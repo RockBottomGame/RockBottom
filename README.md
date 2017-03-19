@@ -1,2 +1,4 @@
 # 2dGame
-A game that I make
+A game that I make  
+
+This does not use gradle or anything so you will have to download [slick2d](http://slick.ninjacave.com/) and add it as a dependency.

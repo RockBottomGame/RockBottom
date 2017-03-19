@@ -13,7 +13,5 @@ public final class Constants{
     public static final int CHUNK_RENDER_DISTANCE = 1;
     public static final int CHUNK_LOAD_DISTANCE = 3;
 
-    public static final String FILE_EXTENSION_SEPARATOR = ".";
-
     public static final String ASSETS_FOLDER = "/assets";
 }
