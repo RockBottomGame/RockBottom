@@ -108,28 +108,29 @@ public class DataSet{
 
     public static DataPart readDataPart(String data){
         try{
-            String totalPart = getStringInbetween(data, "[", "]", true);
+            String totalPart = getStringInbetween(data, "[", "]");
             String[] totalPartSplit = totalPart.split("@", 2);
-            String idAndName = getStringInbetween(totalPartSplit[0], "{", "}", false);
-            String actualData = getStringInbetween(totalPartSplit[1], "{", "}", true);
-            String[] idNameSplit = idAndName.split(",");
+            String actualData = getStringInbetween(totalPartSplit[1], "{", "}");
 
-            Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.byId(Integer.parseInt(idNameSplit[0]));
-            DataPart part = partClass.getConstructor(String.class).newInstance(idNameSplit[1]);
             if(!actualData.isEmpty()){
-                part.read(actualData);
-            }
+                String idAndName = getStringInbetween(totalPartSplit[0], "{", "}");
+                String[] idNameSplit = idAndName.split(",");
 
-            return part;
+                Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.byId(Integer.parseInt(idNameSplit[0]));
+                DataPart part = partClass.getConstructor(String.class).newInstance(idNameSplit[1]);
+                part.read(actualData);
+
+                return part;
+            }
         }
         catch(Exception e){
             Log.error("Cannot read DataSet property with data "+data+"!", e);
-            return null;
         }
+        return null;
     }
 
-    private static String getStringInbetween(String input, String left, String right, boolean last){
+    private static String getStringInbetween(String input, String left, String right){
         String fromLeft = input.substring(input.indexOf(left)+1);
-        return fromLeft.substring(0, (last ? input.lastIndexOf(right) : input.indexOf(right))-1);
+        return fromLeft.substring(0, input.lastIndexOf(right)-1);
     }
 }
