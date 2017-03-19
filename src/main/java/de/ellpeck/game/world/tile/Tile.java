@@ -1,0 +1,137 @@
+package de.ellpeck.game.world.tile;
+
+import de.ellpeck.game.ContentRegistry;
+import de.ellpeck.game.item.Item;
+import de.ellpeck.game.item.ItemInstance;
+import de.ellpeck.game.item.ItemTile;
+import de.ellpeck.game.render.tile.ITileRenderer;
+import de.ellpeck.game.util.BoundBox;
+import de.ellpeck.game.util.Direction;
+import de.ellpeck.game.world.Chunk.TileLayer;
+import de.ellpeck.game.world.IWorld;
+import de.ellpeck.game.world.World;
+import de.ellpeck.game.world.entity.Entity;
+import de.ellpeck.game.world.entity.EntityItem;
+import de.ellpeck.game.world.tile.entity.TileEntity;
+
+import java.util.Collections;
+import java.util.List;
+
+public class Tile{
+
+    protected final int id;
+    public static final BoundBox DEFAULT_BOUNDS = new BoundBox(0, 0, 1, 1);
+
+    public Tile(int id){
+        this.id = id;
+    }
+
+    public ITileRenderer getRenderer(){
+        return null;
+    }
+
+    public BoundBox getBoundBox(IWorld world, int x, int y){
+        return DEFAULT_BOUNDS;
+    }
+
+    public boolean canBreak(IWorld world, int x, int y, TileLayer layer){
+        if(layer == TileLayer.MAIN){
+            return true;
+        }
+        else{
+            if(!world.getTile(x, y).isFullTile()){
+                for(Direction dir : Direction.DIRECTIONS){
+                    Tile tile = world.getTile(layer, x+dir.offsetX, y+dir.offsetY);
+                    if(!tile.isFullTile()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public Tile register(){
+        ContentRegistry.TILE_REGISTRY.register(this.id, this);
+
+        if(this.hasItem()){
+            ItemTile item = new ItemTile(this.id);
+            item.register();
+        }
+
+        return this;
+    }
+
+    protected boolean hasItem(){
+        return true;
+    }
+
+    public int getId(){
+        return this.id;
+    }
+
+    public Item getItem(){
+        if(this.hasItem()){
+            return ContentRegistry.ITEM_REGISTRY.byId(this.id);
+        }
+        else{
+            return null;
+        }
+    }
+
+    public void onRemoved(World world, int x, int y){
+
+    }
+
+    public void onAdded(World world, int x, int y){
+
+    }
+
+    public boolean canReplace(World world, int x, int y, TileLayer layer){
+        return false;
+    }
+
+    public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer){
+        List<ItemInstance> drops = this.getDrops(world, x, y, destroyer);
+        if(drops != null && !drops.isEmpty()){
+            for(ItemInstance inst : drops){
+                EntityItem.spawn(world, inst, x+0.5, y+0.5, 0, 0);
+            }
+        }
+    }
+
+    public List<ItemInstance> getDrops(World world, int x, int y, Entity destroyer){
+        Item item = this.getItem();
+        if(item != null){
+            return Collections.singletonList(new ItemInstance(item));
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public int hashCode(){
+        return this.getId();
+    }
+
+    public TileEntity provideTileEntity(World world, int x, int y){
+        return null;
+    }
+
+    public boolean providesTileEntity(){
+        return false;
+    }
+
+    public void onChangeAround(World world, int x, int y, int changedX, int changedY){
+
+    }
+
+    public boolean canBeOnLayer(World world, int x, int y, TileLayer layer){
+        return layer == TileLayer.MAIN || !this.providesTileEntity();
+    }
+
+    public boolean isFullTile(){
+        return true;
+    }
+}
