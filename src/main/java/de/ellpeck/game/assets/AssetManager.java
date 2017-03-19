@@ -18,7 +18,7 @@ public class AssetManager{
     private AssetSound missingSound;
     private AssetImage missingTexture;
 
-    private final Map<String, Asset> assets = new HashMap<>();
+    private final Map<String, IAsset> assets = new HashMap<>();
 
     public void create(Game game){
         try{
@@ -64,8 +64,8 @@ public class AssetManager{
         }
     }
 
-    public <T> T getAssetWithFallback(String path, Asset<T> fallback){
-        Asset asset = this.assets.get(path);
+    public <T> T getAssetWithFallback(String path, IAsset<T> fallback){
+        IAsset asset = this.assets.get(path);
 
         if(asset == null){
             this.assets.put(path, fallback);

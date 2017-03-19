@@ -2,7 +2,7 @@ package de.ellpeck.game.assets;
 
 import org.newdawn.slick.Sound;
 
-public class AssetSound implements Asset<Sound>{
+public class AssetSound implements IAsset<Sound>{
 
     private final Sound sound;
 

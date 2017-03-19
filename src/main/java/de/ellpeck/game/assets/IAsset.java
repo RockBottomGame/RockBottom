@@ -1,6 +1,6 @@
 package de.ellpeck.game.assets;
 
-public interface Asset<T>{
+public interface IAsset<T>{
 
     T get();
 

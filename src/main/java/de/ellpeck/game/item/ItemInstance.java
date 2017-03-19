@@ -1,5 +1,6 @@
 package de.ellpeck.game.item;
 
+import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
 import de.ellpeck.game.world.tile.Tile;
 
@@ -32,7 +33,7 @@ public class ItemInstance{
 
     public ItemInstance(Item item, int amount, int meta){
         if(item == null){
-            Main.doExceptionInfo(null, new NullPointerException("Tried to create an ItemInstance with null item!"));
+            Main.doExceptionInfo(Game.get(), new NullPointerException("Tried to create an ItemInstance with null item!"));
         }
 
         this.item = item;

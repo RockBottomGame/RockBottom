@@ -1,6 +1,8 @@
 package de.ellpeck.game;
 
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.data.DataManager;
+import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
 import de.ellpeck.game.item.ItemInstance;
@@ -12,18 +14,21 @@ import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.entity.player.InteractionManager;
 import org.newdawn.slick.*;
 
+import java.io.File;
+
 public class Game extends BasicGame{
 
     private static Game instance;
 
     private GameContainer container;
-    private AssetManager assetManager;
+    public DataManager dataManager;
 
     private EntityPlayer player;
     public InteractionManager interactionManager;
 
     private World world;
 
+    private AssetManager assetManager;
     private WorldRenderer worldRenderer;
     public ParticleManager particleManager;
 
@@ -44,6 +49,8 @@ public class Game extends BasicGame{
 
     @Override
     public void init(GameContainer container) throws SlickException{
+        this.dataManager = new DataManager(this);
+
         this.container = container;
 
         this.assetManager = new AssetManager();
@@ -51,7 +58,9 @@ public class Game extends BasicGame{
 
         ContentRegistry.init();
 
-        this.world = new World(123782738283L);
+        DataSet set = new DataSet();
+        set.read(this.dataManager.worldFile);
+        this.world = new World(123782738283L, set);
 
         this.player = new EntityPlayer(this.world);
         this.player.setPos(0, 10);
@@ -61,6 +70,13 @@ public class Game extends BasicGame{
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
+    }
+
+    @Override
+    public boolean closeRequested(){
+        this.world.save();
+        this.world.saveData.write(this.dataManager.worldFile);
+        return true;
     }
 
     @Override

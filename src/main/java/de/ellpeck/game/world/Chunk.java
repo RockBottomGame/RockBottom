@@ -3,6 +3,9 @@ package de.ellpeck.game.world;
 import de.ellpeck.game.Constants;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
+import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
+import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.util.Vec2;
@@ -21,7 +24,7 @@ public class Chunk implements IWorld{
     private final World world;
 
     private final Tile[][][] tileGrid = new Tile[TileLayer.values().length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    private final byte[][] metaGrid = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    private byte[][] metaGrid = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
     private final List<Entity> entities = new ArrayList<>();
 
@@ -30,19 +33,16 @@ public class Chunk implements IWorld{
 
     public int loadTimer;
 
-    public Chunk(World world, int gridX, int gridY){
+    private boolean isDirty;
+    private boolean isGenerating;
+
+    public Chunk(World world, int gridX, int gridY, DataSet set){
         this.world = world;
 
         this.x = MathUtil.toWorldPos(gridX);
         this.y = MathUtil.toWorldPos(gridY);
 
-        for(int layer = 0; layer < this.tileGrid.length; layer++){
-            for(int row = 0; row < this.tileGrid[layer].length; row++){
-                for(int column = 0; column < this.tileGrid[layer][row].length; column++){
-                    this.tileGrid[layer][row][column] = ContentRegistry.TILE_AIR;
-                }
-            }
-        }
+        this.loadOrCreate(set);
     }
 
     public void generate(Random rand){
@@ -174,18 +174,25 @@ public class Chunk implements IWorld{
             }
         }
 
-        this.world.notifyNeighborsOfChange(x, y);
+        if(!this.isGenerating){
+            this.world.notifyNeighborsOfChange(x, y);
+        }
+        this.isDirty = true;
     }
 
     public void setMetaInner(int x, int y, byte meta){
         this.metaGrid[x][y] = meta;
 
-        this.world.notifyNeighborsOfChange(x, y);
+        if(!this.isGenerating){
+            this.world.notifyNeighborsOfChange(x, y);
+        }
+        this.isDirty = true;
     }
 
     @Override
     public void addEntity(Entity entity){
         this.entities.add(entity);
+        this.isDirty = true;
     }
 
     @Override
@@ -193,12 +200,16 @@ public class Chunk implements IWorld{
         this.tileEntities.add(tile);
         this.tileEntityLookup.put(new Vec2(tile.x, tile.y), tile);
 
-        this.world.notifyNeighborsOfChange(tile.x, tile.y);
+        if(!this.isGenerating){
+            this.world.notifyNeighborsOfChange(tile.x, tile.y);
+        }
+        this.isDirty = true;
     }
 
     @Override
     public void removeEntity(Entity entity){
         this.entities.remove(entity);
+        this.isDirty = true;
     }
 
     @Override
@@ -208,7 +219,10 @@ public class Chunk implements IWorld{
             this.tileEntities.remove(tile);
             this.tileEntityLookup.remove(new Vec2(tile.x, tile.y));
 
-            this.world.notifyNeighborsOfChange(x, y);
+            if(!this.isGenerating){
+                this.world.notifyNeighborsOfChange(x, y);
+            }
+            this.isDirty = true;
         }
     }
 
@@ -239,6 +253,57 @@ public class Chunk implements IWorld{
 
     public boolean shouldUnload(){
         return this.loadTimer <= 0;
+    }
+
+    public boolean needsSave(){
+        return this.isDirty;
+    }
+
+    public void save(DataSet set){
+        for(int i = 0; i < this.tileGrid.length; i++){
+            int[][] ids = new int[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    ids[x][y] = ContentRegistry.TILE_REGISTRY.getId(this.tileGrid[i][x][y]);
+                }
+            }
+
+            set.put(new PartIntIntArray("l_"+i, ids));
+        }
+
+        set.put(new PartByteByteArray("m", this.metaGrid));
+
+        this.isDirty = false;
+    }
+
+    public void loadOrCreate(DataSet set){
+        if(set != null){
+            for(int i = 0; i < this.tileGrid.length; i++){
+                int[][] ids = set.getDataInPart("l_"+i);
+
+                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                        this.tileGrid[i][x][y] = ContentRegistry.TILE_REGISTRY.byId(ids[x][y]);
+                    }
+                }
+            }
+
+            this.metaGrid = set.getDataInPart("m");
+        }
+        else{
+            for(int i = 0; i < this.tileGrid.length; i++){
+                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                        this.tileGrid[i][x][y] = ContentRegistry.TILE_AIR;
+                    }
+                }
+            }
+
+            this.isGenerating = true;
+            this.generate(this.world.generatorRandom);
+            this.isGenerating = false;
+        }
     }
 
     public enum TileLayer{

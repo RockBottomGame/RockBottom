@@ -2,6 +2,8 @@ package de.ellpeck.game.world;
 
 import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
+import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.data.set.part.PartDataSet;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.MathUtil;
@@ -24,8 +26,11 @@ public class World implements IWorld{
 
     public List<EntityPlayer> players = new ArrayList<>();
 
-    public World(long seed){
+    public final DataSet saveData;
+
+    public World(long seed, DataSet saveData){
         this.generatorRandom = new Random(seed);
+        this.saveData = saveData;
     }
 
     public void update(Game game){
@@ -44,6 +49,8 @@ public class World implements IWorld{
 
             chunk.loadTimer--;
             if(chunk.loadTimer <= 0 || chunk.shouldUnload()){
+                this.saveChunk(chunk);
+
                 this.chunks.remove(i);
                 this.chunkLookup.remove(new Vec2(chunk.getGridX(), chunk.getGridY()));
                 i--;
@@ -150,11 +157,11 @@ public class World implements IWorld{
         Chunk chunk = this.chunkLookup.get(new Vec2(gridX, gridY));
 
         if(chunk == null){
-            chunk = new Chunk(this, gridX, gridY);
+            DataSet set = this.saveData.getDataInPart("c_"+gridX+"_"+gridY);
+            chunk = new Chunk(this, gridX, gridY, set);
+
             this.chunks.add(chunk);
             this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
-
-            chunk.generate(this.generatorRandom);
         }
 
         return chunk;
@@ -206,6 +213,26 @@ public class World implements IWorld{
 
             Tile tile = this.getTile(offX, offY);
             tile.onChangeAround(this, offX, offY, x, y);
+        }
+    }
+
+    public void save(){
+        for(Chunk chunk : this.chunks){
+            this.saveChunk(chunk);
+        }
+    }
+
+    private void saveChunk(Chunk chunk){
+        if(chunk.needsSave()){
+            int gridX = chunk.getGridX();
+            int gridY = chunk.getGridY();
+
+            DataSet set = this.saveData.getDataInPart("c_"+gridX+"_"+gridY);
+            if(set == null){
+                set = new DataSet();
+                this.saveData.put(new PartDataSet("c_"+gridX+"_"+gridY, set));
+            }
+            chunk.save(set);
         }
     }
 }

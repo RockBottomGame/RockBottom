@@ -2,7 +2,7 @@ package de.ellpeck.game.assets;
 
 import org.newdawn.slick.Image;
 
-public class AssetImage implements Asset<Image>{
+public class AssetImage implements IAsset<Image>{
 
     private final Image image;
 

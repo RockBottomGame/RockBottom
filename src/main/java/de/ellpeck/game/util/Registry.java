@@ -1,7 +1,7 @@
 package de.ellpeck.game.util;
 
+import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
-import org.newdawn.slick.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class Registry<T>{
 
     public void register(int id, T value){
         if(this.map.containsKey(id)){
-            Main.doExceptionInfo(null, new RuntimeException("Cannot register "+value+" with id "+id+" twice!"));
+            Main.doExceptionInfo(Game.get(), new RuntimeException("Cannot register "+value+" with id "+id+" twice!"));
         }
 
         this.map.put(id, value);

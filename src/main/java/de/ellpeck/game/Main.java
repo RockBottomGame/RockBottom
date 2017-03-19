@@ -2,7 +2,6 @@ package de.ellpeck.game;
 
 import de.ellpeck.game.util.LogSystem;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
@@ -13,8 +12,10 @@ public final class Main{
     public static void main(String[] args){
         Log.setLogSystem(new LogSystem());
 
+        Game game = new Game();
+
         try{
-            AppGameContainer container = new AppGameContainer(new Game(), 1280, 720, false);
+            AppGameContainer container = new AppGameContainer(game, 1280, 720, false);
 
             container.setAlwaysRender(true);
             container.setShowFPS(false);
@@ -27,7 +28,7 @@ public final class Main{
             container.start();
         }
         catch(SlickException e){
-            doExceptionInfo(null, e);
+            doExceptionInfo(game, e);
         }
     }
 
@@ -35,9 +36,8 @@ public final class Main{
         JOptionPane.showMessageDialog(null, e.toString(), "Something went wrong!", JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
 
-        GameContainer container = game.getContainer();
-        if(container != null){
-            container.exit();
+        if(game != null){
+            game.getContainer().exit();
         }
         else{
             System.exit(-1);
