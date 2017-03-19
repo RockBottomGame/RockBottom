@@ -1,7 +1,7 @@
 package de.ellpeck.game.world.tile.entity;
 
 import de.ellpeck.game.Game;
-import org.newdawn.slick.GameContainer;
+import de.ellpeck.game.data.set.DataSet;
 
 public class TileEntity{
 
@@ -21,4 +21,11 @@ public class TileEntity{
         return false;
     }
 
+    public void save(DataSet set){
+
+    }
+
+    public void load(DataSet set){
+
+    }
 }

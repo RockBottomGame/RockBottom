@@ -2,42 +2,28 @@ package de.ellpeck.game.data.set.part;
 
 import de.ellpeck.game.data.set.DataSet;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class PartDataSet extends BasicDataPart<DataSet>{
 
     public PartDataSet(String name){
         super(name);
     }
 
+    @Override
+    public void write(DataOutputStream stream) throws Exception{
+        DataSet.writeSet(stream, this.data);
+    }
+
+    @Override
+    public void read(DataInputStream stream) throws Exception{
+        this.data = new DataSet();
+        DataSet.readSet(stream, this.data);
+    }
+
     public PartDataSet(String name, DataSet data){
         super(name, data);
-    }
-
-    @Override
-    public String write(){
-        if(!this.data.isEmpty()){
-            String s = "";
-            for(DataPart part : this.data.getData().values()){
-                s += DataSet.writeDataPart(part)+"~";
-            }
-            return s.substring(0, s.length()-1);
-        }
-        else{
-            return "";
-        }
-    }
-
-    @Override
-    public void read(String data){
-        this.data = new DataSet();
-
-        if(!data.isEmpty()){
-            String[] split = data.split("~");
-            for(String s : split){
-                DataPart part = DataSet.readDataPart(s);
-                if(part != null){
-                    this.data.put(part);
-                }
-            }
-        }
     }
 }

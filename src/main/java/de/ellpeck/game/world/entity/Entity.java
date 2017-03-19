@@ -1,12 +1,11 @@
 package de.ellpeck.game.world.entity;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.world.World;
-
-import java.util.List;
 
 public class Entity extends MovableWorldObject{
 
@@ -62,5 +61,19 @@ public class Entity extends MovableWorldObject{
     @Override
     public BoundBox getBoundingBox(){
         return this.boundingBox;
+    }
+
+    public void save(DataSet set){
+        set.addDouble("x", this.x);
+        set.addDouble("y", this.y);
+        set.addDouble("motion_x", this.motionX);
+        set.addDouble("motion_y", this.motionY);
+    }
+
+    public void load(DataSet set){
+        this.x = set.getDouble("x");
+        this.y = set.getDouble("y");
+        this.motionX = set.getDouble("motion_x");
+        this.motionY = set.getDouble("motion_y");
     }
 }

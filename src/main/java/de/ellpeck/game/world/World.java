@@ -3,7 +3,6 @@ package de.ellpeck.game.world;
 import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
-import de.ellpeck.game.data.set.part.PartDataSet;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.MathUtil;
@@ -14,23 +13,44 @@ import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 
+import java.io.File;
 import java.util.*;
 
 public class World implements IWorld{
 
     public final Random rand = new Random();
-    public final Random generatorRandom;
 
-    public final List<Chunk> chunks = new ArrayList<>();
+    private long seed;
+    public final Random generatorRandom = new Random();
+
+    public final List<Chunk> loadedChunks = new ArrayList<>();
     private final Map<Vec2, Chunk> chunkLookup = new HashMap<>();
 
     public List<EntityPlayer> players = new ArrayList<>();
 
-    public final DataSet saveData;
+    private final File chunksDirectory;
+    private final File playerDirectory;
 
-    public World(long seed, DataSet saveData){
-        this.generatorRandom = new Random(seed);
-        this.saveData = saveData;
+    private final File dataFile;
+
+    public long totalTimeInWorld;
+    public int currentWorldTime;
+
+    public World(File worldDirectory){
+        this.chunksDirectory = new File(worldDirectory, "chunks");
+        this.playerDirectory = new File(worldDirectory, "players");
+        this.dataFile = new File(worldDirectory, "world_info.dat");
+
+        this.load();
+    }
+
+    public void setSeed(long seed){
+        this.seed = seed;
+        this.generatorRandom.setSeed(seed);
+    }
+
+    public long getSeed(){
+        return this.seed;
     }
 
     public void update(Game game){
@@ -43,15 +63,15 @@ public class World implements IWorld{
             }
         }
 
-        for(int i = 0; i < this.chunks.size(); i++){
-            Chunk chunk = this.chunks.get(i);
+        for(int i = 0; i < this.loadedChunks.size(); i++){
+            Chunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
 
             chunk.loadTimer--;
             if(chunk.loadTimer <= 0 || chunk.shouldUnload()){
                 this.saveChunk(chunk);
 
-                this.chunks.remove(i);
+                this.loadedChunks.remove(i);
                 this.chunkLookup.remove(new Vec2(chunk.getGridX(), chunk.getGridY()));
                 i--;
             }
@@ -99,7 +119,7 @@ public class World implements IWorld{
     @Override
     public List<Entity> getAllEntities(){
         List<Entity> entities = new ArrayList<>();
-        for(Chunk chunk : this.chunks){
+        for(Chunk chunk : this.loadedChunks){
             entities.addAll(chunk.getAllEntities());
         }
         return entities;
@@ -108,7 +128,7 @@ public class World implements IWorld{
     @Override
     public List<TileEntity> getAllTileEntities(){
         List<TileEntity> tiles = new ArrayList<>();
-        for(Chunk chunk : this.chunks){
+        for(Chunk chunk : this.loadedChunks){
             tiles.addAll(chunk.getAllTileEntities());
         }
         return tiles;
@@ -157,10 +177,12 @@ public class World implements IWorld{
         Chunk chunk = this.chunkLookup.get(new Vec2(gridX, gridY));
 
         if(chunk == null){
-            DataSet set = this.saveData.getDataInPart("c_"+gridX+"_"+gridY);
+            DataSet set = new DataSet();
+            set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
+
             chunk = new Chunk(this, gridX, gridY, set);
 
-            this.chunks.add(chunk);
+            this.loadedChunks.add(chunk);
             this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
         }
 
@@ -217,8 +239,47 @@ public class World implements IWorld{
     }
 
     public void save(){
-        for(Chunk chunk : this.chunks){
+        for(Chunk chunk : this.loadedChunks){
             this.saveChunk(chunk);
+        }
+
+        DataSet dataSet = new DataSet();
+        dataSet.addLong("seed", this.seed);
+        dataSet.addLong("total_time", this.totalTimeInWorld);
+        dataSet.addInt("curr_time", this.currentWorldTime);
+
+        dataSet.write(this.dataFile);
+
+        for(EntityPlayer player : this.players){
+            DataSet playerSet = new DataSet();
+            player.save(playerSet);
+
+            playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
+        }
+    }
+
+    public void load(){
+        DataSet dataSet = new DataSet();
+        dataSet.read(this.dataFile);
+
+        this.setSeed(dataSet.getLong("seed"));
+        this.totalTimeInWorld = dataSet.getLong("total_time");
+        this.currentWorldTime = dataSet.getInt("curr_time");
+
+        File[] files = this.playerDirectory.listFiles();
+        if(files != null){
+            for(File file : files){
+                String name = file.getName().replace(".dat", "");
+
+                DataSet playerSet = new DataSet();
+                playerSet.read(file);
+
+                EntityPlayer player = new EntityPlayer(this);
+                player.setUniqueId(UUID.fromString(name));
+                player.load(playerSet);
+
+                this.addEntity(player);
+            }
         }
     }
 
@@ -227,12 +288,10 @@ public class World implements IWorld{
             int gridX = chunk.getGridX();
             int gridY = chunk.getGridY();
 
-            DataSet set = this.saveData.getDataInPart("c_"+gridX+"_"+gridY);
-            if(set == null){
-                set = new DataSet();
-                this.saveData.put(new PartDataSet("c_"+gridX+"_"+gridY, set));
-            }
+            DataSet set = new DataSet();
             chunk.save(set);
+
+            set.write(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
         }
     }
 }

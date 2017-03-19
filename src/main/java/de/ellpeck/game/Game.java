@@ -2,7 +2,6 @@ package de.ellpeck.game;
 
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.data.DataManager;
-import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
 import de.ellpeck.game.item.ItemInstance;
@@ -58,13 +57,19 @@ public class Game extends BasicGame{
 
         ContentRegistry.init();
 
-        DataSet set = new DataSet();
-        set.read(this.dataManager.worldFile);
-        this.world = new World(123782738283L, set);
+        this.world = new World(new File(this.dataManager.saveDirectory, "world"));
+        if(this.world.getSeed() == 0){
+            this.world.setSeed(this.world.rand.nextLong());
+        }
 
-        this.player = new EntityPlayer(this.world);
-        this.player.setPos(0, 10);
-        this.world.addEntity(this.player);
+        if(this.world.players.isEmpty()){
+            this.player = new EntityPlayer(this.world);
+            this.player.setPos(0, 10);
+            this.world.addEntity(this.player);
+        }
+        else{
+            this.player = this.world.players.get(0);
+        }
 
         this.interactionManager = new InteractionManager(this.player);
 
@@ -75,7 +80,6 @@ public class Game extends BasicGame{
     @Override
     public boolean closeRequested(){
         this.world.save();
-        this.world.saveData.write(this.dataManager.worldFile);
         return true;
     }
 
@@ -137,12 +141,13 @@ public class Game extends BasicGame{
             Font font = container.getDefaultFont();
             font.drawString(10, 10, "Avg FPS: "+this.fpsAverage);
             font.drawString(10, 30, "Avg TPS: "+this.tpsAverage);
-            font.drawString(10, 50, "Loaded Chunks: "+this.world.chunks.size());
+            font.drawString(10, 50, "Loaded Chunks: "+this.world.loadedChunks.size());
             font.drawString(10, 70, "Entities: "+this.world.getAllEntities().size()+" Players: "+this.world.players.size());
             font.drawString(10, 90, "TileEntities: "+this.world.getAllTileEntities().size()+" Particles: "+this.particleManager.getAmount());
             font.drawString(10, 110, "Player: Chunk: "+this.player.chunkX+", "+this.player.chunkY+" Pos: "+this.player.x+", "+this.player.y);
             font.drawString(10, 130, "Mouse: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
             font.drawString(10, 150, "Moused Tile: "+this.interactionManager.mousedTileX+", "+this.interactionManager.mousedTileY);
+            font.drawString(10, 170, "Seed: "+this.world.getSeed());
         }
 
         g.scale(Constants.GUI_SCALE, Constants.GUI_SCALE);

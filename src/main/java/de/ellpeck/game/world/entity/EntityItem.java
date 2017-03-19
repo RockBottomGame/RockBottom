@@ -1,6 +1,7 @@
 package de.ellpeck.game.world.entity;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.ItemEntityRenderer;
@@ -67,5 +68,22 @@ public class EntityItem extends Entity{
 
         this.motionX *= this.onGround ? 0.8 : 0.98;
         this.motionY *= 0.98;
+    }
+
+    @Override
+    public void save(DataSet set){
+        super.save(set);
+
+        DataSet itemSet = new DataSet();
+        this.item.save(itemSet);
+        set.addDataSet("item", itemSet);
+    }
+
+    @Override
+    public void load(DataSet set){
+        super.load(set);
+
+        DataSet itemSet = set.getDataSet("item");
+        this.item = new ItemInstance(itemSet);
     }
 }

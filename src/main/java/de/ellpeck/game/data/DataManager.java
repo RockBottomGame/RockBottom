@@ -1,12 +1,12 @@
 package de.ellpeck.game.data;
 
 import de.ellpeck.game.Game;
-import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.data.set.part.DataPart;
 import de.ellpeck.game.data.set.part.PartDataSet;
 import de.ellpeck.game.data.set.part.num.PartDouble;
 import de.ellpeck.game.data.set.part.num.PartFloat;
 import de.ellpeck.game.data.set.part.num.PartInt;
+import de.ellpeck.game.data.set.part.num.PartLong;
 import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
@@ -27,6 +27,7 @@ public class DataManager{
         PART_REGISTRY.register(4, PartIntIntArray.class);
         PART_REGISTRY.register(5, PartByteByteArray.class);
         PART_REGISTRY.register(6, PartDataSet.class);
+        PART_REGISTRY.register(7, PartLong.class);
     }
 
     public File gameDirectory;

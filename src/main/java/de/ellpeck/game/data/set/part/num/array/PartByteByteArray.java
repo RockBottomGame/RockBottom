@@ -2,6 +2,8 @@ package de.ellpeck.game.data.set.part.num.array;
 
 import de.ellpeck.game.data.set.part.BasicDataPart;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.util.Arrays;
 
 public class PartByteByteArray extends BasicDataPart<byte[][]>{
@@ -10,35 +12,36 @@ public class PartByteByteArray extends BasicDataPart<byte[][]>{
         super(name);
     }
 
+    @Override
+    public void write(DataOutputStream stream) throws Exception{
+        stream.writeInt(this.data.length);
+
+        for(byte[] array : this.data){
+            stream.writeInt(array.length);
+
+            for(byte b : array){
+                stream.writeByte(b);
+            }
+        }
+    }
+
+    @Override
+    public void read(DataInputStream stream) throws Exception{
+        int amount = stream.readInt();
+        this.data = new byte[amount][];
+
+        for(int i = 0; i < amount; i++){
+            int innerAmount = stream.readInt();
+            this.data[i] = new byte[innerAmount];
+
+            for(int j = 0; j < innerAmount; j++){
+                this.data[i][j] = stream.readByte();
+            }
+        }
+    }
+
     public PartByteByteArray(String name, byte[][] data){
         super(name, data);
-    }
-
-    @Override
-    public String write(){
-        String s = "";
-        for(byte[] array : this.data){
-            for(int data : array){
-                s += data+";";
-            }
-            s+=":";
-        }
-        return s.substring(0, s.length()-2);
-    }
-
-    @Override
-    public void read(String data){
-        String[] splitRows = data.split(":");
-        this.data = new byte[splitRows.length][];
-
-        for(int row = 0; row < splitRows.length; row++){
-            String[] splitColumns = splitRows[row].split(";");
-            this.data[row] = new byte[splitColumns.length];
-
-            for(int column = 0; column < splitColumns.length; column++){
-                this.data[row][column] = Byte.parseByte(splitColumns[column]);
-            }
-        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
+import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.inventory.InventoryBasic;
 import de.ellpeck.game.item.ItemInstance;
@@ -15,23 +16,23 @@ import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.EntityLiving;
 
 import java.util.List;
+import java.util.UUID;
 
 public class EntityPlayer extends EntityLiving{
 
-    private final IEntityRenderer renderer;
-
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
 
+    private final IEntityRenderer renderer;
     public final InventoryBasic playerInventory = new InventoryBasic(32);
-
     private Gui gui;
+
+    private UUID uniqueId;
 
     public EntityPlayer(World world){
         super(world);
         this.renderer = new PlayerEntityRenderer();
-
         this.facing = Direction.RIGHT;
-        this.openGui(null);
+        this.uniqueId = UUID.randomUUID();
 
         this.playerInventory.add(new ItemInstance(ContentRegistry.TILE_DIRT, 500), false);
     }
@@ -88,5 +89,25 @@ public class EntityPlayer extends EntityLiving{
 
     public Gui getGui(){
         return this.gui;
+    }
+
+    @Override
+    public void save(DataSet set){
+        super.save(set);
+        this.playerInventory.save(set);
+    }
+
+    @Override
+    public void load(DataSet set){
+        super.load(set);
+        this.playerInventory.load(set);
+    }
+
+    public UUID getUniqueId(){
+        return this.uniqueId;
+    }
+
+    public void setUniqueId(UUID id){
+        this.uniqueId = id;
     }
 }

@@ -4,15 +4,16 @@ import de.ellpeck.game.Constants;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
-import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
-import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.util.Vec2;
 import de.ellpeck.game.world.entity.Entity;
+import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
+import org.newdawn.slick.util.Log;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -269,18 +270,32 @@ public class Chunk implements IWorld{
                 }
             }
 
-            set.put(new PartIntIntArray("l_"+i, ids));
+            set.addIntIntArray("l_"+i, ids);
         }
 
-        set.put(new PartByteByteArray("m", this.metaGrid));
+        set.addByteByteArray("m", this.metaGrid);
+
+        int entityId = 0;
+        for(Entity entity : this.entities){
+            if(!(entity instanceof EntityPlayer)){
+                DataSet entitySet = new DataSet();
+                entitySet.addInt("id", ContentRegistry.ENTITY_REGISTRY.getId(entity.getClass()));
+                entity.save(entitySet);
+
+                set.addDataSet("e_"+entityId, entitySet);
+
+                entityId++;
+            }
+        }
+        set.addInt("e_a", entityId);
 
         this.isDirty = false;
     }
 
     public void loadOrCreate(DataSet set){
-        if(set != null){
+        if(set != null && !set.isEmpty()){
             for(int i = 0; i < this.tileGrid.length; i++){
-                int[][] ids = set.getDataInPart("l_"+i);
+                int[][] ids = set.getIntIntArray("l_"+i);
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
@@ -289,7 +304,24 @@ public class Chunk implements IWorld{
                 }
             }
 
-            this.metaGrid = set.getDataInPart("m");
+            this.metaGrid = set.getByteByteArray("m");
+
+            int entityAmount = set.getInt("e_a");
+            for(int i = 0; i < entityAmount; i++){
+                DataSet entitySet = set.getDataSet("e_"+i);
+
+                int id = entitySet.getInt("id");
+                Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.byId(id);
+
+                try{
+                    Entity entity = entityClass.getConstructor(World.class).newInstance(this.world);
+                    entity.load(entitySet);
+                    this.entities.add(entity);
+                }
+                catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
+                    Log.error("Couldn't load entity with id "+id+" and data "+entitySet+"!", e);
+                }
+            }
         }
         else{
             for(int i = 0; i < this.tileGrid.length; i++){

@@ -4,9 +4,17 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
 import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.data.set.part.DataPart;
-import org.newdawn.slick.util.Log;
+import de.ellpeck.game.data.set.part.PartDataSet;
+import de.ellpeck.game.data.set.part.num.PartDouble;
+import de.ellpeck.game.data.set.part.num.PartFloat;
+import de.ellpeck.game.data.set.part.num.PartInt;
+import de.ellpeck.game.data.set.part.num.PartLong;
+import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
+import de.ellpeck.game.data.set.part.num.array.PartIntArray;
+import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,68 +22,116 @@ public class DataSet{
 
     private final Map<String, DataPart> data = new HashMap<>();
 
-    public void put(DataPart part){
+    public void addPart(DataPart part){
         this.data.put(part.getName(), part);
     }
 
-    public <T> T getDataInPart(String key){
+    public <T> T getPartContent(String key, T defaultValue){
         DataPart part = this.data.get(key);
 
         if(part != null){
-            return (T)part.get();
+            T result = (T)part.get();
+            if(result != null){
+                return result;
+            }
         }
-        else{
-            return null;
-        }
+
+        return defaultValue;
+    }
+
+    public int getInt(String key){
+        return this.getPartContent(key, 0);
+    }
+
+    public void addInt(String key, int i){
+        this.addPart(new PartInt(key, i));
+    }
+
+    public long getLong(String key){
+        return this.getPartContent(key, 0L);
+    }
+
+    public void addLong(String key, long l){
+        this.addPart(new PartLong(key, l));
+    }
+
+    public float getFloat(String key){
+        return this.getPartContent(key, 0F);
+    }
+
+    public void addFloat(String key, float f){
+        this.addPart(new PartFloat(key, f));
+    }
+
+    public double getDouble(String key){
+        return this.getPartContent(key, 0D);
+    }
+
+    public void addDouble(String key, double d){
+        this.addPart(new PartDouble(key, d));
+    }
+
+    public DataSet getDataSet(String key){
+        return this.getPartContent(key, new DataSet());
+    }
+
+    public void addDataSet(String key, DataSet set){
+        this.addPart(new PartDataSet(key, set));
+    }
+
+    public byte[][] getByteByteArray(String key){
+        return this.getPartContent(key, new byte[0][0]);
+    }
+
+    public void addByteByteArray(String key, byte[][] array){
+        this.addPart(new PartByteByteArray(key, array));
+    }
+
+    public int[] getIntArray(String key){
+        return this.getPartContent(key, new int[0]);
+    }
+
+    public void addIntArray(String key, int[] array){
+        this.addPart(new PartIntArray(key, array));
+    }
+
+    public int[][] getIntIntArray(String key){
+        return this.getPartContent(key, new int[0][0]);
+    }
+
+    public void addIntIntArray(String key, int[][] array){
+        this.addPart(new PartIntIntArray(key, array));
     }
 
     public void write(File file){
         try{
             if(!file.exists()){
+                file.getParentFile().mkdirs();
                 file.createNewFile();
             }
 
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
-
-            for(DataPart part : this.data.values()){
-                String s = writeDataPart(part);
-                if(s != null){
-                    writer.write(s);
-                    writer.newLine();
-                }
-            }
-
-            writer.flush();
-            writer.close();
+            DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
+            writeSet(stream, this);
+            stream.close();
         }
-        catch(IOException e){
+        catch(Exception e){
             Main.doExceptionInfo(Game.get(), e);
         }
     }
 
     public void read(File file){
-        this.data.clear();
+        if(!this.data.isEmpty()){
+            this.data.clear();
+        }
 
         try{
             if(file.exists()){
-                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-
-                String line = reader.readLine();
-                while(line != null){
-                    if(!line.isEmpty()){
-                        DataPart part = readDataPart(line);
-                        if(part != null){
-                            this.data.put(part.getName(), part);
-                        }
-                    }
-
-                    line = reader.readLine();
-                }
-
-                reader.close();
+                DataInputStream stream = new DataInputStream(new FileInputStream(file));
+                readSet(stream, this);
+                stream.close();
             }
         }
-        catch(IOException e){
+        catch(Exception e){
             Main.doExceptionInfo(Game.get(), e);
         }
     }
@@ -93,44 +149,37 @@ public class DataSet{
         return this.data.isEmpty();
     }
 
-    public static String writeDataPart(DataPart part){
-        String name = part.getName();
+    public static void writeSet(DataOutputStream stream, DataSet set) throws Exception{
+        stream.writeInt(set.data.size());
 
-        int id = DataManager.PART_REGISTRY.getId(part.getClass());
-        if(id >= 0){
-            return "[{"+id+","+name+"}@{"+part.write()+"}]";
-        }
-        else{
-            Log.error("Cannot write DataSet property "+part+" with name "+part.getName()+" because it is not registered!");
-            return null;
+        for(DataPart part : set.data.values()){
+            writePart(stream, part);
         }
     }
 
-    public static DataPart readDataPart(String data){
-        try{
-            String totalPart = getStringInbetween(data, "[", "]");
-            String[] totalPartSplit = totalPart.split("@", 2);
-            String actualData = getStringInbetween(totalPartSplit[1], "{", "}");
+    public static void readSet(DataInputStream stream, DataSet set) throws Exception{
+        int amount = stream.readInt();
 
-            if(!actualData.isEmpty()){
-                String idAndName = getStringInbetween(totalPartSplit[0], "{", "}");
-                String[] idNameSplit = idAndName.split(",");
-
-                Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.byId(Integer.parseInt(idNameSplit[0]));
-                DataPart part = partClass.getConstructor(String.class).newInstance(idNameSplit[1]);
-                part.read(actualData);
-
-                return part;
-            }
+        for(int i = 0; i < amount; i++){
+            DataPart part = readPart(stream);
+            set.data.put(part.getName(), part);
         }
-        catch(Exception e){
-            Log.error("Cannot read DataSet property with data "+data+"!", e);
-        }
-        return null;
     }
 
-    private static String getStringInbetween(String input, String left, String right){
-        String fromLeft = input.substring(input.indexOf(left)+1);
-        return fromLeft.substring(0, input.lastIndexOf(right)-1);
+    public static void writePart(DataOutputStream stream, DataPart part) throws Exception{
+        stream.writeInt(DataManager.PART_REGISTRY.getId(part.getClass()));
+        stream.writeUTF(part.getName());
+        part.write(stream);
+    }
+
+    public static DataPart readPart(DataInputStream stream) throws Exception{
+        int id = stream.readInt();
+        String name = stream.readUTF();
+
+        Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.byId(id);
+        DataPart part = partClass.getConstructor(String.class).newInstance(name);
+        part.read(stream);
+
+        return part;
     }
 }

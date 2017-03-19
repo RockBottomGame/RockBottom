@@ -6,23 +6,23 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PartFloat extends BasicDataPart<Float>{
+public class PartLong extends BasicDataPart<Long>{
 
-    public PartFloat(String name){
+    public PartLong(String name){
         super(name);
     }
 
     @Override
     public void write(DataOutputStream stream) throws Exception{
-        stream.writeFloat(this.data);
+        stream.writeLong(this.data);
     }
 
     @Override
     public void read(DataInputStream stream) throws Exception{
-        this.data = stream.readFloat();
+        this.data = stream.readLong();
     }
 
-    public PartFloat(String name, Float data){
+    public PartLong(String name, Long data){
         super(name, data);
     }
 }

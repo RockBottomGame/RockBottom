@@ -1,7 +1,9 @@
 package de.ellpeck.game.item;
 
+import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
+import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.world.tile.Tile;
 
 public class ItemInstance{
@@ -39,6 +41,18 @@ public class ItemInstance{
         this.item = item;
         this.amount = amount;
         this.meta = meta;
+    }
+
+    public ItemInstance(DataSet set){
+        this.item = ContentRegistry.ITEM_REGISTRY.byId(set.getInt("item_id"));
+        this.amount = set.getInt("amount");
+        this.meta = set.getInt("meta");
+    }
+
+    public void save(DataSet set){
+        set.addInt("item_id", ContentRegistry.ITEM_REGISTRY.getId(this.item));
+        set.addInt("amount", this.amount);
+        set.addInt("meta", this.meta);
     }
 
     public Item getItem(){
