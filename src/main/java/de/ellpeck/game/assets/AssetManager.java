@@ -23,7 +23,7 @@ public class AssetManager{
     public void create(Game game){
         try{
             Log.info("Loading resources...");
-            this.loadAssets(Constants.ASSETS_FOLDER);
+            this.loadAssets("/assets");
 
             ImageBuffer buffer = new ImageBuffer(2, 2);
             for(int x = 0; x < 2; x++){
