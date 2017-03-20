@@ -64,7 +64,6 @@ public class Game extends BasicGame{
         }
 
         this.player = this.world.addPlayer(this.uniqueId);
-
         this.interactionManager = new InteractionManager(this.player);
 
         this.worldRenderer = new WorldRenderer();

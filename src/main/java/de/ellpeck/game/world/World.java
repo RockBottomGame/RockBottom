@@ -73,7 +73,7 @@ public class World implements IWorld{
                 this.saveChunk(chunk);
 
                 this.loadedChunks.remove(i);
-                this.chunkLookup.remove(new Vec2(chunk.getGridX(), chunk.getGridY()));
+                this.chunkLookup.remove(new Vec2(chunk.gridX, chunk.gridY));
                 i--;
             }
         }
@@ -291,17 +291,10 @@ public class World implements IWorld{
 
     private void saveChunk(Chunk chunk){
         if(chunk.needsSave()){
-            int gridX = chunk.getGridX();
-            int gridY = chunk.getGridY();
-
             DataSet set = new DataSet();
             chunk.save(set);
 
-            set.write(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
+            set.write(new File(this.chunksDirectory, "c_"+chunk.gridX+"_"+chunk.gridY+".dat"));
         }
-    }
-
-    public EntityPlayer getPlayer(UUID id){
-        return this.players.stream().filter(player -> id.equals(player.getUniqueId())).findFirst().orElse(null);
     }
 }

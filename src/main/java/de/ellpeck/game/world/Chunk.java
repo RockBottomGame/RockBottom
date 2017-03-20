@@ -22,6 +22,9 @@ public class Chunk implements IWorld{
     public final int x;
     public final int y;
 
+    public final int gridX;
+    public final int gridY;
+
     private final World world;
 
     private final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
@@ -44,6 +47,8 @@ public class Chunk implements IWorld{
 
         this.x = MathUtil.toWorldPos(gridX);
         this.y = MathUtil.toWorldPos(gridY);
+        this.gridX = gridX;
+        this.gridY = gridY;
 
         for(int i = 0; i < TileLayer.LAYERS.length; i++){
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
@@ -81,18 +86,15 @@ public class Chunk implements IWorld{
                 i--;
             }
             else{
-                int currChunkX = MathUtil.toGridPos(entity.x);
-                int currChunkY = MathUtil.toGridPos(entity.y);
+                int newChunkX = MathUtil.toGridPos(entity.x);
+                int newChunkY = MathUtil.toGridPos(entity.y);
 
-                if(currChunkX != entity.chunkX || currChunkY != entity.chunkY){
-                    Chunk chunk = this.world.getChunkFromGridCoords(currChunkX, currChunkY);
-                    chunk.addEntity(entity);
-
-                    entity.chunkX = currChunkX;
-                    entity.chunkY = currChunkY;
-
+                if(newChunkX != this.gridX || newChunkY != this.gridY){
                     this.removeEntity(entity);
                     i--;
+
+                    Chunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
+                    chunk.addEntity(entity);
                 }
             }
         }
@@ -116,14 +118,6 @@ public class Chunk implements IWorld{
                 tile.updateRandomly(this.world, this.x+randX, this.y+randY);
             }
         }
-    }
-
-    public int getGridX(){
-        return MathUtil.toGridPos(this.x);
-    }
-
-    public int getGridY(){
-        return MathUtil.toGridPos(this.y);
     }
 
     @Override
@@ -221,6 +215,9 @@ public class Chunk implements IWorld{
     @Override
     public void addEntity(Entity entity){
         this.entities.add(entity);
+
+        entity.chunkX = this.gridX;
+        entity.chunkY = this.gridY;
 
         if(!this.isGenerating){
             this.isDirty = true;
@@ -365,7 +362,7 @@ public class Chunk implements IWorld{
                 try{
                     Entity entity = entityClass.getConstructor(World.class).newInstance(this.world);
                     entity.load(entitySet);
-                    this.entities.add(entity);
+                    this.addEntity(entity);
                 }
                 catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
                     Log.error("Couldn't load entity with id "+id+" and data "+entitySet+"!", e);
