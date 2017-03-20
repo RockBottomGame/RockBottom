@@ -40,7 +40,7 @@ public class InteractionManager{
     }
 
     public void update(Game game){
-        Gui gui = this.player.getGui();
+        Gui gui = this.player.guiManager.getGui();
 
         if(gui == null){
             Input input = game.getContainer().getInput();
@@ -155,18 +155,11 @@ public class InteractionManager{
     }
 
     public void onMouseAction(Game game, int button){
-        Gui gui = this.player.getGui();
-        if(gui != null){
-            gui.onMouseAction(game, button);
-        }
+        this.player.guiManager.onMouseAction(game, button);
     }
 
     public void onKeyboardAction(Game game, int button){
-        Gui gui = this.player.getGui();
-        if(gui != null){
-            gui.onKeyboardAction(game, button);
-        }
-        else{
+        if(!this.player.guiManager.onKeyboardAction(game, button)){
             int index = ITEM_SELECTION_KEYS.indexOf(button);
             if(index >= 0){
                 this.selectedSlot = index;

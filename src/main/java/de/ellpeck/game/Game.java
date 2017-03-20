@@ -91,7 +91,7 @@ public class Game extends BasicGame{
             this.lastPollTime = time;
         }
 
-        Gui gui = this.player.getGui();
+        Gui gui = this.player.guiManager.getGui();
         if(gui == null || !gui.doesPauseGame()){
             this.world.update(this);
             this.interactionManager.update(this);
@@ -107,13 +107,13 @@ public class Game extends BasicGame{
 
     @Override
     public void keyPressed(int key, char c){
-        if(this.player.getGui() == null){
+        if(this.player.guiManager.getGui() == null){
             if(key == Input.KEY_F1){
                 this.isDebug = !this.isDebug;
                 return;
             }
             else if(key == Input.KEY_ESCAPE || key == Input.KEY_E){
-                this.player.openGui(new GuiInventory(this.player));
+                this.player.guiManager.openGui(new GuiInventory(this.player));
                 return;
             }
         }
@@ -144,7 +144,7 @@ public class Game extends BasicGame{
             }
         }
 
-        Gui gui = this.player.getGui();
+        Gui gui = this.player.guiManager.getGui();
         if(gui != null){
             g.setColor(Gui.GRADIENT);
             g.fillRect(0F, 0F, (float)this.getWidthInGui(), (float)this.getHeightInGui());

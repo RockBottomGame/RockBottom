@@ -7,7 +7,6 @@ import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.item.IItemRenderer;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
-import de.ellpeck.game.world.entity.player.InteractionManager;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
@@ -29,15 +28,21 @@ public class GuiContainer extends Gui{
     }
 
     @Override
-    public void onMouseAction(Game game, int button){
-        super.onMouseAction(game, button);
+    public boolean onMouseAction(Game game, int button){
+        if(super.onMouseAction(game, button)){
+            return true;
+        }
 
         if(this.holdingInst != null && button == Input.MOUSE_LEFT_BUTTON){
             if(!this.isMouseOver(game)){
                 this.dropHeldItem();
                 this.holdingInst = null;
+
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

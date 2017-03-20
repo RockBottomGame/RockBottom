@@ -4,6 +4,7 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.Gui;
+import de.ellpeck.game.gui.GuiManager;
 import de.ellpeck.game.inventory.InventoryBasic;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.entity.IEntityRenderer;
@@ -24,9 +25,9 @@ public class EntityPlayer extends EntityLiving{
 
     private final IEntityRenderer renderer;
     public final InventoryBasic playerInventory = new InventoryBasic(32);
-    private Gui gui;
 
     private final UUID uniqueId;
+    public final GuiManager guiManager = new GuiManager();
 
     public EntityPlayer(World world, UUID uniqueId){
         super(world);
@@ -59,36 +60,12 @@ public class EntityPlayer extends EntityLiving{
             }
         }
 
-        if(this.gui != null){
-            this.gui.update(game);
-        }
+        this.guiManager.update(game);
     }
 
     @Override
     public BoundBox getBoundingBox(){
         return this.boundingBox;
-    }
-
-    public void openGui(Gui gui){
-        Game game = Game.get();
-
-        if(this.gui != null){
-            this.gui.onClosed(game);
-        }
-
-        this.gui = gui;
-
-        if(this.gui != null){
-            this.gui.initGui(game);
-        }
-    }
-
-    public void closeGui(){
-        this.openGui(null);
-    }
-
-    public Gui getGui(){
-        return this.gui;
     }
 
     @Override

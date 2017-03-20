@@ -48,16 +48,27 @@ public class Gui{
         this.components.forEach(component -> component.update(game));
     }
 
-    public void onMouseAction(Game game, int button){
-        this.components.forEach(component -> component.onMouseAction(game, button));
+    public boolean onMouseAction(Game game, int button){
+        for(GuiComponent component : this.components){
+            if(component.onMouseAction(game, button)){
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void onKeyboardAction(Game game, int button){
+    public boolean onKeyboardAction(Game game, int button){
         if(this.canEscape() && (button == Keyboard.KEY_ESCAPE || button == Keyboard.KEY_E)){
-            this.player.closeGui();
+            this.player.guiManager.closeGui();
+            return true;
         }
         else{
-            this.components.forEach(component -> component.onKeyboardAction(game, button));
+            for(GuiComponent component : this.components){
+                if(component.onKeyboardAction(game, button)){
+                    return true;
+                }
+            }
+            return false;
         }
     }
 

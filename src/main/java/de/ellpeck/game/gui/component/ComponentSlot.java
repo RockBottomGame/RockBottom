@@ -24,7 +24,7 @@ public class ComponentSlot extends GuiComponent{
     }
 
     @Override
-    public void onMouseAction(Game game, int button){
+    public boolean onMouseAction(Game game, int button){
         if(this.isMouseOver(game)){
             ItemInstance slotInst = this.inventory.get(this.id);
 
@@ -33,12 +33,16 @@ public class ComponentSlot extends GuiComponent{
                     if(slotInst != null){
                         this.container.holdingInst = slotInst;
                         this.inventory.set(this.id, null);
+
+                        return true;
                     }
                 }
                 else{
                     if(slotInst == null){
                         this.inventory.set(this.id, this.container.holdingInst);
                         this.container.holdingInst = null;
+
+                        return true;
                     }
                     else{
                         if(slotInst.isItemEqual(this.container.holdingInst)){
@@ -50,12 +54,16 @@ public class ComponentSlot extends GuiComponent{
                                 if(this.container.holdingInst.getAmount() <= 0){
                                     this.container.holdingInst = null;
                                 }
+
+                                return true;
                             }
                         }
                         else{
                             ItemInstance copy = this.container.holdingInst.copy();
                             this.container.holdingInst = slotInst;
                             this.inventory.set(this.id, copy);
+
+                            return true;
                         }
                     }
                 }
@@ -70,6 +78,8 @@ public class ComponentSlot extends GuiComponent{
                         if(slotInst.getAmount() <= 0){
                             this.inventory.set(this.id, null);
                         }
+
+                        return true;
                     }
                 }
                 else{
@@ -80,6 +90,8 @@ public class ComponentSlot extends GuiComponent{
                         if(this.container.holdingInst.getAmount() <= 0){
                             this.container.holdingInst = null;
                         }
+
+                        return true;
                     }
                     else if(slotInst.isItemEqual(this.container.holdingInst)){
                         if(slotInst.getAmount() < slotInst.getItem().getMaxAmount()){
@@ -89,11 +101,14 @@ public class ComponentSlot extends GuiComponent{
                             if(this.container.holdingInst.getAmount() <= 0){
                                 this.container.holdingInst = null;
                             }
+
+                            return true;
                         }
                     }
                 }
             }
         }
+        return false;
     }
 
     @Override
