@@ -204,7 +204,7 @@ public class Chunk implements IWorld{
         }
 
         if(!this.isGenerating){
-            this.world.notifyNeighborsOfChange(x, y);
+            this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
             this.isDirty = true;
         }
     }
@@ -213,7 +213,7 @@ public class Chunk implements IWorld{
         this.metaGrid[x][y] = meta;
 
         if(!this.isGenerating){
-            this.world.notifyNeighborsOfChange(x, y);
+            this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
             this.isDirty = true;
         }
     }
@@ -255,7 +255,7 @@ public class Chunk implements IWorld{
             this.tileEntityLookup.remove(new Vec2(tile.x, tile.y));
 
             if(!this.isGenerating){
-                this.world.notifyNeighborsOfChange(x, y);
+                this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
                 this.isDirty = true;
             }
         }
