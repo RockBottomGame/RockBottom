@@ -5,10 +5,7 @@ import de.ellpeck.game.util.Registry;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
-import de.ellpeck.game.world.tile.Tile;
-import de.ellpeck.game.world.tile.TileAir;
-import de.ellpeck.game.world.tile.TileBasic;
-import de.ellpeck.game.world.tile.TileGrass;
+import de.ellpeck.game.world.tile.*;
 import org.newdawn.slick.util.Log;
 
 public final class ContentRegistry{
@@ -18,7 +15,7 @@ public final class ContentRegistry{
     public static final Registry<Class<? extends Entity>> ENTITY_REGISTRY = new Registry<>();
 
     public static final Tile TILE_AIR = new TileAir(0).register();
-    public static final Tile TILE_DIRT = new TileBasic(1, "dirt").register();
+    public static final Tile TILE_DIRT = new TileDirt(1).register();
     public static final Tile TILE_ROCK = new TileBasic(2, "rock").register();
     public static final Tile TILE_GRASS = new TileGrass(3).register();
 

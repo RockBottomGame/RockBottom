@@ -26,13 +26,13 @@ public class EntityPlayer extends EntityLiving{
     public final InventoryBasic playerInventory = new InventoryBasic(32);
     private Gui gui;
 
-    private UUID uniqueId;
+    private final UUID uniqueId;
 
-    public EntityPlayer(World world){
+    public EntityPlayer(World world, UUID uniqueId){
         super(world);
         this.renderer = new PlayerEntityRenderer();
         this.facing = Direction.RIGHT;
-        this.uniqueId = UUID.randomUUID();
+        this.uniqueId = uniqueId;
 
         this.playerInventory.add(new ItemInstance(ContentRegistry.TILE_DIRT, 500), false);
     }
@@ -105,9 +105,5 @@ public class EntityPlayer extends EntityLiving{
 
     public UUID getUniqueId(){
         return this.uniqueId;
-    }
-
-    public void setUniqueId(UUID id){
-        this.uniqueId = id;
     }
 }

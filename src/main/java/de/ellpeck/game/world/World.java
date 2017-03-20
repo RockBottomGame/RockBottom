@@ -12,6 +12,7 @@ import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
+import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.*;
@@ -265,22 +266,27 @@ public class World implements IWorld{
         this.setSeed(dataSet.getLong("seed"));
         this.totalTimeInWorld = dataSet.getLong("total_time");
         this.currentWorldTime = dataSet.getInt("curr_time");
+    }
 
-        File[] files = this.playerDirectory.listFiles();
-        if(files != null){
-            for(File file : files){
-                String name = file.getName().replace(".dat", "");
+    public EntityPlayer addPlayer(UUID id){
+        EntityPlayer player = new EntityPlayer(this, id);
 
-                DataSet playerSet = new DataSet();
-                playerSet.read(file);
+        File file = new File(this.playerDirectory, id+".dat");
+        if(file.exists()){
+            DataSet set = new DataSet();
+            set.read(file);
 
-                EntityPlayer player = new EntityPlayer(this);
-                player.setUniqueId(UUID.fromString(name));
-                player.load(playerSet);
-
-                this.addEntity(player);
-            }
+            player.load(set);
+            Log.info("Loading player with unique id "+id+"!");
         }
+        else{
+            player.setPos(0, 10);
+            Log.info("Adding new player with unique id "+id+" to world!");
+        }
+
+        this.addEntity(player);
+
+        return player;
     }
 
     private void saveChunk(Chunk chunk){
@@ -293,5 +299,9 @@ public class World implements IWorld{
 
             set.write(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
         }
+    }
+
+    public EntityPlayer getPlayer(UUID id){
+        return this.players.stream().filter(player -> id.equals(player.getUniqueId())).findFirst().orElse(null);
     }
 }

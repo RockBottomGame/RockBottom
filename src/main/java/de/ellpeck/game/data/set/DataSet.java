@@ -4,6 +4,7 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
 import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.data.set.part.DataPart;
+import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.PartDataSet;
 import de.ellpeck.game.data.set.part.num.PartDouble;
 import de.ellpeck.game.data.set.part.num.PartFloat;
@@ -14,9 +15,9 @@ import de.ellpeck.game.data.set.part.num.array.PartIntArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class DataSet{
 
@@ -101,6 +102,14 @@ public class DataSet{
 
     public void addIntIntArray(String key, int[][] array){
         this.addPart(new PartIntIntArray(key, array));
+    }
+
+    public UUID getUniqueId(String key){
+        return this.getPartContent(key, null);
+    }
+
+    public void addUniqueId(String key, UUID id){
+        this.addPart(new PartUniqueId(key, id));
     }
 
     public void write(File file){

@@ -2,6 +2,7 @@ package de.ellpeck.game;
 
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.data.DataManager;
+import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
 import de.ellpeck.game.item.ItemInstance;
@@ -14,6 +15,7 @@ import de.ellpeck.game.world.entity.player.InteractionManager;
 import org.newdawn.slick.*;
 
 import java.io.File;
+import java.util.UUID;
 
 public class Game extends BasicGame{
 
@@ -32,13 +34,12 @@ public class Game extends BasicGame{
     public ParticleManager particleManager;
 
     private long lastPollTime;
-
     public int tpsAverage;
     private int tpsAccumulator;
-
     public int fpsAverage;
     private int fpsAccumulator;
 
+    public UUID uniqueId;
     public boolean isDebug;
 
     public Game(){
@@ -62,14 +63,7 @@ public class Game extends BasicGame{
             this.world.setSeed(this.world.rand.nextLong());
         }
 
-        if(this.world.players.isEmpty()){
-            this.player = new EntityPlayer(this.world);
-            this.player.setPos(0, 10);
-            this.world.addEntity(this.player);
-        }
-        else{
-            this.player = this.world.players.get(0);
-        }
+        this.player = this.world.addPlayer(this.uniqueId);
 
         this.interactionManager = new InteractionManager(this.player);
 
@@ -135,19 +129,7 @@ public class Game extends BasicGame{
         this.worldRenderer.render(this, this.assetManager, this.particleManager, g, this.world, this.player, this.interactionManager);
 
         if(this.isDebug){
-            g.setColor(Color.black);
-            g.drawOval((float)container.getWidth()/2F-5F, (float)container.getHeight()/2F-5F, 10, 10);
-
-            Font font = container.getDefaultFont();
-            font.drawString(10, 10, "Avg FPS: "+this.fpsAverage);
-            font.drawString(10, 30, "Avg TPS: "+this.tpsAverage);
-            font.drawString(10, 50, "Loaded Chunks: "+this.world.loadedChunks.size());
-            font.drawString(10, 70, "Entities: "+this.world.getAllEntities().size()+" Players: "+this.world.players.size());
-            font.drawString(10, 90, "TileEntities: "+this.world.getAllTileEntities().size()+" Particles: "+this.particleManager.getAmount());
-            font.drawString(10, 110, "Player: Chunk: "+this.player.chunkX+", "+this.player.chunkY+" Pos: "+this.player.x+", "+this.player.y);
-            font.drawString(10, 130, "Mouse: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
-            font.drawString(10, 150, "Moused Tile: "+this.interactionManager.mousedTileX+", "+this.interactionManager.mousedTileY);
-            font.drawString(10, 170, "Seed: "+this.world.getSeed());
+            DebugRenderer.render(this, this.world, this.player, container, g);
         }
 
         g.scale(Constants.GUI_SCALE, Constants.GUI_SCALE);

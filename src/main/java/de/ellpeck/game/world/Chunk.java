@@ -24,13 +24,15 @@ public class Chunk implements IWorld{
 
     private final World world;
 
-    private final Tile[][][] tileGrid = new Tile[TileLayer.values().length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    private final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private byte[][] metaGrid = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
     private final List<Entity> entities = new ArrayList<>();
 
     private final List<TileEntity> tileEntities = new ArrayList<>();
     private final Map<Vec2, TileEntity> tileEntityLookup = new HashMap<>();
+
+    public int randomUpdateTileAmount;
 
     public int loadTimer;
 
@@ -42,6 +44,14 @@ public class Chunk implements IWorld{
 
         this.x = MathUtil.toWorldPos(gridX);
         this.y = MathUtil.toWorldPos(gridY);
+
+        for(int i = 0; i < TileLayer.LAYERS.length; i++){
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    this.tileGrid[i][x][y] = ContentRegistry.TILE_AIR;
+                }
+            }
+        }
 
         this.loadOrCreate(set);
     }
@@ -94,6 +104,16 @@ public class Chunk implements IWorld{
             if(tile.shouldRemove()){
                 this.world.removeTileEntity(tile.x, tile.y);
                 i--;
+            }
+        }
+
+        if(this.randomUpdateTileAmount > 0){
+            int randX = this.world.rand.nextInt(Constants.CHUNK_SIZE);
+            int randY = this.world.rand.nextInt(Constants.CHUNK_SIZE);
+
+            Tile tile = this.getTileInner(randX, randY);
+            if(tile.doesRandomUpdates()){
+                tile.updateRandomly(this.world, this.x+randX, this.y+randY);
             }
         }
     }
@@ -165,6 +185,10 @@ public class Chunk implements IWorld{
             this.removeTileEntity(this.x+x, this.y+y);
         }
 
+        if(lastTile.doesRandomUpdates()){
+            this.randomUpdateTileAmount--;
+        }
+
         this.tileGrid[layer.ordinal()][x][y] = tile;
         tile.onAdded(this.world, this.x+x, this.y+y);
 
@@ -175,10 +199,14 @@ public class Chunk implements IWorld{
             }
         }
 
+        if(tile.doesRandomUpdates()){
+            this.randomUpdateTileAmount++;
+        }
+
         if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(x, y);
+            this.isDirty = true;
         }
-        this.isDirty = true;
     }
 
     public void setMetaInner(int x, int y, byte meta){
@@ -186,14 +214,17 @@ public class Chunk implements IWorld{
 
         if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(x, y);
+            this.isDirty = true;
         }
-        this.isDirty = true;
     }
 
     @Override
     public void addEntity(Entity entity){
         this.entities.add(entity);
-        this.isDirty = true;
+
+        if(!this.isGenerating){
+            this.isDirty = true;
+        }
     }
 
     @Override
@@ -203,14 +234,17 @@ public class Chunk implements IWorld{
 
         if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(tile.x, tile.y);
+            this.isDirty = true;
         }
-        this.isDirty = true;
     }
 
     @Override
     public void removeEntity(Entity entity){
         this.entities.remove(entity);
-        this.isDirty = true;
+
+        if(!this.isGenerating){
+            this.isDirty = true;
+        }
     }
 
     @Override
@@ -222,8 +256,8 @@ public class Chunk implements IWorld{
 
             if(!this.isGenerating){
                 this.world.notifyNeighborsOfChange(x, y);
+                this.isDirty = true;
             }
-            this.isDirty = true;
         }
     }
 
@@ -261,12 +295,13 @@ public class Chunk implements IWorld{
     }
 
     public void save(DataSet set){
-        for(int i = 0; i < this.tileGrid.length; i++){
+        for(int i = 0; i < TileLayer.LAYERS.length; i++){
+            TileLayer layer = TileLayer.LAYERS[i];
             int[][] ids = new int[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    ids[x][y] = ContentRegistry.TILE_REGISTRY.getId(this.tileGrid[i][x][y]);
+                    ids[x][y] = ContentRegistry.TILE_REGISTRY.getId(this.getTileInner(layer, x, y));
                 }
             }
 
@@ -289,17 +324,31 @@ public class Chunk implements IWorld{
         }
         set.addInt("e_a", entityId);
 
+        int tileEntityId = 0;
+        for(TileEntity tile : this.tileEntities){
+            DataSet tileSet = new DataSet();
+            tileSet.addInt("x", tile.x);
+            tileSet.addInt("y", tile.y);
+            tile.save(tileSet);
+
+            set.addDataSet("t_"+tileEntityId, tileSet);
+        }
+        set.addInt("t_a", tileEntityId);
+
         this.isDirty = false;
     }
 
     public void loadOrCreate(DataSet set){
+        this.isGenerating = true;
+
         if(set != null && !set.isEmpty()){
-            for(int i = 0; i < this.tileGrid.length; i++){
+            for(int i = 0; i < TileLayer.LAYERS.length; i++){
+                TileLayer layer = TileLayer.LAYERS[i];
                 int[][] ids = set.getIntIntArray("l_"+i);
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        this.tileGrid[i][x][y] = ContentRegistry.TILE_REGISTRY.byId(ids[x][y]);
+                        this.setTileInner(layer, x, y, ContentRegistry.TILE_REGISTRY.byId(ids[x][y]));
                     }
                 }
             }
@@ -322,24 +371,33 @@ public class Chunk implements IWorld{
                     Log.error("Couldn't load entity with id "+id+" and data "+entitySet+"!", e);
                 }
             }
-        }
-        else{
-            for(int i = 0; i < this.tileGrid.length; i++){
-                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        this.tileGrid[i][x][y] = ContentRegistry.TILE_AIR;
-                    }
+
+            int tileEntityAmount = set.getInt("t_a");
+            for(int i = 0; i < tileEntityAmount; i++){
+                DataSet tileSet = set.getDataSet("t_"+i);
+                int x = tileSet.getInt("x");
+                int y = tileSet.getInt("y");
+
+                TileEntity tile = this.getTileEntity(x, y);
+                if(tile != null){
+                    tile.load(tileSet);
+                }
+                else{
+                    Log.error("Couldn't load data of tile entity at "+x+", "+y+" because it is missing!");
                 }
             }
-
-            this.isGenerating = true;
-            this.generate(this.world.generatorRandom);
-            this.isGenerating = false;
         }
+        else{
+            this.generate(this.world.generatorRandom);
+        }
+
+        this.isGenerating = false;
     }
 
     public enum TileLayer{
         MAIN,
-        BACKGROUND
+        BACKGROUND;
+
+        public static final TileLayer[] LAYERS = values();
     }
 }

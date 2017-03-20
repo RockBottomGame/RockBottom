@@ -1,6 +1,5 @@
 package de.ellpeck.game.assets;
 
-import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
 import org.newdawn.slick.Image;
@@ -23,7 +22,7 @@ public class AssetManager{
     public void create(Game game){
         try{
             Log.info("Loading resources...");
-            this.loadAssets("/assets");
+            this.loadAssets();
 
             ImageBuffer buffer = new ImageBuffer(2, 2);
             for(int x = 0; x < 2; x++){
@@ -41,7 +40,9 @@ public class AssetManager{
         }
     }
 
-    private void loadAssets(String path) throws Exception{
+    private void loadAssets() throws Exception{
+        String path = "/assets";
+
         InputStream propStream = AssetManager.class.getResourceAsStream(path+"/assets.properties");
         Properties props = new Properties();
         props.load(propStream);

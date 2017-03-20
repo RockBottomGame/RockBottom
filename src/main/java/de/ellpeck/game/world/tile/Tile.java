@@ -134,4 +134,12 @@ public class Tile{
     public boolean isFullTile(){
         return true;
     }
+
+    public boolean doesRandomUpdates(){
+        return false;
+    }
+
+    public void updateRandomly(World world, int x, int y){
+
+    }
 }
