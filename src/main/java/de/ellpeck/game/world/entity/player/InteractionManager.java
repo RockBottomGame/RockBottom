@@ -110,7 +110,7 @@ public class InteractionManager{
                                 Tile tileThere = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
                                 if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
                                     Tile tile = ((ItemTile)item).getTile();
-                                    if(tile.canBeOnLayer(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
+                                    if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
                                         this.player.world.setTile(layer, this.mousedTileX, this.mousedTileY, tile);
 
                                         if(layer == TileLayer.MAIN){

@@ -59,6 +59,6 @@ public class GuiContainer extends Gui{
     }
 
     private void dropHeldItem(){
-        EntityItem.spawn(this.player.world, this.holdingInst, this.player.x, this.player.y+1, this.player.facing.offsetX*0.25, 0);
+        EntityItem.spawn(this.player.world, this.holdingInst, this.player.x, this.player.y+1, this.player.facing.x*0.25, 0);
     }
 }

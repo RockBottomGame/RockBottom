@@ -40,8 +40,8 @@ public class Tile{
         }
         else{
             if(!world.getTile(x, y).isFullTile()){
-                for(Direction dir : Direction.DIRECTIONS){
-                    Tile tile = world.getTile(layer, x+dir.offsetX, y+dir.offsetY);
+                for(Direction dir : Direction.ADJACENT_DIRECTIONS){
+                    Tile tile = world.getTile(layer, x+dir.x, y+dir.y);
                     if(!tile.isFullTile()){
                         return true;
                     }
@@ -49,6 +49,10 @@ public class Tile{
             }
         }
         return false;
+    }
+
+    public boolean canPlace(World world, int x, int y, TileLayer layer){
+        return layer == TileLayer.MAIN || !this.providesTileEntity();
     }
 
     public Tile register(){
@@ -125,10 +129,6 @@ public class Tile{
 
     public void onChangeAround(World world, int x, int y, int changedX, int changedY){
 
-    }
-
-    public boolean canBeOnLayer(World world, int x, int y, TileLayer layer){
-        return layer == TileLayer.MAIN || !this.providesTileEntity();
     }
 
     public boolean isFullTile(){

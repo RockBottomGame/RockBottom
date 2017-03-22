@@ -230,9 +230,9 @@ public class World implements IWorld{
     }
 
     public void notifyNeighborsOfChange(int x, int y){
-        for(Direction direction : Direction.DIRECTIONS){
-            int offX = x+direction.offsetX;
-            int offY = y+direction.offsetY;
+        for(Direction direction : Direction.ADJACENT_DIRECTIONS){
+            int offX = x+direction.x;
+            int offY = y+direction.y;
 
             Tile tile = this.getTile(offX, offY);
             tile.onChangeAround(this, offX, offY, x, y);
