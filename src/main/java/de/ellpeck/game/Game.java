@@ -5,10 +5,8 @@ import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
-import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.WorldRenderer;
-import de.ellpeck.game.render.item.IItemRenderer;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.entity.player.InteractionManager;
@@ -131,26 +129,7 @@ public class Game extends BasicGame{
             DebugRenderer.render(this, this.world, this.player, container, g);
         }
 
-        g.scale(Constants.GUI_SCALE, Constants.GUI_SCALE);
-
-        for(int i = 0; i < 8; i++){
-            ItemInstance slot = this.player.playerInventory.get(i);
-
-            int x = (int)(this.getWidthInGui()/2-59.25+i*15);
-            IItemRenderer.renderSlotInGui(this, this.assetManager, g, slot, x, 3, 0.75F);
-
-            if(this.interactionManager.selectedSlot == i){
-                this.assetManager.getImage("gui.selection_arrow").draw(x+0.75F, 1);
-            }
-        }
-
-        Gui gui = this.player.guiManager.getGui();
-        if(gui != null){
-            g.setColor(Gui.GRADIENT);
-            g.fillRect(0F, 0F, (float)this.getWidthInGui(), (float)this.getHeightInGui());
-
-            gui.render(this, this.assetManager, g);
-        }
+        this.player.guiManager.render(this, this.assetManager, g, this.player);
     }
 
     public GameContainer getContainer(){

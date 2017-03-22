@@ -34,7 +34,7 @@ public class Tile{
         return DEFAULT_BOUNDS;
     }
 
-    public boolean canBreak(IWorld world, int x, int y, TileLayer layer){
+    public boolean canBreak(World world, int x, int y, TileLayer layer){
         if(layer == TileLayer.MAIN){
             return true;
         }
@@ -52,7 +52,17 @@ public class Tile{
     }
 
     public boolean canPlace(World world, int x, int y, TileLayer layer){
-        return layer == TileLayer.MAIN || !this.providesTileEntity();
+        if(world.getTile(layer.getOpposite(), x, y).isFullTile()){
+            return true;
+        }
+
+        for(Direction dir : Direction.ADJACENT_DIRECTIONS){
+            Tile tile = world.getTile(layer, x+dir.x, y+dir.y);
+            if(tile.isFullTile()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public Tile register(){
@@ -76,7 +86,7 @@ public class Tile{
 
     public Item getItem(){
         if(this.hasItem()){
-            return ContentRegistry.ITEM_REGISTRY.byId(this.id);
+            return ContentRegistry.ITEM_REGISTRY.get(this.id);
         }
         else{
             return null;

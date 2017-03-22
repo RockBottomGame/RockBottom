@@ -44,7 +44,7 @@ public class ItemInstance{
     }
 
     public ItemInstance(DataSet set){
-        this.item = ContentRegistry.ITEM_REGISTRY.byId(set.getInt("item_id"));
+        this.item = ContentRegistry.ITEM_REGISTRY.get(set.getInt("item_id"));
         this.amount = set.getInt("amount");
         this.meta = set.getInt("meta");
     }

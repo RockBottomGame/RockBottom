@@ -5,7 +5,7 @@ import de.ellpeck.game.render.tile.ITileRenderer;
 
 public class TileBasic extends Tile{
 
-    private final ITileRenderer renderer;
+    protected final ITileRenderer renderer;
 
     public TileBasic(int id, String name){
         super(id);

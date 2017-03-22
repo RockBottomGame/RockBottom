@@ -10,7 +10,7 @@ import org.newdawn.slick.Image;
 
 public class DefaultTileRenderer implements ITileRenderer{
 
-    private final String texture;
+    protected final String texture;
 
     public DefaultTileRenderer(String texture){
         this.texture = "tiles."+texture;

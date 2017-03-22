@@ -18,6 +18,7 @@ public final class ContentRegistry{
     public static final Tile TILE_DIRT = new TileDirt(1).register();
     public static final Tile TILE_ROCK = new TileBasic(2, "rock").register();
     public static final Tile TILE_GRASS = new TileGrass(3).register();
+    public static final Tile TILE_SMELTER = new TileSmelter(4).register();
 
     public static void init(){
         ENTITY_REGISTRY.register(0, EntityPlayer.class);

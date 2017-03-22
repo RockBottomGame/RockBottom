@@ -27,9 +27,14 @@ public class InventoryBasic implements IInventory{
     }
 
     public boolean add(ItemInstance instance, boolean simulate){
+        return this.add(instance, simulate, false);
+    }
+
+    public boolean add(ItemInstance instance, boolean simulate, boolean fromBack){
         ItemInstance copy = instance.copy();
 
-        for(int i = 0; i < this.slots.length; i++){
+        for(int c = 0; c < this.slots.length; c++){
+            int i = fromBack ? this.slots.length-1-c : c;
             ItemInstance slot = this.slots[i];
 
             if(slot == null){

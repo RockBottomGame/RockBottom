@@ -15,7 +15,7 @@ public class ItemTile extends Item{
     }
 
     public Tile getTile(){
-        return ContentRegistry.TILE_REGISTRY.byId(this.id);
+        return ContentRegistry.TILE_REGISTRY.get(this.id);
     }
 
     @Override

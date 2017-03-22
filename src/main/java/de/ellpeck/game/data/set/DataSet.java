@@ -185,7 +185,7 @@ public class DataSet{
         int id = stream.readInt();
         String name = stream.readUTF();
 
-        Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.byId(id);
+        Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.get(id);
         DataPart part = partClass.getConstructor(String.class).newInstance(name);
         part.read(stream);
 

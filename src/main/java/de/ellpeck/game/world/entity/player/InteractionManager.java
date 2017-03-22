@@ -29,7 +29,6 @@ public class InteractionManager{
     public int breakProgress;
     public int placeCooldown;
 
-    public int selectedSlot;
     public int mousedTileX;
     public int mousedTileY;
 
@@ -77,12 +76,7 @@ public class InteractionManager{
                     if(this.breakProgress >= 8){
                         this.breakProgress = 0;
 
-                        tile.onDestroyed(this.player.world, this.breakTileX, this.breakTileY, this.player, layer);
-
-                        byte meta = this.player.world.getMeta(this.breakTileX, this.breakTileY);
-                        game.particleManager.addTileParticles(this.player.world, this.breakTileX, this.breakTileY, tile, meta);
-
-                        this.player.world.setTile(layer, this.breakTileX, this.breakTileY, ContentRegistry.TILE_AIR);
+                        this.player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, this.player);
                     }
                     else{
                         this.breakProgress++;
@@ -102,7 +96,7 @@ public class InteractionManager{
 
             if(this.placeCooldown <= 0){
                 if(input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)){
-                    ItemInstance selected = this.player.playerInventory.get(this.selectedSlot);
+                    ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
                     if(selected != null){
                         Item item = selected.getItem();
                         if(item instanceof ItemTile){
@@ -122,7 +116,7 @@ public class InteractionManager{
 
                                         selected.remove(1);
                                         if(selected.getAmount() <= 0){
-                                            this.player.playerInventory.set(this.selectedSlot, null);
+                                            this.player.inv.set(this.player.inv.selectedSlot, null);
                                         }
 
                                         this.placeCooldown = 5;
@@ -139,15 +133,15 @@ public class InteractionManager{
 
             int scroll = Mouse.getDWheel();
             if(scroll < 0){
-                this.selectedSlot++;
-                if(this.selectedSlot >= 8){
-                    this.selectedSlot = 0;
+                this.player.inv.selectedSlot++;
+                if(this.player.inv.selectedSlot >= 8){
+                    this.player.inv.selectedSlot = 0;
                 }
             }
             else if(scroll > 0){
-                this.selectedSlot--;
-                if(this.selectedSlot < 0){
-                    this.selectedSlot = 7;
+                this.player.inv.selectedSlot--;
+                if(this.player.inv.selectedSlot < 0){
+                    this.player.inv.selectedSlot = 7;
                 }
             }
         }
@@ -162,7 +156,7 @@ public class InteractionManager{
         if(!this.player.guiManager.onKeyboardAction(game, button)){
             int index = ITEM_SELECTION_KEYS.indexOf(button);
             if(index >= 0){
-                this.selectedSlot = index;
+                this.player.inv.selectedSlot = index;
             }
         }
     }

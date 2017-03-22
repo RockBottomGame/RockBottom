@@ -17,7 +17,7 @@ public class TileAir extends Tile{
     }
 
     @Override
-    public boolean canBreak(IWorld world, int x, int y, Chunk.TileLayer layer){
+    public boolean canBreak(World world, int x, int y, Chunk.TileLayer layer){
         return false;
     }
 

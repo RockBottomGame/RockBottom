@@ -3,6 +3,7 @@ package de.ellpeck.game.util;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,7 +20,7 @@ public class Registry<T>{
         this.map.put(id, value);
     }
 
-    public T byId(int id){
+    public T get(int id){
         return this.map.get(id);
     }
 
@@ -34,5 +35,9 @@ public class Registry<T>{
 
     public int getSize(){
         return this.map.size();
+    }
+
+    public Map<Integer, T> getUnmodifiable(){
+        return Collections.unmodifiableMap(this.map);
     }
 }

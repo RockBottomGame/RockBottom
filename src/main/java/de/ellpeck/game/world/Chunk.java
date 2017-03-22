@@ -104,7 +104,7 @@ public class Chunk implements IWorld{
             tile.update(game);
 
             if(tile.shouldRemove()){
-                this.world.removeTileEntity(tile.x, tile.y);
+                this.removeTileEntity(tile.x, tile.y);
                 i--;
             }
         }
@@ -175,30 +175,37 @@ public class Chunk implements IWorld{
         Tile lastTile = this.getTileInner(x, y);
         lastTile.onRemoved(this.world, this.x+x, this.y+y);
 
-        if(lastTile.providesTileEntity()){
-            this.removeTileEntity(this.x+x, this.y+y);
-        }
+        if(layer == TileLayer.MAIN){
+            if(lastTile.providesTileEntity()){
+                this.removeTileEntity(this.x+x, this.y+y);
+            }
 
-        if(lastTile.doesRandomUpdates()){
-            this.randomUpdateTileAmount--;
+            if(lastTile.doesRandomUpdates()){
+                this.randomUpdateTileAmount--;
+            }
         }
 
         this.tileGrid[layer.ordinal()][x][y] = tile;
         tile.onAdded(this.world, this.x+x, this.y+y);
 
-        if(tile.providesTileEntity()){
-            TileEntity tileEntity = tile.provideTileEntity(this.world, this.x+x, this.y+y);
-            if(tileEntity != null){
-                this.addTileEntity(tileEntity);
+        if(layer == TileLayer.MAIN){
+            if(tile.providesTileEntity()){
+                TileEntity tileEntity = tile.provideTileEntity(this.world, this.x+x, this.y+y);
+                if(tileEntity != null){
+                    this.addTileEntity(tileEntity);
+                }
+            }
+
+            if(tile.doesRandomUpdates()){
+                this.randomUpdateTileAmount++;
             }
         }
 
-        if(tile.doesRandomUpdates()){
-            this.randomUpdateTileAmount++;
-        }
-
         if(!this.isGenerating){
-            this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
+            if(layer == TileLayer.MAIN){
+                this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
+            }
+
             this.isDirty = true;
         }
     }
@@ -246,7 +253,7 @@ public class Chunk implements IWorld{
 
     @Override
     public void removeTileEntity(int x, int y){
-        TileEntity tile = this.world.getTileEntity(x, y);
+        TileEntity tile = this.getTileEntity(x, y);
         if(tile != null){
             this.tileEntities.remove(tile);
             this.tileEntityLookup.remove(new Vec2(tile.x, tile.y));
@@ -329,6 +336,8 @@ public class Chunk implements IWorld{
             tile.save(tileSet);
 
             set.addDataSet("t_"+tileEntityId, tileSet);
+
+            tileEntityId++;
         }
         set.addInt("t_a", tileEntityId);
 
@@ -345,7 +354,7 @@ public class Chunk implements IWorld{
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        this.setTileInner(layer, x, y, ContentRegistry.TILE_REGISTRY.byId(ids[x][y]));
+                        this.setTileInner(layer, x, y, ContentRegistry.TILE_REGISTRY.get(ids[x][y]));
                     }
                 }
             }
@@ -357,7 +366,7 @@ public class Chunk implements IWorld{
                 DataSet entitySet = set.getDataSet("e_"+i);
 
                 int id = entitySet.getInt("id");
-                Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.byId(id);
+                Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.get(id);
 
                 try{
                     Entity entity = entityClass.getConstructor(World.class).newInstance(this.world);
@@ -396,5 +405,9 @@ public class Chunk implements IWorld{
         BACKGROUND;
 
         public static final TileLayer[] LAYERS = values();
+
+        public TileLayer getOpposite(){
+            return this == MAIN ? BACKGROUND : MAIN;
+        }
     }
 }

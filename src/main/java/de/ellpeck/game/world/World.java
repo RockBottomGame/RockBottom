@@ -1,6 +1,7 @@
 package de.ellpeck.game.world;
 
 import de.ellpeck.game.Constants;
+import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.util.BoundBox;
@@ -296,5 +297,16 @@ public class World implements IWorld{
 
             set.write(new File(this.chunksDirectory, "c_"+chunk.gridX+"_"+chunk.gridY+".dat"));
         }
+    }
+
+    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer){
+        Tile tile = this.getTile(x, y);
+        byte meta = this.getMeta(x, y);
+
+        tile.onDestroyed(this, x, y, destroyer, layer);
+
+        Game.get().particleManager.addTileParticles(this, x, y, tile, meta);
+
+        this.setTile(layer, x, y, ContentRegistry.TILE_AIR);
     }
 }
