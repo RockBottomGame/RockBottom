@@ -5,10 +5,7 @@ import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.data.set.part.DataPart;
 import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.PartDataSet;
-import de.ellpeck.game.data.set.part.num.PartDouble;
-import de.ellpeck.game.data.set.part.num.PartFloat;
-import de.ellpeck.game.data.set.part.num.PartInt;
-import de.ellpeck.game.data.set.part.num.PartLong;
+import de.ellpeck.game.data.set.part.num.*;
 import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
@@ -32,6 +29,7 @@ public class DataManager{
         PART_REGISTRY.register(6, PartDataSet.class);
         PART_REGISTRY.register(7, PartLong.class);
         PART_REGISTRY.register(8, PartUniqueId.class);
+        PART_REGISTRY.register(9, PartByte.class);
     }
 
     public File gameDirectory;

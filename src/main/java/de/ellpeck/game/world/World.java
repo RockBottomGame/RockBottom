@@ -204,8 +204,13 @@ public class World implements IWorld{
 
     @Override
     public byte getMeta(int x, int y){
+        return this.getMeta(TileLayer.MAIN, x, y);
+    }
+
+    @Override
+    public byte getMeta(TileLayer layer, int x, int y){
         Chunk chunk = this.getChunk(x, y);
-        return chunk.getMeta(x, y);
+        return chunk.getMeta(layer, x, y);
     }
 
     @Override
@@ -220,14 +225,14 @@ public class World implements IWorld{
     }
 
     @Override
-    public void setMeta(int x, int y, int meta){
-        this.setMeta(x, y, (byte)meta);
+    public void setMeta(int x, int y, byte meta){
+        this.setMeta(TileLayer.MAIN, x, y, meta);
     }
 
     @Override
-    public void setMeta(int x, int y, byte meta){
+    public void setMeta(TileLayer layer, int x, int y, byte meta){
         Chunk chunk = this.getChunk(x, y);
-        chunk.setMeta(x, y, meta);
+        chunk.setMeta(layer, x, y, meta);
     }
 
     public void notifyNeighborsOfChange(int x, int y){

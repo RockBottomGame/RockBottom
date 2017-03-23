@@ -53,6 +53,10 @@ public class Tile{
     }
 
     public boolean canPlace(World world, int x, int y, TileLayer layer){
+        if(layer != TileLayer.MAIN && this.providesTileEntity()){
+            return false;
+        }
+
         if(world.getTile(layer.getOpposite(), x, y).isFullTile()){
             return true;
         }
@@ -156,5 +160,14 @@ public class Tile{
 
     public void updateRandomly(World world, int x, int y){
 
+    }
+
+    public void doPlace(World world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
+        world.setTile(layer, x, y, this);
+
+        byte meta = instance.getMeta();
+        if(meta != 0){
+            world.setMeta(layer, x, y, meta);
+        }
     }
 }

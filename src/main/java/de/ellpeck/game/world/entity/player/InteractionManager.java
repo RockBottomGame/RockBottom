@@ -105,14 +105,8 @@ public class InteractionManager{
                                     if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
                                         Tile tile = ((ItemTile)item).getTile();
                                         if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
-                                            this.player.world.setTile(layer, this.mousedTileX, this.mousedTileY, tile);
 
-                                            if(layer == TileLayer.MAIN){
-                                                int meta = selected.getMeta();
-                                                if(meta != 0){
-                                                    this.player.world.setMeta(this.mousedTileX, this.mousedTileY, meta);
-                                                }
-                                            }
+                                            tile.doPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer, selected, this.player);
 
                                             selected.remove(1);
                                             if(selected.getAmount() <= 0){

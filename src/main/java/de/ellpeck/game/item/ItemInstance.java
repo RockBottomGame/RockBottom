@@ -9,7 +9,7 @@ import de.ellpeck.game.world.tile.Tile;
 public class ItemInstance{
 
     private final Item item;
-    private final int meta;
+    private final byte meta;
 
     private int amount;
 
@@ -18,10 +18,10 @@ public class ItemInstance{
     }
 
     public ItemInstance(Tile tile, int amount){
-        this(tile, amount, 0);
+        this(tile, amount, (byte)0);
     }
 
-    public ItemInstance(Tile tile, int amount, int meta){
+    public ItemInstance(Tile tile, int amount, byte meta){
         this(tile.getItem(), amount, meta);
     }
 
@@ -30,10 +30,10 @@ public class ItemInstance{
     }
 
     public ItemInstance(Item item, int amount){
-        this(item, amount, 0);
+        this(item, amount, (byte)0);
     }
 
-    public ItemInstance(Item item, int amount, int meta){
+    public ItemInstance(Item item, int amount, byte meta){
         if(item == null){
             Main.doExceptionInfo(Game.get(), new NullPointerException("Tried to create an ItemInstance with null item!"));
         }
@@ -46,20 +46,20 @@ public class ItemInstance{
     public ItemInstance(DataSet set){
         this.item = ContentRegistry.ITEM_REGISTRY.get(set.getInt("item_id"));
         this.amount = set.getInt("amount");
-        this.meta = set.getInt("meta");
+        this.meta = set.getByte("meta");
     }
 
     public void save(DataSet set){
         set.addInt("item_id", ContentRegistry.ITEM_REGISTRY.getId(this.item));
         set.addInt("amount", this.amount);
-        set.addInt("meta", this.meta);
+        set.addByte("meta", this.meta);
     }
 
     public Item getItem(){
         return this.item;
     }
 
-    public int getMeta(){
+    public byte getMeta(){
         return this.meta;
     }
 

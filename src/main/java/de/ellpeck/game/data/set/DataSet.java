@@ -6,10 +6,7 @@ import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.data.set.part.DataPart;
 import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.PartDataSet;
-import de.ellpeck.game.data.set.part.num.PartDouble;
-import de.ellpeck.game.data.set.part.num.PartFloat;
-import de.ellpeck.game.data.set.part.num.PartInt;
-import de.ellpeck.game.data.set.part.num.PartLong;
+import de.ellpeck.game.data.set.part.num.*;
 import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
@@ -27,10 +24,10 @@ public class DataSet{
         this.data.put(part.getName(), part);
     }
 
-    public <T> T getPartContent(String key, T defaultValue){
+    public <T> T getPartContent(String key, Class<? extends DataPart<T>> typeClass, T defaultValue){
         DataPart part = this.data.get(key);
 
-        if(part != null){
+        if(part != null && part.getClass() == typeClass){
             T result = (T)part.get();
             if(result != null){
                 return result;
@@ -41,7 +38,7 @@ public class DataSet{
     }
 
     public int getInt(String key){
-        return this.getPartContent(key, 0);
+        return this.getPartContent(key, PartInt.class, 0);
     }
 
     public void addInt(String key, int i){
@@ -49,7 +46,7 @@ public class DataSet{
     }
 
     public long getLong(String key){
-        return this.getPartContent(key, 0L);
+        return this.getPartContent(key, PartLong.class, 0L);
     }
 
     public void addLong(String key, long l){
@@ -57,7 +54,7 @@ public class DataSet{
     }
 
     public float getFloat(String key){
-        return this.getPartContent(key, 0F);
+        return this.getPartContent(key,  PartFloat.class, 0F);
     }
 
     public void addFloat(String key, float f){
@@ -65,7 +62,7 @@ public class DataSet{
     }
 
     public double getDouble(String key){
-        return this.getPartContent(key, 0D);
+        return this.getPartContent(key, PartDouble.class, 0D);
     }
 
     public void addDouble(String key, double d){
@@ -73,31 +70,31 @@ public class DataSet{
     }
 
     public DataSet getDataSet(String key){
-        return this.getPartContent(key, new DataSet());
+        return this.getPartContent(key, PartDataSet.class, new DataSet());
     }
 
     public void addDataSet(String key, DataSet set){
         this.addPart(new PartDataSet(key, set));
     }
 
-    public byte[][] getByteByteArray(String key){
-        return this.getPartContent(key, new byte[0][0]);
+    public byte[][] getByteByteArray(String key, int defaultSize){
+        return this.getPartContent(key, PartByteByteArray.class, new byte[defaultSize][defaultSize]);
     }
 
     public void addByteByteArray(String key, byte[][] array){
         this.addPart(new PartByteByteArray(key, array));
     }
 
-    public int[] getIntArray(String key){
-        return this.getPartContent(key, new int[0]);
+    public int[] getIntArray(String key, int defaultSize){
+        return this.getPartContent(key, PartIntArray.class, new int[defaultSize]);
     }
 
     public void addIntArray(String key, int[] array){
         this.addPart(new PartIntArray(key, array));
     }
 
-    public int[][] getIntIntArray(String key){
-        return this.getPartContent(key, new int[0][0]);
+    public int[][] getIntIntArray(String key, int defaultSize){
+        return this.getPartContent(key, PartIntIntArray.class, new int[defaultSize][defaultSize]);
     }
 
     public void addIntIntArray(String key, int[][] array){
@@ -105,11 +102,19 @@ public class DataSet{
     }
 
     public UUID getUniqueId(String key){
-        return this.getPartContent(key, null);
+        return this.getPartContent(key, PartUniqueId.class, null);
     }
 
     public void addUniqueId(String key, UUID id){
         this.addPart(new PartUniqueId(key, id));
+    }
+
+    public byte getByte(String key){
+        return this.getPartContent(key, PartByte.class, (byte)0);
+    }
+
+    public void addByte(String key, byte b){
+        this.addPart(new PartByte(key, b));
     }
 
     public void write(File file){

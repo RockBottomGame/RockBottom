@@ -28,7 +28,7 @@ public class Chunk implements IWorld{
     private final World world;
 
     private final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    private byte[][] metaGrid = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    private final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
     private final List<Entity> entities = new ArrayList<>();
 
@@ -132,7 +132,12 @@ public class Chunk implements IWorld{
 
     @Override
     public byte getMeta(int x, int y){
-        return this.getMetaInner(x-this.x, y-this.y);
+        return this.getMeta(TileLayer.MAIN, x, y);
+    }
+
+    @Override
+    public byte getMeta(TileLayer layer, int x, int y){
+        return this.getMetaInner(layer, x-this.x, y-this.y);
     }
 
     @Override
@@ -146,13 +151,13 @@ public class Chunk implements IWorld{
     }
 
     @Override
-    public void setMeta(int x, int y, int meta){
-        this.setMeta(x, y, (byte)meta);
+    public void setMeta(int x, int y, byte meta){
+        this.setMeta(TileLayer.MAIN, x, y, meta);
     }
 
     @Override
-    public void setMeta(int x, int y, byte meta){
-        this.setMetaInner(x-this.x, y-this.y, meta);
+    public void setMeta(TileLayer layer, int x, int y, byte meta){
+        this.setMetaInner(layer, x-this.x, y-this.y, meta);
     }
 
     public Tile getTileInner(TileLayer layer, int x, int y){
@@ -163,8 +168,8 @@ public class Chunk implements IWorld{
         return this.getTileInner(TileLayer.MAIN, x, y);
     }
 
-    public byte getMetaInner(int x, int y){
-        return this.metaGrid[x][y];
+    public byte getMetaInner(TileLayer layer, int x, int y){
+        return this.metaGrid[layer.ordinal()][x][y];
     }
 
     public void setTileInner(int x, int y, Tile tile){
@@ -210,8 +215,8 @@ public class Chunk implements IWorld{
         }
     }
 
-    public void setMetaInner(int x, int y, byte meta){
-        this.metaGrid[x][y] = meta;
+    public void setMetaInner(TileLayer layer, int x, int y, byte meta){
+        this.metaGrid[layer.ordinal()][x][y] = meta;
 
         if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
@@ -310,9 +315,9 @@ public class Chunk implements IWorld{
             }
 
             set.addIntIntArray("l_"+i, ids);
-        }
 
-        set.addByteByteArray("m", this.metaGrid);
+            set.addByteByteArray("m_"+i, this.metaGrid[i]);
+        }
 
         int entityId = 0;
         for(Entity entity : this.entities){
@@ -350,16 +355,16 @@ public class Chunk implements IWorld{
         if(set != null && !set.isEmpty()){
             for(int i = 0; i < TileLayer.LAYERS.length; i++){
                 TileLayer layer = TileLayer.LAYERS[i];
-                int[][] ids = set.getIntIntArray("l_"+i);
+                int[][] ids = set.getIntIntArray("l_"+i, Constants.CHUNK_SIZE);
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                         this.setTileInner(layer, x, y, ContentRegistry.TILE_REGISTRY.get(ids[x][y]));
                     }
                 }
-            }
 
-            this.metaGrid = set.getByteByteArray("m");
+                this.metaGrid[i] = set.getByteByteArray("m_"+i, Constants.CHUNK_SIZE);
+            }
 
             int entityAmount = set.getInt("e_a");
             for(int i = 0; i < entityAmount; i++){
