@@ -26,8 +26,7 @@ public final class DebugRenderer{
         list.add("Entities: "+world.getAllEntities().size()+" Players: "+world.players.size());
         list.add("TileEntities: "+world.getAllTileEntities().size()+" Particles: "+game.particleManager.getAmount());
         list.add("Player: Chunk: "+player.chunkX+", "+player.chunkY+" Pos: "+player.x+", "+player.y);
-        list.add("Mouse: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
-        list.add("Moused Tile: "+game.interactionManager.mousedTileX+", "+game.interactionManager.mousedTileY);
+        list.add("Mouse: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY()+" Tile: "+game.interactionManager.mousedTileX+", "+game.interactionManager.mousedTileY);
         list.add("Seed: "+world.getSeed());
 
         int amount = 0;

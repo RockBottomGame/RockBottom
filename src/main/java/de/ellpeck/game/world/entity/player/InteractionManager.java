@@ -1,7 +1,6 @@
 package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.Constants;
-import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.item.Item;
@@ -96,30 +95,32 @@ public class InteractionManager{
 
             if(this.placeCooldown <= 0){
                 if(input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)){
-                    ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
-                    if(selected != null){
-                        Item item = selected.getItem();
-                        if(item instanceof ItemTile){
-                            if(layer != TileLayer.MAIN || this.player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1)).isEmpty()){
-                                Tile tileThere = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
-                                if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
-                                    Tile tile = ((ItemTile)item).getTile();
-                                    if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
-                                        this.player.world.setTile(layer, this.mousedTileX, this.mousedTileY, tile);
+                    Tile tileThere = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
+                    if(layer != TileLayer.MAIN || !tileThere.onInteractWith(this.player.world, this.mousedTileX, this.mousedTileY, this.player)){
+                        ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
+                        if(selected != null){
+                            Item item = selected.getItem();
+                            if(item instanceof ItemTile){
+                                if(layer != TileLayer.MAIN || this.player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1)).isEmpty()){
+                                    if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
+                                        Tile tile = ((ItemTile)item).getTile();
+                                        if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
+                                            this.player.world.setTile(layer, this.mousedTileX, this.mousedTileY, tile);
 
-                                        if(layer == TileLayer.MAIN){
-                                            int meta = selected.getMeta();
-                                            if(meta != 0){
-                                                this.player.world.setMeta(this.mousedTileX, this.mousedTileY, meta);
+                                            if(layer == TileLayer.MAIN){
+                                                int meta = selected.getMeta();
+                                                if(meta != 0){
+                                                    this.player.world.setMeta(this.mousedTileX, this.mousedTileY, meta);
+                                                }
                                             }
-                                        }
 
-                                        selected.remove(1);
-                                        if(selected.getAmount() <= 0){
-                                            this.player.inv.set(this.player.inv.selectedSlot, null);
-                                        }
+                                            selected.remove(1);
+                                            if(selected.getAmount() <= 0){
+                                                this.player.inv.set(this.player.inv.selectedSlot, null);
+                                            }
 
-                                        this.placeCooldown = 5;
+                                            this.placeCooldown = 5;
+                                        }
                                     }
                                 }
                             }
@@ -145,7 +146,9 @@ public class InteractionManager{
                 }
             }
         }
-
+        else{
+            this.breakProgress = 0;
+        }
     }
 
     public void onMouseAction(Game game, int button){

@@ -300,7 +300,7 @@ public class World implements IWorld{
     }
 
     public void destroyTile(int x, int y, TileLayer layer, Entity destroyer){
-        Tile tile = this.getTile(x, y);
+        Tile tile = this.getTile(layer, x, y);
         byte meta = this.getMeta(x, y);
 
         tile.onDestroyed(this, x, y, destroyer, layer);

@@ -9,12 +9,14 @@ import org.newdawn.slick.Graphics;
 
 public interface IItemRenderer<T extends Item>{
 
+    Color COLOR = new Color(0x529652);
+
     void render(Game game, AssetManager manager, Graphics g, T item, float x, float y, float scale);
 
     static void renderSlotInGui(Game game, AssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
         g.pushTransform();
         g.scale(scale, scale);
-        manager.getImage("gui.slot").draw(x/scale, y/scale);
+        manager.getImage("gui.slot").draw(x/scale, y/scale, COLOR);
         g.popTransform();
 
         if(slot != null){

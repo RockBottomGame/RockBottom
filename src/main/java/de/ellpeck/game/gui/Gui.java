@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Gui{
 
-    public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.35F);
+    public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.25F);
 
     protected List<GuiComponent> components = new ArrayList<>();
 

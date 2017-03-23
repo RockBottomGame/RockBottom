@@ -12,6 +12,7 @@ import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.EntityItem;
+import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 
 import java.util.Collections;
@@ -112,6 +113,10 @@ public class Tile{
                 EntityItem.spawn(world, inst, x+0.5, y+0.5, 0, 0);
             }
         }
+    }
+
+    public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
+        return false;
     }
 
     public List<ItemInstance> getDrops(World world, int x, int y, Entity destroyer){
