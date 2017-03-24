@@ -8,7 +8,6 @@ import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.util.Vec2;
-import de.ellpeck.game.world.Chunk.TileLayer;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;

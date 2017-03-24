@@ -1,8 +1,8 @@
 package de.ellpeck.game.world.tile;
 
 import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.IWorld;
+import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
 
 public class TileAir extends Tile{
@@ -17,7 +17,7 @@ public class TileAir extends Tile{
     }
 
     @Override
-    public boolean canBreak(World world, int x, int y, Chunk.TileLayer layer){
+    public boolean canBreak(World world, int x, int y, TileLayer layer){
         return false;
     }
 
@@ -27,7 +27,7 @@ public class TileAir extends Tile{
     }
 
     @Override
-    public boolean canReplace(World world, int x, int y, Chunk.TileLayer layer){
+    public boolean canReplace(World world, int x, int y, TileLayer layer){
         return true;
     }
 

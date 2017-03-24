@@ -3,7 +3,7 @@ package de.ellpeck.game.world.tile;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.render.tile.SmelterTileRenderer;
 import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.world.Chunk.TileLayer;
+import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.tile.entity.TileEntity;

@@ -7,7 +7,7 @@ import de.ellpeck.game.item.ItemTile;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
-import de.ellpeck.game.world.Chunk.TileLayer;
+import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.Entity;

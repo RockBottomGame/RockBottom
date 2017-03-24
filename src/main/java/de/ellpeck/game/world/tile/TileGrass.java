@@ -2,7 +2,7 @@ package de.ellpeck.game.world.tile;
 
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.item.ItemInstance;
-import de.ellpeck.game.world.Chunk.TileLayer;
+import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;

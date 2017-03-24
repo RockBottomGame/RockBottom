@@ -1,7 +1,6 @@
 package de.ellpeck.game.world;
 
 import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.world.Chunk.TileLayer;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;

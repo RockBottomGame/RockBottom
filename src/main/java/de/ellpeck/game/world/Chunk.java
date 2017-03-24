@@ -405,14 +405,4 @@ public class Chunk implements IWorld{
         this.isGenerating = false;
     }
 
-    public enum TileLayer{
-        MAIN,
-        BACKGROUND;
-
-        public static final TileLayer[] LAYERS = values();
-
-        public TileLayer getOpposite(){
-            return this == MAIN ? BACKGROUND : MAIN;
-        }
-    }
 }
