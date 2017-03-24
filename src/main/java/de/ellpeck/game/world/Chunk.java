@@ -190,7 +190,10 @@ public class Chunk implements IWorld{
             }
         }
 
-        this.tileGrid[layer.ordinal()][x][y] = tile;
+        int ord = layer.ordinal();
+        this.tileGrid[ord][x][y] = tile;
+        this.metaGrid[ord][x][y] = 0;
+
         tile.onAdded(this.world, this.x+x, this.y+y);
 
         if(layer == TileLayer.MAIN){
@@ -207,10 +210,7 @@ public class Chunk implements IWorld{
         }
 
         if(!this.isGenerating){
-            if(layer == TileLayer.MAIN){
-                this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
-            }
-
+            this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
             this.isDirty = true;
         }
     }
@@ -219,7 +219,7 @@ public class Chunk implements IWorld{
         this.metaGrid[layer.ordinal()][x][y] = meta;
 
         if(!this.isGenerating){
-            this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
+            this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
             this.isDirty = true;
         }
     }
@@ -242,7 +242,7 @@ public class Chunk implements IWorld{
         this.tileEntityLookup.put(new Vec2(tile.x, tile.y), tile);
 
         if(!this.isGenerating){
-            this.world.notifyNeighborsOfChange(tile.x, tile.y);
+            this.world.notifyNeighborsOfChange(tile.x, tile.y, TileLayer.MAIN);
             this.isDirty = true;
         }
     }
@@ -264,7 +264,7 @@ public class Chunk implements IWorld{
             this.tileEntityLookup.remove(new Vec2(tile.x, tile.y));
 
             if(!this.isGenerating){
-                this.world.notifyNeighborsOfChange(this.x+x, this.y+y);
+                this.world.notifyNeighborsOfChange(this.x+x, this.y+y, TileLayer.MAIN);
                 this.isDirty = true;
             }
         }

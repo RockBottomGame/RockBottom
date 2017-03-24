@@ -3,7 +3,6 @@ package de.ellpeck.game.world.tile;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.render.tile.SmelterTileRenderer;
 import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.Chunk.TileLayer;
 import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.World;
@@ -39,9 +38,11 @@ public class TileSmelter extends Tile{
     }
 
     @Override
-    public void onChangeAround(World world, int x, int y, int changedX, int changedY){
-        if(!world.getTile(x, y-1).isFullTile()){
-            world.destroyTile(x, y, TileLayer.MAIN, null);
+    public void onChangeAround(World world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+        if(layer == changedLayer){
+            if(!world.getTile(layer, x, y-1).isFullTile()){
+                world.destroyTile(x, y, layer, null);
+            }
         }
     }
 

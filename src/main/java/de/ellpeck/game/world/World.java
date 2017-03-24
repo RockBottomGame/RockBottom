@@ -235,14 +235,16 @@ public class World implements IWorld{
         chunk.setMeta(layer, x, y, meta);
     }
 
-    public void notifyNeighborsOfChange(int x, int y){
+    public void notifyNeighborsOfChange(int x, int y, TileLayer layer){
         for(Direction direction : Direction.ADJACENT_DIRECTIONS){
             int offX = x+direction.x;
             int offY = y+direction.y;
 
-            Tile tile = this.getTile(offX, offY);
-            tile.onChangeAround(this, offX, offY, x, y);
+            this.getTile(layer, offX, offY).onChangeAround(this, offX, offY, layer, x, y, layer);
         }
+
+        TileLayer opp = layer.getOpposite();
+        this.getTile(opp, x, y).onChangeAround(this, x, y, opp, x, y, layer);
     }
 
     public void save(){

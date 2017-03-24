@@ -146,7 +146,7 @@ public class Tile{
         return false;
     }
 
-    public void onChangeAround(World world, int x, int y, int changedX, int changedY){
+    public void onChangeAround(World world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
 
     }
 
