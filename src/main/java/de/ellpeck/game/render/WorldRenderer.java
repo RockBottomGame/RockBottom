@@ -6,6 +6,7 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.tile.ITileRenderer;
+import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -95,7 +96,7 @@ public class WorldRenderer{
     private void doBreakAnimation(InteractionManager input, AssetManager manager, int tileX, int tileY){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
-                Image brk = manager.getImage("break."+input.breakProgress);
+                Image brk = manager.getImage("break."+MathUtil.ceil(input.breakProgress*8F));
                 brk.draw(tileX, -tileY, 1F, 1F);
             }
         }

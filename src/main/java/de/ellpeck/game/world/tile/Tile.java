@@ -4,6 +4,7 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.item.Item;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.item.ItemTile;
+import de.ellpeck.game.item.ToolType;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
@@ -22,6 +23,9 @@ public class Tile{
 
     protected final int id;
     public static final BoundBox DEFAULT_BOUNDS = new BoundBox(0, 0, 1, 1);
+
+    protected ToolType[] effectiveTools = new ToolType[0];
+    protected float hardness = 1F;
 
     public Tile(int id){
         this.id = id;
@@ -169,5 +173,23 @@ public class Tile{
         if(meta != 0){
             world.setMeta(layer, x, y, meta);
         }
+    }
+
+    public float getHardness(World world, int x, int y, TileLayer layer){
+        return this.hardness;
+    }
+
+    public Tile setHardness(float hardness){
+        this.hardness = hardness;
+        return this;
+    }
+
+    public ToolType[] getEffectiveTools(World world, int x, int y, TileLayer layer){
+        return this.effectiveTools;
+    }
+
+    public Tile setEffectiveTools(ToolType... types){
+        this.effectiveTools = types;
+        return this;
     }
 }

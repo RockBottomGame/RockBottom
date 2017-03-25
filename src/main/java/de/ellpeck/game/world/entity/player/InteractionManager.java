@@ -25,7 +25,7 @@ public class InteractionManager{
     public int breakTileX;
     public int breakTileY;
 
-    public int breakProgress;
+    public float breakProgress;
     public int placeCooldown;
 
     public int mousedTileX;
@@ -72,14 +72,14 @@ public class InteractionManager{
 
                 Tile tile = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
                 if(tile.canBreak(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
-                    if(this.breakProgress >= 8){
+                    this.breakProgress += 0.05F/tile.getHardness(this.player.world, this.mousedTileX, this.mousedTileY, layer);
+
+                    if(this.breakProgress >= 1){
                         this.breakProgress = 0;
 
                         this.player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, this.player);
                     }
                     else{
-                        this.breakProgress++;
-
                         this.breakTileX = this.mousedTileX;
                         this.breakTileY = this.mousedTileY;
                         this.breakingLayer = layer;
