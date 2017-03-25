@@ -25,8 +25,18 @@ import java.util.List;
 public class WorldRenderer{
 
     private static final Color SKY_COLOR = new Color(0x4C8DFF);
-    private static final Color BACKGROUND_COLOR = new Color(0.55F, 0.55F, 0.55F, 1F);
-    private static final Color MAIN_COLOR = Color.white;
+    public static final Color[] BACKGROUND_COLORS = new Color[Constants.MAX_LIGHT+1];
+    public static final Color[] MAIN_COLORS = new Color[Constants.MAX_LIGHT+1];
+
+    static{
+        float step = 1F/(Constants.MAX_LIGHT+1);
+        for(int i = 0; i <= Constants.MAX_LIGHT; i++){
+            float modifier = step+i*step;
+
+            MAIN_COLORS[i] = new Color(modifier, modifier, modifier, 1F);
+            BACKGROUND_COLORS[i] = new Color(modifier*0.5F, modifier*0.5F, modifier*0.5F, 1F);
+        }
+    }
 
     public void render(Game game, AssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
         g.scale(Constants.RENDER_SCALE, Constants.RENDER_SCALE);
@@ -52,12 +62,13 @@ public class WorldRenderer{
 
                         if(tileX >= worldAtScreenX-1 && -tileY >= worldAtScreenY-1 && tileX < worldAtScreenX+width && -tileY < worldAtScreenY+height){
                             Tile tile = chunk.getTileInner(x, y);
+                            byte light = chunk.getLightInner(x, y);
 
                             if(!tile.isFullTile()){
                                 Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
                                 ITileRenderer rendererBack = tileBack.getRenderer();
                                 if(rendererBack != null){
-                                    rendererBack.render(game, manager, g, world, tileBack, tileX, -tileY, BACKGROUND_COLOR);
+                                    rendererBack.render(game, manager, g, world, tileBack, tileX, -tileY, BACKGROUND_COLORS[light]);
 
                                     if(input.breakingLayer == TileLayer.BACKGROUND){
                                         this.doBreakAnimation(input, manager, tileX, tileY);
@@ -67,7 +78,7 @@ public class WorldRenderer{
 
                             ITileRenderer renderer = tile.getRenderer();
                             if(renderer != null){
-                                renderer.render(game, manager, g, world, tile, tileX, -tileY, MAIN_COLOR);
+                                renderer.render(game, manager, g, world, tile, tileX, -tileY, MAIN_COLORS[light]);
 
                                 if(input.breakingLayer == TileLayer.MAIN){
                                     this.doBreakAnimation(input, manager, tileX, tileY);
@@ -84,11 +95,12 @@ public class WorldRenderer{
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             IEntityRenderer renderer = entity.getRenderer();
             if(renderer != null){
-                renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F);
+                int light = world.getLight(MathUtil.floor(entity.x), MathUtil.floor(entity.y));
+                renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[light]);
             }
         });
 
-        particles.render(game, manager, g);
+        particles.render(game, manager, g, world);
 
         g.resetTransform();
     }

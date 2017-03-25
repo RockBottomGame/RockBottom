@@ -2,6 +2,8 @@ package de.ellpeck.game.particle;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.render.WorldRenderer;
+import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.tile.Tile;
 import org.newdawn.slick.Graphics;
@@ -25,8 +27,11 @@ public class ParticleManager{
         }
     }
 
-    public void render(Game game, AssetManager manager, Graphics g){
-        this.particles.forEach(particle -> particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F));
+    public void render(Game game, AssetManager manager, Graphics g, World world){
+        this.particles.forEach(particle -> {
+            int light = world.getLight(MathUtil.floor(particle.x), MathUtil.floor(particle.y));
+            particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F, WorldRenderer.MAIN_COLORS[light]);
+        });
     }
 
     public void addParticle(Particle particle){

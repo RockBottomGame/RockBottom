@@ -35,4 +35,9 @@ public class TileAir extends Tile{
     public boolean isFullTile(){
         return false;
     }
+
+    @Override
+    public byte getLight(World world, int x, int y, TileLayer layer){
+        return 10;
+    }
 }

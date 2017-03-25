@@ -5,6 +5,7 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.MovableWorldObject;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class Particle extends MovableWorldObject{
@@ -57,7 +58,7 @@ public class Particle extends MovableWorldObject{
         this.motionY *= 0.98;
     }
 
-    public void render(Game game, AssetManager manager, Graphics g, float x, float y){
+    public void render(Game game, AssetManager manager, Graphics g, float x, float y, Color filter){
 
     }
 

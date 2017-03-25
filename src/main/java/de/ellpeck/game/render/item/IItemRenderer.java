@@ -11,7 +11,7 @@ public interface IItemRenderer<T extends Item>{
 
     Color COLOR = new Color(0x529652);
 
-    void render(Game game, AssetManager manager, Graphics g, T item, float x, float y, float scale);
+    void render(Game game, AssetManager manager, Graphics g, T item, float x, float y, float scale, Color filter);
 
     static void renderSlotInGui(Game game, AssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
         g.pushTransform();
@@ -28,7 +28,7 @@ public interface IItemRenderer<T extends Item>{
         Item item = slot.getItem();
         IItemRenderer renderer = item.getRenderer();
         if(renderer != null){
-            renderer.render(game, manager, g, item, x, y, 12F*scale);
+            renderer.render(game, manager, g, item, x, y, 12F*scale, Color.white);
         }
 
         g.pushTransform();

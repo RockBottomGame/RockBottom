@@ -10,8 +10,8 @@ import org.newdawn.slick.Graphics;
 public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
     @Override
-    public void render(Game game, AssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y){
-        g.setColor(Color.orange);
+    public void render(Game game, AssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color filter){
+        g.setColor(Color.orange.multiply(filter));
         g.fillRect(x-0.5F, y-1.5F, 1F, 2F);
     }
 }

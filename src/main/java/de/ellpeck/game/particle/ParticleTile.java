@@ -22,7 +22,7 @@ public class ParticleTile extends Particle{
     }
 
     @Override
-    public void render(Game game, AssetManager manager, Graphics g, float x, float y){
+    public void render(Game game, AssetManager manager, Graphics g, float x, float y, Color filter){
         if(this.renderPixel == null){
             ITileRenderer renderer = this.tile.getRenderer();
             if(renderer != null){
@@ -33,7 +33,7 @@ public class ParticleTile extends Particle{
 
                     int pixelX = this.world.rand.nextInt(width);
                     int pixelY = this.world.rand.nextInt(height);
-                    this.renderPixel = texture.getColor(pixelX, pixelY);
+                    this.renderPixel = texture.getColor(pixelX, pixelY).multiply(filter);
                 }
             }
         }

@@ -170,6 +170,23 @@ public class World implements IWorld{
         return collisions;
     }
 
+    @Override
+    public byte getLight(int x, int y){
+        Chunk chunk = this.getChunk(x, y);
+        return chunk.getLight(x, y);
+    }
+
+    @Override
+    public void setLight(int x, int y, byte light){
+        Chunk chunk = this.getChunk(x, y);
+        chunk.setLight(x, y, light);
+    }
+
+    @Override
+    public boolean isLoaded(int x, int y){
+        return this.chunkLookup.containsKey(new Vec2(MathUtil.toGridPos(x), MathUtil.toGridPos(y)));
+    }
+
     public Chunk getChunk(double x, double y){
         return this.getChunkFromGridCoords(MathUtil.toGridPos(x), MathUtil.toGridPos(y));
     }
@@ -178,13 +195,13 @@ public class World implements IWorld{
         Chunk chunk = this.chunkLookup.get(new Vec2(gridX, gridY));
 
         if(chunk == null){
-            DataSet set = new DataSet();
-            set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
-
-            chunk = new Chunk(this, gridX, gridY, set);
-
+            chunk = new Chunk(this, gridX, gridY);
             this.loadedChunks.add(chunk);
             this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
+
+            DataSet set = new DataSet();
+            set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
+            chunk.loadOrCreate(set);
         }
 
         return chunk;
@@ -287,7 +304,7 @@ public class World implements IWorld{
             Log.info("Loading player with unique id "+id+"!");
         }
         else{
-            player.setPos(0, 10);
+            player.setPos(0, 20);
             Log.info("Adding new player with unique id "+id+" to world!");
         }
 
@@ -314,5 +331,70 @@ public class World implements IWorld{
         Game.get().particleManager.addTileParticles(this, x, y, tile, meta);
 
         this.setTile(layer, x, y, ContentRegistry.TILE_AIR);
+    }
+
+    public void calcLightInArea(int x1, int y1, int x2, int y2){
+        for(int x = x2; x >= x1; x--){
+            for(int y = y2; y >= y1; y--){
+                byte light = this.calcLight(x, y);
+                this.setLight(x, y, light);
+            }
+        }
+
+        for(int x = x1; x <= x2; x++){
+            for(int y = y1; y <= y2; y++){
+                byte light = this.calcLight(x, y);
+                this.setLight(x, y, light);
+            }
+        }
+    }
+
+    public byte calcLight(int x, int y){
+        byte maxLight = 0;
+
+        if(maxLight < Constants.MAX_LIGHT){
+            for(Direction facing : Direction.ALL_DIRECTIONS){
+                if(this.isLoaded(x+facing.x, y+facing.y)){
+                    byte light = this.getLight(x+facing.x, y+facing.y);
+                    if(light > maxLight){
+                        maxLight = light;
+                    }
+                }
+            }
+
+            float minModifier = Float.MAX_VALUE;
+            for(TileLayer layer : TileLayer.LAYERS){
+                Tile tile = this.getTile(layer, x, y);
+                float modifier = tile.getTranslucentModifier(this, x, y, layer);
+
+                if(modifier < minModifier){
+                    minModifier = modifier;
+                }
+            }
+
+            maxLight *= minModifier;
+        }
+
+        byte emitted = this.getTileLight(x, y);
+        if(emitted > maxLight){
+            maxLight = emitted;
+        }
+
+        return (byte)Math.min(Constants.MAX_LIGHT, maxLight);
+    }
+
+    private byte getTileLight(int x, int y){
+        byte minLight = Byte.MAX_VALUE;
+        if(this.isLoaded(x, y)){
+            for(TileLayer layer : TileLayer.LAYERS){
+                Tile tile = this.getTile(layer, x, y);
+                byte light = tile.getLight(this, x, y, layer);
+
+                if(light < minLight){
+                    minLight = light;
+                }
+            }
+        }
+        return minLight;
     }
 }

@@ -192,4 +192,12 @@ public class Tile{
         this.effectiveTools = types;
         return this;
     }
+
+    public byte getLight(World world, int x, int y, TileLayer layer){
+        return 0;
+    }
+
+    public float getTranslucentModifier(World world, int x, int y, TileLayer layer){
+        return this.isFullTile() ? 0.5F : 0.95F;
+    }
 }

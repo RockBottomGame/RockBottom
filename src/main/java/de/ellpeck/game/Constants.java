@@ -6,6 +6,7 @@ public final class Constants{
     public static final int TARGET_TPS = 40;
 
     public static final int CHUNK_SIZE = 32;
+    public static final byte MAX_LIGHT = 10;
 
     public static final int GUI_SCALE = 4;
     public static final int RENDER_SCALE = 48;

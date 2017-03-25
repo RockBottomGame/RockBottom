@@ -42,4 +42,10 @@ public interface IWorld{
     List<Entity> getEntities(BoundBox area);
 
     List<BoundBox> getCollisions(BoundBox area);
+
+    byte getLight(int x, int y);
+
+    void setLight(int x, int y, byte light);
+
+    boolean isLoaded(int x, int y);
 }

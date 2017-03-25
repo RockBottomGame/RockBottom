@@ -12,7 +12,7 @@ public interface ITileRenderer<T extends Tile>{
 
     void render(Game game, AssetManager manager, Graphics g, IWorld world, T tile, int x, int y, Color filter);
 
-    void renderItem(Game game, AssetManager manager, Graphics g, T tile, float x, float y, float scale);
+    void renderItem(Game game, AssetManager manager, Graphics g, T tile, float x, float y, float scale, Color filter);
 
     Image getParticleTexture(Game game, AssetManager manager, Graphics g, T tile, byte meta);
 }

@@ -29,6 +29,7 @@ public class Chunk implements IWorld{
 
     private final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    private byte[][] lightGrid = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
     private final List<Entity> entities = new ArrayList<>();
 
@@ -42,7 +43,7 @@ public class Chunk implements IWorld{
     private boolean isDirty;
     private boolean isGenerating;
 
-    public Chunk(World world, int gridX, int gridY, DataSet set){
+    public Chunk(World world, int gridX, int gridY){
         this.world = world;
 
         this.x = MathUtil.toWorldPos(gridX);
@@ -57,17 +58,15 @@ public class Chunk implements IWorld{
                 }
             }
         }
-
-        this.loadOrCreate(set);
     }
 
     public void generate(Random rand){
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                if(this.y+y == 0){
+                if(this.y+y == 15){
                     this.setTileInner(x, y, ContentRegistry.TILE_GRASS);
                 }
-                else if(this.y+y < 0){
+                else if(this.y+y < 15){
                     this.setTileInner(x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
 
                     this.setTileInner(TileLayer.BACKGROUND, x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
@@ -177,7 +176,11 @@ public class Chunk implements IWorld{
     }
 
     public void setTileInner(TileLayer layer, int x, int y, Tile tile){
-        Tile lastTile = this.getTileInner(x, y);
+        Tile lastTile = this.getTileInner(layer, x, y);
+
+        byte lastLight = lastTile.getLight(this.world, this.x+x, this.y+y, layer);
+        float lastMofifier = lastTile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer);
+
         lastTile.onRemoved(this.world, this.x+x, this.y+y);
 
         if(layer == TileLayer.MAIN){
@@ -210,6 +213,10 @@ public class Chunk implements IWorld{
         }
 
         if(!this.isGenerating){
+            if(lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
+                this.world.calcLightInArea(this.x+x-5, this.y+y-5, this.x+x+5, this.y+y+5);
+            }
+
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
             this.isDirty = true;
         }
@@ -295,6 +302,29 @@ public class Chunk implements IWorld{
         return this.world.getCollisions(area);
     }
 
+    @Override
+    public byte getLight(int x, int y){
+        return this.getLightInner(x-this.x, y-this.y);
+    }
+
+    @Override
+    public void setLight(int x, int y, byte light){
+        this.setLightInner(x-this.x, y-this.y, light);
+    }
+
+    @Override
+    public boolean isLoaded(int x, int y){
+        return true;
+    }
+
+    public byte getLightInner(int x, int y){
+        return this.lightGrid[x][y];
+    }
+
+    public void setLightInner(int x, int y, byte light){
+        this.lightGrid[x][y] = light;
+    }
+
     public boolean shouldUnload(){
         return this.loadTimer <= 0;
     }
@@ -318,6 +348,8 @@ public class Chunk implements IWorld{
 
             set.addByteByteArray("m_"+i, this.metaGrid[i]);
         }
+
+        set.addByteByteArray("li", this.lightGrid);
 
         int entityId = 0;
         for(Entity entity : this.entities){
@@ -366,6 +398,8 @@ public class Chunk implements IWorld{
                 this.metaGrid[i] = set.getByteByteArray("m_"+i, Constants.CHUNK_SIZE);
             }
 
+            this.lightGrid = set.getByteByteArray("li", Constants.CHUNK_SIZE);
+
             int entityAmount = set.getInt("e_a");
             for(int i = 0; i < entityAmount; i++){
                 DataSet entitySet = set.getDataSet("e_"+i);
@@ -400,9 +434,9 @@ public class Chunk implements IWorld{
         }
         else{
             this.generate(this.world.generatorRandom);
+            this.world.calcLightInArea(this.x, this.y, this.x+Constants.CHUNK_SIZE-1, this.y+Constants.CHUNK_SIZE-1);
         }
 
         this.isGenerating = false;
     }
-
 }
