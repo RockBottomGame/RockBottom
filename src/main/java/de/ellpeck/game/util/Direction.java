@@ -18,7 +18,8 @@ public enum Direction{
 
     public static final Direction[] ADJACENT_DIRECTIONS = new Direction[]{UP, RIGHT, DOWN, LEFT};
     public static final Direction[] DIAGONAL_DIRECTIONS = new Direction[]{LEFT_UP, RIGHT_UP, RIGHT_DOWN, LEFT_DOWN};
-    public static final Direction[] ALL_DIRECTIONS = new Direction[]{LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN, LEFT};
+    public static final Direction[] REAL_DIRECTIONS = new Direction[]{LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN, LEFT};
+    public static final Direction[] ALL_DIRECTIONS = values();
 
     Direction(int x, int y){
         this.x = x;

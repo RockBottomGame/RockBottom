@@ -8,8 +8,8 @@ import de.ellpeck.game.item.ToolType;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
-import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.IWorld;
+import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.EntityItem;
@@ -198,6 +198,10 @@ public class Tile{
     }
 
     public float getTranslucentModifier(World world, int x, int y, TileLayer layer){
-        return this.isFullTile() ? 0.5F : 0.95F;
+        return this.isFullTile() ? (layer == TileLayer.BACKGROUND ? 0.85F : 0.75F) : 1F;
+    }
+
+    public boolean isAir(){
+        return false;
     }
 }

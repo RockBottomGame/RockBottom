@@ -214,7 +214,7 @@ public class Chunk implements IWorld{
 
         if(!this.isGenerating){
             if(lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
-                this.world.calcLightInArea(this.x+x-5, this.y+y-5, this.x+x+5, this.y+y+5);
+                this.world.updateLightFrom(this.x+x, this.y+y);
             }
 
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);

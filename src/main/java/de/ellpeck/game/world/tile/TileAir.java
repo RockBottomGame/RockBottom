@@ -37,7 +37,7 @@ public class TileAir extends Tile{
     }
 
     @Override
-    public byte getLight(World world, int x, int y, TileLayer layer){
-        return 10;
+    public boolean isAir(){
+        return true;
     }
 }

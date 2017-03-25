@@ -333,6 +333,22 @@ public class World implements IWorld{
         this.setTile(layer, x, y, ContentRegistry.TILE_AIR);
     }
 
+    public void updateLightFrom(int x, int y){
+        for(Direction direction : Direction.ALL_DIRECTIONS){
+            int dirX = x+direction.x;
+            int dirY = y+direction.y;
+
+            byte lightThere = this.getLight(dirX, dirY);
+            byte calcedLight = this.calcLight(dirX, dirY);
+
+            if(calcedLight != lightThere){
+                this.setLight(dirX, dirY, calcedLight);
+
+                this.updateLightFrom(dirX, dirY);
+            }
+        }
+    }
+
     public void calcLightInArea(int x1, int y1, int x2, int y2){
         for(int x = x2; x >= x1; x--){
             for(int y = y2; y >= y1; y--){
@@ -352,28 +368,16 @@ public class World implements IWorld{
     public byte calcLight(int x, int y){
         byte maxLight = 0;
 
-        if(maxLight < Constants.MAX_LIGHT){
-            for(Direction facing : Direction.ALL_DIRECTIONS){
-                if(this.isLoaded(x+facing.x, y+facing.y)){
-                    byte light = this.getLight(x+facing.x, y+facing.y);
-                    if(light > maxLight){
-                        maxLight = light;
-                    }
+        for(Direction facing : Direction.REAL_DIRECTIONS){
+            if(this.isLoaded(x+facing.x, y+facing.y)){
+                byte light = this.getLight(x+facing.x, y+facing.y);
+                if(light > maxLight){
+                    maxLight = light;
                 }
             }
-
-            float minModifier = Float.MAX_VALUE;
-            for(TileLayer layer : TileLayer.LAYERS){
-                Tile tile = this.getTile(layer, x, y);
-                float modifier = tile.getTranslucentModifier(this, x, y, layer);
-
-                if(modifier < minModifier){
-                    minModifier = modifier;
-                }
-            }
-
-            maxLight *= minModifier;
         }
+
+        maxLight *= this.getTileModifier(x, y);
 
         byte emitted = this.getTileLight(x, y);
         if(emitted > maxLight){
@@ -384,17 +388,28 @@ public class World implements IWorld{
     }
 
     private byte getTileLight(int x, int y){
-        byte minLight = Byte.MAX_VALUE;
-        if(this.isLoaded(x, y)){
-            for(TileLayer layer : TileLayer.LAYERS){
-                Tile tile = this.getTile(layer, x, y);
-                byte light = tile.getLight(this, x, y, layer);
+        Tile foreground = this.getTile(x, y);
+        Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
 
-                if(light < minLight){
-                    minLight = light;
-                }
-            }
+        if(foreground.isAir() && background.isAir()){
+            return Constants.MAX_LIGHT;
         }
-        return minLight;
+        else{
+            byte foregroundLight = foreground.getLight(this, x, y, TileLayer.MAIN);
+            byte backgroundLight = background.getLight(this, x, y, TileLayer.BACKGROUND);
+            return (byte)Math.max(foregroundLight, backgroundLight);
+        }
+    }
+
+    private float getTileModifier(int x, int y){
+        Tile foreground = this.getTile(x, y);
+
+        if(!foreground.isAir()){
+            return foreground.getTranslucentModifier(this, x, y, TileLayer.MAIN);
+        }
+        else{
+            Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
+            return background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND);
+        }
     }
 }
