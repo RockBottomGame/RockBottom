@@ -2,6 +2,7 @@ package de.ellpeck.game.util;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.Main;
+import org.newdawn.slick.util.Log;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,14 +11,21 @@ import java.util.Map.Entry;
 
 public class Registry<T>{
 
+    private final String name;
     private final Map<Integer, T> map = new HashMap<>();
+
+    public Registry(String name){
+        this.name = name;
+    }
 
     public void register(int id, T value){
         if(this.map.containsKey(id)){
-            Main.doExceptionInfo(Game.get(), new RuntimeException("Cannot register "+value+" with id "+id+" twice!"));
+            throw new RuntimeException("Cannot register "+value+" with id "+id+" twice!");
         }
 
         this.map.put(id, value);
+
+        Log.info("Registered "+value+" with id "+id+" into registry "+this);
     }
 
     public T get(int id){
@@ -39,5 +47,10 @@ public class Registry<T>{
 
     public Map<Integer, T> getUnmodifiable(){
         return Collections.unmodifiableMap(this.map);
+    }
+
+    @Override
+    public String toString(){
+        return this.name;
     }
 }

@@ -1,7 +1,6 @@
 package de.ellpeck.game.assets;
 
 import de.ellpeck.game.Game;
-import de.ellpeck.game.Main;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
 import org.newdawn.slick.Sound;
@@ -36,7 +35,7 @@ public class AssetManager{
             this.missingSound = new AssetSound(null);
         }
         catch(Exception e){
-            Main.doExceptionInfo(game, e);
+            Log.error("Exception loading assets! ", e);
         }
     }
 
@@ -60,7 +59,7 @@ public class AssetManager{
                 Log.info("Loaded ogg resource "+key+" with path "+value);
             }
             else{
-                Log.info("Found unknown resource definition "+key+" with path "+value+"!");
+                Log.warn("Found unknown resource definition "+key+" with path "+value+"!");
             }
         }
     }

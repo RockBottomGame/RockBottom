@@ -14,7 +14,7 @@ public class TileSmelter extends Tile{
     private final ITileRenderer renderer = new SmelterTileRenderer();
 
     public TileSmelter(int id){
-        super(id);
+        super(id, "smelter");
     }
 
     @Override

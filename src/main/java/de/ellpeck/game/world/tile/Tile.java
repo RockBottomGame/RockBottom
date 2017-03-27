@@ -21,14 +21,17 @@ import java.util.List;
 
 public class Tile{
 
-    protected final int id;
     public static final BoundBox DEFAULT_BOUNDS = new BoundBox(0, 0, 1, 1);
+
+    protected final int id;
+    protected final String name;
 
     protected ToolType[] effectiveTools = new ToolType[0];
     protected float hardness = 1F;
 
-    public Tile(int id){
+    public Tile(int id, String name){
         this.id = id;
+        this.name = name;
     }
 
     public ITileRenderer getRenderer(){
@@ -61,13 +64,13 @@ public class Tile{
             return false;
         }
 
-        if(world.getTile(layer.getOpposite(), x, y).isFullTile()){
+        if(!world.getTile(layer.getOpposite(), x, y).isAir()){
             return true;
         }
 
         for(Direction dir : Direction.ADJACENT_DIRECTIONS){
             Tile tile = world.getTile(layer, x+dir.x, y+dir.y);
-            if(tile.isFullTile()){
+            if(!tile.isAir()){
                 return true;
             }
         }
@@ -75,10 +78,10 @@ public class Tile{
     }
 
     public Tile register(){
-        ContentRegistry.TILE_REGISTRY.register(this.id, this);
+        ContentRegistry.TILE_REGISTRY.register(this.getId(), this);
 
         if(this.hasItem()){
-            ItemTile item = new ItemTile(this.id);
+            ItemTile item = new ItemTile(this.getId(), "item_"+this.getName());
             item.register();
         }
 
@@ -203,5 +206,14 @@ public class Tile{
 
     public boolean isAir(){
         return false;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    @Override
+    public String toString(){
+        return this.getName()+"@"+this.getId();
     }
 }

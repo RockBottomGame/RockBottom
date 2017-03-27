@@ -1,15 +1,14 @@
 package de.ellpeck.game.data.set;
 
-import de.ellpeck.game.Game;
-import de.ellpeck.game.Main;
 import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.data.set.part.DataPart;
-import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.PartDataSet;
+import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.num.*;
 import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
+import org.newdawn.slick.util.Log;
 
 import java.io.*;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public class DataSet{
     }
 
     public float getFloat(String key){
-        return this.getPartContent(key,  PartFloat.class, 0F);
+        return this.getPartContent(key, PartFloat.class, 0F);
     }
 
     public void addFloat(String key, float f){
@@ -129,7 +128,7 @@ public class DataSet{
             stream.close();
         }
         catch(Exception e){
-            Main.doExceptionInfo(Game.get(), e);
+            Log.error("Exception saving a data set to disk!", e);
         }
     }
 
@@ -146,7 +145,7 @@ public class DataSet{
             }
         }
         catch(Exception e){
-            Main.doExceptionInfo(Game.get(), e);
+            Log.error("Exception loading a data set from disk!", e);
         }
     }
 

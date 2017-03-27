@@ -5,10 +5,12 @@ import de.ellpeck.game.render.item.IItemRenderer;
 
 public class Item{
 
+    protected final String name;
     protected final int id;
 
-    public Item(int id){
+    public Item(int id, String name){
         this.id = id;
+        this.name = name;
     }
 
     public IItemRenderer getRenderer(){
@@ -31,5 +33,14 @@ public class Item{
 
     public int getMaxAmount(){
         return 999;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    @Override
+    public String toString(){
+        return this.getName()+"@"+this.getId();
     }
 }

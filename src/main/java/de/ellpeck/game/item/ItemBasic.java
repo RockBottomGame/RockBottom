@@ -8,7 +8,7 @@ public class ItemBasic extends Item{
     private final IItemRenderer renderer;
 
     public ItemBasic(int id, String name){
-        super(id);
+        super(id, name);
         this.renderer = new DefaultItemRenderer(name);
     }
 

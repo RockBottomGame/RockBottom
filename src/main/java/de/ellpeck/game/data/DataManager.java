@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class DataManager{
 
-    public static final Registry<Class<? extends DataPart>> PART_REGISTRY = new Registry<>();
+    public static final Registry<Class<? extends DataPart>> PART_REGISTRY = new Registry<>("part_registry");
 
     static{
         PART_REGISTRY.register(0, PartInt.class);

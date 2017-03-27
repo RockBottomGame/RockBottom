@@ -9,8 +9,8 @@ public class ItemTile extends Item{
 
     private final IItemRenderer renderer;
 
-    public ItemTile(int id){
-        super(id);
+    public ItemTile(int id, String name){
+        super(id, name);
         this.renderer = new ItemTileRenderer();
     }
 

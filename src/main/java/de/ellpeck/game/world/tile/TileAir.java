@@ -8,7 +8,7 @@ import de.ellpeck.game.world.World;
 public class TileAir extends Tile{
 
     public TileAir(int id){
-        super(id);
+        super(id, "air");
     }
 
     @Override

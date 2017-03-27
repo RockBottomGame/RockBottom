@@ -252,7 +252,7 @@ public class World implements IWorld{
     }
 
     public void notifyNeighborsOfChange(int x, int y, TileLayer layer){
-        for(Direction direction : Direction.ADJACENT_DIRECTIONS){
+        for(Direction direction : Direction.REAL_DIRECTIONS){
             int offX = x+direction.x;
             int offY = y+direction.y;
 

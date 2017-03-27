@@ -79,7 +79,7 @@ public class InventoryBasic implements IInventory{
         for(int i = 0; i < this.slots.length; i++){
             DataSet subset = set.getDataSet("item_"+i);
             if(!subset.isEmpty()){
-                this.slots[i] = new ItemInstance(subset);
+                this.slots[i] = ItemInstance.load(subset);
             }
             else{
                 this.slots[i] = null;

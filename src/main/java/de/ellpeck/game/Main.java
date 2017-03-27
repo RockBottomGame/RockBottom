@@ -5,8 +5,6 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
-import javax.swing.*;
-
 public final class Main{
 
     public static void main(String[] args){
@@ -28,19 +26,7 @@ public final class Main{
             container.start();
         }
         catch(SlickException e){
-            doExceptionInfo(game, e);
-        }
-    }
-
-    public static void doExceptionInfo(Game game, Exception e){
-        JOptionPane.showMessageDialog(null, e.toString(), "Something went wrong!", JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-
-        if(game != null){
-            game.getContainer().exit();
-        }
-        else{
-            System.exit(-1);
+            Log.error("Exception initializing game! ", e);
         }
     }
 }

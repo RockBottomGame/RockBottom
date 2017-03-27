@@ -13,7 +13,6 @@ import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 import org.newdawn.slick.util.Log;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -391,7 +390,11 @@ public class Chunk implements IWorld{
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        this.setTileInner(layer, x, y, ContentRegistry.TILE_REGISTRY.get(ids[x][y]));
+                        Tile tile = ContentRegistry.TILE_REGISTRY.get(ids[x][y]);
+                        if(tile != null){
+                            this.setTileInner(layer, x, y, tile);
+                        }
+                        else Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
                     }
                 }
 
@@ -412,7 +415,7 @@ public class Chunk implements IWorld{
                     entity.load(entitySet);
                     this.addEntity(entity);
                 }
-                catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
+                catch(Exception e){
                     Log.error("Couldn't load entity with id "+id+" and data "+entitySet+"!", e);
                 }
             }

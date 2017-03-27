@@ -1,10 +1,9 @@
 package de.ellpeck.game.item;
 
 import de.ellpeck.game.ContentRegistry;
-import de.ellpeck.game.Game;
-import de.ellpeck.game.Main;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.world.tile.Tile;
+import org.newdawn.slick.util.Log;
 
 public class ItemInstance{
 
@@ -35,7 +34,7 @@ public class ItemInstance{
 
     public ItemInstance(Item item, int amount, byte meta){
         if(item == null){
-            Main.doExceptionInfo(Game.get(), new NullPointerException("Tried to create an ItemInstance with null item!"));
+            throw new NullPointerException("Tried to create an ItemInstance with null item!");
         }
 
         this.item = item;
@@ -43,10 +42,21 @@ public class ItemInstance{
         this.meta = meta;
     }
 
-    public ItemInstance(DataSet set){
-        this.item = ContentRegistry.ITEM_REGISTRY.get(set.getInt("item_id"));
-        this.amount = set.getInt("amount");
-        this.meta = set.getByte("meta");
+    public static ItemInstance load(DataSet set){
+        int id = set.getInt("item_id");
+        Item item = ContentRegistry.ITEM_REGISTRY.get(id);
+
+        if(item != null){
+            int amount = set.getInt("amount");
+            byte meta = set.getByte("meta");
+
+            return new ItemInstance(item, amount, meta);
+        }
+        else{
+            Log.info("Could not load item instance from data set "+set+" because id "+id+" is missing!");
+
+            return null;
+        }
     }
 
     public void save(DataSet set){

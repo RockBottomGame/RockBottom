@@ -84,6 +84,10 @@ public class EntityItem extends Entity{
         super.load(set);
 
         DataSet itemSet = set.getDataSet("item");
-        this.item = new ItemInstance(itemSet);
+        this.item = ItemInstance.load(itemSet);
+
+        if(this.item == null){
+            this.setDead();
+        }
     }
 }
