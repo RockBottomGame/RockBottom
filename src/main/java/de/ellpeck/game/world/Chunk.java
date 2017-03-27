@@ -35,6 +35,8 @@ public class Chunk implements IWorld{
     private final List<TileEntity> tileEntities = new ArrayList<>();
     private final Map<Vec2, TileEntity> tileEntityLookup = new HashMap<>();
 
+    private final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
+
     public int randomUpdateTileAmount;
 
     public int loadTimer;
@@ -84,6 +86,10 @@ public class Chunk implements IWorld{
                 i--;
             }
             else{
+                if(entity.isDirty()){
+                    this.isDirty = true;
+                }
+
                 int newChunkX = MathUtil.toGridPos(entity.x);
                 int newChunkY = MathUtil.toGridPos(entity.y);
 
@@ -105,6 +111,9 @@ public class Chunk implements IWorld{
                 this.removeTileEntity(tile.x, tile.y);
                 i--;
             }
+            else if(tile.isDirty()){
+                this.isDirty = true;
+            }
         }
 
         if(this.randomUpdateTileAmount > 0){
@@ -114,6 +123,25 @@ public class Chunk implements IWorld{
             Tile tile = this.getTileInner(randX, randY);
             if(tile.doesRandomUpdates()){
                 tile.updateRandomly(this.world, this.x+randX, this.y+randY);
+            }
+        }
+
+        if(!this.scheduledUpdates.isEmpty()){
+            for(int i = 0; i < this.scheduledUpdates.size(); i++){
+                ScheduledUpdate update = this.scheduledUpdates.get(i);
+                update.time--;
+
+                if(update.time <= 0){
+                    Tile tile = this.getTile(update.x, update.y);
+                    if(tile == update.tile){
+                        tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
+                    }
+
+                    this.scheduledUpdates.remove(i);
+                    i--;
+
+                    this.isDirty = true;
+                }
             }
         }
     }
@@ -316,6 +344,15 @@ public class Chunk implements IWorld{
         return true;
     }
 
+    @Override
+    public void scheduleUpdate(int x, int y, TileLayer layer, int time){
+        this.scheduledUpdates.add(new ScheduledUpdate(x, y, layer, this.getTile(x, y), time));
+
+        if(!this.isGenerating){
+            this.isDirty = true;
+        }
+    }
+
     public byte getLightInner(int x, int y){
         return this.lightGrid[x][y];
     }
@@ -377,6 +414,22 @@ public class Chunk implements IWorld{
         }
         set.addInt("t_a", tileEntityId);
 
+        DataSet updateSet = new DataSet();
+
+        int updateId = 0;
+        for(ScheduledUpdate update : this.scheduledUpdates){
+            updateSet.addInt("x_"+updateId, update.x);
+            updateSet.addInt("y_"+updateId, update.y);
+            updateSet.addInt("l_"+updateId, update.layer.ordinal());
+            updateSet.addInt("t_"+updateId, update.time);
+            updateSet.addInt("i_"+updateId, ContentRegistry.TILE_REGISTRY.getId(update.tile));
+
+            updateId++;
+        }
+        updateSet.addInt("a", updateId);
+
+        set.addDataSet("s_u", updateSet);
+
         this.isDirty = false;
     }
 
@@ -394,7 +447,9 @@ public class Chunk implements IWorld{
                         if(tile != null){
                             this.setTileInner(layer, x, y, tile);
                         }
-                        else Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
+                        else{
+                            Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
+                        }
                     }
                 }
 
@@ -434,6 +489,28 @@ public class Chunk implements IWorld{
                     Log.error("Couldn't load data of tile entity at "+x+", "+y+" because it is missing!");
                 }
             }
+
+            DataSet updateSet = set.getDataSet("s_u");
+
+            int updateAmount = updateSet.getInt("a");
+            for(int i = 0; i < updateAmount; i++){
+                int x = updateSet.getInt("x_"+i);
+                int y = updateSet.getInt("y_"+i);
+                int time = updateSet.getInt("t_"+i);
+
+                int id = updateSet.getInt("i_"+i);
+                Tile tile = ContentRegistry.TILE_REGISTRY.get(id);
+
+                if(tile != null){
+                    TileLayer layer = TileLayer.LAYERS[updateSet.getInt("l_"+i)];
+
+                    ScheduledUpdate update = new ScheduledUpdate(x, y, layer, tile, time);
+                    this.scheduledUpdates.add(update);
+                }
+                else{
+                    Log.warn("Could not load scheduled update at "+x+" "+y+" with time "+time+" because tile with id "+id+" is missing!");
+                }
+            }
         }
         else{
             this.generate(this.world.generatorRandom);
@@ -441,5 +518,28 @@ public class Chunk implements IWorld{
         }
 
         this.isGenerating = false;
+    }
+
+    public int getScheduledUpdateAmount(){
+        return this.scheduledUpdates.size();
+    }
+
+    private static class ScheduledUpdate{
+
+        public final int x;
+        public final int y;
+        public final TileLayer layer;
+        public final Tile tile;
+
+        public int time;
+
+        public ScheduledUpdate(int x, int y, TileLayer layer, Tile tile, int time){
+            this.x = x;
+            this.y = y;
+            this.layer = layer;
+            this.tile = tile;
+
+            this.time = time;
+        }
     }
 }

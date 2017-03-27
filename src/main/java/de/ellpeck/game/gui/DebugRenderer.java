@@ -28,11 +28,14 @@ public final class DebugRenderer{
         list.add("Players: "+world.players.size());
         list.add("TileEntities: "+world.getAllTileEntities().size());
         list.add("Particles: "+game.particleManager.getAmount());
-        int amount = 0;
+        int updateTileAmount = 0;
+        int scheduledTileAmount = 0;
         for(Chunk chunk : world.loadedChunks){
-            amount += chunk.randomUpdateTileAmount;
+            updateTileAmount += chunk.randomUpdateTileAmount;
+            scheduledTileAmount += chunk.getScheduledUpdateAmount();
         }
-        list.add("Random Update Tiles: "+amount);
+        list.add("Random Update Tiles: "+updateTileAmount);
+        list.add("Scheduled Tile Updates: "+scheduledTileAmount);
         list.add("Seed: "+world.getSeed());
         list.add("");
 

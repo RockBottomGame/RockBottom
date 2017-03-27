@@ -187,6 +187,12 @@ public class World implements IWorld{
         return this.chunkLookup.containsKey(new Vec2(MathUtil.toGridPos(x), MathUtil.toGridPos(y)));
     }
 
+    @Override
+    public void scheduleUpdate(int x, int y, TileLayer layer, int time){
+        Chunk chunk = this.getChunk(x, y);
+        chunk.scheduleUpdate(x, y, layer, time);
+    }
+
     public Chunk getChunk(double x, double y){
         return this.getChunkFromGridCoords(MathUtil.toGridPos(x), MathUtil.toGridPos(y));
     }
@@ -334,7 +340,7 @@ public class World implements IWorld{
     }
 
     public void updateLightFrom(int x, int y){
-        for(Direction direction : Direction.ALL_DIRECTIONS){
+        for(Direction direction : Direction.ADJACENT_DIRECTIONS){
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 

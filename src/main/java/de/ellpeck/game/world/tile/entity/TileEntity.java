@@ -31,4 +31,8 @@ public class TileEntity{
     public void load(DataSet set){
 
     }
+
+    public boolean isDirty(){
+        return false;
+    }
 }

@@ -48,4 +48,6 @@ public interface IWorld{
     void setLight(int x, int y, byte light);
 
     boolean isLoaded(int x, int y);
+
+    void scheduleUpdate(int x, int y, TileLayer layer, int time);
 }

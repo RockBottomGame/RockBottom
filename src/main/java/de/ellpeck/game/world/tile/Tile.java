@@ -172,10 +172,14 @@ public class Tile{
     public void doPlace(World world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
         world.setTile(layer, x, y, this);
 
-        byte meta = instance.getMeta();
+        byte meta = this.getPlacementMeta(world, x, y, layer, instance);
         if(meta != 0){
             world.setMeta(layer, x, y, meta);
         }
+    }
+
+    public byte getPlacementMeta(World world, int x, int y, TileLayer layer, ItemInstance instance){
+        return instance.getMeta();
     }
 
     public float getHardness(World world, int x, int y, TileLayer layer){
@@ -215,5 +219,9 @@ public class Tile{
     @Override
     public String toString(){
         return this.getName()+"@"+this.getId();
+    }
+
+    public void onScheduledUpdate(World world, int x, int y, TileLayer layer){
+
     }
 }

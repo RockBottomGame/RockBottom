@@ -55,7 +55,7 @@ public class InventoryBasic implements IInventory{
                 else{
                     if(!simulate){
                         slot.add(space);
-                        copy.add(-space);
+                        copy.remove(space);
                     }
                 }
             }

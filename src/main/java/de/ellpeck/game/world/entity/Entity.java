@@ -76,4 +76,8 @@ public class Entity extends MovableWorldObject{
         this.motionX = set.getDouble("motion_x");
         this.motionY = set.getDouble("motion_y");
     }
+
+    public boolean isDirty(){
+        return false;
+    }
 }
