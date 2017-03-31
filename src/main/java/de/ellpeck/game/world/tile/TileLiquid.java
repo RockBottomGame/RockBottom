@@ -33,7 +33,7 @@ public class TileLiquid extends Tile{
     }
 
     @Override
-    public byte getPlacementMeta(World world, int x, int y, TileLayer layer, ItemInstance instance){
+    public int getPlacementMeta(World world, int x, int y, TileLayer layer, ItemInstance instance){
         return MAX_META;
     }
 
@@ -53,15 +53,15 @@ public class TileLiquid extends Tile{
 
     @Override
     public void onScheduledUpdate(World world, int x, int y, TileLayer layer){
-        if(!tryCombine(world, x, y, x, y-1, this, Byte.MAX_VALUE)){
+        if(!tryCombine(world, x, y, x, y-1, this, Integer.MAX_VALUE)){
             trySpread(world, x, y, this);
         }
     }
 
     public static void trySpread(World world, int originX, int originY, TileLiquid liquid){
-        byte meta = world.getMeta(originX, originY);
+        int meta = world.getMeta(originX, originY);
         if(meta >= 3){
-            byte metaThird = (byte)(meta/3);
+            int metaThird = meta/3;
 
             if(canLiquidCover(world, originX+1, originY, liquid)){
                 tryCombine(world, originX, originY, originX+1, originY, liquid, metaThird);
@@ -73,24 +73,24 @@ public class TileLiquid extends Tile{
         }
     }
 
-    public static boolean tryCombine(World world, int originX, int originY, int destX, int destY, TileLiquid liquid, byte max){
+    public static boolean tryCombine(World world, int originX, int originY, int destX, int destY, TileLiquid liquid, int max){
         if(canLiquidCover(world, destX, destY, liquid)){
-            byte originMeta = world.getMeta(originX, originY);
+            int originMeta = world.getMeta(originX, originY);
             if(originMeta > 0){
-                byte destMeta = world.getMeta(destX, destY);
+                int destMeta = world.getMeta(destX, destY);
                 boolean isDestLiquid = world.getTile(destX, destY) == liquid;
 
                 if(destY < originY || destMeta == 0 || !isDestLiquid || originMeta-destMeta >= 2){
-                    byte possible = (byte)(MAX_META-destMeta);
+                    int possible = MAX_META-destMeta;
                     if(possible > 0){
                         if(!isDestLiquid){
                             world.setTile(destX, destY, liquid);
                         }
 
-                        byte toAdd = (byte)Math.min(possible, Math.min(originMeta, max));
-                        world.setMeta(destX, destY, (byte)(destMeta+toAdd));
+                        int toAdd = Math.min(possible, Math.min(originMeta, max));
+                        world.setMeta(destX, destY, destMeta+toAdd);
 
-                        byte left = (byte)(originMeta-toAdd);
+                        int left = originMeta-toAdd;
                         if(left > 0){
                             world.setMeta(originX, originY, left);
                         }

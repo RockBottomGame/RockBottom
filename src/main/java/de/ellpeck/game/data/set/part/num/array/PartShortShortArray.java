@@ -6,9 +6,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Arrays;
 
-public class PartIntIntArray extends BasicDataPart<int[][]>{
+public class PartShortShortArray extends BasicDataPart<short[][]>{
 
-    public PartIntIntArray(String name){
+    public PartShortShortArray(String name){
         super(name);
     }
 
@@ -16,11 +16,11 @@ public class PartIntIntArray extends BasicDataPart<int[][]>{
     public void write(DataOutputStream stream) throws Exception{
         stream.writeInt(this.data.length);
 
-        for(int[] array : this.data){
+        for(short[] array : this.data){
             stream.writeInt(array.length);
 
             for(int b : array){
-                stream.writeInt(b);
+                stream.writeShort(b);
             }
         }
     }
@@ -28,19 +28,19 @@ public class PartIntIntArray extends BasicDataPart<int[][]>{
     @Override
     public void read(DataInputStream stream) throws Exception{
         int amount = stream.readInt();
-        this.data = new int[amount][];
+        this.data = new short[amount][];
 
         for(int i = 0; i < amount; i++){
             int innerAmount = stream.readInt();
-            this.data[i] = new int[innerAmount];
+            this.data[i] = new short[innerAmount];
 
             for(int j = 0; j < innerAmount; j++){
-                this.data[i][j] = stream.readInt();
+                this.data[i][j] = stream.readShort();
             }
         }
     }
 
-    public PartIntIntArray(String name, int[][] data){
+    public PartShortShortArray(String name, short[][] data){
         super(name, data);
     }
 

@@ -13,17 +13,17 @@ public interface IWorld{
 
     Tile getTile(TileLayer layer, int x, int y);
 
-    byte getMeta(int x, int y);
+    int getMeta(int x, int y);
 
-    byte getMeta(TileLayer layer, int x, int y);
+    int getMeta(TileLayer layer, int x, int y);
 
     void setTile(int x, int y, Tile tile);
 
     void setTile(TileLayer layer, int x, int y, Tile tile);
 
-    void setMeta(int x, int y, byte meta);
+    void setMeta(int x, int y, int meta);
 
-    void setMeta(TileLayer layer, int x, int y, byte meta);
+    void setMeta(TileLayer layer, int x, int y, int meta);
 
     void addEntity(Entity entity);
 

@@ -9,9 +9,9 @@ import org.newdawn.slick.util.Log;
 
 public final class ContentRegistry{
 
-    public static final Registry<Tile> TILE_REGISTRY = new Registry<>("tile_registry");
-    public static final Registry<Item> ITEM_REGISTRY = new Registry<>("item_registry");
-    public static final Registry<Class<? extends Entity>> ENTITY_REGISTRY = new Registry<>("entity_registry");
+    public static final Registry<Tile> TILE_REGISTRY = new Registry<>("tile_registry", Short.MAX_VALUE);
+    public static final Registry<Item> ITEM_REGISTRY = new Registry<>("item_registry", Short.MAX_VALUE);
+    public static final Registry<Class<? extends Entity>> ENTITY_REGISTRY = new Registry<>("entity_registry", Short.MAX_VALUE);
 
     public static final Tile TILE_AIR = new TileAir(0).register();
     public static final Tile TILE_DIRT = new TileDirt(1).register();

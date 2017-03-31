@@ -7,7 +7,7 @@ import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.num.*;
 import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntArray;
-import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
+import de.ellpeck.game.data.set.part.num.array.PartShortShortArray;
 import org.newdawn.slick.util.Log;
 
 import java.io.*;
@@ -92,12 +92,12 @@ public class DataSet{
         this.addPart(new PartIntArray(key, array));
     }
 
-    public int[][] getIntIntArray(String key, int defaultSize){
-        return this.getPartContent(key, PartIntIntArray.class, new int[defaultSize][defaultSize]);
+    public short[][] getShortShortArray(String key, int defaultSize){
+        return this.getPartContent(key, PartShortShortArray.class, new short[defaultSize][defaultSize]);
     }
 
-    public void addIntIntArray(String key, int[][] array){
-        this.addPart(new PartIntIntArray(key, array));
+    public void addShortShortArray(String key, short[][] array){
+        this.addPart(new PartShortShortArray(key, array));
     }
 
     public UUID getUniqueId(String key){
@@ -114,6 +114,14 @@ public class DataSet{
 
     public void addByte(String key, byte b){
         this.addPart(new PartByte(key, b));
+    }
+
+    public short getShort(String key){
+        return this.getPartContent(key, PartShort.class, (short)0);
+    }
+
+    public void addShort(String key, short s){
+        this.addPart(new PartShort(key, s));
     }
 
     public void write(File file){
@@ -180,13 +188,13 @@ public class DataSet{
     }
 
     public static void writePart(DataOutputStream stream, DataPart part) throws Exception{
-        stream.writeInt(DataManager.PART_REGISTRY.getId(part.getClass()));
+        stream.writeByte(DataManager.PART_REGISTRY.getId(part.getClass()));
         stream.writeUTF(part.getName());
         part.write(stream);
     }
 
     public static DataPart readPart(DataInputStream stream) throws Exception{
-        int id = stream.readInt();
+        byte id = stream.readByte();
         String name = stream.readUTF();
 
         Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.get(id);

@@ -229,12 +229,12 @@ public class World implements IWorld{
     }
 
     @Override
-    public byte getMeta(int x, int y){
+    public int getMeta(int x, int y){
         return this.getMeta(TileLayer.MAIN, x, y);
     }
 
     @Override
-    public byte getMeta(TileLayer layer, int x, int y){
+    public int getMeta(TileLayer layer, int x, int y){
         Chunk chunk = this.getChunk(x, y);
         return chunk.getMeta(layer, x, y);
     }
@@ -251,12 +251,12 @@ public class World implements IWorld{
     }
 
     @Override
-    public void setMeta(int x, int y, byte meta){
+    public void setMeta(int x, int y, int meta){
         this.setMeta(TileLayer.MAIN, x, y, meta);
     }
 
     @Override
-    public void setMeta(TileLayer layer, int x, int y, byte meta){
+    public void setMeta(TileLayer layer, int x, int y, int meta){
         Chunk chunk = this.getChunk(x, y);
         chunk.setMeta(layer, x, y, meta);
     }
@@ -334,7 +334,7 @@ public class World implements IWorld{
 
     public void destroyTile(int x, int y, TileLayer layer, Entity destroyer){
         Tile tile = this.getTile(layer, x, y);
-        byte meta = this.getMeta(x, y);
+        int meta = this.getMeta(x, y);
 
         tile.onDestroyed(this, x, y, destroyer, layer);
 

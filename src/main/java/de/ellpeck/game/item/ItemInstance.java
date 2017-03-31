@@ -8,7 +8,7 @@ import org.newdawn.slick.util.Log;
 public class ItemInstance{
 
     private final Item item;
-    private final byte meta;
+    private final short meta;
 
     private int amount;
 
@@ -20,7 +20,7 @@ public class ItemInstance{
         this(tile, amount, (byte)0);
     }
 
-    public ItemInstance(Tile tile, int amount, byte meta){
+    public ItemInstance(Tile tile, int amount, int meta){
         this(tile.getItem(), amount, meta);
     }
 
@@ -32,23 +32,26 @@ public class ItemInstance{
         this(item, amount, (byte)0);
     }
 
-    public ItemInstance(Item item, int amount, byte meta){
+    public ItemInstance(Item item, int amount, int meta){
         if(item == null){
             throw new NullPointerException("Tried to create an ItemInstance with null item!");
+        }
+        if(meta > Short.MAX_VALUE){
+            throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" to item instance with item "+item+" and amount "+amount+" which is greater than max "+Short.MAX_VALUE+"!");
         }
 
         this.item = item;
         this.amount = amount;
-        this.meta = meta;
+        this.meta = (short)meta;
     }
 
     public static ItemInstance load(DataSet set){
-        int id = set.getInt("item_id");
+        short id = set.getShort("item_id");
         Item item = ContentRegistry.ITEM_REGISTRY.get(id);
 
         if(item != null){
             int amount = set.getInt("amount");
-            byte meta = set.getByte("meta");
+            short meta = set.getShort("meta");
 
             return new ItemInstance(item, amount, meta);
         }
@@ -60,16 +63,16 @@ public class ItemInstance{
     }
 
     public void save(DataSet set){
-        set.addInt("item_id", ContentRegistry.ITEM_REGISTRY.getId(this.item));
+        set.addShort("item_id", (short)ContentRegistry.ITEM_REGISTRY.getId(this.item));
         set.addInt("amount", this.amount);
-        set.addByte("meta", this.meta);
+        set.addShort("meta", this.meta);
     }
 
     public Item getItem(){
         return this.item;
     }
 
-    public byte getMeta(){
+    public int getMeta(){
         return this.meta;
     }
 

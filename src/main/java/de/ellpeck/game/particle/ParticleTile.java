@@ -13,9 +13,9 @@ public class ParticleTile extends Particle{
 
     private Color renderPixel;
     private final Tile tile;
-    private final byte meta;
+    private final int meta;
 
-    public ParticleTile(World world, double x, double y, double motionX, double motionY, Tile tile, byte meta){
+    public ParticleTile(World world, double x, double y, double motionX, double motionY, Tile tile, int meta){
         super(world, x, y, motionX, motionY, world.rand.nextInt(30)+10);
         this.tile = tile;
         this.meta = meta;

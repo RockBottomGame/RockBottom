@@ -8,7 +8,7 @@ import de.ellpeck.game.data.set.part.PartDataSet;
 import de.ellpeck.game.data.set.part.num.*;
 import de.ellpeck.game.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.game.data.set.part.num.array.PartIntArray;
-import de.ellpeck.game.data.set.part.num.array.PartIntIntArray;
+import de.ellpeck.game.data.set.part.num.array.PartShortShortArray;
 import de.ellpeck.game.util.Registry;
 import org.newdawn.slick.util.Log;
 
@@ -17,19 +17,20 @@ import java.util.UUID;
 
 public class DataManager{
 
-    public static final Registry<Class<? extends DataPart>> PART_REGISTRY = new Registry<>("part_registry");
+    public static final Registry<Class<? extends DataPart>> PART_REGISTRY = new Registry<>("part_registry", Byte.MAX_VALUE);
 
     static{
         PART_REGISTRY.register(0, PartInt.class);
         PART_REGISTRY.register(1, PartFloat.class);
         PART_REGISTRY.register(2, PartDouble.class);
         PART_REGISTRY.register(3, PartIntArray.class);
-        PART_REGISTRY.register(4, PartIntIntArray.class);
+        PART_REGISTRY.register(4, PartShortShortArray.class);
         PART_REGISTRY.register(5, PartByteByteArray.class);
         PART_REGISTRY.register(6, PartDataSet.class);
         PART_REGISTRY.register(7, PartLong.class);
         PART_REGISTRY.register(8, PartUniqueId.class);
         PART_REGISTRY.register(9, PartByte.class);
+        PART_REGISTRY.register(10, PartShort.class);
     }
 
     public File gameDirectory;

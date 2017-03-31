@@ -166,12 +166,12 @@ public class Chunk implements IWorld{
     }
 
     @Override
-    public byte getMeta(int x, int y){
+    public int getMeta(int x, int y){
         return this.getMeta(TileLayer.MAIN, x, y);
     }
 
     @Override
-    public byte getMeta(TileLayer layer, int x, int y){
+    public int getMeta(TileLayer layer, int x, int y){
         return this.getMetaInner(layer, x-this.x, y-this.y);
     }
 
@@ -186,12 +186,12 @@ public class Chunk implements IWorld{
     }
 
     @Override
-    public void setMeta(int x, int y, byte meta){
+    public void setMeta(int x, int y, int meta){
         this.setMeta(TileLayer.MAIN, x, y, meta);
     }
 
     @Override
-    public void setMeta(TileLayer layer, int x, int y, byte meta){
+    public void setMeta(TileLayer layer, int x, int y, int meta){
         this.setMetaInner(layer, x-this.x, y-this.y, meta);
     }
 
@@ -258,8 +258,12 @@ public class Chunk implements IWorld{
         }
     }
 
-    public void setMetaInner(TileLayer layer, int x, int y, byte meta){
-        this.metaGrid[layer.ordinal()][x][y] = meta;
+    public void setMetaInner(TileLayer layer, int x, int y, int meta){
+        if(meta > Byte.MAX_VALUE){
+            throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" in chunk at "+this.gridX+", "+this.gridY+" which is greater than max "+Byte.MAX_VALUE+"!");
+        }
+
+        this.metaGrid[layer.ordinal()][x][y] = (byte)meta;
 
         if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
@@ -390,15 +394,15 @@ public class Chunk implements IWorld{
     public void save(DataSet set){
         for(int i = 0; i < TileLayer.LAYERS.length; i++){
             TileLayer layer = TileLayer.LAYERS[i];
-            int[][] ids = new int[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+            short[][] ids = new short[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    ids[x][y] = ContentRegistry.TILE_REGISTRY.getId(this.getTileInner(layer, x, y));
+                    ids[x][y] = (short)ContentRegistry.TILE_REGISTRY.getId(this.getTileInner(layer, x, y));
                 }
             }
 
-            set.addIntIntArray("l_"+i, ids);
+            set.addShortShortArray("l_"+i, ids);
 
             set.addByteByteArray("m_"+i, this.metaGrid[i]);
         }
@@ -457,7 +461,7 @@ public class Chunk implements IWorld{
         if(set != null && !set.isEmpty()){
             for(int i = 0; i < TileLayer.LAYERS.length; i++){
                 TileLayer layer = TileLayer.LAYERS[i];
-                int[][] ids = set.getIntIntArray("l_"+i, Constants.CHUNK_SIZE);
+                short[][] ids = set.getShortShortArray("l_"+i, Constants.CHUNK_SIZE);
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){

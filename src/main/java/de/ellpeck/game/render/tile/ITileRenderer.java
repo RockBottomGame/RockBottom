@@ -14,5 +14,5 @@ public interface ITileRenderer<T extends Tile>{
 
     void renderItem(Game game, AssetManager manager, Graphics g, T tile, float x, float y, float scale, Color filter);
 
-    Image getParticleTexture(Game game, AssetManager manager, Graphics g, T tile, byte meta);
+    Image getParticleTexture(Game game, AssetManager manager, Graphics g, T tile, int meta);
 }

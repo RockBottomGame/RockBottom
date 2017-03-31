@@ -27,7 +27,7 @@ public class DefaultTileRenderer implements ITileRenderer{
     }
 
     @Override
-    public Image getParticleTexture(Game game, AssetManager manager, Graphics g, Tile tile, byte meta){
+    public Image getParticleTexture(Game game, AssetManager manager, Graphics g, Tile tile, int meta){
         return manager.getImage(this.texture);
     }
 }

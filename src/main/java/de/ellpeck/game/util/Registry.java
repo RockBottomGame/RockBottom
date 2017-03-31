@@ -11,14 +11,19 @@ import java.util.Map.Entry;
 
 public class Registry<T>{
 
+    private final int max;
     private final String name;
     private final Map<Integer, T> map = new HashMap<>();
 
-    public Registry(String name){
+    public Registry(String name, int max){
         this.name = name;
+        this.max = max;
     }
 
     public void register(int id, T value){
+        if(id > this.max){
+            throw new IndexOutOfBoundsException("Tried registering "+value+" with id "+id+" which is greater than max "+this.max+"!");
+        }
         if(this.map.containsKey(id)){
             throw new RuntimeException("Cannot register "+value+" with id "+id+" twice!");
         }
