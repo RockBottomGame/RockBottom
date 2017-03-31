@@ -55,6 +55,10 @@ public class World implements IWorld{
     }
 
     public void update(Game game){
+        if(this.loadedChunks.size() != this.chunkLookup.size()){
+            throw new RuntimeException("LoadedChunks and ChunkLookup are out of sync!");
+        }
+
         for(EntityPlayer player : this.players){
             for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
                 for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){
@@ -258,7 +262,7 @@ public class World implements IWorld{
     }
 
     public void notifyNeighborsOfChange(int x, int y, TileLayer layer){
-        for(Direction direction : Direction.REAL_DIRECTIONS){
+        for(Direction direction : Direction.ADJACENT_DIRECTIONS){
             int offX = x+direction.x;
             int offY = y+direction.y;
 
@@ -340,7 +344,7 @@ public class World implements IWorld{
     }
 
     public void updateLightFrom(int x, int y){
-        for(Direction direction : Direction.ADJACENT_DIRECTIONS){
+        for(Direction direction : Direction.ALL_DIRECTIONS){
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 

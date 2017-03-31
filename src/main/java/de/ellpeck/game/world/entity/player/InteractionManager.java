@@ -102,8 +102,8 @@ public class InteractionManager{
                             Item item = selected.getItem();
                             if(item instanceof ItemTile){
                                 if(layer != TileLayer.MAIN || this.player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1)).isEmpty()){
-                                    if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
-                                        Tile tile = ((ItemTile)item).getTile();
+                                    Tile tile = ((ItemTile)item).getTile();
+                                    if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer, tile)){
                                         if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
 
                                             tile.doPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer, selected, this.player);

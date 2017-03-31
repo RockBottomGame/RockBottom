@@ -36,6 +36,7 @@ public class Chunk implements IWorld{
     private final Map<Vec2, TileEntity> tileEntityLookup = new HashMap<>();
 
     private final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
+    private final Map<Vec2, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
 
     public int randomUpdateTileAmount;
 
@@ -77,6 +78,13 @@ public class Chunk implements IWorld{
     }
 
     public void update(Game game){
+        if(this.tileEntities.size() != this.tileEntityLookup.size()){
+            throw new RuntimeException("TileEntities and TileEntityLookup are out of sync!");
+        }
+        if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
+            throw new RuntimeException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
+        }
+
         for(int i = 0; i < this.entities.size(); i++){
             Entity entity = this.entities.get(i);
             entity.update(game);
@@ -132,14 +140,15 @@ public class Chunk implements IWorld{
                 update.time--;
 
                 if(update.time <= 0){
+                    this.scheduledUpdates.remove(i);
+                    this.scheduledUpdateLookup.remove(new Vec2(update.x, update.y));
+
                     Tile tile = this.getTile(update.x, update.y);
                     if(tile == update.tile){
                         tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
                     }
 
-                    this.scheduledUpdates.remove(i);
                     i--;
-
                     this.isDirty = true;
                 }
             }
@@ -272,12 +281,15 @@ public class Chunk implements IWorld{
 
     @Override
     public void addTileEntity(TileEntity tile){
-        this.tileEntities.add(tile);
-        this.tileEntityLookup.put(new Vec2(tile.x, tile.y), tile);
+        Vec2 posVec = new Vec2(tile.x, tile.y);
+        if(!this.tileEntityLookup.containsKey(posVec)){
+            this.tileEntities.add(tile);
+            this.tileEntityLookup.put(posVec, tile);
 
-        if(!this.isGenerating){
-            this.world.notifyNeighborsOfChange(tile.x, tile.y, TileLayer.MAIN);
-            this.isDirty = true;
+            if(!this.isGenerating){
+                this.world.notifyNeighborsOfChange(tile.x, tile.y, TileLayer.MAIN);
+                this.isDirty = true;
+            }
         }
     }
 
@@ -346,10 +358,16 @@ public class Chunk implements IWorld{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-        this.scheduledUpdates.add(new ScheduledUpdate(x, y, layer, this.getTile(x, y), time));
+        Vec2 posVec = new Vec2(x, y);
+        if(!this.scheduledUpdateLookup.containsKey(posVec)){
+            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getTile(x, y), time);
 
-        if(!this.isGenerating){
-            this.isDirty = true;
+            this.scheduledUpdateLookup.put(posVec, update);
+            this.scheduledUpdates.add(update);
+
+            if(!this.isGenerating){
+                this.isDirty = true;
+            }
         }
     }
 
@@ -503,9 +521,7 @@ public class Chunk implements IWorld{
 
                 if(tile != null){
                     TileLayer layer = TileLayer.LAYERS[updateSet.getInt("l_"+i)];
-
-                    ScheduledUpdate update = new ScheduledUpdate(x, y, layer, tile, time);
-                    this.scheduledUpdates.add(update);
+                    this.scheduleUpdate(x, y, layer, time);
                 }
                 else{
                     Log.warn("Could not load scheduled update at "+x+" "+y+" with time "+time+" because tile with id "+id+" is missing!");

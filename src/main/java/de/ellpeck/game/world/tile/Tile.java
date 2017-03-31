@@ -113,7 +113,7 @@ public class Tile{
 
     }
 
-    public boolean canReplace(World world, int x, int y, TileLayer layer){
+    public boolean canReplace(World world, int x, int y, TileLayer layer, Tile replacementTile){
         return false;
     }
 

@@ -2,6 +2,7 @@ package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.world.Chunk;
+import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
@@ -44,10 +45,14 @@ public final class DebugRenderer{
         list.add("Pos: "+player.x+", "+player.y);
         list.add("");
 
+        int x = game.interactionManager.mousedTileX;
+        int y = game.interactionManager.mousedTileY;
         list.add("Mouse:");
-        list.add("Pos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
-        list.add("Tile: "+game.interactionManager.mousedTileX+", "+game.interactionManager.mousedTileY);
-        list.add("Light: "+world.getLight(game.interactionManager.mousedTileX, game.interactionManager.mousedTileY));
+        list.add("ScreenPos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
+        list.add("TilePos: "+x+", "+y);
+        list.add("Light: "+world.getLight(x, y));
+        list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
+        list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));
 
         for(int i = 0; i < list.size(); i++){
             String s = list.get(i);

@@ -17,8 +17,8 @@ public class DefaultTileRenderer implements ITileRenderer{
     }
 
     @Override
-    public void render(Game game, AssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, Color filter){
-        manager.getImage(this.texture).draw(x, y, 1F, 1F, filter);
+    public void render(Game game, AssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, Color filter){
+        manager.getImage(this.texture).draw(renderX, renderY, 1F, 1F, filter);
     }
 
     @Override

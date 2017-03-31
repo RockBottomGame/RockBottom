@@ -1,19 +1,30 @@
 package de.ellpeck.game.world.tile;
 
+import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.item.ItemInstance;
-import de.ellpeck.game.util.Direction;
+import de.ellpeck.game.render.tile.ITileRenderer;
+import de.ellpeck.game.render.tile.LiquidTileRenderer;
+import de.ellpeck.game.util.BoundBox;
+import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
 
-public class TileLiquid extends TileBasic{
+public class TileLiquid extends Tile{
 
-    private static final Direction[] FLOW_DIRECTIONS = new Direction[]{Direction.DOWN, Direction.LEFT, Direction.RIGHT};
+    private static final int MAX_META = 8;
 
+    protected final ITileRenderer renderer;
     private final int speed;
 
     public TileLiquid(int id, String name, int speed){
         super(id, name);
         this.speed = speed;
+        this.renderer = new LiquidTileRenderer(name);
+    }
+
+    @Override
+    public ITileRenderer getRenderer(){
+        return this.renderer;
     }
 
     @Override
@@ -23,7 +34,7 @@ public class TileLiquid extends TileBasic{
 
     @Override
     public byte getPlacementMeta(World world, int x, int y, TileLayer layer, ItemInstance instance){
-        return 8;
+        return MAX_META;
     }
 
     @Override
@@ -34,30 +45,95 @@ public class TileLiquid extends TileBasic{
     @Override
     public void onChangeAround(World world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(changedLayer == layer){
-            world.scheduleUpdate(x, y, TileLayer.MAIN, this.speed);
+            if(changedY <= y){
+                world.scheduleUpdate(x, y, TileLayer.MAIN, this.speed);
+            }
         }
     }
 
     @Override
     public void onScheduledUpdate(World world, int x, int y, TileLayer layer){
-        int meta = world.getMeta(x, y);
-        if(meta >= 2){
-            for(Direction facing : FLOW_DIRECTIONS){
-                int xOff = x+facing.x;
-                int yOff = y+facing.y;
+        if(!tryCombine(world, x, y, x, y-1, this, Byte.MAX_VALUE)){
+            trySpread(world, x, y, this);
+        }
+    }
 
-                Tile tile = world.getTile(xOff, yOff);
-                if(tile.canReplace(world, xOff, yOff, TileLayer.MAIN)){
-                    int half = meta/2;
+    public static void trySpread(World world, int originX, int originY, TileLiquid liquid){
+        byte meta = world.getMeta(originX, originY);
+        if(meta >= 3){
+            byte metaThird = (byte)(meta/3);
 
-                    world.setTile(xOff, yOff, this);
-                    world.setMeta(xOff, yOff, (byte)half);
+            if(canLiquidCover(world, originX+1, originY, liquid)){
+                tryCombine(world, originX, originY, originX+1, originY, liquid, metaThird);
+            }
 
-                    world.setMeta(x, y, (byte)(meta-half));
+            if(canLiquidCover(world, originX-1, originY, liquid)){
+                tryCombine(world, originX, originY, originX-1, originY, liquid, metaThird);
+            }
+        }
+    }
 
-                    break;
+    public static boolean tryCombine(World world, int originX, int originY, int destX, int destY, TileLiquid liquid, byte max){
+        if(canLiquidCover(world, destX, destY, liquid)){
+            byte originMeta = world.getMeta(originX, originY);
+            if(originMeta > 0){
+                byte destMeta = world.getMeta(destX, destY);
+                boolean isDestLiquid = world.getTile(destX, destY) == liquid;
+
+                if(destY < originY || destMeta == 0 || !isDestLiquid || originMeta-destMeta >= 2){
+                    byte possible = (byte)(MAX_META-destMeta);
+                    if(possible > 0){
+                        if(!isDestLiquid){
+                            world.setTile(destX, destY, liquid);
+                        }
+
+                        byte toAdd = (byte)Math.min(possible, Math.min(originMeta, max));
+                        world.setMeta(destX, destY, (byte)(destMeta+toAdd));
+
+                        byte left = (byte)(originMeta-toAdd);
+                        if(left > 0){
+                            world.setMeta(originX, originY, left);
+                        }
+                        else{
+                            world.setTile(originX, originY, ContentRegistry.TILE_AIR);
+                        }
+
+                        return true;
+                    }
                 }
             }
         }
+
+        return false;
+    }
+
+    public static boolean canLiquidCover(World world, int x, int y, TileLiquid liquid){
+        Tile tile = world.getTile(x, y);
+        return tile.isAir() || tile.canReplace(world, x, y, TileLayer.MAIN, liquid);
+    }
+
+    @Override
+    public boolean canReplace(World world, int x, int y, TileLayer layer, Tile replacementTile){
+        return true;
+    }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
+    }
+
+    @Override
+    public boolean canBreak(World world, int x, int y, TileLayer layer){
+        return false;
+    }
+
+    @Override
+    public BoundBox getBoundBox(IWorld world, int x, int y){
+        return null;
+    }
+
+    @Override
+    public float getTranslucentModifier(World world, int x, int y, TileLayer layer){
+        return 0.95F;
     }
 }
