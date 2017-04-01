@@ -50,7 +50,7 @@ public final class DebugRenderer{
         list.add("Mouse:");
         list.add("ScreenPos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);
-        list.add("Light: "+world.getLight(x, y));
+        list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
         list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
         list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));
 

@@ -1,7 +1,5 @@
 package de.ellpeck.game.util;
 
-import de.ellpeck.game.Game;
-import de.ellpeck.game.Main;
 import org.newdawn.slick.util.Log;
 
 import java.util.Collections;
@@ -22,10 +20,10 @@ public class Registry<T>{
 
     public void register(int id, T value){
         if(id > this.max){
-            throw new IndexOutOfBoundsException("Tried registering "+value+" with id "+id+" which is greater than max "+this.max+"!");
+            throw new IndexOutOfBoundsException("Tried registering "+value+" with id "+id+" which is greater than max "+this.max+" in registry "+this+"!");
         }
         if(this.map.containsKey(id)){
-            throw new RuntimeException("Cannot register "+value+" with id "+id+" twice!");
+            throw new RuntimeException("Cannot register "+value+" with id "+id+" twice into registry "+this+"!");
         }
 
         this.map.put(id, value);
@@ -34,7 +32,13 @@ public class Registry<T>{
     }
 
     public T get(int id){
-        return this.map.get(id);
+        if(id > this.max){
+            Log.warn("Tried getting value of "+id+" for registry "+this+" which is greater than max "+this.max+"!");
+            return null;
+        }
+        else{
+            return this.map.get(id);
+        }
     }
 
     public int getId(T value){

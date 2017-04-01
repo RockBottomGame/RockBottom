@@ -18,7 +18,7 @@ public class TileTorch extends TileBasic{
 
     @Override
     public boolean canPlace(World world, int x, int y, TileLayer layer){
-        return super.canPlace(world, x, y, layer) && world.getTile(x, y-1).isFullTile();
+        return layer == TileLayer.MAIN && super.canPlace(world, x, y, layer) && world.getTile(x, y-1).isFullTile();
     }
 
     @Override

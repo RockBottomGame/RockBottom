@@ -62,7 +62,7 @@ public class WorldRenderer{
 
                         if(tileX >= worldAtScreenX-1 && -tileY >= worldAtScreenY-1 && tileX < worldAtScreenX+width && -tileY < worldAtScreenY+height){
                             Tile tile = chunk.getTileInner(x, y);
-                            byte light = chunk.getLightInner(x, y);
+                            byte light = chunk.getCombinedLightInner(x, y);
 
                             if(!tile.isFullTile()){
                                 Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
@@ -95,7 +95,7 @@ public class WorldRenderer{
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             IEntityRenderer renderer = entity.getRenderer();
             if(renderer != null){
-                int light = world.getLight(MathUtil.floor(entity.x), MathUtil.floor(entity.y));
+                int light = world.getCombinedLight(MathUtil.floor(entity.x), MathUtil.floor(entity.y));
                 renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[light]);
             }
         });

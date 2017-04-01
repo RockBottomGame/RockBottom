@@ -175,15 +175,33 @@ public class World implements IWorld{
     }
 
     @Override
-    public byte getLight(int x, int y){
+    public byte getCombinedLight(int x, int y){
         Chunk chunk = this.getChunk(x, y);
-        return chunk.getLight(x, y);
+        return chunk.getCombinedLight(x, y);
     }
 
     @Override
-    public void setLight(int x, int y, byte light){
+    public byte getSkyLight(int x, int y){
         Chunk chunk = this.getChunk(x, y);
-        chunk.setLight(x, y, light);
+        return chunk.getSkyLight(x, y);
+    }
+
+    @Override
+    public byte getArtificialLight(int x, int y){
+        Chunk chunk = this.getChunk(x, y);
+        return chunk.getArtificialLight(x, y);
+    }
+
+    @Override
+    public void setSkyLight(int x, int y, byte light){
+        Chunk chunk = this.getChunk(x, y);
+        chunk.setSkyLight(x, y, light);
+    }
+
+    @Override
+    public void setArtificialLight(int x, int y, byte light){
+        Chunk chunk = this.getChunk(x, y);
+        chunk.setArtificialLight(x, y, light);
     }
 
     @Override
@@ -348,48 +366,62 @@ public class World implements IWorld{
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 
-            byte lightThere = this.getLight(dirX, dirY);
-            byte calcedLight = this.calcLight(dirX, dirY);
+            boolean change = false;
 
-            if(calcedLight != lightThere){
-                this.setLight(dirX, dirY, calcedLight);
+            byte skylightThere = this.getSkyLight(dirX, dirY);
+            byte calcedSkylight = this.calcLight(dirX, dirY, true);
+            if(calcedSkylight != skylightThere){
+                this.setSkyLight(dirX, dirY, calcedSkylight);
+                change = true;
+            }
 
+            byte artLightThere = this.getArtificialLight(dirX, dirY);
+            byte calcedArtLight = this.calcLight(dirX, dirY, false);
+            if(calcedArtLight != artLightThere){
+                this.setArtificialLight(dirX, dirY, calcedArtLight);
+                change = true;
+            }
+
+            if(change){
                 this.updateLightFrom(dirX, dirY);
             }
         }
     }
 
-    public void calcLightInArea(int x1, int y1, int x2, int y2){
+    public void calcInitialSkylight(int x1, int y1, int x2, int y2){
         for(int x = x2; x >= x1; x--){
             for(int y = y2; y >= y1; y--){
-                byte light = this.calcLight(x, y);
-                this.setLight(x, y, light);
+                byte light = this.calcLight(x, y, true);
+                this.setSkyLight(x, y, light);
             }
         }
 
         for(int x = x1; x <= x2; x++){
             for(int y = y1; y <= y2; y++){
-                byte light = this.calcLight(x, y);
-                this.setLight(x, y, light);
+                byte light = this.calcLight(x, y, true);
+                this.setSkyLight(x, y, light);
             }
         }
     }
 
-    public byte calcLight(int x, int y){
+    private byte calcLight(int x, int y, boolean isSky){
         byte maxLight = 0;
 
-        for(Direction facing : Direction.REAL_DIRECTIONS){
-            if(this.isLoaded(x+facing.x, y+facing.y)){
-                byte light = this.getLight(x+facing.x, y+facing.y);
+        for(Direction direction : Direction.REAL_DIRECTIONS){
+            int dirX = x+direction.x;
+            int dirY = y+direction.y;
+
+            if(this.isLoaded(dirX, dirY)){
+                byte light = isSky ? this.getSkyLight(dirX, dirY) : this.getArtificialLight(dirX, dirY);
                 if(light > maxLight){
                     maxLight = light;
                 }
             }
         }
 
-        maxLight *= this.getTileModifier(x, y);
+        maxLight *= this.getTileModifier(x, y, isSky);
 
-        byte emitted = this.getTileLight(x, y);
+        byte emitted = this.getTileLight(x, y, isSky);
         if(emitted > maxLight){
             maxLight = emitted;
         }
@@ -397,21 +429,26 @@ public class World implements IWorld{
         return (byte)Math.min(Constants.MAX_LIGHT, maxLight);
     }
 
-    private byte getTileLight(int x, int y){
+    private byte getTileLight(int x, int y, boolean isSky){
         Tile foreground = this.getTile(x, y);
         Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
 
         if(foreground.isAir() && background.isAir()){
-            return Constants.MAX_LIGHT;
+            if(isSky){
+                return Constants.MAX_LIGHT;
+            }
         }
         else{
-            byte foregroundLight = foreground.getLight(this, x, y, TileLayer.MAIN);
-            byte backgroundLight = background.getLight(this, x, y, TileLayer.BACKGROUND);
-            return (byte)Math.max(foregroundLight, backgroundLight);
+            if(!isSky){
+                byte foregroundLight = foreground.getLight(this, x, y, TileLayer.MAIN);
+                byte backgroundLight = background.getLight(this, x, y, TileLayer.BACKGROUND);
+                return (byte)Math.max(foregroundLight, backgroundLight);
+            }
         }
+        return 0;
     }
 
-    private float getTileModifier(int x, int y){
+    private float getTileModifier(int x, int y, boolean isSky){
         Tile foreground = this.getTile(x, y);
 
         if(!foreground.isAir()){
@@ -419,7 +456,12 @@ public class World implements IWorld{
         }
         else{
             Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
-            return background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND);
+            if(!background.isAir()){
+                return background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND);
+            }
+            else{
+                return isSky ? 1.0F : 0.8F;
+            }
         }
     }
 }

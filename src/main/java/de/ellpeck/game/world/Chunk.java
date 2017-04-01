@@ -28,7 +28,7 @@ public class Chunk implements IWorld{
 
     private final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    private byte[][] lightGrid = new byte[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    private final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
     private final List<Entity> entities = new ArrayList<>();
 
@@ -346,13 +346,28 @@ public class Chunk implements IWorld{
     }
 
     @Override
-    public byte getLight(int x, int y){
-        return this.getLightInner(x-this.x, y-this.y);
+    public byte getCombinedLight(int x, int y){
+        return this.getCombinedLightInner(x-this.x, y-this.y);
     }
 
     @Override
-    public void setLight(int x, int y, byte light){
-        this.setLightInner(x-this.x, y-this.y, light);
+    public byte getSkyLight(int x, int y){
+        return this.getSkylightInner(x-this.x, y-this.y);
+    }
+
+    @Override
+    public byte getArtificialLight(int x, int y){
+        return this.getArtificialLightInner(x-this.x, y-this.y);
+    }
+
+    @Override
+    public void setSkyLight(int x, int y, byte light){
+        this.setSkylightInner(x-this.x, y-this.y, light);
+    }
+
+    @Override
+    public void setArtificialLight(int x, int y, byte light){
+        this.setArtificialLightInner(x-this.x, y-this.y, light);
     }
 
     @Override
@@ -375,12 +390,24 @@ public class Chunk implements IWorld{
         }
     }
 
-    public byte getLightInner(int x, int y){
-        return this.lightGrid[x][y];
+    public byte getCombinedLightInner(int x, int y){
+        return (byte)Math.min(Constants.MAX_LIGHT, this.getSkylightInner(x, y)+this.getArtificialLightInner(x, y));
     }
 
-    public void setLightInner(int x, int y, byte light){
-        this.lightGrid[x][y] = light;
+    public byte getSkylightInner(int x, int y){
+        return this.lightGrid[0][x][y];
+    }
+
+    public void setSkylightInner(int x, int y, byte light){
+        this.lightGrid[0][x][y] = light;
+    }
+
+    public byte getArtificialLightInner(int x, int y){
+        return this.lightGrid[1][x][y];
+    }
+
+    public void setArtificialLightInner(int x, int y, byte light){
+        this.lightGrid[1][x][y] = light;
     }
 
     public boolean shouldUnload(){
@@ -407,7 +434,9 @@ public class Chunk implements IWorld{
             set.addByteByteArray("m_"+i, this.metaGrid[i]);
         }
 
-        set.addByteByteArray("li", this.lightGrid);
+        for(int i = 0; i < this.lightGrid.length; i++){
+            set.addByteByteArray("li_"+i, this.lightGrid[i]);
+        }
 
         int entityId = 0;
         for(Entity entity : this.entities){
@@ -478,7 +507,9 @@ public class Chunk implements IWorld{
                 this.metaGrid[i] = set.getByteByteArray("m_"+i, Constants.CHUNK_SIZE);
             }
 
-            this.lightGrid = set.getByteByteArray("li", Constants.CHUNK_SIZE);
+            for(int i = 0; i < this.lightGrid.length; i++){
+                this.lightGrid[i] = set.getByteByteArray("li_"+i, Constants.CHUNK_SIZE);
+            }
 
             int entityAmount = set.getInt("e_a");
             for(int i = 0; i < entityAmount; i++){
@@ -534,7 +565,7 @@ public class Chunk implements IWorld{
         }
         else{
             this.generate(this.world.generatorRandom);
-            this.world.calcLightInArea(this.x, this.y, this.x+Constants.CHUNK_SIZE-1, this.y+Constants.CHUNK_SIZE-1);
+            this.world.calcInitialSkylight(this.x, this.y, this.x+Constants.CHUNK_SIZE-1, this.y+Constants.CHUNK_SIZE-1);
         }
 
         this.isGenerating = false;

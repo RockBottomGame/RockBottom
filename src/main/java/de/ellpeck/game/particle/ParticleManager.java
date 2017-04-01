@@ -29,7 +29,7 @@ public class ParticleManager{
 
     public void render(Game game, AssetManager manager, Graphics g, World world){
         this.particles.forEach(particle -> {
-            int light = world.getLight(MathUtil.floor(particle.x), MathUtil.floor(particle.y));
+            int light = world.getCombinedLight(MathUtil.floor(particle.x), MathUtil.floor(particle.y));
             particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F, WorldRenderer.MAIN_COLORS[light]);
         });
     }

@@ -43,9 +43,15 @@ public interface IWorld{
 
     List<BoundBox> getCollisions(BoundBox area);
 
-    byte getLight(int x, int y);
+    byte getCombinedLight(int x, int y);
 
-    void setLight(int x, int y, byte light);
+    byte getSkyLight(int x, int y);
+
+    byte getArtificialLight(int x, int y);
+
+    void setSkyLight(int x, int y, byte light);
+
+    void setArtificialLight(int x, int y, byte light);
 
     boolean isLoaded(int x, int y);
 
