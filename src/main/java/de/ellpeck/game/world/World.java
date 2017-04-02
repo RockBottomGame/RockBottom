@@ -16,6 +16,7 @@ import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class World implements IWorld{
 
@@ -148,16 +149,31 @@ public class World implements IWorld{
 
     @Override
     public List<Entity> getEntities(BoundBox area){
+        return this.getEntities(area, null, null);
+    }
+
+    @Override
+    public List<Entity> getEntities(BoundBox area, Predicate<Entity> test){
+        return this.getEntities(area, null, test);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type){
+        return this.getEntities(area, type, null);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test){
         int minChunkX = MathUtil.toGridPos(area.getMinX())-1;
         int minChunkY = MathUtil.toGridPos(area.getMinY())-1;
         int maxChunkX = MathUtil.toGridPos(area.getMaxX())+1;
         int maxChunkY = MathUtil.toGridPos(area.getMaxY())+1;
 
-        List<Entity> entities = new ArrayList<>();
+        List<T> entities = new ArrayList<>();
         for(int x = minChunkX; x <= maxChunkX; x++){
             for(int y = minChunkY; y <= maxChunkY; y++){
                 Chunk chunk = this.getChunkFromGridCoords(x, y);
-                entities.addAll(chunk.getEntities(area));
+                entities.addAll(chunk.getEntities(area, type, test));
             }
         }
         return entities;

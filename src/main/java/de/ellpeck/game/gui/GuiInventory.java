@@ -36,7 +36,7 @@ public class GuiInventory extends GuiContainer{
     public boolean onKeyboardAction(Game game, int button){
         if(button == Input.KEY_F){
             for(Item item : ContentRegistry.ITEM_REGISTRY.getUnmodifiable().values()){
-                this.player.inv.add(new ItemInstance(item, 500), false, true);
+                this.player.inv.add(new ItemInstance(item, 500), false);
             }
             return true;
         }

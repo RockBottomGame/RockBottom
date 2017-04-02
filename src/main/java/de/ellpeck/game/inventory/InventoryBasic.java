@@ -26,41 +26,64 @@ public class InventoryBasic implements IInventory{
         return this.slots.length;
     }
 
-    public boolean add(ItemInstance instance, boolean simulate){
-        return this.add(instance, simulate, false);
-    }
-
-    public boolean add(ItemInstance instance, boolean simulate, boolean fromBack){
+    public ItemInstance add(ItemInstance instance, boolean simulate){
         ItemInstance copy = instance.copy();
 
-        for(int c = 0; c < this.slots.length; c++){
-            int i = fromBack ? this.slots.length-1-c : c;
-            ItemInstance slot = this.slots[i];
+        for(int i = 0; i < this.slots.length; i++){
+            copy = this.addToSlot(i, copy, simulate);
 
-            if(slot == null){
-                if(!simulate){
-                    this.slots[i] = copy;
-                }
-                return true;
+            if(copy == null){
+                return null;
             }
-            else if(slot.isItemEqual(copy)){
-                int space = slot.getItem().getMaxAmount()-slot.getAmount();
+        }
 
-                if(space >= copy.getAmount()){
-                    if(!simulate){
-                        slot.add(copy.getAmount());
-                    }
-                    return true;
-                }
-                else{
-                    if(!simulate){
-                        slot.add(space);
-                        copy.remove(space);
+        return copy;
+    }
+
+    public ItemInstance addExistingFirst(ItemInstance instance, boolean simulate){
+        ItemInstance copy = instance.copy();
+
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < this.slots.length; j++){
+                if(i == 1 || (this.slots[j] != null && this.slots[j].isItemEqual(instance))){
+                    copy = this.addToSlot(j, copy, simulate);
+
+                    if(copy == null){
+                        return null;
                     }
                 }
             }
         }
-        return false;
+
+        return copy;
+    }
+
+    public ItemInstance addToSlot(int slot, ItemInstance instance, boolean simulate){
+        ItemInstance slotInst = this.slots[slot];
+
+        if(slotInst == null){
+            if(!simulate){
+                this.slots[slot] = instance;
+            }
+            return null;
+        }
+        else if(slotInst.isItemEqual(instance)){
+            int space = slotInst.getItem().getMaxAmount()-slotInst.getAmount();
+
+            if(space >= instance.getAmount()){
+                if(!simulate){
+                    slotInst.add(instance.getAmount());
+                }
+                return null;
+            }
+            else{
+                if(!simulate){
+                    slotInst.add(space);
+                    instance.remove(space);
+                }
+            }
+        }
+        return instance;
     }
 
     public void save(DataSet set){

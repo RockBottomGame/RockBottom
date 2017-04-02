@@ -2,10 +2,12 @@ package de.ellpeck.game.world;
 
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.world.entity.Entity;
+import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface IWorld{
 
@@ -40,6 +42,12 @@ public interface IWorld{
     List<TileEntity> getAllTileEntities();
 
     List<Entity> getEntities(BoundBox area);
+
+    List<Entity> getEntities(BoundBox area, Predicate<Entity> test);
+
+    <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type);
+
+    <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test);
 
     List<BoundBox> getCollisions(BoundBox area);
 

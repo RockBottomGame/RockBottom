@@ -1,19 +1,17 @@
 package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.Game;
-import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.GuiManager;
 import de.ellpeck.game.inventory.InventoryPlayer;
+import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.PlayerEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.world.World;
-import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.EntityLiving;
-import org.newdawn.slick.Graphics;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,15 +42,16 @@ public class EntityPlayer extends EntityLiving{
     public void update(Game game){
         super.update(game);
 
-        List<Entity> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y));
-        for(Entity entity : entities){
-            if(entity instanceof EntityItem){
-                EntityItem item = (EntityItem)entity;
-                if(item.canPickUp()){
-                    if(this.inv.add(item.item, true)){
-                        this.inv.add(item.item, false);
-                        item.setDead();
-                    }
+        List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y), EntityItem.class);
+        for(EntityItem entity : entities){
+            if(entity.canPickUp()){
+                ItemInstance left = this.inv.addExistingFirst(entity.item, false);
+
+                if(left == null){
+                    entity.setDead();
+                }
+                else{
+                    entity.item = left;
                 }
             }
         }

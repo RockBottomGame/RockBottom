@@ -121,7 +121,7 @@ public class Tile{
         List<ItemInstance> drops = this.getDrops(world, x, y, destroyer);
         if(drops != null && !drops.isEmpty()){
             for(ItemInstance inst : drops){
-                EntityItem.spawn(world, inst, x+0.5, y+0.5, 0, 0);
+                EntityItem.spawn(world, inst, x+0.5, y+0.5, world.rand.nextGaussian()*0.1, world.rand.nextGaussian()*0.1);
             }
         }
     }

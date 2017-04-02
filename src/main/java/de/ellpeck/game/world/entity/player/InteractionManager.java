@@ -10,16 +10,21 @@ import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.TileLayer;
+import de.ellpeck.game.world.entity.Entity;
+import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.tile.Tile;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class InteractionManager{
 
     private static final List<Integer> ITEM_SELECTION_KEYS = Arrays.asList(Input.KEY_1, Input.KEY_2, Input.KEY_3, Input.KEY_4, Input.KEY_5, Input.KEY_6, Input.KEY_7, Input.KEY_8);
+
+    private static final Predicate<Entity> PLACEMENT_TEST = entity -> !(entity instanceof EntityItem);
 
     public TileLayer breakingLayer;
     public int breakTileX;
@@ -101,7 +106,7 @@ public class InteractionManager{
                         if(selected != null){
                             Item item = selected.getItem();
                             if(item instanceof ItemTile){
-                                if(layer != TileLayer.MAIN || this.player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1)).isEmpty()){
+                                if(layer != TileLayer.MAIN || this.player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1), PLACEMENT_TEST).isEmpty()){
                                     Tile tile = ((ItemTile)item).getTile();
                                     if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer, tile)){
                                         if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){

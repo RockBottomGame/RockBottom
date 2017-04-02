@@ -14,7 +14,7 @@ import de.ellpeck.game.world.tile.entity.TileEntity;
 import org.newdawn.slick.util.Log;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 public class Chunk implements IWorld{
 
@@ -338,7 +338,35 @@ public class Chunk implements IWorld{
 
     @Override
     public List<Entity> getEntities(BoundBox area){
-        return this.entities.stream().filter(entity -> !entity.isDead() && entity.getBoundingBox().copy().add(entity.x, entity.y).intersects(area)).collect(Collectors.toList());
+        return this.getEntities(area, null, null);
+    }
+
+    @Override
+    public List<Entity> getEntities(BoundBox area, Predicate<Entity> test){
+        return this.getEntities(area, null, test);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type){
+        return this.getEntities(area, type, null);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test){
+        List<T> entities = new ArrayList<>();
+
+        for(Entity entity : this.entities){
+            if(!entity.isDead() && (type == null || type.isAssignableFrom(entity.getClass()))){
+                T castEntity = (T)entity;
+                if(test == null || test.test(castEntity)){
+                    if(entity.getBoundingBox().copy().add(entity.x, entity.y).intersects(area)){
+                        entities.add(castEntity);
+                    }
+                }
+            }
+        }
+
+        return entities;
     }
 
     @Override
