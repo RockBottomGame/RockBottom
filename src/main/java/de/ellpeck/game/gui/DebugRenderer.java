@@ -38,6 +38,7 @@ public final class DebugRenderer{
         list.add("Random Update Tiles: "+updateTileAmount);
         list.add("Scheduled Tile Updates: "+scheduledTileAmount);
         list.add("Seed: "+world.getSeed());
+        list.add("Time: Local "+world.currentWorldTime+" / Total "+world.totalTimeInWorld);
         list.add("");
 
         list.add("Player:");

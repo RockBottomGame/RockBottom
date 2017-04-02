@@ -24,7 +24,7 @@ import java.util.List;
 
 public class WorldRenderer{
 
-    private static final Color SKY_COLOR = new Color(0x4C8DFF);
+    private static final Color[] SKY_COLORS = new Color[50];
     public static final Color[] BACKGROUND_COLORS = new Color[Constants.MAX_LIGHT+1];
     public static final Color[] MAIN_COLORS = new Color[Constants.MAX_LIGHT+1];
 
@@ -36,11 +36,19 @@ public class WorldRenderer{
             MAIN_COLORS[i] = new Color(modifier, modifier, modifier, 1F);
             BACKGROUND_COLORS[i] = new Color(modifier*0.5F, modifier*0.5F, modifier*0.5F, 1F);
         }
+
+        Color sky = new Color(0x4C8DFF);
+        for(int i = 0; i < SKY_COLORS.length; i++){
+            float percent = (float)i/(float)SKY_COLORS.length;
+            SKY_COLORS[i] = sky.darker(1F-percent);
+        }
     }
 
     public void render(Game game, AssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
         g.scale(Constants.RENDER_SCALE, Constants.RENDER_SCALE);
-        g.setBackground(SKY_COLOR);
+
+        int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
+        g.setBackground(SKY_COLORS[skyLight]);
 
         double width = game.getWidthInWorld();
         double height = game.getHeightInWorld();

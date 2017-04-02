@@ -81,6 +81,13 @@ public class World implements IWorld{
                 i--;
             }
         }
+
+        this.totalTimeInWorld++;
+
+        this.currentWorldTime++;
+        if(this.currentWorldTime >= Constants.TIME_PER_DAY){
+            this.currentWorldTime = 0;
+        }
     }
 
     @Override
@@ -462,6 +469,16 @@ public class World implements IWorld{
             else{
                 return isSky ? 1.0F : 0.8F;
             }
+        }
+    }
+
+    public float getSkylightModifier(){
+        int noon = Constants.TIME_PER_DAY/2;
+        if(this.currentWorldTime <= noon){
+            return (float)this.currentWorldTime/(float)noon;
+        }
+        else{
+            return 1F-(float)(this.currentWorldTime-noon)/(float)noon;
         }
     }
 }

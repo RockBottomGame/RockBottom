@@ -214,6 +214,7 @@ public class Chunk implements IWorld{
     public void setTileInner(TileLayer layer, int x, int y, Tile tile){
         Tile lastTile = this.getTileInner(layer, x, y);
 
+        boolean lastAir = lastTile.isAir();
         byte lastLight = lastTile.getLight(this.world, this.x+x, this.y+y, layer);
         float lastMofifier = lastTile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer);
 
@@ -249,7 +250,7 @@ public class Chunk implements IWorld{
         }
 
         if(!this.isGenerating){
-            if(lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
+            if(lastAir != tile.isAir() || lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
                 this.world.updateLightFrom(this.x+x, this.y+y);
             }
 
@@ -391,7 +392,10 @@ public class Chunk implements IWorld{
     }
 
     public byte getCombinedLightInner(int x, int y){
-        return (byte)Math.min(Constants.MAX_LIGHT, this.getSkylightInner(x, y)+this.getArtificialLightInner(x, y));
+        byte artificial = this.getArtificialLightInner(x, y);
+        byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
+
+        return (byte)Math.min(Constants.MAX_LIGHT, artificial+sky);
     }
 
     public byte getSkylightInner(int x, int y){
