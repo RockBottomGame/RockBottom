@@ -13,7 +13,9 @@ import de.ellpeck.game.data.set.part.num.array.PartShortShortArray;
 import de.ellpeck.game.util.Registry;
 import org.newdawn.slick.util.Log;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -63,33 +65,43 @@ public class DataManager{
     }
 
     public Settings loadSettings(){
-        Settings settings = new Settings();
+        Properties props = new Properties();
+        boolean loaded = false;
 
-        try{
-            Properties props = new Properties();
-            props.load(new FileInputStream(this.settingsFile));
-            settings.load(props);
+        if(this.settingsFile.exists()){
+            try{
+                props.load(new FileInputStream(this.settingsFile));
+                loaded = true;
+            }
+            catch(Exception e){
+                Log.error("Couldn't load game settings!", e);
+            }
         }
-        catch(FileNotFoundException e){
-            Log.info("Game settings not found, creating from default.");
+
+        Settings settings = new Settings();
+        settings.load(props);
+
+        if(!loaded){
+            Log.info("Creating game settings from default.");
             this.saveSettings(settings);
         }
-        catch(Exception e){
-            Log.error("Couldn't load game settings!", e);
+        else{
+            Log.info("Loaded game settings.");
         }
 
         return settings;
     }
 
     public void saveSettings(Settings settings){
+        Properties props = new Properties();
+        settings.save(props);
+
         try{
             if(!this.settingsFile.exists()){
                 this.settingsFile.getParentFile().mkdirs();
                 this.settingsFile.createNewFile();
             }
 
-            Properties props = new Properties();
-            settings.save(props);
             props.store(new FileOutputStream(this.settingsFile), null);
         }
         catch(Exception e){

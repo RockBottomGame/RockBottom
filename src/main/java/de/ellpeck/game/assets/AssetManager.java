@@ -5,6 +5,7 @@ import de.ellpeck.game.assets.local.AssetLocale;
 import de.ellpeck.game.assets.local.Locale;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.util.Log;
 
@@ -23,7 +24,7 @@ public class AssetManager{
 
     private Locale currentLocale;
 
-    public void create(Game game){
+    public void create(Game game) throws SlickException{
         try{
             Log.info("Loading resources...");
             this.loadAssets();
@@ -48,6 +49,10 @@ public class AssetManager{
 
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
         this.currentLocale = this.getLocale("us_english");
+
+        if(!game.settings.hardwareCursor){
+            game.getContainer().setMouseCursor(this.getImage("gui.cursor").getScaledCopy(game.settings.cursorScale), 0, 0);
+        }
     }
 
     private void loadAssets() throws Exception{
