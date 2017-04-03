@@ -2,8 +2,11 @@ package de.ellpeck.game.gui.component;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.inventory.InventoryPlayer;
+import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.item.IItemRenderer;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class ComponentHotbarSlot extends GuiComponent{
@@ -23,6 +26,17 @@ public class ComponentHotbarSlot extends GuiComponent{
 
         if(this.inv.selectedSlot == this.id){
             manager.getImage("gui.selection_arrow").draw(this.x+0.75F, 1);
+        }
+    }
+
+    @Override
+    public void renderOverlay(Game game, AssetManager manager, Graphics g){
+        if(this.isMouseOver(game)){
+            ItemInstance instance = this.inv.get(this.id);
+            if(instance != null){
+                String name = manager.localize(instance.getItem().getUnlocalizedName(instance));
+                Gui.drawHoverInfoAtMouse(game, g, Color.white, name);
+            }
         }
     }
 

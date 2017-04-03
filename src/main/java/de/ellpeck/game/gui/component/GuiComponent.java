@@ -29,6 +29,10 @@ public class GuiComponent{
 
     }
 
+    public void renderOverlay(Game game, AssetManager manager, Graphics g){
+
+    }
+
     public boolean isMouseOver(Game game){
         Input input = game.getContainer().getInput();
         int mouseX = input.getMouseX()/Constants.GUI_SCALE;

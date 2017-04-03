@@ -81,7 +81,7 @@ public class Tile{
         ContentRegistry.TILE_REGISTRY.register(this.getId(), this);
 
         if(this.hasItem()){
-            ItemTile item = new ItemTile(this.getId(), "item_"+this.getName());
+            ItemTile item = new ItemTile(this.getId(), this.getName());
             item.register();
         }
 

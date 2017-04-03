@@ -7,6 +7,7 @@ import de.ellpeck.game.gui.component.GuiComponent;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class Gui{
 
+    private static final Color HOVER_INFO_BACKGROUND = new Color(0F, 0F, 0F, 0.7F);
     public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.25F);
 
     protected List<GuiComponent> components = new ArrayList<>();
@@ -76,6 +78,10 @@ public class Gui{
         this.components.forEach(component -> component.render(game, manager, g));
     }
 
+    public void renderOverlay(Game game, AssetManager manager, Graphics g){
+        this.components.forEach(component -> component.renderOverlay(game, manager, g));
+    }
+
     protected boolean canEscape(){
         return true;
     }
@@ -95,5 +101,47 @@ public class Gui{
 
         boolean overSelf = mouseX >= this.guiLeft && mouseX < this.guiLeft+this.sizeX && mouseY >= this.guiTop && mouseY < this.guiTop+this.sizeY;
         return overSelf || this.isMouseOverComponent(game);
+    }
+
+    public static void drawHoverInfoAtMouse(Game game, Graphics g, Color color, String... text){
+        Input input = game.getContainer().getInput();
+        float mouseX = (float)input.getMouseX()/(float)Constants.GUI_SCALE;
+        float mouseY = (float)input.getMouseY()/(float)Constants.GUI_SCALE;
+
+        drawHoverInfo(game, g, mouseX+3, mouseY+3, 0.25F, color, text);
+    }
+
+    public static void drawHoverInfo(Game game, Graphics g, float x, float y, float scale, Color color, String... text){
+        Font font = game.getContainer().getDefaultFont();
+
+        float boxWidth = 0F;
+        float boxHeight = text.length*font.getLineHeight()*scale;
+
+        for(String s : text){
+            int length = font.getWidth(s);
+            if(length > boxWidth){
+                boxWidth = length*scale;
+            }
+        }
+
+        if(boxWidth > 0F && boxHeight > 0F){
+            g.setColor(HOVER_INFO_BACKGROUND);
+            g.fillRoundRect(x, y, boxWidth+4, boxHeight+4, 2);
+
+            g.setColor(color);
+
+            int yOffset = 0;
+            for(String s : text){
+                drawScaledText(game, g, x+2, y+2+yOffset, scale, s);
+                yOffset += font.getLineHeight();
+            }
+        }
+    }
+
+    public static void drawScaledText(Game game, Graphics g, float x, float y, float scale, String s){
+        g.pushTransform();
+        g.scale(scale, scale);
+        game.getContainer().getDefaultFont().drawString(x*1/scale, y*1/scale, s, Color.white);
+        g.popTransform();
     }
 }

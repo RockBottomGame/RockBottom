@@ -2,11 +2,13 @@ package de.ellpeck.game.gui.component;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiContainer;
 import de.ellpeck.game.inventory.IInventory;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.item.IItemRenderer;
 import de.ellpeck.game.util.MathUtil;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
@@ -114,5 +116,16 @@ public class ComponentSlot extends GuiComponent{
     @Override
     public void render(Game game, AssetManager manager, Graphics g){
         IItemRenderer.renderSlotInGui(game, manager, g, this.inventory.get(this.id), this.x, this.y, 1F);
+    }
+
+    @Override
+    public void renderOverlay(Game game, AssetManager manager, Graphics g){
+        if(this.container.holdingInst == null && this.isMouseOver(game)){
+            ItemInstance instance = this.inventory.get(this.id);
+            if(instance != null){
+                String name = manager.localize(instance.getItem().getUnlocalizedName(instance));
+                Gui.drawHoverInfoAtMouse(game, g, Color.white, name);
+            }
+        }
     }
 }

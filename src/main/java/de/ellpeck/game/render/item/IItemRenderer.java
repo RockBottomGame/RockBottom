@@ -2,6 +2,7 @@ package de.ellpeck.game.render.item;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.item.Item;
 import de.ellpeck.game.item.ItemInstance;
 import org.newdawn.slick.Color;
@@ -31,9 +32,6 @@ public interface IItemRenderer<T extends Item>{
             renderer.render(game, manager, g, item, x, y, 12F*scale, Color.white);
         }
 
-        g.pushTransform();
-        g.scale(0.25F*scale, 0.25F*scale);
-        game.getContainer().getDefaultFont().drawString((x+9F*scale)*4F/scale, (y+9F*scale)*4F/scale, String.valueOf(slot.getAmount()), Color.white);
-        g.popTransform();
+        Gui.drawScaledText(game, g, x+9F*scale, y+9F*scale, 0.25F*scale, String.valueOf(slot.getAmount()));
     }
 }

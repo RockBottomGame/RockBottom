@@ -39,6 +39,10 @@ public class Item{
         return this.name;
     }
 
+    public String getUnlocalizedName(ItemInstance instance){
+        return "name."+this.name;
+    }
+
     @Override
     public String toString(){
         return this.getName()+"@"+this.getId();

@@ -31,9 +31,7 @@ public class GuiManager{
     public void render(Game game, AssetManager manager, Graphics g, EntityPlayer player){
         g.scale(Constants.GUI_SCALE, Constants.GUI_SCALE);
 
-        for(ComponentHotbarSlot slot : this.hotbarSlots){
-            slot.render(game, manager, g);
-        }
+        this.hotbarSlots.forEach(slot -> slot.render(game, manager, g));
 
         Gui gui = player.guiManager.getGui();
         if(gui != null){
@@ -41,6 +39,10 @@ public class GuiManager{
             g.fillRect(0F, 0F, (float)game.getWidthInGui(), (float)game.getHeightInGui());
 
             gui.render(game, manager, g);
+            gui.renderOverlay(game, manager, g);
+        }
+        else{
+            this.hotbarSlots.forEach(slot -> slot.renderOverlay(game, manager, g));
         }
     }
 
