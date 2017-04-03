@@ -12,6 +12,9 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ComponentSlot extends GuiComponent{
 
     private final GuiContainer container;
@@ -123,8 +126,9 @@ public class ComponentSlot extends GuiComponent{
         if(this.container.holdingInst == null && this.isMouseOver(game)){
             ItemInstance instance = this.inventory.get(this.id);
             if(instance != null){
-                String name = manager.localize(instance.getItem().getUnlocalizedName(instance));
-                Gui.drawHoverInfoAtMouse(game, g, Color.white, name);
+                List<String> desc = new ArrayList<>();
+                instance.getItem().describeItem(manager, instance, desc);
+                Gui.drawHoverInfoAtMouse(game, g, true, desc);
             }
         }
     }

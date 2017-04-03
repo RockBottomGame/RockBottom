@@ -58,7 +58,7 @@ public final class DebugRenderer{
         for(int i = 0; i < list.size(); i++){
             String s = list.get(i);
             if(!s.isEmpty()){
-                container.getDefaultFont().drawString(10, 10+i*20, s);
+                Gui.drawText(game, g, 10F, 10F+i*20, s);
             }
         }
     }

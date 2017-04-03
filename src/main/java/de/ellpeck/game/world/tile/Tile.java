@@ -60,7 +60,7 @@ public class Tile{
     }
 
     public boolean canPlace(World world, int x, int y, TileLayer layer){
-        if(layer != TileLayer.MAIN && this.providesTileEntity()){
+        if(!this.canPlaceInLayer(layer)){
             return false;
         }
 
@@ -77,15 +77,22 @@ public class Tile{
         return false;
     }
 
+    public boolean canPlaceInLayer(TileLayer layer){
+        return layer != TileLayer.BACKGROUND || !this.providesTileEntity();
+    }
+
     public Tile register(){
         ContentRegistry.TILE_REGISTRY.register(this.getId(), this);
 
         if(this.hasItem()){
-            ItemTile item = new ItemTile(this.getId(), this.getName());
-            item.register();
+            this.createItemTile().register();
         }
 
         return this;
+    }
+
+    protected ItemTile createItemTile(){
+        return new ItemTile(this.getId(), this.getName());
     }
 
     protected boolean hasItem(){
@@ -205,7 +212,7 @@ public class Tile{
     }
 
     public float getTranslucentModifier(World world, int x, int y, TileLayer layer){
-        return layer == TileLayer.BACKGROUND ? 0.85F : 0.75F;
+        return this.isFullTile() ? (layer == TileLayer.BACKGROUND ? 0.85F : 0.75F) : 1F;
     }
 
     public boolean isAir(){

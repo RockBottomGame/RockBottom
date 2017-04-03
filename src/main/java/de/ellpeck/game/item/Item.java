@@ -1,7 +1,11 @@
 package de.ellpeck.game.item;
 
 import de.ellpeck.game.ContentRegistry;
+import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.render.item.IItemRenderer;
+
+import java.util.Collections;
+import java.util.List;
 
 public class Item{
 
@@ -41,6 +45,10 @@ public class Item{
 
     public String getUnlocalizedName(ItemInstance instance){
         return "name."+this.name;
+    }
+
+    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc){
+        desc.add(manager.localize(this.getUnlocalizedName(instance)));
     }
 
     @Override

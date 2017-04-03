@@ -32,6 +32,6 @@ public interface IItemRenderer<T extends Item>{
             renderer.render(game, manager, g, item, x, y, 12F*scale, Color.white);
         }
 
-        Gui.drawScaledText(game, g, x+9F*scale, y+9F*scale, 0.25F*scale, String.valueOf(slot.getAmount()));
+        Gui.drawText(game, g, x+9F*scale, y+9F*scale, 0.25F*scale, String.valueOf(slot.getAmount()));
     }
 }

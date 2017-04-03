@@ -50,4 +50,9 @@ public class TileSmelter extends Tile{
     public TileEntity provideTileEntity(World world, int x, int y){
         return new TileEntitySmelter(world, x, y);
     }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
+    }
 }

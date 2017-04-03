@@ -28,8 +28,8 @@ public class TileLiquid extends Tile{
     }
 
     @Override
-    public boolean canPlace(World world, int x, int y, TileLayer layer){
-        return layer == TileLayer.MAIN && super.canPlace(world, x, y, layer);
+    public boolean canPlaceInLayer(TileLayer layer){
+        return layer == TileLayer.MAIN;
     }
 
     @Override

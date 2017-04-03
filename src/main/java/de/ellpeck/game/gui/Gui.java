@@ -1,6 +1,5 @@
 package de.ellpeck.game.gui;
 
-import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.component.GuiComponent;
@@ -16,7 +15,10 @@ import java.util.List;
 
 public class Gui{
 
-    private static final Color HOVER_INFO_BACKGROUND = new Color(0F, 0F, 0F, 0.7F);
+    private static final Color[] COLORS_BY_FORMATTING_CODE = new Color[]{Color.black, Color.darkGray, Color.gray, Color.lightGray, Color.white, Color.yellow, Color.orange, Color.red, Color.pink, Color.magenta, Color.black, Color.green, Color.transparent};
+    private static final String FORMATTING_CODES = "0123456789abcde";
+
+    private static final Color HOVER_INFO_BACKGROUND = new Color(0F, 0F, 0F, 0.8F);
     public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.25F);
 
     protected List<GuiComponent> components = new ArrayList<>();
@@ -103,45 +105,88 @@ public class Gui{
         return overSelf || this.isMouseOverComponent(game);
     }
 
-    public static void drawHoverInfoAtMouse(Game game, Graphics g, Color color, String... text){
+    public static void drawHoverInfoAtMouse(Game game, Graphics g, boolean firstLineOffset, List<String> text){
+        drawHoverInfoAtMouse(game, g, firstLineOffset, text.toArray(new String[text.size()]));
+    }
+
+    public static void drawHoverInfoAtMouse(Game game, Graphics g, boolean firstLineOffset, String... text){
         Input input = game.getContainer().getInput();
         float mouseX = (float)input.getMouseX()/(float)game.settings.guiScale;
         float mouseY = (float)input.getMouseY()/(float)game.settings.guiScale;
 
-        drawHoverInfo(game, g, mouseX+3, mouseY+3, 0.25F, color, text);
+        drawHoverInfo(game, g, mouseX+3, mouseY+3, 0.25F, firstLineOffset, text);
     }
 
-    public static void drawHoverInfo(Game game, Graphics g, float x, float y, float scale, Color color, String... text){
+    public static void drawHoverInfo(Game game, Graphics g, float x, float y, float scale, boolean firstLineOffset, String... text){
         Font font = game.getContainer().getDefaultFont();
 
         float boxWidth = 0F;
-        float boxHeight = text.length*font.getLineHeight()*scale;
+        float boxHeight = 0F;
 
         for(String s : text){
-            int length = font.getWidth(s);
+            int length = font.getWidth(getStringWithoutFormatting(s));
             if(length > boxWidth){
                 boxWidth = length*scale;
             }
+
+            if(firstLineOffset && boxHeight == 0F){
+                boxHeight += 3F;
+            }
+            boxHeight += font.getLineHeight()*scale;
         }
 
         if(boxWidth > 0F && boxHeight > 0F){
             g.setColor(HOVER_INFO_BACKGROUND);
-            g.fillRoundRect(x, y, boxWidth+4, boxHeight+4, 2);
+            g.fillRoundRect(x, y, boxWidth+4F, boxHeight+4F, 2);
 
-            g.setColor(color);
-
-            int yOffset = 0;
+            float yOffset = 0F;
             for(String s : text){
-                drawScaledText(game, g, x+2, y+2+yOffset, scale, s);
-                yOffset += font.getLineHeight();
+                drawText(game, g, x+2F, y+2F+yOffset, scale, s);
+
+                if(firstLineOffset && yOffset == 0F){
+                    yOffset += 3F;
+                }
+                yOffset += font.getLineHeight()*scale;
             }
         }
     }
 
-    public static void drawScaledText(Game game, Graphics g, float x, float y, float scale, String s){
-        g.pushTransform();
-        g.scale(scale, scale);
-        game.getContainer().getDefaultFont().drawString(x*1/scale, y*1/scale, s, Color.white);
-        g.popTransform();
+    public static void drawText(Game game, Graphics g, float x, float y, String s){
+        drawText(game, g, x, y, 1F, s);
+    }
+
+    public static void drawText(Game game, Graphics g, float x, float y, float scale, String s){
+        Font font = game.getContainer().getDefaultFont();
+
+        if(scale != 1F){
+            g.pushTransform();
+            g.scale(scale, scale);
+            drawText(font, x*1/scale, y*1/scale, s);
+            g.popTransform();
+        }
+        else{
+            drawText(font, x, y, s);
+        }
+    }
+
+    private static void drawText(Font font, float x, float y, String s){
+        font.drawString(x, y, getStringWithoutFormatting(s), getFormatting(s));
+    }
+
+    public static String getStringWithoutFormatting(String s){
+        int index = getFormattingIndex(s);
+        return index >= 0 ? s.substring(index) : s;
+    }
+
+    public static Color getFormatting(String s){
+        int index = getFormattingIndex(s);
+        return index >= 0 ? COLORS_BY_FORMATTING_CODE[index] : Color.white;
+    }
+
+    private static int getFormattingIndex(String s){
+        if(s.charAt(0) == '&'){
+            return FORMATTING_CODES.indexOf(s.charAt(1));
+        }
+        return -1;
     }
 }
