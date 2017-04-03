@@ -432,6 +432,10 @@ public class Chunk implements IWorld{
 
     public void setSkylightInner(int x, int y, byte light){
         this.lightGrid[0][x][y] = light;
+
+        if(!this.isGenerating){
+            this.isDirty = true;
+        }
     }
 
     public byte getArtificialLightInner(int x, int y){
@@ -440,6 +444,10 @@ public class Chunk implements IWorld{
 
     public void setArtificialLightInner(int x, int y, byte light){
         this.lightGrid[1][x][y] = light;
+
+        if(!this.isGenerating){
+            this.isDirty = true;
+        }
     }
 
     public boolean shouldUnload(){
