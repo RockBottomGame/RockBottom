@@ -21,6 +21,7 @@ public class Game extends BasicGame{
 
     private GameContainer container;
     public DataManager dataManager;
+    public Settings settings;
 
     private EntityPlayer player;
     public InteractionManager interactionManager;
@@ -48,6 +49,7 @@ public class Game extends BasicGame{
     @Override
     public void init(GameContainer container) throws SlickException{
         this.dataManager = new DataManager(this);
+        this.settings = this.dataManager.loadSettings();
 
         this.container = container;
 
@@ -137,19 +139,19 @@ public class Game extends BasicGame{
     }
 
     public double getWidthInWorld(){
-        return (double)this.container.getWidth()/(double)Constants.RENDER_SCALE;
+        return (double)this.container.getWidth()/(double)this.settings.renderScale;
     }
 
     public double getHeightInWorld(){
-        return (double)this.container.getHeight()/(double)Constants.RENDER_SCALE;
+        return (double)this.container.getHeight()/(double)this.settings.renderScale;
     }
 
     public double getWidthInGui(){
-        return (double)this.container.getWidth()/(double)Constants.GUI_SCALE;
+        return (double)this.container.getWidth()/(double)this.settings.guiScale;
     }
 
     public double getHeightInGui(){
-        return (double)this.container.getHeight()/(double)Constants.GUI_SCALE;
+        return (double)this.container.getHeight()/(double)this.settings.guiScale;
     }
 
     public static Game get(){

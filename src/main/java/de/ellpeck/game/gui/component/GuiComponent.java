@@ -35,8 +35,8 @@ public class GuiComponent{
 
     public boolean isMouseOver(Game game){
         Input input = game.getContainer().getInput();
-        int mouseX = input.getMouseX()/Constants.GUI_SCALE;
-        int mouseY = input.getMouseY()/Constants.GUI_SCALE;
+        int mouseX = input.getMouseX()/game.settings.guiScale;
+        int mouseY = input.getMouseY()/game.settings.guiScale;
 
         return mouseX >= this.x && mouseX < this.x+this.sizeX && mouseY >= this.y && mouseY < this.y+this.sizeY;
     }

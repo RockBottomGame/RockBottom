@@ -45,7 +45,7 @@ public class WorldRenderer{
     }
 
     public void render(Game game, AssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
-        g.scale(Constants.RENDER_SCALE, Constants.RENDER_SCALE);
+        g.scale(game.settings.renderScale, game.settings.renderScale);
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
         g.setBackground(SKY_COLORS[skyLight]);

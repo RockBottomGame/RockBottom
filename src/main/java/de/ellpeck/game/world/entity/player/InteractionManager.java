@@ -52,8 +52,8 @@ public class InteractionManager{
 
             double worldAtScreenX = this.player.x-game.getWidthInWorld()/2;
             double worldAtScreenY = -this.player.y-game.getHeightInWorld()/2;
-            this.mousedTileX = MathUtil.floor(worldAtScreenX+mouseX/(double)Constants.RENDER_SCALE);
-            this.mousedTileY = -MathUtil.floor(worldAtScreenY+mouseY/(double)Constants.RENDER_SCALE);
+            this.mousedTileX = MathUtil.floor(worldAtScreenX+mouseX/(double)game.settings.renderScale);
+            this.mousedTileY = -MathUtil.floor(worldAtScreenY+mouseY/(double)game.settings.renderScale);
 
             if(input.isKeyDown(Input.KEY_A)){
                 this.player.motionX -= 0.2;

@@ -29,7 +29,7 @@ public class GuiManager{
     }
 
     public void render(Game game, AssetManager manager, Graphics g, EntityPlayer player){
-        g.scale(Constants.GUI_SCALE, Constants.GUI_SCALE);
+        g.scale(game.settings.guiScale, game.settings.guiScale);
 
         this.hotbarSlots.forEach(slot -> slot.render(game, manager, g));
 

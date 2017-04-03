@@ -96,8 +96,8 @@ public class Gui{
 
     public boolean isMouseOver(Game game){
         Input input = game.getContainer().getInput();
-        int mouseX = input.getMouseX()/Constants.GUI_SCALE;
-        int mouseY = input.getMouseY()/Constants.GUI_SCALE;
+        int mouseX = input.getMouseX()/game.settings.guiScale;
+        int mouseY = input.getMouseY()/game.settings.guiScale;
 
         boolean overSelf = mouseX >= this.guiLeft && mouseX < this.guiLeft+this.sizeX && mouseY >= this.guiTop && mouseY < this.guiTop+this.sizeY;
         return overSelf || this.isMouseOverComponent(game);
@@ -105,8 +105,8 @@ public class Gui{
 
     public static void drawHoverInfoAtMouse(Game game, Graphics g, Color color, String... text){
         Input input = game.getContainer().getInput();
-        float mouseX = (float)input.getMouseX()/(float)Constants.GUI_SCALE;
-        float mouseY = (float)input.getMouseY()/(float)Constants.GUI_SCALE;
+        float mouseX = (float)input.getMouseX()/(float)game.settings.guiScale;
+        float mouseY = (float)input.getMouseY()/(float)game.settings.guiScale;
 
         drawHoverInfo(game, g, mouseX+3, mouseY+3, 0.25F, color, text);
     }

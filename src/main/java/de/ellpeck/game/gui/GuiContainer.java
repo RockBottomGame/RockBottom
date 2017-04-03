@@ -51,8 +51,8 @@ public class GuiContainer extends Gui{
 
         if(this.holdingInst != null){
             Input input = game.getContainer().getInput();
-            float mouseX = (float)input.getMouseX()/(float)Constants.GUI_SCALE;
-            float mouseY = (float)input.getMouseY()/(float)Constants.GUI_SCALE;
+            float mouseX = (float)input.getMouseX()/(float)game.settings.guiScale;
+            float mouseY = (float)input.getMouseY()/(float)game.settings.guiScale;
 
             IItemRenderer.renderItemInGui(game, manager, g, this.holdingInst, mouseX-4F, mouseY-4F, 0.8F);
         }
