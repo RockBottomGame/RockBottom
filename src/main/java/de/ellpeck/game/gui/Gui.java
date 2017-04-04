@@ -128,7 +128,7 @@ public class Gui{
             if(firstLineOffset && boxHeight == 0F){
                 boxHeight += 3F;
             }
-            boxHeight += font.getHeight(scale)+2F;
+            boxHeight += font.getHeight(scale);
         }
 
         if(boxWidth > 0F && boxHeight > 0F){
@@ -150,7 +150,7 @@ public class Gui{
                 if(firstLineOffset && yOffset == 0F){
                     yOffset += 3F;
                 }
-                yOffset += font.getHeight(scale)+2F;
+                yOffset += font.getHeight(scale);
             }
         }
     }

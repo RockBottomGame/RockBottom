@@ -4,6 +4,7 @@ import de.ellpeck.game.util.Vec2;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -89,8 +90,16 @@ public class Font{
     }
 
     public void drawCharacter(float x, float y, char character, float scale, Color color){
-        Vec2 pos = this.characters.get(character);
-        if(pos != null){
+        if(character != ' '){
+            Vec2 pos = this.characters.get(character);
+
+            if(pos == null){
+                pos = this.characters.get('?');
+                this.characters.put(character, pos);
+
+                Log.warn("Character "+character+" is missing from font with name "+this.name+"!");
+            }
+
             int srcX = pos.getX()*this.charWidth;
             int srcY = pos.getY()*this.charHeight;
 
