@@ -10,15 +10,10 @@ import org.newdawn.slick.Graphics;
 
 public interface IItemRenderer<T extends Item>{
 
-    Color COLOR = new Color(0x529652);
-
     void render(Game game, AssetManager manager, Graphics g, T item, float x, float y, float scale, Color filter);
 
     static void renderSlotInGui(Game game, AssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
-        g.pushTransform();
-        g.scale(scale, scale);
-        manager.getImage("gui.slot").draw(x/scale, y/scale, COLOR);
-        g.popTransform();
+        Gui.drawScaledImage(g, manager.getImage("gui.slot"), x, y, scale, Gui.GUI_COLOR);
 
         if(slot != null){
             IItemRenderer.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale);
@@ -32,6 +27,6 @@ public interface IItemRenderer<T extends Item>{
             renderer.render(game, manager, g, item, x, y, 12F*scale, Color.white);
         }
 
-        Gui.drawText(game, g, x+9F*scale, y+9F*scale, 0.25F*scale, String.valueOf(slot.getAmount()));
+        manager.getFont().drawString(x+4F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);
     }
 }

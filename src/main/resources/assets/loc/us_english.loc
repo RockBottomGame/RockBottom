@@ -4,6 +4,7 @@ name.grass=Grass
 name.torch=Torch
 
 info.layer_placement=Can be placed in %s
+info.health=Health
 
 layer.main=Foreground
 layer.background=Background

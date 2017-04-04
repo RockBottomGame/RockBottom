@@ -1,6 +1,8 @@
 package de.ellpeck.game.assets;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.assets.font.AssetFont;
+import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.assets.local.AssetLocale;
 import de.ellpeck.game.assets.local.Locale;
 import org.newdawn.slick.Image;
@@ -19,10 +21,12 @@ public class AssetManager{
     private AssetSound missingSound;
     private AssetImage missingTexture;
     private AssetLocale missingLocale;
+    private AssetFont missingFont;
 
     private final Map<String, IAsset> assets = new HashMap<>();
 
     private Locale currentLocale;
+    private Font currentFont;
 
     public void create(Game game) throws SlickException{
         try{
@@ -43,12 +47,14 @@ public class AssetManager{
         this.missingTexture = new AssetImage(buffer.getImage());
         this.missingSound = new AssetSound(null);
         this.missingLocale = new AssetLocale(new Locale("fallback"));
+        this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>()));
 
         Log.info("Loaded "+this.getAllOfType(AssetImage.class).size()+" image resources!");
         Log.info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");
-
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
+
         this.currentLocale = this.getLocale("us_english");
+        this.currentFont = this.getFont("default");
 
         if(!game.settings.hardwareCursor){
             game.getContainer().setMouseCursor(this.getImage("gui.cursor").getScaledCopy(game.settings.cursorScale), 0, 0);
@@ -64,22 +70,35 @@ public class AssetManager{
 
         for(String key : props.stringPropertyNames()){
             String value = props.getProperty(key);
-            InputStream stream = AssetManager.class.getResourceAsStream(path+value);
 
-            if(value.endsWith(".png")){
-                this.assets.put(key, new AssetImage(new Image(stream, key, false)));
-                Log.info("Loaded png resource "+key+" with path "+value);
+            try{
+                if(value.endsWith(".fnt")){
+                    String fontName = value.substring(0, value.length()-4);
+                    InputStream image = AssetManager.class.getResourceAsStream(path+fontName+".png");
+                    InputStream info = AssetManager.class.getResourceAsStream(path+fontName+".info");
+
+                    this.assets.put(key, new AssetFont(Font.fromStream(image, info, key)));
+                    Log.info("Loaded font resource "+key+" with path "+value);
+                }
+                else{
+                    InputStream stream = AssetManager.class.getResourceAsStream(path+value);
+
+                    if(value.endsWith(".png")){
+                        this.assets.put(key, new AssetImage(new Image(stream, key, false)));
+                        Log.info("Loaded png resource "+key+" with path "+value);
+                    }
+                    else if(value.endsWith(".ogg")){
+                        this.assets.put(key, new AssetSound(new Sound(stream, key)));
+                        Log.info("Loaded ogg resource "+key+" with path "+value);
+                    }
+                    else if(value.endsWith(".loc")){
+                        this.assets.put(key, new AssetLocale(Locale.fromStream(stream, key)));
+                        Log.info("Loaded localization resource "+key+" with path "+value);
+                    }
+                }
             }
-            else if(value.endsWith(".ogg")){
-                this.assets.put(key, new AssetSound(new Sound(stream, key)));
-                Log.info("Loaded ogg resource "+key+" with path "+value);
-            }
-            else if(value.endsWith(".loc")){
-                this.assets.put(key, new AssetLocale(Locale.fromStream(stream, key)));
-                Log.info("Loaded localization resource "+key+" with path "+value);
-            }
-            else{
-                Log.warn("Found unknown resource definition "+key+" with path "+value+"!");
+            catch(Exception e){
+                Log.error("Failed loading resource "+key+" with path "+value+"!", e);
             }
         }
     }
@@ -116,14 +135,22 @@ public class AssetManager{
     }
 
     public Sound getSound(String path){
-        return this.getAssetWithFallback(path, this.missingSound);
+        return this.getAssetWithFallback("sound."+path, this.missingSound);
     }
 
     public Locale getLocale(String path){
         return this.getAssetWithFallback(path, this.missingLocale);
     }
 
+    public Font getFont(String path){
+        return this.getAssetWithFallback("font."+path, this.missingFont);
+    }
+
     public String localize(String unloc, Object... format){
         return this.currentLocale.localize(unloc, format);
+    }
+
+    public Font getFont(){
+        return this.currentFont;
     }
 }

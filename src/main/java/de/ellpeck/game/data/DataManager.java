@@ -4,6 +4,7 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.Settings;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.data.set.part.DataPart;
+import de.ellpeck.game.data.set.part.PartBoolean;
 import de.ellpeck.game.data.set.part.PartDataSet;
 import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.num.*;
@@ -35,6 +36,7 @@ public class DataManager{
         PART_REGISTRY.register(8, PartUniqueId.class);
         PART_REGISTRY.register(9, PartByte.class);
         PART_REGISTRY.register(10, PartShort.class);
+        PART_REGISTRY.register(11, PartBoolean.class);
     }
 
     public File gameDirectory;

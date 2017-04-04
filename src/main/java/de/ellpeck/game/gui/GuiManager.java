@@ -1,11 +1,13 @@
 package de.ellpeck.game.gui;
 
-import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.component.ComponentHotbarSlot;
+import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,8 @@ public class GuiManager{
 
         this.hotbarSlots.forEach(slot -> slot.render(game, manager, g));
 
+        this.drawHealth(game, manager, g, player);
+
         Gui gui = player.guiManager.getGui();
         if(gui != null){
             g.setColor(Gui.GRADIENT);
@@ -43,6 +47,33 @@ public class GuiManager{
         }
         else{
             this.hotbarSlots.forEach(slot -> slot.renderOverlay(game, manager, g));
+        }
+    }
+
+    private void drawHealth(Game game, AssetManager manager, Graphics g, EntityPlayer player){
+        int healthParts = MathUtil.floor(player.getHealth()/20);
+        int maxHealthParts = MathUtil.floor(player.getMaxHealth()/20);
+
+        Image heart = manager.getImage("gui.heart");
+        Image heartEmpty = manager.getImage("gui.heart_empty");
+
+        int step = 13;
+        int xStart = (int)game.getWidthInGui()-3-maxHealthParts*step;
+        int yStart = (int)game.getHeightInGui()-3-12;
+
+        int currX = 0;
+        for(int i = 0; i < maxHealthParts; i++){
+            Gui.drawScaledImage(g, healthParts > i ? heart : heartEmpty, xStart+currX, yStart, 0.75F, Color.white);
+            currX += step;
+        }
+
+        if(player.guiManager.getGui() == null){
+            float mouseX = game.getMouseInGuiX();
+            float mouseY = game.getMouseInGuiY();
+
+            if(mouseX >= xStart && mouseX < xStart+step*maxHealthParts-1 && mouseY >= yStart && mouseY < yStart+12){
+                Gui.drawHoverInfoAtMouse(game, manager, g, false, manager.localize("info.health")+":", player.getHealth()+"/"+player.getMaxHealth());
+            }
         }
     }
 

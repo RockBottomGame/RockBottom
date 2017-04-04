@@ -1,15 +1,17 @@
 package de.ellpeck.game.world.entity;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.world.World;
-import org.newdawn.slick.GameContainer;
 
-public class EntityLiving extends Entity{
+public abstract class EntityLiving extends Entity{
 
+    protected int health;
     protected boolean jumping;
 
     public EntityLiving(World world){
         super(world);
+        this.health = this.getMaxHealth();
     }
 
     @Override
@@ -20,6 +22,15 @@ public class EntityLiving extends Entity{
             this.motionY = 0;
             this.jumping = false;
         }
+
+        if(this.health <= 0){
+            this.kill();
+        }
+        else if(this.health < this.getMaxHealth()){
+            if(this.world.totalTimeInWorld%this.getRegenRate() == 0){
+                this.health++;
+            }
+        }
     }
 
     public void jump(double motion){
@@ -27,5 +38,29 @@ public class EntityLiving extends Entity{
             this.motionY += motion;
             this.jumping = true;
         }
+    }
+
+    public int getHealth(){
+        return this.health;
+    }
+
+    public abstract int getMaxHealth();
+
+    public abstract int getRegenRate();
+
+    @Override
+    public void save(DataSet set){
+        super.save(set);
+
+        set.addBoolean("jumping", this.jumping);
+        set.addInt("health", this.health);
+    }
+
+    @Override
+    public void load(DataSet set){
+        super.load(set);
+
+        this.jumping = set.getBoolean("jumping");
+        this.health = set.getInt("health");
     }
 }

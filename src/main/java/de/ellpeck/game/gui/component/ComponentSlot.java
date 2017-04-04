@@ -128,7 +128,7 @@ public class ComponentSlot extends GuiComponent{
             if(instance != null){
                 List<String> desc = new ArrayList<>();
                 instance.getItem().describeItem(manager, instance, desc);
-                Gui.drawHoverInfoAtMouse(game, g, true, desc);
+                Gui.drawHoverInfoAtMouse(game, manager, g, true, desc);
             }
         }
     }

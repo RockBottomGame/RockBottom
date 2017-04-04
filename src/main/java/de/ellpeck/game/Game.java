@@ -128,7 +128,7 @@ public class Game extends BasicGame{
         this.worldRenderer.render(this, this.assetManager, this.particleManager, g, this.world, this.player, this.interactionManager);
 
         if(this.isDebug){
-            DebugRenderer.render(this, this.world, this.player, container, g);
+            DebugRenderer.render(this, this.assetManager, this.world, this.player, container, g);
         }
 
         this.player.guiManager.render(this, this.assetManager, g, this.player);
@@ -152,6 +152,14 @@ public class Game extends BasicGame{
 
     public double getHeightInGui(){
         return (double)this.container.getHeight()/(double)this.settings.guiScale;
+    }
+
+    public float getMouseInGuiX(){
+        return (float)this.container.getInput().getMouseX()/(float)this.settings.guiScale;
+    }
+
+    public float getMouseInGuiY(){
+        return (float)this.container.getInput().getMouseY()/(float)this.settings.guiScale;
     }
 
     public static Game get(){

@@ -2,6 +2,7 @@ package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.gui.GuiDead;
 import de.ellpeck.game.gui.GuiManager;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
@@ -57,6 +58,30 @@ public class EntityPlayer extends EntityLiving{
         }
 
         this.guiManager.update(game);
+    }
+
+    @Override
+    public void onGroundHit(){
+        if(this.fallAmount >= 20){
+            this.health -= this.fallAmount*1.5;
+        }
+    }
+
+    @Override
+    public void kill(){
+        super.kill();
+
+        this.guiManager.openGui(new GuiDead(this, 500, 500));
+    }
+
+    @Override
+    public int getMaxHealth(){
+        return 100;
+    }
+
+    @Override
+    public int getRegenRate(){
+        return 10;
     }
 
     @Override

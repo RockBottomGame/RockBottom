@@ -2,6 +2,7 @@ package de.ellpeck.game.data.set;
 
 import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.data.set.part.DataPart;
+import de.ellpeck.game.data.set.part.PartBoolean;
 import de.ellpeck.game.data.set.part.PartDataSet;
 import de.ellpeck.game.data.set.part.PartUniqueId;
 import de.ellpeck.game.data.set.part.num.*;
@@ -122,6 +123,14 @@ public class DataSet{
 
     public void addShort(String key, short s){
         this.addPart(new PartShort(key, s));
+    }
+
+    public boolean getBoolean(String key){
+        return this.getPartContent(key, PartBoolean.class, false);
+    }
+
+    public void addBoolean(String key, boolean s){
+        this.addPart(new PartBoolean(key, s));
     }
 
     public void write(File file){

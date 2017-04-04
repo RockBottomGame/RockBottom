@@ -1,6 +1,7 @@
 package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public final class DebugRenderer{
 
-    public static void render(Game game, World world, EntityPlayer player, GameContainer container, Graphics g){
+    public static void render(Game game, AssetManager manager, World world, EntityPlayer player, GameContainer container, Graphics g){
         g.setColor(Color.black);
         g.drawOval((float)container.getWidth()/2F-5F, (float)container.getHeight()/2F-5F, 10, 10);
 
@@ -58,7 +59,7 @@ public final class DebugRenderer{
         for(int i = 0; i < list.size(); i++){
             String s = list.get(i);
             if(!s.isEmpty()){
-                Gui.drawText(game, g, 10F, 10F+i*20, s);
+                manager.getFont().drawString(10F, 10F+i*20, s, 1F);
             }
         }
     }

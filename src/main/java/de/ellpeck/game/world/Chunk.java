@@ -60,6 +60,8 @@ public class Chunk implements IWorld{
                 }
             }
         }
+
+        this.loadTimer = Constants.CHUNK_LOAD_TIME;
     }
 
     public void generate(Random rand){
@@ -90,7 +92,7 @@ public class Chunk implements IWorld{
             entity.update(game);
 
             if(entity.isDead()){
-                this.world.removeEntity(entity);
+                this.removeEntity(entity);
                 i--;
             }
             else{

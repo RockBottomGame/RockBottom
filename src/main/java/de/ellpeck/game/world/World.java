@@ -64,7 +64,7 @@ public class World implements IWorld{
             for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
                 for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){
                     Chunk chunk = this.getChunkFromGridCoords(player.chunkX+x, player.chunkY+y);
-                    chunk.loadTimer = 250;
+                    chunk.loadTimer = Constants.CHUNK_LOAD_TIME;
                 }
             }
         }

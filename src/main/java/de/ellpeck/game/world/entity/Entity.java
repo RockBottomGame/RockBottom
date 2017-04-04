@@ -18,6 +18,8 @@ public class Entity extends MovableWorldObject{
 
     protected boolean dead;
 
+    public int fallAmount;
+
     public Entity(World world){
         super(world);
     }
@@ -33,7 +35,16 @@ public class Entity extends MovableWorldObject{
 
         if(this.onGround){
             this.motionY = 0;
+
+            if(this.fallAmount > 0){
+                this.onGroundHit();
+                this.fallAmount = 0;
+            }
         }
+        else if(this.motionY < 0){
+            this.fallAmount++;
+        }
+
         if(this.collidedHor){
             this.motionX = 0;
         }
@@ -54,8 +65,16 @@ public class Entity extends MovableWorldObject{
         this.dead = true;
     }
 
+    public void kill(){
+        this.setDead();
+    }
+
     public int getRenderPriority(){
         return 0;
+    }
+
+    public void onGroundHit(){
+
     }
 
     @Override

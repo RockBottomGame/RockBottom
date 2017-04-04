@@ -1,6 +1,5 @@
 package de.ellpeck.game.gui;
 
-import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.item.ItemInstance;
@@ -50,9 +49,8 @@ public class GuiContainer extends Gui{
         super.render(game, manager, g);
 
         if(this.holdingInst != null){
-            Input input = game.getContainer().getInput();
-            float mouseX = (float)input.getMouseX()/(float)game.settings.guiScale;
-            float mouseY = (float)input.getMouseY()/(float)game.settings.guiScale;
+            float mouseX = game.getMouseInGuiX();
+            float mouseY = game.getMouseInGuiY();
 
             IItemRenderer.renderItemInGui(game, manager, g, this.holdingInst, mouseX-4F, mouseY-4F, 0.8F);
         }
