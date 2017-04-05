@@ -27,6 +27,6 @@ public interface IItemRenderer<T extends Item>{
             renderer.render(game, manager, g, item, x, y, 12F*scale, Color.white);
         }
 
-        manager.getFont().drawString(x+4F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);
+        manager.getFont().drawStringFromRight(x+15F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);
     }
 }

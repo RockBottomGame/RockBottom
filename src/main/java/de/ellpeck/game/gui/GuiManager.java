@@ -78,7 +78,7 @@ public class GuiManager{
             float mouseY = game.getMouseInGuiY();
 
             if(mouseX >= xStart && mouseX < xStart+step*maxHealthParts-1 && mouseY >= yStart && mouseY < yStart+12){
-                Gui.drawHoverInfoAtMouse(game, manager, g, false, manager.localize("info.health")+":", player.getHealth()+"/"+player.getMaxHealth());
+                Gui.drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize("info.health")+":", player.getHealth()+"/"+player.getMaxHealth());
             }
         }
     }

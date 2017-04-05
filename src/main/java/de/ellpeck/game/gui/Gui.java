@@ -117,15 +117,15 @@ public class Gui{
         return overSelf || this.isMouseOverComponent(game);
     }
 
-    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, String... text){
-        drawHoverInfoAtMouse(game, manager, g, firstLineOffset, Arrays.asList(text));
+    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, String... text){
+        drawHoverInfoAtMouse(game, manager, g, firstLineOffset, maxLength, Arrays.asList(text));
     }
 
-    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, List<String> text){
+    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, List<String> text){
         float mouseX = game.getMouseInGuiX();
         float mouseY = game.getMouseInGuiY();
 
-        drawHoverInfo(game, manager, g, mouseX+3, mouseY+3, 0.25F, firstLineOffset, false, 100, text);
+        drawHoverInfo(game, manager, g, mouseX+3, mouseY+3, 0.25F, firstLineOffset, false, maxLength, text);
     }
 
     public static void drawHoverInfo(Game game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){

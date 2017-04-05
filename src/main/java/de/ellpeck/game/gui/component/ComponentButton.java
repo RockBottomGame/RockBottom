@@ -49,7 +49,7 @@ public class ComponentButton extends GuiComponent{
         String[] hover = this.getHover();
         if(hover != null && hover.length > 0){
             if(this.isMouseOver(game)){
-                Gui.drawHoverInfoAtMouse(game, manager, g, false, hover);
+                Gui.drawHoverInfoAtMouse(game, manager, g, false, 100, hover);
             }
         }
     }

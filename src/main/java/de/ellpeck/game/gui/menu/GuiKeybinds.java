@@ -2,10 +2,13 @@ package de.ellpeck.game.gui.menu;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.Settings;
+import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentKeybind;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
+import org.newdawn.slick.Graphics;
 
 public class GuiKeybinds extends Gui{
 
@@ -33,6 +36,15 @@ public class GuiKeybinds extends Gui{
         }
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
+    }
+
+    @Override
+    public void render(Game game, AssetManager manager, Graphics g){
+        super.render(game, manager, g);
+
+        Font font = manager.getFont();
+        font.drawCenteredString(this.guiLeft+this.sizeX/2, this.guiTop+this.sizeY+15, "Press &6F&4 while in the inventory to get items!", 0.25F, false);
+        font.drawCenteredString(this.guiLeft+this.sizeX/2, this.guiTop+this.sizeY+25, "Press &6F1&4 to open the debug menu!", 0.25F, false);
     }
 
     @Override

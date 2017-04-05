@@ -66,6 +66,10 @@ public class Font{
         return new Font(name, image, width, heightIndex, characters);
     }
 
+    public void drawStringFromRight(float x, float y, String s, float scale){
+        this.drawString(x-this.getWidth(s, scale), y, s, scale);
+    }
+
     public void drawCenteredString(float x, float y, String s, float scale, boolean centeredOnY){
         this.drawString(x-this.getWidth(s, scale)/2, centeredOnY ? (y-this.getHeight(scale)/2) : y, s, scale);
     }
@@ -133,7 +137,7 @@ public class Font{
 
             for(String word : words){
                 if(this.getWidth(accumulated+word, scale) >= length){
-                    result.add(accumulated);
+                    result.add(accumulated.trim());
                     accumulated = word+" ";
                 }
                 else{
@@ -141,7 +145,7 @@ public class Font{
                 }
             }
 
-            result.add(accumulated);
+            result.add(accumulated.trim());
             accumulated = "";
         }
 
