@@ -6,7 +6,6 @@ import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.item.IItemRenderer;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     private final int id;
 
     public ComponentHotbarSlot(InventoryPlayer inventory, int id, int x, int y){
-        super(x, y, 14, 14);
+        super(null, x, y, 14, 14);
         this.inv = inventory;
         this.id = id;
     }

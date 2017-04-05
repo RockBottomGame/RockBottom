@@ -9,3 +9,10 @@ info.dead=You died!
 
 layer.main=Foreground
 layer.background=Background
+
+key.inventory=Inventory
+key.menu=Menu
+key.left=Go Left
+key.right=Go Right
+key.jump=Jump
+key.background=Edit Background

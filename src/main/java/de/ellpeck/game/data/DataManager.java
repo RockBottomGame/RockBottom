@@ -80,8 +80,8 @@ public class DataManager{
             }
         }
 
-        Settings settings = new Settings();
-        settings.load(props);
+        Settings settings = new Settings(props);
+        settings.load();
 
         if(!loaded){
             Log.info("Creating game settings from default.");
@@ -95,8 +95,7 @@ public class DataManager{
     }
 
     public void saveSettings(Settings settings){
-        Properties props = new Properties();
-        settings.save(props);
+        Properties props = settings.save();
 
         try{
             if(!this.settingsFile.exists()){

@@ -5,32 +5,39 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.Gui;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
 public class ComponentButton extends GuiComponent{
 
+    private static final Color COLOR = Gui.GUI_COLOR.multiply(new Color(1F, 1F, 1F, 0.5F));
+    private static final Color COLOR_UNSELECTED = COLOR.darker(0.4F);
+
+    protected final int id;
     private final String text;
     private final String[] hover;
-    private final Runnable action;
 
-    public ComponentButton(int x, int y, int sizeX, int sizeY, Runnable action, String text, String... hover){
-        super(x, y, sizeX, sizeY);
-        this.action = action;
+    public ComponentButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, String text, String... hover){
+        super(gui, x, y, sizeX, sizeY);
+        this.id = id;
         this.text = text;
         this.hover = hover;
     }
 
     @Override
     public void render(Game game, AssetManager manager, Graphics g){
-        g.setColor(Gui.GUI_COLOR);
+        g.setColor(this.isMouseOver(game) ? COLOR : COLOR_UNSELECTED);
         g.fillRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
 
         g.setColor(Color.black);
         g.drawRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
 
-        if(this.text != null){
-            manager.getFont().drawCenteredString(this.x+this.sizeX/2, this.y+this.sizeY/2, this.text, 0.35F, true);
+        String text = this.getText();
+        if(text != null){
+            manager.getFont().drawCenteredString(this.x+this.sizeX/2, this.y+this.sizeY/2, text, 0.35F, true);
         }
+    }
+
+    protected String getText(){
+        return this.text;
     }
 
     @Override
@@ -44,12 +51,18 @@ public class ComponentButton extends GuiComponent{
 
     @Override
     public boolean onMouseAction(Game game, int button){
-        if(button == Input.MOUSE_LEFT_BUTTON && this.isMouseOver(game)){
-            this.action.run();
-            return true;
+        if(button == game.settings.buttonGuiAction1 && this.isMouseOver(game)){
+            if(this.onPressed(game)){
+                return true;
+            }
+            else if(this.gui.onButtonActivated(game, this.id)){
+                return true;
+            }
         }
-        else{
-            return false;
-        }
+        return false;
+    }
+
+    public boolean onPressed(Game game){
+        return false;
     }
 }

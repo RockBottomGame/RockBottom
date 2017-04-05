@@ -15,13 +15,9 @@ import de.ellpeck.game.world.tile.Tile;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Predicate;
 
 public class InteractionManager{
-
-    private static final List<Integer> ITEM_SELECTION_KEYS = Arrays.asList(Input.KEY_1, Input.KEY_2, Input.KEY_3, Input.KEY_4, Input.KEY_5, Input.KEY_6, Input.KEY_7, Input.KEY_8);
 
     private static final Predicate<Entity> PLACEMENT_TEST = entity -> !(entity instanceof EntityItem);
 
@@ -54,16 +50,16 @@ public class InteractionManager{
             this.mousedTileX = MathUtil.floor(worldAtScreenX+mouseX/(double)game.settings.renderScale);
             this.mousedTileY = -MathUtil.floor(worldAtScreenY+mouseY/(double)game.settings.renderScale);
 
-            if(input.isKeyDown(Input.KEY_A)){
+            if(input.isKeyDown(game.settings.keyLeft.key)){
                 this.player.motionX -= 0.2;
                 this.player.facing = Direction.LEFT;
             }
-            else if(input.isKeyDown(Input.KEY_D)){
+            else if(input.isKeyDown(game.settings.keyRight.key)){
                 this.player.motionX += 0.2;
                 this.player.facing = Direction.RIGHT;
             }
 
-            if(input.isKeyDown(Input.KEY_SPACE) || input.isKeyDown(Input.KEY_W)){
+            if(input.isKeyDown(game.settings.keyJump.key)){
                 this.player.jump(0.28);
             }
 
@@ -71,9 +67,9 @@ public class InteractionManager{
                 this.player.kill();
             }
 
-            TileLayer layer = input.isKeyDown(Input.KEY_LSHIFT) ? TileLayer.BACKGROUND : TileLayer.MAIN;
+            TileLayer layer = input.isKeyDown(game.settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
 
-            if(input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)){
+            if(input.isMouseButtonDown(game.settings.buttonDestroy)){
                 if(this.breakTileX != this.mousedTileX || this.breakTileY != this.mousedTileY){
                     this.breakProgress = 0;
                 }
@@ -102,7 +98,7 @@ public class InteractionManager{
             }
 
             if(this.placeCooldown <= 0){
-                if(input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)){
+                if(input.isMouseButtonDown(game.settings.buttonPlace)){
                     Tile tileThere = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
                     if(layer != TileLayer.MAIN || !tileThere.onInteractWith(this.player.world, this.mousedTileX, this.mousedTileY, this.player)){
                         ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
@@ -159,9 +155,11 @@ public class InteractionManager{
 
     public void onKeyboardAction(Game game, int button){
         if(!this.player.guiManager.onKeyboardAction(game, button)){
-            int index = ITEM_SELECTION_KEYS.indexOf(button);
-            if(index >= 0){
-                this.player.inv.selectedSlot = index;
+            for(int i = 0; i < game.settings.keysItemSelection.length; i++){
+                if(button == game.settings.keysItemSelection[i]){
+                    this.player.inv.selectedSlot = i;
+                    break;
+                }
             }
         }
     }

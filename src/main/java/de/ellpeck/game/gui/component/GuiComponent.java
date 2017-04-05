@@ -1,12 +1,13 @@
 package de.ellpeck.game.gui.component;
 
-import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.gui.Gui;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
 public class GuiComponent{
+
+    public Gui gui;
 
     public int x;
     public int y;
@@ -14,7 +15,8 @@ public class GuiComponent{
     public final int sizeX;
     public final int sizeY;
 
-    public GuiComponent(int x, int y, int sizeX, int sizeY){
+    public GuiComponent(Gui gui, int x, int y, int sizeX, int sizeY){
+        this.gui = gui;
         this.x = x;
         this.y = y;
         this.sizeX = sizeX;

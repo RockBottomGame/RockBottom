@@ -19,8 +19,6 @@ public class GuiContainer extends Gui{
 
     @Override
     public void onClosed(Game game){
-        super.onClosed(game);
-
         if(this.holdingInst != null){
             this.dropHeldItem();
         }
@@ -32,7 +30,7 @@ public class GuiContainer extends Gui{
             return true;
         }
 
-        if(this.holdingInst != null && button == Input.MOUSE_LEFT_BUTTON){
+        if(this.holdingInst != null && button == game.settings.buttonGuiAction1){
             if(!this.isMouseOver(game)){
                 this.dropHeldItem();
                 this.holdingInst = null;

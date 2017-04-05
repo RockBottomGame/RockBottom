@@ -114,7 +114,7 @@ public class Font{
     }
 
     public float getWidth(String s, float scale){
-        return this.charWidth*this.removeFormatting(s).length()*scale;
+        return this.charWidth*(this.removeFormatting(s).length()-1)*scale;
     }
 
     public float getHeight(float scale){

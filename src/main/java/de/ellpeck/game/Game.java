@@ -5,12 +5,16 @@ import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
+import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.WorldRenderer;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.entity.player.InteractionManager;
-import org.newdawn.slick.*;
+import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 
 import java.io.File;
 import java.util.UUID;
@@ -28,7 +32,7 @@ public class Game extends BasicGame{
 
     private World world;
 
-    private AssetManager assetManager;
+    public AssetManager assetManager;
     private WorldRenderer worldRenderer;
     public ParticleManager particleManager;
 
@@ -108,11 +112,15 @@ public class Game extends BasicGame{
     @Override
     public void keyPressed(int key, char c){
         if(this.player.guiManager.getGui() == null){
-            if(key == Input.KEY_F1){
+            if(key == this.settings.keyMenu.key){
+                this.player.guiManager.openGui(new GuiMenu(this.player));
+                return;
+            }
+            else if(key == this.settings.keyDebug){
                 this.isDebug = !this.isDebug;
                 return;
             }
-            else if(key == Input.KEY_ESCAPE || key == Input.KEY_E){
+            else if(key == this.settings.keyInventory.key){
                 this.player.guiManager.openGui(new GuiInventory(this.player));
                 return;
             }

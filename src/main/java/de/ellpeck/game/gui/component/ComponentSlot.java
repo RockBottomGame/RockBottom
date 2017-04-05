@@ -22,7 +22,7 @@ public class ComponentSlot extends GuiComponent{
     public final int id;
 
     public ComponentSlot(GuiContainer container, IInventory inventory, int id, int x, int y){
-        super(x, y, 18, 18);
+        super(container, x, y, 18, 18);
         this.container = container;
         this.inventory = inventory;
         this.id = id;
@@ -33,7 +33,7 @@ public class ComponentSlot extends GuiComponent{
         if(this.isMouseOver(game)){
             ItemInstance slotInst = this.inventory.get(this.id);
 
-            if(button == Input.MOUSE_LEFT_BUTTON){
+            if(button == game.settings.buttonGuiAction1){
                 if(this.container.holdingInst == null){
                     if(slotInst != null){
                         this.container.holdingInst = slotInst;
@@ -73,7 +73,7 @@ public class ComponentSlot extends GuiComponent{
                     }
                 }
             }
-            else if(button == Input.MOUSE_RIGHT_BUTTON){
+            else if(button == game.settings.buttonGuiAction2){
                 if(this.container.holdingInst == null){
                     if(slotInst != null){
                         int half = MathUtil.ceil((double)slotInst.getAmount()/2);

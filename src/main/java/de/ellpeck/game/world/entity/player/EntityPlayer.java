@@ -73,10 +73,11 @@ public class EntityPlayer extends EntityLiving{
     public void resetAndSpawn(){
         this.respawnTimer = 0;
         this.dead = false;
-        this.guiManager.closeGui();
-
         this.motionX = 0;
         this.motionY = 0;
+        this.fallAmount = 0;
+        this.health = this.getMaxHealth();
+        this.guiManager.closeGui();
 
         this.setPos(this.world.spawnX, this.world.spawnY);
     }

@@ -5,7 +5,6 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.gui.component.GuiComponent;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
-import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -29,10 +28,17 @@ public class Gui{
 
     protected final EntityPlayer player;
 
+    protected final Gui parent;
+
     public Gui(EntityPlayer player, int sizeX, int sizeY){
+        this(player, sizeX, sizeY, null);
+    }
+
+    public Gui(EntityPlayer player, int sizeX, int sizeY, Gui parent){
         this.player = player;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.parent = parent;
     }
 
     public void onClosed(Game game){
@@ -60,18 +66,19 @@ public class Gui{
     }
 
     public boolean onKeyboardAction(Game game, int button){
-        if(this.canEscape() && (button == Keyboard.KEY_ESCAPE || button == Keyboard.KEY_E)){
-            this.player.guiManager.closeGui();
-            return true;
-        }
-        else{
-            for(GuiComponent component : this.components){
-                if(component.onKeyboardAction(game, button)){
-                    return true;
-                }
+        if(button == game.settings.keyMenu.key || (button == game.settings.keyInventory.key && this instanceof GuiInventory)){
+            if(this.tryEscape()){
+                return true;
             }
-            return false;
         }
+
+        for(GuiComponent component : this.components){
+            if(component.onKeyboardAction(game, button)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void render(Game game, AssetManager manager, Graphics g){
@@ -82,7 +89,14 @@ public class Gui{
         this.components.forEach(component -> component.renderOverlay(game, manager, g));
     }
 
-    protected boolean canEscape(){
+    protected boolean tryEscape(){
+        if(this.parent != null){
+            this.player.guiManager.openGui(this.parent);
+        }
+        else{
+            this.player.guiManager.closeGui();
+        }
+
         return true;
     }
 
@@ -160,5 +174,9 @@ public class Gui{
         g.scale(scale, scale);
         image.draw(x/scale, y/scale, color);
         g.popTransform();
+    }
+
+    public boolean onButtonActivated(Game game, int button){
+        return false;
     }
 }
