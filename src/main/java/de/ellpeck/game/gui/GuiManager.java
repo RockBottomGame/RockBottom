@@ -2,7 +2,10 @@ package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentHotbarSlot;
+import de.ellpeck.game.gui.component.GuiComponent;
+import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
@@ -14,14 +17,43 @@ import java.util.List;
 
 public class GuiManager{
 
-    private final List<ComponentHotbarSlot> hotbarSlots = new ArrayList<>();
+    private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private Gui gui;
 
     public GuiManager(EntityPlayer player){
+        Game game = Game.get();
+        double width = game.getWidthInGui();
+
         for(int i = 0; i < 8; i++){
-            int x = (int)(Game.get().getWidthInGui()/2-59.25+i*15);
-            this.hotbarSlots.add(new ComponentHotbarSlot(player.inv, i, x, 3));
+            int x = (int)(width/2-59.25+i*15);
+            this.onScreenComponents.add(new ComponentHotbarSlot(player.inv, i, x, 3));
         }
+
+        this.onScreenComponents.add(new ComponentButton(null, 0, (int)width-33, 3, 30, 10, game.assetManager.localize("button.menu")){
+            @Override
+            public boolean onPressed(Game game){
+                GuiManager.this.openGui(new GuiMenu(player));
+                return true;
+            }
+
+            @Override
+            public boolean isMouseOver(Game game){
+                return GuiManager.this.getGui() == null && super.isMouseOver(game);
+            }
+        });
+
+        this.onScreenComponents.add(new ComponentButton(null, 0, 3, 3, 30, 10, game.assetManager.localize("button.inventory")){
+            @Override
+            public boolean onPressed(Game game){
+                GuiManager.this.openGui(new GuiInventory(player));
+                return true;
+            }
+
+            @Override
+            public boolean isMouseOver(Game game){
+                return GuiManager.this.getGui() == null && super.isMouseOver(game);
+            }
+        });
     }
 
     public void update(Game game){
@@ -34,7 +66,7 @@ public class GuiManager{
         g.scale(game.settings.guiScale, game.settings.guiScale);
 
         if(!player.isDead()){
-            this.hotbarSlots.forEach(slot -> slot.render(game, manager, g));
+            this.onScreenComponents.forEach(comp -> comp.render(game, manager, g));
 
             this.drawHealth(game, manager, g, player);
 
@@ -47,7 +79,7 @@ public class GuiManager{
                 gui.renderOverlay(game, manager, g);
             }
             else{
-                this.hotbarSlots.forEach(slot -> slot.renderOverlay(game, manager, g));
+                this.onScreenComponents.forEach(comp -> comp.renderOverlay(game, manager, g));
             }
         }
         else{
@@ -110,8 +142,8 @@ public class GuiManager{
             return this.gui.onMouseAction(game, button);
         }
         else{
-            for(ComponentHotbarSlot slot : this.hotbarSlots){
-                if(slot.onMouseAction(game, button)){
+            for(GuiComponent comp : this.onScreenComponents){
+                if(comp.onMouseAction(game, button)){
                     return true;
                 }
             }

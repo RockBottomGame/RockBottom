@@ -32,7 +32,7 @@ public class ComponentButton extends GuiComponent{
 
         String text = this.getText();
         if(text != null){
-            manager.getFont().drawCenteredString(this.x+this.sizeX/2, this.y+this.sizeY/2, text, 0.35F, true);
+            manager.getFont().drawCenteredString(this.x+this.sizeX/2F, this.y+this.sizeY/2F, text, 0.35F, true);
         }
     }
 
@@ -60,7 +60,7 @@ public class ComponentButton extends GuiComponent{
             if(this.onPressed(game)){
                 return true;
             }
-            else if(this.gui.onButtonActivated(game, this.id)){
+            else if(this.gui != null && this.gui.onButtonActivated(game, this.id)){
                 return true;
             }
         }

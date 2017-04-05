@@ -16,7 +16,7 @@ public class Entity extends MovableWorldObject{
 
     public Direction facing = Direction.NONE;
 
-    protected int ticksExisted;
+    public int ticksExisted;
     protected boolean dead;
 
     public int fallAmount;

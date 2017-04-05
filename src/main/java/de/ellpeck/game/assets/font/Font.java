@@ -71,12 +71,12 @@ public class Font{
     }
 
     public void drawCenteredString(float x, float y, String s, float scale, boolean centeredOnY){
-        this.drawString(x-this.getWidth(s, scale)/2, centeredOnY ? (y-this.getHeight(scale)/2) : y, s, scale);
+        this.drawString(x-this.getWidth(s, scale)/2F, centeredOnY ? (y-this.getHeight(scale)/2F) : y, s, scale);
     }
 
     public void drawString(float x, float y, String s, float scale){
         Color color = Color.white;
-        int xOffset = 0;
+        float xOffset = 0F;
 
         char[] characters = s.toCharArray();
         for(int i = 0; i < characters.length; i++){
@@ -90,7 +90,7 @@ public class Font{
             }
 
             this.drawCharacter(x+xOffset, y, characters[i], scale, color);
-            xOffset += this.charWidth*scale;
+            xOffset += (float)this.charWidth*scale;
         }
     }
 
@@ -108,7 +108,7 @@ public class Font{
             int srcX = pos.getX()*this.charWidth;
             int srcY = pos.getY()*this.charHeight;
 
-            this.image.draw(x, y, x+this.charWidth*scale, y+this.charHeight*scale, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
+            this.image.draw(x, y, x+(float)this.charWidth*scale, y+(float)this.charHeight*scale, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
         }
     }
 
@@ -117,11 +117,11 @@ public class Font{
     }
 
     public float getWidth(String s, float scale){
-        return this.charWidth*this.removeFormatting(s).length()*scale;
+        return (float)this.charWidth*(float)this.removeFormatting(s).length()*scale;
     }
 
     public float getHeight(float scale){
-        return this.charHeight*scale;
+        return (float)this.charHeight*scale;
     }
 
     public List<String> splitTextToLength(int length, float scale, String... lines){

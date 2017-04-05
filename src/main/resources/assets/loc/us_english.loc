@@ -11,10 +11,12 @@ info.hardware_cursor_2=&6Requires Restart
 
 button.back=Back
 button.settings=Settings
-button.close=Close Menu
+button.close=Close
 button.controls=Controls
 button.hardware_cursor=Hardware Cursor Off
 button.hardware_cursor_toggled=Hardware Cursor On
+button.menu=Menu
+button.inventory=Bag
 
 layer.main=Foreground
 layer.background=Background
