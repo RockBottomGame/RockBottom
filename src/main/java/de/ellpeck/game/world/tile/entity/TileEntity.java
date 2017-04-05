@@ -35,4 +35,12 @@ public class TileEntity{
     public boolean isDirty(){
         return false;
     }
+
+    public void onMarkDirty(){
+
+    }
+
+    public boolean doesSave(){
+        return true;
+    }
 }

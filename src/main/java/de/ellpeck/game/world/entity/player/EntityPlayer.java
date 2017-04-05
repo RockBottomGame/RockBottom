@@ -2,7 +2,6 @@ package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
-import de.ellpeck.game.gui.GuiDead;
 import de.ellpeck.game.gui.GuiManager;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
@@ -27,6 +26,8 @@ public class EntityPlayer extends EntityLiving{
     private final UUID uniqueId;
     public final GuiManager guiManager = new GuiManager(this);
 
+    private int respawnTimer;
+
     public EntityPlayer(World world, UUID uniqueId){
         super(world);
         this.renderer = new PlayerEntityRenderer();
@@ -43,21 +44,41 @@ public class EntityPlayer extends EntityLiving{
     public void update(Game game){
         super.update(game);
 
-        List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y), EntityItem.class);
-        for(EntityItem entity : entities){
-            if(entity.canPickUp()){
-                ItemInstance left = this.inv.addExistingFirst(entity.item, false);
+        if(this.isDead()){
+            this.respawnTimer++;
 
-                if(left == null){
-                    entity.setDead();
-                }
-                else{
-                    entity.item = left;
+            if(this.respawnTimer >= 400){
+                this.resetAndSpawn();
+            }
+        }
+        else{
+            List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y), EntityItem.class);
+            for(EntityItem entity : entities){
+                if(entity.canPickUp()){
+                    ItemInstance left = this.inv.addExistingFirst(entity.item, false);
+
+                    if(left == null){
+                        entity.kill();
+                    }
+                    else{
+                        entity.item = left;
+                    }
                 }
             }
         }
 
         this.guiManager.update(game);
+    }
+
+    public void resetAndSpawn(){
+        this.respawnTimer = 0;
+        this.dead = false;
+        this.guiManager.closeGui();
+
+        this.motionX = 0;
+        this.motionY = 0;
+
+        this.setPos(this.world.spawnX, this.world.spawnY);
     }
 
     @Override
@@ -68,10 +89,8 @@ public class EntityPlayer extends EntityLiving{
     }
 
     @Override
-    public void kill(){
-        super.kill();
-
-        this.guiManager.openGui(new GuiDead(this, 500, 500));
+    public boolean shouldBeRemoved(){
+        return false;
     }
 
     @Override

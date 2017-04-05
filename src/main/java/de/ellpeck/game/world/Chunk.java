@@ -91,13 +91,14 @@ public class Chunk implements IWorld{
             Entity entity = this.entities.get(i);
             entity.update(game);
 
-            if(entity.isDead()){
+            if(entity.shouldBeRemoved()){
                 this.removeEntity(entity);
                 i--;
             }
             else{
                 if(entity.isDirty()){
                     this.isDirty = true;
+                    entity.onMarkDirty();
                 }
 
                 int newChunkX = MathUtil.toGridPos(entity.x);
@@ -123,6 +124,7 @@ public class Chunk implements IWorld{
             }
             else if(tile.isDirty()){
                 this.isDirty = true;
+                tile.onMarkDirty();
             }
         }
 
@@ -482,7 +484,7 @@ public class Chunk implements IWorld{
 
         int entityId = 0;
         for(Entity entity : this.entities){
-            if(!(entity instanceof EntityPlayer)){
+            if(entity.doesSave() && !(entity instanceof EntityPlayer)){
                 DataSet entitySet = new DataSet();
                 entitySet.addInt("id", ContentRegistry.ENTITY_REGISTRY.getId(entity.getClass()));
                 entity.save(entitySet);
@@ -496,14 +498,16 @@ public class Chunk implements IWorld{
 
         int tileEntityId = 0;
         for(TileEntity tile : this.tileEntities){
-            DataSet tileSet = new DataSet();
-            tileSet.addInt("x", tile.x);
-            tileSet.addInt("y", tile.y);
-            tile.save(tileSet);
+            if(tile.doesSave()){
+                DataSet tileSet = new DataSet();
+                tileSet.addInt("x", tile.x);
+                tileSet.addInt("y", tile.y);
+                tile.save(tileSet);
 
-            set.addDataSet("t_"+tileEntityId, tileSet);
+                set.addDataSet("t_"+tileEntityId, tileSet);
 
-            tileEntityId++;
+                tileEntityId++;
+            }
         }
         set.addInt("t_a", tileEntityId);
 

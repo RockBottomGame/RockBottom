@@ -39,6 +39,8 @@ public class Font{
 
     public static Font fromStream(InputStream imageStream, InputStream infoStream, String name) throws IOException, SlickException{
         Image image = new Image(imageStream, name, false);
+        image.setFilter(Image.FILTER_NEAREST);
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(infoStream));
 
         int width = 0;
@@ -65,8 +67,8 @@ public class Font{
         return new Font(name, image, width, heightIndex, characters);
     }
 
-    public void drawCenteredString(float x, float y, String s, float scale){
-        this.drawString(x-this.getWidth(s, scale)/2, y, s, scale);
+    public void drawCenteredString(float x, float y, String s, float scale, boolean centeredOnY){
+        this.drawString(x-this.getWidth(s, scale)/2, centeredOnY ? (y-this.getHeight(scale)/2): y, s, scale);
     }
 
     public void drawString(float x, float y, String s, float scale){

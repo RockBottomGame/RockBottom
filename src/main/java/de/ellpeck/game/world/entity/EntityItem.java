@@ -14,7 +14,7 @@ public class EntityItem extends Entity{
     private final IEntityRenderer renderer;
     public ItemInstance item;
 
-    public int pickupDelay = 10;
+    private int pickupDelay = 10;
 
     public EntityItem(World world){
         super(world);
@@ -37,6 +37,10 @@ public class EntityItem extends Entity{
 
         if(this.pickupDelay > 0){
             this.pickupDelay--;
+        }
+
+        if(this.ticksExisted >= this.item.getItem().getDespawnTime(this.item)){
+            this.kill();
         }
     }
 
@@ -77,6 +81,8 @@ public class EntityItem extends Entity{
         DataSet itemSet = new DataSet();
         this.item.save(itemSet);
         set.addDataSet("item", itemSet);
+
+        set.addInt("pickup_delay", this.pickupDelay);
     }
 
     @Override
@@ -85,9 +91,11 @@ public class EntityItem extends Entity{
 
         DataSet itemSet = set.getDataSet("item");
         this.item = ItemInstance.load(itemSet);
-
         if(this.item == null){
-            this.setDead();
+            this.kill();
+            return;
         }
+
+        this.pickupDelay = set.getInt("pickup_delay");
     }
 }

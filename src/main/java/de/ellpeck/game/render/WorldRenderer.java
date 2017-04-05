@@ -101,10 +101,12 @@ public class WorldRenderer{
         }
 
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
-            IEntityRenderer renderer = entity.getRenderer();
-            if(renderer != null){
-                int light = world.getCombinedLight(MathUtil.floor(entity.x), MathUtil.floor(entity.y));
-                renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[light]);
+            if(entity.shouldRender()){
+                IEntityRenderer renderer = entity.getRenderer();
+                if(renderer != null){
+                    int light = world.getCombinedLight(MathUtil.floor(entity.x), MathUtil.floor(entity.y));
+                    renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[light]);
+                }
             }
         });
 

@@ -33,20 +33,26 @@ public class GuiManager{
     public void render(Game game, AssetManager manager, Graphics g, EntityPlayer player){
         g.scale(game.settings.guiScale, game.settings.guiScale);
 
-        this.hotbarSlots.forEach(slot -> slot.render(game, manager, g));
+        if(!player.isDead()){
+            this.hotbarSlots.forEach(slot -> slot.render(game, manager, g));
 
-        this.drawHealth(game, manager, g, player);
+            this.drawHealth(game, manager, g, player);
 
-        Gui gui = player.guiManager.getGui();
-        if(gui != null){
-            g.setColor(Gui.GRADIENT);
-            g.fillRect(0F, 0F, (float)game.getWidthInGui(), (float)game.getHeightInGui());
+            Gui gui = player.guiManager.getGui();
+            if(gui != null){
+                g.setColor(Gui.GRADIENT);
+                g.fillRect(0F, 0F, (float)game.getWidthInGui(), (float)game.getHeightInGui());
 
-            gui.render(game, manager, g);
-            gui.renderOverlay(game, manager, g);
+                gui.render(game, manager, g);
+                gui.renderOverlay(game, manager, g);
+            }
+            else{
+                this.hotbarSlots.forEach(slot -> slot.renderOverlay(game, manager, g));
+            }
         }
         else{
-            this.hotbarSlots.forEach(slot -> slot.renderOverlay(game, manager, g));
+            String deathInfo = manager.localize("info.dead");
+            manager.getFont().drawCenteredString((float)game.getWidthInGui()/2F, (float)game.getHeightInGui()/2F, deathInfo, 2F, true);
         }
     }
 

@@ -29,7 +29,7 @@ public class ComponentButton extends GuiComponent{
         g.drawRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
 
         if(this.text != null){
-            manager.getFont().drawCenteredString(this.x+this.sizeX/2, this.y+this.sizeY/2, this.text, 0.35F);
+            manager.getFont().drawCenteredString(this.x+this.sizeX/2, this.y+this.sizeY/2, this.text, 0.35F, true);
         }
     }
 

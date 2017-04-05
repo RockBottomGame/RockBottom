@@ -1,6 +1,5 @@
 package de.ellpeck.game.world.entity.player;
 
-import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.item.Item;
@@ -45,7 +44,7 @@ public class InteractionManager{
     public void update(Game game){
         Gui gui = this.player.guiManager.getGui();
 
-        if(gui == null){
+        if(gui == null && !this.player.isDead()){
             Input input = game.getContainer().getInput();
             double mouseX = input.getMouseX();
             double mouseY = input.getMouseY();
@@ -66,6 +65,10 @@ public class InteractionManager{
 
             if(input.isKeyDown(Input.KEY_SPACE) || input.isKeyDown(Input.KEY_W)){
                 this.player.jump(0.28);
+            }
+
+            if(input.isKeyPressed(Input.KEY_K)){
+                this.player.kill();
             }
 
             TileLayer layer = input.isKeyDown(Input.KEY_LSHIFT) ? TileLayer.BACKGROUND : TileLayer.MAIN;

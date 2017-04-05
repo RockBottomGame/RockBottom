@@ -38,6 +38,9 @@ public class World implements IWorld{
     public long totalTimeInWorld;
     public int currentWorldTime;
 
+    public int spawnX = 0;
+    public int spawnY = 20;
+
     public World(File worldDirectory){
         this.chunksDirectory = new File(worldDirectory, "chunks");
         this.playerDirectory = new File(worldDirectory, "players");
@@ -355,7 +358,7 @@ public class World implements IWorld{
             Log.info("Loading player with unique id "+id+"!");
         }
         else{
-            player.setPos(0, 20);
+            player.resetAndSpawn();
             Log.info("Adding new player with unique id "+id+" to world!");
         }
 

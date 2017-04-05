@@ -16,6 +16,7 @@ public class Entity extends MovableWorldObject{
 
     public Direction facing = Direction.NONE;
 
+    protected int ticksExisted;
     protected boolean dead;
 
     public int fallAmount;
@@ -29,25 +30,33 @@ public class Entity extends MovableWorldObject{
     }
 
     public void update(Game game){
-        this.applyMotion();
+        if(!this.isDead()){
+            this.applyMotion();
 
-        this.move(this.motionX, this.motionY);
+            this.move(this.motionX, this.motionY);
 
-        if(this.onGround){
-            this.motionY = 0;
+            if(this.onGround){
+                this.motionY = 0;
 
-            if(this.fallAmount > 0){
-                this.onGroundHit();
-                this.fallAmount = 0;
+                if(this.fallAmount > 0){
+                    this.onGroundHit();
+                    this.fallAmount = 0;
+                }
+            }
+            else if(this.motionY < 0){
+                this.fallAmount++;
+            }
+
+            if(this.collidedHor){
+                this.motionX = 0;
             }
         }
-        else if(this.motionY < 0){
-            this.fallAmount++;
+        else{
+            this.motionX = 0;
+            this.motionY = 0;
         }
 
-        if(this.collidedHor){
-            this.motionX = 0;
-        }
+        this.ticksExisted++;
     }
 
     protected void applyMotion(){
@@ -61,12 +70,20 @@ public class Entity extends MovableWorldObject{
         return this.dead;
     }
 
-    public void setDead(){
-        this.dead = true;
+    public boolean shouldBeRemoved(){
+        return this.isDead();
+    }
+
+    public boolean shouldRender(){
+        return !this.isDead();
+    }
+
+    public void setDead(boolean dead){
+        this.dead = dead;
     }
 
     public void kill(){
-        this.setDead();
+        this.setDead(true);
     }
 
     public int getRenderPriority(){
@@ -87,6 +104,8 @@ public class Entity extends MovableWorldObject{
         set.addDouble("y", this.y);
         set.addDouble("motion_x", this.motionX);
         set.addDouble("motion_y", this.motionY);
+        set.addInt("ticks", this.ticksExisted);
+        set.addBoolean("dead", this.isDead());
     }
 
     public void load(DataSet set){
@@ -94,9 +113,19 @@ public class Entity extends MovableWorldObject{
         this.y = set.getDouble("y");
         this.motionX = set.getDouble("motion_x");
         this.motionY = set.getDouble("motion_y");
+        this.ticksExisted = set.getInt("ticks");
+        this.setDead(set.getBoolean("dead"));
     }
 
     public boolean isDirty(){
         return false;
+    }
+
+    public void onMarkDirty(){
+
+    }
+
+    public boolean doesSave(){
+        return true;
     }
 }

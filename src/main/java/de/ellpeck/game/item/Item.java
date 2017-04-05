@@ -4,7 +4,6 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.render.item.IItemRenderer;
 
-import java.util.Collections;
 import java.util.List;
 
 public class Item{
@@ -54,5 +53,9 @@ public class Item{
     @Override
     public String toString(){
         return this.getName()+"@"+this.getId();
+    }
+
+    public int getDespawnTime(ItemInstance instance){
+        return 24000;
     }
 }
