@@ -6,6 +6,15 @@ name.torch=Torch
 info.layer_placement=Can be placed in %s
 info.health=Health
 info.dead=You died!
+info.hardware_cursor_1=If the in-game cursor should be replaced by the operating system's cursor
+info.hardware_cursor_2=&6Requires Restart
+
+button.back=Back
+button.settings=Settings
+button.close=Close Menu
+button.controls=Controls
+button.hardware_cursor=Hardware Cursor Off
+button.hardware_cursor_toggled=Hardware Cursor On
 
 layer.main=Foreground
 layer.background=Background

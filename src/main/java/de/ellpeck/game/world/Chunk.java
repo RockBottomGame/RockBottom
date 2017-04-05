@@ -96,11 +96,6 @@ public class Chunk implements IWorld{
                 i--;
             }
             else{
-                if(entity.isDirty()){
-                    this.isDirty = true;
-                    entity.onMarkDirty();
-                }
-
                 int newChunkX = MathUtil.toGridPos(entity.x);
                 int newChunkY = MathUtil.toGridPos(entity.y);
 
@@ -121,10 +116,6 @@ public class Chunk implements IWorld{
             if(tile.shouldRemove()){
                 this.removeTileEntity(tile.x, tile.y);
                 i--;
-            }
-            else if(tile.isDirty()){
-                this.isDirty = true;
-                tile.onMarkDirty();
             }
         }
 
@@ -153,7 +144,7 @@ public class Chunk implements IWorld{
                     }
 
                     i--;
-                    this.isDirty = true;
+                    this.setDirty();
                 }
             }
         }
@@ -259,7 +250,7 @@ public class Chunk implements IWorld{
             }
 
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
-            this.isDirty = true;
+            this.setDirty();
         }
     }
 
@@ -272,7 +263,7 @@ public class Chunk implements IWorld{
 
         if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
-            this.isDirty = true;
+            this.setDirty();
         }
     }
 
@@ -284,7 +275,7 @@ public class Chunk implements IWorld{
         entity.chunkY = this.gridY;
 
         if(!this.isGenerating){
-            this.isDirty = true;
+            this.setDirty();
         }
     }
 
@@ -297,7 +288,7 @@ public class Chunk implements IWorld{
 
             if(!this.isGenerating){
                 this.world.notifyNeighborsOfChange(tile.x, tile.y, TileLayer.MAIN);
-                this.isDirty = true;
+                this.setDirty();
             }
         }
     }
@@ -307,7 +298,7 @@ public class Chunk implements IWorld{
         this.entities.remove(entity);
 
         if(!this.isGenerating){
-            this.isDirty = true;
+            this.setDirty();
         }
     }
 
@@ -320,7 +311,7 @@ public class Chunk implements IWorld{
 
             if(!this.isGenerating){
                 this.world.notifyNeighborsOfChange(this.x+x, this.y+y, TileLayer.MAIN);
-                this.isDirty = true;
+                this.setDirty();
             }
         }
     }
@@ -418,9 +409,14 @@ public class Chunk implements IWorld{
             this.scheduledUpdates.add(update);
 
             if(!this.isGenerating){
-                this.isDirty = true;
+                this.setDirty();
             }
         }
+    }
+
+    @Override
+    public void setDirty(int x, int y){
+        this.setDirty();
     }
 
     public byte getCombinedLightInner(int x, int y){
@@ -438,7 +434,7 @@ public class Chunk implements IWorld{
         this.lightGrid[0][x][y] = light;
 
         if(!this.isGenerating){
-            this.isDirty = true;
+            this.setDirty();
         }
     }
 
@@ -450,7 +446,7 @@ public class Chunk implements IWorld{
         this.lightGrid[1][x][y] = light;
 
         if(!this.isGenerating){
-            this.isDirty = true;
+            this.setDirty();
         }
     }
 
@@ -460,6 +456,10 @@ public class Chunk implements IWorld{
 
     public boolean needsSave(){
         return this.isDirty;
+    }
+
+    public void setDirty(){
+        this.isDirty = true;
     }
 
     public void save(DataSet set){

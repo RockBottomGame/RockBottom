@@ -10,8 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Font{
@@ -68,7 +67,7 @@ public class Font{
     }
 
     public void drawCenteredString(float x, float y, String s, float scale, boolean centeredOnY){
-        this.drawString(x-this.getWidth(s, scale)/2, centeredOnY ? (y-this.getHeight(scale)/2): y, s, scale);
+        this.drawString(x-this.getWidth(s, scale)/2, centeredOnY ? (y-this.getHeight(scale)/2) : y, s, scale);
     }
 
     public void drawString(float x, float y, String s, float scale){
@@ -114,10 +113,38 @@ public class Font{
     }
 
     public float getWidth(String s, float scale){
-        return this.charWidth*(this.removeFormatting(s).length()-1)*scale;
+        return this.charWidth*this.removeFormatting(s).length()*scale;
     }
 
     public float getHeight(float scale){
         return this.charHeight*scale;
+    }
+
+    public List<String> splitTextToLength(int length, float scale, String... lines){
+        return this.splitTextToLength(length, scale, Arrays.asList(lines));
+    }
+
+    public List<String> splitTextToLength(int length, float scale, List<String> lines){
+        List<String> result = new ArrayList<>();
+        String accumulated = "";
+
+        for(String line : lines){
+            String[] words = line.split(" ");
+
+            for(String word : words){
+                if(this.getWidth(accumulated+word, scale) >= length){
+                    result.add(accumulated);
+                    accumulated = word+" ";
+                }
+                else{
+                    accumulated += word+" ";
+                }
+            }
+
+            result.add(accumulated);
+            accumulated = "";
+        }
+
+        return result;
     }
 }

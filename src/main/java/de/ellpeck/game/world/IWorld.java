@@ -64,4 +64,6 @@ public interface IWorld{
     boolean isLoaded(int x, int y);
 
     void scheduleUpdate(int x, int y, TileLayer layer, int time);
+
+    void setDirty(int x, int y);
 }

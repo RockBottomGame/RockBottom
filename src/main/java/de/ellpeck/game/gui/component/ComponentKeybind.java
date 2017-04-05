@@ -26,10 +26,7 @@ public class ComponentKeybind extends ComponentButton{
     @Override
     public boolean onKeyboardAction(Game game, int button){
         if(this.isActive()){
-            if(this.bind.key != button){
-                this.bind.key = button;
-                this.gui.change = true;
-            }
+            this.bind.key = button;
             this.gui.activeKeybind = -1;
 
             return true;

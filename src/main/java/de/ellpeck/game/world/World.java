@@ -241,6 +241,12 @@ public class World implements IWorld{
         chunk.scheduleUpdate(x, y, layer, time);
     }
 
+    @Override
+    public void setDirty(int x, int y){
+        Chunk chunk = this.getChunk(x, y);
+        chunk.setDirty(x, y);
+    }
+
     public Chunk getChunk(double x, double y){
         return this.getChunkFromGridCoords(MathUtil.toGridPos(x), MathUtil.toGridPos(y));
     }

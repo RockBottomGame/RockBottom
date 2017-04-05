@@ -40,11 +40,16 @@ public class ComponentButton extends GuiComponent{
         return this.text;
     }
 
+    protected String[] getHover(){
+        return this.hover;
+    }
+
     @Override
     public void renderOverlay(Game game, AssetManager manager, Graphics g){
-        if(this.hover != null && this.hover.length > 0){
+        String[] hover = this.getHover();
+        if(hover != null && hover.length > 0){
             if(this.isMouseOver(game)){
-                Gui.drawHoverInfoAtMouse(game, manager, g, false, this.hover);
+                Gui.drawHoverInfoAtMouse(game, manager, g, false, hover);
             }
         }
     }

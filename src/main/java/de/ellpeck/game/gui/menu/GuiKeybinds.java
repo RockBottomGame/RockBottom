@@ -10,7 +10,6 @@ import de.ellpeck.game.world.entity.player.EntityPlayer;
 public class GuiKeybinds extends Gui{
 
     public int activeKeybind = -1;
-    public boolean change;
 
     public GuiKeybinds(EntityPlayer player, Gui parent){
         super(player, 304, 100, parent);
@@ -33,7 +32,7 @@ public class GuiKeybinds extends Gui{
             }
         }
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, "Back"));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
     }
 
     @Override
@@ -43,13 +42,6 @@ public class GuiKeybinds extends Gui{
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onClosed(Game game){
-        if(this.change){
-            game.dataManager.saveSettings(game.settings);
-        }
     }
 
     @Override

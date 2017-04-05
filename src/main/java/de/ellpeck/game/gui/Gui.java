@@ -10,6 +10,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Gui{
@@ -116,22 +117,26 @@ public class Gui{
         return overSelf || this.isMouseOverComponent(game);
     }
 
-    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, List<String> text){
-        drawHoverInfoAtMouse(game, manager, g, firstLineOffset, text.toArray(new String[text.size()]));
+    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, String... text){
+        drawHoverInfoAtMouse(game, manager, g, firstLineOffset, Arrays.asList(text));
     }
 
-    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, String... text){
+    public static void drawHoverInfoAtMouse(Game game, AssetManager manager, Graphics g, boolean firstLineOffset, List<String> text){
         float mouseX = game.getMouseInGuiX();
         float mouseY = game.getMouseInGuiY();
 
-        drawHoverInfo(game, manager, g, mouseX+3, mouseY+3, 0.25F, firstLineOffset, false, text);
+        drawHoverInfo(game, manager, g, mouseX+3, mouseY+3, 0.25F, firstLineOffset, false, 100, text);
     }
 
-    public static void drawHoverInfo(Game game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, String... text){
+    public static void drawHoverInfo(Game game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){
         Font font = manager.getFont();
 
         float boxWidth = 0F;
         float boxHeight = 0F;
+
+        if(maxLength > 0){
+            text = font.splitTextToLength(maxLength, scale, text);
+        }
 
         for(String s : text){
             float length = font.getWidth(s, scale);

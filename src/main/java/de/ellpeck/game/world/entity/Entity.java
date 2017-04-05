@@ -116,15 +116,6 @@ public class Entity extends MovableWorldObject{
         this.ticksExisted = set.getInt("ticks");
         this.setDead(set.getBoolean("dead"));
     }
-
-    public boolean isDirty(){
-        return false;
-    }
-
-    public void onMarkDirty(){
-
-    }
-
     public boolean doesSave(){
         return true;
     }
