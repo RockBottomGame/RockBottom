@@ -9,17 +9,15 @@ import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 import de.ellpeck.game.world.tile.entity.TileEntitySmelter;
 
-public class TileSmelter extends Tile{
-
-    private final ITileRenderer renderer = new SmelterTileRenderer();
+public class TileSmelter extends TileBasic{
 
     public TileSmelter(int id){
         super(id, "smelter");
     }
 
     @Override
-    public ITileRenderer getRenderer(){
-        return this.renderer;
+    protected ITileRenderer createRenderer(String name){
+        return new SmelterTileRenderer();
     }
 
     @Override

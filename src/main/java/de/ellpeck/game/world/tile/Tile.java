@@ -68,10 +68,12 @@ public class Tile{
             return true;
         }
 
-        for(Direction dir : Direction.ADJACENT_DIRECTIONS){
-            Tile tile = world.getTile(layer, x+dir.x, y+dir.y);
-            if(!tile.isAir()){
-                return true;
+        for(TileLayer testLayer : TileLayer.LAYERS){
+            for(Direction dir : Direction.ADJACENT_DIRECTIONS){
+                Tile tile = world.getTile(testLayer, x+dir.x, y+dir.y);
+                if(!tile.isAir()){
+                    return true;
+                }
             }
         }
         return false;

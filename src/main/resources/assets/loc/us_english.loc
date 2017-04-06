@@ -8,6 +8,7 @@ info.health=Health
 info.dead=You died!
 info.hardware_cursor_1=If the in-game cursor should be replaced by the operating system's cursor
 info.hardware_cursor_2=&6Requires Restart
+info.autosave_interval=The amount of seconds before the world is automatically saved
 
 button.back=Back
 button.settings=Settings
@@ -17,6 +18,7 @@ button.hardware_cursor=Hardware Cursor Off
 button.hardware_cursor_toggled=Hardware Cursor On
 button.menu=Menu
 button.inventory=Bag
+button.autosave_interval=Autosave Interval
 
 layer.main=Foreground
 layer.background=Background

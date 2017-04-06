@@ -24,8 +24,6 @@ public class EntityPlayer extends EntityLiving{
     public final InventoryPlayer inv = new InventoryPlayer();
 
     private final UUID uniqueId;
-    public final GuiManager guiManager = new GuiManager(this);
-
     private int respawnTimer;
 
     public EntityPlayer(World world, UUID uniqueId){
@@ -48,7 +46,7 @@ public class EntityPlayer extends EntityLiving{
             this.respawnTimer++;
 
             if(this.respawnTimer >= 400){
-                this.resetAndSpawn();
+                this.resetAndSpawn(game);
             }
         }
         else{
@@ -66,18 +64,16 @@ public class EntityPlayer extends EntityLiving{
                 }
             }
         }
-
-        this.guiManager.update(game);
     }
 
-    public void resetAndSpawn(){
+    public void resetAndSpawn(Game game){
         this.respawnTimer = 0;
         this.dead = false;
         this.motionX = 0;
         this.motionY = 0;
         this.fallAmount = 0;
         this.health = this.getMaxHealth();
-        this.guiManager.closeGui();
+        game.guiManager.closeGui();
 
         this.setPos(this.world.spawnX, this.world.spawnY);
     }

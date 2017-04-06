@@ -9,7 +9,11 @@ public class TileBasic extends Tile{
 
     public TileBasic(int id, String name){
         super(id, name);
-        this.renderer = new DefaultTileRenderer(name);
+        this.renderer = this.createRenderer(name);
+    }
+
+    protected ITileRenderer createRenderer(String name){
+        return new DefaultTileRenderer(name);
     }
 
     @Override

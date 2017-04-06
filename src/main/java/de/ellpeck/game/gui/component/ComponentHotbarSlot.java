@@ -44,7 +44,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public boolean onMouseAction(Game game, int button){
+    public boolean onMouseAction(Game game, int button, float x, float y){
         if(this.isMouseOver(game)){
             if(this.inv.selectedSlot != this.id){
                 this.inv.selectedSlot = this.id;

@@ -57,9 +57,9 @@ public class Gui{
         this.components.forEach(component -> component.update(game));
     }
 
-    public boolean onMouseAction(Game game, int button){
+    public boolean onMouseAction(Game game, int button, float x, float y){
         for(GuiComponent component : this.components){
-            if(component.onMouseAction(game, button)){
+            if(component.onMouseAction(game, button, x, y)){
                 return true;
             }
         }
@@ -68,7 +68,7 @@ public class Gui{
 
     public boolean onKeyboardAction(Game game, int button){
         if(button == game.settings.keyMenu.key || (button == game.settings.keyInventory.key && this instanceof GuiInventory)){
-            if(this.tryEscape()){
+            if(this.tryEscape(game)){
                 return true;
             }
         }
@@ -90,12 +90,12 @@ public class Gui{
         this.components.forEach(component -> component.renderOverlay(game, manager, g));
     }
 
-    protected boolean tryEscape(){
+    protected boolean tryEscape(Game game){
         if(this.parent != null){
-            this.player.guiManager.openGui(this.parent);
+            game.guiManager.openGui(this.parent);
         }
         else{
-            this.player.guiManager.closeGui();
+            game.guiManager.closeGui();
         }
 
         return true;

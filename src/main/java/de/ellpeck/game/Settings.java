@@ -19,6 +19,8 @@ public class Settings{
     public Keybind keyJump = new Keybind("jump", Input.KEY_SPACE);
     public Keybind keyBackground = new Keybind("background", Input.KEY_LSHIFT);
 
+    public int autosaveIntervalSeconds;
+
     public int guiScale;
     public int renderScale;
 
@@ -41,6 +43,8 @@ public class Settings{
         for(Keybind bind : this.keybinds){
             bind.key = this.getProp("key_"+bind.name, bind.def);
         }
+
+        this.autosaveIntervalSeconds = this.getProp("autosave_interval", 30);
 
         this.guiScale = this.getProp("gui_scale", 4);
         this.renderScale = this.getProp("render_scale", 48);
@@ -66,6 +70,8 @@ public class Settings{
         for(Keybind bind : this.keybinds){
             this.setProp("key_"+bind.name, bind.key);
         }
+
+        this.setProp("autosave_interval", this.autosaveIntervalSeconds);
 
         this.setProp("gui_scale", this.guiScale);
         this.setProp("render_scale", this.renderScale);

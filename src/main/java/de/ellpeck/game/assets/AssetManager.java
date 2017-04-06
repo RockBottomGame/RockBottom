@@ -72,10 +72,9 @@ public class AssetManager{
             String value = props.getProperty(key);
 
             try{
-                if(value.endsWith(".fnt")){
-                    String fontName = value.substring(0, value.length()-4);
-                    InputStream image = AssetManager.class.getResourceAsStream(path+fontName+".png");
-                    InputStream info = AssetManager.class.getResourceAsStream(path+fontName+".info");
+                if(key.startsWith("font.")){
+                    InputStream image = AssetManager.class.getResourceAsStream(path+value+".png");
+                    InputStream info = AssetManager.class.getResourceAsStream(path+value+".info");
 
                     this.assets.put(key, new AssetFont(Font.fromStream(image, info, key)));
                     Log.info("Loaded font resource "+key+" with path "+value);

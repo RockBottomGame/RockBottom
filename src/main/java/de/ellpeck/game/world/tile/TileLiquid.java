@@ -9,22 +9,20 @@ import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
 
-public class TileLiquid extends Tile{
+public class TileLiquid extends TileBasic{
 
     private static final int MAX_META = 8;
 
-    protected final ITileRenderer renderer;
     private final int speed;
 
     public TileLiquid(int id, String name, int speed){
         super(id, name);
         this.speed = speed;
-        this.renderer = new LiquidTileRenderer(name);
     }
 
     @Override
-    public ITileRenderer getRenderer(){
-        return this.renderer;
+    protected ITileRenderer createRenderer(String name){
+        return new LiquidTileRenderer(name);
     }
 
     @Override

@@ -8,8 +8,8 @@ import org.newdawn.slick.Graphics;
 
 public class ComponentButton extends GuiComponent{
 
-    private static final Color COLOR = Gui.GUI_COLOR.multiply(new Color(1F, 1F, 1F, 0.5F));
-    private static final Color COLOR_UNSELECTED = COLOR.darker(0.4F);
+    protected static final Color COLOR = Gui.GUI_COLOR.multiply(new Color(1F, 1F, 1F, 0.5F));
+    protected static final Color COLOR_UNSELECTED = COLOR.darker(0.4F);
 
     protected final int id;
     private final String text;
@@ -55,7 +55,7 @@ public class ComponentButton extends GuiComponent{
     }
 
     @Override
-    public boolean onMouseAction(Game game, int button){
+    public boolean onMouseAction(Game game, int button, float x, float y){
         if(button == game.settings.buttonGuiAction1 && this.isMouseOver(game)){
             if(this.onPressed(game)){
                 return true;

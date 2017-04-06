@@ -5,6 +5,7 @@ import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
+import de.ellpeck.game.gui.GuiManager;
 import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.WorldRenderer;
@@ -15,6 +16,7 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.UUID;
@@ -23,11 +25,14 @@ public class Game extends BasicGame{
 
     private static Game instance;
 
+    private final long timeGameCreated;
+
     private GameContainer container;
     public DataManager dataManager;
     public Settings settings;
 
     private EntityPlayer player;
+    public GuiManager guiManager;
     public InteractionManager interactionManager;
 
     private World world;
@@ -47,11 +52,19 @@ public class Game extends BasicGame{
 
     public Game(){
         super("Game");
+
+        Log.info("Setting game instance to "+this);
         instance = this;
+
+        this.timeGameCreated = System.currentTimeMillis();
     }
 
     @Override
     public void init(GameContainer container) throws SlickException{
+        long timeInitStarted = System.currentTimeMillis();
+        Log.info("Pre-init took "+(timeInitStarted-this.timeGameCreated)+"ms.");
+        Log.info("----- Initializing game -----");
+
         this.dataManager = new DataManager(this);
         this.settings = this.dataManager.loadSettings();
 
@@ -69,15 +82,13 @@ public class Game extends BasicGame{
 
         this.player = this.world.addPlayer(this.uniqueId);
         this.interactionManager = new InteractionManager(this.player);
+        this.guiManager = new GuiManager(this.player);
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
-    }
 
-    @Override
-    public boolean closeRequested(){
-        this.world.save();
-        return true;
+        Log.info("----- Done initializing game -----");
+        Log.info("Init took "+(System.currentTimeMillis()-timeInitStarted)+"ms.");
     }
 
     @Override
@@ -95,13 +106,15 @@ public class Game extends BasicGame{
             this.lastPollTime = time;
         }
 
-        Gui gui = this.player.guiManager.getGui();
+        Gui gui = this.guiManager.getGui();
         if(gui == null || !gui.doesPauseGame()){
             this.world.update(this);
             this.interactionManager.update(this);
 
             this.particleManager.update(this);
         }
+
+        this.guiManager.update(this);
     }
 
     @Override
@@ -111,9 +124,9 @@ public class Game extends BasicGame{
 
     @Override
     public void keyPressed(int key, char c){
-        if(this.player.guiManager.getGui() == null){
+        if(this.guiManager.getGui() == null){
             if(key == this.settings.keyMenu.key){
-                this.player.guiManager.openGui(new GuiMenu(this.player));
+                this.openMenu();
                 return;
             }
             else if(key == this.settings.keyDebug){
@@ -121,7 +134,7 @@ public class Game extends BasicGame{
                 return;
             }
             else if(key == this.settings.keyInventory.key){
-                this.player.guiManager.openGui(new GuiInventory(this.player));
+                this.guiManager.openGui(new GuiInventory(this.player));
                 return;
             }
         }
@@ -139,7 +152,13 @@ public class Game extends BasicGame{
             DebugRenderer.render(this, this.assetManager, this.world, this.player, container, g);
         }
 
-        this.player.guiManager.render(this, this.assetManager, g, this.player);
+        this.guiManager.render(this, this.assetManager, g, this.player);
+    }
+
+    public void openMenu(){
+        this.guiManager.openGui(new GuiMenu(this.player));
+
+        this.world.save();
     }
 
     public GameContainer getContainer(){

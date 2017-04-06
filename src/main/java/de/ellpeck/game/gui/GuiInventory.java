@@ -51,7 +51,7 @@ public class GuiInventory extends GuiContainer{
     @Override
     public boolean onButtonActivated(Game game, int button){
         if(button == -1){
-            this.player.guiManager.closeGui();
+            game.guiManager.closeGui();
             return true;
         }
         else{

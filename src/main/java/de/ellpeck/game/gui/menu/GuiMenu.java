@@ -23,11 +23,11 @@ public class GuiMenu extends Gui{
     @Override
     public boolean onButtonActivated(Game game, int button){
         if(button == -1){
-            this.player.guiManager.closeGui();
+            game.guiManager.closeGui();
             return true;
         }
         else if(button == 0){
-            this.player.guiManager.openGui(new GuiSettings(this.player, this));
+            game.guiManager.openGui(new GuiSettings(this.player, this));
         }
         return false;
     }

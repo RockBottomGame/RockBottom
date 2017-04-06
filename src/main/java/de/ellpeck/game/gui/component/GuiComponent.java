@@ -42,7 +42,7 @@ public class GuiComponent{
         return mouseX >= this.x && mouseX < this.x+this.sizeX && mouseY >= this.y && mouseY < this.y+this.sizeY;
     }
 
-    public boolean onMouseAction(Game game, int button){
+    public boolean onMouseAction(Game game, int button, float x, float y){
         return false;
     }
 

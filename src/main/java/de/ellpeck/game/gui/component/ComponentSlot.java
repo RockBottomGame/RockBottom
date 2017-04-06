@@ -29,7 +29,7 @@ public class ComponentSlot extends GuiComponent{
     }
 
     @Override
-    public boolean onMouseAction(Game game, int button){
+    public boolean onMouseAction(Game game, int button, float x, float y){
         if(this.isMouseOver(game)){
             ItemInstance slotInst = this.inventory.get(this.id);
 

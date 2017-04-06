@@ -50,15 +50,15 @@ public class GuiKeybinds extends Gui{
     @Override
     public boolean onButtonActivated(Game game, int button){
         if(button == -1){
-            this.player.guiManager.openGui(this.parent);
+            game.guiManager.openGui(this.parent);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean onMouseAction(Game game, int button){
-        if(!super.onMouseAction(game, button)){
+    public boolean onMouseAction(Game game, int button, float x, float y){
+        if(!super.onMouseAction(game, button, x, y)){
             this.activeKeybind = -1;
         }
         return true;

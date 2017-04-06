@@ -5,7 +5,6 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentHotbarSlot;
 import de.ellpeck.game.gui.component.GuiComponent;
-import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
@@ -32,7 +31,7 @@ public class GuiManager{
         this.onScreenComponents.add(new ComponentButton(null, 0, (int)width-33, 3, 30, 10, game.assetManager.localize("button.menu")){
             @Override
             public boolean onPressed(Game game){
-                GuiManager.this.openGui(new GuiMenu(player));
+                game.openMenu();
                 return true;
             }
 
@@ -70,7 +69,7 @@ public class GuiManager{
 
             this.drawHealth(game, manager, g, player);
 
-            Gui gui = player.guiManager.getGui();
+            Gui gui = game.guiManager.getGui();
             if(gui != null){
                 g.setColor(Gui.GRADIENT);
                 g.fillRect(0F, 0F, (float)game.getWidthInGui(), (float)game.getHeightInGui());
@@ -105,7 +104,7 @@ public class GuiManager{
             currX += step;
         }
 
-        if(player.guiManager.getGui() == null){
+        if(game.guiManager.getGui() == null){
             float mouseX = game.getMouseInGuiX();
             float mouseY = game.getMouseInGuiY();
 
@@ -137,13 +136,13 @@ public class GuiManager{
         return this.gui;
     }
 
-    public boolean onMouseAction(Game game, int button){
+    public boolean onMouseAction(Game game, int button, float x, float y){
         if(this.gui != null){
-            return this.gui.onMouseAction(game, button);
+            return this.gui.onMouseAction(game, button, x, y);
         }
         else{
             for(GuiComponent comp : this.onScreenComponents){
-                if(comp.onMouseAction(game, button)){
+                if(comp.onMouseAction(game, button, x, y)){
                     return true;
                 }
             }

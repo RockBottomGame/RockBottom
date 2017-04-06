@@ -35,8 +35,9 @@ public class World implements IWorld{
 
     private final File dataFile;
 
-    public long totalTimeInWorld;
+    public int totalTimeInWorld;
     public int currentWorldTime;
+    private int saveTicksCounter;
 
     public int spawnX = 0;
     public int spawnY = 20;
@@ -91,6 +92,13 @@ public class World implements IWorld{
         this.currentWorldTime++;
         if(this.currentWorldTime >= Constants.TIME_PER_DAY){
             this.currentWorldTime = 0;
+        }
+
+        this.saveTicksCounter++;
+        if(this.saveTicksCounter >= game.settings.autosaveIntervalSeconds*Constants.TARGET_TPS){
+            this.saveTicksCounter = 0;
+
+            this.save();
         }
     }
 
@@ -324,13 +332,16 @@ public class World implements IWorld{
     }
 
     public void save(){
+        long timeStarted = System.currentTimeMillis();
+        Log.info("Saving world...");
+
         for(Chunk chunk : this.loadedChunks){
             this.saveChunk(chunk);
         }
 
         DataSet dataSet = new DataSet();
         dataSet.addLong("seed", this.seed);
-        dataSet.addLong("total_time", this.totalTimeInWorld);
+        dataSet.addInt("total_time", this.totalTimeInWorld);
         dataSet.addInt("curr_time", this.currentWorldTime);
 
         dataSet.write(this.dataFile);
@@ -341,6 +352,8 @@ public class World implements IWorld{
 
             playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
         }
+
+        Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
     }
 
     public void load(){
@@ -348,7 +361,7 @@ public class World implements IWorld{
         dataSet.read(this.dataFile);
 
         this.setSeed(dataSet.getLong("seed"));
-        this.totalTimeInWorld = dataSet.getLong("total_time");
+        this.totalTimeInWorld = dataSet.getInt("total_time");
         this.currentWorldTime = dataSet.getInt("curr_time");
     }
 
@@ -364,7 +377,7 @@ public class World implements IWorld{
             Log.info("Loading player with unique id "+id+"!");
         }
         else{
-            player.resetAndSpawn();
+            player.resetAndSpawn(Game.get());
             Log.info("Adding new player with unique id "+id+" to world!");
         }
 
