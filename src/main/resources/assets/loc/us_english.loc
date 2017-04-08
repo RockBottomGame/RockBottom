@@ -6,8 +6,7 @@ name.torch=Torch
 info.layer_placement=Can be placed in %s
 info.health=Health
 info.dead=You died!
-info.hardware_cursor_1=If the in-game cursor should be replaced by the operating system's cursor
-info.hardware_cursor_2=&6Requires Restart
+info.hardware_cursor=If the in-game cursor should be replaced by the operating system's cursor
 info.autosave_interval=The amount of seconds before the world is automatically saved
 
 button.back=Back

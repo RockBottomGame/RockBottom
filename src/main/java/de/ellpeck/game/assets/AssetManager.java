@@ -5,10 +5,7 @@ import de.ellpeck.game.assets.font.AssetFont;
 import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.assets.local.AssetLocale;
 import de.ellpeck.game.assets.local.Locale;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.ImageBuffer;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
+import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
 import java.io.InputStream;
@@ -56,8 +53,22 @@ public class AssetManager{
         this.currentLocale = this.getLocale("us_english");
         this.currentFont = this.getFont("default");
 
-        if(!game.settings.hardwareCursor){
-            game.getContainer().setMouseCursor(this.getImage("gui.cursor").getScaledCopy(game.settings.cursorScale), 0, 0);
+        this.reloadCursor(game);
+    }
+
+    public void reloadCursor(Game game){
+        try{
+            GameContainer container = game.getContainer();
+
+            if(!game.settings.hardwareCursor){
+                container.setMouseCursor(this.getImage("gui.cursor").getScaledCopy(game.settings.cursorScale), 0, 0);
+            }
+            else{
+                container.setDefaultMouseCursor();
+            }
+        }
+        catch(SlickException e){
+            Log.error("Could not set mouse cursor!", e);
         }
     }
 

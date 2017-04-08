@@ -19,7 +19,7 @@ public class GuiSettings extends Gui{
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, this.sizeX, 16, game.assetManager.localize("button.controls")));
 
-        this.components.add(new ComponentToggleButton(this, 1, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.settings.hardwareCursor, "button.hardware_cursor", game.assetManager.localize("info.hardware_cursor_1"), game.assetManager.localize("info.hardware_cursor_2")));
+        this.components.add(new ComponentToggleButton(this, 1, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.settings.hardwareCursor, "button.hardware_cursor", game.assetManager.localize("info.hardware_cursor")));
         this.components.add(new ComponentSlider(this, 1, this.guiLeft, this.guiTop+40, this.sizeX, 16, game.settings.autosaveIntervalSeconds, 10, 300, number -> game.settings.autosaveIntervalSeconds = number, game.assetManager.localize("button.autosave_interval"), game.assetManager.localize("info.autosave_interval")));
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
@@ -36,6 +36,7 @@ public class GuiSettings extends Gui{
         }
         else if(button == 1){
             game.settings.hardwareCursor = !game.settings.hardwareCursor;
+            game.assetManager.reloadCursor(game);
         }
         return false;
     }

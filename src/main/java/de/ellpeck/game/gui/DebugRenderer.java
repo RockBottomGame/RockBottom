@@ -59,7 +59,7 @@ public final class DebugRenderer{
         for(int i = 0; i < list.size(); i++){
             String s = list.get(i);
             if(!s.isEmpty()){
-                manager.getFont().drawString(10F, 10F+i*20, s, 0.8F);
+                manager.getFont().drawString(10F, 70F+i*20, s, 0.8F);
             }
         }
     }
