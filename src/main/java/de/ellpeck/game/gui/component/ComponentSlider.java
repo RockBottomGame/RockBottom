@@ -13,6 +13,8 @@ public class ComponentSlider extends ComponentButton{
     private final int max;
     private int number;
 
+    private boolean wasMouseDown;
+
     public ComponentSlider(Gui gui, int id, int x, int y, int sizeX, int sizeY, int initialNumber, int min, int max, ICallback callback, String text, String... hover){
         super(gui, id, x, y, sizeX, sizeY, text, hover);
         this.min = min;
@@ -42,26 +44,49 @@ public class ComponentSlider extends ComponentButton{
 
     @Override
     public void update(Game game){
-        if(game.getContainer().getInput().isMouseButtonDown(game.settings.buttonGuiAction1)){
-            if(this.isMouseOver(game)){
-                this.onClickOrMove(game.getMouseInGuiX());
+        boolean isMouseDown = game.getContainer().getInput().isMouseButtonDown(game.settings.buttonGuiAction1);
+        float mouseX = game.getMouseInGuiX();
+        float mouseY = game.getMouseInGuiY();
+
+        if(isMouseDown){
+            if(this.wasMouseDown || this.isMouseOver(game)){
+                this.onClickOrMove(mouseX, mouseY);
+
+                if(!this.wasMouseDown){
+                    this.callback.onFirstClick(mouseX, mouseY, this.number);
+                    this.wasMouseDown = true;
+                }
             }
+        }
+        else if(this.wasMouseDown){
+            this.callback.onLetGo(mouseX, mouseY, this.number);
+            this.wasMouseDown = false;
         }
     }
 
-    private void onClickOrMove(float mouseX){
+    private void onClickOrMove(float mouseX, float mouseY){
         float clickPercentage = (mouseX-this.x)/(float)this.sizeX;
         int number = Math.max(this.min, Math.min(this.max, (int)(clickPercentage*(this.max-this.min+1)+this.min)));
 
         if(number != this.number){
             this.number = number;
 
-            this.callback.onNumberSet(number);
+            this.callback.onNumberChange(mouseX, mouseY, this.number);
         }
     }
 
     public interface ICallback{
 
-        void onNumberSet(int number);
+        default void onNumberChange(float mouseX, float mouseY, int number){
+
+        }
+
+        default void onFirstClick(float mouseX, float mouseY, int number){
+
+        }
+
+        default void onLetGo(float mouseX, float mouseY, int number){
+
+        }
     }
 }

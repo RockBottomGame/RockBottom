@@ -395,7 +395,12 @@ public class Chunk implements IWorld{
     }
 
     @Override
-    public boolean isLoaded(int x, int y){
+    public boolean isPosLoaded(int x, int y){
+        return true;
+    }
+
+    @Override
+    public boolean isChunkLoaded(int x, int y){
         return true;
     }
 

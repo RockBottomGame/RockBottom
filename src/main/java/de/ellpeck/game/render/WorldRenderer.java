@@ -59,44 +59,56 @@ public class WorldRenderer{
 
         List<Entity> entities = new ArrayList<>();
 
-        for(int gridX = -Constants.CHUNK_RENDER_DISTANCE; gridX <= Constants.CHUNK_RENDER_DISTANCE; gridX++){
-            for(int gridY = -Constants.CHUNK_RENDER_DISTANCE; gridY <= Constants.CHUNK_RENDER_DISTANCE; gridY++){
-                Chunk chunk = world.getChunkFromGridCoords(player.chunkX+gridX, player.chunkY+gridY);
+        int topLeftX = MathUtil.toGridPos(worldAtScreenX);
+        int topLeftY = MathUtil.toGridPos(-worldAtScreenY);
+        int bottomRightX = MathUtil.toGridPos(worldAtScreenX+width);
+        int bottomRightY = MathUtil.toGridPos(-worldAtScreenY-height);
 
-                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        int tileX = chunk.x+x;
-                        int tileY = chunk.y+y;
+        int minX = Math.min(topLeftX, bottomRightX);
+        int minY = Math.min(topLeftY, bottomRightY);
+        int maxX = Math.max(topLeftX, bottomRightX);
+        int maxY = Math.max(topLeftY, bottomRightY);
 
-                        if(tileX >= worldAtScreenX-1 && -tileY >= worldAtScreenY-1 && tileX < worldAtScreenX+width && -tileY < worldAtScreenY+height){
-                            Tile tile = chunk.getTileInner(x, y);
-                            byte light = chunk.getCombinedLightInner(x, y);
+        for(int gridX = minX; gridX <= maxX; gridX++){
+            for(int gridY = minY; gridY <= maxY; gridY++){
+                if(world.isChunkLoaded(gridX, gridY)){
+                    Chunk chunk = world.getChunkFromGridCoords(gridX, gridY);
 
-                            if(!tile.isFullTile()){
-                                Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
-                                ITileRenderer rendererBack = tileBack.getRenderer();
-                                if(rendererBack != null){
-                                    rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX, -tileY, BACKGROUND_COLORS[light]);
+                    for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                        for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                            int tileX = chunk.x+x;
+                            int tileY = chunk.y+y;
 
-                                    if(input.breakingLayer == TileLayer.BACKGROUND){
+                            if(tileX >= worldAtScreenX-1 && -tileY >= worldAtScreenY-1 && tileX < worldAtScreenX+width && -tileY < worldAtScreenY+height){
+                                Tile tile = chunk.getTileInner(x, y);
+                                byte light = chunk.getCombinedLightInner(x, y);
+
+                                if(!tile.isFullTile()){
+                                    Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
+                                    ITileRenderer rendererBack = tileBack.getRenderer();
+                                    if(rendererBack != null){
+                                        rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX, -tileY, BACKGROUND_COLORS[light]);
+
+                                        if(input.breakingLayer == TileLayer.BACKGROUND){
+                                            this.doBreakAnimation(input, manager, tileX, tileY);
+                                        }
+                                    }
+                                }
+
+                                ITileRenderer renderer = tile.getRenderer();
+                                if(renderer != null){
+                                    renderer.render(game, manager, g, world, tile, tileX, tileY, tileX, -tileY, MAIN_COLORS[light]);
+
+                                    if(input.breakingLayer == TileLayer.MAIN){
                                         this.doBreakAnimation(input, manager, tileX, tileY);
                                     }
                                 }
                             }
-
-                            ITileRenderer renderer = tile.getRenderer();
-                            if(renderer != null){
-                                renderer.render(game, manager, g, world, tile, tileX, tileY, tileX, -tileY, MAIN_COLORS[light]);
-
-                                if(input.breakingLayer == TileLayer.MAIN){
-                                    this.doBreakAnimation(input, manager, tileX, tileY);
-                                }
-                            }
                         }
                     }
-                }
 
-                entities.addAll(chunk.getAllEntities());
+                    entities.addAll(chunk.getAllEntities());
+                }
             }
         }
 

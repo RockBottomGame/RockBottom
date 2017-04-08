@@ -18,10 +18,16 @@ public class GuiManager{
 
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private Gui gui;
+    public boolean shouldReInit;
 
     public GuiManager(EntityPlayer player){
-        Game game = Game.get();
+        this.initPermanentComponents(Game.get(), player);
+    }
+
+    private void initPermanentComponents(Game game, EntityPlayer player){
         double width = game.getWidthInGui();
+
+        this.onScreenComponents.clear();
 
         for(int i = 0; i < 8; i++){
             int x = (int)(width/2-59.25+i*15);
@@ -56,6 +62,16 @@ public class GuiManager{
     }
 
     public void update(Game game){
+        if(this.shouldReInit){
+            this.initPermanentComponents(game, game.player);
+
+            if(this.gui != null){
+                this.gui.initGui(game);
+            }
+
+            this.shouldReInit = false;
+        }
+
         if(this.gui != null){
             this.gui.update(game);
         }

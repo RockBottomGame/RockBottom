@@ -2,6 +2,7 @@ package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -52,9 +53,12 @@ public final class DebugRenderer{
         list.add("Mouse:");
         list.add("ScreenPos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);
-        list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
-        list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
-        list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));
+        list.add("ChunkPos: "+MathUtil.toGridPos(x)+", "+MathUtil.toGridPos(y));
+        if(world.isPosLoaded(x, y)){
+            list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
+            list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
+            list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));
+        }
 
         for(int i = 0; i < list.size(); i++){
             String s = list.get(i);

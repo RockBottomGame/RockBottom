@@ -18,6 +18,9 @@ button.hardware_cursor_toggled=Hardware Cursor On
 button.menu=Menu
 button.inventory=Bag
 button.autosave_interval=Autosave Interval
+button.gui_scale=Gui Scale
+button.cursor_scale=Cursor Scale
+button.render_scale=World Render Scale
 
 layer.main=Foreground
 layer.background=Background

@@ -2,7 +2,6 @@ package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
-import de.ellpeck.game.gui.GuiManager;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.entity.IEntityRenderer;
@@ -73,7 +72,10 @@ public class EntityPlayer extends EntityLiving{
         this.motionY = 0;
         this.fallAmount = 0;
         this.health = this.getMaxHealth();
-        game.guiManager.closeGui();
+
+        if(game.guiManager != null){
+            game.guiManager.closeGui();
+        }
 
         this.setPos(this.world.spawnX, this.world.spawnY);
     }

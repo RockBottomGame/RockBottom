@@ -61,7 +61,9 @@ public interface IWorld{
 
     void setArtificialLight(int x, int y, byte light);
 
-    boolean isLoaded(int x, int y);
+    boolean isPosLoaded(int x, int y);
+
+    boolean isChunkLoaded(int x, int y);
 
     void scheduleUpdate(int x, int y, TileLayer layer, int time);
 

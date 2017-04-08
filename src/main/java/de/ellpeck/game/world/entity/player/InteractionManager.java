@@ -69,73 +69,75 @@ public class InteractionManager{
                 this.player.kill();
             }
 
-            TileLayer layer = input.isKeyDown(game.settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
-            ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
+            if(this.player.world.isPosLoaded(this.mousedTileX, this.mousedTileY)){
+                TileLayer layer = input.isKeyDown(game.settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
+                ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
 
-            if(input.isMouseButtonDown(game.settings.buttonDestroy)){
-                if(this.breakTileX != this.mousedTileX || this.breakTileY != this.mousedTileY){
-                    this.breakProgress = 0;
-                }
+                if(input.isMouseButtonDown(game.settings.buttonDestroy)){
+                    if(this.breakTileX != this.mousedTileX || this.breakTileY != this.mousedTileY){
+                        this.breakProgress = 0;
+                    }
 
-                Tile tile = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
-                if(tile.canBreak(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
-                    float hardness = tile.getHardness(this.player.world, this.mousedTileX, this.mousedTileY, layer);
-                    float progressAmount = 0.05F/hardness;
+                    Tile tile = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
+                    if(tile.canBreak(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
+                        float hardness = tile.getHardness(this.player.world, this.mousedTileX, this.mousedTileY, layer);
+                        float progressAmount = 0.05F/hardness;
 
-                    if(selected != null){
-                        Map<ToolType, Integer> tools = selected.getItem().getToolTypes(selected);
-                        if(!tools.isEmpty()){
-                            for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                                int level = entry.getValue();
+                        if(selected != null){
+                            Map<ToolType, Integer> tools = selected.getItem().getToolTypes(selected);
+                            if(!tools.isEmpty()){
+                                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                                    int level = entry.getValue();
 
-                                if(tile.isToolEffective(this.player.world, this.mousedTileX, this.mousedTileY, layer, entry.getKey(), level)){
-                                    progressAmount += level/200F;
+                                    if(tile.isToolEffective(this.player.world, this.mousedTileX, this.mousedTileY, layer, entry.getKey(), level)){
+                                        progressAmount += level/200F;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    this.breakProgress += progressAmount;
+                        this.breakProgress += progressAmount;
 
-                    if(this.breakProgress >= 1){
-                        this.breakProgress = 0;
+                        if(this.breakProgress >= 1){
+                            this.breakProgress = 0;
 
-                        this.player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, this.player);
+                            this.player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, this.player);
+                        }
+                        else{
+                            this.breakTileX = this.mousedTileX;
+                            this.breakTileY = this.mousedTileY;
+                            this.breakingLayer = layer;
+                        }
                     }
                     else{
-                        this.breakTileX = this.mousedTileX;
-                        this.breakTileY = this.mousedTileY;
-                        this.breakingLayer = layer;
+                        this.breakProgress = 0;
                     }
                 }
                 else{
                     this.breakProgress = 0;
                 }
-            }
-            else{
-                this.breakProgress = 0;
-            }
 
-            if(this.placeCooldown <= 0){
-                if(input.isMouseButtonDown(game.settings.buttonPlace)){
-                    Tile tileThere = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
-                    if(layer != TileLayer.MAIN || !tileThere.onInteractWith(this.player.world, this.mousedTileX, this.mousedTileY, this.player)){
-                        if(selected != null){
-                            Item item = selected.getItem();
-                            if(item instanceof ItemTile){
-                                if(layer != TileLayer.MAIN || this.player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1), PLACEMENT_TEST).isEmpty()){
-                                    Tile tile = ((ItemTile)item).getTile();
-                                    if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer, tile)){
-                                        if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
+                if(this.placeCooldown <= 0){
+                    if(input.isMouseButtonDown(game.settings.buttonPlace)){
+                        Tile tileThere = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
+                        if(layer != TileLayer.MAIN || !tileThere.onInteractWith(this.player.world, this.mousedTileX, this.mousedTileY, this.player)){
+                            if(selected != null){
+                                Item item = selected.getItem();
+                                if(item instanceof ItemTile){
+                                    if(layer != TileLayer.MAIN || this.player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1), PLACEMENT_TEST).isEmpty()){
+                                        Tile tile = ((ItemTile)item).getTile();
+                                        if(tileThere.canReplace(this.player.world, this.mousedTileX, this.mousedTileY, layer, tile)){
+                                            if(tile.canPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
 
-                                            tile.doPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer, selected, this.player);
+                                                tile.doPlace(this.player.world, this.mousedTileX, this.mousedTileY, layer, selected, this.player);
 
-                                            selected.remove(1);
-                                            if(selected.getAmount() <= 0){
-                                                this.player.inv.set(this.player.inv.selectedSlot, null);
+                                                selected.remove(1);
+                                                if(selected.getAmount() <= 0){
+                                                    this.player.inv.set(this.player.inv.selectedSlot, null);
+                                                }
+
+                                                this.placeCooldown = 5;
                                             }
-
-                                            this.placeCooldown = 5;
                                         }
                                     }
                                 }
@@ -143,9 +145,9 @@ public class InteractionManager{
                         }
                     }
                 }
-            }
-            else{
-                this.placeCooldown--;
+                else{
+                    this.placeCooldown--;
+                }
             }
 
             int scroll = Mouse.getDWheel();

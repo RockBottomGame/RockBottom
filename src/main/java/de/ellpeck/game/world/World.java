@@ -239,8 +239,13 @@ public class World implements IWorld{
     }
 
     @Override
-    public boolean isLoaded(int x, int y){
-        return this.chunkLookup.containsKey(new Vec2(MathUtil.toGridPos(x), MathUtil.toGridPos(y)));
+    public boolean isChunkLoaded(int x, int y){
+        return this.chunkLookup.containsKey(new Vec2(x, y));
+    }
+
+    @Override
+    public boolean isPosLoaded(int x, int y){
+        return this.isChunkLoaded(MathUtil.toGridPos(x), MathUtil.toGridPos(y));
     }
 
     @Override
@@ -263,6 +268,7 @@ public class World implements IWorld{
         Chunk chunk = this.chunkLookup.get(new Vec2(gridX, gridY));
 
         if(chunk == null){
+            System.out.println("Getting unloaded chunk at "+gridX+" "+gridY+"!");
             chunk = new Chunk(this, gridX, gridY);
             this.loadedChunks.add(chunk);
             this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
@@ -456,7 +462,7 @@ public class World implements IWorld{
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 
-            if(this.isLoaded(dirX, dirY)){
+            if(this.isPosLoaded(dirX, dirY)){
                 byte light = isSky ? this.getSkyLight(dirX, dirY) : this.getArtificialLight(dirX, dirY);
                 if(light > maxLight){
                     maxLight = light;

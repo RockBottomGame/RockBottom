@@ -31,7 +31,7 @@ public class Game extends BasicGame{
     public DataManager dataManager;
     public Settings settings;
 
-    private EntityPlayer player;
+    public EntityPlayer player;
     public GuiManager guiManager;
     public InteractionManager interactionManager;
 
