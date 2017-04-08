@@ -5,6 +5,7 @@ import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.item.Item;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.item.ItemTile;
+import de.ellpeck.game.item.ToolType;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.MathUtil;
@@ -15,6 +16,7 @@ import de.ellpeck.game.world.tile.Tile;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class InteractionManager{
@@ -68,6 +70,7 @@ public class InteractionManager{
             }
 
             TileLayer layer = input.isKeyDown(game.settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
+            ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
 
             if(input.isMouseButtonDown(game.settings.buttonDestroy)){
                 if(this.breakTileX != this.mousedTileX || this.breakTileY != this.mousedTileY){
@@ -76,7 +79,23 @@ public class InteractionManager{
 
                 Tile tile = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
                 if(tile.canBreak(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
-                    this.breakProgress += 0.05F/tile.getHardness(this.player.world, this.mousedTileX, this.mousedTileY, layer);
+                    float hardness = tile.getHardness(this.player.world, this.mousedTileX, this.mousedTileY, layer);
+                    float progressAmount = 0.05F/hardness;
+
+                    if(selected != null){
+                        Map<ToolType, Integer> tools = selected.getItem().getToolTypes(selected);
+                        if(!tools.isEmpty()){
+                            for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                                int level = entry.getValue();
+
+                                if(tile.isToolEffective(this.player.world, this.mousedTileX, this.mousedTileY, layer, entry.getKey(), level)){
+                                    progressAmount += level/200F;
+                                }
+                            }
+                        }
+                    }
+
+                    this.breakProgress += progressAmount;
 
                     if(this.breakProgress >= 1){
                         this.breakProgress = 0;
@@ -101,7 +120,6 @@ public class InteractionManager{
                 if(input.isMouseButtonDown(game.settings.buttonPlace)){
                     Tile tileThere = this.player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
                     if(layer != TileLayer.MAIN || !tileThere.onInteractWith(this.player.world, this.mousedTileX, this.mousedTileY, this.player)){
-                        ItemInstance selected = this.player.inv.get(this.player.inv.selectedSlot);
                         if(selected != null){
                             Item item = selected.getItem();
                             if(item instanceof ItemTile){

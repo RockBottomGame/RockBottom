@@ -144,7 +144,7 @@ public class Gui{
                 boxWidth = length;
             }
 
-            if(firstLineOffset && boxHeight == 0F){
+            if(firstLineOffset && boxHeight == 0F && text.size() > 1){
                 boxHeight += 3F;
             }
             boxHeight += font.getHeight(scale);

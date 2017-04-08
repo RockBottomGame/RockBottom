@@ -14,7 +14,7 @@ public class ItemTile extends Item{
     private final IItemRenderer renderer;
 
     public ItemTile(int id, String name){
-        super(id, name);
+        super(id, name, false);
         this.renderer = new ItemTileRenderer();
     }
 

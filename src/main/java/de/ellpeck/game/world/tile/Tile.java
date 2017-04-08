@@ -17,7 +17,9 @@ import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Tile{
 
@@ -26,7 +28,7 @@ public class Tile{
     protected final int id;
     protected final String name;
 
-    protected ToolType[] effectiveTools = new ToolType[0];
+    protected Map<ToolType, Integer> effectiveTools = new HashMap<>();
     protected float hardness = 1F;
 
     public Tile(int id, String name){
@@ -200,12 +202,17 @@ public class Tile{
         return this;
     }
 
-    public ToolType[] getEffectiveTools(World world, int x, int y, TileLayer layer){
-        return this.effectiveTools;
+    public boolean isToolEffective(World world, int x, int y, TileLayer layer, ToolType type, int level){
+        for(Map.Entry<ToolType, Integer> entry : this.effectiveTools.entrySet()){
+            if(entry.getKey() == type && level >= entry.getValue()){
+                return true;
+            }
+        }
+        return false;
     }
 
-    public Tile setEffectiveTools(ToolType... types){
-        this.effectiveTools = types;
+    public Tile addEffectiveTool(ToolType type, int level){
+        this.effectiveTools.put(type, level);
         return this;
     }
 

@@ -13,9 +13,11 @@ public class ItemTileRenderer implements IItemRenderer<ItemTile>{
     @Override
     public void render(Game game, AssetManager manager, Graphics g, ItemTile item, float x, float y, float scale, Color filter){
         Tile tile = item.getTile();
-        ITileRenderer renderer = tile.getRenderer();
-        if(renderer != null){
-            renderer.renderItem(game, manager, g, tile, x, y, scale, filter);
+        if(tile != null){
+            ITileRenderer renderer = tile.getRenderer();
+            if(renderer != null){
+                renderer.renderItem(game, manager, g, tile, x, y, scale, filter);
+            }
         }
     }
 }

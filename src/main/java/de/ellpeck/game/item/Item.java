@@ -1,18 +1,27 @@
 package de.ellpeck.game.item;
 
+import de.ellpeck.game.Constants;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.render.item.IItemRenderer;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Item{
+
+    protected int maxAmount = 999;
 
     protected final String name;
     protected final int id;
 
     public Item(int id, String name){
-        this.id = id;
+        this(id, name, true);
+    }
+
+    public Item(int id, String name, boolean shift){
+        this.id = shift ? Constants.ITEM_ID_OFFSET+id : id;
         this.name = name;
     }
 
@@ -35,7 +44,7 @@ public class Item{
     }
 
     public int getMaxAmount(){
-        return 999;
+        return this.maxAmount;
     }
 
     public String getName(){
@@ -57,5 +66,9 @@ public class Item{
 
     public int getDespawnTime(ItemInstance instance){
         return 24000;
+    }
+
+    public Map<ToolType, Integer> getToolTypes(ItemInstance instance){
+        return Collections.emptyMap();
     }
 }

@@ -16,7 +16,7 @@ public interface IItemRenderer<T extends Item>{
         Gui.drawScaledImage(g, manager.getImage("gui.slot"), x, y, scale, Gui.GUI_COLOR);
 
         if(slot != null){
-            IItemRenderer.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale);
+            renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale);
         }
     }
 
