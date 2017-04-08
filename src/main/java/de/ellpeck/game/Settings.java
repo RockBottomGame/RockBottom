@@ -33,7 +33,6 @@ public class Settings{
     public int buttonGuiAction2;
 
     public int[] keysItemSelection = new int[8];
-    public int keyDebug;
 
     public Settings(Properties props){
         this.props = props;
@@ -61,7 +60,6 @@ public class Settings{
         for(int i = 0; i < this.keysItemSelection.length; i++){
             this.keysItemSelection[i] = this.getProp("key_item_select_"+i, defaultKeys[i]);
         }
-        this.keyDebug = this.getProp("key_debug", Input.KEY_F1);
     }
 
     public Properties save(){
@@ -87,7 +85,6 @@ public class Settings{
         for(int i = 0; i < this.keysItemSelection.length; i++){
             this.setProp("key_item_select_"+i, this.keysItemSelection[i]);
         }
-        this.setProp("key_debug", this.keyDebug);
 
         return this.props;
     }

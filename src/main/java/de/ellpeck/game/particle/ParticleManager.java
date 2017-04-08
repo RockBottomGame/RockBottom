@@ -1,11 +1,13 @@
 package de.ellpeck.game.particle;
 
+import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.render.WorldRenderer;
 import de.ellpeck.game.util.MathUtil;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.tile.Tile;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class ParticleManager{
     public void render(Game game, AssetManager manager, Graphics g, World world){
         this.particles.forEach(particle -> {
             int light = world.getCombinedLight(MathUtil.floor(particle.x), MathUtil.floor(particle.y));
-            particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F, WorldRenderer.MAIN_COLORS[light]);
+            particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F, WorldRenderer.MAIN_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
         });
     }
 

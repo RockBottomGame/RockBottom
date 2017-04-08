@@ -48,7 +48,7 @@ public class WorldRenderer{
         g.scale(game.settings.renderScale, game.settings.renderScale);
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
-        g.setBackground(SKY_COLORS[skyLight]);
+        g.setBackground(SKY_COLORS[game.isLightDebug ? SKY_COLORS.length-1 : skyLight]);
 
         double width = game.getWidthInWorld();
         double height = game.getHeightInWorld();
@@ -87,7 +87,7 @@ public class WorldRenderer{
                                     Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
                                     ITileRenderer rendererBack = tileBack.getRenderer();
                                     if(rendererBack != null){
-                                        rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX, -tileY, BACKGROUND_COLORS[light]);
+                                        rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX, -tileY, BACKGROUND_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
 
                                         if(input.breakingLayer == TileLayer.BACKGROUND){
                                             this.doBreakAnimation(input, manager, tileX, tileY);
@@ -97,7 +97,7 @@ public class WorldRenderer{
 
                                 ITileRenderer renderer = tile.getRenderer();
                                 if(renderer != null){
-                                    renderer.render(game, manager, g, world, tile, tileX, tileY, tileX, -tileY, MAIN_COLORS[light]);
+                                    renderer.render(game, manager, g, world, tile, tileX, tileY, tileX, -tileY, MAIN_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
 
                                     if(input.breakingLayer == TileLayer.MAIN){
                                         this.doBreakAnimation(input, manager, tileX, tileY);
@@ -117,7 +117,7 @@ public class WorldRenderer{
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
                     int light = world.getCombinedLight(MathUtil.floor(entity.x), MathUtil.floor(entity.y));
-                    renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[light]);
+                    renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
                 }
             }
         });

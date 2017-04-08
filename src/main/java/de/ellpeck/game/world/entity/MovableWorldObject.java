@@ -34,47 +34,45 @@ public abstract class MovableWorldObject{
             double motionYBefore = motionY;
 
             BoundBox ownBox = this.getBoundingBox();
-            if(!ownBox.isEmpty()){
-                BoundBox tempBox = ownBox.copy().add(this.x+motionX, this.y+motionY);
-                List<BoundBox> boxes = this.world.getCollisions(tempBox);
+            BoundBox tempBox = ownBox.copy().add(this.x+motionX, this.y+motionY);
+            List<BoundBox> boxes = this.world.getCollisions(tempBox);
 
-                if(motionY != 0){
-                    if(!boxes.isEmpty()){
-                        BoundBox currBox = tempBox.set(ownBox).add(this.x, this.y);
+            if(motionY != 0){
+                if(!boxes.isEmpty()){
+                    BoundBox currBox = tempBox.set(ownBox).add(this.x, this.y);
 
-                        for(BoundBox box : boxes){
-                            if(motionY != 0){
-                                if(!box.isEmpty()){
-                                    motionY = box.getYDistanceWithMax(currBox, motionY);
-                                }
-                            }
-                            else{
-                                break;
+                    for(BoundBox box : boxes){
+                        if(motionY != 0){
+                            if(!box.isEmpty()){
+                                motionY = box.getYDistanceWithMax(currBox, motionY);
                             }
                         }
-                    }
-
-                    this.y += motionY;
-                }
-
-                if(motionX != 0){
-                    if(!boxes.isEmpty()){
-                        BoundBox currBox = tempBox.set(ownBox).add(this.x, this.y);
-
-                        for(BoundBox box : boxes){
-                            if(motionX != 0){
-                                if(!box.isEmpty()){
-                                    motionX = box.getXDistanceWithMax(currBox, motionX);
-                                }
-                            }
-                            else{
-                                break;
-                            }
+                        else{
+                            break;
                         }
                     }
-
-                    this.x += motionX;
                 }
+
+                this.y += motionY;
+            }
+
+            if(motionX != 0){
+                if(!boxes.isEmpty()){
+                    BoundBox currBox = tempBox.set(ownBox).add(this.x, this.y);
+
+                    for(BoundBox box : boxes){
+                        if(motionX != 0){
+                            if(!box.isEmpty()){
+                                motionX = box.getXDistanceWithMax(currBox, motionX);
+                            }
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                }
+
+                this.x += motionX;
             }
 
             this.collidedHor = motionX != motionXBefore;

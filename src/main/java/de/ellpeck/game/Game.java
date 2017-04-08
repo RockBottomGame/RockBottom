@@ -12,10 +12,7 @@ import de.ellpeck.game.render.WorldRenderer;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.entity.player.InteractionManager;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -48,7 +45,9 @@ public class Game extends BasicGame{
     private int fpsAccumulator;
 
     public UUID uniqueId;
+
     public boolean isDebug;
+    public boolean isLightDebug;
 
     public Game(){
         super("Game");
@@ -129,8 +128,12 @@ public class Game extends BasicGame{
                 this.openMenu();
                 return;
             }
-            else if(key == this.settings.keyDebug){
+            else if(key == Input.KEY_F1){
                 this.isDebug = !this.isDebug;
+                return;
+            }
+            else if(key == Input.KEY_F2){
+                this.isLightDebug = !this.isLightDebug;
                 return;
             }
             else if(key == this.settings.keyInventory.key){
