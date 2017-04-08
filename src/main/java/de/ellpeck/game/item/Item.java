@@ -17,11 +17,7 @@ public class Item{
     protected final int id;
 
     public Item(int id, String name){
-        this(id, name, true);
-    }
-
-    public Item(int id, String name, boolean shift){
-        this.id = shift ? Constants.ITEM_ID_OFFSET+id : id;
+        this.id = id;
         this.name = name;
     }
 
@@ -30,11 +26,11 @@ public class Item{
     }
 
     public int getId(){
-        return this.id;
+        return Constants.ITEM_ID_OFFSET+this.id;
     }
 
     public Item register(){
-        ContentRegistry.ITEM_REGISTRY.register(this.id, this);
+        ContentRegistry.ITEM_REGISTRY.register(this.getId(), this);
         return this;
     }
 
