@@ -268,7 +268,6 @@ public class World implements IWorld{
         Chunk chunk = this.chunkLookup.get(new Vec2(gridX, gridY));
 
         if(chunk == null){
-            System.out.println("Getting unloaded chunk at "+gridX+" "+gridY+"!");
             chunk = new Chunk(this, gridX, gridY);
             this.loadedChunks.add(chunk);
             this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
