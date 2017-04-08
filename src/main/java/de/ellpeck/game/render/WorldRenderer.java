@@ -60,7 +60,7 @@ public class WorldRenderer{
         List<Entity> entities = new ArrayList<>();
 
         int topLeftX = MathUtil.toGridPos(worldAtScreenX);
-        int topLeftY = MathUtil.toGridPos(-worldAtScreenY);
+        int topLeftY = MathUtil.toGridPos(-worldAtScreenY+1);
         int bottomRightX = MathUtil.toGridPos(worldAtScreenX+width);
         int bottomRightY = MathUtil.toGridPos(-worldAtScreenY-height);
 

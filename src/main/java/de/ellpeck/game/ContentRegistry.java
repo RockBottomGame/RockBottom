@@ -18,7 +18,7 @@ public final class ContentRegistry{
     public static final Tile TILE_AIR = new TileAir(0).register();
     public static final Tile TILE_DIRT = new TileDirt(1).addEffectiveTool(ToolType.SHOVEL, 1).register();
     public static final Tile TILE_ROCK = new TileBasic(2, "rock").setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
-    public static final Tile TILE_GRASS = new TileGrass(3).register();
+    public static final Tile TILE_GRASS = new TileGrass(3).addEffectiveTool(ToolType.SHOVEL, 1).register();
     public static final Tile TILE_SMELTER = new TileSmelter(4).register();
     public static final Tile TILE_TORCH = new TileTorch(5).setHardness(0F).register();
     //public static final Tile TILE_WATER = new TileLiquid(6, "water", 3).register();
