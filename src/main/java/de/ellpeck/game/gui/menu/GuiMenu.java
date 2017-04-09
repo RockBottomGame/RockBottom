@@ -17,12 +17,17 @@ public class GuiMenu extends Gui{
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, this.sizeX, 16, game.assetManager.localize("button.settings")));
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.close")));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, game.assetManager.localize("button.quit")));
+        this.components.add(new ComponentButton(this, -2, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.close")));
     }
 
     @Override
     public boolean onButtonActivated(Game game, int button){
         if(button == -1){
+            game.getContainer().exit();
+            return true;
+        }
+        else if(button == -2){
             game.guiManager.closeGui();
             return true;
         }

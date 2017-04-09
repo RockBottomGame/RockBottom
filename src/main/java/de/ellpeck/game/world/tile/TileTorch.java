@@ -41,16 +41,21 @@ public class TileTorch extends TileBasic{
 
     @Override
     public void onChangeAround(World world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        if(layer == changedLayer){
-            if(this.getPossibleTorchMeta(world, x, y) < 0){
-                world.destroyTile(x, y, layer, null);
-            }
+        int meta = this.getPossibleTorchMeta(world, x, y);
+        if(meta < 0){
+            world.destroyTile(x, y, layer, null);
+        }
+        else if(world.getMeta(x, y) != meta){
+            world.setMeta(x, y, meta);
         }
     }
 
     private int getPossibleTorchMeta(World world, int x, int y){
         if(world.getTile(x, y-1).isFullTile()){
             return 0;
+        }
+        else if(world.getTile(TileLayer.BACKGROUND, x, y).isFullTile()){
+            return 3;
         }
         else if(world.getTile(x-1, y).isFullTile()){
             return 1;

@@ -43,12 +43,19 @@ public class GuiSettings extends Gui{
             }
         }, game.assetManager.localize("button.render_scale")));
 
-        this.components.add(new ComponentSlider(this, 5, this.guiLeft, this.guiTop+60, 150, 16, game.settings.autosaveIntervalSeconds, 10, 300, new ICallback(){
+        this.components.add(new ComponentSlider(this, 5, this.guiLeft, this.guiTop+60, 150, 16, game.settings.autosaveIntervalSeconds, 30, 1800, new ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int number){
                 game.settings.autosaveIntervalSeconds = number;
             }
         }, game.assetManager.localize("button.autosave_interval"), game.assetManager.localize("info.autosave_interval")));
+        this.components.add(new ComponentSlider(this, 6, this.guiLeft+154, this.guiTop+60, 150, 16, game.settings.targetFps, 30, 500, new ICallback(){
+            @Override
+            public void onLetGo(float mouseX, float mouseY, int number){
+                game.settings.targetFps = number;
+                game.getContainer().setTargetFrameRate(number);
+            }
+        }, game.assetManager.localize("button.target_fps")));
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
     }

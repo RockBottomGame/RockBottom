@@ -17,7 +17,6 @@ public final class Main{
 
             container.setAlwaysRender(true);
             container.setShowFPS(false);
-            container.setTargetFrameRate(Constants.TARGET_FPS);
 
             int interval = 1000/Constants.TARGET_TPS;
             container.setMinimumLogicUpdateInterval(interval);

@@ -68,6 +68,7 @@ public class Game extends BasicGame{
         this.settings = this.dataManager.loadSettings();
 
         this.container = container;
+        this.container.setTargetFrameRate(this.settings.targetFps);
 
         this.assetManager = new AssetManager();
         this.assetManager.create(this);

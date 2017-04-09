@@ -24,6 +24,10 @@ public class TorchTileRenderer extends DefaultTileRenderer{
         else if(meta == 2){
             tex += ".right";
         }
+        else if(meta == 3){
+            tex+= ".back";
+        }
+
         manager.getImage(tex).draw(renderX, renderY, 1F, 1F, filter);
     }
 }

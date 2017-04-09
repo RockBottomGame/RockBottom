@@ -12,6 +12,7 @@ info.autosave_interval=The amount of seconds before the world is automatically s
 button.back=Back
 button.settings=Settings
 button.close=Close
+button.quit=Quit Game
 button.controls=Controls
 button.hardware_cursor=Hardware Cursor Off
 button.hardware_cursor_toggled=Hardware Cursor On
@@ -21,6 +22,7 @@ button.autosave_interval=Autosave Interval
 button.gui_scale=Gui Scale
 button.cursor_scale=Cursor Scale
 button.render_scale=World Render Scale
+button.target_fps=Target FPS
 
 layer.main=Foreground
 layer.background=Background
