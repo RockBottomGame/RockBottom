@@ -43,7 +43,7 @@ public class TileTorch extends TileBasic{
     public void onChangeAround(World world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         int meta = this.getPossibleTorchMeta(world, x, y);
         if(meta < 0){
-            world.destroyTile(x, y, layer, null);
+            world.destroyTile(x, y, layer, null, true);
         }
         else if(world.getMeta(x, y) != meta){
             world.setMeta(x, y, meta);

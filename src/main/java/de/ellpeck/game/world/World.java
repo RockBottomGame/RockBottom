@@ -400,11 +400,11 @@ public class World implements IWorld{
         }
     }
 
-    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer){
+    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean forceDrop){
         Tile tile = this.getTile(layer, x, y);
         int meta = this.getMeta(x, y);
 
-        tile.onDestroyed(this, x, y, destroyer, layer);
+        tile.onDestroyed(this, x, y, destroyer, layer, forceDrop);
 
         Game.get().particleManager.addTileParticles(this, x, y, tile, meta);
 

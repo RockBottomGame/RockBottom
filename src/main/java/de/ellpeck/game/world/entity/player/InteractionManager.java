@@ -82,6 +82,7 @@ public class InteractionManager{
                     if(tile.canBreak(this.player.world, this.mousedTileX, this.mousedTileY, layer)){
                         float hardness = tile.getHardness(this.player.world, this.mousedTileX, this.mousedTileY, layer);
                         float progressAmount = 0.05F/hardness;
+                        boolean isRightTool = false;
 
                         if(selected != null){
                             Map<ToolType, Integer> tools = selected.getItem().getToolTypes(selected);
@@ -91,6 +92,8 @@ public class InteractionManager{
 
                                     if(tile.isToolEffective(this.player.world, this.mousedTileX, this.mousedTileY, layer, entry.getKey(), level)){
                                         progressAmount += level/200F;
+                                        isRightTool = true;
+                                        break;
                                     }
                                 }
                             }
@@ -101,7 +104,7 @@ public class InteractionManager{
                         if(this.breakProgress >= 1){
                             this.breakProgress = 0;
 
-                            this.player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, this.player);
+                            this.player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, this.player, isRightTool);
                         }
                         else{
                             this.breakTileX = this.mousedTileX;

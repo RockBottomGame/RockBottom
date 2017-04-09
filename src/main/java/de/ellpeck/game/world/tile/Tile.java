@@ -29,6 +29,7 @@ public class Tile{
     protected final String name;
 
     protected Map<ToolType, Integer> effectiveTools = new HashMap<>();
+    protected boolean forceDrop;
     protected float hardness = 1F;
 
     public Tile(int id, String name){
@@ -128,11 +129,13 @@ public class Tile{
         return false;
     }
 
-    public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer){
-        List<ItemInstance> drops = this.getDrops(world, x, y, destroyer);
-        if(drops != null && !drops.isEmpty()){
-            for(ItemInstance inst : drops){
-                EntityItem.spawn(world, inst, x+0.5, y+0.5, world.rand.nextGaussian()*0.1, world.rand.nextGaussian()*0.1);
+    public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
+        if(forceDrop || this.forceDrop){
+            List<ItemInstance> drops = this.getDrops(world, x, y, destroyer);
+            if(drops != null && !drops.isEmpty()){
+                for(ItemInstance inst : drops){
+                    EntityItem.spawn(world, inst, x+0.5, y+0.5, world.rand.nextGaussian()*0.1, world.rand.nextGaussian()*0.1);
+                }
             }
         }
     }
@@ -199,6 +202,11 @@ public class Tile{
 
     public Tile setHardness(float hardness){
         this.hardness = hardness;
+        return this;
+    }
+
+    public Tile setForceDrop(){
+        this.forceDrop = true;
         return this;
     }
 

@@ -39,7 +39,7 @@ public class TileSmelter extends TileBasic{
     public void onChangeAround(World world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(layer == changedLayer){
             if(!world.getTile(layer, x, y-1).isFullTile()){
-                world.destroyTile(x, y, layer, null);
+                world.destroyTile(x, y, layer, null, true);
             }
         }
     }
