@@ -17,7 +17,7 @@ public class Gui{
 
     public static final Color GUI_COLOR = new Color(0x529652);
     private static final Color HOVER_INFO_BACKGROUND = new Color(0F, 0F, 0F, 0.8F);
-    public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.25F);
+    public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.5F);
 
     protected List<GuiComponent> components = new ArrayList<>();
 
@@ -27,16 +27,13 @@ public class Gui{
     public int guiLeft;
     public int guiTop;
 
-    protected final EntityPlayer player;
-
     protected final Gui parent;
 
-    public Gui(EntityPlayer player, int sizeX, int sizeY){
-        this(player, sizeX, sizeY, null);
+    public Gui(int sizeX, int sizeY){
+        this(sizeX, sizeY, null);
     }
 
-    public Gui(EntityPlayer player, int sizeX, int sizeY, Gui parent){
-        this.player = player;
+    public Gui(int sizeX, int sizeY, Gui parent){
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.parent = parent;
@@ -183,5 +180,9 @@ public class Gui{
 
     public boolean onButtonActivated(Game game, int button){
         return false;
+    }
+
+    public boolean hasGradient(){
+        return true;
     }
 }

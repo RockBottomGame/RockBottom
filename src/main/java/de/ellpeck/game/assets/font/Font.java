@@ -1,5 +1,6 @@
 package de.ellpeck.game.assets.font;
 
+import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.util.Vec2;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
@@ -16,8 +17,8 @@ import java.util.regex.Pattern;
 public class Font{
 
     private static final Pattern FORMATTING_PATTERN = Pattern.compile("&[a-z0-9]");
-    private static final Color[] COLORS_BY_FORMATTING_CODE = new Color[]{Color.black, Color.darkGray, Color.gray, Color.lightGray, Color.white, Color.yellow, Color.orange, Color.red, Color.pink, Color.magenta, Color.black, Color.green, Color.transparent};
-    private static final String FORMATTING_CODES = "0123456789abcde";
+    private static final Color[] COLORS_BY_FORMATTING_CODE = new Color[]{Color.black, Color.darkGray, Color.gray, Color.lightGray, Color.white, Color.yellow, Color.orange, Color.red, Color.pink, Color.magenta, Color.black, new Color(0F, 0.5F, 0F), Color.transparent};
+    private static final String FORMATTING_CODES = "0123456789abc";
 
     private final String name;
     private final Image image;
@@ -74,8 +75,24 @@ public class Font{
         this.drawString(x-this.getWidth(s, scale)/2F, centeredOnY ? (y-this.getHeight(scale)/2F) : y, s, scale);
     }
 
+    public void drawFadingString(float x, float y, String s, float scale, float fadeTotal, float fadeInEnd, float fadeOutStart){
+        Color color = new Color(Color.white);
+
+        if(fadeTotal <= fadeInEnd){
+            color.a *= fadeTotal/fadeInEnd;
+        }
+        else if(fadeTotal >= fadeOutStart){
+            color.a *= 1F-(fadeTotal-fadeOutStart)/(1F-fadeOutStart);
+        }
+
+        this.drawString(x, y, s, scale, color);
+    }
+
     public void drawString(float x, float y, String s, float scale){
-        Color color = Color.white;
+        this.drawString(x, y, s, scale, Color.white);
+    }
+
+    public void drawString(float x, float y, String s, float scale, Color color){
         float xOffset = 0F;
 
         char[] characters = s.toCharArray();

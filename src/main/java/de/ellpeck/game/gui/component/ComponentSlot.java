@@ -7,10 +7,8 @@ import de.ellpeck.game.gui.GuiContainer;
 import de.ellpeck.game.inventory.IInventory;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.item.IItemRenderer;
-import de.ellpeck.game.util.MathUtil;
-import org.newdawn.slick.Color;
+import de.ellpeck.game.util.Util;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +74,7 @@ public class ComponentSlot extends GuiComponent{
             else if(button == game.settings.buttonGuiAction2){
                 if(this.container.holdingInst == null){
                     if(slotInst != null){
-                        int half = MathUtil.ceil((double)slotInst.getAmount()/2);
+                        int half = Util.ceil((double)slotInst.getAmount()/2);
                         this.container.holdingInst = slotInst.copy().setAmount(half);
 
                         slotInst.remove(half);

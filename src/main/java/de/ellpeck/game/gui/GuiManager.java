@@ -5,7 +5,8 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentHotbarSlot;
 import de.ellpeck.game.gui.component.GuiComponent;
-import de.ellpeck.game.util.MathUtil;
+import de.ellpeck.game.gui.menu.MainMenuBackground;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -16,15 +17,25 @@ import java.util.List;
 
 public class GuiManager{
 
+    private MainMenuBackground background;
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private Gui gui;
     public boolean shouldReInit;
 
-    public GuiManager(EntityPlayer player){
-        this.initPermanentComponents(Game.get(), player);
+    public void reInitSelf(Game game){
+        if(game.isInWorld()){
+            this.initInWorldComponents(game, game.player);
+            this.background = null;
+        }
+        else{
+            this.onScreenComponents.clear();
+
+            this.background = new MainMenuBackground();
+            this.background.init(game);
+        }
     }
 
-    private void initPermanentComponents(Game game, EntityPlayer player){
+    private void initInWorldComponents(Game game, EntityPlayer player){
         double width = game.getWidthInGui();
 
         this.onScreenComponents.clear();
@@ -37,7 +48,7 @@ public class GuiManager{
         this.onScreenComponents.add(new ComponentButton(null, 0, (int)width-33, 3, 30, 10, game.assetManager.localize("button.menu")){
             @Override
             public boolean onPressed(Game game){
-                game.openMenu();
+                game.openIngameMenu();
                 return true;
             }
 
@@ -63,7 +74,7 @@ public class GuiManager{
 
     public void update(Game game){
         if(this.shouldReInit){
-            this.initPermanentComponents(game, game.player);
+            this.reInitSelf(game);
 
             if(this.gui != null){
                 this.gui.initGui(game);
@@ -75,20 +86,35 @@ public class GuiManager{
         if(this.gui != null){
             this.gui.update(game);
         }
+
+        if(this.background != null){
+            this.background.update(game);
+        }
     }
 
     public void render(Game game, AssetManager manager, Graphics g, EntityPlayer player){
         g.scale(game.settings.guiScale, game.settings.guiScale);
 
-        if(!player.isDead()){
+        if(player != null && player.isDead()){
+            String deathInfo = manager.localize("info.dead");
+            manager.getFont().drawCenteredString((float)game.getWidthInGui()/2F, (float)game.getHeightInGui()/2F, deathInfo, 2F, true);
+        }
+        else{
             this.onScreenComponents.forEach(comp -> comp.render(game, manager, g));
 
-            this.drawHealth(game, manager, g, player);
+            if(game.isInWorld()){
+                this.drawHealth(game, manager, g, player);
+            }
+            else{
+                this.background.render(game, manager, g);
+            }
 
             Gui gui = game.guiManager.getGui();
             if(gui != null){
-                g.setColor(Gui.GRADIENT);
-                g.fillRect(0F, 0F, (float)game.getWidthInGui(), (float)game.getHeightInGui());
+                if(gui.hasGradient()){
+                    g.setColor(Gui.GRADIENT);
+                    g.fillRect(0F, 0F, (float)game.getWidthInGui(), (float)game.getHeightInGui());
+                }
 
                 gui.render(game, manager, g);
                 gui.renderOverlay(game, manager, g);
@@ -97,15 +123,11 @@ public class GuiManager{
                 this.onScreenComponents.forEach(comp -> comp.renderOverlay(game, manager, g));
             }
         }
-        else{
-            String deathInfo = manager.localize("info.dead");
-            manager.getFont().drawCenteredString((float)game.getWidthInGui()/2F, (float)game.getHeightInGui()/2F, deathInfo, 2F, true);
-        }
     }
 
     private void drawHealth(Game game, AssetManager manager, Graphics g, EntityPlayer player){
-        int healthParts = MathUtil.floor(player.getHealth()/20);
-        int maxHealthParts = MathUtil.floor(player.getMaxHealth()/20);
+        int healthParts = Util.floor(player.getHealth()/20);
+        int maxHealthParts = Util.floor(player.getMaxHealth()/20);
 
         Image heart = manager.getImage("gui.heart");
         Image heartEmpty = manager.getImage("gui.heart_empty");

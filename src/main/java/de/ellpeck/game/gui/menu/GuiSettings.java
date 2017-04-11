@@ -6,12 +6,11 @@ import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentSlider;
 import de.ellpeck.game.gui.component.ComponentSlider.ICallback;
 import de.ellpeck.game.gui.component.ComponentToggleButton;
-import de.ellpeck.game.world.entity.player.EntityPlayer;
 
 public class GuiSettings extends Gui{
 
-    public GuiSettings(EntityPlayer player, Gui parent){
-        super(player, 304, 100, parent);
+    public GuiSettings(Gui parent){
+        super(304, 100, parent);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class GuiSettings extends Gui{
             return true;
         }
         else if(button == 0){
-            game.guiManager.openGui(new GuiKeybinds(this.player, this));
+            game.guiManager.openGui(new GuiKeybinds(this));
         }
         else if(button == 1){
             game.settings.hardwareCursor = !game.settings.hardwareCursor;

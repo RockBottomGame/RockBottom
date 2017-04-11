@@ -5,7 +5,7 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.util.MathUtil;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.util.Vec2;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
@@ -48,8 +48,8 @@ public class Chunk implements IWorld{
     public Chunk(World world, int gridX, int gridY){
         this.world = world;
 
-        this.x = MathUtil.toWorldPos(gridX);
-        this.y = MathUtil.toWorldPos(gridY);
+        this.x = Util.toWorldPos(gridX);
+        this.y = Util.toWorldPos(gridY);
         this.gridX = gridX;
         this.gridY = gridY;
 
@@ -96,8 +96,8 @@ public class Chunk implements IWorld{
                 i--;
             }
             else{
-                int newChunkX = MathUtil.toGridPos(entity.x);
-                int newChunkY = MathUtil.toGridPos(entity.y);
+                int newChunkX = Util.toGridPos(entity.x);
+                int newChunkY = Util.toGridPos(entity.y);
 
                 if(newChunkX != this.gridX || newChunkY != this.gridY){
                     this.removeEntity(entity);

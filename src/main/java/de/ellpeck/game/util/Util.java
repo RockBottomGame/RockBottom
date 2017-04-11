@@ -2,7 +2,9 @@ package de.ellpeck.game.util;
 
 import de.ellpeck.game.Constants;
 
-public final class MathUtil{
+import java.io.File;
+
+public final class Util{
 
     public static int floor(double value){
         int i = (int)value;
@@ -24,5 +26,14 @@ public final class MathUtil{
 
     public static int toWorldPos(int gridPos){
         return gridPos*Constants.CHUNK_SIZE;
+    }
+
+    public static void deleteFolder(File file) throws Exception{
+        if(file.isDirectory()){
+            for(File child : file.listFiles()){
+                deleteFolder(child);
+            }
+        }
+        file.delete();
     }
 }

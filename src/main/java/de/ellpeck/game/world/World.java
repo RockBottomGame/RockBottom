@@ -6,7 +6,7 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
-import de.ellpeck.game.util.MathUtil;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.util.Vec2;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
@@ -22,7 +22,6 @@ public class World implements IWorld{
 
     public final Random rand = new Random();
 
-    private long seed;
     public final Random generatorRandom = new Random();
 
     public final List<Chunk> loadedChunks = new ArrayList<>();
@@ -32,31 +31,19 @@ public class World implements IWorld{
 
     private final File chunksDirectory;
     private final File playerDirectory;
-
-    private final File dataFile;
-
-    public int totalTimeInWorld;
-    public int currentWorldTime;
     private int saveTicksCounter;
 
     public int spawnX = 0;
     public int spawnY = 20;
 
-    public World(File worldDirectory){
+    public WorldInfo info;
+
+    public World(File worldDirectory, WorldInfo info){
         this.chunksDirectory = new File(worldDirectory, "chunks");
         this.playerDirectory = new File(worldDirectory, "players");
-        this.dataFile = new File(worldDirectory, "world_info.dat");
 
-        this.load();
-    }
-
-    public void setSeed(long seed){
-        this.seed = seed;
-        this.generatorRandom.setSeed(seed);
-    }
-
-    public long getSeed(){
-        return this.seed;
+        this.info = info;
+        this.generatorRandom.setSeed(this.info.seed);
     }
 
     public void update(Game game){
@@ -87,11 +74,11 @@ public class World implements IWorld{
             }
         }
 
-        this.totalTimeInWorld++;
+        this.info.totalTimeInWorld++;
 
-        this.currentWorldTime++;
-        if(this.currentWorldTime >= Constants.TIME_PER_DAY){
-            this.currentWorldTime = 0;
+        this.info.currentWorldTime++;
+        if(this.info.currentWorldTime >= Constants.TIME_PER_DAY){
+            this.info.currentWorldTime = 0;
         }
 
         this.saveTicksCounter++;
@@ -175,10 +162,10 @@ public class World implements IWorld{
 
     @Override
     public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test){
-        int minChunkX = MathUtil.toGridPos(area.getMinX())-1;
-        int minChunkY = MathUtil.toGridPos(area.getMinY())-1;
-        int maxChunkX = MathUtil.toGridPos(area.getMaxX())+1;
-        int maxChunkY = MathUtil.toGridPos(area.getMaxY())+1;
+        int minChunkX = Util.toGridPos(area.getMinX())-1;
+        int minChunkY = Util.toGridPos(area.getMinY())-1;
+        int maxChunkX = Util.toGridPos(area.getMaxX())+1;
+        int maxChunkY = Util.toGridPos(area.getMaxY())+1;
 
         List<T> entities = new ArrayList<>();
         for(int x = minChunkX; x <= maxChunkX; x++){
@@ -194,8 +181,8 @@ public class World implements IWorld{
     public List<BoundBox> getCollisions(BoundBox area){
         List<BoundBox> collisions = new ArrayList<>();
 
-        for(int x = MathUtil.floor(area.getMinX()); x <= MathUtil.ceil(area.getMaxX()); x++){
-            for(int y = MathUtil.floor(area.getMinY()); y <= MathUtil.ceil(area.getMaxY()); y++){
+        for(int x = Util.floor(area.getMinX()); x <= Util.ceil(area.getMaxX()); x++){
+            for(int y = Util.floor(area.getMinY()); y <= Util.ceil(area.getMaxY()); y++){
                 Tile tile = this.getTile(x, y);
 
                 BoundBox box = tile.getBoundBox(this, x, y);
@@ -245,7 +232,7 @@ public class World implements IWorld{
 
     @Override
     public boolean isPosLoaded(int x, int y){
-        return this.isChunkLoaded(MathUtil.toGridPos(x), MathUtil.toGridPos(y));
+        return this.isChunkLoaded(Util.toGridPos(x), Util.toGridPos(y));
     }
 
     @Override
@@ -261,7 +248,7 @@ public class World implements IWorld{
     }
 
     public Chunk getChunk(double x, double y){
-        return this.getChunkFromGridCoords(MathUtil.toGridPos(x), MathUtil.toGridPos(y));
+        return this.getChunkFromGridCoords(Util.toGridPos(x), Util.toGridPos(y));
     }
 
     public Chunk getChunkFromGridCoords(int gridX, int gridY){
@@ -344,12 +331,7 @@ public class World implements IWorld{
             this.saveChunk(chunk);
         }
 
-        DataSet dataSet = new DataSet();
-        dataSet.addLong("seed", this.seed);
-        dataSet.addInt("total_time", this.totalTimeInWorld);
-        dataSet.addInt("curr_time", this.currentWorldTime);
-
-        dataSet.write(this.dataFile);
+        this.info.save();
 
         for(EntityPlayer player : this.players){
             DataSet playerSet = new DataSet();
@@ -359,15 +341,6 @@ public class World implements IWorld{
         }
 
         Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
-    }
-
-    public void load(){
-        DataSet dataSet = new DataSet();
-        dataSet.read(this.dataFile);
-
-        this.setSeed(dataSet.getLong("seed"));
-        this.totalTimeInWorld = dataSet.getInt("total_time");
-        this.currentWorldTime = dataSet.getInt("curr_time");
     }
 
     public EntityPlayer addPlayer(UUID id){
@@ -517,11 +490,41 @@ public class World implements IWorld{
 
     public float getSkylightModifier(){
         int noon = Constants.TIME_PER_DAY/2;
-        if(this.currentWorldTime <= noon){
-            return (float)this.currentWorldTime/(float)noon;
+        if(this.info.currentWorldTime <= noon){
+            return (float)this.info.currentWorldTime/(float)noon;
         }
         else{
-            return 1F-(float)(this.currentWorldTime-noon)/(float)noon;
+            return 1F-(float)(this.info.currentWorldTime-noon)/(float)noon;
+        }
+    }
+
+    public static class WorldInfo{
+
+        public final File dataFile;
+
+        public long seed;
+        public int totalTimeInWorld;
+        public int currentWorldTime;
+
+        public WorldInfo(File worldDirectory){
+            this.dataFile = new File(worldDirectory, "world_info.dat");
+        }
+
+        public void load(){
+            DataSet dataSet = new DataSet();
+            dataSet.read(this.dataFile);
+
+            this.seed = dataSet.getLong("seed");
+            this.totalTimeInWorld = dataSet.getInt("total_time");
+            this.currentWorldTime = dataSet.getInt("curr_time");
+        }
+
+        public void save(){
+            DataSet dataSet = new DataSet();
+            dataSet.addLong("seed", this.seed);
+            dataSet.addInt("total_time", this.totalTimeInWorld);
+            dataSet.addInt("curr_time", this.currentWorldTime);
+            dataSet.write(this.dataFile);
         }
     }
 }

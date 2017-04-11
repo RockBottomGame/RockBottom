@@ -10,10 +10,12 @@ import org.newdawn.slick.Graphics;
 
 public class GuiContainer extends Gui{
 
+    protected final EntityPlayer player;
     public ItemInstance holdingInst;
 
     public GuiContainer(EntityPlayer player, int sizeX, int sizeY){
-        super(player, sizeX, sizeY);
+        super(sizeX, sizeY);
+        this.player = player;
     }
 
     @Override

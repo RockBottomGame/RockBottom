@@ -2,7 +2,7 @@ package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
-import de.ellpeck.game.util.MathUtil;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -39,8 +39,8 @@ public final class DebugRenderer{
         }
         list.add("Random Update Tiles: "+updateTileAmount);
         list.add("Scheduled Tile Updates: "+scheduledTileAmount);
-        list.add("Seed: "+world.getSeed());
-        list.add("Time: Local "+world.currentWorldTime+" / Total "+world.totalTimeInWorld);
+        list.add("Seed: "+world.info.seed);
+        list.add("Time: Local "+world.info.currentWorldTime+" / Total "+world.info.totalTimeInWorld);
         list.add("");
 
         list.add("Player:");
@@ -53,7 +53,7 @@ public final class DebugRenderer{
         list.add("Mouse:");
         list.add("ScreenPos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);
-        list.add("ChunkPos: "+MathUtil.toGridPos(x)+", "+MathUtil.toGridPos(y));
+        list.add("ChunkPos: "+Util.toGridPos(x)+", "+Util.toGridPos(y));
         if(world.isPosLoaded(x, y)){
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
             list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));

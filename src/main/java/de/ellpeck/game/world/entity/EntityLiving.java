@@ -27,7 +27,7 @@ public abstract class EntityLiving extends Entity{
             this.kill();
         }
         else if(this.health < this.getMaxHealth()){
-            if(this.world.totalTimeInWorld%this.getRegenRate() == 0){
+            if(this.world.info.totalTimeInWorld%this.getRegenRate() == 0){
                 this.health++;
             }
         }

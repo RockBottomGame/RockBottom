@@ -229,7 +229,7 @@ public class Tile{
     }
 
     public float getTranslucentModifier(World world, int x, int y, TileLayer layer){
-        return this.isFullTile() ? (layer == TileLayer.BACKGROUND ? 0.85F : 0.75F) : 1F;
+        return this.isFullTile() ? (layer == TileLayer.BACKGROUND ? 0.9F : 0.8F) : 1F;
     }
 
     public boolean isAir(){

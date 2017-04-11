@@ -6,7 +6,7 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.tile.ITileRenderer;
-import de.ellpeck.game.util.MathUtil;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class WorldRenderer{
 
-    private static final Color[] SKY_COLORS = new Color[50];
+    public static final Color[] SKY_COLORS = new Color[50];
     public static final Color[] BACKGROUND_COLORS = new Color[Constants.MAX_LIGHT+1];
     public static final Color[] MAIN_COLORS = new Color[Constants.MAX_LIGHT+1];
 
@@ -59,10 +59,10 @@ public class WorldRenderer{
 
         List<Entity> entities = new ArrayList<>();
 
-        int topLeftX = MathUtil.toGridPos(worldAtScreenX);
-        int topLeftY = MathUtil.toGridPos(-worldAtScreenY+1);
-        int bottomRightX = MathUtil.toGridPos(worldAtScreenX+width);
-        int bottomRightY = MathUtil.toGridPos(-worldAtScreenY-height);
+        int topLeftX = Util.toGridPos(worldAtScreenX);
+        int topLeftY = Util.toGridPos(-worldAtScreenY+1);
+        int bottomRightX = Util.toGridPos(worldAtScreenX+width);
+        int bottomRightY = Util.toGridPos(-worldAtScreenY-height);
 
         int minX = Math.min(topLeftX, bottomRightX);
         int minY = Math.min(topLeftY, bottomRightY);
@@ -116,7 +116,7 @@ public class WorldRenderer{
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
-                    int light = world.getCombinedLight(MathUtil.floor(entity.x), MathUtil.floor(entity.y));
+                    int light = world.getCombinedLight(Util.floor(entity.x), Util.floor(entity.y));
                     renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
                 }
             }
@@ -130,7 +130,7 @@ public class WorldRenderer{
     private void doBreakAnimation(InteractionManager input, AssetManager manager, int tileX, int tileY){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
-                Image brk = manager.getImage("break."+MathUtil.ceil(input.breakProgress*8F));
+                Image brk = manager.getImage("break."+Util.ceil(input.breakProgress*8F));
                 brk.draw(tileX, -tileY, 1F, 1F);
             }
         }

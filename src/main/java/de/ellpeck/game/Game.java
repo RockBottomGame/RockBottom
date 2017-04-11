@@ -6,10 +6,12 @@ import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
 import de.ellpeck.game.gui.GuiManager;
+import de.ellpeck.game.gui.menu.GuiMainMenu;
 import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.WorldRenderer;
 import de.ellpeck.game.world.World;
+import de.ellpeck.game.world.World.WorldInfo;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.entity.player.InteractionManager;
 import org.newdawn.slick.*;
@@ -75,20 +77,16 @@ public class Game extends BasicGame{
 
         ContentRegistry.init();
 
-        this.world = new World(new File(this.dataManager.saveDirectory, "world"));
-        if(this.world.getSeed() == 0){
-            this.world.setSeed(this.world.rand.nextLong());
-        }
-
-        this.player = this.world.addPlayer(this.uniqueId);
-        this.interactionManager = new InteractionManager(this.player);
-        this.guiManager = new GuiManager(this.player);
+        this.guiManager = new GuiManager();
+        this.interactionManager = new InteractionManager();
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
 
         Log.info("----- Done initializing game -----");
         Log.info("Init took "+(System.currentTimeMillis()-timeInitStarted)+"ms.");
+
+        this.quitWorld();
     }
 
     @Override
@@ -126,7 +124,7 @@ public class Game extends BasicGame{
     public void keyPressed(int key, char c){
         if(this.guiManager.getGui() == null){
             if(key == this.settings.keyMenu.key){
-                this.openMenu();
+                this.openIngameMenu();
                 return;
             }
             else if(key == Input.KEY_F1){
@@ -150,18 +148,51 @@ public class Game extends BasicGame{
     public void render(GameContainer container, Graphics g) throws SlickException{
         this.fpsAccumulator++;
 
-        this.worldRenderer.render(this, this.assetManager, this.particleManager, g, this.world, this.player, this.interactionManager);
+        if(this.isInWorld()){
+            this.worldRenderer.render(this, this.assetManager, this.particleManager, g, this.world, this.player, this.interactionManager);
 
-        if(this.isDebug){
-            DebugRenderer.render(this, this.assetManager, this.world, this.player, container, g);
+            if(this.isDebug){
+                DebugRenderer.render(this, this.assetManager, this.world, this.player, container, g);
+            }
         }
 
         this.guiManager.render(this, this.assetManager, g, this.player);
     }
 
-    public void openMenu(){
-        this.guiManager.openGui(new GuiMenu(this.player));
+    public boolean isInWorld(){
+        return this.world != null;
+    }
 
+    public void startWorld(File worldFile, WorldInfo info){
+        Log.info("Starting world with file "+worldFile);
+
+        this.world = new World(worldFile, info);
+        if(this.world.info.seed == 0){
+            this.world.info.seed = this.world.rand.nextLong();
+        }
+
+        this.player = this.world.addPlayer(this.uniqueId);
+
+        this.guiManager.reInitSelf(this);
+        this.guiManager.closeGui();
+
+        Log.info("Successfully started world with file "+worldFile);
+    }
+
+    public void quitWorld(){
+        Log.info("Quitting current world");
+
+        this.world = null;
+        this.player = null;
+
+        this.guiManager.openGui(new GuiMainMenu());
+        this.guiManager.reInitSelf(this);
+
+        Log.info("Successfully quit current world");
+    }
+
+    public void openIngameMenu(){
+        this.guiManager.openGui(new GuiMenu());
         this.world.save();
     }
 

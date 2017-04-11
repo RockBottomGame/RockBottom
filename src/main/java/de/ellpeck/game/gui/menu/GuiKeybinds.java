@@ -14,8 +14,8 @@ public class GuiKeybinds extends Gui{
 
     public int activeKeybind = -1;
 
-    public GuiKeybinds(EntityPlayer player, Gui parent){
-        super(player, 304, 100, parent);
+    public GuiKeybinds(Gui parent){
+        super(304, 100, parent);
     }
 
     @Override
