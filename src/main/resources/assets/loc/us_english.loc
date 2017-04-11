@@ -9,6 +9,10 @@ info.dead=You died!
 info.hardware_cursor=If the in-game cursor should be replaced by the operating system's cursor
 info.autosave_interval=The amount of seconds before the world is automatically saved
 info.saved=Game saved!
+info.seed=Seed
+info.time=Time
+info.delete_world=&7Delete World %s
+info.world=World %s
 
 button.back=Back
 button.settings=Settings

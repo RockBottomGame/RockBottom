@@ -1,6 +1,7 @@
 package de.ellpeck.game.gui.component;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.menu.GuiSelectWorld;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.World.WorldInfo;
@@ -32,7 +33,8 @@ public class ComponentSelectWorldButton extends ComponentButton{
     @Override
     protected String getText(){
         if(this.exists){
-            return (this.gui.deleteMode ? "&7Delete " : "")+"World "+(this.id+1);
+            AssetManager manager = Game.get().assetManager;
+            return manager.localize("info."+(this.gui.deleteMode ? "delete_world" : "world"), this.id+1);
         }
         else{
             return "-----";
@@ -42,9 +44,11 @@ public class ComponentSelectWorldButton extends ComponentButton{
     @Override
     protected String[] getHover(){
         if(this.exists){
+            AssetManager manager = Game.get().assetManager;
+
             String[] hover = new String[2];
-            hover[0] = "Seed: "+this.info.seed;
-            hover[1] = "Time: "+this.info.currentWorldTime;
+            hover[0] = manager.localize("info.seed")+": "+this.info.seed;
+            hover[1] = manager.localize("info.time")+": "+this.info.currentWorldTime;
             return hover;
         }
         return super.getHover();
