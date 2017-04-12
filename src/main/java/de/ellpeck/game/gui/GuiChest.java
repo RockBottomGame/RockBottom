@@ -9,7 +9,7 @@ public class GuiChest extends GuiContainer{
     private final TileEntityChest tile;
 
     public GuiChest(EntityPlayer player, TileEntityChest tile){
-        super(player, 158, 150);
+        super(player, 198, 150);
         this.tile = tile;
     }
 
@@ -17,8 +17,8 @@ public class GuiChest extends GuiContainer{
     public void initGui(Game game){
         super.initGui(game);
 
-        this.addSlotGrid(this.tile.inventory, 0, this.tile.inventory.getSlotAmount(), this.guiLeft-20, this.guiTop, 10);
-        this.addPlayerInventory(this.guiLeft, this.guiTop+60);
+        this.addSlotGrid(this.tile.inventory, 0, this.tile.inventory.getSlotAmount(), this.guiLeft, this.guiTop, 10);
+        this.addPlayerInventory(this.guiLeft+20, this.guiTop+60);
     }
 
     @Override

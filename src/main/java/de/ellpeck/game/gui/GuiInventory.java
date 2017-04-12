@@ -46,9 +46,4 @@ public class GuiInventory extends GuiContainer{
             return super.onButtonActivated(game, button);
         }
     }
-
-    @Override
-    public boolean doesPauseGame(){
-        return false;
-    }
 }

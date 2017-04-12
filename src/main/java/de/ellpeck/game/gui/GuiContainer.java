@@ -79,4 +79,9 @@ public class GuiContainer extends Gui{
         this.addSlotGrid(this.player.inv, 0, 8, x, y, 8);
         this.addSlotGrid(this.player.inv, 8, this.player.inv.getSlotAmount(), x, y+25, 8);
     }
+
+    @Override
+    public boolean doesPauseGame(){
+        return false;
+    }
 }
