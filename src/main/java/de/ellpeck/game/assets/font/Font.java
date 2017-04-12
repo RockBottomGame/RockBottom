@@ -1,6 +1,5 @@
 package de.ellpeck.game.assets.font;
 
-import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.util.Vec2;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
@@ -122,10 +121,12 @@ public class Font{
                 Log.warn("Character "+character+" is missing from font with name "+this.name+"!");
             }
 
-            int srcX = pos.getX()*this.charWidth;
-            int srcY = pos.getY()*this.charHeight;
+            if(pos != null){
+                int srcX = pos.getX()*this.charWidth;
+                int srcY = pos.getY()*this.charHeight;
 
-            this.image.draw(x, y, x+(float)this.charWidth*scale, y+(float)this.charHeight*scale, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
+                this.image.draw(x, y, x+(float)this.charWidth*scale, y+(float)this.charHeight*scale, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
+            }
         }
     }
 

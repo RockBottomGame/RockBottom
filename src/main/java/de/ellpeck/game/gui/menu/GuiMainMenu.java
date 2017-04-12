@@ -1,8 +1,10 @@
 package de.ellpeck.game.gui.menu;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.component.ComponentButton;
+import org.newdawn.slick.Graphics;
 
 public class GuiMainMenu extends Gui{
 
@@ -22,6 +24,13 @@ public class GuiMainMenu extends Gui{
         this.components.add(new ComponentButton(this, 0, start, y, buttonWidth, 16, game.assetManager.localize("button.play")));
         this.components.add(new ComponentButton(this, 1, start+parts, y, buttonWidth, 16, game.assetManager.localize("button.settings")));
         this.components.add(new ComponentButton(this, 2, start+parts*2, y, buttonWidth, 16, game.assetManager.localize("button.quit")));
+    }
+
+    @Override
+    public void render(Game game, AssetManager manager, Graphics g){
+        super.render(game, manager, g);
+
+        manager.getFont().drawStringFromRight((float)game.getWidthInGui()-2F, (float)game.getHeightInGui()-7F, "Copyright 2017 Ellpeck", 0.25F);
     }
 
     @Override

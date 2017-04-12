@@ -30,7 +30,7 @@ public class GuiMenu extends Gui{
 
         if(this.savingTimer >= 0){
             this.savingTimer++;
-            if(this.savingTimer >= 100){
+            if(this.savingTimer >= 50){
                 this.savingTimer = -1;
             }
         }
@@ -41,7 +41,7 @@ public class GuiMenu extends Gui{
         super.render(game, manager, g);
 
         if(this.savingTimer >= 0){
-            manager.getFont().drawFadingString(5F, (float)game.getHeightInGui()-10F, manager.localize("info.saved"), 0.25F, (float)this.savingTimer/100F, 0.25F, 0.75F);
+            manager.getFont().drawFadingString(5F, (float)game.getHeightInGui()-10F, manager.localize("info.saved"), 0.25F, (float)this.savingTimer/50F, 0.25F, 0.75F);
         }
     }
 
