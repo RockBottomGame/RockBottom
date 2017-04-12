@@ -2,6 +2,8 @@ package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.gui.component.ComponentSlot;
+import de.ellpeck.game.inventory.IInventory;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.item.IItemRenderer;
 import de.ellpeck.game.world.entity.EntityItem;
@@ -57,5 +59,24 @@ public class GuiContainer extends Gui{
 
     private void dropHeldItem(){
         EntityItem.spawn(this.player.world, this.holdingInst, this.player.x, this.player.y+1, this.player.facing.x*0.25, 0);
+    }
+
+    protected void addSlotGrid(IInventory inventory, int start, int end, int xStart, int yStart, int width){
+        int x = xStart;
+        int y = yStart;
+        for(int i = start; i < end; i++){
+            this.components.add(new ComponentSlot(this, inventory, i, x, y));
+
+            x += 20;
+            if((i+1)%width == 0){
+                y += 20;
+                x = xStart;
+            }
+        }
+    }
+
+    protected void addPlayerInventory(int x, int y){
+        this.addSlotGrid(this.player.inv, 0, 8, x, y, 8);
+        this.addSlotGrid(this.player.inv, 8, this.player.inv.getSlotAmount(), x, y+25, 8);
     }
 }

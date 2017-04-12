@@ -3,17 +3,24 @@ package de.ellpeck.game.inventory;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.item.ItemInstance;
 
-public class InventoryBasic implements IInventory{
+public class Inventory implements IInventory{
 
+    private final Runnable changeCallback;
     private final ItemInstance[] slots;
 
-    public InventoryBasic(int slotAmount){
+    public Inventory(int slotAmount){
+        this(slotAmount, null);
+    }
+
+    public Inventory(int slotAmount, Runnable changeCallback){
         this.slots = new ItemInstance[slotAmount];
+        this.changeCallback = changeCallback;
     }
 
     @Override
     public void set(int id, ItemInstance instance){
         this.slots[id] = instance;
+        this.notifyChange();
     }
 
     @Override
@@ -24,6 +31,13 @@ public class InventoryBasic implements IInventory{
     @Override
     public int getSlotAmount(){
         return this.slots.length;
+    }
+
+    @Override
+    public void notifyChange(){
+        if(this.changeCallback != null){
+            this.changeCallback.run();
+        }
     }
 
     public ItemInstance add(ItemInstance instance, boolean simulate){
@@ -63,7 +77,7 @@ public class InventoryBasic implements IInventory{
 
         if(slotInst == null){
             if(!simulate){
-                this.slots[slot] = instance;
+                this.set(slot, instance);
             }
             return null;
         }
@@ -73,6 +87,7 @@ public class InventoryBasic implements IInventory{
             if(space >= instance.getAmount()){
                 if(!simulate){
                     slotInst.add(instance.getAmount());
+                    this.notifyChange();
                 }
                 return null;
             }
@@ -80,6 +95,7 @@ public class InventoryBasic implements IInventory{
                 if(!simulate){
                     slotInst.add(space);
                     instance.remove(space);
+                    this.notifyChange();
                 }
             }
         }

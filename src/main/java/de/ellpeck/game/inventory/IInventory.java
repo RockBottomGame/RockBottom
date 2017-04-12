@@ -9,4 +9,6 @@ public interface IInventory{
     ItemInstance get(int id);
 
     int getSlotAmount();
+
+    void notifyChange();
 }

@@ -2,7 +2,7 @@ package de.ellpeck.game.inventory;
 
 import de.ellpeck.game.data.set.DataSet;
 
-public class InventoryPlayer extends InventoryBasic{
+public class InventoryPlayer extends Inventory{
 
     public int selectedSlot;
 

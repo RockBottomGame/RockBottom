@@ -11,6 +11,7 @@ import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,8 @@ public class GuiManager{
     public boolean shouldReInit;
 
     public void reInitSelf(Game game){
+        Log.info("Re-initializing Gui Manager");
+
         if(game.isInWorld()){
             this.initInWorldComponents(game, game.player);
             this.background = null;
@@ -33,6 +36,8 @@ public class GuiManager{
             this.background = new MainMenuBackground();
             this.background.init(game);
         }
+
+        Log.info("Successfully re-initialized Gui Manager");
     }
 
     private void initInWorldComponents(Game game, EntityPlayer player){
@@ -163,6 +168,13 @@ public class GuiManager{
 
         if(this.gui != null){
             this.gui.initGui(game);
+        }
+
+        if(this.gui == null){
+            Log.info("Closed Gui");
+        }
+        else{
+            Log.info("Opened Gui "+this.gui);
         }
     }
 

@@ -22,6 +22,7 @@ public final class ContentRegistry{
     public static final Tile TILE_SMELTER = new TileSmelter(4).register();
     public static final Tile TILE_TORCH = new TileTorch(5).setHardness(0F).setForceDrop().register();
     //public static final Tile TILE_WATER = new TileLiquid(6, "water", 3).register();
+    public static final Tile TILE_CHEST = new TileChest(7).setForceDrop().register();
 
     public static final Item ITEM_SUPER_TOOL = new ItemTool(0, "super_tool").addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
     public static final Item ITEM_WOOD_PICK = new ItemTool(1, "pick_wood").addToolType(ToolType.PICKAXE, 1).register();

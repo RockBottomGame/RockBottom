@@ -64,7 +64,7 @@ public class Gui{
     }
 
     public boolean onKeyboardAction(Game game, int button){
-        if(button == game.settings.keyMenu.key || (button == game.settings.keyInventory.key && this instanceof GuiInventory)){
+        if(button == game.settings.keyMenu.key || (button == game.settings.keyInventory.key && this instanceof GuiContainer)){
             if(this.tryEscape(game)){
                 return true;
             }

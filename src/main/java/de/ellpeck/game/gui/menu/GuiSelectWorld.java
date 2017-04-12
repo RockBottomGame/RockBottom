@@ -43,12 +43,7 @@ public class GuiSelectWorld extends Gui{
 
     @Override
     public boolean onButtonActivated(Game game, int button){
-        if(button >= 0 && button < 6){
-
-
-            return true;
-        }
-        else if(button == -1){
+        if(button == -1){
             game.guiManager.openGui(this.parent);
             return true;
         }

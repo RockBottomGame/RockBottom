@@ -19,19 +19,7 @@ public class GuiInventory extends GuiContainer{
     public void initGui(Game game){
         super.initGui(game);
 
-        int x = 0;
-        int y = 0;
-        for(int i = 0; i < this.player.inv.getSlotAmount(); i++){
-            this.components.add(new ComponentSlot(this, this.player.inv, i, this.guiLeft+x, this.guiTop+y));
-
-            x += 20;
-
-            if(i == 7 || i == 15 || i == 23){
-                y += i == 7 ? 25 : 20;
-                x = 0;
-            }
-        }
-
+        this.addPlayerInventory(this.guiLeft, this.guiTop);
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-15, this.guiTop+this.sizeY+10, 30, 10, game.assetManager.localize("button.close")));
     }
 
