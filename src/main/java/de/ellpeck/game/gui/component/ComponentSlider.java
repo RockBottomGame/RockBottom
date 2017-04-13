@@ -8,10 +8,10 @@ import org.newdawn.slick.Graphics;
 
 public class ComponentSlider extends ComponentButton{
 
-    private final ICallback callback;
-    private final int min;
-    private final int max;
-    private int number;
+    protected final ICallback callback;
+    protected final int min;
+    protected final int max;
+    protected int number;
 
     private boolean wasMouseDown;
 
@@ -53,13 +53,13 @@ public class ComponentSlider extends ComponentButton{
                 this.onClickOrMove(mouseX, mouseY);
 
                 if(!this.wasMouseDown){
-                    this.callback.onFirstClick(mouseX, mouseY, this.number);
+                    this.callback.onFirstClick(mouseX, mouseY, this.min, this.max, this.number);
                     this.wasMouseDown = true;
                 }
             }
         }
         else if(this.wasMouseDown){
-            this.callback.onLetGo(mouseX, mouseY, this.number);
+            this.callback.onLetGo(mouseX, mouseY, this.min, this.max, this.number);
             this.wasMouseDown = false;
         }
     }
@@ -71,21 +71,21 @@ public class ComponentSlider extends ComponentButton{
         if(number != this.number){
             this.number = number;
 
-            this.callback.onNumberChange(mouseX, mouseY, this.number);
+            this.callback.onNumberChange(mouseX, mouseY, this.min, this.max, this.number);
         }
     }
 
     public interface ICallback{
 
-        default void onNumberChange(float mouseX, float mouseY, int number){
+        default void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
 
         }
 
-        default void onFirstClick(float mouseX, float mouseY, int number){
+        default void onFirstClick(float mouseX, float mouseY, int min, int max, int number){
 
         }
 
-        default void onLetGo(float mouseX, float mouseY, int number){
+        default void onLetGo(float mouseX, float mouseY, int min, int max, int number){
 
         }
     }

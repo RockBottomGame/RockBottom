@@ -1,7 +1,6 @@
 package de.ellpeck.game;
 
 import de.ellpeck.game.util.LogSystem;
-import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
@@ -13,7 +12,7 @@ public final class Main{
         Game game = new Game();
 
         try{
-            AppGameContainer container = new AppGameContainer(game, 1280, 720, false);
+            Container container = new Container(game);
 
             container.setAlwaysRender(true);
             container.setShowFPS(false);

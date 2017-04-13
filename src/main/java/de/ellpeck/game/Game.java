@@ -24,9 +24,7 @@ public class Game extends BasicGame{
 
     private static Game instance;
 
-    private final long timeGameCreated;
-
-    private GameContainer container;
+    private Container container;
     public DataManager dataManager;
     public Settings settings;
 
@@ -56,20 +54,16 @@ public class Game extends BasicGame{
 
         Log.info("Setting game instance to "+this);
         instance = this;
-
-        this.timeGameCreated = System.currentTimeMillis();
     }
 
     @Override
     public void init(GameContainer container) throws SlickException{
-        long timeInitStarted = System.currentTimeMillis();
-        Log.info("Pre-init took "+(timeInitStarted-this.timeGameCreated)+"ms.");
         Log.info("----- Initializing game -----");
 
         this.dataManager = new DataManager(this);
         this.settings = this.dataManager.loadSettings();
 
-        this.container = container;
+        this.container = (Container)container;
         this.container.setTargetFrameRate(this.settings.targetFps);
 
         this.assetManager = new AssetManager();
@@ -84,8 +78,6 @@ public class Game extends BasicGame{
         this.particleManager = new ParticleManager();
 
         Log.info("----- Done initializing game -----");
-        Log.info("Init took "+(System.currentTimeMillis()-timeInitStarted)+"ms.");
-
         this.quitWorld();
     }
 
@@ -185,8 +177,8 @@ public class Game extends BasicGame{
         this.world = null;
         this.player = null;
 
-        this.guiManager.openGui(new GuiMainMenu());
         this.guiManager.reInitSelf(this);
+        this.guiManager.openGui(new GuiMainMenu());
 
         Log.info("Successfully quit current world");
     }
@@ -196,7 +188,7 @@ public class Game extends BasicGame{
         this.world.save();
     }
 
-    public GameContainer getContainer(){
+    public Container getContainer(){
         return this.container;
     }
 

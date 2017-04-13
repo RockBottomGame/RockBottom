@@ -14,6 +14,7 @@ info.seed=Seed
 info.time=Time
 info.delete_world=&7Delete World %s
 info.world=World %s
+info.unlimited=Unlimited
 
 button.back=Back
 button.settings=Settings
