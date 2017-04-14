@@ -21,16 +21,16 @@ public final class NetHandler{
     private static Server server;
 
     public static void init(boolean isServer){
-        if(client != null || server != null){
+        if(isActive()){
             Log.error("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+client+", Server: "+server);
         }
         else{
             if(isServer){
-                server = new Server();
+                server = new Server(8000);
                 Log.info("Started server!");
             }
             else{
-                client = new Client();
+                client = new Client("localhost", 8000);
                 Log.info("Started client!");
             }
         }

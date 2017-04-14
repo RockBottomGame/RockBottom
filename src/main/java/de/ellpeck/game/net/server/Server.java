@@ -14,35 +14,29 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import org.newdawn.slick.util.Log;
 
 public class Server{
 
     private final EventLoopGroup group;
-    public Channel channel;
+    public final Channel channel;
 
-    public ChannelGroup connectedChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public final ChannelGroup connectedChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    public Server(){
+    public Server(int port){
         this.group = NetHandler.HAS_EPOLL ? new EpollEventLoopGroup() : new NioEventLoopGroup();
 
-        try{
-            this.channel = new ServerBootstrap()
-                    .group(this.group)
-                    .channel(NetHandler.HAS_EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer(){
-                        @Override
-                        protected void initChannel(Channel channel) throws Exception{
-                            channel.pipeline()
-                                    .addLast(new PacketDecoder())
-                                    .addLast(new PacketEncoder())
-                                    .addLast(new ServerNetworkHandler(Server.this));
-                        }
-                    }).bind(8000).sync().channel();
-        }
-        catch(InterruptedException e){
-            Log.error(e);
-        }
+        this.channel = new ServerBootstrap()
+                .group(this.group)
+                .channel(NetHandler.HAS_EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                .childHandler(new ChannelInitializer(){
+                    @Override
+                    protected void initChannel(Channel channel) throws Exception{
+                        channel.pipeline()
+                                .addLast(new PacketDecoder())
+                                .addLast(new PacketEncoder())
+                                .addLast(new ServerNetworkHandler(Server.this));
+                    }
+                }).bind(port).syncUninterruptibly().channel();
     }
 
     public void shutdown(){

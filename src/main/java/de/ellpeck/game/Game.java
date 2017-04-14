@@ -18,11 +18,15 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.UUID;
 
 public class Game extends BasicGame{
 
     private static Game instance;
+
+    public final Queue<Runnable> scheduledActions = new ArrayDeque<>();
 
     private Container container;
     public DataManager dataManager;
@@ -95,6 +99,12 @@ public class Game extends BasicGame{
             this.fpsAccumulator = 0;
 
             this.lastPollTime = time;
+        }
+
+        synchronized(this.scheduledActions){
+            while(!this.scheduledActions.isEmpty()){
+                this.scheduledActions.poll().run();
+            }
         }
 
         Gui gui = this.guiManager.getGui();
@@ -187,6 +197,12 @@ public class Game extends BasicGame{
     public void openIngameMenu(){
         this.guiManager.openGui(new GuiMenu());
         this.world.save();
+    }
+
+    public void scheduleAction(Runnable runnable){
+        synchronized(this.scheduledActions){
+            this.scheduledActions.add(runnable);
+        }
     }
 
     public Container getContainer(){
