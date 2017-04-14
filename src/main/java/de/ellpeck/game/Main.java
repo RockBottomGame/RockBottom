@@ -1,5 +1,6 @@
 package de.ellpeck.game;
 
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.util.LogSystem;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
@@ -13,6 +14,7 @@ public final class Main{
 
         try{
             Container container = new Container(game);
+            container.setForceExit(false);
 
             container.setAlwaysRender(true);
             container.setShowFPS(false);
@@ -25,6 +27,9 @@ public final class Main{
         }
         catch(SlickException e){
             Log.error("Exception initializing game! ", e);
+        }
+        finally{
+            NetHandler.shutdown();
         }
     }
 }
