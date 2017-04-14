@@ -70,6 +70,7 @@ public class Game extends BasicGame{
         this.assetManager.create(this);
 
         ContentRegistry.init();
+        WorldRenderer.init();
 
         this.guiManager = new GuiManager();
         this.interactionManager = new InteractionManager();
