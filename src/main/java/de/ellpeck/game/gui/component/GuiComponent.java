@@ -46,7 +46,7 @@ public class GuiComponent{
         return false;
     }
 
-    public boolean onKeyboardAction(Game game, int button){
+    public boolean onKeyboardAction(Game game, int button, char character){
         return false;
     }
 }

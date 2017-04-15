@@ -9,10 +9,14 @@ import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.tile.Tile;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 import java.util.Random;
 
 public class MainMenuBackground{
+
+    private static final int[] KONAMI_CODE = new int[]{Input.KEY_UP, Input.KEY_UP, Input.KEY_DOWN, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_B, Input.KEY_A};
+    private int konamiAt;
 
     private final Random rand = new Random();
 
@@ -40,8 +44,6 @@ public class MainMenuBackground{
 
         if(this.stackAtY < this.tileAmountY){
             if(this.timer%8 == 0 && this.rand.nextBoolean()){
-                Tile tile = this.rand.nextFloat() >= 0.75F ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK;
-
                 int placeY = this.tileAmountY-this.stackAtY-1;
 
                 int placeX;
@@ -50,6 +52,13 @@ public class MainMenuBackground{
                 }
                 while(this.menuTileGrid[placeX][placeY] != null);
 
+                Tile tile;
+                if(this.konamiAt >= KONAMI_CODE.length){
+                    tile = ContentRegistry.TILE_GRASS;
+                }
+                else{
+                    tile = this.rand.nextFloat() >= 0.75F ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK;
+                }
                 this.menuTileGrid[placeX][placeY] = tile;
 
                 this.stackedAmountX++;
@@ -57,6 +66,17 @@ public class MainMenuBackground{
                     this.stackedAmountX = 0;
                     this.stackAtY++;
                 }
+            }
+        }
+    }
+
+    public void onKeyInput(int button){
+        if(this.konamiAt < KONAMI_CODE.length){
+            if(button == KONAMI_CODE[this.konamiAt]){
+                this.konamiAt++;
+            }
+            else{
+                this.konamiAt = 0;
             }
         }
     }

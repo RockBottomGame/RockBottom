@@ -26,7 +26,7 @@ public class Game extends BasicGame{
 
     private static Game instance;
 
-    public final Queue<Runnable> scheduledActions = new ArrayDeque<>();
+    private final Queue<Runnable> scheduledActions = new ArrayDeque<>();
 
     private Container container;
     public DataManager dataManager;
@@ -144,7 +144,7 @@ public class Game extends BasicGame{
             }
         }
 
-        this.interactionManager.onKeyboardAction(this, key);
+        this.interactionManager.onKeyboardAction(this, key, c);
     }
 
     @Override

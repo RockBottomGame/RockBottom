@@ -200,7 +200,11 @@ public class GuiManager{
         return false;
     }
 
-    public boolean onKeyboardAction(Game game, int button){
-        return this.gui != null && this.gui.onKeyboardAction(game, button);
+    public boolean onKeyboardAction(Game game, int button, char character){
+        if(this.background != null){
+            this.background.onKeyInput(button);
+        }
+
+        return this.gui != null && this.gui.onKeyboardAction(game, button, character);
     }
 }

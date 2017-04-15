@@ -63,15 +63,15 @@ public class Gui{
         return false;
     }
 
-    public boolean onKeyboardAction(Game game, int button){
-        if(button == game.settings.keyMenu.key || (button == game.settings.keyInventory.key && this instanceof GuiContainer)){
-            if(this.tryEscape(game)){
+    public boolean onKeyboardAction(Game game, int button, char character){
+        for(GuiComponent component : this.components){
+            if(component.onKeyboardAction(game, button, character)){
                 return true;
             }
         }
 
-        for(GuiComponent component : this.components){
-            if(component.onKeyboardAction(game, button)){
+        if(button == game.settings.keyMenu.key || (button == game.settings.keyInventory.key && this instanceof GuiContainer)){
+            if(this.tryEscape(game)){
                 return true;
             }
         }

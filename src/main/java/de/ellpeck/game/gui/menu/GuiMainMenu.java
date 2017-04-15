@@ -16,14 +16,15 @@ public class GuiMainMenu extends Gui{
     public void initGui(Game game){
         super.initGui(game);
 
-        int parts = (int)game.getWidthInGui()/3;
-        int buttonWidth = 90;
+        int parts = (int)game.getWidthInGui()/4;
+        int buttonWidth = 60;
         int start = (parts-buttonWidth)/2;
         int y = (int)game.getHeightInGui()-30;
 
         this.components.add(new ComponentButton(this, 0, start, y, buttonWidth, 16, game.assetManager.localize("button.play")));
-        this.components.add(new ComponentButton(this, 1, start+parts, y, buttonWidth, 16, game.assetManager.localize("button.settings")));
-        this.components.add(new ComponentButton(this, 2, start+parts*2, y, buttonWidth, 16, game.assetManager.localize("button.quit")));
+        this.components.add(new ComponentButton(this, 1, start+parts, y, buttonWidth, 16, game.assetManager.localize("button.join")));
+        this.components.add(new ComponentButton(this, 2, start+parts*2, y, buttonWidth, 16, game.assetManager.localize("button.settings")));
+        this.components.add(new ComponentButton(this, 3, start+parts*3, y, buttonWidth, 16, game.assetManager.localize("button.quit")));
     }
 
     @Override
@@ -50,10 +51,14 @@ public class GuiMainMenu extends Gui{
             return true;
         }
         else if(button == 1){
-            game.guiManager.openGui(new GuiSettings(this));
+            game.guiManager.openGui(new GuiJoinServer(this));
             return true;
         }
         else if(button == 2){
+            game.guiManager.openGui(new GuiSettings(this));
+            return true;
+        }
+        else if(button == 3){
             game.getContainer().exit();
             return true;
         }

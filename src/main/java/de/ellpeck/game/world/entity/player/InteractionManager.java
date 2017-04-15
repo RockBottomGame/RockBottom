@@ -173,8 +173,8 @@ public class InteractionManager{
         game.guiManager.onMouseAction(game, button, game.getMouseInGuiX(), game.getMouseInGuiY());
     }
 
-    public void onKeyboardAction(Game game, int button){
-        if(!game.guiManager.onKeyboardAction(game, button)){
+    public void onKeyboardAction(Game game, int button, char character){
+        if(!game.guiManager.onKeyboardAction(game, button, character)){
             if(game.isInWorld()){
                 for(int i = 0; i < game.settings.keysItemSelection.length; i++){
                     if(button == game.settings.keysItemSelection[i]){

@@ -24,7 +24,7 @@ public class GuiInventory extends GuiContainer{
     }
 
     @Override
-    public boolean onKeyboardAction(Game game, int button){
+    public boolean onKeyboardAction(Game game, int button, char character){
         if(button == Input.KEY_F){
             for(Item item : ContentRegistry.ITEM_REGISTRY.getUnmodifiable().values()){
                 this.player.inv.add(new ItemInstance(item, item.getMaxAmount()), false);
@@ -32,7 +32,7 @@ public class GuiInventory extends GuiContainer{
             return true;
         }
         else{
-            return super.onKeyboardAction(game, button);
+            return super.onKeyboardAction(game, button, character);
         }
     }
 

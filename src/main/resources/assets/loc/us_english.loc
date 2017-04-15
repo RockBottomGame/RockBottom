@@ -34,6 +34,7 @@ button.main_menu=Quit World
 button.play=Play
 button.delete=Delete Mode Off
 button.delete_toggled=Delete Mode On
+button.join=Join
 
 layer.main=Foreground
 layer.background=Background
