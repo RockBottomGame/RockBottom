@@ -76,7 +76,7 @@ public class PacketChunk implements IPacket{
 
     @Override
     public void handle(Game game, ChannelHandlerContext context){
-        Game.get().scheduleAction(() -> {
+        game.scheduleAction(() -> {
             if(game.world != null){
                 Log.info("Receiving chunk at "+this.chunkX+", "+this.chunkY);
 
