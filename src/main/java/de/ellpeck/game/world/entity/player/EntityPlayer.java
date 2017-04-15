@@ -25,7 +25,6 @@ public class EntityPlayer extends EntityLiving{
     private final IEntityRenderer renderer;
     public final InventoryPlayer inv = new InventoryPlayer();
 
-    private final UUID uniqueId;
     private int respawnTimer;
 
     public EntityPlayer(World world, UUID uniqueId){
@@ -120,10 +119,6 @@ public class EntityPlayer extends EntityLiving{
     public void load(DataSet set){
         super.load(set);
         this.inv.load(set);
-    }
-
-    public UUID getUniqueId(){
-        return this.uniqueId;
     }
 
     public void setChannel(Channel channel){

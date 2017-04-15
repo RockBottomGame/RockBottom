@@ -4,6 +4,9 @@ import de.ellpeck.game.Constants;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.net.NetHandler;
+import de.ellpeck.game.net.packet.PacketMetaChange;
+import de.ellpeck.game.net.packet.PacketTileChange;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.util.Vec2;
@@ -71,12 +74,12 @@ public class Chunk implements IWorld{
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                 if(this.y+y == 15){
-                    this.setTileInner(x, y, ContentRegistry.TILE_GRASS);
+                    this.setTileInner(x, y, ContentRegistry.TILE_GRASS, false);
                 }
                 else if(this.y+y < 15){
-                    this.setTileInner(x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
+                    this.setTileInner(x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK, false);
 
-                    this.setTileInner(TileLayer.BACKGROUND, x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
+                    this.setTileInner(TileLayer.BACKGROUND, x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK, false);
                 }
             }
         }
@@ -96,7 +99,7 @@ public class Chunk implements IWorld{
                 entity.update(game);
 
                 if(entity.shouldBeRemoved()){
-                    this.removeEntity(entity);
+                    this.world.removeEntity(entity);
                     i--;
                 }
                 else{
@@ -182,7 +185,7 @@ public class Chunk implements IWorld{
 
     @Override
     public void setTile(TileLayer layer, int x, int y, Tile tile){
-        this.setTileInner(layer, x-this.x, y-this.y, tile);
+        this.setTileInner(layer, x-this.x, y-this.y, tile, true);
     }
 
     @Override
@@ -192,7 +195,7 @@ public class Chunk implements IWorld{
 
     @Override
     public void setMeta(TileLayer layer, int x, int y, int meta){
-        this.setMetaInner(layer, x-this.x, y-this.y, meta);
+        this.setMetaInner(layer, x-this.x, y-this.y, meta, true);
     }
 
     public Tile getTileInner(TileLayer layer, int x, int y){
@@ -207,11 +210,11 @@ public class Chunk implements IWorld{
         return this.metaGrid[layer.ordinal()][x][y];
     }
 
-    public void setTileInner(int x, int y, Tile tile){
-        this.setTileInner(TileLayer.MAIN, x, y, tile);
+    public void setTileInner(int x, int y, Tile tile, boolean callChange){
+        this.setTileInner(TileLayer.MAIN, x, y, tile, callChange);
     }
 
-    public void setTileInner(TileLayer layer, int x, int y, Tile tile){
+    public void setTileInner(TileLayer layer, int x, int y, Tile tile, boolean callChange){
         Tile lastTile = this.getTileInner(layer, x, y);
 
         boolean lastAir = lastTile.isAir();
@@ -249,6 +252,10 @@ public class Chunk implements IWorld{
             }
         }
 
+        if(callChange){
+            NetHandler.sendToServerOrPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, tile));
+        }
+
         if(!this.isGenerating){
             if(lastAir != tile.isAir() || lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
                 this.world.updateLightFrom(this.x+x, this.y+y);
@@ -259,12 +266,16 @@ public class Chunk implements IWorld{
         }
     }
 
-    public void setMetaInner(TileLayer layer, int x, int y, int meta){
+    public void setMetaInner(TileLayer layer, int x, int y, int meta, boolean callChange){
         if(meta > Byte.MAX_VALUE){
             throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" in chunk at "+this.gridX+", "+this.gridY+" which is greater than max "+Byte.MAX_VALUE+"!");
         }
 
         this.metaGrid[layer.ordinal()][x][y] = (byte)meta;
+
+        if(callChange){
+            NetHandler.sendToServerOrPlayers(this.world, new PacketMetaChange(this.x+x, this.y+y, layer, meta));
+        }
 
         if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
@@ -334,6 +345,16 @@ public class Chunk implements IWorld{
     @Override
     public List<TileEntity> getAllTileEntities(){
         return this.tileEntities;
+    }
+
+    @Override
+    public Entity getEntity(UUID id){
+        for(Entity entity : this.entities){
+            if(id.equals(entity.getUniqueId())){
+                return entity;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -548,7 +569,7 @@ public class Chunk implements IWorld{
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                         Tile tile = ContentRegistry.TILE_REGISTRY.get(ids[x][y]);
                         if(tile != null){
-                            this.setTileInner(layer, x, y, tile);
+                            this.setTileInner(layer, x, y, tile, false);
                         }
                         else{
                             Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
@@ -568,15 +589,14 @@ public class Chunk implements IWorld{
                 DataSet entitySet = set.getDataSet("e_"+i);
 
                 int id = entitySet.getInt("id");
-                Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.get(id);
+                Entity entity = Entity.create(id, this.world);
 
-                try{
-                    Entity entity = entityClass.getConstructor(World.class).newInstance(this.world);
+                if(entity != null){
                     entity.load(entitySet);
                     this.addEntity(entity);
                 }
-                catch(Exception e){
-                    Log.error("Couldn't load entity with id "+id+" and data "+entitySet+"!", e);
+                else{
+                    Log.error("Couldn't load entity with id "+id+" and data "+entitySet);
                 }
             }
 

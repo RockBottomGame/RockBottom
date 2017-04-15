@@ -7,6 +7,7 @@ import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public interface IWorld{
@@ -40,6 +41,8 @@ public interface IWorld{
     List<Entity> getAllEntities();
 
     List<TileEntity> getAllTileEntities();
+
+    Entity getEntity(UUID id);
 
     List<Entity> getEntities(BoundBox area);
 

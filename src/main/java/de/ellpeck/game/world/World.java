@@ -4,7 +4,8 @@ import de.ellpeck.game.Constants;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
-import de.ellpeck.game.net.packet.toclient.PacketChunk;
+import de.ellpeck.game.net.NetHandler;
+import de.ellpeck.game.net.packet.PacketEntityChange;
 import de.ellpeck.game.net.server.ConnectedPlayer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
@@ -98,11 +99,18 @@ public class World implements IWorld{
 
     @Override
     public void addEntity(Entity entity){
+        this.addEntity(entity, true);
+    }
+
+    public void addEntity(Entity entity, boolean callChange){
         Chunk chunk = this.getChunk(entity.x, entity.y);
         chunk.addEntity(entity);
 
         if(entity instanceof EntityPlayer){
             this.players.add((EntityPlayer)entity);
+        }
+        else if(callChange){
+            NetHandler.sendToServerOrPlayers(this, new PacketEntityChange(entity, false));
         }
     }
 
@@ -114,11 +122,18 @@ public class World implements IWorld{
 
     @Override
     public void removeEntity(Entity entity){
+        this.removeEntity(entity, true);
+    }
+
+    public void removeEntity(Entity entity, boolean callChange){
         Chunk chunk = this.getChunk(entity.x, entity.y);
         chunk.removeEntity(entity);
 
         if(entity instanceof EntityPlayer){
             this.players.remove(entity);
+        }
+        else if(callChange){
+            NetHandler.sendToServerOrPlayers(this, new PacketEntityChange(entity, true));
         }
     }
 
@@ -150,6 +165,17 @@ public class World implements IWorld{
             tiles.addAll(chunk.getAllTileEntities());
         }
         return tiles;
+    }
+
+    @Override
+    public Entity getEntity(UUID id){
+        for(Chunk chunk : this.loadedChunks){
+            Entity entity = chunk.getEntity(id);
+            if(entity != null){
+                return entity;
+            }
+        }
+        return null;
     }
 
     @Override

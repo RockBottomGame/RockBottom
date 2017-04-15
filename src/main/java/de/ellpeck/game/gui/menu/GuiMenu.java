@@ -38,10 +38,12 @@ public class GuiMenu extends Gui{
     public void update(Game game){
         super.update(game);
 
-        if(this.savingTimer >= 0){
-            this.savingTimer++;
-            if(this.savingTimer >= 50){
-                this.savingTimer = -1;
+        if(!NetHandler.isClient()){
+            if(this.savingTimer >= 0){
+                this.savingTimer++;
+                if(this.savingTimer >= 50){
+                    this.savingTimer = -1;
+                }
             }
         }
     }
@@ -50,8 +52,10 @@ public class GuiMenu extends Gui{
     public void render(Game game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        if(this.savingTimer >= 0){
-            manager.getFont().drawFadingString(5F, (float)game.getHeightInGui()-10F, manager.localize("info.saved"), 0.25F, (float)this.savingTimer/50F, 0.25F, 0.75F);
+        if(!NetHandler.isClient()){
+            if(this.savingTimer >= 0){
+                manager.getFont().drawFadingString(5F, (float)game.getHeightInGui()-10F, manager.localize("info.saved"), 0.25F, (float)this.savingTimer/50F, 0.25F, 0.75F);
+            }
         }
     }
 

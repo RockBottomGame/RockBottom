@@ -1,11 +1,16 @@
 package de.ellpeck.game.world.entity;
 
+import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.world.World;
+import org.newdawn.slick.util.Log;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 public class Entity extends MovableWorldObject{
 
@@ -21,8 +26,15 @@ public class Entity extends MovableWorldObject{
 
     public int fallAmount;
 
+    protected UUID uniqueId;
+
     public Entity(World world){
         super(world);
+        this.uniqueId = UUID.randomUUID();
+    }
+
+    public UUID getUniqueId(){
+        return this.uniqueId;
     }
 
     public IEntityRenderer getRenderer(){
@@ -106,6 +118,7 @@ public class Entity extends MovableWorldObject{
         set.addDouble("motion_y", this.motionY);
         set.addInt("ticks", this.ticksExisted);
         set.addBoolean("dead", this.isDead());
+        set.addUniqueId("uuid", this.uniqueId);
     }
 
     public void load(DataSet set){
@@ -115,8 +128,22 @@ public class Entity extends MovableWorldObject{
         this.motionY = set.getDouble("motion_y");
         this.ticksExisted = set.getInt("ticks");
         this.setDead(set.getBoolean("dead"));
+        this.uniqueId = set.getUniqueId("uuid");
     }
+
     public boolean doesSave(){
         return true;
+    }
+
+    public static Entity create(int id, World world){
+        Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.get(id);
+
+        try{
+            return entityClass.getConstructor(World.class).newInstance(world);
+        }
+        catch(Exception e){
+            Log.error("Couldn't initialize entity with id "+id, e);
+            return null;
+        }
     }
 }

@@ -40,7 +40,7 @@ public class ClientChunk extends Chunk{
                 entity.update(game);
 
                 if(entity.shouldBeRemoved()){
-                    this.removeEntity(entity);
+                    this.world.removeEntity(entity);
                     i--;
                 }
                 else{
