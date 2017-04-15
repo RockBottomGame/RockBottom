@@ -2,6 +2,10 @@ package de.ellpeck.game.net;
 
 import de.ellpeck.game.net.client.Client;
 import de.ellpeck.game.net.packet.IPacket;
+import de.ellpeck.game.net.packet.toclient.PacketChunk;
+import de.ellpeck.game.net.packet.toclient.PacketInitialServerData;
+import de.ellpeck.game.net.packet.toserver.PacketDisconnect;
+import de.ellpeck.game.net.packet.toserver.PacketJoin;
 import de.ellpeck.game.net.server.Server;
 import de.ellpeck.game.util.Registry;
 import io.netty.channel.epoll.Epoll;
@@ -14,24 +18,27 @@ public final class NetHandler{
     public static final Registry<Class<? extends IPacket>> PACKET_REGISTRY = new Registry<>("packet_registry", Byte.MAX_VALUE);
 
     static{
-
+        PACKET_REGISTRY.register(0, PacketJoin.class);
+        PACKET_REGISTRY.register(1, PacketChunk.class);
+        PACKET_REGISTRY.register(2, PacketInitialServerData.class);
+        PACKET_REGISTRY.register(3, PacketDisconnect.class);
     }
 
     private static Client client;
     private static Server server;
 
-    public static void init(boolean isServer){
+    public static void init(String ip, int port, boolean isServer) throws Exception{
         if(isActive()){
             Log.error("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+client+", Server: "+server);
         }
         else{
             if(isServer){
-                server = new Server(8000);
-                Log.info("Started server!");
+                server = new Server(ip, port);
+                Log.info("Started server with ip "+ip+" on port "+port);
             }
             else{
-                client = new Client("localhost", 8000);
-                Log.info("Started client!");
+                client = new Client(ip, port);
+                Log.info("Started client with ip "+ip+" on port "+port);
             }
         }
     }

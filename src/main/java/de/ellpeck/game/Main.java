@@ -31,5 +31,8 @@ public final class Main{
         finally{
             NetHandler.shutdown();
         }
+
+        Log.info("Game shutting down");
+        System.exit(0);
     }
 }

@@ -2,9 +2,7 @@ package de.ellpeck.game.data.set.part.num;
 
 import de.ellpeck.game.data.set.part.BasicDataPart;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class PartShort extends BasicDataPart<Short>{
 
@@ -13,12 +11,12 @@ public class PartShort extends BasicDataPart<Short>{
     }
 
     @Override
-    public void write(DataOutputStream stream) throws IOException{
+    public void write(DataOutput stream) throws IOException{
         stream.writeShort(this.data);
     }
 
     @Override
-    public void read(DataInputStream stream) throws IOException{
+    public void read(DataInput stream) throws IOException{
         this.data = stream.readShort();
     }
 

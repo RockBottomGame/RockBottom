@@ -69,6 +69,13 @@ public class ComponentInputField extends GuiComponent{
                 this.isActive = false;
             }
         }
+        else if(button == game.settings.buttonGuiAction2){
+            if(this.isMouseOver(game)){
+                this.text = "";
+                this.isActive = true;
+                return true;
+            }
+        }
         return false;
     }
 }

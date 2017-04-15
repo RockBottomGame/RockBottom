@@ -4,13 +4,16 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
+import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.PlayerEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
+import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.EntityLiving;
+import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.UUID;
@@ -121,5 +124,17 @@ public class EntityPlayer extends EntityLiving{
 
     public UUID getUniqueId(){
         return this.uniqueId;
+    }
+
+    public void setChannel(Channel channel){
+
+    }
+
+    public void sendPacket(IPacket packet){
+
+    }
+
+    public void onKeepLoaded(Chunk chunk){
+
     }
 }

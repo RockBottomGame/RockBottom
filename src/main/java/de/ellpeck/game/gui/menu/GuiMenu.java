@@ -4,7 +4,9 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.component.ComponentButton;
+import de.ellpeck.game.net.NetHandler;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.util.Log;
 
 public class GuiMenu extends Gui{
 
@@ -19,6 +21,14 @@ public class GuiMenu extends Gui{
         super.initGui(game);
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, this.sizeX, 16, game.assetManager.localize("button.settings")));
+        if(!NetHandler.isClient()){
+            this.components.add(new ComponentButton(this, 1, this.guiLeft, this.guiTop+20, this.sizeX, 16, null){
+                @Override
+                protected String getText(){
+                    return game.assetManager.localize("button."+(NetHandler.isServer() ? "close" : "open")+"_server");
+                }
+            });
+        }
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, game.assetManager.localize("button.main_menu")));
         this.components.add(new ComponentButton(this, -2, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.close")));
@@ -57,6 +67,19 @@ public class GuiMenu extends Gui{
         }
         else if(button == 0){
             game.guiManager.openGui(new GuiSettings(this));
+        }
+        else if(button == 1){
+            if(NetHandler.isServer()){
+                NetHandler.shutdown();
+            }
+            else{
+                try{
+                    NetHandler.init("localhost", game.settings.serverStartPort, true);
+                }
+                catch(Exception e){
+                    Log.error("Couldn't start server", e);
+                }
+            }
         }
         return false;
     }

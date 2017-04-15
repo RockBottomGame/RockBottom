@@ -2,18 +2,23 @@ package de.ellpeck.game;
 
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.data.DataManager;
+import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
 import de.ellpeck.game.gui.GuiManager;
 import de.ellpeck.game.gui.menu.GuiMainMenu;
 import de.ellpeck.game.gui.menu.GuiMenu;
+import de.ellpeck.game.net.NetHandler;
+import de.ellpeck.game.net.client.ClientWorld;
+import de.ellpeck.game.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.WorldRenderer;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.World.WorldInfo;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.entity.player.InteractionManager;
+import io.netty.channel.ChannelHandlerContext;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -36,7 +41,7 @@ public class Game extends BasicGame{
     public GuiManager guiManager;
     public InteractionManager interactionManager;
 
-    private World world;
+    public World world;
 
     public AssetManager assetManager;
     private WorldRenderer worldRenderer;
@@ -169,12 +174,14 @@ public class Game extends BasicGame{
     public void startWorld(File worldFile, WorldInfo info){
         Log.info("Starting world with file "+worldFile);
 
-        this.world = new World(worldFile, info);
+        this.world = new World(info);
+        this.world.initFiles(worldFile);
+
         if(this.world.info.seed == 0){
             this.world.info.seed = this.world.rand.nextLong();
         }
 
-        this.player = this.world.addPlayer(this.uniqueId);
+        this.player = this.world.addPlayer(this.uniqueId, false);
 
         this.guiManager.reInitSelf(this);
         this.guiManager.closeGui();
@@ -182,8 +189,29 @@ public class Game extends BasicGame{
         Log.info("Successfully started world with file "+worldFile);
     }
 
+    public void joinWorld(DataSet playerSet, WorldInfo info){
+        Log.info("Joining world");
+
+        this.world = new ClientWorld(info);
+
+        this.player = this.world.addPlayer(this.uniqueId, false);
+        this.player.load(playerSet);
+
+        this.guiManager.reInitSelf(this);
+        this.guiManager.closeGui();
+
+        Log.info("Successfully joined world");
+    }
+
     public void quitWorld(){
         Log.info("Quitting current world");
+
+        if(NetHandler.isClient()){
+            Log.info("Sending disconnection packet");
+            NetHandler.sendToServer(new PacketDisconnect(this.player.getUniqueId()));
+        }
+
+        NetHandler.shutdown();
 
         this.world = null;
         this.player = null;
@@ -196,7 +224,10 @@ public class Game extends BasicGame{
 
     public void openIngameMenu(){
         this.guiManager.openGui(new GuiMenu());
-        this.world.save();
+
+        if(!this.world.isClient()){
+            this.world.save();
+        }
     }
 
     public void scheduleAction(Runnable runnable){

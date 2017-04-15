@@ -33,6 +33,8 @@ public class Settings{
     public int buttonGuiAction1;
     public int buttonGuiAction2;
 
+    public int serverStartPort;
+
     public int[] keysItemSelection = new int[8];
 
     public Settings(Properties props){
@@ -57,6 +59,8 @@ public class Settings{
         this.buttonPlace = this.getProp("button_place", Input.MOUSE_RIGHT_BUTTON);
         this.buttonGuiAction1 = this.getProp("button_gui_1", Input.MOUSE_LEFT_BUTTON);
         this.buttonGuiAction2 = this.getProp("button_gui_2", Input.MOUSE_RIGHT_BUTTON);
+
+        this.serverStartPort = this.getProp("server_port", 8000);
 
         int[] defaultKeys = new int[]{Input.KEY_1, Input.KEY_2, Input.KEY_3, Input.KEY_4, Input.KEY_5, Input.KEY_6, Input.KEY_7, Input.KEY_8};
         for(int i = 0; i < this.keysItemSelection.length; i++){
@@ -84,6 +88,8 @@ public class Settings{
         this.setProp("button_place", this.buttonPlace);
         this.setProp("button_gui_1", this.buttonGuiAction1);
         this.setProp("button_gui_2", this.buttonGuiAction2);
+
+        this.setProp("server_port", this.serverStartPort);
 
         for(int i = 0; i < this.keysItemSelection.length; i++){
             this.setProp("key_item_select_"+i, this.keysItemSelection[i]);

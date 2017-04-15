@@ -2,7 +2,9 @@ package de.ellpeck.game.data.set.part.num.array;
 
 import de.ellpeck.game.data.set.part.BasicDataPart;
 
+import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.util.Arrays;
 
@@ -13,7 +15,7 @@ public class PartByteByteArray extends BasicDataPart<byte[][]>{
     }
 
     @Override
-    public void write(DataOutputStream stream) throws Exception{
+    public void write(DataOutput stream) throws Exception{
         stream.writeInt(this.data.length);
 
         for(byte[] array : this.data){
@@ -26,7 +28,7 @@ public class PartByteByteArray extends BasicDataPart<byte[][]>{
     }
 
     @Override
-    public void read(DataInputStream stream) throws Exception{
+    public void read(DataInput stream) throws Exception{
         int amount = stream.readInt();
         this.data = new byte[amount][];
 

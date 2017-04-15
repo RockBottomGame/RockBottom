@@ -1,8 +1,6 @@
 package de.ellpeck.game.data.set.part;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public abstract class DataPart<T>{
 
@@ -14,9 +12,9 @@ public abstract class DataPart<T>{
 
     public abstract T get();
 
-    public abstract void write(DataOutputStream stream) throws Exception;
+    public abstract void write(DataOutput stream) throws Exception;
 
-    public abstract void read(DataInputStream stream) throws Exception;
+    public abstract void read(DataInput stream) throws Exception;
 
     public String getName(){
         return this.name;

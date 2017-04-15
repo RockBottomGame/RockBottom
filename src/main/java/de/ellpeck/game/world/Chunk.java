@@ -24,26 +24,27 @@ public class Chunk implements IWorld{
     public final int gridX;
     public final int gridY;
 
-    private final World world;
+    protected final World world;
 
-    private final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    private final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    private final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
-    private final List<Entity> entities = new ArrayList<>();
+    protected final List<Entity> entities = new ArrayList<>();
 
-    private final List<TileEntity> tileEntities = new ArrayList<>();
-    private final Map<Vec2, TileEntity> tileEntityLookup = new HashMap<>();
+    protected final List<TileEntity> tileEntities = new ArrayList<>();
+    protected final Map<Vec2, TileEntity> tileEntityLookup = new HashMap<>();
 
-    private final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
-    private final Map<Vec2, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
+    protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
+    protected final Map<Vec2, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
 
     public int randomUpdateTileAmount;
 
     public int loadTimer;
 
-    private boolean isDirty;
-    private boolean isGenerating;
+    protected boolean needsSave;
+
+    public boolean isGenerating;
 
     public Chunk(World world, int gridX, int gridY){
         this.world = world;
@@ -52,6 +53,8 @@ public class Chunk implements IWorld{
         this.y = Util.toWorldPos(gridY);
         this.gridX = gridX;
         this.gridY = gridY;
+
+        this.isGenerating = true;
 
         for(int i = 0; i < TileLayer.LAYERS.length; i++){
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
@@ -87,64 +90,66 @@ public class Chunk implements IWorld{
             throw new RuntimeException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
         }
 
-        for(int i = 0; i < this.entities.size(); i++){
-            Entity entity = this.entities.get(i);
-            entity.update(game);
+        if(!this.isGenerating){
+            for(int i = 0; i < this.entities.size(); i++){
+                Entity entity = this.entities.get(i);
+                entity.update(game);
 
-            if(entity.shouldBeRemoved()){
-                this.removeEntity(entity);
-                i--;
-            }
-            else{
-                int newChunkX = Util.toGridPos(entity.x);
-                int newChunkY = Util.toGridPos(entity.y);
-
-                if(newChunkX != this.gridX || newChunkY != this.gridY){
+                if(entity.shouldBeRemoved()){
                     this.removeEntity(entity);
                     i--;
+                }
+                else{
+                    int newChunkX = Util.toGridPos(entity.x);
+                    int newChunkY = Util.toGridPos(entity.y);
 
-                    Chunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
-                    chunk.addEntity(entity);
+                    if(newChunkX != this.gridX || newChunkY != this.gridY){
+                        this.removeEntity(entity);
+                        i--;
+
+                        Chunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
+                        chunk.addEntity(entity);
+                    }
                 }
             }
-        }
 
-        for(int i = 0; i < this.tileEntities.size(); i++){
-            TileEntity tile = this.tileEntities.get(i);
-            tile.update(game);
+            for(int i = 0; i < this.tileEntities.size(); i++){
+                TileEntity tile = this.tileEntities.get(i);
+                tile.update(game);
 
-            if(tile.shouldRemove()){
-                this.removeTileEntity(tile.x, tile.y);
-                i--;
-            }
-        }
-
-        if(this.randomUpdateTileAmount > 0){
-            int randX = this.world.rand.nextInt(Constants.CHUNK_SIZE);
-            int randY = this.world.rand.nextInt(Constants.CHUNK_SIZE);
-
-            Tile tile = this.getTileInner(randX, randY);
-            if(tile.doesRandomUpdates()){
-                tile.updateRandomly(this.world, this.x+randX, this.y+randY);
-            }
-        }
-
-        if(!this.scheduledUpdates.isEmpty()){
-            for(int i = 0; i < this.scheduledUpdates.size(); i++){
-                ScheduledUpdate update = this.scheduledUpdates.get(i);
-                update.time--;
-
-                if(update.time <= 0){
-                    this.scheduledUpdates.remove(i);
-                    this.scheduledUpdateLookup.remove(new Vec2(update.x, update.y));
-
-                    Tile tile = this.getTile(update.x, update.y);
-                    if(tile == update.tile){
-                        tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
-                    }
-
+                if(tile.shouldRemove()){
+                    this.removeTileEntity(tile.x, tile.y);
                     i--;
-                    this.setDirty();
+                }
+            }
+
+            if(this.randomUpdateTileAmount > 0){
+                int randX = this.world.rand.nextInt(Constants.CHUNK_SIZE);
+                int randY = this.world.rand.nextInt(Constants.CHUNK_SIZE);
+
+                Tile tile = this.getTileInner(randX, randY);
+                if(tile.doesRandomUpdates()){
+                    tile.updateRandomly(this.world, this.x+randX, this.y+randY);
+                }
+            }
+
+            if(!this.scheduledUpdates.isEmpty()){
+                for(int i = 0; i < this.scheduledUpdates.size(); i++){
+                    ScheduledUpdate update = this.scheduledUpdates.get(i);
+                    update.time--;
+
+                    if(update.time <= 0){
+                        this.scheduledUpdates.remove(i);
+                        this.scheduledUpdateLookup.remove(new Vec2(update.x, update.y));
+
+                        Tile tile = this.getTile(update.x, update.y);
+                        if(tile == update.tile){
+                            tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
+                        }
+
+                        i--;
+                        this.setDirty();
+                    }
                 }
             }
         }
@@ -459,12 +464,8 @@ public class Chunk implements IWorld{
         return this.loadTimer <= 0;
     }
 
-    public boolean needsSave(){
-        return this.isDirty;
-    }
-
     public void setDirty(){
-        this.isDirty = true;
+        this.needsSave = true;
     }
 
     public void save(DataSet set){
@@ -532,7 +533,7 @@ public class Chunk implements IWorld{
 
         set.addDataSet("s_u", updateSet);
 
-        this.isDirty = false;
+        this.needsSave = false;
     }
 
     public void loadOrCreate(DataSet set){
@@ -626,7 +627,7 @@ public class Chunk implements IWorld{
         return this.scheduledUpdates.size();
     }
 
-    private static class ScheduledUpdate{
+    protected static class ScheduledUpdate{
 
         public final int x;
         public final int y;

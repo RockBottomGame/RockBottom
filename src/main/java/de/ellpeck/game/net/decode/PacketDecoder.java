@@ -1,9 +1,11 @@
-package de.ellpeck.game.net;
+package de.ellpeck.game.net.decode;
 
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.newdawn.slick.util.Log;
 
 import java.util.List;
 
@@ -14,9 +16,14 @@ public class PacketDecoder extends ByteToMessageDecoder{
         byte id = buf.readByte();
 
         Class<? extends IPacket> packetClass = NetHandler.PACKET_REGISTRY.get(id);
-        IPacket packet = packetClass.newInstance();
+        if(packetClass != null){
+            IPacket packet = packetClass.newInstance();
 
-        packet.fromBuffer(buf);
-        out.add(packet);
+            packet.fromBuffer(buf);
+            out.add(packet);
+        }
+        else{
+            Log.error("Found unknown packet with id "+id);
+        }
     }
 }

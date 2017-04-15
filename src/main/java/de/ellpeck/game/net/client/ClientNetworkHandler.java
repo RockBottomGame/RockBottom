@@ -9,6 +9,6 @@ public class ClientNetworkHandler extends SimpleChannelInboundHandler<IPacket>{
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) throws Exception{
-        packet.handle(Game.get());
+        packet.handle(Game.get(), ctx);
     }
 }

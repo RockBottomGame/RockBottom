@@ -4,6 +4,8 @@ import de.ellpeck.game.Constants;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.net.packet.toclient.PacketChunk;
+import de.ellpeck.game.net.server.ConnectedPlayer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.Util;
@@ -12,6 +14,7 @@ import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
+import io.netty.buffer.ByteBuf;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -25,25 +28,27 @@ public class World implements IWorld{
     public final Random generatorRandom = new Random();
 
     public final List<Chunk> loadedChunks = new ArrayList<>();
-    private final Map<Vec2, Chunk> chunkLookup = new HashMap<>();
+    protected final Map<Vec2, Chunk> chunkLookup = new HashMap<>();
 
     public List<EntityPlayer> players = new ArrayList<>();
 
-    private final File chunksDirectory;
-    private final File playerDirectory;
-    private int saveTicksCounter;
+    protected File chunksDirectory;
+    protected File playerDirectory;
+    protected int saveTicksCounter;
 
     public int spawnX = 0;
     public int spawnY = 20;
 
     public WorldInfo info;
 
-    public World(File worldDirectory, WorldInfo info){
-        this.chunksDirectory = new File(worldDirectory, "chunks");
-        this.playerDirectory = new File(worldDirectory, "players");
-
+    public World(WorldInfo info){
         this.info = info;
         this.generatorRandom.setSeed(this.info.seed);
+    }
+
+    public void initFiles(File worldDirectory){
+        this.chunksDirectory = new File(worldDirectory, "chunks");
+        this.playerDirectory = new File(worldDirectory, "players");
     }
 
     public void update(Game game){
@@ -56,6 +61,8 @@ public class World implements IWorld{
                 for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){
                     Chunk chunk = this.getChunkFromGridCoords(player.chunkX+x, player.chunkY+y);
                     chunk.loadTimer = Constants.CHUNK_LOAD_TIME;
+
+                    player.onKeepLoaded(chunk);
                 }
             }
         }
@@ -65,7 +72,7 @@ public class World implements IWorld{
             chunk.update(game);
 
             chunk.loadTimer--;
-            if(chunk.loadTimer <= 0 || chunk.shouldUnload()){
+            if(chunk.shouldUnload()){
                 this.saveChunk(chunk);
 
                 this.loadedChunks.remove(i);
@@ -252,18 +259,23 @@ public class World implements IWorld{
     }
 
     public Chunk getChunkFromGridCoords(int gridX, int gridY){
-        Vec2 vec = new Vec2(gridX, gridY);
-        Chunk chunk = this.chunkLookup.get(vec);
+        Chunk chunk = this.chunkLookup.get(new Vec2(gridX, gridY));
 
         if(chunk == null){
-            chunk = new Chunk(this, gridX, gridY);
-            this.loadedChunks.add(chunk);
-            this.chunkLookup.put(vec, chunk);
-
-            DataSet set = new DataSet();
-            set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
-            chunk.loadOrCreate(set);
+            chunk = this.loadChunk(gridX, gridY);
         }
+
+        return chunk;
+    }
+
+    protected Chunk loadChunk(int gridX, int gridY){
+        Chunk chunk = new Chunk(this, gridX, gridY);
+        this.loadedChunks.add(chunk);
+        this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
+
+        DataSet set = new DataSet();
+        set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
+        chunk.loadOrCreate(set);
 
         return chunk;
     }
@@ -344,8 +356,8 @@ public class World implements IWorld{
         Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
     }
 
-    public EntityPlayer addPlayer(UUID id){
-        EntityPlayer player = new EntityPlayer(this, id);
+    public EntityPlayer addPlayer(UUID id, boolean connected){
+        EntityPlayer player = connected ? new ConnectedPlayer(this, id) : new EntityPlayer(this, id);
 
         File file = new File(this.playerDirectory, id+".dat");
         if(file.exists()){
@@ -365,8 +377,17 @@ public class World implements IWorld{
         return player;
     }
 
-    private void saveChunk(Chunk chunk){
-        if(chunk.needsSave()){
+    public EntityPlayer getPlayer(UUID id){
+        for(EntityPlayer player : this.players){
+            if(id.equals(player.getUniqueId())){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    protected void saveChunk(Chunk chunk){
+        if(chunk.needsSave){
             DataSet set = new DataSet();
             chunk.save(set);
 
@@ -390,24 +411,26 @@ public class World implements IWorld{
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 
-            boolean change = false;
+            if(this.isPosLoaded(dirX, dirY)){
+                boolean change = false;
 
-            byte skylightThere = this.getSkyLight(dirX, dirY);
-            byte calcedSkylight = this.calcLight(dirX, dirY, true);
-            if(calcedSkylight != skylightThere){
-                this.setSkyLight(dirX, dirY, calcedSkylight);
-                change = true;
-            }
+                byte skylightThere = this.getSkyLight(dirX, dirY);
+                byte calcedSkylight = this.calcLight(dirX, dirY, true);
+                if(calcedSkylight != skylightThere){
+                    this.setSkyLight(dirX, dirY, calcedSkylight);
+                    change = true;
+                }
 
-            byte artLightThere = this.getArtificialLight(dirX, dirY);
-            byte calcedArtLight = this.calcLight(dirX, dirY, false);
-            if(calcedArtLight != artLightThere){
-                this.setArtificialLight(dirX, dirY, calcedArtLight);
-                change = true;
-            }
+                byte artLightThere = this.getArtificialLight(dirX, dirY);
+                byte calcedArtLight = this.calcLight(dirX, dirY, false);
+                if(calcedArtLight != artLightThere){
+                    this.setArtificialLight(dirX, dirY, calcedArtLight);
+                    change = true;
+                }
 
-            if(change){
-                this.updateLightFrom(dirX, dirY);
+                if(change){
+                    this.updateLightFrom(dirX, dirY);
+                }
             }
         }
     }
@@ -428,7 +451,7 @@ public class World implements IWorld{
         }
     }
 
-    private byte calcLight(int x, int y, boolean isSky){
+    protected byte calcLight(int x, int y, boolean isSky){
         byte maxLight = 0;
 
         for(Direction direction : Direction.REAL_DIRECTIONS){
@@ -453,7 +476,7 @@ public class World implements IWorld{
         return (byte)Math.min(Constants.MAX_LIGHT, maxLight);
     }
 
-    private byte getTileLight(int x, int y, boolean isSky){
+    protected byte getTileLight(int x, int y, boolean isSky){
         Tile foreground = this.getTile(x, y);
         Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
 
@@ -472,7 +495,7 @@ public class World implements IWorld{
         return 0;
     }
 
-    private float getTileModifier(int x, int y, boolean isSky){
+    protected float getTileModifier(int x, int y, boolean isSky){
         Tile foreground = this.getTile(x, y);
 
         if(!foreground.isAir()){
@@ -499,9 +522,13 @@ public class World implements IWorld{
         }
     }
 
+    public boolean isClient(){
+        return false;
+    }
+
     public static class WorldInfo{
 
-        public final File dataFile;
+        private final File dataFile;
 
         public long seed;
         public int totalTimeInWorld;
@@ -526,6 +553,18 @@ public class World implements IWorld{
             dataSet.addInt("total_time", this.totalTimeInWorld);
             dataSet.addInt("curr_time", this.currentWorldTime);
             dataSet.write(this.dataFile);
+        }
+
+        public void toBuffer(ByteBuf buf){
+            buf.writeLong(this.seed);
+            buf.writeInt(this.totalTimeInWorld);
+            buf.writeInt(this.currentWorldTime);
+        }
+
+        public void fromBuffer(ByteBuf buf){
+            this.seed = buf.readLong();
+            this.totalTimeInWorld = buf.readInt();
+            this.currentWorldTime = buf.readInt();
         }
     }
 }

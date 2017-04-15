@@ -179,7 +179,7 @@ public class DataSet{
         return this.data.isEmpty();
     }
 
-    public static void writeSet(DataOutputStream stream, DataSet set) throws Exception{
+    public static void writeSet(DataOutput stream, DataSet set) throws Exception{
         stream.writeInt(set.data.size());
 
         for(DataPart part : set.data.values()){
@@ -187,7 +187,7 @@ public class DataSet{
         }
     }
 
-    public static void readSet(DataInputStream stream, DataSet set) throws Exception{
+    public static void readSet(DataInput stream, DataSet set) throws Exception{
         int amount = stream.readInt();
 
         for(int i = 0; i < amount; i++){
@@ -196,13 +196,13 @@ public class DataSet{
         }
     }
 
-    public static void writePart(DataOutputStream stream, DataPart part) throws Exception{
+    public static void writePart(DataOutput stream, DataPart part) throws Exception{
         stream.writeByte(DataManager.PART_REGISTRY.getId(part.getClass()));
         stream.writeUTF(part.getName());
         part.write(stream);
     }
 
-    public static DataPart readPart(DataInputStream stream) throws Exception{
+    public static DataPart readPart(DataInput stream) throws Exception{
         byte id = stream.readByte();
         String name = stream.readUTF();
 
