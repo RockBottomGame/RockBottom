@@ -89,8 +89,8 @@ public class PacketChunk implements IPacket{
 
                     for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                         for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                            chunk.setTileInner(layer, x, y, ContentRegistry.TILE_REGISTRY.get(this.tileData[index]), false);
-                            chunk.setMetaInner(layer, x, y, this.metaData[index], false);
+                            chunk.setTileInner(layer, x, y, ContentRegistry.TILE_REGISTRY.get(this.tileData[index]));
+                            chunk.setMetaInner(layer, x, y, this.metaData[index]);
 
                             chunk.setSkylightInner(x, y, this.lightData[index]);
                             chunk.setArtificialLightInner(x, y, this.lightData[DATA_SIZE+index]);

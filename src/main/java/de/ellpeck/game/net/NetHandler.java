@@ -2,11 +2,8 @@ package de.ellpeck.game.net;
 
 import de.ellpeck.game.net.client.Client;
 import de.ellpeck.game.net.packet.IPacket;
-import de.ellpeck.game.net.packet.PacketEntityChange;
-import de.ellpeck.game.net.packet.PacketMetaChange;
-import de.ellpeck.game.net.packet.PacketTileChange;
-import de.ellpeck.game.net.packet.toclient.PacketChunk;
-import de.ellpeck.game.net.packet.toclient.PacketInitialServerData;
+import de.ellpeck.game.net.packet.toclient.*;
+import de.ellpeck.game.net.packet.toserver.PacketBreakTile;
 import de.ellpeck.game.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.game.net.packet.toserver.PacketJoin;
 import de.ellpeck.game.net.server.Server;
@@ -30,6 +27,8 @@ public final class NetHandler{
         PACKET_REGISTRY.register(4, PacketTileChange.class);
         PACKET_REGISTRY.register(5, PacketMetaChange.class);
         PACKET_REGISTRY.register(6, PacketEntityChange.class);
+        PACKET_REGISTRY.register(7, PacketBreakTile.class);
+        PACKET_REGISTRY.register(8, PacketParticles.class);
     }
 
     private static Client client;
@@ -77,15 +76,6 @@ public final class NetHandler{
 
     public static boolean isActive(){
         return isClient() || isServer();
-    }
-
-    public static void sendToServerOrPlayers(World world, IPacket packet){
-        if(isClient()){
-            NetHandler.sendToServer(packet);
-        }
-        else if(isServer()){
-            NetHandler.sendToAllPlayers(world, packet);
-        }
     }
 
     public static void sendToServer(IPacket packet){

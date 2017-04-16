@@ -5,8 +5,8 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.net.NetHandler;
-import de.ellpeck.game.net.packet.PacketMetaChange;
-import de.ellpeck.game.net.packet.PacketTileChange;
+import de.ellpeck.game.net.packet.toclient.PacketMetaChange;
+import de.ellpeck.game.net.packet.toclient.PacketTileChange;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.util.Vec2;
@@ -74,12 +74,12 @@ public class Chunk implements IWorld{
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                 if(this.y+y == 15){
-                    this.setTileInner(x, y, ContentRegistry.TILE_GRASS, false);
+                    this.setTileInner(x, y, ContentRegistry.TILE_GRASS);
                 }
                 else if(this.y+y < 15){
-                    this.setTileInner(x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK, false);
+                    this.setTileInner(x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
 
-                    this.setTileInner(TileLayer.BACKGROUND, x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK, false);
+                    this.setTileInner(TileLayer.BACKGROUND, x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
                 }
             }
         }
@@ -185,7 +185,7 @@ public class Chunk implements IWorld{
 
     @Override
     public void setTile(TileLayer layer, int x, int y, Tile tile){
-        this.setTileInner(layer, x-this.x, y-this.y, tile, true);
+        this.setTileInner(layer, x-this.x, y-this.y, tile);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class Chunk implements IWorld{
 
     @Override
     public void setMeta(TileLayer layer, int x, int y, int meta){
-        this.setMetaInner(layer, x-this.x, y-this.y, meta, true);
+        this.setMetaInner(layer, x-this.x, y-this.y, meta);
     }
 
     public Tile getTileInner(TileLayer layer, int x, int y){
@@ -210,11 +210,11 @@ public class Chunk implements IWorld{
         return this.metaGrid[layer.ordinal()][x][y];
     }
 
-    public void setTileInner(int x, int y, Tile tile, boolean callChange){
-        this.setTileInner(TileLayer.MAIN, x, y, tile, callChange);
+    public void setTileInner(int x, int y, Tile tile){
+        this.setTileInner(TileLayer.MAIN, x, y, tile);
     }
 
-    public void setTileInner(TileLayer layer, int x, int y, Tile tile, boolean callChange){
+    public void setTileInner(TileLayer layer, int x, int y, Tile tile){
         Tile lastTile = this.getTileInner(layer, x, y);
 
         boolean lastAir = lastTile.isAir();
@@ -252,8 +252,8 @@ public class Chunk implements IWorld{
             }
         }
 
-        if(callChange){
-            NetHandler.sendToServerOrPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, tile));
+        if(NetHandler.isServer()){
+            NetHandler.sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, tile));
         }
 
         if(!this.isGenerating){
@@ -266,15 +266,15 @@ public class Chunk implements IWorld{
         }
     }
 
-    public void setMetaInner(TileLayer layer, int x, int y, int meta, boolean callChange){
+    public void setMetaInner(TileLayer layer, int x, int y, int meta){
         if(meta > Byte.MAX_VALUE){
             throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" in chunk at "+this.gridX+", "+this.gridY+" which is greater than max "+Byte.MAX_VALUE+"!");
         }
 
         this.metaGrid[layer.ordinal()][x][y] = (byte)meta;
 
-        if(callChange){
-            NetHandler.sendToServerOrPlayers(this.world, new PacketMetaChange(this.x+x, this.y+y, layer, meta));
+        if(NetHandler.isServer()){
+            NetHandler.sendToAllPlayers(this.world, new PacketMetaChange(this.x+x, this.y+y, layer, meta));
         }
 
         if(!this.isGenerating){
@@ -569,7 +569,7 @@ public class Chunk implements IWorld{
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                         Tile tile = ContentRegistry.TILE_REGISTRY.get(ids[x][y]);
                         if(tile != null){
-                            this.setTileInner(layer, x, y, tile, false);
+                            this.setTileInner(layer, x, y, tile);
                         }
                         else{
                             Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");

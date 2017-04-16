@@ -5,7 +5,8 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.net.NetHandler;
-import de.ellpeck.game.net.packet.PacketEntityChange;
+import de.ellpeck.game.net.packet.toclient.PacketEntityChange;
+import de.ellpeck.game.net.packet.toclient.PacketParticles;
 import de.ellpeck.game.net.server.ConnectedPlayer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
@@ -99,18 +100,15 @@ public class World implements IWorld{
 
     @Override
     public void addEntity(Entity entity){
-        this.addEntity(entity, true);
-    }
-
-    public void addEntity(Entity entity, boolean callChange){
         Chunk chunk = this.getChunk(entity.x, entity.y);
         chunk.addEntity(entity);
 
         if(entity instanceof EntityPlayer){
             this.players.add((EntityPlayer)entity);
         }
-        else if(callChange){
-            NetHandler.sendToServerOrPlayers(this, new PacketEntityChange(entity, false));
+
+        if(NetHandler.isServer()){
+            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, false));
         }
     }
 
@@ -122,18 +120,15 @@ public class World implements IWorld{
 
     @Override
     public void removeEntity(Entity entity){
-        this.removeEntity(entity, true);
-    }
-
-    public void removeEntity(Entity entity, boolean callChange){
         Chunk chunk = this.getChunk(entity.x, entity.y);
         chunk.removeEntity(entity);
 
         if(entity instanceof EntityPlayer){
             this.players.remove(entity);
         }
-        else if(callChange){
-            NetHandler.sendToServerOrPlayers(this, new PacketEntityChange(entity, true));
+
+        if(NetHandler.isServer()){
+            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, true));
         }
     }
 
@@ -426,6 +421,10 @@ public class World implements IWorld{
         int meta = this.getMeta(x, y);
 
         tile.onDestroyed(this, x, y, destroyer, layer, forceDrop);
+
+        if(NetHandler.isServer()){
+            NetHandler.sendToAllPlayers(this, PacketParticles.tile(x, y, tile, meta));
+        }
 
         Game.get().particleManager.addTileParticles(this, x, y, tile, meta);
 

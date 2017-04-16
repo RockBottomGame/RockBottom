@@ -6,6 +6,8 @@ import de.ellpeck.game.item.Item;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.item.ItemTile;
 import de.ellpeck.game.item.ToolType;
+import de.ellpeck.game.net.NetHandler;
+import de.ellpeck.game.net.packet.toserver.PacketBreakTile;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.Util;
@@ -78,21 +80,10 @@ public class InteractionManager{
                         if(tile.canBreak(player.world, this.mousedTileX, this.mousedTileY, layer)){
                             float hardness = tile.getHardness(player.world, this.mousedTileX, this.mousedTileY, layer);
                             float progressAmount = 0.05F/hardness;
-                            boolean isRightTool = false;
 
-                            if(selected != null){
-                                Map<ToolType, Integer> tools = selected.getItem().getToolTypes(selected);
-                                if(!tools.isEmpty()){
-                                    for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                                        int level = entry.getValue();
-
-                                        if(tile.isToolEffective(player.world, this.mousedTileX, this.mousedTileY, layer, entry.getKey(), level)){
-                                            progressAmount += level/200F;
-                                            isRightTool = true;
-                                            break;
-                                        }
-                                    }
-                                }
+                            int effectiveness = getToolEffectiveness(player, tile, layer, this.mousedTileX, this.mousedTileY);
+                            if(effectiveness > 0){
+                                progressAmount += effectiveness/200F;
                             }
 
                             this.breakProgress += progressAmount;
@@ -100,7 +91,12 @@ public class InteractionManager{
                             if(this.breakProgress >= 1){
                                 this.breakProgress = 0;
 
-                                player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, player, isRightTool);
+                                if(NetHandler.isClient()){
+                                    NetHandler.sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                }
+                                else{
+                                    player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, player, effectiveness > 0);
+                                }
                             }
                             else{
                                 this.breakTileX = this.mousedTileX;
@@ -167,6 +163,23 @@ public class InteractionManager{
                 this.breakProgress = 0;
             }
         }
+    }
+
+    public static int getToolEffectiveness(EntityPlayer player, Tile tile, TileLayer layer, int x, int y){
+        ItemInstance selected = player.inv.get(player.inv.selectedSlot);
+        if(selected != null){
+            Map<ToolType, Integer> tools = selected.getItem().getToolTypes(selected);
+            if(!tools.isEmpty()){
+                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                    int level = entry.getValue();
+
+                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
+                        return level;
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     public void onMouseAction(Game game, int button){

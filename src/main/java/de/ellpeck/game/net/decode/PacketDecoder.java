@@ -5,7 +5,6 @@ import de.ellpeck.game.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import org.newdawn.slick.util.Log;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class PacketDecoder extends ByteToMessageDecoder{
             out.add(packet);
         }
         else{
-            Log.error("Found unknown packet with id "+id);
+            throw new NullPointerException("Found unknown packet with id "+id);
         }
     }
 }

@@ -36,6 +36,8 @@ public class PacketJoin implements IPacket{
 
     @Override
     public void handle(Game game, ChannelHandlerContext context){
+        System.out.println("Joining player, stack follows");
+        Thread.dumpStack();
         game.scheduleAction(() -> {
             EntityPlayer player = game.world.addPlayer(this.id, true);
             player.setChannel(context.channel());

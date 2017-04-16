@@ -1,9 +1,10 @@
-package de.ellpeck.game.net.packet;
+package de.ellpeck.game.net.packet.toclient;
 
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.net.NetUtil;
+import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.world.entity.Entity;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -68,14 +69,14 @@ public class PacketEntityChange implements IPacket{
                 if(this.remove){
                     Entity entity = game.world.getEntity(this.uniqueId);
                     if(entity != null){
-                        game.world.removeEntity(entity, false);
+                        game.world.removeEntity(entity);
                     }
                 }
                 else{
                     Entity entity = Entity.create(this.id, game.world);
                     if(entity != null){
                         entity.load(this.entitySet);
-                        game.world.addEntity(entity, false);
+                        game.world.addEntity(entity);
                     }
                 }
             }

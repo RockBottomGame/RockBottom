@@ -1,31 +1,33 @@
-package de.ellpeck.game.net.packet;
+package de.ellpeck.game.net.packet.toclient;
 
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
+import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.tile.Tile;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 
-public class PacketMetaChange implements IPacket{
+public class PacketTileChange implements IPacket{
 
     private int x;
     private int y;
 
     private TileLayer layer;
-    private int meta;
+    private Tile tile;
 
-    public PacketMetaChange(int x, int y, TileLayer layer, int meta){
+    public PacketTileChange(int x, int y, TileLayer layer, Tile tile){
         this.x = x;
         this.y = y;
         this.layer = layer;
-        this.meta = meta;
+        this.tile = tile;
     }
 
-    public PacketMetaChange(){
+    public PacketTileChange(){
     }
 
     @Override
@@ -33,7 +35,7 @@ public class PacketMetaChange implements IPacket{
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.layer.ordinal());
-        buf.writeByte(this.meta);
+        buf.writeShort(ContentRegistry.TILE_REGISTRY.getId(this.tile));
     }
 
     @Override
@@ -41,7 +43,7 @@ public class PacketMetaChange implements IPacket{
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.layer = TileLayer.LAYERS[buf.readInt()];
-        this.meta = buf.readByte();
+        this.tile = ContentRegistry.TILE_REGISTRY.get(buf.readShort());
     }
 
     @Override
@@ -49,7 +51,7 @@ public class PacketMetaChange implements IPacket{
         game.scheduleAction(() -> {
             if(game.world != null){
                 Chunk chunk = game.world.getChunk(this.x, this.y);
-                chunk.setMetaInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.meta, false);
+                chunk.setTileInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.tile);
             }
         });
     }
