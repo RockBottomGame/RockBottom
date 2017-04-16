@@ -2,8 +2,11 @@ package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.gui.container.ContainerInventory;
+import de.ellpeck.game.gui.container.ItemContainer;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.PlayerEntityRenderer;
@@ -14,6 +17,7 @@ import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.EntityLiving;
 import io.netty.channel.Channel;
+import org.newdawn.slick.util.Log;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,18 +29,44 @@ public class EntityPlayer extends EntityLiving{
     private final IEntityRenderer renderer;
     public final InventoryPlayer inv = new InventoryPlayer();
 
+    public final ItemContainer invContainer = new ContainerInventory(this);
+    private ItemContainer currentContainer;
+
     private int respawnTimer;
 
-    public EntityPlayer(World world, UUID uniqueId){
+    public EntityPlayer(World world){
         super(world);
         this.renderer = new PlayerEntityRenderer();
         this.facing = Direction.RIGHT;
+    }
+
+    public EntityPlayer(World world, UUID uniqueId){
+        this(world);
         this.uniqueId = uniqueId;
     }
 
     @Override
     public IEntityRenderer getRenderer(){
         return this.renderer;
+    }
+
+    public void openContainer(ItemContainer container){
+        this.currentContainer = container;
+
+        if(this.currentContainer == null){
+            Log.info("Closed Container");
+        }
+        else{
+            Log.info("Opened Container "+this.currentContainer);
+        }
+    }
+
+    public void closeContainer(){
+        this.openContainer(null);
+    }
+
+    public ItemContainer getContainer(){
+        return this.currentContainer;
     }
 
     @Override
@@ -51,20 +81,27 @@ public class EntityPlayer extends EntityLiving{
             }
         }
         else{
-            List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y), EntityItem.class);
-            for(EntityItem entity : entities){
-                if(entity.canPickUp()){
-                    ItemInstance left = this.inv.addExistingFirst(entity.item, false);
+            if(!NetHandler.isClient()){
+                List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y), EntityItem.class);
+                for(EntityItem entity : entities){
+                    if(entity.canPickUp()){
+                        ItemInstance left = this.inv.addExistingFirst(entity.item, false);
 
-                    if(left == null){
-                        entity.kill();
-                    }
-                    else{
-                        entity.item = left;
+                        if(left == null){
+                            entity.kill();
+                        }
+                        else{
+                            entity.item = left;
+                        }
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public int getUpdateFrequency(){
+        return 2;
     }
 
     public void resetAndSpawn(Game game){
@@ -131,5 +168,19 @@ public class EntityPlayer extends EntityLiving{
 
     public void onKeepLoaded(Chunk chunk){
 
+    }
+
+    public void move(int type){
+        if(type == 0){
+            this.motionX -= 0.2;
+            this.facing = Direction.LEFT;
+        }
+        else if(type == 1){
+            this.motionX += 0.2;
+            this.facing = Direction.RIGHT;
+        }
+        else if(type == 2){
+            this.jump(0.28);
+        }
     }
 }

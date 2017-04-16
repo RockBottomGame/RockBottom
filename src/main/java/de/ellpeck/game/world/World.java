@@ -5,7 +5,7 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.net.NetHandler;
-import de.ellpeck.game.net.packet.toclient.PacketEntityChange;
+import de.ellpeck.game.net.packet.toclient.PacketEntity;
 import de.ellpeck.game.net.packet.toclient.PacketParticles;
 import de.ellpeck.game.net.server.ConnectedPlayer;
 import de.ellpeck.game.util.BoundBox;
@@ -108,7 +108,7 @@ public class World implements IWorld{
         }
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, false));
+            NetHandler.sendToAllPlayers(this, new PacketEntity(entity, false));
         }
     }
 
@@ -128,7 +128,7 @@ public class World implements IWorld{
         }
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, true));
+            NetHandler.sendToAllPlayers(this, new PacketEntity(entity, true));
         }
     }
 

@@ -1,13 +1,14 @@
 package de.ellpeck.game.net;
 
+import de.ellpeck.game.Game;
 import de.ellpeck.game.net.client.Client;
 import de.ellpeck.game.net.packet.IPacket;
+import de.ellpeck.game.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.game.net.packet.toclient.*;
-import de.ellpeck.game.net.packet.toserver.PacketBreakTile;
-import de.ellpeck.game.net.packet.toserver.PacketDisconnect;
-import de.ellpeck.game.net.packet.toserver.PacketJoin;
+import de.ellpeck.game.net.packet.toserver.*;
 import de.ellpeck.game.net.server.Server;
 import de.ellpeck.game.util.Registry;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import io.netty.channel.epoll.Epoll;
@@ -26,9 +27,13 @@ public final class NetHandler{
         PACKET_REGISTRY.register(3, PacketDisconnect.class);
         PACKET_REGISTRY.register(4, PacketTileChange.class);
         PACKET_REGISTRY.register(5, PacketMetaChange.class);
-        PACKET_REGISTRY.register(6, PacketEntityChange.class);
+        PACKET_REGISTRY.register(6, PacketEntity.class);
         PACKET_REGISTRY.register(7, PacketBreakTile.class);
         PACKET_REGISTRY.register(8, PacketParticles.class);
+        PACKET_REGISTRY.register(9, PacketEntityUpdate.class);
+        PACKET_REGISTRY.register(10, PacketPlayerMovement.class);
+        PACKET_REGISTRY.register(11, PacketInteract.class);
+        PACKET_REGISTRY.register(12, PacketHotbar.class);
     }
 
     private static Client client;
@@ -66,6 +71,10 @@ public final class NetHandler{
         }
     }
 
+    public static boolean isThePlayer(EntityPlayer player){
+        return Game.get().player == player;
+    }
+
     public static boolean isClient(){
         return client != null;
     }
@@ -84,6 +93,14 @@ public final class NetHandler{
 
     public static void sendToAllClients(IPacket packet){
         server.connectedChannels.writeAndFlush(packet);
+    }
+
+    public static void sendToPlayersInArea(World world, IPacket packet, double x, double y, double radius){
+        for(EntityPlayer player : world.players){
+            if(Util.distanceSq(x, y, player.x, player.y) <= radius*radius){
+                player.sendPacket(packet);
+            }
+        }
     }
 
     public static void sendToAllPlayers(World world, IPacket packet){

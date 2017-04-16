@@ -8,8 +8,10 @@ import de.ellpeck.game.item.ItemTile;
 import de.ellpeck.game.item.ToolType;
 import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.toserver.PacketBreakTile;
+import de.ellpeck.game.net.packet.toserver.PacketHotbar;
+import de.ellpeck.game.net.packet.toserver.PacketInteract;
+import de.ellpeck.game.net.packet.toserver.PacketPlayerMovement;
 import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.entity.Entity;
@@ -22,8 +24,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class InteractionManager{
-
-    private static final Predicate<Entity> PLACEMENT_TEST = entity -> !(entity instanceof EntityItem);
 
     public TileLayer breakingLayer;
     public int breakTileX;
@@ -51,16 +51,14 @@ public class InteractionManager{
                 this.mousedTileY = -Util.floor(worldAtScreenY+mouseY/(double)game.settings.renderScale);
 
                 if(input.isKeyDown(game.settings.keyLeft.key)){
-                    player.motionX -= 0.2;
-                    player.facing = Direction.LEFT;
+                    moveAndSend(player, 0);
                 }
                 else if(input.isKeyDown(game.settings.keyRight.key)){
-                    player.motionX += 0.2;
-                    player.facing = Direction.RIGHT;
+                    moveAndSend(player, 1);
                 }
 
                 if(input.isKeyDown(game.settings.keyJump.key)){
-                    player.jump(0.28);
+                    moveAndSend(player, 2);
                 }
 
                 if(input.isKeyPressed(Input.KEY_K)){
@@ -69,7 +67,6 @@ public class InteractionManager{
 
                 if(player.world.isPosLoaded(this.mousedTileX, this.mousedTileY)){
                     TileLayer layer = input.isKeyDown(game.settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
-                    ItemInstance selected = player.inv.get(player.inv.selectedSlot);
 
                     if(input.isMouseButtonDown(game.settings.buttonDestroy)){
                         if(this.breakTileX != this.mousedTileX || this.breakTileY != this.mousedTileY){
@@ -114,29 +111,13 @@ public class InteractionManager{
 
                     if(this.placeCooldown <= 0){
                         if(input.isMouseButtonDown(game.settings.buttonPlace)){
-                            Tile tileThere = player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
-                            if(layer != TileLayer.MAIN || !tileThere.onInteractWith(player.world, this.mousedTileX, this.mousedTileY, player)){
-                                if(selected != null){
-                                    Item item = selected.getItem();
-                                    if(item instanceof ItemTile){
-                                        if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(this.mousedTileX, this.mousedTileY, this.mousedTileX+1, this.mousedTileY+1), PLACEMENT_TEST).isEmpty()){
-                                            Tile tile = ((ItemTile)item).getTile();
-                                            if(tileThere.canReplace(player.world, this.mousedTileX, this.mousedTileY, layer, tile)){
-                                                if(tile.canPlace(player.world, this.mousedTileX, this.mousedTileY, layer)){
-
-                                                    tile.doPlace(player.world, this.mousedTileX, this.mousedTileY, layer, selected, player);
-
-                                                    selected.remove(1);
-                                                    if(selected.getAmount() <= 0){
-                                                        player.inv.set(player.inv.selectedSlot, null);
-                                                    }
-
-                                                    this.placeCooldown = 5;
-                                                }
-                                            }
-                                        }
-                                    }
+                            boolean client = NetHandler.isClient();
+                            if(interact(player, layer, this.mousedTileX, this.mousedTileY, client)){
+                                if(client){
+                                    NetHandler.sendToServer(new PacketInteract(player.getUniqueId(), this.mousedTileX, this.mousedTileY));
                                 }
+
+                                this.placeCooldown = 5;
                             }
                         }
                     }
@@ -145,23 +126,72 @@ public class InteractionManager{
                     }
                 }
 
+                boolean slotChange = false;
+
                 int scroll = Mouse.getDWheel();
                 if(scroll < 0){
                     player.inv.selectedSlot++;
                     if(player.inv.selectedSlot >= 8){
                         player.inv.selectedSlot = 0;
                     }
+                    slotChange = true;
                 }
                 else if(scroll > 0){
                     player.inv.selectedSlot--;
                     if(player.inv.selectedSlot < 0){
                         player.inv.selectedSlot = 7;
                     }
+                    slotChange = true;
+                }
+
+                if(slotChange){
+                    if(NetHandler.isClient()){
+                        NetHandler.sendToServer(new PacketHotbar(player.getUniqueId(), player.inv.selectedSlot));
+                    }
                 }
             }
             else{
                 this.breakProgress = 0;
             }
+        }
+    }
+
+    public static boolean interact(EntityPlayer player, TileLayer layer, int x, int y, boolean simulate){
+        Tile tileThere = player.world.getTile(layer, x, y);
+        if(layer != TileLayer.MAIN || !tileThere.onInteractWith(player.world, x, y, player)){
+            ItemInstance selected = player.inv.get(player.inv.selectedSlot);
+            if(selected != null){
+                Item item = selected.getItem();
+                if(item instanceof ItemTile){
+                    if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
+                        Tile tile = ((ItemTile)item).getTile();
+                        if(tileThere.canReplace(player.world, x, y, layer, tile)){
+                            if(tile.canPlace(player.world, x, y, layer)){
+
+                                if(!simulate){
+                                    tile.doPlace(player.world, x, y, layer, selected, player);
+
+                                    selected.remove(1);
+                                    if(selected.getAmount() <= 0){
+                                        player.inv.set(player.inv.selectedSlot, null);
+                                    }
+                                }
+
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static void moveAndSend(EntityPlayer player, int type){
+        player.move(type);
+
+        if(NetHandler.isClient()){
+            NetHandler.sendToServer(new PacketPlayerMovement(player.getUniqueId(), type));
         }
     }
 
@@ -192,6 +222,11 @@ public class InteractionManager{
                 for(int i = 0; i < game.settings.keysItemSelection.length; i++){
                     if(button == game.settings.keysItemSelection[i]){
                         game.player.inv.selectedSlot = i;
+
+                        if(NetHandler.isClient()){
+                            NetHandler.sendToServer(new PacketHotbar(game.player.getUniqueId(), i));
+                        }
+
                         break;
                     }
                 }

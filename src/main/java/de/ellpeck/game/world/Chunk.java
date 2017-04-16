@@ -34,6 +34,7 @@ public class Chunk implements IWorld{
     protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
     protected final List<Entity> entities = new ArrayList<>();
+    protected final Map<UUID, Entity> entityLookup = new HashMap<>();
 
     protected final List<TileEntity> tileEntities = new ArrayList<>();
     protected final Map<Vec2, TileEntity> tileEntityLookup = new HashMap<>();
@@ -86,6 +87,9 @@ public class Chunk implements IWorld{
     }
 
     public void update(Game game){
+        if(this.entities.size() != this.entityLookup.size()){
+            throw new RuntimeException("Entities and EntityLookup are out of sync!");
+        }
         if(this.tileEntities.size() != this.tileEntityLookup.size()){
             throw new RuntimeException("TileEntities and TileEntityLookup are out of sync!");
         }
@@ -286,6 +290,7 @@ public class Chunk implements IWorld{
     @Override
     public void addEntity(Entity entity){
         this.entities.add(entity);
+        this.entityLookup.put(entity.getUniqueId(), entity);
 
         entity.chunkX = this.gridX;
         entity.chunkY = this.gridY;
@@ -312,6 +317,7 @@ public class Chunk implements IWorld{
     @Override
     public void removeEntity(Entity entity){
         this.entities.remove(entity);
+        this.entityLookup.remove(entity.getUniqueId());
 
         if(!this.isGenerating){
             this.setDirty();
@@ -349,12 +355,7 @@ public class Chunk implements IWorld{
 
     @Override
     public Entity getEntity(UUID id){
-        for(Entity entity : this.entities){
-            if(id.equals(entity.getUniqueId())){
-                return entity;
-            }
-        }
-        return null;
+        return this.entityLookup.get(id);
     }
 
     @Override

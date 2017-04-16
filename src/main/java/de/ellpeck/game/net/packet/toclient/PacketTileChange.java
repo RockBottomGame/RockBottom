@@ -8,7 +8,6 @@ import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.tile.Tile;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 
@@ -50,8 +49,10 @@ public class PacketTileChange implements IPacket{
     public void handle(Game game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             if(game.world != null){
-                Chunk chunk = game.world.getChunk(this.x, this.y);
-                chunk.setTileInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.tile);
+                if(game.world.isPosLoaded(this.x, this.y)){
+                    Chunk chunk = game.world.getChunk(this.x, this.y);
+                    chunk.setTileInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.tile);
+                }
             }
         });
     }

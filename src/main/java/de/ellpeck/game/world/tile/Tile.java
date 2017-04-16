@@ -1,10 +1,15 @@
 package de.ellpeck.game.world.tile;
 
+import de.ellpeck.game.Container;
 import de.ellpeck.game.ContentRegistry;
+import de.ellpeck.game.Game;
+import de.ellpeck.game.gui.Gui;
+import de.ellpeck.game.gui.container.ItemContainer;
 import de.ellpeck.game.item.Item;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.item.ItemTile;
 import de.ellpeck.game.item.ToolType;
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
@@ -125,6 +130,34 @@ public class Tile{
 
     }
 
+    public ItemContainer getContainer(World world, int x, int y, EntityPlayer player){
+        return null;
+    }
+
+    public Gui getGui(World world, int x, int y, EntityPlayer player){
+        return null;
+    }
+
+    public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
+        boolean ret = false;
+
+        ItemContainer container = this.getContainer(world, x, y, player);
+        if(container != null){
+            player.openContainer(container);
+            ret = true;
+        }
+
+        if(NetHandler.isThePlayer(player)){
+            Gui gui = this.getGui(world, x, y, player);
+            if(gui != null){
+                Game.get().guiManager.openGui(gui);
+                ret = true;
+            }
+        }
+
+        return ret;
+    }
+
     public boolean canReplace(World world, int x, int y, TileLayer layer, Tile replacementTile){
         return false;
     }
@@ -138,10 +171,6 @@ public class Tile{
                 }
             }
         }
-    }
-
-    public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
-        return false;
     }
 
     public List<ItemInstance> getDrops(World world, int x, int y, Entity destroyer){

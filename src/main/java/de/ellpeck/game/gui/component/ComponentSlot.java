@@ -16,7 +16,7 @@ import java.util.List;
 public class ComponentSlot extends GuiComponent{
 
     private final GuiContainer container;
-    private final IInventory inventory;
+    public final IInventory inventory;
     public final int id;
 
     public ComponentSlot(GuiContainer container, IInventory inventory, int id, int x, int y){

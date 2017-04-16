@@ -6,13 +6,15 @@ import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.net.NetUtil;
 import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.world.entity.Entity;
+import de.ellpeck.game.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 import java.util.UUID;
 
-public class PacketEntityChange implements IPacket{
+public class PacketEntity implements IPacket{
 
     private final DataSet entitySet = new DataSet();
     private int id;
@@ -20,11 +22,20 @@ public class PacketEntityChange implements IPacket{
     private UUID uniqueId;
     private boolean remove;
 
-    public PacketEntityChange(Entity entity, boolean remove){
+    public PacketEntity(Entity entity, boolean remove){
         this.remove = remove;
 
         if(!this.remove){
-            this.id = ContentRegistry.ENTITY_REGISTRY.getId(entity.getClass());
+            if(entity instanceof EntityPlayer){
+                this.id = -2;
+            }
+            else{
+                this.id = ContentRegistry.ENTITY_REGISTRY.getId(entity.getClass());
+                if(this.id == -1){
+                    Log.error("Entity with class "+entity.getClass()+" is being sent to the client without being registered!");
+                }
+            }
+
             entity.save(this.entitySet);
         }
         else{
@@ -32,7 +43,7 @@ public class PacketEntityChange implements IPacket{
         }
     }
 
-    public PacketEntityChange(){
+    public PacketEntity(){
     }
 
     @Override
@@ -73,7 +84,14 @@ public class PacketEntityChange implements IPacket{
                     }
                 }
                 else{
-                    Entity entity = Entity.create(this.id, game.world);
+                    Entity entity;
+
+                    if(this.id == -2){
+                        entity = new EntityPlayer(game.world);
+                    }else{
+                        entity = Entity.create(this.id, game.world);
+                    }
+
                     if(entity != null){
                         entity.load(this.entitySet);
                         game.world.addEntity(entity);

@@ -3,13 +3,14 @@ package de.ellpeck.game.world.entity;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.net.NetHandler;
+import de.ellpeck.game.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.world.World;
 import org.newdawn.slick.util.Log;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class Entity extends MovableWorldObject{
@@ -27,6 +28,9 @@ public class Entity extends MovableWorldObject{
     public int fallAmount;
 
     protected UUID uniqueId;
+
+    private double lastX;
+    private double lastY;
 
     public Entity(World world){
         super(world);
@@ -69,6 +73,21 @@ public class Entity extends MovableWorldObject{
         }
 
         this.ticksExisted++;
+
+        if(NetHandler.isServer()){
+            if(this.ticksExisted%this.getUpdateFrequency() == 0){
+                if(this.lastX != this.x || this.lastY != this.y){
+                    NetHandler.sendToAllPlayers(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY));
+
+                    this.lastX = this.x;
+                    this.lastY = this.y;
+                }
+            }
+        }
+    }
+
+    public int getUpdateFrequency(){
+        return 40;
     }
 
     protected void applyMotion(){

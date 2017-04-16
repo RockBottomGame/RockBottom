@@ -5,6 +5,8 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
+import de.ellpeck.game.net.NetHandler;
+import de.ellpeck.game.net.packet.toserver.PacketHotbar;
 import de.ellpeck.game.render.item.IItemRenderer;
 import org.newdawn.slick.Graphics;
 
@@ -48,6 +50,11 @@ public class ComponentHotbarSlot extends GuiComponent{
         if(this.isMouseOver(game)){
             if(this.inv.selectedSlot != this.id){
                 this.inv.selectedSlot = this.id;
+
+                if(NetHandler.isClient()){
+                    NetHandler.sendToServer(new PacketHotbar(game.player.getUniqueId(), this.id));
+                }
+
                 return true;
             }
         }

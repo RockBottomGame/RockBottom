@@ -1,6 +1,7 @@
 package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.gui.container.ContainerChest;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.entity.TileEntityChest;
 
@@ -17,8 +18,6 @@ public class GuiChest extends GuiContainer{
     public void initGui(Game game){
         super.initGui(game);
 
-        this.addSlotGrid(this.tile.inventory, 0, this.tile.inventory.getSlotAmount(), this.guiLeft, this.guiTop, 10);
-        this.addPlayerInventory(this.guiLeft+20, this.guiTop+60);
     }
 
     @Override

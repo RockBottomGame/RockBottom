@@ -5,6 +5,7 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentHotbarSlot;
 import de.ellpeck.game.gui.component.GuiComponent;
+import de.ellpeck.game.gui.container.ContainerInventory;
 import de.ellpeck.game.gui.menu.MainMenuBackground;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
@@ -66,6 +67,7 @@ public class GuiManager{
         this.onScreenComponents.add(new ComponentButton(null, 0, 3, 3, 30, 10, game.assetManager.localize("button.inventory")){
             @Override
             public boolean onPressed(Game game){
+                player.openContainer(new ContainerInventory(player));
                 GuiManager.this.openGui(new GuiInventory(player));
                 return true;
             }

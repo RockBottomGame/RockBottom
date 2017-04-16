@@ -7,6 +7,7 @@ import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
 import de.ellpeck.game.gui.GuiManager;
+import de.ellpeck.game.gui.container.ContainerInventory;
 import de.ellpeck.game.gui.menu.GuiMainMenu;
 import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.net.NetHandler;
@@ -144,6 +145,7 @@ public class Game extends BasicGame{
                 return;
             }
             else if(key == this.settings.keyInventory.key){
+                this.player.openContainer(new ContainerInventory(this.player));
                 this.guiManager.openGui(new GuiInventory(this.player));
                 return;
             }

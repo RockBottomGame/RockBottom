@@ -1,11 +1,12 @@
 package de.ellpeck.game.net.server;
 
-import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.net.packet.toclient.PacketChunk;
+import de.ellpeck.game.net.packet.toclient.PacketEntity;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
+import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;
@@ -43,6 +44,11 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
+    public int getUpdateFrequency(){
+        return 80;
+    }
+
+    @Override
     public void sendPacket(IPacket packet){
         if(this.channel != null){
             this.channel.writeAndFlush(packet);
@@ -56,6 +62,10 @@ public class ConnectedPlayer extends EntityPlayer{
 
             Log.info("Sending chunk at "+chunk.gridX+", "+chunk.gridY+" to player with id "+this.getUniqueId());
             this.sendPacket(new PacketChunk(chunk));
+
+            for(Entity entity : chunk.getAllEntities()){
+                this.sendPacket(new PacketEntity(entity, false));
+            }
         }
     }
 }
