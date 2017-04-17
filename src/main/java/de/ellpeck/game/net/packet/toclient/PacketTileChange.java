@@ -54,6 +54,7 @@ public class PacketTileChange implements IPacket{
                     chunk.setTileInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.tile);
                 }
             }
+            return true;
         });
     }
 }

@@ -17,6 +17,7 @@ import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -62,22 +63,10 @@ public class World implements IWorld{
     public void update(Game game){
         this.checkListSync();
 
-        for(EntityPlayer player : this.players){
-            for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
-                for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){
-                    Chunk chunk = this.getChunkFromGridCoords(player.chunkX+x, player.chunkY+y);
-                    chunk.loadTimer = Constants.CHUNK_LOAD_TIME;
-
-                    player.onKeepLoaded(chunk);
-                }
-            }
-        }
-
         for(int i = 0; i < this.loadedChunks.size(); i++){
             Chunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
 
-            chunk.loadTimer--;
             if(chunk.shouldUnload()){
                 this.saveChunk(chunk);
 
@@ -112,7 +101,7 @@ public class World implements IWorld{
         }
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, false));
+            NetHandler.sendToAllPlayersExcept(this, new PacketEntityChange(entity, false), entity);
         }
     }
 
@@ -131,8 +120,10 @@ public class World implements IWorld{
             this.players.remove(entity);
         }
 
+        entity.onRemoveFromWorld();
+
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, true));
+            NetHandler.sendToAllPlayersExcept(this, new PacketEntityChange(entity, true), entity);
         }
     }
 
@@ -381,8 +372,8 @@ public class World implements IWorld{
         Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
     }
 
-    public EntityPlayer addPlayer(UUID id, boolean connected){
-        EntityPlayer player = connected ? new ConnectedPlayer(this, id) : new EntityPlayer(this, id);
+    public EntityPlayer createPlayer(UUID id, Channel channel){
+        EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, channel) : new EntityPlayer(this, id);
 
         File file = new File(this.playerDirectory, id+".dat");
         if(file.exists()){
@@ -396,9 +387,6 @@ public class World implements IWorld{
             player.resetAndSpawn(Game.get());
             Log.info("Adding new player with unique id "+id+" to world!");
         }
-
-        this.addEntity(player);
-
         return player;
     }
 

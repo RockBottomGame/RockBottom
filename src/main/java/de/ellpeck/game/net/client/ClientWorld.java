@@ -6,6 +6,7 @@ import de.ellpeck.game.util.Vec2;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
+import io.netty.channel.Channel;
 
 import java.util.UUID;
 
@@ -29,18 +30,10 @@ public class ClientWorld extends World{
     public void update(Game game){
         this.checkListSync();
 
-        for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
-            for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){
-                Chunk chunk = this.getChunkFromGridCoords(game.player.chunkX+x, game.player.chunkY+y);
-                chunk.loadTimer = Constants.CHUNK_LOAD_TIME;
-            }
-        }
-
         for(int i = 0; i < this.loadedChunks.size(); i++){
             Chunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
 
-            chunk.loadTimer--;
             if(chunk.shouldUnload()){
                 this.loadedChunks.remove(i);
                 this.chunkLookup.remove(new Vec2(chunk.gridX, chunk.gridY));
@@ -67,14 +60,11 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public EntityPlayer addPlayer(UUID id, boolean connected){
-        if(connected){
-            throw new UnsupportedOperationException("Cannot add a connected player to a client world");
+    public EntityPlayer createPlayer(UUID id, Channel channel){
+        if(channel != null){
+            throw new UnsupportedOperationException("Cannot create a connected player in a client world");
         }
-
-        EntityPlayer player = new EntityPlayer(this, id);
-        this.addEntity(player);
-        return player;
+        return new EntityPlayer(this, id);
     }
 
     @Override

@@ -48,6 +48,10 @@ public class PacketTileEntityData implements IPacket{
                 if(tile != null){
                     tile.loadSynced(this.tileSet);
                 }
+                return true;
+            }
+            else{
+                return false;
             }
         });
     }

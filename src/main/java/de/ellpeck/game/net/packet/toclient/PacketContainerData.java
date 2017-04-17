@@ -68,6 +68,7 @@ public class PacketContainerData implements IPacket{
                     }
                 }
             }
+            return true;
         });
     }
 }

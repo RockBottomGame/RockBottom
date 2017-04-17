@@ -88,7 +88,8 @@ public class PacketEntityChange implements IPacket{
 
                     if(this.id == -2){
                         entity = new EntityPlayer(game.world);
-                    }else{
+                    }
+                    else{
                         entity = Entity.create(this.id, game.world);
                     }
 
@@ -97,6 +98,10 @@ public class PacketEntityChange implements IPacket{
                         game.world.addEntity(entity);
                     }
                 }
+                return true;
+            }
+            else{
+                return false;
             }
         });
     }

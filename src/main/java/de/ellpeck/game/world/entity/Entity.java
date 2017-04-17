@@ -8,6 +8,7 @@ import de.ellpeck.game.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
+import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import org.newdawn.slick.util.Log;
 
@@ -105,6 +106,10 @@ public class Entity extends MovableWorldObject{
         return this.isDead();
     }
 
+    public void onRemoveFromWorld(){
+
+    }
+
     public boolean shouldRender(){
         return !this.isDead();
     }
@@ -128,6 +133,11 @@ public class Entity extends MovableWorldObject{
     @Override
     public BoundBox getBoundingBox(){
         return this.boundingBox;
+    }
+
+    public void moveToChunk(Chunk chunk){
+        this.chunkX = chunk.gridX;
+        this.chunkY = chunk.gridY;
     }
 
     public void save(DataSet set){

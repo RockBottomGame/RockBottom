@@ -42,9 +42,11 @@ public class Chunk implements IWorld{
     protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
     protected final Map<Vec2, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
 
+    public final List<EntityPlayer> playersInRange = new ArrayList<>();
+
     public int randomUpdateTileAmount;
 
-    public int loadTimer;
+    private int loadTimer;
 
     protected boolean needsSave;
 
@@ -98,41 +100,54 @@ public class Chunk implements IWorld{
         }
     }
 
+    protected void updateEntities(Game game){
+        for(int i = 0; i < this.entities.size(); i++){
+            Entity entity = this.entities.get(i);
+            entity.update(game);
+
+            if(entity.shouldBeRemoved()){
+                this.world.removeEntity(entity);
+                i--;
+            }
+            else{
+                int newChunkX = Util.toGridPos(entity.x);
+                int newChunkY = Util.toGridPos(entity.y);
+
+                if(newChunkX != this.gridX || newChunkY != this.gridY){
+                    this.removeEntity(entity);
+                    i--;
+
+                    Chunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
+                    chunk.addEntity(entity);
+                }
+            }
+        }
+
+        for(int i = 0; i < this.tileEntities.size(); i++){
+            TileEntity tile = this.tileEntities.get(i);
+            tile.update(game);
+
+            if(tile.shouldRemove()){
+                this.removeTileEntity(tile.x, tile.y);
+                i--;
+            }
+        }
+    }
+
+    protected void updateTimer(){
+        if(this.playersInRange.isEmpty()){
+            this.loadTimer--;
+        }
+        else{
+            this.loadTimer = Constants.CHUNK_LOAD_TIME;
+        }
+    }
+
     public void update(Game game){
         this.checkListSync();
 
         if(!this.isGenerating){
-            for(int i = 0; i < this.entities.size(); i++){
-                Entity entity = this.entities.get(i);
-                entity.update(game);
-
-                if(entity.shouldBeRemoved()){
-                    this.world.removeEntity(entity);
-                    i--;
-                }
-                else{
-                    int newChunkX = Util.toGridPos(entity.x);
-                    int newChunkY = Util.toGridPos(entity.y);
-
-                    if(newChunkX != this.gridX || newChunkY != this.gridY){
-                        this.removeEntity(entity);
-                        i--;
-
-                        Chunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
-                        chunk.addEntity(entity);
-                    }
-                }
-            }
-
-            for(int i = 0; i < this.tileEntities.size(); i++){
-                TileEntity tile = this.tileEntities.get(i);
-                tile.update(game);
-
-                if(tile.shouldRemove()){
-                    this.removeTileEntity(tile.x, tile.y);
-                    i--;
-                }
-            }
+            this.updateEntities(game);
 
             if(this.randomUpdateTileAmount > 0){
                 int randX = this.world.rand.nextInt(Constants.CHUNK_SIZE);
@@ -164,6 +179,8 @@ public class Chunk implements IWorld{
                 }
             }
         }
+
+        this.updateTimer();
     }
 
     @Override
@@ -293,14 +310,18 @@ public class Chunk implements IWorld{
 
     @Override
     public void addEntity(Entity entity){
-        this.entities.add(entity);
-        this.entityLookup.put(entity.getUniqueId(), entity);
+        if(this.entityLookup.containsKey(entity.getUniqueId())){
+            Log.error("Tried adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk at "+this.gridX+", "+this.gridY+" that already contained it!");
+        }
+        else{
+            this.entities.add(entity);
+            this.entityLookup.put(entity.getUniqueId(), entity);
 
-        entity.chunkX = this.gridX;
-        entity.chunkY = this.gridY;
+            entity.moveToChunk(this);
 
-        if(!this.isGenerating){
-            this.setDirty();
+            if(!this.isGenerating){
+                this.setDirty();
+            }
         }
     }
 

@@ -45,6 +45,8 @@ public class PacketInitialServerData implements IPacket{
         game.scheduleAction(() -> {
             Log.info("Received initial server data, joining world");
             game.joinWorld(this.playerSet, this.info);
+
+            return true;
         });
     }
 }

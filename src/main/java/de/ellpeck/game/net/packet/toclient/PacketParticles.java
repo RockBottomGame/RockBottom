@@ -64,6 +64,7 @@ public class PacketParticles implements IPacket{
                     game.particleManager.addTileParticles(game.world, this.x, this.y, tile, this.args[1]);
                 }
             }
+            return true;
         });
     }
 }

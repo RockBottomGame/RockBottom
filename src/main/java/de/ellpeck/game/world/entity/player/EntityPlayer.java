@@ -1,5 +1,6 @@
 package de.ellpeck.game.world.entity.player;
 
+import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.Gui;
@@ -27,6 +28,7 @@ import io.netty.channel.Channel;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +42,8 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     public final ItemContainer inventoryContainer = new ContainerInventory(this);
     private ItemContainer currentContainer;
+
+    public List<Chunk> chunksInRange = new ArrayList<>();
 
     private int respawnTimer;
 
@@ -216,15 +220,11 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         this.color = new Color(set.getFloat("color_r"), set.getFloat("color_g"), set.getFloat("color_b"));
     }
 
-    public void setChannel(Channel channel){
-
-    }
-
     public void sendPacket(IPacket packet){
 
     }
 
-    public void onKeepLoaded(Chunk chunk){
+    public void onChunkNewlyLoaded(Chunk chunk){
 
     }
 
@@ -254,6 +254,55 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                     this.sendPacket(new PacketContainerChange(isInv, index, newInstance));
                 }
             }
+        }
+    }
+
+    @Override
+    public void moveToChunk(Chunk newChunk){
+        super.moveToChunk(newChunk);
+
+        if(NetHandler.isServer() || NetHandler.isThePlayer(this)){
+            List<Chunk> nowLoaded = new ArrayList<>();
+
+            for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
+                for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){
+                    Chunk chunk = this.world.getChunkFromGridCoords(this.chunkX+x, this.chunkY+y);
+                    nowLoaded.add(chunk);
+                }
+            }
+
+            int unload = 0;
+            for(int i = 0; i < this.chunksInRange.size(); i++){
+                Chunk chunk = this.chunksInRange.get(i);
+
+                int nowIndex = nowLoaded.indexOf(chunk);
+                if(nowIndex < 0){
+                    chunk.playersInRange.remove(this);
+                    this.chunksInRange.remove(i);
+                    i--;
+
+                    unload++;
+                }
+                else{
+                    nowLoaded.remove(nowIndex);
+                }
+            }
+
+            Log.info("Scheduling "+unload+" chunks for unload and loading "+nowLoaded.size()+" new ones");
+
+            for(Chunk chunk : nowLoaded){
+                chunk.playersInRange.add(this);
+                this.chunksInRange.add(chunk);
+
+                this.onChunkNewlyLoaded(chunk);
+            }
+        }
+    }
+
+    @Override
+    public void onRemoveFromWorld(){
+        for(Chunk chunk : this.chunksInRange){
+            chunk.playersInRange.remove(this);
         }
     }
 }

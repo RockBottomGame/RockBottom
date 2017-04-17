@@ -61,6 +61,7 @@ public class PacketContainerChange implements IPacket{
                     slot.set(this.instance);
                 }
             }
+            return true;
         });
     }
 }

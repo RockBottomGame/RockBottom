@@ -59,6 +59,7 @@ public class PacketEntityUpdate implements IPacket{
                     entity.motionY = this.motionY;
                 }
             }
+            return true;
         });
     }
 }

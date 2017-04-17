@@ -39,6 +39,8 @@ public class PacketDisconnect implements IPacket{
             EntityPlayer player = game.world.getPlayer(this.id);
             game.world.removeEntity(player);
             Log.info("Removing disconnected player with id "+this.id+" from world");
+
+            return true;
         });
     }
 }

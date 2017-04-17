@@ -55,6 +55,7 @@ public class PacketInteract implements IPacket{
                     InteractionManager.interact(player, this.layer, this.x, this.y, false);
                 }
             }
+            return true;
         });
     }
 }

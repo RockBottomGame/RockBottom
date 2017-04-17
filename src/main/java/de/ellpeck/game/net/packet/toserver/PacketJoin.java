@@ -37,11 +37,13 @@ public class PacketJoin implements IPacket{
     @Override
     public void handle(Game game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            EntityPlayer player = game.world.addPlayer(this.id, true);
-            player.setChannel(context.channel());
-
+            EntityPlayer player = game.world.createPlayer(this.id, context.channel());
+            game.world.addEntity(player);
             player.sendPacket(new PacketInitialServerData(player, game.world.info));
+
             Log.info("Player with "+this.id+" joined, sending initial server data");
+
+            return true;
         });
     }
 }

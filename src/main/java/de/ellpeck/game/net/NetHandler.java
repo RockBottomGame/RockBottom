@@ -3,15 +3,16 @@ package de.ellpeck.game.net;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.net.client.Client;
 import de.ellpeck.game.net.packet.IPacket;
-import de.ellpeck.game.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.game.net.packet.toclient.*;
 import de.ellpeck.game.net.packet.toserver.*;
 import de.ellpeck.game.net.server.Server;
 import de.ellpeck.game.util.Registry;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.World;
+import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import io.netty.channel.epoll.Epoll;
+import io.netty.channel.group.ChannelGroup;
 import org.newdawn.slick.util.Log;
 
 public final class NetHandler{
@@ -92,6 +93,13 @@ public final class NetHandler{
         return isClient() || isServer();
     }
 
+    public static ChannelGroup getConnectedClients(){
+        if(isServer()){
+            return server.connectedChannels;
+        }
+        return null;
+    }
+
     public static void sendToServer(IPacket packet){
         client.channel.writeAndFlush(packet);
     }
@@ -109,8 +117,14 @@ public final class NetHandler{
     }
 
     public static void sendToAllPlayers(World world, IPacket packet){
+        sendToAllPlayersExcept(world, packet, null);
+    }
+
+    public static void sendToAllPlayersExcept(World world, IPacket packet, Entity except){
         for(EntityPlayer player : world.players){
-            player.sendPacket(packet);
+            if(player != except){
+                player.sendPacket(packet);
+            }
         }
     }
 }

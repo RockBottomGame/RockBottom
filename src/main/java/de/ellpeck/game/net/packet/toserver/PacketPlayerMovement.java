@@ -44,6 +44,7 @@ public class PacketPlayerMovement implements IPacket{
                     player.move(this.type);
                 }
             }
+            return true;
         });
     }
 }

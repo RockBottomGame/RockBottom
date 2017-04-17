@@ -78,7 +78,7 @@ public class GuiMenu extends Gui{
             }
             else{
                 try{
-                    NetHandler.init("localhost", game.settings.serverStartPort, true);
+                    NetHandler.init(null, game.settings.serverStartPort, true);
                 }
                 catch(Exception e){
                     Log.error("Couldn't start server", e);

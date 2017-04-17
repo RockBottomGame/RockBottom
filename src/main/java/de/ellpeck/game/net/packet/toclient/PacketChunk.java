@@ -3,7 +3,6 @@ package de.ellpeck.game.net.packet.toclient;
 import de.ellpeck.game.Constants;
 import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
-import de.ellpeck.game.net.client.ClientChunk;
 import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
@@ -101,6 +100,11 @@ public class PacketChunk implements IPacket{
                 }
 
                 chunk.isGenerating = false;
+
+                return true;
+            }
+            else{
+                return false;
             }
         });
     }

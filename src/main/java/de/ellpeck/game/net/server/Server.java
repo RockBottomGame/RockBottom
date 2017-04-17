@@ -14,7 +14,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.compression.FastLzFrameDecoder;
 import io.netty.handler.codec.compression.FastLzFrameEncoder;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.GlobalEventExecutor;
+
+import java.net.InetAddress;
 
 public class Server{
 
@@ -24,7 +27,9 @@ public class Server{
     public final ChannelGroup connectedChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public Server(String ip, int port) throws Exception{
-        this.group = NetHandler.HAS_EPOLL ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        this.group = NetHandler.HAS_EPOLL ?
+                new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollServer", true)) :
+                new NioEventLoopGroup(0, new DefaultThreadFactory("NioServer", true));
 
         this.channel = new ServerBootstrap()
                 .group(this.group)
@@ -41,7 +46,7 @@ public class Server{
                                 .addLast(new PacketEncoder())
                                 .addLast(new ServerNetworkHandler(Server.this));
                     }
-                }).bind(ip, port).syncUninterruptibly().channel();
+                }).bind(ip != null ? InetAddress.getByName(ip) : null, port).syncUninterruptibly().channel();
     }
 
     public void shutdown(){

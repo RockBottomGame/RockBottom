@@ -65,6 +65,7 @@ public class PacketSlotModification implements IPacket{
                     }
                 }
             }
+            return true;
         });
     }
 }

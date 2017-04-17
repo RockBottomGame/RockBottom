@@ -50,6 +50,7 @@ public class PacketMetaChange implements IPacket{
                 Chunk chunk = game.world.getChunk(this.x, this.y);
                 chunk.setMetaInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.meta);
             }
+            return true;
         });
     }
 }

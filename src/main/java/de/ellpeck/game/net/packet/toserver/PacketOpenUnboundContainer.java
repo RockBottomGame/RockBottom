@@ -52,6 +52,7 @@ public class PacketOpenUnboundContainer implements IPacket{
                     }
                 }
             }
+            return true;
         });
     }
 }

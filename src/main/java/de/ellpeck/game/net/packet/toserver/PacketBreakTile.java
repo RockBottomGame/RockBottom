@@ -59,6 +59,7 @@ public class PacketBreakTile implements IPacket{
                     game.world.destroyTile(this.x, this.y, this.layer, player, isRightTool);
                 }
             }
+            return true;
         });
     }
 }

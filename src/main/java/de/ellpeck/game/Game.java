@@ -7,7 +7,6 @@ import de.ellpeck.game.gui.DebugRenderer;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiInventory;
 import de.ellpeck.game.gui.GuiManager;
-import de.ellpeck.game.gui.container.ContainerInventory;
 import de.ellpeck.game.gui.menu.GuiMainMenu;
 import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.net.NetHandler;
@@ -15,6 +14,7 @@ import de.ellpeck.game.net.client.ClientWorld;
 import de.ellpeck.game.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.WorldRenderer;
+import de.ellpeck.game.util.IAction;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.World.WorldInfo;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
@@ -23,15 +23,13 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 
 public class Game extends BasicGame{
 
     private static Game instance;
 
-    private final Queue<Runnable> scheduledActions = new ArrayDeque<>();
+    private final List<IAction> scheduledActions = new ArrayList<>();
 
     private Container container;
     public DataManager dataManager;
@@ -107,8 +105,13 @@ public class Game extends BasicGame{
         }
 
         synchronized(this.scheduledActions){
-            while(!this.scheduledActions.isEmpty()){
-                this.scheduledActions.poll().run();
+            for(int i = 0; i < this.scheduledActions.size(); i++){
+                IAction action = this.scheduledActions.get(i);
+
+                if(action.run()){
+                    this.scheduledActions.remove(i);
+                    i--;
+                }
             }
         }
 
@@ -183,7 +186,8 @@ public class Game extends BasicGame{
             this.world.info.seed = this.world.rand.nextLong();
         }
 
-        this.player = this.world.addPlayer(this.uniqueId, false);
+        this.player = this.world.createPlayer(this.uniqueId, null);
+        this.world.addEntity(this.player);
 
         this.guiManager.reInitSelf(this);
         this.guiManager.closeGui();
@@ -196,8 +200,9 @@ public class Game extends BasicGame{
 
         this.world = new ClientWorld(info);
 
-        this.player = this.world.addPlayer(this.uniqueId, false);
+        this.player = this.world.createPlayer(this.uniqueId, null);
         this.player.load(playerSet);
+        this.world.addEntity(this.player);
 
         this.guiManager.reInitSelf(this);
         this.guiManager.closeGui();
@@ -232,9 +237,9 @@ public class Game extends BasicGame{
         }
     }
 
-    public void scheduleAction(Runnable runnable){
+    public void scheduleAction(IAction action){
         synchronized(this.scheduledActions){
-            this.scheduledActions.add(runnable);
+            this.scheduledActions.add(action);
         }
     }
 

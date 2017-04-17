@@ -44,6 +44,7 @@ public class PacketHotbar implements IPacket{
                     player.inv.selectedSlot = this.slot;
                 }
             }
+            return true;
         });
     }
 }
