@@ -18,12 +18,13 @@ public class PacketEntityChange implements IPacket{
 
     private final DataSet entitySet = new DataSet();
     private int id;
-
     private UUID uniqueId;
+
     private boolean remove;
 
     public PacketEntityChange(Entity entity, boolean remove){
         this.remove = remove;
+        this.uniqueId = entity.getUniqueId();
 
         if(!this.remove){
             if(entity instanceof EntityPlayer){
@@ -38,9 +39,6 @@ public class PacketEntityChange implements IPacket{
 
             entity.save(this.entitySet);
         }
-        else{
-            this.uniqueId = entity.getUniqueId();
-        }
     }
 
     public PacketEntityChange(){
@@ -48,28 +46,24 @@ public class PacketEntityChange implements IPacket{
 
     @Override
     public void toBuffer(ByteBuf buf) throws IOException{
+        buf.writeLong(this.uniqueId.getMostSignificantBits());
+        buf.writeLong(this.uniqueId.getLeastSignificantBits());
         buf.writeBoolean(this.remove);
 
         if(!this.remove){
             buf.writeInt(this.id);
             NetUtil.writeSetToBuffer(this.entitySet, buf);
         }
-        else{
-            buf.writeLong(this.uniqueId.getMostSignificantBits());
-            buf.writeLong(this.uniqueId.getLeastSignificantBits());
-        }
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
+        this.uniqueId = new UUID(buf.readLong(), buf.readLong());
         this.remove = buf.readBoolean();
 
         if(!this.remove){
             this.id = buf.readInt();
             NetUtil.readSetFromBuffer(this.entitySet, buf);
-        }
-        else{
-            this.uniqueId = new UUID(buf.readLong(), buf.readLong());
         }
     }
 
@@ -77,25 +71,29 @@ public class PacketEntityChange implements IPacket{
     public void handle(Game game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             if(game.world != null){
+                Entity entity = game.world.getEntity(this.uniqueId);
+
                 if(this.remove){
-                    Entity entity = game.world.getEntity(this.uniqueId);
                     if(entity != null){
                         game.world.removeEntity(entity);
                     }
                 }
                 else{
-                    Entity entity;
+                    if(entity == null){
+                        if(this.id == -2){
+                            entity = new EntityPlayer(game.world);
+                        }
+                        else{
+                            entity = Entity.create(this.id, game.world);
+                        }
 
-                    if(this.id == -2){
-                        entity = new EntityPlayer(game.world);
+                        if(entity != null){
+                            entity.load(this.entitySet);
+                            game.world.addEntity(entity);
+                        }
                     }
                     else{
-                        entity = Entity.create(this.id, game.world);
-                    }
-
-                    if(entity != null){
                         entity.load(this.entitySet);
-                        game.world.addEntity(entity);
                     }
                 }
                 return true;

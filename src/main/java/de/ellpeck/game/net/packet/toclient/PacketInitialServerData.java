@@ -43,8 +43,13 @@ public class PacketInitialServerData implements IPacket{
     @Override
     public void handle(Game game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            Log.info("Received initial server data, joining world");
-            game.joinWorld(this.playerSet, this.info);
+            if(game.world == null){
+                Log.info("Received initial server data, joining world");
+                game.joinWorld(this.playerSet, this.info);
+            }
+            else{
+                Log.warn("Received initial server data while already being in a world!");
+            }
 
             return true;
         });

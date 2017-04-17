@@ -44,7 +44,7 @@ public class GuiJoinServer extends Gui{
                     NetHandler.init(separated[0], port, false);
                 }
 
-                Log.info("Attempting to join world");
+                Log.info("Attempting to join server");
                 NetHandler.sendToServer(new PacketJoin(game.uniqueId));
             }
             catch(Exception e){

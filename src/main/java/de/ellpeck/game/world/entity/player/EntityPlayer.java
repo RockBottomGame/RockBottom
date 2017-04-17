@@ -288,7 +288,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 }
             }
 
-            Log.info("Scheduling "+unload+" chunks for unload and loading "+nowLoaded.size()+" new ones");
+            Log.info("Player with id "+this.getUniqueId()+" scheduling "+unload+" chunks for unload and loading "+nowLoaded.size()+" new ones");
 
             for(Chunk chunk : nowLoaded){
                 chunk.playersInRange.add(this);
