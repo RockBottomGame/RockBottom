@@ -1,8 +1,10 @@
 package de.ellpeck.game.util;
 
 import de.ellpeck.game.Constants;
+import org.newdawn.slick.Color;
 
 import java.io.File;
+import java.util.Random;
 
 public final class Util{
 
@@ -45,5 +47,9 @@ public final class Util{
             }
         }
         file.delete();
+    }
+
+    public static Color randomColor(Random rand){
+        return new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
     }
 }

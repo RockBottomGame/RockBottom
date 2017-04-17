@@ -59,8 +59,10 @@ public class InteractionManager{
                     moveAndSend(player, 2);
                 }
 
-                if(input.isKeyPressed(Input.KEY_K)){
-                    player.kill();
+                if(!NetHandler.isClient()){
+                    if(input.isKeyPressed(Input.KEY_K)){
+                        player.kill();
+                    }
                 }
 
                 if(player.world.isPosLoaded(this.mousedTileX, this.mousedTileY)){

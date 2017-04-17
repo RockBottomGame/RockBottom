@@ -18,11 +18,13 @@ import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.PlayerEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.EntityLiving;
 import io.netty.channel.Channel;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.util.Log;
 
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.UUID;
 public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
+    public Color color = Util.randomColor(this.world.rand);
 
     private final IEntityRenderer renderer;
     public final InventoryPlayer inv = new InventoryPlayer(this);
@@ -199,12 +202,18 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     public void save(DataSet set){
         super.save(set);
         this.inv.save(set);
+
+        set.addFloat("color_r", this.color.r);
+        set.addFloat("color_g", this.color.g);
+        set.addFloat("color_b", this.color.b);
     }
 
     @Override
     public void load(DataSet set){
         super.load(set);
         this.inv.load(set);
+
+        this.color = new Color(set.getFloat("color_r"), set.getFloat("color_g"), set.getFloat("color_b"));
     }
 
     public void setChannel(Channel channel){

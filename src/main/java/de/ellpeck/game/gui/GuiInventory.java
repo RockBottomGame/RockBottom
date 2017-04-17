@@ -5,6 +5,7 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.item.Item;
 import de.ellpeck.game.item.ItemInstance;
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Input;
 
@@ -24,14 +25,14 @@ public class GuiInventory extends GuiContainer{
     @Override
     public boolean onKeyboardAction(Game game, int button, char character){
         if(button == Input.KEY_F){
-            for(Item item : ContentRegistry.ITEM_REGISTRY.getUnmodifiable().values()){
-                this.player.inv.add(new ItemInstance(item, item.getMaxAmount()), false);
+            if(!NetHandler.isClient()){
+                for(Item item : ContentRegistry.ITEM_REGISTRY.getUnmodifiable().values()){
+                    this.player.inv.add(new ItemInstance(item, item.getMaxAmount()), false);
+                }
+                return true;
             }
-            return true;
         }
-        else{
-            return super.onKeyboardAction(game, button, character);
-        }
+        return super.onKeyboardAction(game, button, character);
     }
 
     @Override
