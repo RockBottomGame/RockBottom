@@ -27,12 +27,7 @@ public class ClientChunk extends Chunk{
 
     @Override
     public void update(Game game){
-        if(this.tileEntities.size() != this.tileEntityLookup.size()){
-            throw new RuntimeException("TileEntities and TileEntityLookup are out of sync!");
-        }
-        if(!this.scheduledUpdates.isEmpty() || !this.scheduledUpdateLookup.isEmpty()){
-            throw new RuntimeException("There shouldn't be any scheduled updates in a client chunk!");
-        }
+        this.checkListSync();
 
         if(!this.isGenerating){
             for(int i = 0; i < this.entities.size(); i++){

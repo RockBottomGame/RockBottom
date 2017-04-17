@@ -8,7 +8,12 @@ import java.util.List;
 
 public class ItemContainer{
 
+    public final EntityPlayer player;
     public final List<ContainerSlot> slots = new ArrayList<>();
+
+    public ItemContainer(EntityPlayer player){
+        this.player = player;
+    }
 
     public void addSlot(ContainerSlot slot){
         this.slots.add(slot);
@@ -18,7 +23,7 @@ public class ItemContainer{
         int x = xStart;
         int y = yStart;
         for(int i = start; i < end; i++){
-            this.addSlot(new ContainerSlot(inventory, i, x, y));
+            this.addSlot(new ContainerSlot(this, inventory, i, x, y));
 
             x += 20;
             if((i+1)%width == 0){
@@ -31,5 +36,13 @@ public class ItemContainer{
     protected void addPlayerInventory(EntityPlayer player, int x, int y){
         this.addSlotGrid(player.inv, 0, 8, x, y, 8);
         this.addSlotGrid(player.inv, 8, player.inv.getSlotAmount(), x, y+25, 8);
+    }
+
+    public void onOpened(){
+
+    }
+
+    public void onClosed(){
+
     }
 }

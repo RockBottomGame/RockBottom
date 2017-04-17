@@ -18,13 +18,15 @@ public class PacketInteract implements IPacket{
     private int x;
     private int y;
 
-    public PacketInteract(UUID playerId, int x, int y){
+    public PacketInteract(UUID playerId, TileLayer layer, int x, int y){
         this.playerId = playerId;
+        this.layer = layer;
         this.x = x;
         this.y = y;
     }
 
     public PacketInteract(){
+
     }
 
     @Override

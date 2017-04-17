@@ -5,10 +5,13 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.component.ComponentSlot;
 import de.ellpeck.game.gui.container.ContainerSlot;
 import de.ellpeck.game.item.ItemInstance;
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.render.item.IItemRenderer;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Graphics;
+
+import java.util.List;
 
 public class GuiContainer extends Gui{
 
@@ -52,8 +55,10 @@ public class GuiContainer extends Gui{
     public void initGui(Game game){
         super.initGui(game);
 
-        for(ContainerSlot slot : this.player.getContainer().slots){
-            this.components.add(new ComponentSlot(this, slot.inventory, slot.slot, this.guiLeft+slot.x, this.guiTop+slot.y));
+        List<ContainerSlot> slots = this.player.getContainer().slots;
+        for(int i = 0; i < slots.size(); i++){
+            ContainerSlot slot = slots.get(i);
+            this.components.add(new ComponentSlot(this, slot, i, this.guiLeft+slot.x, this.guiTop+slot.y));
         }
     }
 

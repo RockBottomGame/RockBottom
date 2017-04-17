@@ -14,7 +14,7 @@ import org.newdawn.slick.util.Log;
 import java.io.IOException;
 import java.util.UUID;
 
-public class PacketEntity implements IPacket{
+public class PacketEntityChange implements IPacket{
 
     private final DataSet entitySet = new DataSet();
     private int id;
@@ -22,7 +22,7 @@ public class PacketEntity implements IPacket{
     private UUID uniqueId;
     private boolean remove;
 
-    public PacketEntity(Entity entity, boolean remove){
+    public PacketEntityChange(Entity entity, boolean remove){
         this.remove = remove;
 
         if(!this.remove){
@@ -43,7 +43,7 @@ public class PacketEntity implements IPacket{
         }
     }
 
-    public PacketEntity(){
+    public PacketEntityChange(){
     }
 
     @Override

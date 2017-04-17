@@ -130,32 +130,8 @@ public class Tile{
 
     }
 
-    public ItemContainer getContainer(World world, int x, int y, EntityPlayer player){
-        return null;
-    }
-
-    public Gui getGui(World world, int x, int y, EntityPlayer player){
-        return null;
-    }
-
     public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
-        boolean ret = false;
-
-        ItemContainer container = this.getContainer(world, x, y, player);
-        if(container != null){
-            player.openContainer(container);
-            ret = true;
-        }
-
-        if(NetHandler.isThePlayer(player)){
-            Gui gui = this.getGui(world, x, y, player);
-            if(gui != null){
-                Game.get().guiManager.openGui(gui);
-                ret = true;
-            }
-        }
-
-        return ret;
+        return false;
     }
 
     public boolean canReplace(World world, int x, int y, TileLayer layer, Tile replacementTile){

@@ -86,7 +86,7 @@ public class Chunk implements IWorld{
         }
     }
 
-    public void update(Game game){
+    protected void checkListSync(){
         if(this.entities.size() != this.entityLookup.size()){
             throw new RuntimeException("Entities and EntityLookup are out of sync!");
         }
@@ -96,6 +96,10 @@ public class Chunk implements IWorld{
         if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
             throw new RuntimeException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
         }
+    }
+
+    public void update(Game game){
+        this.checkListSync();
 
         if(!this.isGenerating){
             for(int i = 0; i < this.entities.size(); i++){

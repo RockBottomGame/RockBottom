@@ -14,14 +14,12 @@ import de.ellpeck.game.net.packet.toserver.PacketPlayerMovement;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.TileLayer;
-import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.tile.Tile;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class InteractionManager{
 
@@ -112,9 +110,10 @@ public class InteractionManager{
                     if(this.placeCooldown <= 0){
                         if(input.isMouseButtonDown(game.settings.buttonPlace)){
                             boolean client = NetHandler.isClient();
+
                             if(interact(player, layer, this.mousedTileX, this.mousedTileY, client)){
                                 if(client){
-                                    NetHandler.sendToServer(new PacketInteract(player.getUniqueId(), this.mousedTileX, this.mousedTileY));
+                                    NetHandler.sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
                                 }
 
                                 this.placeCooldown = 5;
@@ -158,32 +157,38 @@ public class InteractionManager{
 
     public static boolean interact(EntityPlayer player, TileLayer layer, int x, int y, boolean simulate){
         Tile tileThere = player.world.getTile(layer, x, y);
-        if(layer != TileLayer.MAIN || !tileThere.onInteractWith(player.world, x, y, player)){
-            ItemInstance selected = player.inv.get(player.inv.selectedSlot);
-            if(selected != null){
-                Item item = selected.getItem();
-                if(item instanceof ItemTile){
-                    if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
-                        Tile tile = ((ItemTile)item).getTile();
-                        if(tileThere.canReplace(player.world, x, y, layer, tile)){
-                            if(tile.canPlace(player.world, x, y, layer)){
 
-                                if(!simulate){
-                                    tile.doPlace(player.world, x, y, layer, selected, player);
+        if(layer == TileLayer.MAIN){
+            if(tileThere.onInteractWith(player.world, x, y, player)){
+                return true;
+            }
+        }
 
-                                    selected.remove(1);
-                                    if(selected.getAmount() <= 0){
-                                        player.inv.set(player.inv.selectedSlot, null);
-                                    }
+        ItemInstance selected = player.inv.get(player.inv.selectedSlot);
+        if(selected != null){
+            Item item = selected.getItem();
+            if(item instanceof ItemTile){
+                if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
+                    Tile tile = ((ItemTile)item).getTile();
+                    if(tileThere.canReplace(player.world, x, y, layer, tile)){
+                        if(tile.canPlace(player.world, x, y, layer)){
+
+                            if(!simulate){
+                                tile.doPlace(player.world, x, y, layer, selected, player);
+
+                                selected.remove(1);
+                                if(selected.getAmount() <= 0){
+                                    player.inv.set(player.inv.selectedSlot, null);
                                 }
-
-                                return true;
                             }
+
+                            return true;
                         }
                     }
                 }
             }
         }
+
         return false;
     }
 

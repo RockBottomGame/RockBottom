@@ -1,9 +1,7 @@
 package de.ellpeck.game.world.tile;
 
-import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.GuiChest;
 import de.ellpeck.game.gui.container.ContainerChest;
-import de.ellpeck.game.gui.container.ItemContainer;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.tile.ChestTileRenderer;
 import de.ellpeck.game.render.tile.ITileRenderer;
@@ -39,31 +37,15 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public Gui getGui(World world, int x, int y, EntityPlayer player){
-        TileEntity tile = world.getTileEntity(x, y);
-        if(tile instanceof TileEntityChest){
-            return new GuiChest(player, (TileEntityChest)tile);
-        }
-        return null;
-    }
-
-    @Override
-    public ItemContainer getContainer(World world, int x, int y, EntityPlayer player){
-        TileEntity tile = world.getTileEntity(x, y);
-        if(tile instanceof TileEntityChest){
-            return new ContainerChest(player, (TileEntityChest)tile);
-        }
-        return null;
-    }
-
-    @Override
     public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
-        if(super.onInteractWith(world, x, y, player)){
-            TileEntity tile = world.getTileEntity(x, y);
-            if(tile instanceof TileEntityChest){
-                ((TileEntityChest)tile).openCount++;
-                return true;
-            }
+        TileEntity tile = world.getTileEntity(x, y);
+        if(tile instanceof TileEntityChest){
+            TileEntityChest chest = (TileEntityChest)tile;
+
+            player.openGuiContainer(new GuiChest(player), new ContainerChest(player, chest));
+            chest.openCount++;
+
+            return true;
         }
         return false;
     }

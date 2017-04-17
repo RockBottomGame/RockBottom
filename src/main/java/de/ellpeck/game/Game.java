@@ -19,7 +19,6 @@ import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.World.WorldInfo;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.entity.player.InteractionManager;
-import io.netty.channel.ChannelHandlerContext;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -113,12 +112,14 @@ public class Game extends BasicGame{
             }
         }
 
-        Gui gui = this.guiManager.getGui();
-        if(gui == null || !gui.doesPauseGame()){
-            this.world.update(this);
-            this.interactionManager.update(this);
+        if(this.world != null && this.player != null){
+            Gui gui = this.guiManager.getGui();
+            if(gui == null || !gui.doesPauseGame() || NetHandler.isActive()){
+                this.world.update(this);
+                this.interactionManager.update(this);
 
-            this.particleManager.update(this);
+                this.particleManager.update(this);
+            }
         }
 
         this.guiManager.update(this);
@@ -145,8 +146,7 @@ public class Game extends BasicGame{
                 return;
             }
             else if(key == this.settings.keyInventory.key){
-                this.player.openContainer(new ContainerInventory(this.player));
-                this.guiManager.openGui(new GuiInventory(this.player));
+                this.player.openGuiContainer(new GuiInventory(this.player), new ContainerInventory(this.player));
                 return;
             }
         }

@@ -2,7 +2,7 @@ package de.ellpeck.game.world.entity.player;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
-import de.ellpeck.game.gui.container.ContainerInventory;
+import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.container.ItemContainer;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
@@ -29,7 +29,6 @@ public class EntityPlayer extends EntityLiving{
     private final IEntityRenderer renderer;
     public final InventoryPlayer inv = new InventoryPlayer();
 
-    public final ItemContainer invContainer = new ContainerInventory(this);
     private ItemContainer currentContainer;
 
     private int respawnTimer;
@@ -50,14 +49,30 @@ public class EntityPlayer extends EntityLiving{
         return this.renderer;
     }
 
+    public void openGuiContainer(Gui gui, ItemContainer container){
+        this.openContainer(container);
+
+        if(NetHandler.isThePlayer(this)){
+            Game.get().guiManager.openGui(gui);
+        }
+    }
+
     public void openContainer(ItemContainer container){
+        if(this.currentContainer != null){
+            this.currentContainer.onClosed();
+        }
+
         this.currentContainer = container;
 
+        if(this.currentContainer != null){
+            this.currentContainer.onOpened();
+        }
+
         if(this.currentContainer == null){
-            Log.info("Closed Container");
+            Log.info("Closed Container for player with unique id "+this.getUniqueId());
         }
         else{
-            Log.info("Opened Container "+this.currentContainer);
+            Log.info("Opened Container "+this.currentContainer+" for player with unique id "+this.getUniqueId());
         }
     }
 
@@ -101,7 +116,7 @@ public class EntityPlayer extends EntityLiving{
 
     @Override
     public int getUpdateFrequency(){
-        return 2;
+        return 1;
     }
 
     public void resetAndSpawn(Game game){

@@ -27,13 +27,15 @@ public final class NetHandler{
         PACKET_REGISTRY.register(3, PacketDisconnect.class);
         PACKET_REGISTRY.register(4, PacketTileChange.class);
         PACKET_REGISTRY.register(5, PacketMetaChange.class);
-        PACKET_REGISTRY.register(6, PacketEntity.class);
+        PACKET_REGISTRY.register(6, PacketEntityChange.class);
         PACKET_REGISTRY.register(7, PacketBreakTile.class);
         PACKET_REGISTRY.register(8, PacketParticles.class);
         PACKET_REGISTRY.register(9, PacketEntityUpdate.class);
         PACKET_REGISTRY.register(10, PacketPlayerMovement.class);
         PACKET_REGISTRY.register(11, PacketInteract.class);
         PACKET_REGISTRY.register(12, PacketHotbar.class);
+        PACKET_REGISTRY.register(13, PacketTileEntityData.class);
+        PACKET_REGISTRY.register(14, PacketSlotModification.class);
     }
 
     private static Client client;

@@ -3,11 +3,13 @@ package de.ellpeck.game.net.server;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.net.packet.toclient.PacketChunk;
-import de.ellpeck.game.net.packet.toclient.PacketEntity;
+import de.ellpeck.game.net.packet.toclient.PacketEntityChange;
+import de.ellpeck.game.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
+import de.ellpeck.game.world.tile.entity.TileEntity;
 import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;
 
@@ -64,7 +66,13 @@ public class ConnectedPlayer extends EntityPlayer{
             this.sendPacket(new PacketChunk(chunk));
 
             for(Entity entity : chunk.getAllEntities()){
-                this.sendPacket(new PacketEntity(entity, false));
+                if(!entity.getUniqueId().equals(this.getUniqueId())){
+                    this.sendPacket(new PacketEntityChange(entity, false));
+                }
+            }
+
+            for(TileEntity tile : chunk.getAllTileEntities()){
+                this.sendPacket(new PacketTileEntityData(tile.x, tile.y, tile));
             }
         }
     }

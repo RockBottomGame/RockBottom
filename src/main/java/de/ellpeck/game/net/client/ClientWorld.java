@@ -27,9 +27,7 @@ public class ClientWorld extends World{
 
     @Override
     public void update(Game game){
-        if(this.loadedChunks.size() != this.chunkLookup.size()){
-            throw new RuntimeException("LoadedChunks and ChunkLookup are out of sync!");
-        }
+        this.checkListSync();
 
         for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
             for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){

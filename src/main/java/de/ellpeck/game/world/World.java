@@ -5,7 +5,7 @@ import de.ellpeck.game.ContentRegistry;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.net.NetHandler;
-import de.ellpeck.game.net.packet.toclient.PacketEntity;
+import de.ellpeck.game.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.game.net.packet.toclient.PacketParticles;
 import de.ellpeck.game.net.server.ConnectedPlayer;
 import de.ellpeck.game.util.BoundBox;
@@ -53,10 +53,14 @@ public class World implements IWorld{
         this.playerDirectory = new File(worldDirectory, "players");
     }
 
-    public void update(Game game){
+    protected void checkListSync(){
         if(this.loadedChunks.size() != this.chunkLookup.size()){
             throw new RuntimeException("LoadedChunks and ChunkLookup are out of sync!");
         }
+    }
+
+    public void update(Game game){
+        this.checkListSync();
 
         for(EntityPlayer player : this.players){
             for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
@@ -108,7 +112,7 @@ public class World implements IWorld{
         }
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, new PacketEntity(entity, false));
+            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, false));
         }
     }
 
@@ -128,7 +132,7 @@ public class World implements IWorld{
         }
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, new PacketEntity(entity, true));
+            NetHandler.sendToAllPlayers(this, new PacketEntityChange(entity, true));
         }
     }
 
