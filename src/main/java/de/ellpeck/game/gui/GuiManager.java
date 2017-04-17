@@ -68,7 +68,7 @@ public class GuiManager{
         this.onScreenComponents.add(new ComponentButton(null, 0, 3, 3, 30, 10, game.assetManager.localize("button.inventory")){
             @Override
             public boolean onPressed(Game game){
-                player.openGuiContainer(new GuiInventory(player), new ContainerInventory(player));
+                player.openGuiContainer(new GuiInventory(player), player.inventoryContainer);
                 return true;
             }
 

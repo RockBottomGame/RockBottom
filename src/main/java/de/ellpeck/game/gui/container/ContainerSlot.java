@@ -5,16 +5,13 @@ import de.ellpeck.game.item.ItemInstance;
 
 public class ContainerSlot{
 
-    private final ItemContainer container;
-
-    private final IInventory inventory;
-    private final int slot;
+    public final IInventory inventory;
+    public final int slot;
 
     public final int x;
     public final int y;
 
-    public ContainerSlot(ItemContainer container, IInventory inventory, int slot, int x, int y){
-        this.container = container;
+    public ContainerSlot(IInventory inventory, int slot, int x, int y){
         this.inventory = inventory;
         this.slot = slot;
         this.x = x;

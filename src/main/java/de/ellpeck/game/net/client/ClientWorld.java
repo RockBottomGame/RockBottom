@@ -67,11 +67,6 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public void updateLightFrom(int x, int y){
-
-    }
-
-    @Override
     public EntityPlayer addPlayer(UUID id, boolean connected){
         if(connected){
             throw new UnsupportedOperationException("Cannot add a connected player to a client world");

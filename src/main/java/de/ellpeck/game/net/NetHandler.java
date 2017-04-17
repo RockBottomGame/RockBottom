@@ -36,6 +36,9 @@ public final class NetHandler{
         PACKET_REGISTRY.register(12, PacketHotbar.class);
         PACKET_REGISTRY.register(13, PacketTileEntityData.class);
         PACKET_REGISTRY.register(14, PacketSlotModification.class);
+        PACKET_REGISTRY.register(15, PacketOpenUnboundContainer.class);
+        PACKET_REGISTRY.register(16, PacketContainerData.class);
+        PACKET_REGISTRY.register(17, PacketContainerChange.class);
     }
 
     private static Client client;

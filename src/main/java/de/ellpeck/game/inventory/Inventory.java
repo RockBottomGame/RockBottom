@@ -3,24 +3,22 @@ package de.ellpeck.game.inventory;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.item.ItemInstance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Inventory implements IInventory{
 
-    private final Runnable changeCallback;
-    private final ItemInstance[] slots;
+    protected final List<IInvChangeCallback> callbacks = new ArrayList<>();
+    protected final ItemInstance[] slots;
 
     public Inventory(int slotAmount){
-        this(slotAmount, null);
-    }
-
-    public Inventory(int slotAmount, Runnable changeCallback){
         this.slots = new ItemInstance[slotAmount];
-        this.changeCallback = changeCallback;
     }
 
     @Override
     public void set(int id, ItemInstance instance){
         this.slots[id] = instance;
-        this.notifyChange();
+        this.notifyChange(id);
     }
 
     @Override
@@ -34,10 +32,20 @@ public class Inventory implements IInventory{
     }
 
     @Override
-    public void notifyChange(){
-        if(this.changeCallback != null){
-            this.changeCallback.run();
+    public void notifyChange(int slot){
+        for(IInvChangeCallback callback : this.callbacks){
+            callback.onChange(this, slot, this.get(slot));
         }
+    }
+
+    @Override
+    public void addChangeCallback(IInvChangeCallback callback){
+        this.callbacks.add(callback);
+    }
+
+    @Override
+    public void removeChangeCallback(IInvChangeCallback callback){
+        this.callbacks.remove(callback);
     }
 
     public ItemInstance add(ItemInstance instance, boolean simulate){
@@ -87,7 +95,7 @@ public class Inventory implements IInventory{
             if(space >= instance.getAmount()){
                 if(!simulate){
                     slotInst.add(instance.getAmount());
-                    this.notifyChange();
+                    this.notifyChange(slot);
                 }
                 return null;
             }
@@ -95,7 +103,7 @@ public class Inventory implements IInventory{
                 if(!simulate){
                     slotInst.add(space);
                     instance.remove(space);
-                    this.notifyChange();
+                    this.notifyChange(slot);
                 }
             }
         }

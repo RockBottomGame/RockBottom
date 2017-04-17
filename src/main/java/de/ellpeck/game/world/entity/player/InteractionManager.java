@@ -177,6 +177,7 @@ public class InteractionManager{
                                 tile.doPlace(player.world, x, y, layer, selected, player);
 
                                 selected.remove(1);
+                                player.inv.notifyChange(player.inv.selectedSlot);
                                 if(selected.getAmount() <= 0){
                                     player.inv.set(player.inv.selectedSlot, null);
                                 }

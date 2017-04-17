@@ -43,7 +43,6 @@ public class TileChest extends TileBasic{
             TileEntityChest chest = (TileEntityChest)tile;
 
             player.openGuiContainer(new GuiChest(player), new ContainerChest(player, chest));
-            chest.openCount++;
 
             return true;
         }

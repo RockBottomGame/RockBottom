@@ -1,13 +1,15 @@
 package de.ellpeck.game.inventory;
 
 import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.world.entity.player.EntityPlayer;
 
 public class InventoryPlayer extends Inventory{
 
     public int selectedSlot;
 
-    public InventoryPlayer(){
+    public InventoryPlayer(EntityPlayer player){
         super(32);
+        this.addChangeCallback(player);
     }
 
     @Override

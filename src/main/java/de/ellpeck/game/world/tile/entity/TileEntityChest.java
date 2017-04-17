@@ -7,10 +7,11 @@ import de.ellpeck.game.world.World;
 public class TileEntityChest extends TileEntity{
 
     public int openCount;
-    public final Inventory inventory = new Inventory(20, () -> this.world.setDirty(this.x, this.y));
+    public final Inventory inventory = new Inventory(20);
 
     public TileEntityChest(World world, int x, int y){
         super(world, x, y);
+        this.inventory.addChangeCallback((inv, slot, newInstance) -> this.world.setDirty(this.x, this.y));
     }
 
     @Override

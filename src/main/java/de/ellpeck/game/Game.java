@@ -146,7 +146,7 @@ public class Game extends BasicGame{
                 return;
             }
             else if(key == this.settings.keyInventory.key){
-                this.player.openGuiContainer(new GuiInventory(this.player), new ContainerInventory(this.player));
+                this.player.openGuiContainer(new GuiInventory(this.player), this.player.inventoryContainer);
                 return;
             }
         }

@@ -66,7 +66,7 @@ public class ConnectedPlayer extends EntityPlayer{
             this.sendPacket(new PacketChunk(chunk));
 
             for(Entity entity : chunk.getAllEntities()){
-                if(!entity.getUniqueId().equals(this.getUniqueId())){
+                if(entity != this){
                     this.sendPacket(new PacketEntityChange(entity, false));
                 }
             }

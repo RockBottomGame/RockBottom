@@ -8,7 +8,7 @@ public class ContainerChest extends ItemContainer{
     private final TileEntityChest tile;
 
     public ContainerChest(EntityPlayer player, TileEntityChest tile){
-        super(player);
+        super(player, player.inv, tile.inventory);
         this.tile = tile;
 
         this.addSlotGrid(tile.inventory, 0, tile.inventory.getSlotAmount(), 0, 0, 10);

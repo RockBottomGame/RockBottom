@@ -3,11 +3,17 @@ package de.ellpeck.game.world.entity.player;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.gui.Gui;
+import de.ellpeck.game.gui.container.ContainerInventory;
 import de.ellpeck.game.gui.container.ItemContainer;
+import de.ellpeck.game.inventory.IInvChangeCallback;
+import de.ellpeck.game.inventory.IInventory;
 import de.ellpeck.game.inventory.InventoryPlayer;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.IPacket;
+import de.ellpeck.game.net.packet.toclient.PacketContainerChange;
+import de.ellpeck.game.net.packet.toclient.PacketContainerData;
+import de.ellpeck.game.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.PlayerEntityRenderer;
 import de.ellpeck.game.util.BoundBox;
@@ -22,13 +28,14 @@ import org.newdawn.slick.util.Log;
 import java.util.List;
 import java.util.UUID;
 
-public class EntityPlayer extends EntityLiving{
+public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
 
     private final IEntityRenderer renderer;
-    public final InventoryPlayer inv = new InventoryPlayer();
+    public final InventoryPlayer inv = new InventoryPlayer(this);
 
+    public final ItemContainer inventoryContainer = new ContainerInventory(this);
     private ItemContainer currentContainer;
 
     private int respawnTimer;
@@ -59,13 +66,40 @@ public class EntityPlayer extends EntityLiving{
 
     public void openContainer(ItemContainer container){
         if(this.currentContainer != null){
+            for(IInventory inv : this.currentContainer.containedInventories){
+                if(inv != this.inv){
+                    inv.removeChangeCallback(this);
+                }
+            }
+
             this.currentContainer.onClosed();
         }
 
         this.currentContainer = container;
 
         if(this.currentContainer != null){
+            if(NetHandler.isClient()){
+                int id = this.currentContainer.getUnboundId();
+                if(id >= 0){
+                    NetHandler.sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
+                }
+            }
+            else if(NetHandler.isServer()){
+                this.sendPacket(new PacketContainerData(container));
+            }
+
             this.currentContainer.onOpened();
+
+            for(IInventory inv : this.currentContainer.containedInventories){
+                if(inv != this.inv){
+                    inv.addChangeCallback(this);
+                }
+            }
+        }
+        else{
+            if(NetHandler.isClient()){
+                NetHandler.sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), PacketOpenUnboundContainer.CLOSE_ID));
+            }
         }
 
         if(this.currentContainer == null){
@@ -196,6 +230,22 @@ public class EntityPlayer extends EntityLiving{
         }
         else if(type == 2){
             this.jump(0.28);
+        }
+    }
+
+    @Override
+    public void onChange(IInventory inv, int slot, ItemInstance newInstance){
+        if(NetHandler.isServer()){
+            boolean isInv = inv instanceof InventoryPlayer;
+            ItemContainer container = isInv ? this.inventoryContainer : this.currentContainer;
+
+            if(container != null){
+                int index = container.getIndexForInvSlot(inv, slot);
+                if(index >= 0){
+                    this.sendPacket(new PacketContainerChange(isInv, index, newInstance));
+                    Log.info("Sending change callback to player "+this);
+                }
+            }
         }
     }
 }

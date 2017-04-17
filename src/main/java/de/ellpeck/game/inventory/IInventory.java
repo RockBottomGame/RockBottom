@@ -10,5 +10,9 @@ public interface IInventory{
 
     int getSlotAmount();
 
-    void notifyChange();
+    void notifyChange(int slot);
+
+    void addChangeCallback(IInvChangeCallback callback);
+
+    void removeChangeCallback(IInvChangeCallback callback);
 }
