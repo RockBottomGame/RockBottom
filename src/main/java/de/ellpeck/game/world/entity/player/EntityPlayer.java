@@ -243,7 +243,6 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 int index = container.getIndexForInvSlot(inv, slot);
                 if(index >= 0){
                     this.sendPacket(new PacketContainerChange(isInv, index, newInstance));
-                    Log.info("Sending change callback to player "+this);
                 }
             }
         }
