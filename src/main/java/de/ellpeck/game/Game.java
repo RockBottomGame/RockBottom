@@ -26,6 +26,7 @@ import java.util.*;
 
 public class Game extends BasicGame{
 
+    public static final String VERSION = "0.0.1";
     private static Game instance;
 
     private final List<IAction> scheduledActions = new ArrayList<>();
@@ -57,7 +58,7 @@ public class Game extends BasicGame{
     public boolean isLightDebug;
 
     public Game(){
-        super("Game");
+        super("Game "+Game.VERSION);
 
         Log.info("Setting game instance to "+this);
         instance = this;

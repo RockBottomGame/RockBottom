@@ -2,6 +2,7 @@ package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
+import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentHotbarSlot;
 import de.ellpeck.game.gui.component.GuiComponent;
@@ -102,9 +103,13 @@ public class GuiManager{
     public void render(Game game, AssetManager manager, Graphics g, EntityPlayer player){
         g.scale(game.settings.guiScale, game.settings.guiScale);
 
+        Font font = manager.getFont();
+        float width = (float)game.getWidthInGui();
+        float height = (float)game.getHeightInGui();
+
         if(player != null && player.isDead()){
             String deathInfo = manager.localize("info.dead");
-            manager.getFont().drawCenteredString((float)game.getWidthInGui()/2F, (float)game.getHeightInGui()/2F, deathInfo, 2F, true);
+            font.drawCenteredString(width/2F, height/2F, deathInfo, 2F, true);
         }
         else{
             this.onScreenComponents.forEach(comp -> comp.render(game, manager, g));
@@ -125,7 +130,7 @@ public class GuiManager{
             if(gui != null){
                 if(gui.hasGradient()){
                     g.setColor(Gui.GRADIENT);
-                    g.fillRect(0F, 0F, (float)game.getWidthInGui(), (float)game.getHeightInGui());
+                    g.fillRect(0F, 0F, width, height);
                 }
 
                 gui.render(game, manager, g);
@@ -135,6 +140,8 @@ public class GuiManager{
                 this.onScreenComponents.forEach(comp -> comp.renderOverlay(game, manager, g));
             }
         }
+
+        font.drawString(2, height-font.getHeight(0.25F), game.getTitle(), 0.25F);
     }
 
     private void drawHealth(Game game, AssetManager manager, Graphics g, EntityPlayer player){

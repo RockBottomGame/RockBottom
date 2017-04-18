@@ -54,7 +54,8 @@ public class GuiMenu extends Gui{
 
         if(!NetHandler.isClient()){
             if(this.savingTimer >= 0){
-                manager.getFont().drawFadingString(5F, (float)game.getHeightInGui()-10F, manager.localize("info.saved"), 0.25F, (float)this.savingTimer/50F, 0.25F, 0.75F);
+                String text = manager.localize("info.saved");
+                manager.getFont().drawFadingString((float)game.getWidthInGui()/2-manager.getFont().getWidth(text, 0.35F)/2, (float)game.getHeightInGui()-15F, text, 0.35F, (float)this.savingTimer/50F, 0.25F, 0.75F);
             }
         }
     }
