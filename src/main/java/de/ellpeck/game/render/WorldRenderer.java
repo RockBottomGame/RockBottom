@@ -83,24 +83,28 @@ public class WorldRenderer{
                                 Tile tile = chunk.getTileInner(x, y);
                                 byte light = chunk.getCombinedLightInner(x, y);
 
-                                if(!tile.isFullTile()){
-                                    Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
-                                    ITileRenderer rendererBack = tileBack.getRenderer();
-                                    if(rendererBack != null){
-                                        rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX, -tileY, BACKGROUND_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
+                                if(!game.isBackgroundDebug){
+                                    if(!tile.isFullTile() || game.isForegroundDebug){
+                                        Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
+                                        ITileRenderer rendererBack = tileBack.getRenderer();
+                                        if(rendererBack != null){
+                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX, -tileY, BACKGROUND_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
 
-                                        if(input.breakingLayer == TileLayer.BACKGROUND){
-                                            this.doBreakAnimation(input, manager, tileX, tileY);
+                                            if(input.breakingLayer == TileLayer.BACKGROUND){
+                                                this.doBreakAnimation(input, manager, tileX, tileY);
+                                            }
                                         }
                                     }
                                 }
 
-                                ITileRenderer renderer = tile.getRenderer();
-                                if(renderer != null){
-                                    renderer.render(game, manager, g, world, tile, tileX, tileY, tileX, -tileY, MAIN_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
+                                if(!game.isForegroundDebug){
+                                    ITileRenderer renderer = tile.getRenderer();
+                                    if(renderer != null){
+                                        renderer.render(game, manager, g, world, tile, tileX, tileY, tileX, -tileY, MAIN_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
 
-                                    if(input.breakingLayer == TileLayer.MAIN){
-                                        this.doBreakAnimation(input, manager, tileX, tileY);
+                                        if(input.breakingLayer == TileLayer.MAIN){
+                                            this.doBreakAnimation(input, manager, tileX, tileY);
+                                        }
                                     }
                                 }
                             }

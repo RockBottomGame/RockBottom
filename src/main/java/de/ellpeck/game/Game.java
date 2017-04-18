@@ -56,6 +56,8 @@ public class Game extends BasicGame{
 
     public boolean isDebug;
     public boolean isLightDebug;
+    public boolean isForegroundDebug;
+    public boolean isBackgroundDebug;
 
     public Game(){
         super("Game "+Game.VERSION);
@@ -155,6 +157,14 @@ public class Game extends BasicGame{
             }
             else if(key == Input.KEY_F2){
                 this.isLightDebug = !this.isLightDebug;
+                return;
+            }
+            else if(key == Input.KEY_F3){
+                this.isForegroundDebug = !this.isForegroundDebug;
+                return;
+            }
+            else if(key == Input.KEY_F4){
+                this.isBackgroundDebug = !this.isBackgroundDebug;
                 return;
             }
             else if(key == this.settings.keyInventory.key){
