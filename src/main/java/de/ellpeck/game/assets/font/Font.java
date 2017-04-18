@@ -87,10 +87,43 @@ public class Font{
     }
 
     public void drawString(float x, float y, String s, float scale, Color color){
+        this.drawString(x, y, s, 0, s.length(), scale, color);
+    }
+
+    public void drawCutOffString(float x, float y, String s, float scale, int length, boolean fromRight){
+        int strgLength = s.length();
+
+        int amount = 0;
+        String accumulated = "";
+
+        for(int i = 0; i < strgLength; i++){
+            if(fromRight){
+                accumulated = s.charAt(strgLength-1-i)+accumulated;
+            }
+            else{
+                accumulated += s.charAt(i);
+            }
+
+            amount++;
+
+            if(this.getWidth(accumulated, scale) >= length){
+                break;
+            }
+        }
+
+        if(fromRight){
+            this.drawString(x, y, s, strgLength-amount, strgLength, scale, Color.white);
+        }
+        else{
+            this.drawString(x, y, s, 0, amount, scale, Color.white);
+        }
+    }
+
+    private void drawString(float x, float y, String s, int drawStart, int drawEnd, float scale, Color color){
         float xOffset = 0F;
 
         char[] characters = s.toCharArray();
-        for(int i = 0; i < characters.length; i++){
+        for(int i = 0; i < Math.min(drawEnd, characters.length); i++){
             FormattingCode code = FormattingCode.getFormat(s, i);
             if(code != FormattingCode.NONE){
                 color = code.getColor();
@@ -99,11 +132,12 @@ public class Font{
                 continue;
             }
 
-            this.drawCharacter(x+xOffset, y, characters[i], scale, color);
-            xOffset += (float)this.charWidth*scale;
+            if(i >= drawStart){
+                this.drawCharacter(x+xOffset, y, characters[i], scale, color);
+                xOffset += (float)this.charWidth*scale;
+            }
         }
     }
-
 
     public void drawCharacter(float x, float y, char character, float scale, Color color){
         if(character != ' '){
@@ -183,24 +217,5 @@ public class Font{
         }
 
         return result;
-    }
-
-    public String cutOffStringToLength(int length, float scale, String s, boolean fromRight){
-        String accumulated = "";
-
-        for(int i = 0; i < s.length(); i++){
-            if(fromRight){
-                accumulated = s.charAt(s.length()-1-i)+accumulated;
-            }
-            else{
-                accumulated += s.charAt(i);
-            }
-
-            if(this.getWidth(accumulated, scale) >= length){
-                break;
-            }
-        }
-
-        return accumulated;
     }
 }

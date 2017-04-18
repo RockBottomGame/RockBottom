@@ -75,7 +75,7 @@ public class ComponentInputField extends GuiComponent{
         String text = this.text+(this.isActive ? ((this.counter/15)%2 == 0 ? "|" : " ") : "");
 
         Font font = manager.getFont();
-        font.drawString(this.x+3, this.y+this.sizeY/2F-font.getHeight(0.35F)/2F, font.cutOffStringToLength(this.sizeX-6, 0.35F, text, true), 0.35F);
+        font.drawCutOffString(this.x+3, this.y+this.sizeY/2F-font.getHeight(0.35F)/2F, text, 0.35F, this.sizeX-6, true);
 
         if(this.displaxMaxLength){
             int diff = this.maxLength-this.text.length();
