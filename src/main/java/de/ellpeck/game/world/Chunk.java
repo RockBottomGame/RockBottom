@@ -12,6 +12,8 @@ import de.ellpeck.game.util.Util;
 import de.ellpeck.game.util.Vec2;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
+import de.ellpeck.game.world.gen.IWorldGenerator;
+import de.ellpeck.game.world.gen.WorldGenerators;
 import de.ellpeck.game.world.tile.Tile;
 import de.ellpeck.game.world.tile.entity.TileEntity;
 import org.newdawn.slick.util.Log;
@@ -74,16 +76,11 @@ public class Chunk implements IWorld{
     }
 
     public void generate(Random rand){
-        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                if(this.y+y == 15){
-                    this.setTileInner(x, y, ContentRegistry.TILE_GRASS);
-                }
-                else if(this.y+y < 15){
-                    this.setTileInner(x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
+        List<IWorldGenerator> gens = WorldGenerators.getGenerators();
 
-                    this.setTileInner(TileLayer.BACKGROUND, x, y, rand.nextFloat() <= 0.75 ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK);
-                }
+        for(IWorldGenerator generator : gens){
+            if(generator.shouldGenerate(this.world, this)){
+                generator.generate(this.world, this, rand);
             }
         }
     }

@@ -3,6 +3,7 @@ package de.ellpeck.game.world.tile;
 import de.ellpeck.game.gui.GuiChest;
 import de.ellpeck.game.gui.container.ContainerChest;
 import de.ellpeck.game.item.ItemInstance;
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.render.tile.ChestTileRenderer;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.BoundBox;
@@ -73,14 +74,16 @@ public class TileChest extends TileBasic{
     public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
-        TileEntity tile = world.getTileEntity(x, y);
-        if(tile instanceof TileEntityChest){
-            TileEntityChest chest = (TileEntityChest)tile;
+        if(!NetHandler.isClient()){
+            TileEntity tile = world.getTileEntity(x, y);
+            if(tile instanceof TileEntityChest){
+                TileEntityChest chest = (TileEntityChest)tile;
 
-            for(int i = 0; i < chest.inventory.getSlotAmount(); i++){
-                ItemInstance inst = chest.inventory.get(i);
-                if(inst != null){
-                    EntityItem.spawn(world, inst, x+0.5, y+0.5, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
+                for(int i = 0; i < chest.inventory.getSlotAmount(); i++){
+                    ItemInstance inst = chest.inventory.get(i);
+                    if(inst != null){
+                        EntityItem.spawn(world, inst, x+0.5, y+0.5, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
+                    }
                 }
             }
         }

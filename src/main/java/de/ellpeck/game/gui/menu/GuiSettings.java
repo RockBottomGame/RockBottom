@@ -70,7 +70,7 @@ public class GuiSettings extends Gui{
         this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+90, 130, 16, true, true, false, 24, true);
         this.chatNameField.setText(game.settings.chatName);
         this.components.add(this.chatNameField);
-        this.components.add(new ComponentButton(this, 2, this.guiLeft+134, this.guiTop+90, 16, 16, "?", game.assetManager.localize("info.randomize_name")));
+        this.components.add(new ComponentButton(this, 7, this.guiLeft+134, this.guiTop+90, 16, 16, "?", game.assetManager.localize("info.randomize_name")));
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
     }
@@ -95,7 +95,7 @@ public class GuiSettings extends Gui{
             game.settings.hardwareCursor = !game.settings.hardwareCursor;
             game.assetManager.reloadCursor(game);
         }
-        else if(button == 2){
+        else if(button == 7){
             game.settings.chatName = Settings.getRandomChatName();
             this.chatNameField.setText(game.settings.chatName);
         }
