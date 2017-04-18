@@ -5,9 +5,7 @@ import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentHotbarSlot;
 import de.ellpeck.game.gui.component.GuiComponent;
-import de.ellpeck.game.gui.container.ContainerInventory;
 import de.ellpeck.game.gui.menu.MainMenuBackground;
-import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
@@ -118,9 +116,12 @@ public class GuiManager{
                 this.background.render(game, manager, g);
             }
 
-            game.chatLog.drawNewMessages(game, manager, g);
-
             Gui gui = game.guiManager.getGui();
+
+            if(gui == null || !(gui instanceof GuiChat)){
+                game.chatLog.drawNewMessages(game, manager, g);
+            }
+
             if(gui != null){
                 if(gui.hasGradient()){
                     g.setColor(Gui.GRADIENT);

@@ -98,6 +98,6 @@ public class MainMenuBackground{
             }
         }
 
-        manager.getFont().drawCenteredString((float)game.getWidthInGui()/2F, 20, "&bGame", 4F, false);
+        manager.getFont().drawCenteredString((float)game.getWidthInGui()/2F, 20, "&aGame", 4F, false);
     }
 }

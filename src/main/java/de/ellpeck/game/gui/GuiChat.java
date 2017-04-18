@@ -76,7 +76,8 @@ public class GuiChat extends Gui{
             String text = this.inputField.getText();
 
             if(text != null && !text.isEmpty()){
-                game.chatLog.sendMessage("&5["+game.settings.chatName+"] &4"+text);
+                Color color = game.player.color;
+                game.chatLog.sendMessage("&("+color.r+","+color.g+","+color.b+")["+game.settings.chatName+"] &4"+text);
                 this.inputField.setText("");
 
                 return true;

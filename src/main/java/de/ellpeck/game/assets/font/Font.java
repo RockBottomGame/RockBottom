@@ -11,13 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class Font{
-
-    private static final Pattern FORMATTING_PATTERN = Pattern.compile("&[a-z0-9]");
-    private static final Color[] COLORS_BY_FORMATTING_CODE = new Color[]{Color.black, Color.darkGray, Color.gray, Color.lightGray, Color.white, Color.yellow, Color.orange, Color.red, Color.pink, Color.magenta, Color.black, new Color(0F, 0.5F, 0F), Color.transparent};
-    private static final String FORMATTING_CODES = "0123456789abc";
 
     private final String name;
     private final Image image;
@@ -96,19 +91,17 @@ public class Font{
 
         char[] characters = s.toCharArray();
         for(int i = 0; i < characters.length; i++){
-            if(characters[i] == '&' && i < characters.length-1){
-                int formatIndex = FORMATTING_CODES.indexOf(characters[i+1]);
-                if(formatIndex >= 0){
-                    color = COLORS_BY_FORMATTING_CODE[formatIndex];
-                    i++;
-                    continue;
-                }
+            FormattingCode code = FormattingCode.getFormat(s, i);
+            if(code != FormattingCode.NONE){
+                color = code.getColor();
+                i += code.getLength();
             }
 
             this.drawCharacter(x+xOffset, y, characters[i], scale, color);
             xOffset += (float)this.charWidth*scale;
         }
     }
+
 
     public void drawCharacter(float x, float y, char character, float scale, Color color){
         if(character != ' '){
@@ -131,7 +124,17 @@ public class Font{
     }
 
     public String removeFormatting(String s){
-        return FORMATTING_PATTERN.matcher(s).replaceAll("");
+        String newString = "";
+        for(int i = 0; i < s.length(); i++){
+            FormattingCode code = FormattingCode.getFormat(s, i);
+            if(code != FormattingCode.NONE){
+                i += code.getLength()-1;
+            }
+            else{
+                newString += s.charAt(i);
+            }
+        }
+        return newString;
     }
 
     public float getWidth(String s, float scale){
