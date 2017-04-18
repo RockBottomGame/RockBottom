@@ -3,6 +3,7 @@ package de.ellpeck.game.particle;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.render.tile.ITileRenderer;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.tile.Tile;
 import org.newdawn.slick.Color;
@@ -16,7 +17,7 @@ public class ParticleTile extends Particle{
     private final int meta;
 
     public ParticleTile(World world, double x, double y, double motionX, double motionY, Tile tile, int meta){
-        super(world, x, y, motionX, motionY, world.rand.nextInt(30)+10);
+        super(world, x, y, motionX, motionY, Util.RANDOM.nextInt(30)+10);
         this.tile = tile;
         this.meta = meta;
     }
@@ -31,8 +32,8 @@ public class ParticleTile extends Particle{
                     int width = texture.getWidth();
                     int height = texture.getHeight();
 
-                    int pixelX = this.world.rand.nextInt(width);
-                    int pixelY = this.world.rand.nextInt(height);
+                    int pixelX = Util.RANDOM.nextInt(width);
+                    int pixelY = Util.RANDOM.nextInt(height);
                     this.renderPixel = texture.getColor(pixelX, pixelY).multiply(filter);
                 }
             }

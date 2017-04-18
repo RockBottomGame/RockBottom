@@ -60,6 +60,11 @@ public class ClientWorld extends World{
     }
 
     @Override
+    public void savePlayer(EntityPlayer player){
+        throw new UnsupportedOperationException("Cannot save player in client world");
+    }
+
+    @Override
     public EntityPlayer createPlayer(UUID id, Channel channel){
         if(channel != null){
             throw new UnsupportedOperationException("Cannot create a connected player in a client world");

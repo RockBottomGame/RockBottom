@@ -41,8 +41,8 @@ public class ParticleManager{
 
     public void addTileParticles(World world, int x, int y, Tile tile, int meta){
         for(int i = 0; i < 15; i++){
-            double motionX = world.rand.nextGaussian()*0.1F;
-            double motionY = world.rand.nextGaussian()*0.1F;
+            double motionX = Util.RANDOM.nextGaussian()*0.1F;
+            double motionY = Util.RANDOM.nextGaussian()*0.1F;
 
             Particle particle = new ParticleTile(world, x+0.5, y+0.5, motionX, motionY, tile, meta);
             this.addParticle(particle);

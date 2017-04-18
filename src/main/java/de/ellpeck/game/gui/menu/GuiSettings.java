@@ -1,6 +1,7 @@
 package de.ellpeck.game.gui.menu;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.Settings;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.component.ComponentButton;
@@ -66,9 +67,10 @@ public class GuiSettings extends Gui{
             }
         });
 
-        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+90, 150, 16, true, true, false, 24, true);
+        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+90, 130, 16, true, true, false, 24, true);
         this.chatNameField.setText(game.settings.chatName);
         this.components.add(this.chatNameField);
+        this.components.add(new ComponentButton(this, 2, this.guiLeft+134, this.guiTop+90, 16, 16, "?", game.assetManager.localize("info.randomize_name")));
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
     }
@@ -77,7 +79,7 @@ public class GuiSettings extends Gui{
     public void render(Game game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+82, manager.localize("button.chat_name")+":", 0.35F, false);
+        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+82, manager.localize("button.chat_name"), 0.35F, false);
     }
 
     @Override
@@ -93,6 +95,10 @@ public class GuiSettings extends Gui{
             game.settings.hardwareCursor = !game.settings.hardwareCursor;
             game.assetManager.reloadCursor(game);
         }
+        else if(button == 2){
+            game.settings.chatName = Settings.getRandomChatName();
+            this.chatNameField.setText(game.settings.chatName);
+        }
         return false;
     }
 
@@ -101,7 +107,6 @@ public class GuiSettings extends Gui{
         String name = this.chatNameField.getText().trim();
         if(!name.isEmpty()){
             game.settings.chatName = name;
-
         }
 
         game.dataManager.saveSettings(game.settings);

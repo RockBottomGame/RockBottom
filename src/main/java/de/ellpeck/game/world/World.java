@@ -26,8 +26,6 @@ import java.util.function.Predicate;
 
 public class World implements IWorld{
 
-    public final Random rand = new Random();
-
     public final Random generatorRandom = new Random();
 
     public final List<Chunk> loadedChunks = new ArrayList<>();

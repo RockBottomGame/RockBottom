@@ -150,8 +150,8 @@ public class Chunk implements IWorld{
             this.updateEntities(game);
 
             if(this.randomUpdateTileAmount > 0){
-                int randX = this.world.rand.nextInt(Constants.CHUNK_SIZE);
-                int randY = this.world.rand.nextInt(Constants.CHUNK_SIZE);
+                int randX = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
+                int randY = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
 
                 Tile tile = this.getTileInner(randX, randY);
                 if(tile.doesRandomUpdates()){

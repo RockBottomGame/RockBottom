@@ -6,6 +6,7 @@ import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.render.tile.ChestTileRenderer;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.BoundBox;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -79,7 +80,7 @@ public class TileChest extends TileBasic{
             for(int i = 0; i < chest.inventory.getSlotAmount(); i++){
                 ItemInstance inst = chest.inventory.get(i);
                 if(inst != null){
-                    EntityItem.spawn(world, inst, x+0.5, y+0.5, world.rand.nextGaussian()*0.1, world.rand.nextGaussian()*0.1);
+                    EntityItem.spawn(world, inst, x+0.5, y+0.5, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
                 }
             }
         }

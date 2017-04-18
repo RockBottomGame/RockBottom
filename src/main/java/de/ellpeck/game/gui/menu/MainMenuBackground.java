@@ -18,8 +18,6 @@ public class MainMenuBackground{
     private static final int[] KONAMI_CODE = new int[]{Input.KEY_UP, Input.KEY_UP, Input.KEY_DOWN, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_B, Input.KEY_A};
     private int konamiAt;
 
-    private final Random rand = new Random();
-
     private static final int TILE_SIZE = 16;
     private Tile[][] menuTileGrid;
 
@@ -43,12 +41,12 @@ public class MainMenuBackground{
         this.timer++;
 
         if(this.stackAtY < this.tileAmountY){
-            if(this.timer%8 == 0 && this.rand.nextBoolean()){
+            if(this.timer%8 == 0 && Util.RANDOM.nextBoolean()){
                 int placeY = this.tileAmountY-this.stackAtY-1;
 
                 int placeX;
                 do{
-                    placeX = this.rand.nextInt(this.tileAmountX);
+                    placeX = Util.RANDOM.nextInt(this.tileAmountX);
                 }
                 while(this.menuTileGrid[placeX][placeY] != null);
 
@@ -57,7 +55,7 @@ public class MainMenuBackground{
                     tile = ContentRegistry.TILE_GRASS;
                 }
                 else{
-                    tile = this.rand.nextFloat() >= 0.75F ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK;
+                    tile = Util.RANDOM.nextFloat() >= 0.75F ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK;
                 }
                 this.menuTileGrid[placeX][placeY] = tile;
 

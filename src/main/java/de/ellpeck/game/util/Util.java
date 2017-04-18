@@ -8,6 +8,8 @@ import java.util.Random;
 
 public final class Util{
 
+    public static final Random RANDOM = new Random();
+
     public static double distance(double x1, double y1, double x2, double y2){
         return Math.sqrt(distanceSq(x1, y1, x2, y2));
     }
@@ -51,5 +53,14 @@ public final class Util{
 
     public static Color randomColor(Random rand){
         return new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+    }
+
+    public static String trimString(String s, int length){
+        if(s.length() <= length){
+            return s;
+        }
+        else{
+            return s.substring(0, length);
+        }
     }
 }

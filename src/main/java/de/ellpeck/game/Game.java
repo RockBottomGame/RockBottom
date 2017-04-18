@@ -13,6 +13,7 @@ import de.ellpeck.game.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.game.particle.ParticleManager;
 import de.ellpeck.game.render.WorldRenderer;
 import de.ellpeck.game.util.IAction;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.World.WorldInfo;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
@@ -194,7 +195,7 @@ public class Game extends BasicGame{
         this.world.initFiles(worldFile);
 
         if(this.world.info.seed == 0){
-            this.world.info.seed = this.world.rand.nextLong();
+            this.world.info.seed = Util.RANDOM.nextLong();
         }
 
         this.player = this.world.createPlayer(this.uniqueId, null);

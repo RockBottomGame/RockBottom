@@ -1,5 +1,6 @@
 package de.ellpeck.game;
 
+import de.ellpeck.game.util.Util;
 import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Settings{
     public Keybind keyBackground = new Keybind("background", Input.KEY_LSHIFT);
     public Keybind keyChat = new Keybind("chat", Input.KEY_ENTER);
 
+    private static final String[] DEFAULT_NAMES = new String[]{"Bob", "Doley", "Jason", "Huffelpuff", "Megan", "Jennifer", "Bottle", "Bus Stop", "ThePlayer99", "Genelele", "Karina", "Heinz", "Ketchup", "Dan", "David", "Penguin"};
     public String chatName;
 
     public int targetFps;
@@ -49,7 +51,7 @@ public class Settings{
             bind.key = this.getProp("key_"+bind.name, bind.def);
         }
 
-        this.chatName = this.getProp("chat_name", "Bob");
+        this.chatName = Util.trimString(this.getProp("chat_name", getRandomChatName()), 24).trim();
 
         this.targetFps = this.getProp("target_fps", 60);
         this.autosaveIntervalSeconds = this.getProp("autosave_interval", 60);
@@ -123,6 +125,10 @@ public class Settings{
 
     private String getProp(String name, String def){
         return this.props.getProperty(name, def);
+    }
+
+    public static String getRandomChatName(){
+        return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
     }
 
     public class Keybind{

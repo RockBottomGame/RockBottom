@@ -35,7 +35,7 @@ import java.util.UUID;
 public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
-    public Color color = Util.randomColor(this.world.rand);
+    public Color color = Util.randomColor(Util.RANDOM);
 
     private final IEntityRenderer renderer;
     public final InventoryPlayer inv = new InventoryPlayer(this);

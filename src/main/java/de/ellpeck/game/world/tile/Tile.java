@@ -1,18 +1,14 @@
 package de.ellpeck.game.world.tile;
 
-import de.ellpeck.game.Container;
 import de.ellpeck.game.ContentRegistry;
-import de.ellpeck.game.Game;
-import de.ellpeck.game.gui.Gui;
-import de.ellpeck.game.gui.container.ItemContainer;
 import de.ellpeck.game.item.Item;
 import de.ellpeck.game.item.ItemInstance;
 import de.ellpeck.game.item.ItemTile;
 import de.ellpeck.game.item.ToolType;
-import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.render.tile.ITileRenderer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
+import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -143,7 +139,7 @@ public class Tile{
             List<ItemInstance> drops = this.getDrops(world, x, y, destroyer);
             if(drops != null && !drops.isEmpty()){
                 for(ItemInstance inst : drops){
-                    EntityItem.spawn(world, inst, x+0.5, y+0.5, world.rand.nextGaussian()*0.1, world.rand.nextGaussian()*0.1);
+                    EntityItem.spawn(world, inst, x+0.5, y+0.5, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
                 }
             }
         }

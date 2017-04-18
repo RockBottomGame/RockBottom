@@ -15,6 +15,7 @@ info.time=Time
 info.delete_world=&7Delete World %s
 info.world=World %s
 info.unlimited=Unlimited
+info.randomize_name=Randomize Name
 
 button.back=Back
 button.settings=Settings
