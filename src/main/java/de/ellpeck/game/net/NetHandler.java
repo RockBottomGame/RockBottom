@@ -95,6 +95,10 @@ public final class NetHandler{
         return isClient() || isServer();
     }
 
+    public static boolean isConnectedToServer(){
+        return isClient() && client.channel.isOpen();
+    }
+
     public static ChannelGroup getConnectedClients(){
         if(isServer()){
             return server.connectedChannels;

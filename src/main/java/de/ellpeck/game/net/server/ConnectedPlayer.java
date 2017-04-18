@@ -32,8 +32,10 @@ public class ConnectedPlayer extends EntityPlayer{
         if(this.ticksExisted%80 == 0){
             if(!NetHandler.getConnectedClients().contains(this.channel)){
                 game.scheduleAction(() -> {
+                    game.world.savePlayer(this);
                     game.world.removeEntity(this);
-                    Log.info("Removing disconnected player with id "+this.getUniqueId()+" from world");
+
+                    Log.info("Saving and removing disconnected player with id "+this.getUniqueId()+" from world");
 
                     return true;
                 });

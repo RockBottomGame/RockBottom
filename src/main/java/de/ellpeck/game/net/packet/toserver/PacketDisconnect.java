@@ -37,8 +37,11 @@ public class PacketDisconnect implements IPacket{
     public void handle(Game game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             EntityPlayer player = game.world.getPlayer(this.id);
+
+            game.world.savePlayer(player);
             game.world.removeEntity(player);
-            Log.info("Removing disconnected player with id "+this.id+" from world");
+
+            Log.info("Saving and removing disconnected player with id "+this.id+" from world");
 
             return true;
         });

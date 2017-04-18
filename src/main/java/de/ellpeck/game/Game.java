@@ -115,6 +115,13 @@ public class Game extends BasicGame{
             }
         }
 
+        if(NetHandler.isClient()){
+            if(!NetHandler.isConnectedToServer()){
+                this.quitWorld();
+                NetHandler.shutdown();
+            }
+        }
+
         if(this.world != null && this.player != null){
             Gui gui = this.guiManager.getGui();
             if(gui == null || !gui.doesPauseGame() || NetHandler.isActive()){

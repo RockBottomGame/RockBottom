@@ -363,13 +363,17 @@ public class World implements IWorld{
         this.info.save();
 
         for(EntityPlayer player : this.players){
-            DataSet playerSet = new DataSet();
-            player.save(playerSet);
-
-            playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
+           this.savePlayer(player);
         }
 
         Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
+    }
+
+    public void savePlayer(EntityPlayer player){
+        DataSet playerSet = new DataSet();
+        player.save(playerSet);
+
+        playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
     }
 
     public EntityPlayer createPlayer(UUID id, Channel channel){
