@@ -4,7 +4,6 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.gui.component.GuiComponent;
-import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -132,7 +131,7 @@ public class Gui{
         float boxHeight = 0F;
 
         if(maxLength > 0){
-            text = font.splitTextToLength(maxLength, scale, text);
+            text = font.splitTextToLength(maxLength, scale, true, text);
         }
 
         for(String s : text){

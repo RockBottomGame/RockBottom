@@ -47,7 +47,7 @@ public class GuiChat extends Gui{
         int messageCounter = 0;
 
         for(String message : messages){
-            List<String> split = font.splitTextToLength(sizeX, scale, message);
+            List<String> split = font.splitTextToLength(sizeX, scale, true, message);
 
             g.setColor(alternate ? BACKING_ONE : BACKING_TWO);
             g.fillRect(5, y-fontHeight*(split.size()-1), sizeX, fontHeight*split.size()+1);

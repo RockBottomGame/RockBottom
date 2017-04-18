@@ -94,7 +94,9 @@ public class Font{
             FormattingCode code = FormattingCode.getFormat(s, i);
             if(code != FormattingCode.NONE){
                 color = code.getColor();
-                i += code.getLength();
+
+                i += code.getLength()-1;
+                continue;
             }
 
             this.drawCharacter(x+xOffset, y, characters[i], scale, color);
@@ -145,21 +147,31 @@ public class Font{
         return (float)this.charHeight*scale;
     }
 
-    public List<String> splitTextToLength(int length, float scale, String... lines){
-        return this.splitTextToLength(length, scale, Arrays.asList(lines));
+    public List<String> splitTextToLength(int length, float scale, boolean wrapFormatting, String... lines){
+        return this.splitTextToLength(length, scale, wrapFormatting, Arrays.asList(lines));
     }
 
-    public List<String> splitTextToLength(int length, float scale, List<String> lines){
+    public List<String> splitTextToLength(int length, float scale, boolean wrapFormatting, List<String> lines){
         List<String> result = new ArrayList<>();
         String accumulated = "";
 
         for(String line : lines){
             String[] words = line.split(" ");
 
+            FormattingCode trailingCode = FormattingCode.NONE;
             for(String word : words){
+                if(wrapFormatting){
+                    for(int i = 0; i < word.length()-1; i++){
+                        FormattingCode format = FormattingCode.getFormat(word, i);
+                        if(format != FormattingCode.NONE){
+                            trailingCode = format;
+                        }
+                    }
+                }
+
                 if(this.getWidth(accumulated+word, scale) >= length){
                     result.add(accumulated.trim());
-                    accumulated = word+" ";
+                    accumulated = trailingCode+word+" ";
                 }
                 else{
                     accumulated += word+" ";
