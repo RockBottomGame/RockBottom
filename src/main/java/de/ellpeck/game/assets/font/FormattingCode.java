@@ -4,7 +4,7 @@ import org.newdawn.slick.Color;
 
 public class FormattingCode{
 
-    public static final FormattingCode NONE = new FormattingCode(' ', Color.white, 0);
+    public static final FormattingCode NONE = new FormattingCode(' ', Color.white, 0, "");
     public static final FormattingCode BLACK = new FormattingCode('0', Color.black, 2);
     public static final FormattingCode DARK_GRAY = new FormattingCode('1', Color.darkGray, 2);
     public static final FormattingCode GRAY = new FormattingCode('2', Color.gray, 2);
@@ -22,11 +22,17 @@ public class FormattingCode{
     private final char format;
     private final Color color;
     private final int length;
+    private final String strg;
 
-    FormattingCode(char format, Color color, int length){
+   public FormattingCode(char format, Color color, int length){
+       this(format, color, length, "&"+format);
+   }
+
+    public FormattingCode(char format, Color color, int length, String strg){
         this.format = format;
         this.color = color;
         this.length = length;
+        this.strg = strg;
     }
 
     public static FormattingCode getFormat(String s, int index){
@@ -41,7 +47,7 @@ public class FormattingCode{
 
                     if(colors.length == 3){
                         try{
-                            return new FormattingCode(' ', new Color(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])), code.length()+3);
+                            return new FormattingCode(' ', new Color(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])), code.length()+3, "&("+code+")");
                         }
                         catch(Exception ignored){
                         }
@@ -69,6 +75,6 @@ public class FormattingCode{
 
     @Override
     public String toString(){
-        return this == NONE ? "" : "&"+this.format;
+        return this.strg;
     }
 }
