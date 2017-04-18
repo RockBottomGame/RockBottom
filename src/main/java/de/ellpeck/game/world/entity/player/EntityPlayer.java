@@ -265,7 +265,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
             List<Chunk> nowLoaded = new ArrayList<>();
 
             for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
-                for(int y = -Constants.CHUNK_LOAD_DISTANCE; y <= Constants.CHUNK_LOAD_DISTANCE; y++){
+                for(int y = Constants.CHUNK_LOAD_DISTANCE; y >= -Constants.CHUNK_LOAD_DISTANCE; y--){
                     Chunk chunk = this.world.getChunkFromGridCoords(this.chunkX+x, this.chunkY+y);
                     nowLoaded.add(chunk);
                 }
