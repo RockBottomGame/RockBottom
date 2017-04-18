@@ -6,6 +6,8 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import org.newdawn.slick.util.Log;
 
+import java.nio.charset.StandardCharsets;
+
 public final class NetUtil{
 
     public static void writeSetToBuffer(DataSet set, ByteBuf buf){
@@ -26,4 +28,21 @@ public final class NetUtil{
         }
     }
 
+    public static void writeStringToBuffer(String s, ByteBuf buf){
+        buf.writeInt(s.length());
+
+        for(char c : s.toCharArray()){
+            buf.writeChar(c);
+        }
+    }
+
+    public static String readStringFromBuffer(ByteBuf buf){
+        char[] chars = new char[buf.readInt()];
+
+        for(int i = 0; i < chars.length; i++){
+            chars[i] = buf.readChar();
+        }
+
+        return new String(chars);
+    }
 }

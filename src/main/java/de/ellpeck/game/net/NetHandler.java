@@ -40,6 +40,8 @@ public final class NetHandler{
         PACKET_REGISTRY.register(15, PacketOpenUnboundContainer.class);
         PACKET_REGISTRY.register(16, PacketContainerData.class);
         PACKET_REGISTRY.register(17, PacketContainerChange.class);
+        PACKET_REGISTRY.register(18, PacketChatMessage.class);
+        PACKET_REGISTRY.register(19, PacketSendChat.class);
     }
 
     private static Client client;

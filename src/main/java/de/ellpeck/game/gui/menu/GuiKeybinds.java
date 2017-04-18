@@ -7,7 +7,6 @@ import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.component.ComponentButton;
 import de.ellpeck.game.gui.component.ComponentKeybind;
-import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Graphics;
 
 public class GuiKeybinds extends Gui{
@@ -29,7 +28,7 @@ public class GuiKeybinds extends Gui{
             this.components.add(new ComponentKeybind(this, i, this.guiLeft+x, this.guiTop+y, bind));
 
             y += 20;
-            if(i == 2){
+            if(i == 3){
                 x += 154;
                 y = 0;
             }

@@ -38,6 +38,7 @@ button.join=Join
 button.open_server=Open as Server
 button.close_server=Close Server
 button.connect=Connect
+button.chat_name=Name in Chat
 
 layer.main=Foreground
 layer.background=Background
@@ -48,3 +49,4 @@ key.left=Go Left
 key.right=Go Right
 key.jump=Jump
 key.background=Edit Background
+key.chat=Chat

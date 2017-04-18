@@ -59,12 +59,6 @@ public class InteractionManager{
                     moveAndSend(player, 2);
                 }
 
-                if(!NetHandler.isClient()){
-                    if(input.isKeyPressed(Input.KEY_K)){
-                        player.kill();
-                    }
-                }
-
                 if(player.world.isPosLoaded(this.mousedTileX, this.mousedTileY)){
                     TileLayer layer = input.isKeyDown(game.settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
 
@@ -226,7 +220,7 @@ public class InteractionManager{
 
     public void onKeyboardAction(Game game, int button, char character){
         if(!game.guiManager.onKeyboardAction(game, button, character)){
-            if(game.isInWorld()){
+            if(game.isInWorld() && game.guiManager.getGui() == null){
                 for(int i = 0; i < game.settings.keysItemSelection.length; i++){
                     if(button == game.settings.keysItemSelection[i]){
                         game.player.inv.selectedSlot = i;

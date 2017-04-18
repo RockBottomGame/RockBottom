@@ -3,13 +3,11 @@ package de.ellpeck.game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.data.DataManager;
 import de.ellpeck.game.data.set.DataSet;
-import de.ellpeck.game.gui.DebugRenderer;
-import de.ellpeck.game.gui.Gui;
-import de.ellpeck.game.gui.GuiInventory;
-import de.ellpeck.game.gui.GuiManager;
+import de.ellpeck.game.gui.*;
 import de.ellpeck.game.gui.menu.GuiMainMenu;
 import de.ellpeck.game.gui.menu.GuiMenu;
 import de.ellpeck.game.net.NetHandler;
+import de.ellpeck.game.net.chat.ChatLog;
 import de.ellpeck.game.net.client.ClientWorld;
 import de.ellpeck.game.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.game.particle.ParticleManager;
@@ -38,6 +36,7 @@ public class Game extends BasicGame{
     public EntityPlayer player;
     public GuiManager guiManager;
     public InteractionManager interactionManager;
+    public ChatLog chatLog;
 
     public World world;
 
@@ -81,6 +80,7 @@ public class Game extends BasicGame{
 
         this.guiManager = new GuiManager();
         this.interactionManager = new InteractionManager();
+        this.chatLog = new ChatLog();
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
@@ -150,6 +150,10 @@ public class Game extends BasicGame{
             }
             else if(key == this.settings.keyInventory.key){
                 this.player.openGuiContainer(new GuiInventory(this.player), this.player.inventoryContainer);
+                return;
+            }
+            else if(key == this.settings.keyChat.key && NetHandler.isActive()){
+                this.guiManager.openGui(new GuiChat());
                 return;
             }
         }

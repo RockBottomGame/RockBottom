@@ -18,6 +18,9 @@ public class Settings{
     public Keybind keyRight = new Keybind("right", Input.KEY_D);
     public Keybind keyJump = new Keybind("jump", Input.KEY_SPACE);
     public Keybind keyBackground = new Keybind("background", Input.KEY_LSHIFT);
+    public Keybind keyChat = new Keybind("chat", Input.KEY_ENTER);
+
+    public String chatName;
 
     public int targetFps;
     public int autosaveIntervalSeconds;
@@ -45,6 +48,8 @@ public class Settings{
         for(Keybind bind : this.keybinds){
             bind.key = this.getProp("key_"+bind.name, bind.def);
         }
+
+        this.chatName = this.getProp("chat_name", "Bob");
 
         this.targetFps = this.getProp("target_fps", 60);
         this.autosaveIntervalSeconds = this.getProp("autosave_interval", 60);
@@ -74,6 +79,8 @@ public class Settings{
         for(Keybind bind : this.keybinds){
             this.setProp("key_"+bind.name, bind.key);
         }
+
+        this.setProp("chat_name", this.chatName);
 
         this.setProp("target_fps", this.targetFps);
         this.setProp("autosave_interval", this.autosaveIntervalSeconds);
@@ -112,6 +119,10 @@ public class Settings{
 
     private float getProp(String name, float def){
         return Float.parseFloat(this.props.getProperty(name, String.valueOf(def)));
+    }
+
+    private String getProp(String name, String def){
+        return this.props.getProperty(name, def);
     }
 
     public class Keybind{

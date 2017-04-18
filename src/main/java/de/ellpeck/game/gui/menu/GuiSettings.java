@@ -1,16 +1,21 @@
 package de.ellpeck.game.gui.menu;
 
 import de.ellpeck.game.Game;
+import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.gui.Gui;
 import de.ellpeck.game.gui.component.ComponentButton;
+import de.ellpeck.game.gui.component.ComponentInputField;
 import de.ellpeck.game.gui.component.ComponentSlider;
 import de.ellpeck.game.gui.component.ComponentSlider.ICallback;
 import de.ellpeck.game.gui.component.ComponentToggleButton;
+import org.newdawn.slick.Graphics;
 
 public class GuiSettings extends Gui{
 
+    private ComponentInputField chatNameField;
+
     public GuiSettings(Gui parent){
-        super(304, 100, parent);
+        super(304, 130, parent);
     }
 
     @Override
@@ -61,7 +66,18 @@ public class GuiSettings extends Gui{
             }
         });
 
+        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+90, 150, 16, true, true, true, false);
+        this.chatNameField.setText(game.settings.chatName);
+        this.components.add(this.chatNameField);
+
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
+    }
+
+    @Override
+    public void render(Game game, AssetManager manager, Graphics g){
+        super.render(game, manager, g);
+
+        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+82, manager.localize("button.chat_name")+":", 0.35F, false);
     }
 
     @Override
@@ -82,6 +98,11 @@ public class GuiSettings extends Gui{
 
     @Override
     public void onClosed(Game game){
+        String name = this.chatNameField.getText();
+        if(name != null && !name.isEmpty()){
+            game.settings.chatName = name;
+        }
+
         game.dataManager.saveSettings(game.settings);
     }
 }

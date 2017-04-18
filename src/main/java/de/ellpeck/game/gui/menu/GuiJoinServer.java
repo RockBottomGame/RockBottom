@@ -20,7 +20,7 @@ public class GuiJoinServer extends Gui{
     public void initGui(Game game){
         super.initGui(game);
 
-        this.inputField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-80, this.guiTop, 160, 16);
+        this.inputField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-80, this.guiTop, 160, 16, true, true, true, false);
         this.components.add(this.inputField);
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.assetManager.localize("button.connect")));

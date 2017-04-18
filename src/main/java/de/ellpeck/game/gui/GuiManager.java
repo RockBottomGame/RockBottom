@@ -90,6 +90,8 @@ public class GuiManager{
             this.shouldReInit = false;
         }
 
+        game.chatLog.updateNewMessages();
+
         if(this.gui != null){
             this.gui.update(game);
         }
@@ -115,6 +117,8 @@ public class GuiManager{
             else{
                 this.background.render(game, manager, g);
             }
+
+            game.chatLog.drawNewMessages(game, manager, g);
 
             Gui gui = game.guiManager.getGui();
             if(gui != null){
