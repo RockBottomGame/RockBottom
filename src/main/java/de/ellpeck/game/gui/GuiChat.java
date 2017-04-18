@@ -25,7 +25,7 @@ public class GuiChat extends Gui{
     public void initGui(Game game){
         super.initGui(game);
 
-        this.inputField = new ComponentInputField(this, 5, (int)game.getHeightInGui()-21, (int)game.getWidthInGui()/2, 16, true, false, false, true);
+        this.inputField = new ComponentInputField(this, 5, (int)game.getHeightInGui()-21, (int)game.getWidthInGui()/2, 16, true, false, true, 512, true);
         this.components.add(this.inputField);
     }
 
@@ -80,8 +80,13 @@ public class GuiChat extends Gui{
                 game.chatLog.sendMessage("&("+color.r+","+color.g+","+color.b+")["+game.settings.chatName+"] &4"+text);
                 this.inputField.setText("");
 
+                game.guiManager.closeGui();
                 return true;
             }
+            else{
+                game.guiManager.closeGui();
+            }
+
         }
         return super.onKeyboardAction(game, button, character);
     }

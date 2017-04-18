@@ -172,4 +172,23 @@ public class Font{
 
         return result;
     }
+
+    public String cutOffStringToLength(int length, float scale, String s, boolean fromRight){
+        String accumulated = "";
+
+        for(int i = 0; i < s.length(); i++){
+            if(fromRight){
+                accumulated = s.charAt(s.length()-1-i)+accumulated;
+            }
+            else{
+                accumulated += s.charAt(i);
+            }
+
+            if(this.getWidth(accumulated, scale) >= length){
+                break;
+            }
+        }
+
+        return accumulated;
+    }
 }

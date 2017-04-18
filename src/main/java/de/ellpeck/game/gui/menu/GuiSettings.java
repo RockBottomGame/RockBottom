@@ -66,7 +66,7 @@ public class GuiSettings extends Gui{
             }
         });
 
-        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+90, 150, 16, true, true, true, false);
+        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+90, 150, 16, true, true, false, 24, true);
         this.chatNameField.setText(game.settings.chatName);
         this.components.add(this.chatNameField);
 
@@ -98,9 +98,10 @@ public class GuiSettings extends Gui{
 
     @Override
     public void onClosed(Game game){
-        String name = this.chatNameField.getText();
-        if(name != null && !name.isEmpty()){
+        String name = this.chatNameField.getText().trim();
+        if(!name.isEmpty()){
             game.settings.chatName = name;
+
         }
 
         game.dataManager.saveSettings(game.settings);

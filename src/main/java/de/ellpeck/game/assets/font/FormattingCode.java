@@ -2,12 +2,9 @@ package de.ellpeck.game.assets.font;
 
 import org.newdawn.slick.Color;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FormattingCode{
 
-    public static final FormattingCode NONE = new FormattingCode(' ', Color.white, 2);
+    public static final FormattingCode NONE = new FormattingCode(' ', Color.white, 0);
     public static final FormattingCode BLACK = new FormattingCode('0', Color.black, 2);
     public static final FormattingCode DARK_GRAY = new FormattingCode('1', Color.darkGray, 2);
     public static final FormattingCode GRAY = new FormattingCode('2', Color.gray, 2);
@@ -68,5 +65,10 @@ public class FormattingCode{
 
     public int getLength(){
         return this.length;
+    }
+
+    @Override
+    public String toString(){
+        return this == NONE ? "" : "&"+this.format;
     }
 }
