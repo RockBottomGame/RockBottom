@@ -1,6 +1,6 @@
 package de.ellpeck.game.assets.font;
 
-import de.ellpeck.game.util.Vec2;
+import de.ellpeck.game.util.Pos2;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -17,12 +17,12 @@ public class Font{
     private final String name;
     private final Image image;
 
-    private final Map<Character, Vec2> characters;
+    private final Map<Character, Pos2> characters;
 
     private final int charWidth;
     private final int charHeight;
 
-    public Font(String name, Image image, int widthInChars, int heightInChars, Map<Character, Vec2> characters){
+    public Font(String name, Image image, int widthInChars, int heightInChars, Map<Character, Pos2> characters){
         this.name = name;
         this.image = image;
         this.characters = characters;
@@ -39,7 +39,7 @@ public class Font{
 
         int width = 0;
         int heightIndex = 0;
-        Map<Character, Vec2> characters = new HashMap<>();
+        Map<Character, Pos2> characters = new HashMap<>();
 
         String line = reader.readLine();
         while(line != null){
@@ -50,7 +50,7 @@ public class Font{
                 }
 
                 for(int i = 0; i < chars.length; i++){
-                    characters.put(chars[i], new Vec2(i, heightIndex));
+                    characters.put(chars[i], new Pos2(i, heightIndex));
                 }
             }
             heightIndex++;
@@ -141,7 +141,7 @@ public class Font{
 
     public void drawCharacter(float x, float y, char character, float scale, Color color){
         if(character != ' '){
-            Vec2 pos = this.characters.get(character);
+            Pos2 pos = this.characters.get(character);
 
             if(pos == null){
                 pos = this.characters.get('?');

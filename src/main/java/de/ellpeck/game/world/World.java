@@ -11,7 +11,7 @@ import de.ellpeck.game.net.server.ConnectedPlayer;
 import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.util.Util;
-import de.ellpeck.game.util.Vec2;
+import de.ellpeck.game.util.Pos2;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;
@@ -29,7 +29,7 @@ public class World implements IWorld{
     public final Random generatorRandom = new Random();
 
     public final List<Chunk> loadedChunks = new ArrayList<>();
-    protected final Map<Vec2, Chunk> chunkLookup = new HashMap<>();
+    protected final Map<Pos2, Chunk> chunkLookup = new HashMap<>();
 
     public List<EntityPlayer> players = new ArrayList<>();
 
@@ -69,7 +69,7 @@ public class World implements IWorld{
                 this.saveChunk(chunk);
 
                 this.loadedChunks.remove(i);
-                this.chunkLookup.remove(new Vec2(chunk.gridX, chunk.gridY));
+                this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
                 i--;
             }
         }
@@ -248,7 +248,7 @@ public class World implements IWorld{
 
     @Override
     public boolean isChunkLoaded(int x, int y){
-        return this.chunkLookup.containsKey(new Vec2(x, y));
+        return this.chunkLookup.containsKey(new Pos2(x, y));
     }
 
     @Override
@@ -273,7 +273,7 @@ public class World implements IWorld{
     }
 
     public Chunk getChunkFromGridCoords(int gridX, int gridY){
-        Chunk chunk = this.chunkLookup.get(new Vec2(gridX, gridY));
+        Chunk chunk = this.chunkLookup.get(new Pos2(gridX, gridY));
 
         if(chunk == null){
             chunk = this.loadChunk(gridX, gridY);
@@ -285,7 +285,7 @@ public class World implements IWorld{
     protected Chunk loadChunk(int gridX, int gridY){
         Chunk chunk = new Chunk(this, gridX, gridY);
         this.loadedChunks.add(chunk);
-        this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
+        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
 
         DataSet set = new DataSet();
         set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
@@ -339,7 +339,7 @@ public class World implements IWorld{
     }
 
     public void notifyNeighborsOfChange(int x, int y, TileLayer layer){
-        for(Direction direction : Direction.ADJACENT_DIRECTIONS){
+        for(Direction direction : Direction.ADJACENT){
             int offX = x+direction.x;
             int offY = y+direction.y;
 
@@ -426,7 +426,7 @@ public class World implements IWorld{
     }
 
     public void updateLightFrom(int x, int y){
-        for(Direction direction : Direction.ALL_DIRECTIONS){
+        for(Direction direction : Direction.SURROUNDING_INCLUDING_NONE){
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 
@@ -473,7 +473,7 @@ public class World implements IWorld{
     protected byte calcLight(int x, int y, boolean isSky){
         byte maxLight = 0;
 
-        for(Direction direction : Direction.REAL_DIRECTIONS){
+        for(Direction direction : Direction.SURROUNDING){
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 

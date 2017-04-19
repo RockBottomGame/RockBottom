@@ -2,7 +2,7 @@ package de.ellpeck.game.net.client;
 
 import de.ellpeck.game.Constants;
 import de.ellpeck.game.Game;
-import de.ellpeck.game.util.Vec2;
+import de.ellpeck.game.util.Pos2;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
@@ -21,7 +21,7 @@ public class ClientWorld extends World{
         Chunk chunk = new ClientChunk(this, gridX, gridY);
 
         this.loadedChunks.add(chunk);
-        this.chunkLookup.put(new Vec2(gridX, gridY), chunk);
+        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
 
         return chunk;
     }
@@ -36,7 +36,7 @@ public class ClientWorld extends World{
 
             if(chunk.shouldUnload()){
                 this.loadedChunks.remove(i);
-                this.chunkLookup.remove(new Vec2(chunk.gridX, chunk.gridY));
+                this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
                 i--;
             }
         }

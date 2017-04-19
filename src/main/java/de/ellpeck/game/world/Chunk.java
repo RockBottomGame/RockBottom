@@ -8,8 +8,9 @@ import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.game.net.packet.toclient.PacketTileChange;
 import de.ellpeck.game.util.BoundBox;
+import de.ellpeck.game.util.Pos2;
+import de.ellpeck.game.util.Pos3;
 import de.ellpeck.game.util.Util;
-import de.ellpeck.game.util.Vec2;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.gen.IWorldGenerator;
@@ -39,10 +40,10 @@ public class Chunk implements IWorld{
     protected final Map<UUID, Entity> entityLookup = new HashMap<>();
 
     protected final List<TileEntity> tileEntities = new ArrayList<>();
-    protected final Map<Vec2, TileEntity> tileEntityLookup = new HashMap<>();
+    protected final Map<Pos2, TileEntity> tileEntityLookup = new HashMap<>();
 
     protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
-    protected final Map<Vec2, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
+    protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
 
     public final List<EntityPlayer> playersInRange = new ArrayList<>();
 
@@ -163,9 +164,9 @@ public class Chunk implements IWorld{
 
                     if(update.time <= 0){
                         this.scheduledUpdates.remove(i);
-                        this.scheduledUpdateLookup.remove(new Vec2(update.x, update.y));
+                        this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.ordinal()));
 
-                        Tile tile = this.getTile(update.x, update.y);
+                        Tile tile = this.getTile(update.layer, update.x, update.y);
                         if(tile == update.tile){
                             tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
                         }
@@ -243,7 +244,7 @@ public class Chunk implements IWorld{
         byte lastLight = lastTile.getLight(this.world, this.x+x, this.y+y, layer);
         float lastMofifier = lastTile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer);
 
-        lastTile.onRemoved(this.world, this.x+x, this.y+y);
+        lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
         if(layer == TileLayer.MAIN){
             if(lastTile.providesTileEntity()){
@@ -259,7 +260,7 @@ public class Chunk implements IWorld{
         this.tileGrid[ord][x][y] = tile;
         this.metaGrid[ord][x][y] = 0;
 
-        tile.onAdded(this.world, this.x+x, this.y+y);
+        tile.onAdded(this.world, this.x+x, this.y+y, layer);
 
         if(layer == TileLayer.MAIN){
             if(tile.providesTileEntity()){
@@ -324,7 +325,7 @@ public class Chunk implements IWorld{
 
     @Override
     public void addTileEntity(TileEntity tile){
-        Vec2 posVec = new Vec2(tile.x, tile.y);
+        Pos2 posVec = new Pos2(tile.x, tile.y);
         if(!this.tileEntityLookup.containsKey(posVec)){
             this.tileEntities.add(tile);
             this.tileEntityLookup.put(posVec, tile);
@@ -351,7 +352,7 @@ public class Chunk implements IWorld{
         TileEntity tile = this.getTileEntity(x, y);
         if(tile != null){
             this.tileEntities.remove(tile);
-            this.tileEntityLookup.remove(new Vec2(tile.x, tile.y));
+            this.tileEntityLookup.remove(new Pos2(tile.x, tile.y));
 
             if(!this.isGenerating){
                 this.world.notifyNeighborsOfChange(this.x+x, this.y+y, TileLayer.MAIN);
@@ -362,7 +363,7 @@ public class Chunk implements IWorld{
 
     @Override
     public TileEntity getTileEntity(int x, int y){
-        return this.tileEntityLookup.get(new Vec2(x, y));
+        return this.tileEntityLookup.get(new Pos2(x, y));
     }
 
     @Override
@@ -455,9 +456,9 @@ public class Chunk implements IWorld{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-        Vec2 posVec = new Vec2(x, y);
+        Pos3 posVec = new Pos3(x, y, layer.ordinal());
         if(!this.scheduledUpdateLookup.containsKey(posVec)){
-            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getTile(x, y), time);
+            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getTile(layer, x, y), time);
 
             this.scheduledUpdateLookup.put(posVec, update);
             this.scheduledUpdates.add(update);

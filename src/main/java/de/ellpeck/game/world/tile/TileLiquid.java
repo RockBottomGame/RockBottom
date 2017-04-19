@@ -36,7 +36,7 @@ public class TileLiquid extends TileBasic{
     }
 
     @Override
-    public void onAdded(World world, int x, int y){
+    public void onAdded(World world, int x, int y, TileLayer layer){
         world.scheduleUpdate(x, y, TileLayer.MAIN, this.speed);
     }
 

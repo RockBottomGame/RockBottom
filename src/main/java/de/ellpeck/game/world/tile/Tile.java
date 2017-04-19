@@ -52,7 +52,7 @@ public class Tile{
         }
         else{
             if(!world.getTile(x, y).isFullTile()){
-                for(Direction dir : Direction.ADJACENT_DIRECTIONS){
+                for(Direction dir : Direction.ADJACENT){
                     Tile tile = world.getTile(layer, x+dir.x, y+dir.y);
                     if(!tile.isFullTile()){
                         return true;
@@ -73,7 +73,7 @@ public class Tile{
         }
 
         for(TileLayer testLayer : TileLayer.LAYERS){
-            for(Direction dir : Direction.ADJACENT_DIRECTIONS){
+            for(Direction dir : Direction.ADJACENT){
                 Tile tile = world.getTile(testLayer, x+dir.x, y+dir.y);
                 if(!tile.isAir()){
                     return true;
@@ -118,11 +118,11 @@ public class Tile{
         }
     }
 
-    public void onRemoved(World world, int x, int y){
+    public void onRemoved(World world, int x, int y, TileLayer layer){
 
     }
 
-    public void onAdded(World world, int x, int y){
+    public void onAdded(World world, int x, int y, TileLayer layer){
 
     }
 

@@ -5,7 +5,7 @@ import de.ellpeck.game.assets.font.AssetFont;
 import de.ellpeck.game.assets.font.Font;
 import de.ellpeck.game.assets.local.AssetLocale;
 import de.ellpeck.game.assets.local.Locale;
-import de.ellpeck.game.util.Vec2;
+import de.ellpeck.game.util.Pos2;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -46,7 +46,7 @@ public class AssetManager{
         this.missingTexture = new AssetImage(buffer.getImage());
         this.missingSound = new AssetSound(null);
         this.missingLocale = new AssetLocale(new Locale("fallback"));
-        this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Vec2(0, 0)))));
+        this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0)))));
 
         Log.info("Loaded "+this.getAllOfType(AssetImage.class).size()+" image resources!");
         Log.info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");

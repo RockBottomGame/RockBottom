@@ -16,10 +16,11 @@ public enum Direction{
     public final int x;
     public final int y;
 
-    public static final Direction[] ADJACENT_DIRECTIONS = new Direction[]{UP, RIGHT, DOWN, LEFT};
-    public static final Direction[] DIAGONAL_DIRECTIONS = new Direction[]{LEFT_UP, RIGHT_UP, RIGHT_DOWN, LEFT_DOWN};
-    public static final Direction[] REAL_DIRECTIONS = new Direction[]{LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN, LEFT};
-    public static final Direction[] ALL_DIRECTIONS = values();
+    public static final Direction[] ADJACENT = new Direction[]{UP, RIGHT, DOWN, LEFT};
+    public static final Direction[] ADJACENT_INCLUDING_NONE = new Direction[]{NONE, UP, RIGHT, DOWN, LEFT};
+
+    public static final Direction[] SURROUNDING = new Direction[]{LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN, LEFT};
+    public static final Direction[] SURROUNDING_INCLUDING_NONE = new Direction[]{NONE, LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN, LEFT};
 
     Direction(int x, int y){
         this.x = x;
