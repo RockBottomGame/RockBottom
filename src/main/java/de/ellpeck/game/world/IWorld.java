@@ -73,4 +73,6 @@ public interface IWorld{
     void scheduleUpdate(int x, int y, TileLayer layer, int time);
 
     void setDirty(int x, int y);
+
+    int getLowestAirUpwards(TileLayer layer, int x, int y);
 }

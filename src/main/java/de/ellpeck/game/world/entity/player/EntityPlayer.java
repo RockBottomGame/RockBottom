@@ -24,7 +24,6 @@ import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.EntityItem;
 import de.ellpeck.game.world.entity.EntityLiving;
-import io.netty.channel.Channel;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.util.Log;
 
@@ -110,10 +109,10 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         }
 
         if(this.currentContainer == null){
-            Log.info("Closed Container for player with unique id "+this.getUniqueId());
+            Log.debug("Closed Container for player with unique id "+this.getUniqueId());
         }
         else{
-            Log.info("Opened Container "+this.currentContainer+" for player with unique id "+this.getUniqueId());
+            Log.debug("Opened Container "+this.currentContainer+" for player with unique id "+this.getUniqueId());
         }
     }
 
@@ -288,7 +287,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 }
             }
 
-            Log.info("Player with id "+this.getUniqueId()+" scheduling "+unload+" chunks for unload and loading "+nowLoaded.size()+" new ones");
+            Log.debug("Player with id "+this.getUniqueId()+" scheduling "+unload+" chunks for unload and loading "+nowLoaded.size()+" new ones");
 
             for(Chunk chunk : nowLoaded){
                 chunk.playersInRange.add(this);

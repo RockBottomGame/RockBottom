@@ -7,10 +7,7 @@ import de.ellpeck.game.data.set.DataSet;
 import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.game.net.packet.toclient.PacketTileChange;
-import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.util.Pos2;
-import de.ellpeck.game.util.Pos3;
-import de.ellpeck.game.util.Util;
+import de.ellpeck.game.util.*;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.gen.IWorldGenerator;
@@ -23,6 +20,8 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class Chunk implements IWorld{
+
+    public static boolean isGeneratingChunk;
 
     public final int x;
     public final int y;
@@ -77,13 +76,21 @@ public class Chunk implements IWorld{
     }
 
     public void generate(Random rand){
+        if(isGeneratingChunk){
+            Log.warn("CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT "+this.gridX+", "+this.gridY+"! THIS SHOULD NOT HAPPEN!");
+        }
+
+        isGeneratingChunk = true;
+
         List<IWorldGenerator> gens = WorldGenerators.getGenerators();
 
         for(IWorldGenerator generator : gens){
-            if(generator.shouldGenerate(this.world, this)){
+            if(generator.shouldGenerate(this.world, this, rand)){
                 generator.generate(this.world, this, rand);
             }
         }
+
+        isGeneratingChunk = false;
     }
 
     protected void checkListSync(){
@@ -281,7 +288,12 @@ public class Chunk implements IWorld{
 
         if(!this.isGenerating){
             if(lastAir != tile.isAir() || lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
-                this.world.updateLightFrom(this.x+x, this.y+y);
+                MutableInt recurseCount = new MutableInt(0);
+                this.world.updateLightFrom(this.x+x, this.y+y, recurseCount);
+
+                if(recurseCount.get() >= 100){
+                    Log.debug("Updated light at "+(this.x+x)+", "+(this.y+y)+" using "+recurseCount.get()+" recursive calls!");
+                }
             }
 
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
@@ -290,8 +302,8 @@ public class Chunk implements IWorld{
     }
 
     public void setMetaInner(TileLayer layer, int x, int y, int meta){
-        if(meta > Byte.MAX_VALUE){
-            throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" in chunk at "+this.gridX+", "+this.gridY+" which is greater than max "+Byte.MAX_VALUE+"!");
+        if(meta < 0 || meta > Byte.MAX_VALUE){
+            throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" in chunk at "+this.gridX+", "+this.gridY+" which is less than 0 or greater than max "+Byte.MAX_VALUE+"!");
         }
 
         this.metaGrid[layer.ordinal()][x][y] = (byte)meta;
@@ -483,6 +495,21 @@ public class Chunk implements IWorld{
     @Override
     public void setDirty(int x, int y){
         this.setDirty();
+    }
+
+    @Override
+    public int getLowestAirUpwards(TileLayer layer, int x, int y){
+        int actualX = x-this.x;
+        int actualY = y-this.y;
+
+        for(int yCount = actualY; yCount < Constants.CHUNK_SIZE-yCount; yCount++){
+            Tile tile = this.getTileInner(layer, actualX, yCount);
+            if(tile.isAir()){
+                return this.y+yCount;
+            }
+        }
+
+        return -1;
     }
 
     public byte getCombinedLightInner(int x, int y){

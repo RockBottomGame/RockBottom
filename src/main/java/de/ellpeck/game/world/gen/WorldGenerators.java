@@ -1,5 +1,6 @@
 package de.ellpeck.game.world.gen;
 
+import de.ellpeck.game.world.gen.feature.WorldGenTrees;
 import de.ellpeck.game.world.gen.landscape.WorldGenBasicUnderground;
 import de.ellpeck.game.world.gen.landscape.WorldGenDebugLandscape;
 import de.ellpeck.game.world.gen.landscape.WorldGenHills;
@@ -19,6 +20,7 @@ public final class WorldGenerators{
         registerGenerator(new WorldGenDebugLandscape());
         registerGenerator(new WorldGenHills());
         registerGenerator(new WorldGenBasicUnderground());
+        registerGenerator(new WorldGenTrees());
     }
 
     public static List<IWorldGenerator> getGenerators(){

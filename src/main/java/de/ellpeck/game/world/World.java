@@ -8,10 +8,7 @@ import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.game.net.packet.toclient.PacketParticles;
 import de.ellpeck.game.net.server.ConnectedPlayer;
-import de.ellpeck.game.util.BoundBox;
-import de.ellpeck.game.util.Direction;
-import de.ellpeck.game.util.Util;
-import de.ellpeck.game.util.Pos2;
+import de.ellpeck.game.util.*;
 import de.ellpeck.game.world.entity.Entity;
 import de.ellpeck.game.world.entity.player.EntityPlayer;
 import de.ellpeck.game.world.tile.Tile;
@@ -210,11 +207,13 @@ public class World implements IWorld{
 
         for(int x = Util.floor(area.getMinX()); x <= Util.ceil(area.getMaxX()); x++){
             for(int y = Util.floor(area.getMinY()); y <= Util.ceil(area.getMaxY()); y++){
-                Tile tile = this.getTile(x, y);
+                if(this.isPosLoaded(x, y)){
+                    Tile tile = this.getTile(x, y);
 
-                BoundBox box = tile.getBoundBox(this, x, y);
-                if(box != null && !box.isEmpty()){
-                    collisions.add(box.copy().add(x, y));
+                    BoundBox box = tile.getBoundBox(this, x, y);
+                    if(box != null && !box.isEmpty()){
+                        collisions.add(box.copy().add(x, y));
+                    }
                 }
             }
         }
@@ -272,6 +271,12 @@ public class World implements IWorld{
     public void setDirty(int x, int y){
         Chunk chunk = this.getChunk(x, y);
         chunk.setDirty(x, y);
+    }
+
+    @Override
+    public int getLowestAirUpwards(TileLayer layer, int x, int y){
+        Chunk chunk = this.getChunk(x, y);
+        return chunk.getLowestAirUpwards(layer, x, y);
     }
 
     public Chunk getChunk(double x, double y){
@@ -367,7 +372,7 @@ public class World implements IWorld{
         this.info.save();
 
         for(EntityPlayer player : this.players){
-           this.savePlayer(player);
+            this.savePlayer(player);
         }
 
         Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
@@ -431,7 +436,12 @@ public class World implements IWorld{
         this.setTile(layer, x, y, ContentRegistry.TILE_AIR);
     }
 
-    public void updateLightFrom(int x, int y){
+    public void updateLightFrom(int x, int y, MutableInt recurseCount){
+        if(recurseCount.get() > 2000){
+            Log.warn("UPDATING LIGHT AT "+x+", "+y+" TOOK MORE THAN 2000 RECURSIVE CALLS! ABORTING!");
+            return;
+        }
+
         for(Direction direction : Direction.SURROUNDING_INCLUDING_NONE){
             int dirX = x+direction.x;
             int dirY = y+direction.y;
@@ -454,7 +464,7 @@ public class World implements IWorld{
                 }
 
                 if(change){
-                    this.updateLightFrom(dirX, dirY);
+                    this.updateLightFrom(dirX, dirY, recurseCount.add(1));
                 }
             }
         }

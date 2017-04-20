@@ -185,10 +185,10 @@ public class GuiManager{
         }
 
         if(this.gui == null){
-            Log.info("Closed Gui");
+            Log.debug("Closed Gui");
         }
         else{
-            Log.info("Opened Gui "+this.gui);
+            Log.debug("Opened Gui "+this.gui);
         }
     }
 

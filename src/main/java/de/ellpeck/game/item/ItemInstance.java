@@ -36,8 +36,8 @@ public class ItemInstance{
         if(item == null){
             throw new NullPointerException("Tried to create an ItemInstance with null item!");
         }
-        if(meta > Short.MAX_VALUE){
-            throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" to item instance with item "+item+" and amount "+amount+" which is greater than max "+Short.MAX_VALUE+"!");
+        if(meta < 0 || meta > Short.MAX_VALUE){
+            throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" to item instance with item "+item+" and amount "+amount+" which is less than 0 or greater than max "+Short.MAX_VALUE+"!");
         }
 
         this.item = item;

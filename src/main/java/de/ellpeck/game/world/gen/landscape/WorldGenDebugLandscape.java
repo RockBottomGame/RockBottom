@@ -12,7 +12,7 @@ import java.util.Random;
 public class WorldGenDebugLandscape implements IWorldGenerator{
 
     @Override
-    public boolean shouldGenerate(World world, Chunk chunk){
+    public boolean shouldGenerate(World world, Chunk chunk, Random rand){
         return false;
     }
 

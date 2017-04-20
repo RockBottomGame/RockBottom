@@ -7,7 +7,7 @@ import java.util.Random;
 
 public interface IWorldGenerator{
 
-    boolean shouldGenerate(World world, Chunk chunk);
+    boolean shouldGenerate(World world, Chunk chunk, Random rand);
 
     void generate(World world, Chunk chunk, Random rand);
 

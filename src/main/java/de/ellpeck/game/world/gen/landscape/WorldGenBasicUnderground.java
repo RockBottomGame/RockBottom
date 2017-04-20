@@ -13,7 +13,7 @@ import java.util.Random;
 public class WorldGenBasicUnderground implements IWorldGenerator{
 
     @Override
-    public boolean shouldGenerate(World world, Chunk chunk){
+    public boolean shouldGenerate(World world, Chunk chunk, Random rand){
         return chunk.gridY < 0;
     }
 

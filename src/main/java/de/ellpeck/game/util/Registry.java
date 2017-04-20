@@ -19,8 +19,8 @@ public class Registry<T>{
     }
 
     public void register(int id, T value){
-        if(id > this.max){
-            throw new IndexOutOfBoundsException("Tried registering "+value+" with id "+id+" which is greater than max "+this.max+" in registry "+this+"!");
+        if(id < 0 || id > this.max){
+            throw new IndexOutOfBoundsException("Tried registering "+value+" with id "+id+" which is less than 0 or greater than max "+this.max+" in registry "+this+"!");
         }
         if(this.map.containsKey(id)){
             throw new RuntimeException("Cannot register "+value+" with id "+id+" twice into registry "+this+"!");
