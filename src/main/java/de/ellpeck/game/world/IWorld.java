@@ -38,6 +38,8 @@ public interface IWorld{
 
     TileEntity getTileEntity(int x, int y);
 
+    <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass);
+
     List<Entity> getAllEntities();
 
     List<TileEntity> getAllTileEntities();

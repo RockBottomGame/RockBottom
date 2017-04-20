@@ -40,12 +40,9 @@ public class TileChest extends TileBasic{
 
     @Override
     public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
-        TileEntity tile = world.getTileEntity(x, y);
-        if(tile instanceof TileEntityChest){
-            TileEntityChest chest = (TileEntityChest)tile;
-
+        TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
+        if(chest != null){
             player.openGuiContainer(new GuiChest(player), new ContainerChest(player, chest));
-
             return true;
         }
         return false;
@@ -75,10 +72,8 @@ public class TileChest extends TileBasic{
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
         if(!NetHandler.isClient()){
-            TileEntity tile = world.getTileEntity(x, y);
-            if(tile instanceof TileEntityChest){
-                TileEntityChest chest = (TileEntityChest)tile;
-
+            TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
+            if(chest != null){
                 for(int i = 0; i < chest.inventory.getSlotAmount(); i++){
                     ItemInstance inst = chest.inventory.get(i);
                     if(inst != null){

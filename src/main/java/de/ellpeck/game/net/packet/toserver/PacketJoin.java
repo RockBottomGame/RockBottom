@@ -42,7 +42,7 @@ public class PacketJoin implements IPacket{
     @Override
     public void handle(Game game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(!Game.VERSION.equals(this.version)){
+            if(Game.VERSION.equals(this.version)){
                 if(game.world != null){
                     if(game.world.getPlayer(this.id) == null){
                         EntityPlayer player = game.world.createPlayer(this.id, context.channel());

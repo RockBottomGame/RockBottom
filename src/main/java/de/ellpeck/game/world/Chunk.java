@@ -367,6 +367,17 @@ public class Chunk implements IWorld{
     }
 
     @Override
+    public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass){
+        TileEntity tile = this.getTileEntity(x, y);
+        if(tile != null && tileClass.isAssignableFrom(tile.getClass())){
+            return (T)tile;
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
     public List<Entity> getAllEntities(){
         return this.entities;
     }

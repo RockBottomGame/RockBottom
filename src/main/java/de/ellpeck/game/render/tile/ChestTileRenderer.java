@@ -4,7 +4,6 @@ import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
 import de.ellpeck.game.world.IWorld;
 import de.ellpeck.game.world.tile.Tile;
-import de.ellpeck.game.world.tile.entity.TileEntity;
 import de.ellpeck.game.world.tile.entity.TileEntityChest;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -19,8 +18,8 @@ public class ChestTileRenderer extends DefaultTileRenderer{
     public void render(Game game, AssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, Color filter){
         String tex = this.texture;
 
-        TileEntity tileEntity = world.getTileEntity(x, y);
-        if(tileEntity instanceof TileEntityChest && ((TileEntityChest)tileEntity).openCount > 0){
+        TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
+        if(chest != null && chest.openCount > 0){
             tex += ".open";
         }
 

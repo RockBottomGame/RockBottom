@@ -138,6 +138,12 @@ public class World implements IWorld{
     }
 
     @Override
+    public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass){
+        Chunk chunk = this.getChunk(x, y);
+        return chunk.getTileEntity(x, y, tileClass);
+    }
+
+    @Override
     public List<Entity> getAllEntities(){
         List<Entity> entities = new ArrayList<>();
         for(Chunk chunk : this.loadedChunks){
