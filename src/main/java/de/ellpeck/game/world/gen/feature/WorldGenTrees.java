@@ -21,10 +21,10 @@ public class WorldGenTrees implements IWorldGenerator{
 
     @Override
     public void generate(World world, Chunk chunk, Random rand){
-        int randX = chunk.x+rand.nextInt(Constants.CHUNK_SIZE);
+        int randX = chunk.x+8+rand.nextInt(Constants.CHUNK_SIZE-16);
         int randY = world.getLowestAirUpwards(TileLayer.MAIN, randX, 0);
 
-        if(randY > 0){
+        if(randY > 0 && randY < 16){
             Tile tile = world.getTile(randX, randY-1);
             if(tile instanceof TileDirt || tile instanceof TileGrass){
                 int height = rand.nextInt(6)+8;
@@ -45,7 +45,7 @@ public class WorldGenTrees implements IWorldGenerator{
     private void makeBranch(World world, int startX, int startY, boolean left, Random rand){
         int yAdd = 0;
 
-        int length = rand.nextInt(5)+3;
+        int length = rand.nextInt(4)+3;
         int lengthAdd = rand.nextInt(2)+1;
         for(int l = 1; l <= length+lengthAdd; l++){
             int x = left ? startX-l : startX+l;
@@ -56,8 +56,9 @@ public class WorldGenTrees implements IWorldGenerator{
                 }
             }
 
-            int leafAmount = rand.nextInt(3)+1;
-            for(int lY = -leafAmount; lY <= leafAmount; lY++){
+            int leafAmountDown = rand.nextInt(3)+1;
+            int leafAmountUp = rand.nextInt(3)+1;
+            for(int lY = -leafAmountDown; lY <= leafAmountUp; lY++){
                 if(world.getTile(x, startY+yAdd+lY).isAir()){
                     world.setTile(x, startY+yAdd+lY, ContentRegistry.TILE_LEAVES);
                 }

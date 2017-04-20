@@ -3,9 +3,7 @@ package de.ellpeck.game.net.server;
 import de.ellpeck.game.Game;
 import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.IPacket;
-import de.ellpeck.game.net.packet.toclient.PacketChunk;
-import de.ellpeck.game.net.packet.toclient.PacketEntityChange;
-import de.ellpeck.game.net.packet.toclient.PacketTileEntityData;
+import de.ellpeck.game.net.packet.toclient.*;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
 import de.ellpeck.game.world.entity.Entity;
@@ -19,6 +17,8 @@ import java.util.UUID;
 public class ConnectedPlayer extends EntityPlayer{
 
     private final Channel channel;
+
+    private int lastHealth;
 
     public ConnectedPlayer(World world, UUID uniqueId, Channel channel){
         super(world, uniqueId);
@@ -41,6 +41,22 @@ public class ConnectedPlayer extends EntityPlayer{
                 });
             }
         }
+
+
+        if(this.health != this.lastHealth && this.world.info.totalTimeInWorld%10 == 0){
+            this.lastHealth = this.health;
+
+            if(NetHandler.isServer()){
+                this.sendPacket(new PacketHealth(this.health));
+            }
+        }
+    }
+
+    @Override
+    public void resetAndSpawn(Game game){
+        super.resetAndSpawn(game);
+
+        this.sendPacket(new PacketRespawn());
     }
 
     @Override

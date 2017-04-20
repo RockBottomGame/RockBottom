@@ -14,6 +14,8 @@ import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.net.packet.toclient.PacketContainerChange;
 import de.ellpeck.game.net.packet.toclient.PacketContainerData;
+import de.ellpeck.game.net.packet.toclient.PacketHealth;
+import de.ellpeck.game.net.packet.toclient.PacketRespawn;
 import de.ellpeck.game.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.PlayerEntityRenderer;
@@ -128,15 +130,15 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     public void update(Game game){
         super.update(game);
 
-        if(this.isDead()){
-            this.respawnTimer++;
+        if(!NetHandler.isClient()){
+            if(this.isDead()){
+                this.respawnTimer++;
 
-            if(this.respawnTimer >= 400){
-                this.resetAndSpawn(game);
+                if(this.respawnTimer >= 400){
+                    this.resetAndSpawn(game);
+                }
             }
-        }
-        else{
-            if(!NetHandler.isClient()){
+            else{
                 List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y), EntityItem.class);
                 for(EntityItem entity : entities){
                     if(entity.canPickUp()){
@@ -176,8 +178,10 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     @Override
     public void onGroundHit(){
-        if(this.fallAmount >= 20){
-            this.health -= this.fallAmount*1.5;
+        if(!NetHandler.isClient()){
+            if(this.fallAmount >= 20){
+                this.health -= this.fallAmount*1.5;
+            }
         }
     }
 

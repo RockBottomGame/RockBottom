@@ -2,6 +2,7 @@ package de.ellpeck.game.world.entity;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.data.set.DataSet;
+import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.world.World;
 
 public abstract class EntityLiving extends Entity{
@@ -26,9 +27,13 @@ public abstract class EntityLiving extends Entity{
         if(this.health <= 0){
             this.kill();
         }
-        else if(this.health < this.getMaxHealth()){
-            if(this.world.info.totalTimeInWorld%this.getRegenRate() == 0){
-                this.health++;
+        else{
+            if(!NetHandler.isClient()){
+                if(this.health < this.getMaxHealth()){
+                    if(this.world.info.totalTimeInWorld%this.getRegenRate() == 0){
+                        this.health++;
+                    }
+                }
             }
         }
     }
@@ -42,6 +47,10 @@ public abstract class EntityLiving extends Entity{
 
     public int getHealth(){
         return this.health;
+    }
+
+    public void setHealth(int health){
+        this.health = health;
     }
 
     public abstract int getMaxHealth();
