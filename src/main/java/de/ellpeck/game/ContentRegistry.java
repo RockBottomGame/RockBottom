@@ -25,6 +25,7 @@ public final class ContentRegistry{
     public static final Tile TILE_CHEST = new TileChest(7).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
     public static final Tile TILE_LOG = new TileLog(8).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
     public static final Tile TILE_LEAVES = new TileLeaves(9).setHardness(0.25F).setForceDrop().register();
+    public static final Tile TILE_SAPLING = new TileSapling(10).setHardness(0F).setForceDrop().register();
 
     public static final Item ITEM_SUPER_TOOL = new ItemTool(0, "super_tool").addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
     public static final Item ITEM_WOOD_PICK = new ItemTool(1, "pick_wood").addToolType(ToolType.PICKAXE, 1).register();

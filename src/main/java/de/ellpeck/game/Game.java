@@ -26,7 +26,7 @@ import java.util.*;
 
 public class Game extends BasicGame{
 
-    public static final String VERSION = "0.0.1";
+    public static final String VERSION = "0.0.2";
     private static Game instance;
 
     private final List<IAction> scheduledActions = new ArrayList<>();

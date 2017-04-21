@@ -25,20 +25,24 @@ public class WorldGenTrees implements IWorldGenerator{
         int randY = world.getLowestAirUpwards(TileLayer.MAIN, randX, 0);
 
         if(randY > 0 && randY < 16){
-            Tile tile = world.getTile(randX, randY-1);
-            if(tile instanceof TileDirt || tile instanceof TileGrass){
-                int height = rand.nextInt(6)+8;
-                for(int y = 0; y <= height; y++){
-                    world.setTile(randX, randY+y, ContentRegistry.TILE_LOG);
-                }
+            this.generateAt(world, randX, randY, rand);
+        }
+    }
 
-                int branches = rand.nextInt(2)+1;
-                for(int b = 0; b <= branches; b++){
-                    this.makeBranch(world, randX, randY+rand.nextInt(height/2)+height/2, b%2 == 0, rand);
-                }
-
-                this.makeBranch(world, randX, randY+height, rand.nextBoolean(), rand);
+    public void generateAt(World world, int x, int y, Random rand){
+        Tile tile = world.getTile(x, y-1);
+        if(tile instanceof TileDirt || tile instanceof TileGrass){
+            int height = rand.nextInt(6)+8;
+            for(int h = 0; h <= height; h++){
+                world.setTile(x, y+h, ContentRegistry.TILE_LOG);
             }
+
+            int branches = rand.nextInt(2)+1;
+            for(int b = 0; b <= branches; b++){
+                this.makeBranch(world, x, y+rand.nextInt(height/2)+height/2, b%2 == 0, rand);
+            }
+
+            this.makeBranch(world, x, y+height, rand.nextBoolean(), rand);
         }
     }
 

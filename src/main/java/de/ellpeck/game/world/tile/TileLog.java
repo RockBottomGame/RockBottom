@@ -52,4 +52,10 @@ public class TileLog extends TileBasic{
             }
         }
     }
+
+    @Override
+    public float getHardness(World world, int x, int y, TileLayer layer){
+        float hard = super.getHardness(world, x, y, layer);
+        return world.getMeta(x, y) == 0 ? hard*8F : hard;
+    }
 }
