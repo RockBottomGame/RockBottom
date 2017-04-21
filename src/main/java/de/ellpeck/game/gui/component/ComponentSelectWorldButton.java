@@ -13,7 +13,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
 
     private final GuiSelectWorld gui;
     private final File worldFile;
-    private final WorldInfo info;
+    private WorldInfo info;
 
     private boolean exists;
 
@@ -61,6 +61,8 @@ public class ComponentSelectWorldButton extends ComponentButton{
                 try{
                     Util.deleteFolder(this.worldFile);
                     this.exists = false;
+                    this.info = new WorldInfo(this.worldFile);
+
                     Log.info("Successfully deleted world "+(this.id+1)+".");
                 }
                 catch(Exception e){

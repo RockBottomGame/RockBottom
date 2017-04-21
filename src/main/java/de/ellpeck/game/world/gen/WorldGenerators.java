@@ -4,6 +4,7 @@ import de.ellpeck.game.world.gen.feature.WorldGenTrees;
 import de.ellpeck.game.world.gen.landscape.WorldGenBasicUnderground;
 import de.ellpeck.game.world.gen.landscape.WorldGenDebugLandscape;
 import de.ellpeck.game.world.gen.landscape.WorldGenHills;
+import de.ellpeck.game.world.gen.ore.WorldGenCoal;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public final class WorldGenerators{
         registerGenerator(new WorldGenHills());
         registerGenerator(new WorldGenBasicUnderground());
         registerGenerator(new WorldGenTrees());
+        registerGenerator(new WorldGenCoal());
     }
 
     public static List<IWorldGenerator> getGenerators(){

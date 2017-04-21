@@ -2,7 +2,6 @@ package de.ellpeck.game.gui;
 
 import de.ellpeck.game.Game;
 import de.ellpeck.game.assets.AssetManager;
-import de.ellpeck.game.util.Util;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.TileLayer;
 import de.ellpeck.game.world.World;
@@ -26,7 +25,7 @@ public final class DebugRenderer{
         list.add("Avg TPS: "+game.tpsAverage);
         list.add("");
 
-        list.add("Loaded Chunks: "+world.loadedChunks.size());
+        list.add("Loaded Chunks: "+world.loadedChunks.size()+", PlayerChunks: "+player.chunksInRange.size());
         list.add("Entities: "+world.getAllEntities().size());
         list.add("Players: "+world.players.size());
         list.add("TileEntities: "+world.getAllTileEntities().size());
@@ -53,8 +52,10 @@ public final class DebugRenderer{
         list.add("Mouse:");
         list.add("ScreenPos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);
-        list.add("ChunkPos: "+Util.toGridPos(x)+", "+Util.toGridPos(y));
         if(world.isPosLoaded(x, y)){
+            Chunk chunk = world.getChunk(x, y);
+            list.add("ChunkPos: "+chunk.gridX+", "+chunk.gridY);
+            list.add("ChunkPlayers: "+chunk.playersInRange.size());
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
             list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
             list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));

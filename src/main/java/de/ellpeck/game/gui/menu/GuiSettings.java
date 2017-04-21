@@ -25,8 +25,13 @@ public class GuiSettings extends Gui{
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, game.assetManager.localize("button.controls")));
 
-        this.components.add(new ComponentToggleButton(this, 1, this.guiLeft, this.guiTop+20, 150, 16, game.settings.hardwareCursor, "button.hardware_cursor", game.assetManager.localize("info.hardware_cursor")));
-        this.components.add(new ComponentSlider(this, 2, this.guiLeft+154, this.guiTop+20, 150, 16, (int)game.settings.cursorScale, 1, 16, new ICallback(){
+        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+28, 130, 16, true, true, false, 24, true);
+        this.chatNameField.setText(game.settings.chatName);
+        this.components.add(this.chatNameField);
+        this.components.add(new ComponentButton(this, 7, this.guiLeft+134, this.guiTop+28, 16, 16, "?", game.assetManager.localize("info.randomize_name")));
+
+        this.components.add(new ComponentToggleButton(this, 1, this.guiLeft, this.guiTop+50, 150, 16, game.settings.hardwareCursor, "button.hardware_cursor", game.assetManager.localize("info.hardware_cursor")));
+        this.components.add(new ComponentSlider(this, 2, this.guiLeft+154, this.guiTop+50, 150, 16, (int)game.settings.cursorScale, 1, 16, new ICallback(){
             @Override
             public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
                 game.settings.cursorScale = number;
@@ -34,27 +39,27 @@ public class GuiSettings extends Gui{
             }
         }, game.assetManager.localize("button.cursor_scale")));
 
-        this.components.add(new ComponentSlider(this, 3, this.guiLeft, this.guiTop+40, 150, 16, game.settings.guiScale, 1, 8, new ICallback(){
+        this.components.add(new ComponentSlider(this, 3, this.guiLeft, this.guiTop+70, 150, 16, game.settings.guiScale, 1, 8, new ICallback(){
             @Override
             public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
                 game.settings.guiScale = number;
                 game.guiManager.shouldReInit = true;
             }
         }, game.assetManager.localize("button.gui_scale")));
-        this.components.add(new ComponentSlider(this, 4, this.guiLeft+154, this.guiTop+40, 150, 16, game.settings.renderScale, 1, 128, new ICallback(){
+        this.components.add(new ComponentSlider(this, 4, this.guiLeft+154, this.guiTop+70, 150, 16, game.settings.renderScale, 1, 128, new ICallback(){
             @Override
             public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
                 game.settings.renderScale = number;
             }
         }, game.assetManager.localize("button.render_scale")));
 
-        this.components.add(new ComponentSlider(this, 5, this.guiLeft, this.guiTop+60, 150, 16, game.settings.autosaveIntervalSeconds, 30, 1800, new ICallback(){
+        this.components.add(new ComponentSlider(this, 5, this.guiLeft, this.guiTop+90, 150, 16, game.settings.autosaveIntervalSeconds, 30, 1800, new ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 game.settings.autosaveIntervalSeconds = number;
             }
         }, game.assetManager.localize("button.autosave_interval"), game.assetManager.localize("info.autosave_interval")));
-        this.components.add(new ComponentSlider(this, 6, this.guiLeft+154, this.guiTop+60, 150, 16, game.settings.targetFps, 30, 256, new ICallback(){
+        this.components.add(new ComponentSlider(this, 6, this.guiLeft+154, this.guiTop+90, 150, 16, game.settings.targetFps, 30, 256, new ICallback(){
             @Override
             public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
                 game.settings.targetFps = number;
@@ -67,11 +72,6 @@ public class GuiSettings extends Gui{
             }
         });
 
-        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+90, 130, 16, true, true, false, 24, true);
-        this.chatNameField.setText(game.settings.chatName);
-        this.components.add(this.chatNameField);
-        this.components.add(new ComponentButton(this, 7, this.guiLeft+134, this.guiTop+90, 16, 16, "?", game.assetManager.localize("info.randomize_name")));
-
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
     }
 
@@ -79,7 +79,7 @@ public class GuiSettings extends Gui{
     public void render(Game game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+82, manager.localize("button.chat_name"), 0.35F, false);
+        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+20, manager.localize("button.chat_name"), 0.35F, false);
     }
 
     @Override
