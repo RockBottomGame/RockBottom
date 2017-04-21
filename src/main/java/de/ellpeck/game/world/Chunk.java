@@ -45,6 +45,7 @@ public class Chunk implements IWorld{
     protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
 
     public final List<EntityPlayer> playersInRange = new ArrayList<>();
+    public final List<EntityPlayer> playersOutOfRangeCached = new ArrayList<>();
 
     public int randomUpdateTileAmount;
 
@@ -545,6 +546,14 @@ public class Chunk implements IWorld{
 
     public boolean shouldUnload(){
         return this.loadTimer <= 0;
+    }
+
+    public void onUnload(){
+        if(!this.playersOutOfRangeCached.isEmpty()){
+            for(EntityPlayer player : this.playersOutOfRangeCached){
+                player.chunksInRange.remove(this);
+            }
+        }
     }
 
     public void setDirty(){

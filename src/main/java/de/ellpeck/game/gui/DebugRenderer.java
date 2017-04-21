@@ -55,7 +55,7 @@ public final class DebugRenderer{
         if(world.isPosLoaded(x, y)){
             Chunk chunk = world.getChunk(x, y);
             list.add("ChunkPos: "+chunk.gridX+", "+chunk.gridY);
-            list.add("ChunkPlayers: "+chunk.playersInRange.size());
+            list.add("ChunkPlayers: "+chunk.playersInRange.size()+", PlayersCached: "+chunk.playersOutOfRangeCached.size());
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
             list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
             list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));

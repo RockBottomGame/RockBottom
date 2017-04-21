@@ -35,6 +35,8 @@ public class ClientWorld extends World{
             chunk.update(game);
 
             if(chunk.shouldUnload()){
+                chunk.onUnload();
+
                 this.loadedChunks.remove(i);
                 this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
                 i--;

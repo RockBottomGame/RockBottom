@@ -63,6 +63,8 @@ public class World implements IWorld{
             chunk.update(game);
 
             if(chunk.shouldUnload()){
+                chunk.onUnload();
+
                 this.saveChunk(chunk);
 
                 this.loadedChunks.remove(i);

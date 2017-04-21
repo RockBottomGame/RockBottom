@@ -273,19 +273,12 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
             }
 
             int unload = 0;
-            for(int i = 0; i < this.chunksInRange.size(); i++){
-                Chunk chunk = this.chunksInRange.get(i);
-
+            for(Chunk chunk : this.chunksInRange){
                 int nowIndex = nowLoaded.indexOf(chunk);
+
                 if(nowIndex < 0){
                     chunk.playersInRange.remove(this);
-
-                    if(chunk.shouldUnload()){
-                        this.chunksInRange.remove(i);
-                        i--;
-
-                        unload++;
-                    }
+                    chunk.playersOutOfRangeCached.add(this);
                 }
                 else{
                     nowLoaded.remove(nowIndex);
@@ -302,6 +295,9 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
                     this.onChunkNewlyLoaded(chunk);
                 }
+                else{
+                    chunk.playersOutOfRangeCached.remove(this);
+                }
             }
         }
     }
@@ -310,6 +306,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     public void onRemoveFromWorld(){
         for(Chunk chunk : this.chunksInRange){
             chunk.playersInRange.remove(this);
+            chunk.playersOutOfRangeCached.remove(this);
         }
     }
 }
