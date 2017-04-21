@@ -18,14 +18,14 @@ public class TileLog extends TileBasic{
     public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
-        if(world.getMeta(x, y) == 0){
+        if(world.getMeta(layer, x, y) == 0){
             scheduleDestroyAround(world, x, y);
         }
     }
 
     @Override
     public void onScheduledUpdate(World world, int x, int y, TileLayer layer){
-        if(world.getMeta(x, y) == 0){
+        if(world.getMeta(layer, x, y) == 0){
             world.destroyTile(x, y, layer, null, true);
             scheduleDestroyAround(world, x, y);
         }

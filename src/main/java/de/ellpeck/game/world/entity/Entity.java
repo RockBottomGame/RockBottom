@@ -10,6 +10,7 @@ import de.ellpeck.game.util.BoundBox;
 import de.ellpeck.game.util.Direction;
 import de.ellpeck.game.world.Chunk;
 import de.ellpeck.game.world.World;
+import de.ellpeck.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.util.Log;
 
 import java.util.UUID;
@@ -78,7 +79,7 @@ public class Entity extends MovableWorldObject{
         if(NetHandler.isServer()){
             if(this.ticksExisted%this.getUpdateFrequency() == 0){
                 if(this.lastX != this.x || this.lastY != this.y){
-                    NetHandler.sendToAllPlayers(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY));
+                    NetHandler.sendToAllPlayers(this.world, new PacketEntityUpdate(this.getUniqueId(), this instanceof EntityPlayer, this.x, this.y, this.motionX, this.motionY));
 
                     this.lastX = this.x;
                     this.lastY = this.y;

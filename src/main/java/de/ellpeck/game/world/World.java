@@ -437,7 +437,7 @@ public class World implements IWorld{
     }
 
     public void updateLightFrom(int x, int y, MutableInt recurseCount){
-        if(recurseCount.get() > 2000){
+        if(recurseCount.get() > 5000){
             Log.warn("UPDATING LIGHT AT "+x+", "+y+" TOOK MORE THAN 2000 RECURSIVE CALLS! ABORTING!");
             return;
         }

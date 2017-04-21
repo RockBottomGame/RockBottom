@@ -38,7 +38,7 @@ public class TileLeaves extends TileBasic{
 
     @Override
     public void onScheduledUpdate(World world, int x, int y, TileLayer layer){
-        if(world.getMeta(x, y) == 0){
+        if(world.getMeta(layer, x, y) == 0){
             world.destroyTile(x, y, layer, null, true);
             TileLog.scheduleDestroyAround(world, x, y);
         }

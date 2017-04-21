@@ -15,7 +15,7 @@ public final class Main{
         try{
             Container container = new Container(game);
             container.setForceExit(false);
-
+            container.setUpdateOnlyWhenVisible(false);
             container.setAlwaysRender(true);
             container.setShowFPS(false);
 
