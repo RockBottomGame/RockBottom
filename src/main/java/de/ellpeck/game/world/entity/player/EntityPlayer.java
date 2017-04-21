@@ -14,8 +14,6 @@ import de.ellpeck.game.net.NetHandler;
 import de.ellpeck.game.net.packet.IPacket;
 import de.ellpeck.game.net.packet.toclient.PacketContainerChange;
 import de.ellpeck.game.net.packet.toclient.PacketContainerData;
-import de.ellpeck.game.net.packet.toclient.PacketHealth;
-import de.ellpeck.game.net.packet.toclient.PacketRespawn;
 import de.ellpeck.game.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.game.render.entity.IEntityRenderer;
 import de.ellpeck.game.render.entity.PlayerEntityRenderer;
@@ -298,9 +296,12 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
             for(Chunk chunk : nowLoaded){
                 chunk.playersInRange.add(this);
-                this.chunksInRange.add(chunk);
 
-                this.onChunkNewlyLoaded(chunk);
+                if(!this.chunksInRange.contains(chunk)){
+                    this.chunksInRange.add(chunk);
+
+                    this.onChunkNewlyLoaded(chunk);
+                }
             }
         }
     }
