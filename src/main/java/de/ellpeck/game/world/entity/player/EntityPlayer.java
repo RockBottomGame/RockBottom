@@ -281,17 +281,20 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 int nowIndex = nowLoaded.indexOf(chunk);
                 if(nowIndex < 0){
                     chunk.playersInRange.remove(this);
-                    this.chunksInRange.remove(i);
-                    i--;
 
-                    unload++;
+                    if(chunk.shouldUnload()){
+                        this.chunksInRange.remove(i);
+                        i--;
+
+                        unload++;
+                    }
                 }
                 else{
                     nowLoaded.remove(nowIndex);
                 }
             }
 
-            Log.debug("Player with id "+this.getUniqueId()+" scheduling "+unload+" chunks for unload and loading "+nowLoaded.size()+" new ones");
+            Log.debug("Player with id "+this.getUniqueId()+" unloading "+unload+" chunks and loading "+nowLoaded.size()+" new ones");
 
             for(Chunk chunk : nowLoaded){
                 chunk.playersInRange.add(this);
