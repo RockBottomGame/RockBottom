@@ -4,7 +4,9 @@ import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenBasicUnderground;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenDebugLandscape;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenHills;
+import de.ellpeck.rockbottom.world.gen.landscape.WorldGenHollow;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ public final class WorldGenerators{
         registerGenerator(new WorldGenBasicUnderground());
         registerGenerator(new WorldGenTrees());
         registerGenerator(new WorldGenCoal());
+        registerGenerator(new WorldGenCopper());
+        registerGenerator(new WorldGenHollow());
     }
 
     public static List<IWorldGenerator> getGenerators(){
