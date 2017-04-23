@@ -4,6 +4,8 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.gui.component.ComponentInputField;
+import de.ellpeck.rockbottom.net.NetHandler;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -77,9 +79,16 @@ public class GuiChat extends Gui{
 
             if(text != null && !text.isEmpty()){
                 Color color = game.player.color;
-                game.chatLog.sendMessage("&("+color.r+","+color.g+","+color.b+")["+game.settings.chatName+"] &4"+text);
-                this.inputField.setText("");
+                String name = "&("+color.r+","+color.g+","+color.b+")["+game.settings.chatName+"]";
 
+                if(NetHandler.isClient()){
+                    NetHandler.sendToServer(new PacketSendChat(game.player.getUniqueId(), text, name));
+                }
+                else{
+                    game.chatLog.sendPlayerMessage(text, game.player, name);
+                }
+
+                this.inputField.setText("");
                 game.guiManager.closeGui();
                 return true;
             }

@@ -2,33 +2,67 @@ package de.ellpeck.rockbottom.net.chat;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
+import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
+import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Graphics;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ChatLog{
+
+    public static final Map<String, Command> COMMAND_REGISTRY = new HashMap<>();
+
+    static{
+        registerCommand(new CommandSpawnItem());
+    }
 
     public final List<String> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
 
-    public void addMessage(String message){
+    public void displayMessage(String message){
         this.messages.add(0, message);
         this.newMessageCounter.add(0, 400);
     }
 
-    public void sendMessage(String message){
-        this.addMessage(message);
-
+    public void sendPlayerMessage(String message, EntityPlayer player, String playerName){
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(RockBottom.get().world, new PacketChatMessage(message));
+            if(message.startsWith("/")){
+                String[] split = message.substring(1).split(" ");
+                Command command = COMMAND_REGISTRY.get(split[0]);
+
+                if(command != null){
+                    String cmdFeedback;
+
+                    if(player.getCommandLevel() >= command.getLevel()){
+                        RockBottom game = RockBottom.get();
+                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, game, game.assetManager);
+                    }
+                    else{
+                        cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
+                    }
+
+                    if(NetHandler.isThePlayer(player)){
+                        this.displayMessage(cmdFeedback);
+                    }
+                    else{
+                        player.sendPacket(new PacketChatMessage(cmdFeedback));
+                    }
+
+                    return;
+                }
+            }
+
+            this.broadcastMessage(playerName+" &4"+message);
         }
-        else if(NetHandler.isClient()){
-            NetHandler.sendToServer(new PacketSendChat(RockBottom.get().player.getUniqueId(), message));
+    }
+
+    public void broadcastMessage(String message){
+        if(NetHandler.isServer()){
+            this.displayMessage(message);
+            NetHandler.sendToAllPlayers(RockBottom.get().world, new PacketChatMessage(message));
         }
     }
 
@@ -52,5 +86,9 @@ public class ChatLog{
                 }
             }
         }
+    }
+
+    public static void registerCommand(Command command){
+        COMMAND_REGISTRY.put(command.getName(), command);
     }
 }

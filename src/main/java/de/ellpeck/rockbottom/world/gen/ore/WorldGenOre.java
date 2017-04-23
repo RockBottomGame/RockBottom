@@ -51,7 +51,7 @@ public abstract class WorldGenOre implements IWorldGenerator{
     public abstract int getHighestGridPos();
 
     public int getLowestGridPos(){
-        return -Integer.MAX_VALUE;
+        return Integer.MIN_VALUE;
     }
 
     public abstract int getMaxAmount();

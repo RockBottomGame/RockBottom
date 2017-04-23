@@ -304,6 +304,10 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         }
     }
 
+    public int getCommandLevel(){
+        return NetHandler.isThePlayer(this) ? 10 : 0;
+    }
+
     @Override
     public void onRemoveFromWorld(){
         for(Chunk chunk : this.chunksInRange){

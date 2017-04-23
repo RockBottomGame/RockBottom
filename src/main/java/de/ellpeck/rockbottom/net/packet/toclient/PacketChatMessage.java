@@ -32,7 +32,7 @@ public class PacketChatMessage implements IPacket{
     @Override
     public void handle(RockBottom game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            game.chatLog.addMessage(this.message);
+            game.chatLog.displayMessage(this.message);
             return true;
         });
     }
