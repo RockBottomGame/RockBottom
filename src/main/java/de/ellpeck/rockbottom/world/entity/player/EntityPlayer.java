@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.entity.player;
 import de.ellpeck.rockbottom.Constants;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.data.set.DataSet;
+import de.ellpeck.rockbottom.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.gui.container.ItemContainer;
@@ -17,7 +18,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
-import de.ellpeck.rockbottom.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Direction;
 import de.ellpeck.rockbottom.util.Util;
@@ -274,25 +274,32 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 }
             }
 
+            int newLoad = nowLoaded.size();
             int unload = 0;
             for(Chunk chunk : this.chunksInRange){
                 int nowIndex = nowLoaded.indexOf(chunk);
 
                 if(nowIndex < 0){
-                    chunk.playersInRange.remove(this);
-                    chunk.playersOutOfRangeCached.add(this);
+                    if(chunk.playersInRange.contains(this)){
+                        chunk.playersInRange.remove(this);
+                        unload++;
+                    }
 
-                    unload++;
+                    if(!chunk.playersOutOfRangeCached.contains(this)){
+                        chunk.playersOutOfRangeCached.add(this);
+                    }
                 }
                 else{
-                    nowLoaded.remove(nowIndex);
+                    newLoad--;
                 }
             }
 
-            Log.debug("Player with id "+this.getUniqueId()+" unloading "+unload+" chunks and loading "+nowLoaded.size()+" new ones");
+            Log.debug("Player with id "+this.getUniqueId()+" unloading "+unload+" chunks and loading "+newLoad+" new ones");
 
             for(Chunk chunk : nowLoaded){
-                chunk.playersInRange.add(this);
+                if(!chunk.playersInRange.contains(this)){
+                    chunk.playersInRange.add(this);
+                }
 
                 if(!this.chunksInRange.contains(chunk)){
                     this.chunksInRange.add(chunk);
