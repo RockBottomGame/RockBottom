@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.RockBottom;
-import de.ellpeck.rockbottom.Settings;
+import de.ellpeck.rockbottom.settings.Settings;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.gui.component.ComponentButton;
@@ -109,6 +109,6 @@ public class GuiSettings extends Gui{
             game.settings.chatName = name;
         }
 
-        game.dataManager.saveSettings(game.settings);
+        game.dataManager.savePropSettings(game.settings, game.dataManager.settingsFile);
     }
 }

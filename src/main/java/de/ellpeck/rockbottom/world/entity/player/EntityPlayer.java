@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
+import de.ellpeck.rockbottom.settings.CommandPermissions;
 import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Direction;
 import de.ellpeck.rockbottom.util.Util;
@@ -305,7 +306,22 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     }
 
     public int getCommandLevel(){
-        return NetHandler.isThePlayer(this) ? 10 : 0;
+        if(NetHandler.isServer()){
+            CommandPermissions permissions = NetHandler.getCommandPermissions();
+            int level = permissions.getCommandLevel(this);
+
+            if(level <= 0 && NetHandler.isThePlayer(this)){
+                level = 10;
+                permissions.setCommandLevel(this, level);
+
+                Log.info("Setting command level for server host with id "+this.getUniqueId()+" to "+level+"!");
+            }
+
+            return level;
+        }
+        else{
+            return 0;
+        }
     }
 
     @Override

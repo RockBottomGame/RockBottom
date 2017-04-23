@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.data;
 
 import de.ellpeck.rockbottom.RockBottom;
-import de.ellpeck.rockbottom.Settings;
 import de.ellpeck.rockbottom.data.set.DataSet;
 import de.ellpeck.rockbottom.data.set.part.*;
 import de.ellpeck.rockbottom.data.set.part.num.*;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartShortShortArray;
+import de.ellpeck.rockbottom.settings.IPropSettings;
 import de.ellpeck.rockbottom.util.Registry;
 import org.newdawn.slick.util.Log;
 
@@ -41,6 +41,7 @@ public class DataManager{
     public File saveDirectory;
     public File gameDataFile;
     public File settingsFile;
+    public File commandPermissionFile;
 
     public DataManager(RockBottom game){
         this.gameDirectory = new File(".", "rockbottom");
@@ -48,6 +49,7 @@ public class DataManager{
 
         this.gameDataFile = new File(this.gameDirectory, "game_info.dat");
         this.settingsFile = new File(this.gameDirectory, "settings.properties");
+        this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.properties");
 
         DataSet set = new DataSet();
         set.read(this.gameDataFile);
@@ -64,13 +66,13 @@ public class DataManager{
         set.write(this.gameDataFile);
     }
 
-    public Settings loadSettings(){
+    public void loadPropSettings(IPropSettings settings, File file){
         Properties props = new Properties();
         boolean loaded = false;
 
-        if(this.settingsFile.exists()){
+        if(file.exists()){
             try{
-                props.load(new FileInputStream(this.settingsFile));
+                props.load(new FileInputStream(file));
                 loaded = true;
             }
             catch(Exception e){
@@ -78,30 +80,28 @@ public class DataManager{
             }
         }
 
-        Settings settings = new Settings(props);
-        settings.load();
+        settings.load(props);
 
         if(!loaded){
             Log.info("Creating game settings from default.");
-            this.saveSettings(settings);
+            this.savePropSettings(settings, file);
         }
         else{
             Log.info("Loaded game settings.");
         }
-
-        return settings;
     }
 
-    public void saveSettings(Settings settings){
-        Properties props = settings.save();
+    public void savePropSettings(IPropSettings settings, File file){
+        Properties props = new Properties();
+        settings.save(props);
 
         try{
-            if(!this.settingsFile.exists()){
-                this.settingsFile.getParentFile().mkdirs();
-                this.settingsFile.createNewFile();
+            if(!file.exists()){
+                file.getParentFile().mkdirs();
+                file.createNewFile();
             }
 
-            props.store(new FileOutputStream(this.settingsFile), null);
+            props.store(new FileOutputStream(file), null);
         }
         catch(Exception e){
             Log.error("Couldn't save game settings!", e);

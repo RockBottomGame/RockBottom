@@ -12,6 +12,8 @@ import de.ellpeck.rockbottom.net.client.ClientWorld;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.WorldRenderer;
+import de.ellpeck.rockbottom.settings.CommandPermissions;
+import de.ellpeck.rockbottom.settings.Settings;
 import de.ellpeck.rockbottom.util.IAction;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
@@ -71,7 +73,9 @@ public class RockBottom extends BasicGame{
         Log.info("----- Initializing game -----");
 
         this.dataManager = new DataManager(this);
-        this.settings = this.dataManager.loadSettings();
+
+        this.settings = new Settings();
+        this.dataManager.loadPropSettings(this.settings, this.dataManager.settingsFile);
 
         this.container = (Container)container;
         this.container.setTargetFrameRate(this.settings.targetFps);
