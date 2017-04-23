@@ -2,7 +2,11 @@ package de.ellpeck.rockbottom.util;
 
 import de.ellpeck.rockbottom.Constants;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.util.Log;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.Random;
 
@@ -61,6 +65,23 @@ public final class Util{
         }
         else{
             return s.substring(0, length);
+        }
+    }
+
+    public static void setClipboard(String s){
+        try{
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
+        }
+        catch(Exception ignored){
+        }
+    }
+
+    public static String getClipboard(){
+        try{
+            return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        }
+        catch(Exception ignored){
+            return "";
         }
     }
 }

@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.gui.Gui;
+import de.ellpeck.rockbottom.util.Util;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -44,9 +45,26 @@ public class ComponentInputField extends GuiComponent{
                     return true;
                 }
             }
-            else if(!Character.isISOControl(character)){
-                if(this.text.length() < this.maxLength){
-                    this.text += character;
+            else{
+                Input input = game.getContainer().getInput();
+                if(input.isKeyDown(Input.KEY_LCONTROL) || input.isKeyDown(Input.KEY_RCONTROL)){
+                    if(button == Input.KEY_V){
+                        if(this.text.length() < this.maxLength){
+                            this.text += Util.getClipboard();
+
+                            if(this.text.length() > this.maxLength){
+                                this.text = this.text.substring(0, this.maxLength);
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+                else if(!Character.isISOControl(character)){
+                    if(this.text.length() < this.maxLength){
+                        this.text += character;
+                        return true;
+                    }
                 }
             }
         }
