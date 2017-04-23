@@ -7,18 +7,17 @@ import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.item.Item;
 import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import org.newdawn.slick.Game;
 
 import java.util.Arrays;
 
 public class CommandSpawnItem extends Command{
 
     public CommandSpawnItem(){
-        super("spawnitem", 10);
+        super("spawnitem", "/spawnitem <item id> [amount] [meta]", 10);
     }
 
     @Override
-    public String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager){
+    public String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager, ChatLog chat){
         try{
             int id = Integer.parseInt(args[0]);
             Item item = ContentRegistry.ITEM_REGISTRY.get(id);

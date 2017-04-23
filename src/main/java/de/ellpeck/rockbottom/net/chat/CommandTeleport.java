@@ -10,11 +10,11 @@ import java.util.Arrays;
 public class CommandTeleport extends Command{
 
     public CommandTeleport(){
-        super("teleport", 5);
+        super("teleport", "/teleport <x> <y>", 5);
     }
 
     @Override
-    public String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager){
+    public String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager, ChatLog chat){
         try{
             int x = Integer.parseInt(args[0]);
             int y = Integer.parseInt(args[1]);

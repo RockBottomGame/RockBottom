@@ -16,6 +16,7 @@ public class ChatLog{
     public static final Map<String, Command> COMMAND_REGISTRY = new HashMap<>();
 
     static{
+        registerCommand(new CommandHelp());
         registerCommand(new CommandSpawnItem());
         registerCommand(new CommandTeleport());
     }
@@ -31,32 +32,43 @@ public class ChatLog{
     public void sendPlayerMessage(String message, EntityPlayer player, String playerName){
         if(NetHandler.isServer()){
             if(message.startsWith("/")){
+                String cmdFeedback;
+
                 String[] split = message.substring(1).split(" ");
                 Command command = COMMAND_REGISTRY.get(split[0]);
 
                 if(command != null){
-                    String cmdFeedback;
-
                     if(player.getCommandLevel() >= command.getLevel()){
                         RockBottom game = RockBottom.get();
-                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, game, game.assetManager);
+                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, game, game.assetManager, this);
                     }
                     else{
                         cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
                     }
-
-                    if(NetHandler.isThePlayer(player)){
-                        this.displayMessage(cmdFeedback);
-                    }
-                    else{
-                        player.sendPacket(new PacketChatMessage(cmdFeedback));
-                    }
-
-                    return;
                 }
+                else{
+                    cmdFeedback = FormattingCode.RED+"Unknown command, use /help for a list of commands.";
+                }
+
+                if(cmdFeedback != null){
+                    this.sendMessageToPlayer(player, cmdFeedback);
+                }
+
+                return;
             }
 
             this.broadcastMessage(playerName+" &4"+message);
+        }
+    }
+
+    public void sendMessageToPlayer(EntityPlayer player, String message){
+        if(NetHandler.isServer()){
+            if(NetHandler.isThePlayer(player)){
+                this.displayMessage(message);
+            }
+            else{
+                player.sendPacket(new PacketChatMessage(message));
+            }
         }
     }
 
