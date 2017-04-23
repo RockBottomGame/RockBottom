@@ -17,6 +17,7 @@ public class ChatLog{
 
     static{
         registerCommand(new CommandSpawnItem());
+        registerCommand(new CommandTeleport());
     }
 
     public final List<String> messages = new ArrayList<>();
