@@ -1,13 +1,16 @@
 package de.ellpeck.rockbottom.data.settings;
 
+import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import org.newdawn.slick.Game;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-public class CommandPermissions implements IPropSettings{
+public class CommandPermissions implements PropSettings{
 
     private final Map<UUID, Integer> commandLevels = new HashMap<>();
 
@@ -30,11 +33,20 @@ public class CommandPermissions implements IPropSettings{
         }
     }
 
+    @Override
+    public File getFile(DataManager manager){
+        return manager.commandPermissionFile;
+    }
+
     public int getCommandLevel(EntityPlayer player){
         return this.commandLevels.getOrDefault(player.getUniqueId(), 0);
     }
 
     public void setCommandLevel(EntityPlayer player, int level){
-        this.commandLevels.put(player.getUniqueId(), level);
+        this.setCommandLevel(player.getUniqueId(), level);
+    }
+
+    public void setCommandLevel(UUID id, int level){
+        this.commandLevels.put(id, level);
     }
 }

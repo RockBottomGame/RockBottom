@@ -74,7 +74,7 @@ public class RockBottom extends BasicGame{
         this.dataManager = new DataManager(this);
 
         this.settings = new Settings();
-        this.dataManager.loadPropSettings(this.settings, this.dataManager.settingsFile);
+        this.dataManager.loadPropSettings(this.settings);
 
         this.container = (Container)container;
         this.container.setTargetFrameRate(this.settings.targetFps);

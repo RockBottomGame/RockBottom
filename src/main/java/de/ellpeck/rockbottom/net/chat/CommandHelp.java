@@ -19,7 +19,7 @@ public class CommandHelp extends Command{
             chat.sendMessageToPlayer(player, FormattingCode.ORANGE+command.getName()+FormattingCode.WHITE+": "+FormattingCode.LIGHT_GRAY+command.getDescription());
         }
 
-        chat.sendMessageToPlayer(player, FormattingCode.GRAY+"[Parameters in <angle brackets> are required, ones in [square brackets] are optional]");
+        chat.sendMessageToPlayer(player, FormattingCode.GRAY+"(Parameters in <angle brackets> are required, ones in [square brackets] are optional)");
 
         return null;
     }

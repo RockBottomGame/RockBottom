@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.data.set.part.num.*;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartShortShortArray;
-import de.ellpeck.rockbottom.data.settings.IPropSettings;
+import de.ellpeck.rockbottom.data.settings.PropSettings;
 import de.ellpeck.rockbottom.util.Registry;
 import org.newdawn.slick.util.Log;
 
@@ -66,10 +66,11 @@ public class DataManager{
         set.write(this.gameDataFile);
     }
 
-    public void loadPropSettings(IPropSettings settings, File file){
+    public void loadPropSettings(PropSettings settings){
         Properties props = new Properties();
         boolean loaded = false;
 
+        File file = settings.getFile(this);
         if(file.exists()){
             try{
                 props.load(new FileInputStream(file));
@@ -84,18 +85,20 @@ public class DataManager{
 
         if(!loaded){
             Log.info("Creating game settings from default.");
-            this.savePropSettings(settings, file);
+            this.savePropSettings(settings);
         }
         else{
             Log.info("Loaded game settings.");
         }
     }
 
-    public void savePropSettings(IPropSettings settings, File file){
+    public void savePropSettings(PropSettings settings){
         Properties props = new Properties();
         settings.save(props);
 
         try{
+            File file = settings.getFile(this);
+
             if(!file.exists()){
                 file.getParentFile().mkdirs();
                 file.createNewFile();

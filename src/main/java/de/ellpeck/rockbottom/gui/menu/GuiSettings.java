@@ -109,6 +109,6 @@ public class GuiSettings extends Gui{
             game.settings.chatName = name;
         }
 
-        game.dataManager.savePropSettings(game.settings, game.dataManager.settingsFile);
+        game.dataManager.savePropSettings(game.settings);
     }
 }

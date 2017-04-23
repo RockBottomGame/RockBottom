@@ -311,8 +311,8 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
             CommandPermissions permissions = NetHandler.getCommandPermissions();
             int level = permissions.getCommandLevel(this);
 
-            if(level <= 0 && NetHandler.isThePlayer(this)){
-                level = 10;
+            if(level < Constants.ADMIN_PERMISSION && NetHandler.isThePlayer(this)){
+                level = Constants.ADMIN_PERMISSION;
                 permissions.setCommandLevel(this, level);
 
                 Log.info("Setting command level for server host with id "+this.getUniqueId()+" to "+level+"!");

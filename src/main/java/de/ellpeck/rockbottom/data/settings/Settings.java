@@ -1,13 +1,15 @@
 package de.ellpeck.rockbottom.data.settings;
 
+import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.util.Util;
 import org.newdawn.slick.Input;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class Settings implements IPropSettings{
+public class Settings implements PropSettings{
 
     public List<Keybind> keybinds = new ArrayList<>();
 
@@ -97,6 +99,11 @@ public class Settings implements IPropSettings{
         for(int i = 0; i < this.keysItemSelection.length; i++){
             this.setProp(props, "key_item_select_"+i, this.keysItemSelection[i]);
         }
+    }
+
+    @Override
+    public File getFile(DataManager manager){
+        return manager.settingsFile;
     }
 
     private <T> void setProp(Properties props, String name, T val){

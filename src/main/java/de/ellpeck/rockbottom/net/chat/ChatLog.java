@@ -17,6 +17,7 @@ public class ChatLog{
 
     static{
         registerCommand(new CommandHelp());
+        registerCommand(new CommandAddPermission());
         registerCommand(new CommandSpawnItem());
         registerCommand(new CommandTeleport());
     }
