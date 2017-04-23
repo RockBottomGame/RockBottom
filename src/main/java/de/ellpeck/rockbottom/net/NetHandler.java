@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.net.packet.IPacket;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 import de.ellpeck.rockbottom.net.server.Server;
-import de.ellpeck.rockbottom.settings.CommandPermissions;
+import de.ellpeck.rockbottom.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.util.Registry;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;

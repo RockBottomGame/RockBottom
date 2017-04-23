@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.settings;
+package de.ellpeck.rockbottom.data.settings;
 
 import de.ellpeck.rockbottom.util.Util;
 import org.newdawn.slick.Input;

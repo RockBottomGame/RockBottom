@@ -17,7 +17,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
-import de.ellpeck.rockbottom.settings.CommandPermissions;
+import de.ellpeck.rockbottom.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Direction;
 import de.ellpeck.rockbottom.util.Util;

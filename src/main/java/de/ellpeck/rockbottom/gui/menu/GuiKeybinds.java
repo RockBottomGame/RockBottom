@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.RockBottom;
-import de.ellpeck.rockbottom.settings.Settings;
+import de.ellpeck.rockbottom.data.settings.Settings;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.gui.Gui;

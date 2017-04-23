@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.data.set.part.num.*;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartShortShortArray;
-import de.ellpeck.rockbottom.settings.IPropSettings;
+import de.ellpeck.rockbottom.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.util.Registry;
 import org.newdawn.slick.util.Log;
 

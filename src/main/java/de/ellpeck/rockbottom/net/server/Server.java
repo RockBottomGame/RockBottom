@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.decode.PacketDecoder;
 import de.ellpeck.rockbottom.net.encode.PacketEncoder;
-import de.ellpeck.rockbottom.settings.CommandPermissions;
+import de.ellpeck.rockbottom.data.settings.CommandPermissions;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;

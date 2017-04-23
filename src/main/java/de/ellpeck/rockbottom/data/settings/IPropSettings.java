@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.settings;
+package de.ellpeck.rockbottom.data.settings;
 
 import java.util.Properties;
 
