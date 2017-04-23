@@ -5,6 +5,8 @@ import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.gui.container.ContainerSlot;
 import de.ellpeck.rockbottom.item.ItemInstance;
+import de.ellpeck.rockbottom.net.NetHandler;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketDropItem;
 import de.ellpeck.rockbottom.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -74,7 +76,12 @@ public class GuiContainer extends Gui{
     }
 
     private void dropHeldItem(){
-        EntityItem.spawn(this.player.world, this.holdingInst, this.player.x, this.player.y+1, this.player.facing.x*0.25, 0);
+        if(NetHandler.isClient()){
+            NetHandler.sendToServer(new PacketDropItem(this.player.getUniqueId(), this.holdingInst));
+        }
+        else{
+            EntityItem.spawn(this.player.world, this.holdingInst, this.player.x, this.player.y+1, this.player.facing.x*0.25, 0);
+        }
     }
 
     @Override
