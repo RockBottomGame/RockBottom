@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.data.set.DataSet;
 import de.ellpeck.rockbottom.net.NetHandler;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.util.*;
@@ -125,6 +126,16 @@ public class Chunk implements IWorld{
 
                     Chunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
                     chunk.addEntity(entity);
+
+                    if(NetHandler.isServer()){
+                        for(EntityPlayer player : chunk.playersInRange){
+                            if(!this.playersInRange.contains(player)){
+                                player.sendPacket(new PacketEntityChange(entity, false));
+
+                                Log.debug("Adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk in range of player with id "+player.getUniqueId());
+                            }
+                        }
+                    }
                 }
             }
         }
