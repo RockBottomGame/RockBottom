@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class Settings implements PropSettings{
+public class Settings implements IPropSettings{
 
     public List<Keybind> keybinds = new ArrayList<>();
 

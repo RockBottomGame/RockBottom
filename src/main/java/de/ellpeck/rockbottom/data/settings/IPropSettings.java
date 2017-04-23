@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.data.DataManager;
 import java.io.File;
 import java.util.Properties;
 
-public interface PropSettings{
+public interface IPropSettings{
 
     void load(Properties props);
 

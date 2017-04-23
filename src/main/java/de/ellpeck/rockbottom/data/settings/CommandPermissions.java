@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.data.settings;
 
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import org.newdawn.slick.Game;
 
 import java.io.File;
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-public class CommandPermissions implements PropSettings{
+public class CommandPermissions implements IPropSettings{
 
     private final Map<UUID, Integer> commandLevels = new HashMap<>();
 
