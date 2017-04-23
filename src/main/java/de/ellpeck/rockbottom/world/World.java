@@ -35,7 +35,6 @@ public class World implements IWorld{
     protected int saveTicksCounter;
 
     public int spawnX = 0;
-    public int spawnY = 20;
 
     public WorldInfo info;
 

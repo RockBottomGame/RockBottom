@@ -22,6 +22,7 @@ import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Direction;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.Chunk;
+import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.EntityLiving;
@@ -172,7 +173,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
             game.guiManager.closeGui();
         }
 
-        this.setPos(this.world.spawnX, this.world.spawnY);
+        this.setPos(this.world.spawnX+0.5, this.world.getLowestAirUpwards(TileLayer.MAIN, this.world.spawnX, 0)+1);
     }
 
     @Override
