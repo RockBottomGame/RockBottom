@@ -36,8 +36,14 @@ public class ClientWorld extends World{
     public void update(RockBottom game){
         this.checkListSync();
 
-        for(Chunk chunk : this.loadedChunks){
+        for(int i = 0; i < this.loadedChunks.size(); i++){
+            Chunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
+
+            if(chunk.shouldUnload()){
+                this.unloadChunk(chunk);
+                i--;
+            }
         }
 
         this.info.totalTimeInWorld++;

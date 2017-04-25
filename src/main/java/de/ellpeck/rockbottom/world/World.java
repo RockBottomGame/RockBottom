@@ -88,7 +88,11 @@ public class World implements IWorld{
         chunk.addEntity(entity);
 
         if(entity instanceof EntityPlayer){
-            this.players.add((EntityPlayer)entity);
+            EntityPlayer player = (EntityPlayer)entity;
+
+            if(!this.players.contains(player)){
+                this.players.add(player);
+            }
         }
 
         if(NetHandler.isServer()){
