@@ -20,6 +20,7 @@ import de.ellpeck.rockbottom.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Direction;
+import de.ellpeck.rockbottom.util.MutableInt;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.TileLayer;
@@ -227,7 +228,11 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     }
 
-    public void onChunkNewlyLoaded(Chunk chunk){
+    public void onChunkLoaded(Chunk chunk){
+
+    }
+
+    public void onChunkUnloaded(Chunk chunk){
 
     }
 
@@ -264,7 +269,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     public void moveToChunk(Chunk newChunk){
         super.moveToChunk(newChunk);
 
-        if(NetHandler.isServer() || NetHandler.isThePlayer(this)){
+        if(!NetHandler.isClient()){
             List<Chunk> nowLoaded = new ArrayList<>();
 
             for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
@@ -287,6 +292,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
                     if(!chunk.playersOutOfRangeCached.contains(this)){
                         chunk.playersOutOfRangeCached.add(this);
+                        chunk.playersOutOfRangeCachedTimers.put(this, new MutableInt(Constants.CHUNK_LOAD_TIME));
                     }
                 }
                 else{
@@ -304,10 +310,11 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 if(!this.chunksInRange.contains(chunk)){
                     this.chunksInRange.add(chunk);
 
-                    this.onChunkNewlyLoaded(chunk);
+                    this.onChunkLoaded(chunk);
                 }
                 else{
                     chunk.playersOutOfRangeCached.remove(this);
+                    chunk.playersOutOfRangeCachedTimers.remove(this);
                 }
             }
         }
@@ -334,9 +341,12 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     @Override
     public void onRemoveFromWorld(){
-        for(Chunk chunk : this.chunksInRange){
-            chunk.playersInRange.remove(this);
-            chunk.playersOutOfRangeCached.remove(this);
+        if(!NetHandler.isClient()){
+            for(Chunk chunk : this.chunksInRange){
+                chunk.playersInRange.remove(this);
+                chunk.playersOutOfRangeCached.remove(this);
+                chunk.playersOutOfRangeCachedTimers.remove(this);
+            }
         }
     }
 }

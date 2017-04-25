@@ -29,8 +29,6 @@ public class ClientChunk extends Chunk{
         if(!this.isGenerating){
             this.updateEntities(game);
         }
-
-        this.updateTimer();
     }
 
     @Override

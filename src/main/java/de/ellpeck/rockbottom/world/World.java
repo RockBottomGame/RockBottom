@@ -62,12 +62,7 @@ public class World implements IWorld{
             chunk.update(game);
 
             if(chunk.shouldUnload()){
-                chunk.onUnload();
-
-                this.saveChunk(chunk);
-
-                this.loadedChunks.remove(i);
-                this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
+                this.unloadChunk(chunk);
                 i--;
             }
         }
@@ -304,6 +299,13 @@ public class World implements IWorld{
         chunk.loadOrCreate(set);
 
         return chunk;
+    }
+
+    public void unloadChunk(Chunk chunk){
+        this.saveChunk(chunk);
+
+        this.loadedChunks.remove(chunk);
+        this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
     }
 
     @Override

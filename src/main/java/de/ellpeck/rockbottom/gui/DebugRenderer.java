@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
+import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
@@ -25,7 +26,12 @@ public final class DebugRenderer{
         list.add("Avg TPS: "+game.tpsAverage);
         list.add("");
 
-        list.add("Loaded Chunks: "+world.loadedChunks.size()+", PlayerChunks: "+player.chunksInRange.size());
+        String chunks = "Loaded Chunks: "+world.loadedChunks.size();
+        if(!NetHandler.isClient()){
+            chunks += ", PlayerChunks: "+player.chunksInRange.size();
+        }
+        list.add(chunks);
+
         list.add("Entities: "+world.getAllEntities().size());
         list.add("Players: "+world.players.size());
         list.add("TileEntities: "+world.getAllTileEntities().size());
@@ -55,7 +61,9 @@ public final class DebugRenderer{
         if(world.isPosLoaded(x, y)){
             Chunk chunk = world.getChunk(x, y);
             list.add("ChunkPos: "+chunk.gridX+", "+chunk.gridY);
-            list.add("ChunkPlayers: "+chunk.playersInRange.size()+", PlayersCached: "+chunk.playersOutOfRangeCached.size());
+            if(!NetHandler.isClient()){
+                list.add("ChunkPlayers: "+chunk.playersInRange.size()+", PlayersCached: "+chunk.playersOutOfRangeCached.size());
+            }
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
             list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
             list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));

@@ -27,20 +27,17 @@ public class ClientWorld extends World{
     }
 
     @Override
+    public void unloadChunk(Chunk chunk){
+        this.loadedChunks.remove(chunk);
+        this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
+    }
+
+    @Override
     public void update(RockBottom game){
         this.checkListSync();
 
-        for(int i = 0; i < this.loadedChunks.size(); i++){
-            Chunk chunk = this.loadedChunks.get(i);
+        for(Chunk chunk : this.loadedChunks){
             chunk.update(game);
-
-            if(chunk.shouldUnload()){
-                chunk.onUnload();
-
-                this.loadedChunks.remove(i);
-                this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
-                i--;
-            }
         }
 
         this.info.totalTimeInWorld++;

@@ -47,10 +47,9 @@ public class Chunk implements IWorld{
 
     public final List<EntityPlayer> playersInRange = new ArrayList<>();
     public final List<EntityPlayer> playersOutOfRangeCached = new ArrayList<>();
+    public final Map<EntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
 
     public int randomUpdateTileAmount;
-
-    private int loadTimer;
 
     protected boolean needsSave;
 
@@ -73,8 +72,6 @@ public class Chunk implements IWorld{
                 }
             }
         }
-
-        this.loadTimer = Constants.CHUNK_LOAD_TIME;
     }
 
     public void generate(Random rand){
@@ -104,6 +101,9 @@ public class Chunk implements IWorld{
         }
         if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
             throw new RuntimeException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
+        }
+        if(this.playersOutOfRangeCached.size() != this.playersOutOfRangeCachedTimers.size()){
+            throw new RuntimeException("PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
         }
     }
 
@@ -151,15 +151,6 @@ public class Chunk implements IWorld{
         }
     }
 
-    protected void updateTimer(){
-        if(this.playersInRange.isEmpty()){
-            this.loadTimer--;
-        }
-        else{
-            this.loadTimer = Constants.CHUNK_LOAD_TIME;
-        }
-    }
-
     public void update(RockBottom game){
         this.checkListSync();
 
@@ -197,7 +188,22 @@ public class Chunk implements IWorld{
             }
         }
 
-        this.updateTimer();
+        for(int i = 0; i < this.playersOutOfRangeCached.size(); i++){
+            EntityPlayer player = this.playersOutOfRangeCached.get(i);
+
+            MutableInt time = this.playersOutOfRangeCachedTimers.get(player);
+            time.add(-1);
+
+            if(time.get() <= 0){
+                player.chunksInRange.remove(this);
+                player.onChunkUnloaded(this);
+
+                this.playersOutOfRangeCached.remove(i);
+                this.playersOutOfRangeCachedTimers.remove(player);
+
+                i--;
+            }
+        }
     }
 
     @Override
@@ -556,15 +562,7 @@ public class Chunk implements IWorld{
     }
 
     public boolean shouldUnload(){
-        return this.loadTimer <= 0;
-    }
-
-    public void onUnload(){
-        if(!this.playersOutOfRangeCached.isEmpty()){
-            for(EntityPlayer player : this.playersOutOfRangeCached){
-                player.chunksInRange.remove(this);
-            }
-        }
+        return !NetHandler.isClient() && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
     }
 
     public void setDirty(){
