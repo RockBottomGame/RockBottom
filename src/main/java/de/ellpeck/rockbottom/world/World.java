@@ -90,7 +90,7 @@ public class World implements IWorld{
         if(entity instanceof EntityPlayer){
             EntityPlayer player = (EntityPlayer)entity;
 
-            if(!this.players.contains(player)){
+            if(this.getPlayer(player.getUniqueId()) == null){
                 this.players.add(player);
             }
         }
