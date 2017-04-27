@@ -38,12 +38,19 @@ public class Gui{
         this.parent = parent;
     }
 
+    public void onOpened(RockBottom game){
+
+    }
+
     public void onClosed(RockBottom game){
 
     }
 
     public void initGui(RockBottom game){
-        this.components.clear();
+        if(!this.components.isEmpty()){
+            this.components.clear();
+        }
+
         this.initGuiVars(game);
     }
 

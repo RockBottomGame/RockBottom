@@ -32,7 +32,9 @@ public class GuiManager{
             this.background = null;
         }
         else{
-            this.onScreenComponents.clear();
+            if(!this.onScreenComponents.isEmpty()){
+                this.onScreenComponents.clear();
+            }
 
             this.background = new MainMenuBackground();
             this.background.init(game);
@@ -44,7 +46,9 @@ public class GuiManager{
     private void initInWorldComponents(RockBottom game, EntityPlayer player){
         double width = game.getWidthInGui();
 
-        this.onScreenComponents.clear();
+        if(!this.onScreenComponents.isEmpty()){
+            this.onScreenComponents.clear();
+        }
 
         for(int i = 0; i < 8; i++){
             int x = (int)(width/2-59.25+i*15);
@@ -181,6 +185,7 @@ public class GuiManager{
         this.gui = gui;
 
         if(this.gui != null){
+            this.gui.onOpened(game);
             this.gui.initGui(game);
         }
 

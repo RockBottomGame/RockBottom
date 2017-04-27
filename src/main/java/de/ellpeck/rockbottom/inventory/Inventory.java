@@ -41,7 +41,9 @@ public class Inventory implements IInventory{
 
     @Override
     public void addChangeCallback(IInvChangeCallback callback){
-        this.callbacks.add(callback);
+        if(!this.callbacks.contains(callback)){
+            this.callbacks.add(callback);
+        }
     }
 
     @Override

@@ -14,11 +14,13 @@ import java.util.List;
 
 public class ComponentRecipeButton extends ComponentButton{
 
-    private final IRecipe recipe;
+    public final IRecipe recipe;
+    public final int recipeId;
 
-    public ComponentRecipeButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, IRecipe recipe){
+    public ComponentRecipeButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, IRecipe recipe, int recipeId){
         super(gui, id, x, y, sizeX, sizeY, null);
         this.recipe = recipe;
+        this.recipeId = recipeId;
     }
 
     @Override

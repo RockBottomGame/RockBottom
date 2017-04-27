@@ -9,9 +9,9 @@ import java.util.Map.Entry;
 
 public class Registry<T>{
 
-    private final int max;
-    private final String name;
-    private final Map<Integer, T> map = new HashMap<>();
+    protected final int max;
+    protected final String name;
+    protected final Map<Integer, T> map = new HashMap<>();
 
     public Registry(String name, int max){
         this.name = name;

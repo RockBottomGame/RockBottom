@@ -11,7 +11,7 @@ public class ComponentButton extends GuiComponent{
     public static final Color COLOR = Gui.GUI_COLOR.multiply(new Color(1F, 1F, 1F, 0.5F));
     public static final Color COLOR_UNSELECTED = COLOR.darker(0.4F);
 
-    protected final int id;
+    public final int id;
     protected final String text;
     private final String[] hover;
 

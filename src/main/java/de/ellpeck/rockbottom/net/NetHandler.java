@@ -47,6 +47,7 @@ public final class NetHandler{
         PACKET_REGISTRY.register(21, PacketRespawn.class);
         PACKET_REGISTRY.register(22, PacketDropItem.class);
         PACKET_REGISTRY.register(23, PacketChunkUnload.class);
+        PACKET_REGISTRY.register(24, PacketManualConstruction.class);
     }
 
     private static Client client;
