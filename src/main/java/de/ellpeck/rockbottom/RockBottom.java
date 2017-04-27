@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.assets.AssetManager;
+import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.data.set.DataSet;
 import de.ellpeck.rockbottom.gui.*;
@@ -83,6 +84,7 @@ public class RockBottom extends BasicGame{
         this.assetManager.create(this);
 
         ContentRegistry.init();
+        ConstructionRegistry.init();
         WorldRenderer.init();
 
         this.guiManager = new GuiManager();

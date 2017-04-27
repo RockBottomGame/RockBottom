@@ -16,6 +16,8 @@ info.delete_world=&7Delete World %s
 info.world=World %s
 info.unlimited=Unlimited
 info.randomize_name=Randomize Name
+info.uses=Uses
+info.constructs=Constructs
 
 button.back=Back
 button.settings=Settings
@@ -41,6 +43,7 @@ button.close_server=Close Server
 button.connect=Connect
 button.chat_name=Name in Chat
 button.credits=Credits
+button.construction=Construction Menu
 
 layer.main=Foreground
 layer.background=Background

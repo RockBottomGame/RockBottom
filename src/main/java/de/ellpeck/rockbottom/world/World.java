@@ -28,6 +28,7 @@ public class World implements IWorld{
     public final List<Chunk> loadedChunks = new ArrayList<>();
     protected final Map<Pos2, Chunk> chunkLookup = new HashMap<>();
 
+    //TODO Remove this players list from the client entirely, it doesn't need it
     public List<EntityPlayer> players = new ArrayList<>();
 
     protected File chunksDirectory;

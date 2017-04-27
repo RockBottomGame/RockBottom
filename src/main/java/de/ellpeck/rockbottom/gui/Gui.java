@@ -20,8 +20,8 @@ public class Gui{
 
     protected List<GuiComponent> components = new ArrayList<>();
 
-    public final int sizeX;
-    public final int sizeY;
+    public int sizeX;
+    public int sizeY;
 
     public int guiLeft;
     public int guiTop;
@@ -44,7 +44,10 @@ public class Gui{
 
     public void initGui(RockBottom game){
         this.components.clear();
+        this.initGuiVars(game);
+    }
 
+    protected void initGuiVars(RockBottom game){
         this.guiLeft = (int)game.getWidthInGui()/2-this.sizeX/2;
         this.guiTop = (int)game.getHeightInGui()/2-this.sizeY/2;
     }

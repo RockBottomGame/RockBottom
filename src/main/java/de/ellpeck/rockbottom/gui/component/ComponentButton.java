@@ -15,6 +15,8 @@ public class ComponentButton extends GuiComponent{
     protected final String text;
     private final String[] hover;
 
+    public boolean hasBackground = true;
+
     public ComponentButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, String text, String... hover){
         super(gui, x, y, sizeX, sizeY);
         this.id = id;
@@ -22,13 +24,20 @@ public class ComponentButton extends GuiComponent{
         this.hover = hover;
     }
 
+    public ComponentButton setHasBackground(boolean has){
+        this.hasBackground = has;
+        return this;
+    }
+
     @Override
     public void render(RockBottom game, AssetManager manager, Graphics g){
-        g.setColor(this.isMouseOver(game) ? COLOR : COLOR_UNSELECTED);
-        g.fillRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
+        if(this.hasBackground){
+            g.setColor(this.isMouseOver(game) ? COLOR : COLOR_UNSELECTED);
+            g.fillRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
 
-        g.setColor(Color.black);
-        g.drawRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
+            g.setColor(Color.black);
+            g.drawRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
+        }
 
         String text = this.getText();
         if(text != null){
