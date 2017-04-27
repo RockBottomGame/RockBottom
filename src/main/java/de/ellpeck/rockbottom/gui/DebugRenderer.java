@@ -33,7 +33,9 @@ public final class DebugRenderer{
         list.add(chunks);
 
         list.add("Entities: "+world.getAllEntities().size());
-        list.add("Players: "+world.players.size());
+        if(!NetHandler.isClient()){
+            list.add("Players: "+world.players.size());
+        }
         list.add("TileEntities: "+world.getAllTileEntities().size());
         list.add("Particles: "+game.particleManager.getAmount());
         int updateTileAmount = 0;

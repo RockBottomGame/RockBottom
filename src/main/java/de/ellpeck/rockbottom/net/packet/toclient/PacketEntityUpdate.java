@@ -12,15 +12,13 @@ import java.util.UUID;
 public class PacketEntityUpdate implements IPacket{
 
     private UUID uniqueId;
-    private boolean isPlayer;
     private double x;
     private double y;
     private double motionX;
     private double motionY;
 
-    public PacketEntityUpdate(UUID uniqueId, boolean isPlayer, double x, double y, double motionX, double motionY){
+    public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY){
         this.uniqueId = uniqueId;
-        this.isPlayer = isPlayer;
         this.x = x;
         this.y = y;
         this.motionX = motionX;
@@ -35,7 +33,6 @@ public class PacketEntityUpdate implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         buf.writeLong(this.uniqueId.getMostSignificantBits());
         buf.writeLong(this.uniqueId.getLeastSignificantBits());
-        buf.writeBoolean(this.isPlayer);
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
         buf.writeDouble(this.motionX);
@@ -45,7 +42,6 @@ public class PacketEntityUpdate implements IPacket{
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.uniqueId = new UUID(buf.readLong(), buf.readLong());
-        this.isPlayer = buf.readBoolean();
         this.x = buf.readDouble();
         this.y = buf.readDouble();
         this.motionX = buf.readDouble();
@@ -56,15 +52,7 @@ public class PacketEntityUpdate implements IPacket{
     public void handle(RockBottom game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             if(game.world != null){
-                Entity entity;
-
-                if(this.isPlayer){
-                    entity = game.world.getPlayer(this.uniqueId);
-                }
-                else{
-                    entity = game.world.getEntity(this.uniqueId);
-                }
-
+                Entity entity = game.world.getEntity(this.uniqueId);
                 if(entity != null){
                     entity.setPos(this.x, this.y);
                     entity.motionX = this.motionX;

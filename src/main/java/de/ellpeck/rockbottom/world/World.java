@@ -28,7 +28,6 @@ public class World implements IWorld{
     public final List<Chunk> loadedChunks = new ArrayList<>();
     protected final Map<Pos2, Chunk> chunkLookup = new HashMap<>();
 
-    //TODO Remove this players list from the client entirely, it doesn't need it
     public List<EntityPlayer> players = new ArrayList<>();
 
     protected File chunksDirectory;
@@ -93,6 +92,9 @@ public class World implements IWorld{
 
             if(this.getPlayer(player.getUniqueId()) == null){
                 this.players.add(player);
+            }
+            else{
+                Log.error("Tried adding player "+player+" with id "+player.getUniqueId()+" to world that already contained it!");
             }
         }
 

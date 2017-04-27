@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.net;
 
 import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.net.client.Client;
 import de.ellpeck.rockbottom.net.packet.IPacket;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 import de.ellpeck.rockbottom.net.server.Server;
-import de.ellpeck.rockbottom.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.util.Registry;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
@@ -124,26 +124,16 @@ public final class NetHandler{
         client.channel.writeAndFlush(packet);
     }
 
-    public static void sendToAllClients(IPacket packet){
-        server.connectedChannels.writeAndFlush(packet);
-    }
-
-    public static void sendToPlayersInArea(World world, IPacket packet, double x, double y, double radius){
-        for(EntityPlayer player : world.players){
-            if(Util.distanceSq(x, y, player.x, player.y) <= radius*radius){
-                player.sendPacket(packet);
-            }
-        }
-    }
-
     public static void sendToAllPlayers(World world, IPacket packet){
         sendToAllPlayersExcept(world, packet, null);
     }
 
     public static void sendToAllPlayersExcept(World world, IPacket packet, Entity except){
-        for(EntityPlayer player : world.players){
-            if(player != except){
-                player.sendPacket(packet);
+        if(NetHandler.isServer()){
+            for(EntityPlayer player : world.players){
+                if(player != except){
+                    player.sendPacket(packet);
+                }
             }
         }
     }

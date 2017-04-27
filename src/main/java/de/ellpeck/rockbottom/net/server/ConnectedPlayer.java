@@ -73,7 +73,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
     @Override
     public void onChunkLoaded(Chunk chunk){
-        Log.info("Sending chunk at "+chunk.gridX+", "+chunk.gridY+" to player with id "+this.getUniqueId());
+        Log.debug("Sending chunk at "+chunk.gridX+", "+chunk.gridY+" to player with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunk(chunk));
 
@@ -90,7 +90,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
     @Override
     public void onChunkUnloaded(Chunk chunk){
-        Log.info("Sending chunk unloading packet for chunk at "+chunk.gridX+", "+chunk.gridY+" to player with id "+this.getUniqueId());
+        Log.debug("Sending chunk unloading packet for chunk at "+chunk.gridX+", "+chunk.gridY+" to player with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.gridX, chunk.gridY));
     }

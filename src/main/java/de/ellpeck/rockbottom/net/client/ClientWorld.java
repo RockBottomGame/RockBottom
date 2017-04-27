@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.util.Pos2;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.world.entity.Entity;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 
@@ -70,6 +71,11 @@ public class ClientWorld extends World{
     }
 
     @Override
+    public EntityPlayer getPlayer(UUID id){
+        throw new UnsupportedOperationException("Cannot get player in client world");
+    }
+
+    @Override
     public EntityPlayer createPlayer(UUID id, Channel channel){
         if(channel != null){
             throw new UnsupportedOperationException("Cannot create a connected player in a client world");
@@ -80,5 +86,19 @@ public class ClientWorld extends World{
     @Override
     public boolean isClient(){
         return true;
+    }
+
+    @Override
+    public void addEntity(Entity entity){
+        Chunk chunk = this.getChunk(entity.x, entity.y);
+        chunk.addEntity(entity);
+    }
+
+    @Override
+    public void removeEntity(Entity entity){
+        Chunk chunk = this.getChunk(entity.x, entity.y);
+        chunk.removeEntity(entity);
+
+        entity.onRemoveFromWorld();
     }
 }
