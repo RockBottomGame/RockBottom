@@ -7,17 +7,21 @@ import org.newdawn.slick.Graphics;
 
 public class ComponentFancyButton extends ComponentButton{
 
-    private final String texture;
+    protected final String texture;
 
     public ComponentFancyButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, String texture, String... hover){
         super(gui, id, x, y, sizeX, sizeY, null, hover);
         this.texture = texture;
     }
 
+    protected String getTexture(){
+        return this.texture;
+    }
+
     @Override
     public void render(RockBottom game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        manager.getImage(this.texture).draw(this.x, this.y, this.sizeX, this.sizeY);
+        manager.getImage(this.getTexture()).draw(this.x, this.y, this.sizeX, this.sizeY);
     }
 }

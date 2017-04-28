@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.construction.IRecipe;
 import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.render.item.IItemRenderer;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
@@ -14,13 +15,17 @@ import java.util.List;
 
 public class ComponentRecipeButton extends ComponentButton{
 
+    private static final Color TRANSPARENT = new Color(1F, 1F, 1F, 0.5F);
+
     public final IRecipe recipe;
     public final int recipeId;
+    public final boolean canConstruct;
 
-    public ComponentRecipeButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, IRecipe recipe, int recipeId){
+    public ComponentRecipeButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, IRecipe recipe, int recipeId, boolean canConstruct){
         super(gui, id, x, y, sizeX, sizeY, null);
         this.recipe = recipe;
         this.recipeId = recipeId;
+        this.canConstruct = canConstruct;
     }
 
     @Override
@@ -29,7 +34,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
         List<ItemInstance> outputs = this.recipe.getOutputs();
         ItemInstance instance = outputs.get(0);
-        IItemRenderer.renderItemInGui(game, manager, g, instance, this.x, this.y, 1F);
+        IItemRenderer.renderItemInGui(game, manager, g, instance, this.x, this.y, 1F, this.canConstruct ? Color.white : TRANSPARENT);
     }
 
     @Override

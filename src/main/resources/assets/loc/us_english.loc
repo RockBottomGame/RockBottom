@@ -18,6 +18,7 @@ info.unlimited=Unlimited
 info.randomize_name=Randomize Name
 info.uses=Uses
 info.constructs=Constructs
+info.need_items=Collect items to see things you can construct with them
 
 button.back=Back
 button.settings=Settings
@@ -44,6 +45,7 @@ button.connect=Connect
 button.chat_name=Name in Chat
 button.credits=Credits
 button.construction=Construction Menu
+button.all_construction=Show unconstructible Recipes
 
 layer.main=Foreground
 layer.background=Background

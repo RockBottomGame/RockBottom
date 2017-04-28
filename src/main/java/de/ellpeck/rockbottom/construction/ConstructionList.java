@@ -13,6 +13,10 @@ public class ConstructionList<T extends IRecipe>{
         this.list.add(recipe);
     }
 
+    public List<T> getUnmodifiable(){
+        return new ArrayList<>(this.list);
+    }
+
     public T get(int id){
         if(id >= 0 && this.list.size() > id){
             return this.list.get(id);

@@ -1,10 +1,13 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.assets.AssetManager;
+import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.construction.BasicRecipe;
+import de.ellpeck.rockbottom.construction.ConstructionList;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
+import de.ellpeck.rockbottom.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.gui.component.ComponentRecipeButton;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.IInvChangeCallback;
@@ -13,6 +16,7 @@ import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +24,9 @@ import java.util.List;
 public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
     private final List<ComponentRecipeButton> constructionButtons = new ArrayList<>();
-    public static boolean isConstructionOpen;
+
+    private static boolean isConstructionOpen;
+    private static boolean shouldShowAll;
 
     public GuiInventory(EntityPlayer player){
         super(player, 158, 83);
@@ -30,10 +36,11 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     public void initGui(RockBottom game){
         super.initGui(game);
 
-        this.components.add(new ComponentFancyButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, "gui.construction", game.assetManager.localize("button.construction")));
+        this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, "gui.construction", game.assetManager.localize("button.construction")));
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-15, this.guiTop+this.sizeY+10, 30, 10, game.assetManager.localize("button.close")));
 
         if(isConstructionOpen){
+            this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, "gui.all_construction", game.assetManager.localize("button.all_construction")));
             this.initConstructionButtons();
         }
     }
@@ -44,13 +51,21 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
             this.constructionButtons.clear();
         }
 
-        List<BasicRecipe> recipes = ConstructionRegistry.MANUAL_RECIPES.fromInputs(this.player.inv.getItems());
+        List<ItemInstance> playerInv = this.player.inv.getItems();
+
+        List<BasicRecipe> recipes;
+        if(shouldShowAll){
+            recipes = ConstructionRegistry.MANUAL_RECIPES.getUnmodifiable();
+        }
+        else{
+            recipes = ConstructionRegistry.MANUAL_RECIPES.fromInputs(playerInv);
+        }
 
         int x = 0;
         int y = 0;
         for(int i = 0; i < recipes.size(); i++){
             BasicRecipe recipe = recipes.get(i);
-            this.constructionButtons.add(new ComponentRecipeButton(this, 1+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.getId(recipe)));
+            this.constructionButtons.add(new ComponentRecipeButton(this, 2+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.getId(recipe), ConstructionList.matchesInputs(recipe, playerInv)));
 
             x += 18;
             if((i+1)%5 == 0){
@@ -60,6 +75,17 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         }
 
         this.components.addAll(this.constructionButtons);
+    }
+
+    @Override
+    public void render(RockBottom game, AssetManager manager, Graphics g){
+        if(isConstructionOpen){
+            if(this.constructionButtons.isEmpty()){
+                manager.getFont().drawSplitString(this.guiLeft-104, this.guiTop, FormattingCode.GRAY+manager.localize("info.need_items"), 0.25F, 88);
+            }
+        }
+
+        super.render(game, manager, g);
     }
 
     @Override
@@ -85,7 +111,12 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
     @Override
     public boolean onButtonActivated(RockBottom game, int button){
-        if(button == 0){
+        if(button == 1){
+            shouldShowAll = !shouldShowAll;
+            this.initConstructionButtons();
+            return true;
+        }
+        else if(button == 0){
             isConstructionOpen = !isConstructionOpen;
             this.initGui(game);
             return true;
@@ -97,13 +128,18 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         else{
             for(ComponentRecipeButton but : this.constructionButtons){
                 if(but.id == button){
-                    if(NetHandler.isClient()){
-                        NetHandler.sendToServer(new PacketManualConstruction(game.player.getUniqueId(), but.recipeId));
+                    if(but.canConstruct){
+                        if(NetHandler.isClient()){
+                            NetHandler.sendToServer(new PacketManualConstruction(game.player.getUniqueId(), but.recipeId));
+                        }
+                        else{
+                            ContainerInventory.doManualCraft(game.player, but.recipe);
+                        }
+                        return true;
                     }
                     else{
-                        ContainerInventory.doManualCraft(game.player, but.recipe);
+                        break;
                     }
-                    return true;
                 }
             }
             return super.onButtonActivated(game, button);

@@ -16,15 +16,15 @@ public interface IItemRenderer<T extends Item>{
         Gui.drawScaledImage(g, manager.getImage("gui.slot"), x, y, scale, Gui.GUI_COLOR);
 
         if(slot != null){
-            renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale);
+            renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Color.white);
         }
     }
 
-    static void renderItemInGui(RockBottom game, AssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
+    static void renderItemInGui(RockBottom game, AssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale, Color color){
         Item item = slot.getItem();
         IItemRenderer renderer = item.getRenderer();
         if(renderer != null){
-            renderer.render(game, manager, g, item, x, y, 12F*scale, Color.white);
+            renderer.render(game, manager, g, item, x, y, 12F*scale, color);
         }
 
         manager.getFont().drawStringFromRight(x+15F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);

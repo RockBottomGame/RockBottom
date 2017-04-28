@@ -119,6 +119,15 @@ public class Font{
         }
     }
 
+    public void drawSplitString(float x, float y, String s, float scale, int length){
+        List<String> split = this.splitTextToLength(length, scale, true, s);
+
+        for(String string : split){
+            this.drawString(x, y, string, scale);
+            y += this.getHeight(scale);
+        }
+    }
+
     private void drawString(float x, float y, String s, int drawStart, int drawEnd, float scale, Color color){
         float xOffset = 0F;
 
