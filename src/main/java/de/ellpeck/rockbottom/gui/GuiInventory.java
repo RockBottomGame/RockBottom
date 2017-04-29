@@ -51,26 +51,22 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
             this.constructionButtons.clear();
         }
 
-        List<ItemInstance> playerInv = this.player.inv.getItems();
-
-        List<BasicRecipe> recipes;
-        if(shouldShowAll){
-            recipes = ConstructionRegistry.MANUAL_RECIPES.getUnmodifiable();
-        }
-        else{
-            recipes = ConstructionRegistry.MANUAL_RECIPES.fromInputs(playerInv);
-        }
+        List<BasicRecipe> recipes = ConstructionRegistry.MANUAL_RECIPES.getUnmodifiable();
 
         int x = 0;
         int y = 0;
         for(int i = 0; i < recipes.size(); i++){
             BasicRecipe recipe = recipes.get(i);
-            this.constructionButtons.add(new ComponentRecipeButton(this, 2+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.getId(recipe), ConstructionList.matchesInputs(recipe, playerInv)));
+            boolean matches = ConstructionList.matchesInv(recipe, this.player.inv);
 
-            x += 18;
-            if((i+1)%5 == 0){
-                y += 18;
-                x = 0;
+            if(matches || shouldShowAll){
+                this.constructionButtons.add(new ComponentRecipeButton(this, 2+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.getId(recipe), matches));
+
+                x += 18;
+                if((i+1)%5 == 0){
+                    y += 18;
+                    x = 0;
+                }
             }
         }
 

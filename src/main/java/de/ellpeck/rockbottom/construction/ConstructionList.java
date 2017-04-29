@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.construction;
 
+import de.ellpeck.rockbottom.inventory.IInventory;
 import de.ellpeck.rockbottom.item.ItemInstance;
 
 import java.util.ArrayList;
@@ -30,39 +31,12 @@ public class ConstructionList<T extends IRecipe>{
         return this.list.indexOf(recipe);
     }
 
-    public List<T> fromInputs(List<ItemInstance> inputs){
-        List<T> possibleRecipes = new ArrayList<>();
-        for(T recipe : this.list){
-            if(matchesInputs(recipe, inputs)){
-                possibleRecipes.add(recipe);
+    public static boolean matchesInv(IRecipe recipe, IInventory inventory){
+        for(ItemInstance inst : recipe.getInputs()){
+            if(!inventory.containsItem(inst)){
+                return false;
             }
         }
-        return possibleRecipes;
-    }
-
-    public T firstFromInputs(List<ItemInstance> inputs){
-        for(T recipe : this.list){
-            if(matchesInputs(recipe, inputs)){
-                return recipe;
-            }
-        }
-        return null;
-    }
-
-    public static boolean matchesInputs(IRecipe recipe, List<ItemInstance> inputs){
-        List<ItemInstance> recipeInputs = new ArrayList<>(recipe.getInputs());
-
-        for(ItemInstance testInput : inputs){
-            if(testInput != null){
-                for(ItemInstance recipeInput : recipeInputs){
-                    if(testInput.isItemEqual(recipeInput) && testInput.getAmount() >= recipeInput.getAmount()){
-                        recipeInputs.remove(recipeInput);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return recipeInputs.isEmpty();
+        return true;
     }
 }

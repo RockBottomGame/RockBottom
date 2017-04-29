@@ -52,7 +52,7 @@ public class Item{
     }
 
     public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc){
-        desc.add(manager.localize(this.getUnlocalizedName(instance)));
+        desc.add(instance.getDisplayName());
     }
 
     @Override

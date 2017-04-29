@@ -55,9 +55,9 @@ public class ComponentButton extends GuiComponent{
 
     @Override
     public void renderOverlay(RockBottom game, AssetManager manager, Graphics g){
-        String[] hover = this.getHover();
-        if(hover != null && hover.length > 0){
-            if(this.isMouseOver(game)){
+        if(this.isMouseOver(game)){
+            String[] hover = this.getHover();
+            if(hover != null && hover.length > 0){
                 Gui.drawHoverInfoAtMouse(game, manager, g, false, 100, hover);
             }
         }

@@ -17,8 +17,7 @@ import java.util.List;
 
 public class GuiContainer extends Gui{
 
-    protected final EntityPlayer player;
-
+    public final EntityPlayer player;
     public ItemInstance holdingInst;
 
     public GuiContainer(EntityPlayer player, int sizeX, int sizeY){

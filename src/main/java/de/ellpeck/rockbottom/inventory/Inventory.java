@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.data.set.DataSet;
 import de.ellpeck.rockbottom.item.ItemInstance;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Inventory implements IInventory{
@@ -111,10 +110,6 @@ public class Inventory implements IInventory{
             }
         }
         return instance;
-    }
-
-    public List<ItemInstance> getItems(){
-        return Arrays.asList(this.slots);
     }
 
     public void save(DataSet set){

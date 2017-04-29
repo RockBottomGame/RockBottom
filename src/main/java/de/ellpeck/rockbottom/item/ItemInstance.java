@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.item;
 
 import de.ellpeck.rockbottom.ContentRegistry;
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.data.set.DataSet;
 import de.ellpeck.rockbottom.world.tile.Tile;
 import org.newdawn.slick.util.Log;
@@ -114,6 +115,10 @@ public class ItemInstance{
 
     public boolean isItemEqual(ItemInstance other){
         return other.getItem() == this.getItem();
+    }
+
+    public String getDisplayName(){
+        return RockBottom.get().assetManager.localize(this.item.getUnlocalizedName(this));
     }
 
     @Override

@@ -28,7 +28,7 @@ public class CommandSpawnItem extends Command{
 
                 ItemInstance instance = new ItemInstance(item, amount, meta);
                 player.inv.add(instance, false);
-                return FormattingCode.GREEN+"Added "+amount+"x "+manager.localize(item.getUnlocalizedName(instance))+"!";
+                return FormattingCode.GREEN+"Added "+amount+"x "+instance.getDisplayName()+"!";
             }
             else{
                 return FormattingCode.RED+"Item with id "+id+" not found!";
