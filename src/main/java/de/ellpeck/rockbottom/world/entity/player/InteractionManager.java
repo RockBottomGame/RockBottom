@@ -72,7 +72,7 @@ public class InteractionManager{
                             float hardness = tile.getHardness(player.world, this.mousedTileX, this.mousedTileY, layer);
                             float progressAmount = 0.05F/hardness;
 
-                            int effectiveness = getToolEffectiveness(player, tile, layer, this.mousedTileX, this.mousedTileY);
+                            int effectiveness = getToolEffectiveness(player, player.inv.get(player.inv.selectedSlot), tile, layer, this.mousedTileX, this.mousedTileY);
                             if(effectiveness > 0){
                                 progressAmount += effectiveness/200F;
                             }
@@ -197,17 +197,14 @@ public class InteractionManager{
         }
     }
 
-    public static int getToolEffectiveness(EntityPlayer player, Tile tile, TileLayer layer, int x, int y){
-        ItemInstance selected = player.inv.get(player.inv.selectedSlot);
-        if(selected != null){
-            Map<ToolType, Integer> tools = selected.getItem().getToolTypes(selected);
-            if(!tools.isEmpty()){
-                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                    int level = entry.getValue();
+    public static int getToolEffectiveness(EntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
+        Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
+        if(!tools.isEmpty()){
+            for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                int level = entry.getValue();
 
-                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
-                        return level;
-                    }
+                if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
+                    return level;
                 }
             }
         }

@@ -4,11 +4,16 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.gui.menu.MainMenuBackground;
+import de.ellpeck.rockbottom.item.Item;
+import de.ellpeck.rockbottom.item.ItemInstance;
+import de.ellpeck.rockbottom.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -80,6 +85,9 @@ public class GuiManager{
                 return GuiManager.this.getGui() == null && super.isMouseOver(game);
             }
         });
+
+        int maxHealthParts = Util.floor(game.player.getMaxHealth()/20);
+        this.onScreenComponents.add(new ComponentHealth(null, (int)game.getWidthInGui()-3-maxHealthParts*13, (int)game.getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
     public void update(RockBottom game){
@@ -111,6 +119,8 @@ public class GuiManager{
         float width = (float)game.getWidthInGui();
         float height = (float)game.getHeightInGui();
 
+        Gui gui = this.getGui();
+
         if(player != null && player.isDead()){
             String deathInfo = manager.localize("info.dead");
             font.drawCenteredString(width/2F, height/2F, deathInfo, 2F, true);
@@ -118,14 +128,9 @@ public class GuiManager{
         else{
             this.onScreenComponents.forEach(comp -> comp.render(game, manager, g));
 
-            if(game.isInWorld()){
-                this.drawHealth(game, manager, g, player);
-            }
-            else{
+            if(!game.isInWorld()){
                 this.background.render(game, manager, g);
             }
-
-            Gui gui = game.guiManager.getGui();
 
             if(gui == null || !(gui instanceof GuiChat)){
                 game.chatLog.drawNewMessages(game, manager, g);
@@ -146,31 +151,23 @@ public class GuiManager{
         }
 
         font.drawString(2, height-font.getHeight(0.25F), game.getTitle(), 0.25F);
-    }
 
-    private void drawHealth(RockBottom game, AssetManager manager, Graphics g, EntityPlayer player){
-        int healthParts = Util.floor(player.getHealth()/20);
-        int maxHealthParts = Util.floor(player.getMaxHealth()/20);
+        if(!game.settings.hardwareCursor){
+            if(player != null && gui == null && Mouse.isInsideWindow()){
+                if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
+                    ItemInstance holding = player.inv.get(player.inv.selectedSlot);
+                    if(holding != null){
+                        Item item = holding.getItem();
 
-        Image heart = manager.getImage("gui.heart");
-        Image heartEmpty = manager.getImage("gui.heart_empty");
+                        IItemRenderer renderer = item.getRenderer();
+                        if(renderer != null){
+                            float mouseX = game.getMouseInGuiX();
+                            float mouseY = game.getMouseInGuiY();
 
-        int step = 13;
-        int xStart = (int)game.getWidthInGui()-3-maxHealthParts*step;
-        int yStart = (int)game.getHeightInGui()-3-12;
-
-        int currX = 0;
-        for(int i = 0; i < maxHealthParts; i++){
-            Gui.drawScaledImage(g, healthParts > i ? heart : heartEmpty, xStart+currX, yStart, 0.75F, Color.white);
-            currX += step;
-        }
-
-        if(game.guiManager.getGui() == null){
-            float mouseX = game.getMouseInGuiX();
-            float mouseY = game.getMouseInGuiY();
-
-            if(mouseX >= xStart && mouseX < xStart+step*maxHealthParts-1 && mouseY >= yStart && mouseY < yStart+12){
-                Gui.drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize("info.health")+":", player.getHealth()+"/"+player.getMaxHealth());
+                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+2*game.settings.cursorScale, mouseY, game.settings.cursorScale*3F, Color.white);
+                        }
+                    }
+                }
             }
         }
     }

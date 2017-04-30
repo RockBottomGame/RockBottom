@@ -7,7 +7,7 @@ public class WorldGenCoal extends WorldGenOre{
 
     @Override
     public int getHighestGridPos(){
-        return -2;
+        return -1;
     }
 
     @Override

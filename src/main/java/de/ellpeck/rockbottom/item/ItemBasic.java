@@ -9,7 +9,11 @@ public class ItemBasic extends Item{
 
     public ItemBasic(int id, String name){
         super(id, name);
-        this.renderer = new DefaultItemRenderer(name);
+        this.renderer = this.createRenderer(name);
+    }
+
+    protected IItemRenderer createRenderer(String name){
+        return new DefaultItemRenderer(name);
     }
 
     @Override

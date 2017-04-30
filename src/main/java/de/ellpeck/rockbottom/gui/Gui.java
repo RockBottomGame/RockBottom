@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.gui.component.GuiComponent;
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -116,11 +117,16 @@ public class Gui{
     }
 
     public boolean isMouseOver(RockBottom game){
-        int mouseX = (int)game.getMouseInGuiX();
-        int mouseY = (int)game.getMouseInGuiY();
+        if(Mouse.isInsideWindow()){
+            int mouseX = (int)game.getMouseInGuiX();
+            int mouseY = (int)game.getMouseInGuiY();
 
-        boolean overSelf = mouseX >= this.guiLeft && mouseX < this.guiLeft+this.sizeX && mouseY >= this.guiTop && mouseY < this.guiTop+this.sizeY;
-        return overSelf || this.isMouseOverComponent(game);
+            boolean overSelf = mouseX >= this.guiLeft && mouseX < this.guiLeft+this.sizeX && mouseY >= this.guiTop && mouseY < this.guiTop+this.sizeY;
+            return overSelf || this.isMouseOverComponent(game);
+        }
+        else{
+            return false;
+        }
     }
 
     public static void drawHoverInfoAtMouse(RockBottom game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, String... text){

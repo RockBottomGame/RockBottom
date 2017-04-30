@@ -9,22 +9,19 @@ import de.ellpeck.rockbottom.world.tile.Tile;
 
 import java.util.List;
 
-public class ItemTile extends Item{
-
-    private final IItemRenderer renderer;
+public class ItemTile extends ItemBasic{
 
     public ItemTile(int id, String name){
         super(id, name);
-        this.renderer = new ItemTileRenderer();
+    }
+
+    @Override
+    protected IItemRenderer createRenderer(String name){
+        return new ItemTileRenderer();
     }
 
     public Tile getTile(){
         return ContentRegistry.TILE_REGISTRY.get(this.id);
-    }
-
-    @Override
-    public IItemRenderer getRenderer(){
-        return this.renderer;
     }
 
     @Override
