@@ -7,7 +7,7 @@ name.chest=Chest
 info.layer_placement=Can be placed in %s
 info.health=Health
 info.dead=You died!
-info.hardware_cursor=If the in-game cursor should be replaced by the operating system's cursor, will also hide tool and tile indicators
+info.hardware_cursor=If the in-game cursor should be replaced by the operating system's cursor
 info.autosave_interval=The amount of seconds before the world is automatically saved
 info.saved=Game saved!
 info.seed=Seed
@@ -19,6 +19,7 @@ info.randomize_name=Randomize Name
 info.uses=Uses
 info.constructs=Constructs
 info.need_items=Collect items to see things you can construct with them
+info.cursor_infos=If the in-game cursor should display tool and tile indicators next to it
 
 button.back=Back
 button.settings=Settings
@@ -46,6 +47,8 @@ button.chat_name=Name in Chat
 button.credits=Credits
 button.construction=Construction Menu
 button.all_construction=Show unconstructible Recipes
+button.cursor_infos=Cursor Indicators Off
+button.cursor_infos_toggled=Cursor Indicators On
 
 layer.main=Foreground
 layer.background=Background

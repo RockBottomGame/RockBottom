@@ -77,18 +77,18 @@ public class DataManager{
                 loaded = true;
             }
             catch(Exception e){
-                Log.error("Couldn't load game settings!", e);
+                Log.error("Couldn't load "+settings.getName(), e);
             }
         }
 
         settings.load(props);
 
         if(!loaded){
-            Log.info("Creating game settings from default.");
+            Log.info("Creating "+settings.getName()+" from default");
             this.savePropSettings(settings);
         }
         else{
-            Log.info("Loaded game settings.");
+            Log.info("Loaded "+settings.getName());
         }
     }
 
@@ -107,7 +107,7 @@ public class DataManager{
             props.store(new FileOutputStream(file), null);
         }
         catch(Exception e){
-            Log.error("Couldn't save game settings!", e);
+            Log.error("Couldn't save "+settings.getName(), e);
         }
     }
 }

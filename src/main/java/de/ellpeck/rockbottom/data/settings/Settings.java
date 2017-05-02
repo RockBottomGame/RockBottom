@@ -32,6 +32,7 @@ public class Settings implements IPropSettings{
 
     public float cursorScale;
     public boolean hardwareCursor;
+    public boolean cursorInfos;
 
     public int buttonDestroy;
     public int buttonPlace;
@@ -58,6 +59,7 @@ public class Settings implements IPropSettings{
 
         this.cursorScale = this.getProp(props, "cursor_scale", 3F);
         this.hardwareCursor = this.getProp(props, "hardware_cursor", false);
+        this.cursorInfos = this.getProp(props, "cursor_infos", true);
 
         this.buttonDestroy = this.getProp(props, "button_destroy", Input.MOUSE_LEFT_BUTTON);
         this.buttonPlace = this.getProp(props, "button_place", Input.MOUSE_RIGHT_BUTTON);
@@ -88,6 +90,7 @@ public class Settings implements IPropSettings{
 
         this.setProp(props, "cursor_scale", this.cursorScale);
         this.setProp(props, "hardware_cursor", this.hardwareCursor);
+        this.setProp(props, "cursor_infos", this.cursorInfos);
 
         this.setProp(props, "button_destroy", this.buttonDestroy);
         this.setProp(props, "button_place", this.buttonPlace);
@@ -104,6 +107,11 @@ public class Settings implements IPropSettings{
     @Override
     public File getFile(DataManager manager){
         return manager.settingsFile;
+    }
+
+    @Override
+    public String getName(){
+        return "Game Settings";
     }
 
     private <T> void setProp(Properties props, String name, T val){

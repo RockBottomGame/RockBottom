@@ -1,8 +1,8 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.RockBottom;
-import de.ellpeck.rockbottom.data.settings.Settings;
 import de.ellpeck.rockbottom.assets.AssetManager;
+import de.ellpeck.rockbottom.data.settings.Settings;
 import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.gui.component.ComponentInputField;
@@ -16,7 +16,7 @@ public class GuiSettings extends Gui{
     private ComponentInputField chatNameField;
 
     public GuiSettings(Gui parent){
-        super(304, 130, parent);
+        super(304, 150, parent);
     }
 
     @Override
@@ -43,6 +43,7 @@ public class GuiSettings extends Gui{
             @Override
             public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
                 game.settings.guiScale = number;
+                game.dataManager.savePropSettings(game.settings);
                 game.guiManager.shouldReInit = true;
             }
         }, game.assetManager.localize("button.gui_scale")));
@@ -72,6 +73,8 @@ public class GuiSettings extends Gui{
             }
         });
 
+        this.components.add(new ComponentToggleButton(this, 8, this.guiLeft, this.guiTop+110, 150, 16, game.settings.cursorInfos, "button.cursor_infos", game.assetManager.localize("info.cursor_infos")));
+
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
     }
 
@@ -98,6 +101,9 @@ public class GuiSettings extends Gui{
         else if(button == 7){
             game.settings.chatName = Settings.getRandomChatName();
             this.chatNameField.setText(game.settings.chatName);
+        }
+        else if(button == 8){
+            game.settings.cursorInfos = !game.settings.cursorInfos;
         }
         return false;
     }

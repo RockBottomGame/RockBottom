@@ -300,7 +300,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 }
             }
 
-            Log.debug("Player with id "+this.getUniqueId()+" unloading "+unload+" chunks and loading "+newLoad+" new ones");
+            Log.debug("Player with id "+this.getUniqueId()+" leaving range of "+unload+" chunks and loading "+newLoad+" new ones");
 
             for(Chunk chunk : nowLoaded){
                 if(!chunk.playersInRange.contains(this)){
@@ -327,7 +327,9 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
             if(level < Constants.ADMIN_PERMISSION && NetHandler.isThePlayer(this)){
                 level = Constants.ADMIN_PERMISSION;
+
                 permissions.setCommandLevel(this, level);
+                RockBottom.get().dataManager.savePropSettings(permissions);
 
                 Log.info("Setting command level for server host with id "+this.getUniqueId()+" to "+level+"!");
             }

@@ -50,10 +50,20 @@ public class MainMenuBackground{
 
                 Tile tile;
                 if(this.konamiAt >= KONAMI_CODE.length){
-                    tile = ContentRegistry.TILE_GRASS;
+                    tile = ContentRegistry.TILE_LEAVES;
                 }
                 else{
-                    tile = Util.RANDOM.nextFloat() >= 0.75F ? ContentRegistry.TILE_DIRT : ContentRegistry.TILE_ROCK;
+                    float f = Util.RANDOM.nextFloat();
+
+                    if(f >= 0.9F){
+                        tile = ContentRegistry.TILE_COPPER_ORE;
+                    }
+                    else if(f >= 0.75F){
+                        tile = ContentRegistry.TILE_COAL_ORE;
+                    }
+                    else{
+                        tile = ContentRegistry.TILE_ROCK;
+                    }
                 }
                 this.menuTileGrid[placeX][placeY] = tile;
 

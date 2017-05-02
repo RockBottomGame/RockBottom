@@ -198,13 +198,15 @@ public class InteractionManager{
     }
 
     public static int getToolEffectiveness(EntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
-        Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
-        if(!tools.isEmpty()){
-            for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                int level = entry.getValue();
+        if(instance != null){
+            Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
+            if(!tools.isEmpty()){
+                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                    int level = entry.getValue();
 
-                if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
-                    return level;
+                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
+                        return level;
+                    }
                 }
             }
         }

@@ -152,7 +152,7 @@ public class GuiManager{
 
         font.drawString(2, height-font.getHeight(0.25F), game.getTitle(), 0.25F);
 
-        if(!game.settings.hardwareCursor){
+        if(game.settings.cursorInfos){
             if(player != null && gui == null && Mouse.isInsideWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
                     ItemInstance holding = player.inv.get(player.inv.selectedSlot);

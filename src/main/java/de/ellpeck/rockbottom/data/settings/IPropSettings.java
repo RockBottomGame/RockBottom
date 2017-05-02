@@ -12,4 +12,6 @@ public interface IPropSettings{
     void save(Properties props);
 
     File getFile(DataManager manager);
+
+    String getName();
 }

@@ -37,6 +37,11 @@ public class CommandPermissions implements IPropSettings{
         return manager.commandPermissionFile;
     }
 
+    @Override
+    public String getName(){
+        return "Command Permission Settings";
+    }
+
     public int getCommandLevel(EntityPlayer player){
         return this.commandLevels.getOrDefault(player.getUniqueId(), 0);
     }
