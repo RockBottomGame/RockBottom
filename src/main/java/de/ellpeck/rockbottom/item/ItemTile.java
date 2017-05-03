@@ -25,11 +25,6 @@ public class ItemTile extends ItemBasic{
     }
 
     @Override
-    public int getId(){
-        return this.id;
-    }
-
-    @Override
     public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc){
         super.describeItem(manager, instance, desc);
 

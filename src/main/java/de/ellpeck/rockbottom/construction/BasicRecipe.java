@@ -1,8 +1,6 @@
 package de.ellpeck.rockbottom.construction;
 
-import de.ellpeck.rockbottom.item.Item;
 import de.ellpeck.rockbottom.item.ItemInstance;
-import de.ellpeck.rockbottom.world.tile.Tile;
 
 import java.util.Arrays;
 import java.util.Collections;

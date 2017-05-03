@@ -16,6 +16,6 @@ public class TileCopperOre extends TileBasic{
 
     @Override
     public List<ItemInstance> getDrops(World world, int x, int y, Entity destroyer){
-        return Collections.singletonList(new ItemInstance(ContentRegistry.ITEM_COPPER_NATIVE));
+        return Collections.singletonList(new ItemInstance(ContentRegistry.ITEM_COPPER_CLUSTER));
     }
 }

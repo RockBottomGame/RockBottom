@@ -25,15 +25,7 @@ public class ContainerInventory extends ItemContainer{
                     ItemInstance inv = player.inv.get(i);
 
                     if(inv != null && inv.isItemEqual(input) && inv.getAmount() >= input.getAmount()){
-                        inv.remove(input.getAmount());
-
-                        if(inv.getAmount() <= 0){
-                            player.inv.set(i, null);
-                        }
-                        else{
-                            player.inv.notifyChange(i);
-                        }
-
+                        player.inv.remove(i, input.getAmount());
                         break;
                     }
                 }

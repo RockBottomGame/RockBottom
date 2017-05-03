@@ -53,10 +53,10 @@ public class ComponentSlot extends GuiComponent{
                         if(slotInst.isItemEqual(this.container.holdingInst)){
                             int possible = Math.min(slotInst.getItem().getMaxAmount()-slotInst.getAmount(), this.container.holdingInst.getAmount());
                             if(possible > 0){
-                                slotInst.add(possible);
+                                slotInst.addAmount(possible);
                                 this.setToInv(slotInst);
 
-                                this.container.holdingInst.remove(possible);
+                                this.container.holdingInst.removeAmount(possible);
                                 if(this.container.holdingInst.getAmount() <= 0){
                                     this.container.holdingInst = null;
                                 }
@@ -80,7 +80,7 @@ public class ComponentSlot extends GuiComponent{
                         int half = Util.ceil((double)slotInst.getAmount()/2);
                         this.container.holdingInst = slotInst.copy().setAmount(half);
 
-                        slotInst.remove(half);
+                        slotInst.removeAmount(half);
                         this.setToInv(slotInst.getAmount() <= 0 ? null : slotInst);
 
                         return true;
@@ -90,7 +90,7 @@ public class ComponentSlot extends GuiComponent{
                     if(slotInst == null){
                         this.setToInv(this.container.holdingInst.copy().setAmount(1));
 
-                        this.container.holdingInst.remove(1);
+                        this.container.holdingInst.removeAmount(1);
                         if(this.container.holdingInst.getAmount() <= 0){
                             this.container.holdingInst = null;
                         }
@@ -99,10 +99,10 @@ public class ComponentSlot extends GuiComponent{
                     }
                     else if(slotInst.isItemEqual(this.container.holdingInst)){
                         if(slotInst.getAmount() < slotInst.getItem().getMaxAmount()){
-                            slotInst.add(1);
+                            slotInst.addAmount(1);
                             this.setToInv(slotInst);
 
-                            this.container.holdingInst.remove(1);
+                            this.container.holdingInst.removeAmount(1);
                             if(this.container.holdingInst.getAmount() <= 0){
                                 this.container.holdingInst = null;
                             }

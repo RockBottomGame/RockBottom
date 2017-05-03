@@ -6,6 +6,10 @@ public interface IInventory{
 
     void set(int id, ItemInstance instance);
 
+    ItemInstance add(int id, int amount);
+
+    ItemInstance remove(int id, int amount);
+
     ItemInstance get(int id);
 
     int getSlotAmount();

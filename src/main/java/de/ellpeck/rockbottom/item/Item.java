@@ -26,7 +26,7 @@ public class Item{
     }
 
     public int getId(){
-        return Constants.ITEM_ID_OFFSET+this.id;
+        return this.id;
     }
 
     public Item register(){

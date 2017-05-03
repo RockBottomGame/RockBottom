@@ -11,7 +11,5 @@ public final class Constants{
     public static final int CHUNK_LOAD_DISTANCE = 3;
     public static final int CHUNK_LOAD_TIME = 250;
 
-    public static final int ITEM_ID_OFFSET = 8192;
-
     public static final int ADMIN_PERMISSION = 10;
 }

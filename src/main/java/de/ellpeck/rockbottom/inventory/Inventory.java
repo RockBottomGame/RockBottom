@@ -22,6 +22,44 @@ public class Inventory implements IInventory{
     }
 
     @Override
+    public ItemInstance add(int id, int amount){
+        ItemInstance inst = this.slots[id];
+        if(inst != null){
+            inst.addAmount(amount);
+
+            if(inst.getAmount() <= 0){
+                this.set(id, null);
+                return null;
+            }
+
+            this.notifyChange(id);
+            return inst;
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public ItemInstance remove(int id, int amount){
+        ItemInstance inst = this.slots[id];
+        if(inst != null){
+            inst.removeAmount(amount);
+
+            if(inst.getAmount() <= 0){
+                this.set(id, null);
+                return null;
+            }
+
+            this.notifyChange(id);
+            return inst;
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
     public ItemInstance get(int id){
         return this.slots[id];
     }
@@ -96,16 +134,18 @@ public class Inventory implements IInventory{
 
             if(space >= instance.getAmount()){
                 if(!simulate){
-                    slotInst.add(instance.getAmount());
-                    this.notifyChange(slot);
+                    this.add(slot, instance.getAmount());
                 }
                 return null;
             }
             else{
                 if(!simulate){
-                    slotInst.add(space);
-                    instance.remove(space);
-                    this.notifyChange(slot);
+                    this.add(slot, space);
+
+                    instance.removeAmount(space);
+                    if(instance.getAmount() <= 0){
+                        return null;
+                    }
                 }
             }
         }

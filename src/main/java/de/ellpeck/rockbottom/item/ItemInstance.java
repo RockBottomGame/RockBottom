@@ -86,14 +86,12 @@ public class ItemInstance{
         return this;
     }
 
-    public ItemInstance add(int amount){
+    public void addAmount(int amount){
         this.setAmount(this.amount+amount);
-        return this;
     }
 
-    public ItemInstance remove(int amount){
+    public void removeAmount(int amount){
         this.setAmount(this.amount-amount);
-        return this;
     }
 
     public ItemInstance copy(){

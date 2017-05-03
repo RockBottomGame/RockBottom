@@ -1,10 +1,11 @@
 name.rock=Rock
 name.dirt=Dirt
-name.grass=Grass
 name.torch=Torch
 name.chest=Chest
 name.coal=Coal
-name.copper_native=Native Copper Cluster
+name.copper_cluster=Copper Cluster
+name.copper_grit=Copper Grit
+name.slag=Slag
 
 info.layer_placement=Can be placed in %s
 info.health=Health
