@@ -3,6 +3,8 @@ name.dirt=Dirt
 name.grass=Grass
 name.torch=Torch
 name.chest=Chest
+name.coal=Coal
+name.copper_native=Native Copper Cluster
 
 info.layer_placement=Can be placed in %s
 info.health=Health

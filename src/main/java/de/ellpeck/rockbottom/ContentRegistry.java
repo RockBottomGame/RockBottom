@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.item.Item;
+import de.ellpeck.rockbottom.item.ItemBasic;
 import de.ellpeck.rockbottom.item.ItemTool;
 import de.ellpeck.rockbottom.item.ToolType;
 import de.ellpeck.rockbottom.util.Registry;
@@ -26,12 +27,15 @@ public final class ContentRegistry{
     public static final Tile TILE_LOG = new TileLog(8).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
     public static final Tile TILE_LEAVES = new TileLeaves(9).setHardness(0.25F).setForceDrop().register();
     public static final Tile TILE_SAPLING = new TileSapling(10).setHardness(0F).setForceDrop().register();
-    public static final Tile TILE_COAL_ORE = new TileBasic(11, "coal_ore").setHardness(8F).addEffectiveTool(ToolType.PICKAXE, 2).register();
-    public static final Tile TILE_COPPER_ORE = new TileBasic(12, "copper_ore").setHardness(16F).addEffectiveTool(ToolType.PICKAXE, 4).register();
+    public static final Tile TILE_COAL_ORE = new TileCoalOre(11).setHardness(8F).addEffectiveTool(ToolType.PICKAXE, 2).register();
+    public static final Tile TILE_COPPER_ORE = new TileCopperOre(12).setHardness(16F).addEffectiveTool(ToolType.PICKAXE, 4).register();
 
     public static final Item ITEM_SUPER_TOOL = new ItemTool(0, "super_tool").addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
     public static final Item ITEM_WOOD_PICK = new ItemTool(1, "pick_wood").addToolType(ToolType.PICKAXE, 1).register();
     public static final Item ITEM_ROCK_PICK = new ItemTool(2, "pick_rock").addToolType(ToolType.PICKAXE, 2).register();
+    public static final Item ITEM_COAL = new ItemBasic(3, "coal").register();
+    public static final Item ITEM_COPPER_NATIVE = new ItemBasic(4, "copper_native").register();
+    public static final Item ITEM_COPPER_INGOT = new ItemBasic(5, "copper_ingot").register();
 
     public static void init(){
         ENTITY_REGISTRY.register(0, EntityItem.class);
