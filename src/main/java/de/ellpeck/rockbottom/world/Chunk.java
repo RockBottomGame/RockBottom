@@ -301,7 +301,7 @@ public class Chunk implements IWorld{
 
         int ord = layer.ordinal();
         this.tileGrid[ord][x][y] = tile;
-        this.metaGrid[ord][x][y] = (byte)meta;
+        this.setMetaFast(ord, x, y, meta);
 
         tile.onAdded(this.world, this.x+x, this.y+y, layer);
 
@@ -337,12 +337,16 @@ public class Chunk implements IWorld{
         }
     }
 
-    public void setMetaInner(TileLayer layer, int x, int y, int meta){
+    private void setMetaFast(int layer, int x, int y, int meta){
         if(meta < 0 || meta > Byte.MAX_VALUE){
             throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" in chunk at "+this.gridX+", "+this.gridY+" which is less than 0 or greater than max "+Byte.MAX_VALUE+"!");
         }
 
-        this.metaGrid[layer.ordinal()][x][y] = (byte)meta;
+        this.metaGrid[layer][x][y] = (byte)meta;
+    }
+
+    public void setMetaInner(TileLayer layer, int x, int y, int meta){
+        this.setMetaFast(layer.ordinal(), x, y, meta);
 
         if(NetHandler.isServer()){
             NetHandler.sendToAllPlayers(this.world, new PacketMetaChange(this.x+x, this.y+y, layer, meta));
