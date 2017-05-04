@@ -2,17 +2,14 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.gui.GuiChest;
 import de.ellpeck.rockbottom.gui.container.ContainerChest;
-import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.render.tile.ChestTileRenderer;
 import de.ellpeck.rockbottom.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.util.BoundBox;
-import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.IWorld;
 import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.Entity;
-import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
@@ -74,12 +71,7 @@ public class TileChest extends TileBasic{
         if(!NetHandler.isClient()){
             TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
             if(chest != null){
-                for(int i = 0; i < chest.inventory.getSlotAmount(); i++){
-                    ItemInstance inst = chest.inventory.get(i);
-                    if(inst != null){
-                        EntityItem.spawn(world, inst, x+0.5, y+0.5, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
-                    }
-                }
+                chest.dropInventory(chest.inventory);
             }
         }
     }

@@ -16,9 +16,9 @@ public class PacketContainerData implements IPacket{
     private ItemInstance[] data;
 
     public PacketContainerData(ItemContainer container){
-        this.data = new ItemInstance[container.slots.size()];
+        this.data = new ItemInstance[container.getSlotAmount()];
         for(int i = 0; i < this.data.length; i++){
-            ItemInstance inst = container.slots.get(i).get();
+            ItemInstance inst = container.getSlot(i).get();
             if(inst != null){
                 this.data[i] = inst;
             }
@@ -62,9 +62,9 @@ public class PacketContainerData implements IPacket{
         game.scheduleAction(() -> {
             if(game.player != null){
                 ItemContainer container = game.player.getContainer();
-                if(container != null && container.slots.size() == this.data.length){
+                if(container != null && container.getSlotAmount() == this.data.length){
                     for(int i = 0; i < this.data.length; i++){
-                        container.slots.get(i).set(this.data[i]);
+                        container.getSlot(i).set(this.data[i]);
                     }
                 }
             }

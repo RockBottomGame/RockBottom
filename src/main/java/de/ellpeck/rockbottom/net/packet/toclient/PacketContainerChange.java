@@ -56,8 +56,8 @@ public class PacketContainerChange implements IPacket{
         game.scheduleAction(() -> {
             if(game.player != null){
                 ItemContainer container = this.isInv ? game.player.inventoryContainer : game.player.getContainer();
-                if(container != null && container.slots.size() > this.index){
-                    ContainerSlot slot = container.slots.get(this.index);
+                if(container != null && container.getSlotAmount() > this.index){
+                    ContainerSlot slot = container.getSlot(this.index);
                     slot.set(this.instance);
                 }
             }

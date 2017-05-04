@@ -2,13 +2,14 @@ package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.util.LogSystem;
+import de.ellpeck.rockbottom.util.LogSystem.LogLevel;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
 public final class Main{
 
     public static void main(String[] args){
-        Log.setLogSystem(new LogSystem());
+        Log.setLogSystem(new LogSystem(LogLevel.DEBUG));
 
         RockBottom game = new RockBottom();
 

@@ -2,9 +2,14 @@ package de.ellpeck.rockbottom.world.tile.entity;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.data.set.DataSet;
+import de.ellpeck.rockbottom.inventory.IInventory;
+import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileEntityData;
+import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.world.entity.EntityItem;
+import io.netty.buffer.ByteBuf;
 
 public class TileEntity{
 
@@ -34,11 +39,11 @@ public class TileEntity{
 
     }
 
-    public void saveSynced(DataSet set){
+    public void toBuf(ByteBuf buf){
 
     }
 
-    public void loadSynced(DataSet set){
+    public void fromBuf(ByteBuf buf){
 
     }
 
@@ -50,5 +55,14 @@ public class TileEntity{
 
     public boolean doesSave(){
         return true;
+    }
+
+    public void dropInventory(IInventory inventory){
+        for(int i = 0; i < inventory.getSlotAmount(); i++){
+            ItemInstance inst = inventory.get(i);
+            if(inst != null){
+                EntityItem.spawn(this.world, inst, this.x+0.5, this.y+0.5, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
+            }
+        }
     }
 }

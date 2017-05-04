@@ -18,6 +18,14 @@ public class ContainerSlot{
         this.y = y;
     }
 
+    public boolean canPlace(ItemInstance instance){
+        return true;
+    }
+
+    public boolean canRemove(){
+        return true;
+    }
+
     public void set(ItemInstance instance){
         this.inventory.set(this.slot, instance);
     }

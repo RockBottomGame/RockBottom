@@ -6,9 +6,15 @@ import java.util.Date;
 
 public class LogSystem extends DefaultLogSystem{
 
+    private final LogLevel level;
+
+    public LogSystem(LogLevel level){
+        this.level = level;
+    }
+
     @Override
     public void error(String message, Throwable t){
-        this.format("ERROR", message, t);
+        this.format(LogLevel.ERROR, message, t);
     }
 
     @Override
@@ -28,24 +34,34 @@ public class LogSystem extends DefaultLogSystem{
 
     @Override
     public void warn(String message, Throwable t){
-        this.format("WARN", message, t);
+        this.format(LogLevel.WARN, message, t);
     }
 
     @Override
     public void info(String message){
-        this.format("INFO", message, null);
+        this.format(LogLevel.INFO, message, null);
     }
 
     @Override
     public void debug(String message){
-        this.format("DEBUG", message, null);
+        this.format(LogLevel.DEBUG, message, null);
     }
 
-    private void format(String level, String message, Throwable t){
-        out.println("["+new Date()+"] ["+level+"] "+message);
+    private void format(LogLevel level, String message, Throwable t){
+        if(this.level == level || this.level.ordinal() >= level.ordinal()){
+            out.println("["+new Date()+"] ["+level+"] "+message);
 
-        if(t != null){
-            t.printStackTrace(out);
+            if(t != null){
+                t.printStackTrace(out);
+            }
         }
+    }
+
+    public enum LogLevel{
+        NONE,
+        ERROR,
+        WARN,
+        INFO,
+        DEBUG
     }
 }

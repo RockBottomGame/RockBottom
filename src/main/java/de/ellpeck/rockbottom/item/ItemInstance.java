@@ -81,17 +81,21 @@ public class ItemInstance{
         return this.amount;
     }
 
+    public int getMaxAmount(){
+        return this.item.getMaxAmount();
+    }
+
     public ItemInstance setAmount(int amount){
         this.amount = amount;
         return this;
     }
 
-    public void addAmount(int amount){
-        this.setAmount(this.amount+amount);
+    public ItemInstance addAmount(int amount){
+        return this.setAmount(this.amount+amount);
     }
 
-    public void removeAmount(int amount){
-        this.setAmount(this.amount-amount);
+    public ItemInstance removeAmount(int amount){
+        return this.setAmount(this.amount-amount);
     }
 
     public ItemInstance copy(){

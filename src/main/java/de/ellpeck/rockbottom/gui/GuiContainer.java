@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.gui.container.ContainerSlot;
+import de.ellpeck.rockbottom.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDropItem;
@@ -56,9 +57,9 @@ public class GuiContainer extends Gui{
     public void initGui(RockBottom game){
         super.initGui(game);
 
-        List<ContainerSlot> slots = this.player.getContainer().slots;
-        for(int i = 0; i < slots.size(); i++){
-            ContainerSlot slot = slots.get(i);
+        ItemContainer container = this.player.getContainer();
+        for(int i = 0; i < container.getSlotAmount(); i++){
+            ContainerSlot slot = container.getSlot(i);
             this.components.add(new ComponentSlot(this, slot, i, this.guiLeft+slot.x, this.guiTop+slot.y));
         }
     }

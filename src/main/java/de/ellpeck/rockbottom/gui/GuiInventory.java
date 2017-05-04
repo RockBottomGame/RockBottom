@@ -4,8 +4,8 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.construction.BasicRecipe;
-import de.ellpeck.rockbottom.construction.ConstructionList;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
+import de.ellpeck.rockbottom.construction.IRecipe;
 import de.ellpeck.rockbottom.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.gui.component.ComponentRecipeButton;
@@ -51,16 +51,15 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
             this.constructionButtons.clear();
         }
 
-        List<BasicRecipe> recipes = ConstructionRegistry.MANUAL_RECIPES.getUnmodifiable();
-
         int x = 0;
         int y = 0;
-        for(int i = 0; i < recipes.size(); i++){
-            BasicRecipe recipe = recipes.get(i);
-            boolean matches = ConstructionList.matchesInv(recipe, this.player.inv);
+
+        for(int i = 0; i < ConstructionRegistry.MANUAL_RECIPES.size(); i++){
+            BasicRecipe recipe = ConstructionRegistry.MANUAL_RECIPES.get(i);
+            boolean matches = IRecipe.matchesInv(recipe, this.player.inv);
 
             if(matches || shouldShowAll){
-                this.constructionButtons.add(new ComponentRecipeButton(this, 2+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.getId(recipe), matches));
+                this.constructionButtons.add(new ComponentRecipeButton(this, 2+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.indexOf(recipe), matches));
 
                 x += 18;
                 if((i+1)%5 == 0){

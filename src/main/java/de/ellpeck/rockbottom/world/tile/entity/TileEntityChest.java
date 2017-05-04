@@ -16,13 +16,11 @@ public class TileEntityChest extends TileEntity{
 
     @Override
     public void save(DataSet set){
-        super.save(set);
         this.inventory.save(set);
     }
 
     @Override
     public void load(DataSet set){
-        super.load(set);
         this.inventory.load(set);
     }
 }

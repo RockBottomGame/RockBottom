@@ -1,25 +1,30 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.gui.GuiSeparator;
-import de.ellpeck.rockbottom.gui.container.ContainerSeparator;
+import de.ellpeck.rockbottom.gui.GuiSmelter;
+import de.ellpeck.rockbottom.gui.container.ContainerSmelter;
 import de.ellpeck.rockbottom.item.ItemInstance;
+import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.render.tile.SeparatorTileRenderer;
+import de.ellpeck.rockbottom.render.tile.SmelterTileRenderer;
+import de.ellpeck.rockbottom.util.BoundBox;
+import de.ellpeck.rockbottom.world.IWorld;
 import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.world.entity.Entity;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntity;
-import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
+import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
+import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmelter;
 
-public class TileSeparator extends TileBasic{
+public class TileSmelter extends TileBasic{
 
-    public TileSeparator(int id){
-        super(id, "separator");
+    public TileSmelter(int id){
+        super(id, "smelter");
     }
 
     @Override
     protected ITileRenderer createRenderer(String name){
-        return new SeparatorTileRenderer(name);
+        return new SmelterTileRenderer(name);
     }
 
     @Override
@@ -29,7 +34,7 @@ public class TileSeparator extends TileBasic{
 
     @Override
     public TileEntity provideTileEntity(World world, int x, int y){
-        return world.getMeta(x, y) == 1 ? new TileEntitySeparator(world, x, y) : null;
+        return world.getMeta(x, y) == 1 ? new TileEntitySmelter(world, x, y) : null;
     }
 
     @Override
@@ -62,21 +67,43 @@ public class TileSeparator extends TileBasic{
 
     @Override
     public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
-        TileEntitySeparator tile;
+        TileEntitySmelter tile;
 
         if(world.getMeta(x, y) == 1){
-            tile = world.getTileEntity(x, y, TileEntitySeparator.class);
+            tile = world.getTileEntity(x, y, TileEntitySmelter.class);
         }
         else{
-            tile = world.getTileEntity(x, y-1, TileEntitySeparator.class);
+            tile = world.getTileEntity(x, y-1, TileEntitySmelter.class);
         }
 
         if(tile != null){
-            player.openGuiContainer(new GuiSeparator(tile), new ContainerSeparator(player, tile));
+            player.openGuiContainer(new GuiSmelter(player, tile), new ContainerSmelter(player, tile));
             return true;
         }
         else{
             return false;
         }
+    }
+
+    @Override
+    public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
+        super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
+
+        if(!NetHandler.isClient()){
+            TileEntitySmelter smelter = world.getTileEntity(x, y, TileEntitySmelter.class);
+            if(smelter != null){
+                smelter.dropInventory(smelter.inventory);
+            }
+        }
+    }
+
+    @Override
+    public BoundBox getBoundBox(IWorld world, int x, int y){
+        return null;
+    }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
     }
 }

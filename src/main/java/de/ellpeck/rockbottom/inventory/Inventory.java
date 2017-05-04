@@ -27,11 +27,6 @@ public class Inventory implements IInventory{
         if(inst != null){
             inst.addAmount(amount);
 
-            if(inst.getAmount() <= 0){
-                this.set(id, null);
-                return null;
-            }
-
             this.notifyChange(id);
             return inst;
         }
@@ -130,7 +125,7 @@ public class Inventory implements IInventory{
             return null;
         }
         else if(slotInst.isItemEqual(instance)){
-            int space = slotInst.getItem().getMaxAmount()-slotInst.getAmount();
+            int space = slotInst.getMaxAmount()-slotInst.getAmount();
 
             if(space >= instance.getAmount()){
                 if(!simulate){

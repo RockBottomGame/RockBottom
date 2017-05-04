@@ -666,20 +666,19 @@ public class Chunk implements IWorld{
             for(int i = 0; i < TileLayer.LAYERS.length; i++){
                 TileLayer layer = TileLayer.LAYERS[i];
                 short[][] ids = set.getShortShortArray("l_"+i, Constants.CHUNK_SIZE);
+                byte[][] meta = set.getByteByteArray("m_"+i, Constants.CHUNK_SIZE);
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                         Tile tile = ContentRegistry.TILE_REGISTRY.get(ids[x][y]);
                         if(tile != null){
-                            this.setTileInner(layer, x, y, tile, 0);
+                            this.setTileInner(layer, x, y, tile, meta[x][y]);
                         }
                         else{
                             Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
                         }
                     }
                 }
-
-                this.metaGrid[i] = set.getByteByteArray("m_"+i, Constants.CHUNK_SIZE);
             }
 
             for(int i = 0; i < this.lightGrid.length; i++){

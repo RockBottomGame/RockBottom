@@ -5,17 +5,26 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ItemContainer{
 
     public final IInventory[] containedInventories;
     public final EntityPlayer player;
-    public final List<ContainerSlot> slots = new ArrayList<>();
+    private final List<ContainerSlot> slots = new ArrayList<>();
 
     public ItemContainer(EntityPlayer player, IInventory... containedInventories){
         this.player = player;
         this.containedInventories = containedInventories;
+    }
+
+    public ContainerSlot getSlot(int id){
+        return this.slots.get(id);
+    }
+
+    public int getSlotAmount(){
+        return this.slots.size();
     }
 
     public void addSlot(ContainerSlot slot){

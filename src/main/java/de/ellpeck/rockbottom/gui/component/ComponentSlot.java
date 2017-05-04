@@ -32,76 +32,67 @@ public class ComponentSlot extends GuiComponent{
     public boolean onMouseAction(RockBottom game, int button, float x, float y){
         if(this.isMouseOver(game)){
             ItemInstance slotInst = this.slot.get();
+            ItemInstance slotCopy = slotInst == null ? null : slotInst.copy();
 
             if(button == game.settings.buttonGuiAction1){
                 if(this.container.holdingInst == null){
-                    if(slotInst != null){
-                        this.container.holdingInst = slotInst;
-                        this.setToInv(null);
+                    if(slotCopy != null){
+                        if(this.setToInv(null)){
+                            this.container.holdingInst = slotCopy;
 
-                        return true;
+                            return true;
+                        }
                     }
                 }
                 else{
-                    if(slotInst == null){
-                        this.setToInv(this.container.holdingInst);
-                        this.container.holdingInst = null;
+                    if(slotCopy == null){
+                        if(this.setToInv(this.container.holdingInst)){
+                            this.container.holdingInst = null;
 
-                        return true;
+                            return true;
+                        }
                     }
                     else{
-                        if(slotInst.isItemEqual(this.container.holdingInst)){
-                            int possible = Math.min(slotInst.getItem().getMaxAmount()-slotInst.getAmount(), this.container.holdingInst.getAmount());
+                        if(slotCopy.isItemEqual(this.container.holdingInst)){
+                            int possible = Math.min(slotCopy.getMaxAmount()-slotCopy.getAmount(), this.container.holdingInst.getAmount());
                             if(possible > 0){
-                                slotInst.addAmount(possible);
-                                this.setToInv(slotInst);
+                                if(this.setToInv(slotCopy.addAmount(possible))){
+                                    this.container.holdingInst.removeAmount(possible);
+                                    if(this.container.holdingInst.getAmount() <= 0){
+                                        this.container.holdingInst = null;
+                                    }
 
-                                this.container.holdingInst.removeAmount(possible);
-                                if(this.container.holdingInst.getAmount() <= 0){
-                                    this.container.holdingInst = null;
+                                    return true;
                                 }
-
-                                return true;
                             }
                         }
                         else{
                             ItemInstance copy = this.container.holdingInst.copy();
-                            this.container.holdingInst = slotInst;
-                            this.setToInv(copy);
+                            if(this.setToInv(copy)){
+                                this.container.holdingInst = slotCopy;
 
-                            return true;
+                                return true;
+                            }
                         }
                     }
                 }
             }
             else if(button == game.settings.buttonGuiAction2){
                 if(this.container.holdingInst == null){
-                    if(slotInst != null){
-                        int half = Util.ceil((double)slotInst.getAmount()/2);
-                        this.container.holdingInst = slotInst.copy().setAmount(half);
+                    if(slotCopy != null){
+                        int half = Util.ceil((double)slotCopy.getAmount()/2);
+                        slotCopy.removeAmount(half);
 
-                        slotInst.removeAmount(half);
-                        this.setToInv(slotInst.getAmount() <= 0 ? null : slotInst);
+                        if(this.setToInv(slotCopy.getAmount() <= 0 ? null : slotCopy)){
+                            this.container.holdingInst = slotCopy.copy().setAmount(half);
 
-                        return true;
+                            return true;
+                        }
                     }
                 }
                 else{
-                    if(slotInst == null){
-                        this.setToInv(this.container.holdingInst.copy().setAmount(1));
-
-                        this.container.holdingInst.removeAmount(1);
-                        if(this.container.holdingInst.getAmount() <= 0){
-                            this.container.holdingInst = null;
-                        }
-
-                        return true;
-                    }
-                    else if(slotInst.isItemEqual(this.container.holdingInst)){
-                        if(slotInst.getAmount() < slotInst.getItem().getMaxAmount()){
-                            slotInst.addAmount(1);
-                            this.setToInv(slotInst);
-
+                    if(slotCopy == null){
+                        if(this.setToInv(this.container.holdingInst.copy().setAmount(1))){
                             this.container.holdingInst.removeAmount(1);
                             if(this.container.holdingInst.getAmount() <= 0){
                                 this.container.holdingInst = null;
@@ -110,17 +101,35 @@ public class ComponentSlot extends GuiComponent{
                             return true;
                         }
                     }
+                    else if(slotCopy.isItemEqual(this.container.holdingInst)){
+                        if(slotCopy.getAmount() < slotCopy.getMaxAmount()){
+                            if(this.setToInv(slotCopy.addAmount(1))){
+                                this.container.holdingInst.removeAmount(1);
+                                if(this.container.holdingInst.getAmount() <= 0){
+                                    this.container.holdingInst = null;
+                                }
+
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
         }
         return false;
     }
 
-    private void setToInv(ItemInstance inst){
-        this.slot.set(inst);
+    private boolean setToInv(ItemInstance inst){
+        if(inst == null ? this.slot.canRemove() : this.slot.canPlace(inst)){
+            this.slot.set(inst);
 
-        if(NetHandler.isClient()){
-            NetHandler.sendToServer(new PacketSlotModification(RockBottom.get().player.getUniqueId(), this.componentId, inst));
+            if(NetHandler.isClient()){
+                NetHandler.sendToServer(new PacketSlotModification(RockBottom.get().player.getUniqueId(), this.componentId, inst));
+            }
+            return true;
+        }
+        else{
+            return false;
         }
     }
 

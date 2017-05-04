@@ -52,10 +52,10 @@ public class Particle extends MovableWorldObject{
     }
 
     protected void applyMotion(){
-        this.motionY -= 0.025;
+        this.motionY -= 0.02;
 
-        this.motionX *= 0.98;
-        this.motionY *= 0.98;
+        this.motionX *= 0.99;
+        this.motionY *= 0.99;
     }
 
     public void render(RockBottom game, AssetManager manager, Graphics g, float x, float y, Color filter){

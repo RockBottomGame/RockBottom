@@ -55,7 +55,7 @@ public class PacketSlotModification implements IPacket{
                 if(player != null){
                     ItemContainer container = player.getContainer();
                     if(container != null){
-                        ContainerSlot slot = container.slots.get(this.slot);
+                        ContainerSlot slot = container.getSlot(this.slot);
 
                         ItemInstance inst = null;
                         if(!this.instSet.isEmpty()){

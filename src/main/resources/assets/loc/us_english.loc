@@ -6,6 +6,8 @@ name.coal=Coal
 name.copper_cluster=Copper Cluster
 name.copper_grit=Copper Grit
 name.slag=Slag
+name.copper_ingot=Copper Ingot
+name.smelter=Smelter
 
 info.layer_placement=Can be placed in %s
 info.health=Health
