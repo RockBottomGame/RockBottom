@@ -23,6 +23,10 @@ public interface IWorld{
 
     void setTile(TileLayer layer, int x, int y, Tile tile);
 
+    void setTile(int x, int y, Tile tile, int meta);
+
+    void setTile(TileLayer layer, int x, int y, Tile tile, int meta);
+
     void setMeta(int x, int y, int meta);
 
     void setMeta(TileLayer layer, int x, int y, int meta);

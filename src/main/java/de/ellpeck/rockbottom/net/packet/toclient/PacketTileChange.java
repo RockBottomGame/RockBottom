@@ -18,12 +18,14 @@ public class PacketTileChange implements IPacket{
 
     private TileLayer layer;
     private Tile tile;
+    private int meta;
 
-    public PacketTileChange(int x, int y, TileLayer layer, Tile tile){
+    public PacketTileChange(int x, int y, TileLayer layer, Tile tile, int meta){
         this.x = x;
         this.y = y;
         this.layer = layer;
         this.tile = tile;
+        this.meta = meta;
     }
 
     public PacketTileChange(){
@@ -35,6 +37,7 @@ public class PacketTileChange implements IPacket{
         buf.writeInt(this.y);
         buf.writeInt(this.layer.ordinal());
         buf.writeShort(ContentRegistry.TILE_REGISTRY.getId(this.tile));
+        buf.writeByte(this.meta);
     }
 
     @Override
@@ -43,6 +46,7 @@ public class PacketTileChange implements IPacket{
         this.y = buf.readInt();
         this.layer = TileLayer.LAYERS[buf.readInt()];
         this.tile = ContentRegistry.TILE_REGISTRY.get(buf.readShort());
+        this.meta = buf.readByte();
     }
 
     @Override
@@ -51,7 +55,7 @@ public class PacketTileChange implements IPacket{
             if(game.world != null){
                 if(game.world.isPosLoaded(this.x, this.y)){
                     Chunk chunk = game.world.getChunk(this.x, this.y);
-                    chunk.setTileInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.tile);
+                    chunk.setTileInner(this.layer, this.x-chunk.x, this.y-chunk.y, this.tile, this.meta);
                 }
             }
             return true;

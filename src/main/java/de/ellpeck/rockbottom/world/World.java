@@ -344,8 +344,18 @@ public class World implements IWorld{
 
     @Override
     public void setTile(TileLayer layer, int x, int y, Tile tile){
+        this.setTile(layer, x, y, tile, 0);
+    }
+
+    @Override
+    public void setTile(int x, int y, Tile tile, int meta){
+        this.setTile(TileLayer.MAIN, x, y, tile, meta);
+    }
+
+    @Override
+    public void setTile(TileLayer layer, int x, int y, Tile tile, int meta){
         Chunk chunk = this.getChunk(x, y);
-        chunk.setTile(layer, x, y, tile);
+        chunk.setTile(layer, x, y, tile, meta);
     }
 
     @Override

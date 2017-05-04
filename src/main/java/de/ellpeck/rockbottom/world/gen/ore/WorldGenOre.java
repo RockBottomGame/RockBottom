@@ -35,12 +35,7 @@ public abstract class WorldGenOre implements IWorldGenerator{
                 for(int x = -thisRadX; x <= thisRadX; x++){
                     for(int y = -thisRadY; y <= thisRadY; y++){
                         if(rand.nextInt(thisRadX) == x || rand.nextInt(thisRadY) == y){
-                            world.setTile(startX+x, startY+y, this.getOreTile());
-
-                            int meta = this.getOreMeta();
-                            if(meta != 0){
-                                world.setMeta(startX+x, startY+y, meta);
-                            }
+                            world.setTile(startX+x, startY+y, this.getOreTile(), this.getOreMeta());
                         }
                     }
                 }

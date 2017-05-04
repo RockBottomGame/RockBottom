@@ -84,7 +84,7 @@ public class Tile{
     }
 
     public boolean canPlaceInLayer(TileLayer layer){
-        return layer != TileLayer.BACKGROUND || !this.providesTileEntity();
+        return layer != TileLayer.BACKGROUND || !this.canProvideTileEntity();
     }
 
     public Tile register(){
@@ -164,7 +164,7 @@ public class Tile{
         return null;
     }
 
-    public boolean providesTileEntity(){
+    public boolean canProvideTileEntity(){
         return false;
     }
 
@@ -184,13 +184,12 @@ public class Tile{
 
     }
 
-    public void doPlace(World world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
-        world.setTile(layer, x, y, this);
+    public void doBreak(World world, int x, int y, TileLayer layer, EntityPlayer breaker, boolean isRightTool){
+        world.destroyTile(x, y, layer, breaker, isRightTool);
+    }
 
-        int meta = this.getPlacementMeta(world, x, y, layer, instance);
-        if(meta != 0){
-            world.setMeta(layer, x, y, meta);
-        }
+    public void doPlace(World world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
+        world.setTile(layer, x, y, this, this.getPlacementMeta(world, x, y, layer, instance));
     }
 
     public int getPlacementMeta(World world, int x, int y, TileLayer layer, ItemInstance instance){

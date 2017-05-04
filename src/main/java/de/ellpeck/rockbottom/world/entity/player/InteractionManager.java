@@ -86,7 +86,7 @@ public class InteractionManager{
                                     NetHandler.sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
                                 }
                                 else{
-                                    player.world.destroyTile(this.mousedTileX, this.mousedTileY, layer, player, effectiveness > 0);
+                                    tile.doBreak(game.world, this.mousedTileX, this.mousedTileY, layer, player, effectiveness > 0);
                                 }
                             }
                             else{

@@ -29,7 +29,7 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public boolean providesTileEntity(){
+    public boolean canProvideTileEntity(){
         return true;
     }
 

@@ -233,7 +233,17 @@ public class Chunk implements IWorld{
 
     @Override
     public void setTile(TileLayer layer, int x, int y, Tile tile){
-        this.setTileInner(layer, x-this.x, y-this.y, tile);
+        this.setTileInner(layer, x-this.x, y-this.y, tile, 0);
+    }
+
+    @Override
+    public void setTile(int x, int y, Tile tile, int meta){
+        this.setTileInner(TileLayer.MAIN, x-this.x, y-this.y, tile, meta);
+    }
+
+    @Override
+    public void setTile(TileLayer layer, int x, int y, Tile tile, int meta){
+        this.setTileInner(layer, x-this.x, y-this.y, tile, meta);
     }
 
     @Override
@@ -258,11 +268,19 @@ public class Chunk implements IWorld{
         return this.metaGrid[layer.ordinal()][x][y];
     }
 
+    public void setTileInner(int x, int y, Tile tile, int meta){
+        this.setTileInner(TileLayer.MAIN, x, y, tile, meta);
+    }
+
     public void setTileInner(int x, int y, Tile tile){
         this.setTileInner(TileLayer.MAIN, x, y, tile);
     }
 
     public void setTileInner(TileLayer layer, int x, int y, Tile tile){
+        this.setTileInner(layer, x, y, tile, 0);
+    }
+
+    public void setTileInner(TileLayer layer, int x, int y, Tile tile, int meta){
         Tile lastTile = this.getTileInner(layer, x, y);
 
         boolean lastAir = lastTile.isAir();
@@ -272,7 +290,7 @@ public class Chunk implements IWorld{
         lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
         if(layer == TileLayer.MAIN){
-            if(lastTile.providesTileEntity()){
+            if(lastTile.canProvideTileEntity()){
                 this.removeTileEntity(this.x+x, this.y+y);
             }
 
@@ -283,12 +301,12 @@ public class Chunk implements IWorld{
 
         int ord = layer.ordinal();
         this.tileGrid[ord][x][y] = tile;
-        this.metaGrid[ord][x][y] = 0;
+        this.metaGrid[ord][x][y] = (byte)meta;
 
         tile.onAdded(this.world, this.x+x, this.y+y, layer);
 
         if(layer == TileLayer.MAIN){
-            if(tile.providesTileEntity()){
+            if(tile.canProvideTileEntity()){
                 TileEntity tileEntity = tile.provideTileEntity(this.world, this.x+x, this.y+y);
                 if(tileEntity != null){
                     this.addTileEntity(tileEntity);
@@ -301,7 +319,7 @@ public class Chunk implements IWorld{
         }
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, tile));
+            NetHandler.sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, tile, meta));
         }
 
         if(!this.isGenerating){
@@ -649,7 +667,7 @@ public class Chunk implements IWorld{
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                         Tile tile = ContentRegistry.TILE_REGISTRY.get(ids[x][y]);
                         if(tile != null){
-                            this.setTileInner(layer, x, y, tile);
+                            this.setTileInner(layer, x, y, tile, 0);
                         }
                         else{
                             Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
