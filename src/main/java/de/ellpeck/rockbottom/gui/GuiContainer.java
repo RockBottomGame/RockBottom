@@ -14,8 +14,6 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import java.util.List;
-
 public class GuiContainer extends Gui{
 
     public final EntityPlayer player;

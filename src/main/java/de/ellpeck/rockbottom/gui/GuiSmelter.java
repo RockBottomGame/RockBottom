@@ -22,24 +22,24 @@ public class GuiSmelter extends GuiContainer{
 
     @Override
     public void render(RockBottom game, AssetManager manager, Graphics g){
-        super.render(game, manager, g);
-
         if(this.tile.maxSmeltTime > 0 && this.tile.smeltTime > 0){
-            int width = Util.ceil((double)this.tile.smeltTime/(double)this.tile.maxSmeltTime*41);
+            float width = (float)this.tile.smeltTime/(float)this.tile.maxSmeltTime*40F;
 
             g.setColor(PROGRESS_COLOR);
-            g.fillRect(this.guiLeft+80, this.guiTop+15, width-1, 8);
+            g.fillRect(this.guiLeft+80, this.guiTop+15, width, 8);
         }
 
         if(this.tile.maxCoalTime > 0 && this.tile.coalTime > 0){
-            int height = Util.ceil((double)this.tile.coalTime/(double)this.tile.maxCoalTime*19);
+            float height = (float)this.tile.coalTime/(float)this.tile.maxCoalTime*18F;
 
             g.setColor(FIRE_COLOR);
-            g.fillRect(this.guiLeft+74, this.guiTop+48-height+1, 8, height-1);
+            g.fillRect(this.guiLeft+74, this.guiTop+48-height, 8, height);
         }
 
         g.setColor(Color.black);
         g.drawRect(this.guiLeft+80, this.guiTop+15, 40, 8);
         g.drawRect(this.guiLeft+74, this.guiTop+30, 8, 18);
+
+        super.render(game, manager, g);
     }
 }

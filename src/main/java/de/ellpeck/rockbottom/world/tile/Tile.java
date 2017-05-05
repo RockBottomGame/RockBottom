@@ -224,7 +224,7 @@ public class Tile{
         return this;
     }
 
-    public byte getLight(World world, int x, int y, TileLayer layer){
+    public int getLight(World world, int x, int y, TileLayer layer){
         return 0;
     }
 

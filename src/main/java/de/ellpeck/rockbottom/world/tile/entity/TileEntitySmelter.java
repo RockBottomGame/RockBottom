@@ -26,6 +26,7 @@ public class TileEntitySmelter extends TileEntity{
 
     private int lastSmelt;
     private int lastCoal;
+    private boolean lastActive;
 
     public TileEntitySmelter(World world, int x, int y){
         super(world, x, y);
@@ -60,6 +61,13 @@ public class TileEntitySmelter extends TileEntity{
                 this.lastSmelt = this.smeltTime;
 
                 this.sendToClients();
+            }
+
+            boolean active = this.isActive();
+            if(this.lastActive != active){
+                this.lastActive = active;
+
+                this.world.causeLightUpdate(this.x, this.y);
             }
         }
     }
@@ -97,8 +105,12 @@ public class TileEntitySmelter extends TileEntity{
                                 }
                             }
                             else{
-                                return true;
+                                return hasRecipeAndSpace;
                             }
+                        }
+                        else if(this.smeltTime > 0){
+                            this.smeltTime = Math.max(this.smeltTime-2, 0);
+                            return hasRecipeAndSpace;
                         }
                     }
                 }

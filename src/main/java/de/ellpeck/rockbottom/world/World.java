@@ -456,9 +456,18 @@ public class World implements IWorld{
         this.setTile(layer, x, y, ContentRegistry.TILE_AIR);
     }
 
-    public void updateLightFrom(int x, int y, MutableInt recurseCount){
+    public void causeLightUpdate(int x, int y){
+        MutableInt recurseCount = new MutableInt(0);
+        this.causeLightUpdate(x, y, recurseCount);
+
+        if(recurseCount.get() >= 100){
+            Log.debug("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls!");
+        }
+    }
+
+    private void causeLightUpdate(int x, int y, MutableInt recurseCount){
         if(recurseCount.get() > 5000){
-            Log.warn("UPDATING LIGHT AT "+x+", "+y+" TOOK MORE THAN 2000 RECURSIVE CALLS! ABORTING!");
+            Log.warn("UPDATING LIGHT AT "+x+", "+y+" TOOK MORE THAN 5000 RECURSIVE CALLS! ABORTING!");
             return;
         }
 
@@ -484,7 +493,7 @@ public class World implements IWorld{
                 }
 
                 if(change){
-                    this.updateLightFrom(dirX, dirY, recurseCount.add(1));
+                    this.causeLightUpdate(dirX, dirY, recurseCount.add(1));
                 }
             }
         }
@@ -542,8 +551,8 @@ public class World implements IWorld{
         }
         else{
             if(!isSky){
-                byte foregroundLight = foreground.getLight(this, x, y, TileLayer.MAIN);
-                byte backgroundLight = background.getLight(this, x, y, TileLayer.BACKGROUND);
+                int foregroundLight = foreground.getLight(this, x, y, TileLayer.MAIN);
+                int backgroundLight = background.getLight(this, x, y, TileLayer.BACKGROUND);
                 return (byte)Math.max(foregroundLight, backgroundLight);
             }
         }

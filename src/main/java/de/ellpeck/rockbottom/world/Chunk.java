@@ -284,7 +284,7 @@ public class Chunk implements IWorld{
         Tile lastTile = this.getTileInner(layer, x, y);
 
         boolean lastAir = lastTile.isAir();
-        byte lastLight = lastTile.getLight(this.world, this.x+x, this.y+y, layer);
+        int lastLight = lastTile.getLight(this.world, this.x+x, this.y+y, layer);
         float lastMofifier = lastTile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer);
 
         lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
@@ -324,12 +324,7 @@ public class Chunk implements IWorld{
 
         if(!this.isGenerating){
             if(lastAir != tile.isAir() || lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
-                MutableInt recurseCount = new MutableInt(0);
-                this.world.updateLightFrom(this.x+x, this.y+y, recurseCount);
-
-                if(recurseCount.get() >= 100){
-                    Log.debug("Updated light at "+(this.x+x)+", "+(this.y+y)+" using "+recurseCount.get()+" recursive calls!");
-                }
+                this.world.causeLightUpdate(this.x+x, this.y+y);
             }
 
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);

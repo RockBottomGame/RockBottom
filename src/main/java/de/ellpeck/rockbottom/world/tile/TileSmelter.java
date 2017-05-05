@@ -54,6 +54,12 @@ public class TileSmelter extends TileBasic{
     }
 
     @Override
+    public int getLight(World world, int x, int y, TileLayer layer){
+        TileEntitySmelter tile = world.getTileEntity(x, y, TileEntitySmelter.class);
+        return tile != null && tile.isActive() ? 20 : 0;
+    }
+
+    @Override
     public void doBreak(World world, int x, int y, TileLayer layer, EntityPlayer breaker, boolean isRightTool){
         if(world.getMeta(x, y) == 1){
             world.destroyTile(x, y+1, layer, breaker, false);

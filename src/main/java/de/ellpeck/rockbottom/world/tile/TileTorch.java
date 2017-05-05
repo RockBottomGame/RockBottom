@@ -69,7 +69,7 @@ public class TileTorch extends TileBasic{
     }
 
     @Override
-    public byte getLight(World world, int x, int y, TileLayer layer){
+    public int getLight(World world, int x, int y, TileLayer layer){
         return 25;
     }
 
