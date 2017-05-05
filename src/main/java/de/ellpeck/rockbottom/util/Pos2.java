@@ -28,6 +28,10 @@ public class Pos2{
         return this;
     }
 
+    public Pos2 add(int x, int y){
+        return this.set(this.x+x, this.y+y);
+    }
+
     @Override
     public boolean equals(Object o){
         if(this == o){

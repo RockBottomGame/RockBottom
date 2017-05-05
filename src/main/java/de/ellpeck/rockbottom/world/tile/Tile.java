@@ -134,8 +134,8 @@ public class Tile{
         return false;
     }
 
-    public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
-        if(forceDrop || this.forceDrop){
+    public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop){
+        if(shouldDrop){
             List<ItemInstance> drops = this.getDrops(world, x, y, destroyer);
             if(drops != null && !drops.isEmpty()){
                 for(ItemInstance inst : drops){
@@ -185,7 +185,7 @@ public class Tile{
     }
 
     public void doBreak(World world, int x, int y, TileLayer layer, EntityPlayer breaker, boolean isRightTool){
-        world.destroyTile(x, y, layer, breaker, isRightTool);
+        world.destroyTile(x, y, layer, breaker, this.forceDrop || isRightTool);
     }
 
     public void doPlace(World world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){

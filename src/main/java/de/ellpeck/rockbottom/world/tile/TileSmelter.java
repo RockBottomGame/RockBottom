@@ -2,21 +2,20 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.gui.GuiSmelter;
 import de.ellpeck.rockbottom.gui.container.ContainerSmelter;
-import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.render.tile.SmelterTileRenderer;
 import de.ellpeck.rockbottom.util.BoundBox;
+import de.ellpeck.rockbottom.util.Pos2;
 import de.ellpeck.rockbottom.world.IWorld;
 import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.Entity;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntity;
-import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmelter;
 
-public class TileSmelter extends TileBasic{
+public class TileSmelter extends MultiTile{
 
     public TileSmelter(int id){
         super(id, "smelter");
@@ -34,53 +33,24 @@ public class TileSmelter extends TileBasic{
 
     @Override
     public TileEntity provideTileEntity(World world, int x, int y){
-        return world.getMeta(x, y) == 1 ? new TileEntitySmelter(world, x, y) : null;
-    }
-
-    @Override
-    public boolean canPlace(World world, int x, int y, TileLayer layer){
-        return super.canPlace(world, x, y, layer) && world.getTile(x, y+1).canReplace(world, x, y+1, layer, this);
-    }
-
-    @Override
-    public void doPlace(World world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
-        super.doPlace(world, x, y, layer, instance, placer);
-        world.setTile(x, y+1, this);
-    }
-
-    @Override
-    public int getPlacementMeta(World world, int x, int y, TileLayer layer, ItemInstance instance){
-        return 1;
+        return this.isMainPos(x, y, world.getMeta(x, y)) ? new TileEntitySmelter(world, x, y) : null;
     }
 
     @Override
     public int getLight(World world, int x, int y, TileLayer layer){
-        TileEntitySmelter tile = world.getTileEntity(x, y, TileEntitySmelter.class);
-        return tile != null && tile.isActive() ? 20 : 0;
-    }
-
-    @Override
-    public void doBreak(World world, int x, int y, TileLayer layer, EntityPlayer breaker, boolean isRightTool){
-        if(world.getMeta(x, y) == 1){
-            world.destroyTile(x, y+1, layer, breaker, false);
+        if(this.isMainPos(x, y, world.getMeta(x, y))){
+            TileEntitySmelter tile = world.getTileEntity(x, y, TileEntitySmelter.class);
+            if(tile != null && tile.isActive()){
+                return 20;
+            }
         }
-        else{
-            world.destroyTile(x, y-1, layer, breaker, false);
-        }
-
-        super.doBreak(world, x, y, layer, breaker, isRightTool);
+        return 0;
     }
 
     @Override
     public boolean onInteractWith(World world, int x, int y, EntityPlayer player){
-        TileEntitySmelter tile;
-
-        if(world.getMeta(x, y) == 1){
-            tile = world.getTileEntity(x, y, TileEntitySmelter.class);
-        }
-        else{
-            tile = world.getTileEntity(x, y-1, TileEntitySmelter.class);
-        }
+        Pos2 main = this.getMainPos(x, y, world.getMeta(x, y));
+        TileEntitySmelter tile = world.getTileEntity(main.getX(), main.getY(), TileEntitySmelter.class);
 
         if(tile != null){
             player.openGuiContainer(new GuiSmelter(player, tile), new ContainerSmelter(player, tile));
@@ -96,9 +66,10 @@ public class TileSmelter extends TileBasic{
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
         if(!NetHandler.isClient()){
-            TileEntitySmelter smelter = world.getTileEntity(x, y, TileEntitySmelter.class);
-            if(smelter != null){
-                smelter.dropInventory(smelter.inventory);
+            Pos2 main = this.getMainPos(x, y, world.getMeta(x, y));
+            TileEntitySmelter tile = world.getTileEntity(main.getX(), main.getY(), TileEntitySmelter.class);
+            if(tile != null){
+                tile.dropInventory(tile.inventory);
             }
         }
     }
@@ -111,5 +82,33 @@ public class TileSmelter extends TileBasic{
     @Override
     public boolean isFullTile(){
         return false;
+    }
+
+    @Override
+    protected boolean[][] makeStructure(){
+        return new boolean[][]{
+                new boolean[]{true},
+                new boolean[]{true}
+        };
+    }
+
+    @Override
+    public int getWidth(){
+        return 1;
+    }
+
+    @Override
+    public int getHeight(){
+        return 2;
+    }
+
+    @Override
+    public int getMainX(){
+        return 0;
+    }
+
+    @Override
+    public int getMainY(){
+        return 0;
     }
 }

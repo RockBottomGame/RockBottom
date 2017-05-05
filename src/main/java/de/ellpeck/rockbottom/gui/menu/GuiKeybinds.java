@@ -38,15 +38,6 @@ public class GuiKeybinds extends Gui{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
-        super.render(game, manager, g);
-
-        Font font = manager.getFont();
-        font.drawCenteredString(this.guiLeft+this.sizeX/2, this.guiTop+this.sizeY+15, "Press &6F&4 while in the inventory to get items!", 0.25F, false);
-        font.drawCenteredString(this.guiLeft+this.sizeX/2, this.guiTop+this.sizeY+25, "Press &6F1&4 to open the debug menu!", 0.25F, false);
-    }
-
-    @Override
     public boolean onButtonActivated(RockBottom game, int button){
         if(button == -1){
             game.guiManager.openGui(this.parent);

@@ -441,11 +441,11 @@ public class World implements IWorld{
         }
     }
 
-    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean forceDrop){
+    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean shouldDrop){
         Tile tile = this.getTile(layer, x, y);
         int meta = this.getMeta(x, y);
 
-        tile.onDestroyed(this, x, y, destroyer, layer, forceDrop);
+        tile.onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
         if(NetHandler.isServer()){
             NetHandler.sendToAllPlayers(this, PacketParticles.tile(x, y, tile, meta));
