@@ -38,7 +38,7 @@ public class ComponentSlider extends ComponentButton{
         g.setColor(this.isMouseOver(game) ? COLOR : COLOR_UNSELECTED);
         g.fillRect(x, this.y, 5F, this.sizeY);
 
-        g.setColor(Color.black);
+        g.setColor(COLOR_OUTLINE);
         g.drawRect(x, this.y, 5F, this.sizeY);
     }
 

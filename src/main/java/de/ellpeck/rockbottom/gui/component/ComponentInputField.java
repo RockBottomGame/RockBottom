@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.util.Util;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
@@ -84,10 +83,10 @@ public class ComponentInputField extends GuiComponent{
     public void render(RockBottom game, AssetManager manager, Graphics g){
         if(this.renderBox){
             g.setColor(this.isMouseOver(game) ? ComponentButton.COLOR : ComponentButton.COLOR_UNSELECTED);
-            g.fillRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
+            g.fillRect(this.x, this.y, this.sizeX, this.sizeY);
 
-            g.setColor(Color.black);
-            g.drawRoundRect(this.x, this.y, this.sizeX, this.sizeY, 2);
+            g.setColor(ComponentButton.COLOR_OUTLINE);
+            g.drawRect(this.x, this.y, this.sizeX, this.sizeY);
         }
 
         String text = this.text+(this.isActive ? ((this.counter/15)%2 == 0 ? "|" : " ") : "");

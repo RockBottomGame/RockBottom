@@ -172,7 +172,10 @@ public class Gui{
             }
 
             g.setColor(HOVER_INFO_BACKGROUND);
-            g.fillRoundRect(x, y, boxWidth, boxHeight, 2);
+            g.fillRect(x, y, boxWidth, boxHeight);
+
+            g.setColor(Color.black);
+            g.drawRect(x, y, boxWidth, boxHeight);
 
             float yOffset = 0F;
             for(String s : text){

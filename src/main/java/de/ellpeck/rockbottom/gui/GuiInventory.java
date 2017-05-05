@@ -37,7 +37,6 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         super.initGui(game);
 
         this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, "gui.construction", game.assetManager.localize("button.construction")));
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-15, this.guiTop+this.sizeY+10, 30, 10, game.assetManager.localize("button.close")));
 
         if(isConstructionOpen){
             this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, "gui.all_construction", game.assetManager.localize("button.all_construction")));
@@ -114,10 +113,6 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         else if(button == 0){
             isConstructionOpen = !isConstructionOpen;
             this.initGui(game);
-            return true;
-        }
-        else if(button == -1){
-            game.guiManager.closeGui();
             return true;
         }
         else{

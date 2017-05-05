@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmelter;
 import org.newdawn.slick.Color;
@@ -16,7 +15,7 @@ public class GuiSmelter extends GuiContainer{
     private final TileEntitySmelter tile;
 
     public GuiSmelter(EntityPlayer player, TileEntitySmelter tile){
-        super(player, 158, 150);
+        super(player, 198, 150);
         this.tile = tile;
     }
 

@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.data.set.DataSet;
+import de.ellpeck.rockbottom.data.settings.Settings;
 import de.ellpeck.rockbottom.gui.*;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
@@ -13,7 +14,6 @@ import de.ellpeck.rockbottom.net.client.ClientWorld;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.WorldRenderer;
-import de.ellpeck.rockbottom.data.settings.Settings;
 import de.ellpeck.rockbottom.util.IAction;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
@@ -24,7 +24,9 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class RockBottom extends BasicGame{
 
@@ -197,6 +199,7 @@ public class RockBottom extends BasicGame{
             }
         }
 
+        g.setLineWidth(this.settings.guiScale);
         this.guiManager.render(this, this.assetManager, g, this.player);
     }
 

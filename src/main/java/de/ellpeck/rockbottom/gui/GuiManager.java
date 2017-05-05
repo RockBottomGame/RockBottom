@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.gui;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.font.Font;
-import de.ellpeck.rockbottom.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.component.GuiComponent;
@@ -16,7 +15,6 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -59,32 +57,6 @@ public class GuiManager{
             int x = (int)(width/2-59.25+i*15);
             this.onScreenComponents.add(new ComponentHotbarSlot(player.inv, i, x, 3));
         }
-
-        this.onScreenComponents.add(new ComponentButton(null, 0, (int)width-33, 3, 30, 10, game.assetManager.localize("button.menu")){
-            @Override
-            public boolean onPressed(RockBottom game){
-                game.openIngameMenu();
-                return true;
-            }
-
-            @Override
-            public boolean isMouseOver(RockBottom game){
-                return GuiManager.this.getGui() == null && super.isMouseOver(game);
-            }
-        });
-
-        this.onScreenComponents.add(new ComponentButton(null, 0, 3, 3, 30, 10, game.assetManager.localize("button.inventory")){
-            @Override
-            public boolean onPressed(RockBottom game){
-                player.openGuiContainer(new GuiInventory(player), player.inventoryContainer);
-                return true;
-            }
-
-            @Override
-            public boolean isMouseOver(RockBottom game){
-                return GuiManager.this.getGui() == null && super.isMouseOver(game);
-            }
-        });
 
         int maxHealthParts = Util.floor(game.player.getMaxHealth()/20);
         this.onScreenComponents.add(new ComponentHealth(null, (int)game.getWidthInGui()-3-maxHealthParts*13, (int)game.getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
