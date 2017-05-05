@@ -4,9 +4,15 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.Gui;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class GuiComponent{
+
+    public final Color guiColor = RockBottom.get().settings.guiColor;
+    public final Color colorButton = this.guiColor.multiply(new Color(1F, 1F, 1F, 0.5F));
+    public final Color colorButtonUnselected = this.colorButton.darker(0.4F);
+    public final Color colorOutline = this.guiColor.darker(0.3F);
 
     public Gui gui;
 

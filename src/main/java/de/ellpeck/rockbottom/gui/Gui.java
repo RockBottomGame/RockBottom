@@ -15,7 +15,6 @@ import java.util.List;
 
 public class Gui{
 
-    public static final Color GUI_COLOR = new Color(0x529652);
     private static final Color HOVER_INFO_BACKGROUND = new Color(0F, 0F, 0F, 0.8F);
     public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.5F);
 

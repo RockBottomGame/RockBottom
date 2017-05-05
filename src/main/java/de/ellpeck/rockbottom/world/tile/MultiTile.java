@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.item.ItemInstance;
+import de.ellpeck.rockbottom.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.util.Pos2;
 import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
@@ -20,6 +22,11 @@ public abstract class MultiTile extends TileBasic{
         }
     }
 
+    @Override
+    protected ITileRenderer createRenderer(String name){
+        return new MultiTileRenderer(name);
+    }
+
     protected abstract boolean[][] makeStructure();
 
     public abstract int getWidth();
@@ -31,21 +38,24 @@ public abstract class MultiTile extends TileBasic{
     public abstract int getMainY();
 
     public boolean isStructurePart(int x, int y){
-        return this.structure[y][x];
+        return this.structure[this.getHeight()-1-y][x];
     }
 
     @Override
     public boolean canPlace(World world, int x, int y, TileLayer layer){
         if(super.canPlace(world, x, y, layer)){
-            Pos2 start = this.getBottomLeft(x, y, world.getMeta(layer, x, y));
+            int startX = x-this.getMainX();
+            int startY = y-this.getMainY();
 
             for(int addX = 0; addX < this.getWidth(); addX++){
                 for(int addY = 0; addY < this.getHeight(); addY++){
-                    int theX = start.getX()+addX;
-                    int theY = start.getY()+addY;
+                    if(this.isStructurePart(addX, addY)){
+                        int theX = startX+addX;
+                        int theY = startY+addY;
 
-                    if(!world.getTile(layer, theX, theY).canReplace(world, theX, theY, layer, this)){
-                        return false;
+                        if(!world.getTile(layer, theX, theY).canReplace(world, theX, theY, layer, this)){
+                            return false;
+                        }
                     }
                 }
             }
@@ -91,10 +101,7 @@ public abstract class MultiTile extends TileBasic{
     }
 
     public Pos2 getInnerCoord(int meta){
-        int y = meta/this.getWidth();
-        int x = meta-y;
-
-        return new Pos2(x, y);
+        return new Pos2(meta%this.getWidth(), meta/this.getWidth());
     }
 
     public int getMeta(Pos2 coord){
@@ -102,7 +109,7 @@ public abstract class MultiTile extends TileBasic{
     }
 
     public int getMeta(int x, int y){
-        return x*this.getWidth()+y;
+        return y*this.getWidth()+x;
     }
 
     public Pos2 getMainPos(int x, int y, int meta){

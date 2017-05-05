@@ -82,10 +82,10 @@ public class ComponentInputField extends GuiComponent{
     @Override
     public void render(RockBottom game, AssetManager manager, Graphics g){
         if(this.renderBox){
-            g.setColor(this.isMouseOver(game) ? ComponentButton.COLOR : ComponentButton.COLOR_UNSELECTED);
+            g.setColor(this.isMouseOver(game) ? this.colorButton : this.colorButtonUnselected);
             g.fillRect(this.x, this.y, this.sizeX, this.sizeY);
 
-            g.setColor(ComponentButton.COLOR_OUTLINE);
+            g.setColor(this.colorOutline);
             g.drawRect(this.x, this.y, this.sizeX, this.sizeY);
         }
 

@@ -8,10 +8,6 @@ import org.newdawn.slick.Graphics;
 
 public class ComponentButton extends GuiComponent{
 
-    public static final Color COLOR = Gui.GUI_COLOR.multiply(new Color(1F, 1F, 1F, 0.5F));
-    public static final Color COLOR_UNSELECTED = COLOR.darker(0.4F);
-    public static final Color COLOR_OUTLINE = Gui.GUI_COLOR.darker(0.3F);
-
     public final int id;
     protected final String text;
     private final String[] hover;
@@ -33,10 +29,10 @@ public class ComponentButton extends GuiComponent{
     @Override
     public void render(RockBottom game, AssetManager manager, Graphics g){
         if(this.hasBackground){
-            g.setColor(this.isMouseOver(game) ? COLOR : COLOR_UNSELECTED);
+            g.setColor(this.isMouseOver(game) ? this.colorButton : this.colorButtonUnselected);
             g.fillRect(this.x, this.y, this.sizeX, this.sizeY);
 
-            g.setColor(COLOR_OUTLINE);
+            g.setColor(this.colorOutline);
             g.drawRect(this.x, this.y, this.sizeX, this.sizeY);
         }
 

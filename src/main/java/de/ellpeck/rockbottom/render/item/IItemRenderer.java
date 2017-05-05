@@ -17,7 +17,7 @@ public interface IItemRenderer<T extends Item>{
     }
 
     static void renderSlotInGui(RockBottom game, AssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
-        Gui.drawScaledImage(g, manager.getImage("gui.slot"), x, y, scale, Gui.GUI_COLOR);
+        Gui.drawScaledImage(g, manager.getImage("gui.slot"), x, y, scale, game.settings.guiColor);
 
         if(slot != null){
             renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Color.white);

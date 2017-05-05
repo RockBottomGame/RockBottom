@@ -28,7 +28,7 @@ public class GuiManager{
     public boolean shouldReInit;
 
     public void reInitSelf(RockBottom game){
-        Log.info("Re-initializing Gui Manager");
+        Log.debug("Re-initializing Gui Manager");
 
         if(game.isInWorld()){
             this.initInWorldComponents(game, game.player);
@@ -43,7 +43,7 @@ public class GuiManager{
             this.background.init(game);
         }
 
-        Log.info("Successfully re-initialized Gui Manager");
+        Log.debug("Successfully re-initialized Gui Manager");
     }
 
     private void initInWorldComponents(RockBottom game, EntityPlayer player){

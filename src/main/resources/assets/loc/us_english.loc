@@ -25,6 +25,8 @@ info.uses=Uses
 info.constructs=Constructs
 info.need_items=Collect items to see things you can construct with them
 info.cursor_infos=If the in-game cursor should display tool and tile indicators next to it
+info.gui_color=Gui Color Scheme
+info.reset=Reset
 
 button.back=Back
 button.settings=Settings
@@ -52,6 +54,7 @@ button.construction=Construction Menu
 button.all_construction=Show unconstructible Recipes
 button.cursor_infos=Cursor Indicators Off
 button.cursor_infos_toggled=Cursor Indicators On
+button.graphics=Graphics
 
 layer.main=Foreground
 layer.background=Background

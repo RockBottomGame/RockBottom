@@ -28,6 +28,7 @@ public final class ContentRegistry{
     public static final Tile TILE_COAL_ORE = new TileCoalOre(11).setHardness(8F).addEffectiveTool(ToolType.PICKAXE, 1).register();
     public static final Tile TILE_COPPER_ORE = new TileCopperOre(12).setHardness(16F).addEffectiveTool(ToolType.PICKAXE, 2).register();
     public static final Tile TILE_SMELTER = new TileSmelter(13).setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
+    public static final Tile TILE_SEPARATOR = new TileSeparator(14).setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
 
     public static final Item ITEM_SUPER_TOOL = new ItemTool(8192, "super_tool").addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
     public static final Item ITEM_WOOD_PICK = new ItemTool(8193, "pick_wood").addToolType(ToolType.PICKAXE, 1).register();

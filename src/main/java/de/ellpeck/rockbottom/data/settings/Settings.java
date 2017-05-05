@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.data.settings;
 
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.util.Util;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
 
 import java.io.File;
@@ -10,6 +11,10 @@ import java.util.List;
 import java.util.Properties;
 
 public class Settings implements IPropSettings{
+
+    public static final float DEFAULT_GUI_R =0.32156864F;
+    public static final float DEFAULT_GUI_G =0.5882353F;
+    public static final float DEFAULT_GUI_B =0.32156864F;
 
     public List<Keybind> keybinds = new ArrayList<>();
 
@@ -29,6 +34,7 @@ public class Settings implements IPropSettings{
 
     public int guiScale;
     public int renderScale;
+    public Color guiColor;
 
     public float cursorScale;
     public boolean hardwareCursor;
@@ -56,6 +62,8 @@ public class Settings implements IPropSettings{
 
         this.guiScale = this.getProp(props, "gui_scale", 4);
         this.renderScale = this.getProp(props, "render_scale", 48);
+
+        this.guiColor = new Color(this.getProp(props, "gui_r", DEFAULT_GUI_R), this.getProp(props, "gui_g", DEFAULT_GUI_G), this.getProp(props, "gui_b", DEFAULT_GUI_B));
 
         this.cursorScale = this.getProp(props, "cursor_scale", 3F);
         this.hardwareCursor = this.getProp(props, "hardware_cursor", false);
@@ -87,6 +95,10 @@ public class Settings implements IPropSettings{
 
         this.setProp(props, "gui_scale", this.guiScale);
         this.setProp(props, "render_scale", this.renderScale);
+
+        this.setProp(props, "gui_r", this.guiColor.r);
+        this.setProp(props, "gui_g", this.guiColor.g);
+        this.setProp(props, "gui_b", this.guiColor.b);
 
         this.setProp(props, "cursor_scale", this.cursorScale);
         this.setProp(props, "hardware_cursor", this.hardwareCursor);

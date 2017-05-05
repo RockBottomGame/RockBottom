@@ -25,4 +25,9 @@ public class MultiTileRenderer<T extends MultiTile> extends DefaultTileRenderer<
     public Image getParticleTexture(RockBottom game, AssetManager manager, Graphics g, T tile, int meta){
         return manager.getImage(this.texture+"."+tile.getMainX()+"."+tile.getMainY());
     }
+
+    @Override
+    public void renderItem(RockBottom game, AssetManager manager, Graphics g, T tile, int meta, float x, float y, float scale, Color filter){
+        manager.getImage(this.texture+".item").draw(x, y, scale, scale, filter);
+    }
 }

@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.gui.component;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.Gui;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class ComponentSlider extends ComponentButton{
@@ -35,32 +34,39 @@ public class ComponentSlider extends ComponentButton{
         float percentage = (float)(this.number-this.min)/(float)(this.max-this.min);
         float x = this.x+percentage*(this.sizeX-5);
 
-        g.setColor(this.isMouseOver(game) ? COLOR : COLOR_UNSELECTED);
+        g.setColor(this.isMouseOver(game) ? this.colorButton : this.colorButtonUnselected);
         g.fillRect(x, this.y, 5F, this.sizeY);
 
-        g.setColor(COLOR_OUTLINE);
+        g.setColor(this.colorOutline);
         g.drawRect(x, this.y, 5F, this.sizeY);
     }
 
     @Override
-    public void update(RockBottom game){
-        boolean isMouseDown = game.getContainer().getInput().isMouseButtonDown(game.settings.buttonGuiAction1);
-        float mouseX = game.getMouseInGuiX();
-        float mouseY = game.getMouseInGuiY();
+    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+        if(this.isMouseOver(game)){
+            if(!this.wasMouseDown){
+                this.callback.onFirstClick(game.getMouseInGuiX(), game.getMouseInGuiY(), this.min, this.max, this.number);
+                this.wasMouseDown = true;
 
-        if(isMouseDown){
-            if(this.wasMouseDown || this.isMouseOver(game)){
-                this.onClickOrMove(mouseX, mouseY);
-
-                if(!this.wasMouseDown){
-                    this.callback.onFirstClick(mouseX, mouseY, this.min, this.max, this.number);
-                    this.wasMouseDown = true;
-                }
+                return true;
             }
         }
-        else if(this.wasMouseDown){
-            this.callback.onLetGo(mouseX, mouseY, this.min, this.max, this.number);
-            this.wasMouseDown = false;
+        return false;
+    }
+
+    @Override
+    public void update(RockBottom game){
+        if(this.wasMouseDown){
+            float mouseX = game.getMouseInGuiX();
+            float mouseY = game.getMouseInGuiY();
+
+            if(game.getContainer().getInput().isMouseButtonDown(game.settings.buttonGuiAction1)){
+                this.onClickOrMove(mouseX, mouseY);
+            }
+            else{
+                this.callback.onLetGo(mouseX, mouseY, this.min, this.max, this.number);
+                this.wasMouseDown = false;
+            }
         }
     }
 

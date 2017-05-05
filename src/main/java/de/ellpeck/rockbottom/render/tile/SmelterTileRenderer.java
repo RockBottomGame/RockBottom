@@ -26,9 +26,4 @@ public class SmelterTileRenderer extends MultiTileRenderer<TileSmelter>{
 
         super.render(game, manager, g, world, tile, x, y, renderX, renderY, filter);
     }
-
-    @Override
-    public void renderItem(RockBottom game, AssetManager manager, Graphics g, TileSmelter tile, int meta, float x, float y, float scale, Color filter){
-        manager.getImage(this.texture+".item").draw(x, y, scale, scale, filter);
-    }
 }
