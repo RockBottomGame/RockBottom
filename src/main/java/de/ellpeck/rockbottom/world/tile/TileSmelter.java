@@ -87,8 +87,8 @@ public class TileSmelter extends MultiTile{
     @Override
     protected boolean[][] makeStructure(){
         return new boolean[][]{
-                new boolean[]{true},
-                new boolean[]{true}
+                {true},
+                {true}
         };
     }
 

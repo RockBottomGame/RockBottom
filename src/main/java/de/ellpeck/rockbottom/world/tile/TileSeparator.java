@@ -35,9 +35,9 @@ public class TileSeparator extends MultiTile{
     @Override
     protected boolean[][] makeStructure(){
         return new boolean[][]{
-                new boolean[]{false, true},
-                new boolean[]{true, true},
-                new boolean[]{true, true},
+                {false, true},
+                {true, true},
+                {true, true},
         };
     }
 
