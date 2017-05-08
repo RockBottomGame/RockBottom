@@ -75,7 +75,7 @@ public class AssetManager{
     private void loadAssets() throws Exception{
         String path = "/assets";
 
-        InputStream propStream = AssetManager.class.getResourceAsStream(path+"/assets.properties");
+        InputStream propStream = AssetManager.class.getResourceAsStream(path+"/assets.info");
         Properties props = new Properties();
         props.load(propStream);
 
