@@ -13,14 +13,11 @@ public class GuiComponent{
     public final Color colorButton = this.guiColor.multiply(new Color(1F, 1F, 1F, 0.5F));
     public final Color colorButtonUnselected = this.colorButton.darker(0.4F);
     public final Color colorOutline = this.guiColor.darker(0.3F);
-
-    public Gui gui;
-
-    public int x;
-    public int y;
-
     public final int sizeX;
     public final int sizeY;
+    public Gui gui;
+    public int x;
+    public int y;
 
     public GuiComponent(Gui gui, int x, int y, int sizeX, int sizeY){
         this.gui = gui;

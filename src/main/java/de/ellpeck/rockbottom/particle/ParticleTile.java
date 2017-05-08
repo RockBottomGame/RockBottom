@@ -12,9 +12,9 @@ import org.newdawn.slick.Image;
 
 public class ParticleTile extends Particle{
 
-    private Color renderPixel;
     private final Tile tile;
     private final int meta;
+    private Color renderPixel;
 
     public ParticleTile(World world, double x, double y, double motionX, double motionY, Tile tile, int meta){
         super(world, x, y, motionX, motionY, Util.RANDOM.nextInt(30)+10);

@@ -37,7 +37,7 @@ public class PacketHotbar implements IPacket{
 
     @Override
     public void handle(RockBottom game, ChannelHandlerContext context){
-        game.scheduleAction(()->{
+        game.scheduleAction(() -> {
             if(game.world != null){
                 EntityPlayer player = game.world.getPlayer(this.playerId);
                 if(player != null){

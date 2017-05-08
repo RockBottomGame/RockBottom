@@ -2,12 +2,18 @@ package de.ellpeck.rockbottom.data.set.part.num;
 
 import de.ellpeck.rockbottom.data.set.part.BasicDataPart;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 public class PartShort extends BasicDataPart<Short>{
 
     public PartShort(String name){
         super(name);
+    }
+
+    public PartShort(String name, Short data){
+        super(name, data);
     }
 
     @Override
@@ -18,9 +24,5 @@ public class PartShort extends BasicDataPart<Short>{
     @Override
     public void read(DataInput stream) throws IOException{
         this.data = stream.readShort();
-    }
-
-    public PartShort(String name, Short data){
-        super(name, data);
     }
 }

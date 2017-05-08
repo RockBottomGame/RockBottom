@@ -15,13 +15,11 @@ import java.io.IOException;
 public class PacketChunk implements IPacket{
 
     private static final int DATA_SIZE = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*TileLayer.LAYERS.length;
-
-    private int chunkX;
-    private int chunkY;
-
     private final short[] tileData = new short[DATA_SIZE];
     private final byte[] metaData = new byte[DATA_SIZE];
     private final byte[] lightData = new byte[DATA_SIZE*2];
+    private int chunkX;
+    private int chunkY;
 
     public PacketChunk(Chunk chunk){
         this.chunkX = chunk.gridX;

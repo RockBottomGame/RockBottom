@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ItemContainer{

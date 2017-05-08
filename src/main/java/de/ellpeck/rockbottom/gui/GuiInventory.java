@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.construction.BasicRecipe;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.construction.IRecipe;
-import de.ellpeck.rockbottom.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.gui.component.ComponentRecipeButton;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
@@ -23,10 +22,9 @@ import java.util.List;
 
 public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
-    private final List<ComponentRecipeButton> constructionButtons = new ArrayList<>();
-
     private static boolean isConstructionOpen;
     private static boolean shouldShowAll;
+    private final List<ComponentRecipeButton> constructionButtons = new ArrayList<>();
 
     public GuiInventory(EntityPlayer player){
         super(player, 158, 83);

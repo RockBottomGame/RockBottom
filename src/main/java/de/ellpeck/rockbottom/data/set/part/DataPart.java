@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.data.set.part;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
 
 public abstract class DataPart<T>{
 

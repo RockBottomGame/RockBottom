@@ -7,10 +7,6 @@ import java.util.List;
 
 public interface IRecipe{
 
-    List<ItemInstance> getInputs();
-
-    List<ItemInstance> getOutputs();
-
     static boolean matchesInv(IRecipe recipe, IInventory inventory){
         for(ItemInstance inst : recipe.getInputs()){
             if(!inventory.containsItem(inst)){
@@ -19,4 +15,8 @@ public interface IRecipe{
         }
         return true;
     }
+
+    List<ItemInstance> getInputs();
+
+    List<ItemInstance> getOutputs();
 }

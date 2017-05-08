@@ -14,9 +14,8 @@ import org.newdawn.slick.Input;
 public class MainMenuBackground{
 
     private static final int[] KONAMI_CODE = new int[]{Input.KEY_UP, Input.KEY_UP, Input.KEY_DOWN, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_B, Input.KEY_A};
-    private int konamiAt;
-
     private static final int TILE_SIZE = 16;
+    private int konamiAt;
     private Tile[][] menuTileGrid;
 
     private int tileAmountX;

@@ -12,6 +12,10 @@ public class PartShortShortArray extends BasicDataPart<short[][]>{
         super(name);
     }
 
+    public PartShortShortArray(String name, short[][] data){
+        super(name, data);
+    }
+
     @Override
     public void write(DataOutput stream) throws Exception{
         stream.writeInt(this.data.length);
@@ -38,10 +42,6 @@ public class PartShortShortArray extends BasicDataPart<short[][]>{
                 this.data[i][j] = stream.readShort();
             }
         }
-    }
-
-    public PartShortShortArray(String name, short[][] data){
-        super(name, data);
     }
 
     @Override

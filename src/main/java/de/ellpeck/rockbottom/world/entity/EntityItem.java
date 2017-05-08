@@ -26,6 +26,14 @@ public class EntityItem extends Entity{
         this.item = item;
     }
 
+    public static void spawn(World world, ItemInstance inst, double x, double y, double motionX, double motionY){
+        EntityItem item = new EntityItem(world, inst);
+        item.setPos(x, y);
+        item.motionX = motionX;
+        item.motionY = motionY;
+        world.addEntity(item);
+    }
+
     @Override
     public IEntityRenderer getRenderer(){
         return this.renderer;
@@ -51,14 +59,6 @@ public class EntityItem extends Entity{
 
     public boolean canPickUp(){
         return this.pickupDelay <= 0;
-    }
-
-    public static void spawn(World world, ItemInstance inst, double x, double y, double motionX, double motionY){
-        EntityItem item = new EntityItem(world, inst);
-        item.setPos(x, y);
-        item.motionX = motionX;
-        item.motionY = motionY;
-        world.addEntity(item);
     }
 
     @Override

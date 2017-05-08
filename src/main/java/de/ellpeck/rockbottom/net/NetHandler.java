@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 import de.ellpeck.rockbottom.net.server.Server;
 import de.ellpeck.rockbottom.util.Registry;
-import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.Entity;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -21,6 +20,8 @@ public final class NetHandler{
     public static final boolean HAS_EPOLL = Epoll.isAvailable();
 
     public static final Registry<Class<? extends IPacket>> PACKET_REGISTRY = new Registry<>("packet_registry", Byte.MAX_VALUE);
+    private static Client client;
+    private static Server server;
 
     static{
         PACKET_REGISTRY.register(0, PacketJoin.class);
@@ -49,9 +50,6 @@ public final class NetHandler{
         PACKET_REGISTRY.register(23, PacketChunkUnload.class);
         PACKET_REGISTRY.register(24, PacketManualConstruction.class);
     }
-
-    private static Client client;
-    private static Server server;
 
     public static void init(String ip, int port, boolean isServer) throws Exception{
         if(isActive()){
@@ -109,7 +107,9 @@ public final class NetHandler{
         if(isServer()){
             return server.connectedChannels;
         }
-        return null;
+        else{
+            return null;
+        }
     }
 
     public static CommandPermissions getCommandPermissions(){

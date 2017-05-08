@@ -29,31 +29,22 @@ public class Chunk implements IWorld{
 
     public final int gridX;
     public final int gridY;
-
-    protected final World world;
-
-    protected final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    protected final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-
-    protected final List<Entity> entities = new ArrayList<>();
-    protected final Map<UUID, Entity> entityLookup = new HashMap<>();
-
-    protected final List<TileEntity> tileEntities = new ArrayList<>();
-    protected final Map<Pos2, TileEntity> tileEntityLookup = new HashMap<>();
-
-    protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
-    protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
-
     public final List<EntityPlayer> playersInRange = new ArrayList<>();
     public final List<EntityPlayer> playersOutOfRangeCached = new ArrayList<>();
     public final Map<EntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
-
+    protected final World world;
+    protected final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final List<Entity> entities = new ArrayList<>();
+    protected final Map<UUID, Entity> entityLookup = new HashMap<>();
+    protected final List<TileEntity> tileEntities = new ArrayList<>();
+    protected final Map<Pos2, TileEntity> tileEntityLookup = new HashMap<>();
+    protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
+    protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
     public int randomUpdateTileAmount;
-
-    protected boolean needsSave;
-
     public boolean isGenerating;
+    protected boolean needsSave;
 
     public Chunk(World world, int gridX, int gridY){
         this.world = world;

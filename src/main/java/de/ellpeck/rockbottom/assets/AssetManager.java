@@ -17,13 +17,11 @@ import java.util.Properties;
 
 public class AssetManager{
 
+    private final Map<String, IAsset> assets = new HashMap<>();
     private AssetSound missingSound;
     private AssetImage missingTexture;
     private AssetLocale missingLocale;
     private AssetFont missingFont;
-
-    private final Map<String, IAsset> assets = new HashMap<>();
-
     private Locale currentLocale;
     private Font currentFont;
 

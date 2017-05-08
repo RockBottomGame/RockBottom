@@ -15,18 +15,15 @@ import java.util.List;
 
 public class Gui{
 
-    private static final Color HOVER_INFO_BACKGROUND = new Color(0F, 0F, 0F, 0.8F);
     public static final Color GRADIENT = new Color(0F, 0F, 0F, 0.5F);
-
-    protected List<GuiComponent> components = new ArrayList<>();
-
+    private static final Color HOVER_INFO_BACKGROUND = new Color(0F, 0F, 0F, 0.8F);
+    protected final Gui parent;
     public int sizeX;
     public int sizeY;
 
     public int guiLeft;
     public int guiTop;
-
-    protected final Gui parent;
+    protected List<GuiComponent> components = new ArrayList<>();
 
     public Gui(int sizeX, int sizeY){
         this(sizeX, sizeY, null);
@@ -36,6 +33,73 @@ public class Gui{
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.parent = parent;
+    }
+
+    public static void drawHoverInfoAtMouse(RockBottom game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, String... text){
+        drawHoverInfoAtMouse(game, manager, g, firstLineOffset, maxLength, Arrays.asList(text));
+    }
+
+    public static void drawHoverInfoAtMouse(RockBottom game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, List<String> text){
+        float mouseX = game.getMouseInGuiX();
+        float mouseY = game.getMouseInGuiY();
+
+        drawHoverInfo(game, manager, g, mouseX+1.5F*game.settings.cursorScale, mouseY+1.5F*game.settings.cursorScale, 0.25F, firstLineOffset, false, maxLength, text);
+    }
+
+    public static void drawHoverInfo(RockBottom game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){
+        Font font = manager.getFont();
+
+        float boxWidth = 0F;
+        float boxHeight = 0F;
+
+        if(maxLength > 0){
+            text = font.splitTextToLength(maxLength, scale, true, text);
+        }
+
+        for(String s : text){
+            float length = font.getWidth(s, scale);
+            if(length > boxWidth){
+                boxWidth = length;
+            }
+
+            if(firstLineOffset && boxHeight == 0F && text.size() > 1){
+                boxHeight += 3F;
+            }
+            boxHeight += font.getHeight(scale);
+        }
+
+        if(boxWidth > 0F && boxHeight > 0F){
+            boxWidth += 4F;
+            boxHeight += 4F;
+
+            if(!canLeaveScreen){
+                x = Math.max(0, Math.min(x, (float)game.getWidthInGui()-boxWidth));
+                y = Math.max(0, Math.min(y, (float)game.getHeightInGui()-boxHeight));
+            }
+
+            g.setColor(HOVER_INFO_BACKGROUND);
+            g.fillRect(x, y, boxWidth, boxHeight);
+
+            g.setColor(Color.black);
+            g.drawRect(x, y, boxWidth, boxHeight);
+
+            float yOffset = 0F;
+            for(String s : text){
+                font.drawString(x+2F, y+2F+yOffset, s, scale);
+
+                if(firstLineOffset && yOffset == 0F){
+                    yOffset += 3F;
+                }
+                yOffset += font.getHeight(scale);
+            }
+        }
+    }
+
+    public static void drawScaledImage(Graphics g, Image image, float x, float y, float scale, Color color){
+        g.pushTransform();
+        g.scale(scale, scale);
+        image.draw(x/scale, y/scale, color);
+        g.popTransform();
     }
 
     public void onOpened(RockBottom game){
@@ -126,73 +190,6 @@ public class Gui{
         else{
             return false;
         }
-    }
-
-    public static void drawHoverInfoAtMouse(RockBottom game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, String... text){
-        drawHoverInfoAtMouse(game, manager, g, firstLineOffset, maxLength, Arrays.asList(text));
-    }
-
-    public static void drawHoverInfoAtMouse(RockBottom game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, List<String> text){
-        float mouseX = game.getMouseInGuiX();
-        float mouseY = game.getMouseInGuiY();
-
-        drawHoverInfo(game, manager, g, mouseX+1.5F*game.settings.cursorScale, mouseY+1.5F*game.settings.cursorScale, 0.25F, firstLineOffset, false, maxLength, text);
-    }
-
-    public static void drawHoverInfo(RockBottom game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){
-        Font font = manager.getFont();
-
-        float boxWidth = 0F;
-        float boxHeight = 0F;
-
-        if(maxLength > 0){
-            text = font.splitTextToLength(maxLength, scale, true, text);
-        }
-
-        for(String s : text){
-            float length = font.getWidth(s, scale);
-            if(length > boxWidth){
-                boxWidth = length;
-            }
-
-            if(firstLineOffset && boxHeight == 0F && text.size() > 1){
-                boxHeight += 3F;
-            }
-            boxHeight += font.getHeight(scale);
-        }
-
-        if(boxWidth > 0F && boxHeight > 0F){
-            boxWidth += 4F;
-            boxHeight += 4F;
-
-            if(!canLeaveScreen){
-                x = Math.max(0, Math.min(x, (float)game.getWidthInGui()-boxWidth));
-                y = Math.max(0, Math.min(y, (float)game.getHeightInGui()-boxHeight));
-            }
-
-            g.setColor(HOVER_INFO_BACKGROUND);
-            g.fillRect(x, y, boxWidth, boxHeight);
-
-            g.setColor(Color.black);
-            g.drawRect(x, y, boxWidth, boxHeight);
-
-            float yOffset = 0F;
-            for(String s : text){
-                font.drawString(x+2F, y+2F+yOffset, s, scale);
-
-                if(firstLineOffset && yOffset == 0F){
-                    yOffset += 3F;
-                }
-                yOffset += font.getHeight(scale);
-            }
-        }
-    }
-
-    public static void drawScaledImage(Graphics g, Image image, float x, float y, float scale, Color color){
-        g.pushTransform();
-        g.scale(scale, scale);
-        image.draw(x/scale, y/scale, color);
-        g.popTransform();
     }
 
     public boolean onButtonActivated(RockBottom game, int button){

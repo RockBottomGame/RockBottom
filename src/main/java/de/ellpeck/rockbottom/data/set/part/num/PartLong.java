@@ -11,6 +11,10 @@ public class PartLong extends BasicDataPart<Long>{
         super(name);
     }
 
+    public PartLong(String name, Long data){
+        super(name, data);
+    }
+
     @Override
     public void write(DataOutput stream) throws Exception{
         stream.writeLong(this.data);
@@ -19,9 +23,5 @@ public class PartLong extends BasicDataPart<Long>{
     @Override
     public void read(DataInput stream) throws Exception{
         this.data = stream.readLong();
-    }
-
-    public PartLong(String name, Long data){
-        super(name, data);
     }
 }

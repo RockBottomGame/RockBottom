@@ -11,6 +11,10 @@ public class PartDouble extends BasicDataPart<Double>{
         super(name);
     }
 
+    public PartDouble(String name, Double data){
+        super(name, data);
+    }
+
     @Override
     public void write(DataOutput stream) throws Exception{
         stream.writeDouble(this.data);
@@ -19,9 +23,5 @@ public class PartDouble extends BasicDataPart<Double>{
     @Override
     public void read(DataInput stream) throws Exception{
         this.data = stream.readDouble();
-    }
-
-    public PartDouble(String name, Double data){
-        super(name, data);
     }
 }

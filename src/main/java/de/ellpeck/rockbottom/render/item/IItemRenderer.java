@@ -10,12 +10,6 @@ import org.newdawn.slick.Graphics;
 
 public interface IItemRenderer<T extends Item>{
 
-    void render(RockBottom game, AssetManager manager, Graphics g, T item, ItemInstance instance, float x, float y, float scale, Color filter);
-
-    default void renderOnMouseCursor(RockBottom game, AssetManager manager, Graphics g, T item, ItemInstance instance, float x, float y, float scale, Color filter){
-
-    }
-
     static void renderSlotInGui(RockBottom game, AssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
         Gui.drawScaledImage(g, manager.getImage("gui.slot"), x, y, scale, game.settings.guiColor);
 
@@ -32,5 +26,11 @@ public interface IItemRenderer<T extends Item>{
         }
 
         manager.getFont().drawStringFromRight(x+15F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);
+    }
+
+    void render(RockBottom game, AssetManager manager, Graphics g, T item, ItemInstance instance, float x, float y, float scale, Color filter);
+
+    default void renderOnMouseCursor(RockBottom game, AssetManager manager, Graphics g, T item, ItemInstance instance, float x, float y, float scale, Color filter){
+
     }
 }

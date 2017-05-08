@@ -12,11 +12,6 @@ public class ContainerInventory extends ItemContainer{
         this.addPlayerInventory(player, 0, 0);
     }
 
-    @Override
-    public int getUnboundId(){
-        return 0;
-    }
-
     public static void doManualCraft(EntityPlayer player, IRecipe recipe){
         if(IRecipe.matchesInv(recipe, player.inv)){
             for(ItemInstance input : recipe.getInputs()){
@@ -37,5 +32,10 @@ public class ContainerInventory extends ItemContainer{
                 }
             }
         }
+    }
+
+    @Override
+    public int getUnboundId(){
+        return 0;
     }
 }

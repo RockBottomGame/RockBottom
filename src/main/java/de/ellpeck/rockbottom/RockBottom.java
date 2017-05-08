@@ -34,40 +34,37 @@ public class RockBottom extends BasicGame{
     private static RockBottom instance;
 
     private final List<IAction> scheduledActions = new ArrayList<>();
-
-    private Container container;
     public DataManager dataManager;
     public Settings settings;
-
     public EntityPlayer player;
     public GuiManager guiManager;
     public InteractionManager interactionManager;
     public ChatLog chatLog;
-
     public World world;
-
     public AssetManager assetManager;
-    private WorldRenderer worldRenderer;
     public ParticleManager particleManager;
-
-    private long lastPollTime;
     public int tpsAverage;
-    private int tpsAccumulator;
     public int fpsAverage;
-    private int fpsAccumulator;
-
     public UUID uniqueId;
-
     public boolean isDebug;
     public boolean isLightDebug;
     public boolean isForegroundDebug;
     public boolean isBackgroundDebug;
+    private Container container;
+    private WorldRenderer worldRenderer;
+    private long lastPollTime;
+    private int tpsAccumulator;
+    private int fpsAccumulator;
 
     public RockBottom(){
         super("Rock Bottom "+RockBottom.VERSION);
 
         Log.info("Setting game instance to "+this);
         instance = this;
+    }
+
+    public static RockBottom get(){
+        return instance;
     }
 
     @Override
@@ -129,7 +126,6 @@ public class RockBottom extends BasicGame{
         if(NetHandler.isClient()){
             if(!NetHandler.isConnectedToServer()){
                 this.quitWorld();
-                NetHandler.shutdown();
             }
         }
 
@@ -300,9 +296,5 @@ public class RockBottom extends BasicGame{
 
     public float getMouseInGuiY(){
         return (float)this.container.getInput().getMouseY()/(float)this.settings.guiScale;
-    }
-
-    public static RockBottom get(){
-        return instance;
     }
 }

@@ -2,12 +2,9 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.data.settings.Settings;
-import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
-import org.newdawn.slick.Graphics;
 
 public class GuiKeybinds extends Gui{
 

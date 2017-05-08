@@ -14,6 +14,18 @@ public class TileLog extends TileBasic{
         super(id, "log");
     }
 
+    public static void scheduleDestroyAround(World world, int x, int y){
+        for(TileLayer layer : TileLayer.LAYERS){
+            for(Direction direction : Direction.ADJACENT_INCLUDING_NONE){
+                Tile tile = world.getTile(layer, direction.x+x, direction.y+y);
+
+                if(tile instanceof TileLog || tile instanceof TileLeaves){
+                    world.scheduleUpdate(direction.x+x, direction.y+y, layer, 5);
+                }
+            }
+        }
+    }
+
     @Override
     public void onDestroyed(World world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
@@ -39,18 +51,6 @@ public class TileLog extends TileBasic{
     @Override
     public int getPlacementMeta(World world, int x, int y, TileLayer layer, ItemInstance instance){
         return 1;
-    }
-
-    public static void scheduleDestroyAround(World world, int x, int y){
-        for(TileLayer layer : TileLayer.LAYERS){
-            for(Direction direction : Direction.ADJACENT_INCLUDING_NONE){
-                Tile tile = world.getTile(layer, direction.x+x, direction.y+y);
-
-                if(tile instanceof TileLog || tile instanceof TileLeaves){
-                    world.scheduleUpdate(direction.x+x, direction.y+y, layer, 5);
-                }
-            }
-        }
     }
 
     @Override

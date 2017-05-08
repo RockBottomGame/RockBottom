@@ -17,6 +17,40 @@ public class DataSet{
 
     private final Map<String, DataPart> data = new HashMap<>();
 
+    public static void writeSet(DataOutput stream, DataSet set) throws Exception{
+        stream.writeInt(set.data.size());
+
+        for(DataPart part : set.data.values()){
+            writePart(stream, part);
+        }
+    }
+
+    public static void readSet(DataInput stream, DataSet set) throws Exception{
+        int amount = stream.readInt();
+
+        for(int i = 0; i < amount; i++){
+            DataPart part = readPart(stream);
+            set.data.put(part.getName(), part);
+        }
+    }
+
+    public static void writePart(DataOutput stream, DataPart part) throws Exception{
+        stream.writeByte(DataManager.PART_REGISTRY.getId(part.getClass()));
+        stream.writeUTF(part.getName());
+        part.write(stream);
+    }
+
+    public static DataPart readPart(DataInput stream) throws Exception{
+        byte id = stream.readByte();
+        String name = stream.readUTF();
+
+        Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.get(id);
+        DataPart part = partClass.getConstructor(String.class).newInstance(name);
+        part.read(stream);
+
+        return part;
+    }
+
     public void addPart(DataPart part){
         this.data.put(part.getName(), part);
     }
@@ -182,39 +216,5 @@ public class DataSet{
 
     public boolean isEmpty(){
         return this.data.isEmpty();
-    }
-
-    public static void writeSet(DataOutput stream, DataSet set) throws Exception{
-        stream.writeInt(set.data.size());
-
-        for(DataPart part : set.data.values()){
-            writePart(stream, part);
-        }
-    }
-
-    public static void readSet(DataInput stream, DataSet set) throws Exception{
-        int amount = stream.readInt();
-
-        for(int i = 0; i < amount; i++){
-            DataPart part = readPart(stream);
-            set.data.put(part.getName(), part);
-        }
-    }
-
-    public static void writePart(DataOutput stream, DataPart part) throws Exception{
-        stream.writeByte(DataManager.PART_REGISTRY.getId(part.getClass()));
-        stream.writeUTF(part.getName());
-        part.write(stream);
-    }
-
-    public static DataPart readPart(DataInput stream) throws Exception{
-        byte id = stream.readByte();
-        String name = stream.readUTF();
-
-        Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.get(id);
-        DataPart part = partClass.getConstructor(String.class).newInstance(name);
-        part.read(stream);
-
-        return part;
     }
 }

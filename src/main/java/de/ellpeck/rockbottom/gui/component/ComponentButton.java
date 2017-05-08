@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.gui.component;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.Gui;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class ComponentButton extends GuiComponent{

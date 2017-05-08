@@ -12,6 +12,10 @@ public class PartByteByteArray extends BasicDataPart<byte[][]>{
         super(name);
     }
 
+    public PartByteByteArray(String name, byte[][] data){
+        super(name, data);
+    }
+
     @Override
     public void write(DataOutput stream) throws Exception{
         stream.writeInt(this.data.length);
@@ -38,10 +42,6 @@ public class PartByteByteArray extends BasicDataPart<byte[][]>{
                 this.data[i][j] = stream.readByte();
             }
         }
-    }
-
-    public PartByteByteArray(String name, byte[][] data){
-        super(name, data);
     }
 
     @Override

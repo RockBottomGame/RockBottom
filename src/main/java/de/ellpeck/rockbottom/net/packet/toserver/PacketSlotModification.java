@@ -16,9 +16,9 @@ import java.util.UUID;
 
 public class PacketSlotModification implements IPacket{
 
+    private final DataSet instSet = new DataSet();
     private UUID playerId;
     private int slot;
-    private final DataSet instSet = new DataSet();
 
     public PacketSlotModification(UUID playerId, int slot, ItemInstance inst){
         this.playerId = playerId;

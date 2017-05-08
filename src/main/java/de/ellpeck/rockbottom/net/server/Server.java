@@ -25,11 +25,9 @@ import java.net.InetAddress;
 
 public class Server{
 
-    private final EventLoopGroup group;
     public final Channel channel;
-
     public final ChannelGroup connectedChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-
+    private final EventLoopGroup group;
     public CommandPermissions commandPermissions = new CommandPermissions();
 
     public Server(String ip, int port) throws Exception{

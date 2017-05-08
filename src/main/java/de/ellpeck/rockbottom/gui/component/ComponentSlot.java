@@ -17,9 +17,9 @@ import java.util.List;
 
 public class ComponentSlot extends GuiComponent{
 
-    private final GuiContainer container;
     public final ContainerSlot slot;
     public final int componentId;
+    private final GuiContainer container;
 
     public ComponentSlot(GuiContainer container, ContainerSlot slot, int componentId, int x, int y){
         super(container, x, y, 18, 18);

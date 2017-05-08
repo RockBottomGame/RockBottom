@@ -23,21 +23,6 @@ public class GuiChat extends Gui{
         super(100, 100);
     }
 
-    @Override
-    public void initGui(RockBottom game){
-        super.initGui(game);
-
-        this.inputField = new ComponentInputField(this, 5, (int)game.getHeightInGui()-21, (int)game.getWidthInGui()/2, 16, true, false, true, 512, true);
-        this.components.add(this.inputField);
-    }
-
-    @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
-        super.render(game, manager, g);
-
-        drawMessages(game, manager, g, game.chatLog.messages, 20);
-    }
-
     public static void drawMessages(RockBottom game, AssetManager manager, Graphics g, List<String> messages, int maxCount){
         Font font = manager.getFont();
         float scale = 0.25F;
@@ -70,6 +55,21 @@ public class GuiChat extends Gui{
                 break;
             }
         }
+    }
+
+    @Override
+    public void initGui(RockBottom game){
+        super.initGui(game);
+
+        this.inputField = new ComponentInputField(this, 5, (int)game.getHeightInGui()-21, (int)game.getWidthInGui()/2, 16, true, false, true, 512, true);
+        this.components.add(this.inputField);
+    }
+
+    @Override
+    public void render(RockBottom game, AssetManager manager, Graphics g){
+        super.render(game, manager, g);
+
+        drawMessages(game, manager, g, game.chatLog.messages, 20);
     }
 
     @Override

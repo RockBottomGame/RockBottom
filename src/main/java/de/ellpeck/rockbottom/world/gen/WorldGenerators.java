@@ -19,7 +19,7 @@ public final class WorldGenerators{
     private static final List<IWorldGenerator> GENERATORS = new ArrayList<>();
     private static boolean initialized;
 
-    static {
+    static{
         registerGenerator(new WorldGenDebugLandscape());
         registerGenerator(new WorldGenHills());
         registerGenerator(new WorldGenBasicUnderground());

@@ -18,8 +18,8 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 
 public class Client{
 
-    private final EventLoopGroup group;
     public final Channel channel;
+    private final EventLoopGroup group;
 
     public Client(String ip, int port) throws Exception{
         this.group = NetHandler.HAS_EPOLL ?

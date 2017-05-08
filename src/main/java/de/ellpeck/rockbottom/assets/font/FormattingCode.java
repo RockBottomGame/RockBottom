@@ -24,9 +24,9 @@ public class FormattingCode{
     private final int length;
     private final String strg;
 
-   public FormattingCode(char format, Color color, int length){
-       this(format, color, length, "&"+format);
-   }
+    public FormattingCode(char format, Color color, int length){
+        this(format, color, length, "&"+format);
+    }
 
     public FormattingCode(char format, Color color, int length, String strg){
         this.format = format;

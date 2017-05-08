@@ -29,14 +29,11 @@ public class World implements IWorld{
     protected final Map<Pos2, Chunk> chunkLookup = new HashMap<>();
 
     public List<EntityPlayer> players = new ArrayList<>();
-
+    public int spawnX = 0;
+    public WorldInfo info;
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
-
-    public int spawnX = 0;
-
-    public WorldInfo info;
 
     public World(WorldInfo info){
         this.info = info;

@@ -12,12 +12,11 @@ import java.util.Properties;
 
 public class Settings implements IPropSettings{
 
-    public static final float DEFAULT_GUI_R =0.32156864F;
-    public static final float DEFAULT_GUI_G =0.5882353F;
-    public static final float DEFAULT_GUI_B =0.32156864F;
-
+    public static final float DEFAULT_GUI_R = 0.32156864F;
+    public static final float DEFAULT_GUI_G = 0.5882353F;
+    public static final float DEFAULT_GUI_B = 0.32156864F;
+    private static final String[] DEFAULT_NAMES = new String[]{"Bob", "Doley", "Jason", "Huffelpuff", "Megan", "Jennifer", "Bottle", "Bus Stop", "ThePlayer99", "Genelele", "Karina", "Heinz", "Ketchup", "Dan", "David", "Penguin", "Hubert", "Penny", "Vinny", "Xx_TheBestLP_xX", "Bozo", "Patrick", "InigoMontoya", "Pebbles", "Noodles"};
     public List<Keybind> keybinds = new ArrayList<>();
-
     public Keybind keyInventory = new Keybind("inventory", Input.KEY_E);
     public Keybind keyMenu = new Keybind("menu", Input.KEY_ESCAPE);
     public Keybind keyLeft = new Keybind("left", Input.KEY_A);
@@ -25,8 +24,6 @@ public class Settings implements IPropSettings{
     public Keybind keyJump = new Keybind("jump", Input.KEY_SPACE);
     public Keybind keyBackground = new Keybind("background", Input.KEY_LSHIFT);
     public Keybind keyChat = new Keybind("chat", Input.KEY_ENTER);
-
-    private static final String[] DEFAULT_NAMES = new String[]{"Bob", "Doley", "Jason", "Huffelpuff", "Megan", "Jennifer", "Bottle", "Bus Stop", "ThePlayer99", "Genelele", "Karina", "Heinz", "Ketchup", "Dan", "David", "Penguin", "Hubert", "Penny", "Vinny", "Xx_TheBestLP_xX", "Bozo", "Patrick", "InigoMontoya", "Pebbles", "Noodles"};
     public String chatName;
 
     public int targetFps;
@@ -48,6 +45,10 @@ public class Settings implements IPropSettings{
     public int serverStartPort;
 
     public int[] keysItemSelection = new int[8];
+
+    public static String getRandomChatName(){
+        return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
+    }
 
     @Override
     public void load(Properties props){
@@ -146,15 +147,10 @@ public class Settings implements IPropSettings{
         return props.getProperty(name, def);
     }
 
-    public static String getRandomChatName(){
-        return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
-    }
-
     public class Keybind{
 
-        private final int def;
         public final String name;
-
+        private final int def;
         public int key;
 
         public Keybind(String name, int def){

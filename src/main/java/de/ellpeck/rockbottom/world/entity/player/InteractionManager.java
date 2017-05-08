@@ -33,6 +33,63 @@ public class InteractionManager{
     public int mousedTileX;
     public int mousedTileY;
 
+    public static boolean interact(EntityPlayer player, TileLayer layer, int x, int y, boolean simulate){
+        Tile tileThere = player.world.getTile(layer, x, y);
+
+        if(layer == TileLayer.MAIN){
+            if(tileThere.onInteractWith(player.world, x, y, player)){
+                return true;
+            }
+        }
+
+        ItemInstance selected = player.inv.get(player.inv.selectedSlot);
+        if(selected != null){
+            Item item = selected.getItem();
+            if(item instanceof ItemTile){
+                if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
+                    Tile tile = ((ItemTile)item).getTile();
+                    if(tileThere.canReplace(player.world, x, y, layer, tile)){
+                        if(tile.canPlace(player.world, x, y, layer)){
+
+                            if(!simulate){
+                                tile.doPlace(player.world, x, y, layer, selected, player);
+                                player.inv.remove(player.inv.selectedSlot, 1);
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static void moveAndSend(EntityPlayer player, int type){
+        player.move(type);
+
+        if(NetHandler.isClient()){
+            NetHandler.sendToServer(new PacketPlayerMovement(player.getUniqueId(), type));
+        }
+    }
+
+    public static int getToolEffectiveness(EntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
+        if(instance != null){
+            Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
+            if(!tools.isEmpty()){
+                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                    int level = entry.getValue();
+
+                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
+                        return level;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
     public void update(RockBottom game){
         if(game.isInWorld()){
             EntityPlayer player = game.player;
@@ -149,63 +206,6 @@ public class InteractionManager{
                 this.breakProgress = 0;
             }
         }
-    }
-
-    public static boolean interact(EntityPlayer player, TileLayer layer, int x, int y, boolean simulate){
-        Tile tileThere = player.world.getTile(layer, x, y);
-
-        if(layer == TileLayer.MAIN){
-            if(tileThere.onInteractWith(player.world, x, y, player)){
-                return true;
-            }
-        }
-
-        ItemInstance selected = player.inv.get(player.inv.selectedSlot);
-        if(selected != null){
-            Item item = selected.getItem();
-            if(item instanceof ItemTile){
-                if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
-                    Tile tile = ((ItemTile)item).getTile();
-                    if(tileThere.canReplace(player.world, x, y, layer, tile)){
-                        if(tile.canPlace(player.world, x, y, layer)){
-
-                            if(!simulate){
-                                tile.doPlace(player.world, x, y, layer, selected, player);
-                                player.inv.remove(player.inv.selectedSlot, 1);
-                            }
-
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private static void moveAndSend(EntityPlayer player, int type){
-        player.move(type);
-
-        if(NetHandler.isClient()){
-            NetHandler.sendToServer(new PacketPlayerMovement(player.getUniqueId(), type));
-        }
-    }
-
-    public static int getToolEffectiveness(EntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
-        if(instance != null){
-            Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
-            if(!tools.isEmpty()){
-                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                    int level = entry.getValue();
-
-                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
-                        return level;
-                    }
-                }
-            }
-        }
-        return 0;
     }
 
     public void onMouseAction(RockBottom game, int button){

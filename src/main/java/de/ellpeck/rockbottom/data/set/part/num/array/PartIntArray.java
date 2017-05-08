@@ -12,6 +12,10 @@ public class PartIntArray extends BasicDataPart<int[]>{
         super(name);
     }
 
+    public PartIntArray(String name, int[] data){
+        super(name, data);
+    }
+
     @Override
     public void write(DataOutput stream) throws Exception{
         stream.writeInt(this.data.length);
@@ -28,10 +32,6 @@ public class PartIntArray extends BasicDataPart<int[]>{
         for(int i = 0; i < amount; i++){
             this.data[i] = stream.readInt();
         }
-    }
-
-    public PartIntArray(String name, int[] data){
-        super(name, data);
     }
 
     @Override

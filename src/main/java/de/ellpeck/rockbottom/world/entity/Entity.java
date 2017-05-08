@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Direction;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.util.Log;
 
 import java.util.UUID;
@@ -25,10 +24,8 @@ public class Entity extends MovableWorldObject{
     public Direction facing = Direction.NONE;
 
     public int ticksExisted;
-    protected boolean dead;
-
     public int fallAmount;
-
+    protected boolean dead;
     protected UUID uniqueId;
 
     private double lastX;
@@ -37,6 +34,18 @@ public class Entity extends MovableWorldObject{
     public Entity(World world){
         super(world);
         this.uniqueId = UUID.randomUUID();
+    }
+
+    public static Entity create(int id, World world){
+        Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.get(id);
+
+        try{
+            return entityClass.getConstructor(World.class).newInstance(world);
+        }
+        catch(Exception e){
+            Log.error("Couldn't initialize entity with id "+id, e);
+            return null;
+        }
     }
 
     public UUID getUniqueId(){
@@ -163,17 +172,5 @@ public class Entity extends MovableWorldObject{
 
     public boolean doesSave(){
         return true;
-    }
-
-    public static Entity create(int id, World world){
-        Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.get(id);
-
-        try{
-            return entityClass.getConstructor(World.class).newInstance(world);
-        }
-        catch(Exception e){
-            Log.error("Couldn't initialize entity with id "+id, e);
-            return null;
-        }
     }
 }

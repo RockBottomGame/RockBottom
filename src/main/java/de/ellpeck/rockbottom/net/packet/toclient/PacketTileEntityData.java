@@ -11,9 +11,9 @@ import java.io.IOException;
 
 public class PacketTileEntityData implements IPacket{
 
+    private final ByteBuf tileBuf = Unpooled.buffer();
     private int x;
     private int y;
-    private final ByteBuf tileBuf = Unpooled.buffer();
 
     public PacketTileEntityData(int x, int y, TileEntity tile){
         this.x = x;

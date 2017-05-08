@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.item;
 
-import de.ellpeck.rockbottom.Constants;
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.render.item.IItemRenderer;
@@ -11,10 +10,9 @@ import java.util.Map;
 
 public class Item{
 
-    protected int maxAmount = 999;
-
     protected final String name;
     protected final int id;
+    protected int maxAmount = 999;
 
     public Item(int id, String name){
         this.id = id;

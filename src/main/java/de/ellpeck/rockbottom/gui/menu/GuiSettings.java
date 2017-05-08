@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.gui.component.ComponentSlider.ICallback;
-import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
 import org.newdawn.slick.Graphics;
 
 public class GuiSettings extends Gui{

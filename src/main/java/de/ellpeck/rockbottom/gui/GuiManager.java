@@ -22,10 +22,10 @@ import java.util.List;
 
 public class GuiManager{
 
-    private MainMenuBackground background;
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
-    private Gui gui;
     public boolean shouldReInit;
+    private MainMenuBackground background;
+    private Gui gui;
 
     public void reInitSelf(RockBottom game){
         Log.debug("Re-initializing Gui Manager");

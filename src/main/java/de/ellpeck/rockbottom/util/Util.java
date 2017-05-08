@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.util;
 
 import de.ellpeck.rockbottom.Constants;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.util.Log;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;

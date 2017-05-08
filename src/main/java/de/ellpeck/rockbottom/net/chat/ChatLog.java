@@ -25,6 +25,10 @@ public class ChatLog{
     public final List<String> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
 
+    public static void registerCommand(Command command){
+        COMMAND_REGISTRY.put(command.getName(), command);
+    }
+
     public void displayMessage(String message){
         this.messages.add(0, message);
         this.newMessageCounter.add(0, 400);
@@ -100,9 +104,5 @@ public class ChatLog{
                 }
             }
         }
-    }
-
-    public static void registerCommand(Command command){
-        COMMAND_REGISTRY.put(command.getName(), command);
     }
 }
