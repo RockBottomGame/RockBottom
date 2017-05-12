@@ -76,7 +76,7 @@ public class Container extends AppGameContainer{
     }
 
     private void drawLoadingInfo() throws SlickException{
-        Image image = new Image(AssetManager.class.getResourceAsStream("/assets/loading.png"), "loading", false);
+        Image image = new Image(AssetManager.getResource("/assets/loading.png"), "loading", false);
         image.setFilter(Image.FILTER_NEAREST);
 
         image.draw(0, 0, this.targetDisplayMode.getWidth(), this.targetDisplayMode.getHeight());

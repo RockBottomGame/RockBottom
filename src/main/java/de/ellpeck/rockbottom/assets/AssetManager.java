@@ -75,7 +75,7 @@ public class AssetManager{
     private void loadAssets() throws Exception{
         String path = "/assets";
 
-        InputStream propStream = AssetManager.class.getResourceAsStream(path+"/assets.info");
+        InputStream propStream = getResource(path+"/assets.info");
         Properties props = new Properties();
         props.load(propStream);
 
@@ -84,31 +84,31 @@ public class AssetManager{
 
             try{
                 if(key.startsWith("font.")){
-                    InputStream image = AssetManager.class.getResourceAsStream(path+value+".png");
-                    InputStream info = AssetManager.class.getResourceAsStream(path+value+".info");
+                    InputStream image = getResource(path+value+".png");
+                    InputStream info = getResource(path+value+".info");
 
                     this.assets.put(key, new AssetFont(Font.fromStream(image, info, key)));
-                    Log.info("Loaded font resource "+key+" with path "+value);
+                    Log.info("Loaded font resource "+key+" with data "+value);
+                }
+                else if(key.startsWith("tex.")){
+                    this.assets.put(key, new AssetImage(loadImage(key, path, value)));
+                    Log.info("Loaded png resource "+key+" with data "+value);
                 }
                 else{
-                    InputStream stream = AssetManager.class.getResourceAsStream(path+value);
+                    InputStream stream = getResource(path+value);
 
-                    if(value.endsWith(".png")){
-                        this.assets.put(key, new AssetImage(new Image(stream, key, false)));
-                        Log.info("Loaded png resource "+key+" with path "+value);
-                    }
-                    else if(value.endsWith(".ogg")){
+                    if(key.startsWith("sound.")){
                         this.assets.put(key, new AssetSound(new Sound(stream, key)));
-                        Log.info("Loaded ogg resource "+key+" with path "+value);
+                        Log.info("Loaded ogg resource "+key+" with data "+value);
                     }
-                    else if(value.endsWith(".loc")){
+                    else if(key.startsWith("loc.")){
                         this.assets.put(key, new AssetLocale(Locale.fromStream(stream, key)));
-                        Log.info("Loaded localization resource "+key+" with path "+value);
+                        Log.info("Loaded localization resource "+key+" with data "+value);
                     }
                 }
             }
             catch(Exception e){
-                Log.error("Failed loading resource "+key+" with path "+value+"!", e);
+                Log.error("Failed loading resource "+key+" with data "+value+"!", e);
             }
         }
     }
@@ -141,7 +141,7 @@ public class AssetManager{
     }
 
     public Image getImage(String path){
-        return this.getAssetWithFallback(path, this.missingTexture);
+        return this.getAssetWithFallback("tex."+path, this.missingTexture);
     }
 
     public Sound getSound(String path){
@@ -149,7 +149,7 @@ public class AssetManager{
     }
 
     public Locale getLocale(String path){
-        return this.getAssetWithFallback(path, this.missingLocale);
+        return this.getAssetWithFallback("loc."+path, this.missingLocale);
     }
 
     public Font getFont(String path){
@@ -162,5 +162,27 @@ public class AssetManager{
 
     public Font getFont(){
         return this.currentFont;
+    }
+
+    public static InputStream getResource(String s){
+        return AssetManager.class.getResourceAsStream(s);
+    }
+
+    private static Image loadImage(String key, String path, String value) throws Exception{
+        if(value.startsWith("sub")){
+            String[] parts = value.substring(4).split(",");
+
+            Image main = new Image(getResource(path+parts[0]), key, false);
+
+            int x = Integer.parseInt(parts[1]);
+            int y = Integer.parseInt(parts[2]);
+            int width = Integer.parseInt(parts[3]);
+            int height = Integer.parseInt(parts[4]);
+
+            return main.getSubImage(x, y, width, height);
+        }
+        else{
+            return new Image(getResource(path+value), key, false);
+        }
     }
 }
