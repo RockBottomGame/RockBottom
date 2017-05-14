@@ -24,7 +24,12 @@ public class TileEntity{
     }
 
     public void update(RockBottom game){
-
+        if(NetHandler.isServer()){
+            if(this.world.info.totalTimeInWorld%this.getSyncInterval() == 0 && this.needsSync()){
+                this.sendToClients();
+                this.onSync();
+            }
+        }
     }
 
     public boolean shouldRemove(){
@@ -47,7 +52,19 @@ public class TileEntity{
 
     }
 
-    public void sendToClients(){
+    protected boolean needsSync(){
+        return false;
+    }
+
+    protected void onSync(){
+
+    }
+
+    protected int getSyncInterval(){
+        return 10;
+    }
+
+    protected void sendToClients(){
         if(NetHandler.isServer()){
             NetHandler.sendToAllPlayers(this.world, new PacketTileEntityData(this.x, this.y, this));
         }

@@ -169,7 +169,7 @@ public class AssetManager{
     }
 
     private static Image loadImage(String key, String path, String value) throws Exception{
-        if(value.startsWith("sub")){
+        if(value.startsWith("sub:")){
             String[] parts = value.substring(4).split(",");
 
             Image main = new Image(getResource(path+parts[0]), key, false);

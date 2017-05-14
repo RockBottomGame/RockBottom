@@ -85,16 +85,16 @@ public class Chunk implements IWorld{
 
     protected void checkListSync(){
         if(this.entities.size() != this.entityLookup.size()){
-            throw new RuntimeException("Entities and EntityLookup are out of sync!");
+            throw new IllegalStateException("Entities and EntityLookup are out of sync!");
         }
         if(this.tileEntities.size() != this.tileEntityLookup.size()){
-            throw new RuntimeException("TileEntities and TileEntityLookup are out of sync!");
+            throw new IllegalStateException("TileEntities and TileEntityLookup are out of sync!");
         }
         if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
-            throw new RuntimeException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
+            throw new IllegalStateException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
         }
         if(this.playersOutOfRangeCached.size() != this.playersOutOfRangeCachedTimers.size()){
-            throw new RuntimeException("PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
+            throw new IllegalStateException("PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
         }
     }
 

@@ -18,7 +18,7 @@ public class ItemInstance{
     }
 
     public ItemInstance(Tile tile, int amount){
-        this(tile, amount, (byte)0);
+        this(tile, amount, 0);
     }
 
     public ItemInstance(Tile tile, int amount, int meta){
@@ -30,7 +30,7 @@ public class ItemInstance{
     }
 
     public ItemInstance(Item item, int amount){
-        this(item, amount, (byte)0);
+        this(item, amount, 0);
     }
 
     public ItemInstance(Item item, int amount, int meta){
@@ -79,6 +79,10 @@ public class ItemInstance{
 
     public int getAmount(){
         return this.amount;
+    }
+
+    public boolean fitsAmount(int amount){
+        return this.getAmount()+amount <= this.getMaxAmount();
     }
 
     public int getMaxAmount(){

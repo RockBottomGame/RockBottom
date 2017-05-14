@@ -47,7 +47,7 @@ public class World implements IWorld{
 
     protected void checkListSync(){
         if(this.loadedChunks.size() != this.chunkLookup.size()){
-            throw new RuntimeException("LoadedChunks and ChunkLookup are out of sync!");
+            throw new IllegalStateException("LoadedChunks and ChunkLookup are out of sync!");
         }
     }
 

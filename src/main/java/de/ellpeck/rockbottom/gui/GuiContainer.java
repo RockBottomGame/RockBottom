@@ -16,6 +16,9 @@ import org.newdawn.slick.Graphics;
 
 public class GuiContainer extends Gui{
 
+    public static final Color PROGRESS_COLOR = new Color(0.1F, 0.5F, 0.1F);
+    public static final Color FIRE_COLOR = new Color(0.5F, 0.1F, 0.1F);
+
     public final EntityPlayer player;
     public ItemInstance holdingInst;
 
