@@ -38,13 +38,10 @@ public final class DebugRenderer{
         }
         list.add("TileEntities: "+world.getAllTileEntities().size());
         list.add("Particles: "+game.particleManager.getAmount());
-        int updateTileAmount = 0;
         int scheduledTileAmount = 0;
         for(Chunk chunk : world.loadedChunks){
-            updateTileAmount += chunk.randomUpdateTileAmount;
             scheduledTileAmount += chunk.getScheduledUpdateAmount();
         }
-        list.add("Random Update Tiles: "+updateTileAmount);
         list.add("Scheduled Tile Updates: "+scheduledTileAmount);
         list.add("Seed: "+world.info.seed);
         list.add("Time: Local "+world.info.currentWorldTime+" / Total "+world.info.totalTimeInWorld);

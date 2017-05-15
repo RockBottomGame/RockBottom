@@ -42,7 +42,6 @@ public class Chunk implements IWorld{
     protected final Map<Pos2, TileEntity> tileEntityLookup = new HashMap<>();
     protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
     protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
-    public int randomUpdateTileAmount;
     public boolean isGenerating;
     protected boolean needsSave;
 
@@ -148,14 +147,12 @@ public class Chunk implements IWorld{
         if(!this.isGenerating){
             this.updateEntities(game);
 
-            if(this.randomUpdateTileAmount > 0){
+            for(int i = 0; i < Constants.RANDOM_TILE_UPDATES; i++){
                 int randX = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
                 int randY = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
 
                 Tile tile = this.getTileInner(randX, randY);
-                if(tile.doesRandomUpdates()){
-                    tile.updateRandomly(this.world, this.x+randX, this.y+randY);
-                }
+                tile.updateRandomly(this.world, this.x+randX, this.y+randY);
             }
 
             if(!this.scheduledUpdates.isEmpty()){
@@ -284,10 +281,6 @@ public class Chunk implements IWorld{
             if(lastTile.canProvideTileEntity()){
                 this.removeTileEntity(this.x+x, this.y+y);
             }
-
-            if(lastTile.doesRandomUpdates()){
-                this.randomUpdateTileAmount--;
-            }
         }
 
         int ord = layer.ordinal();
@@ -302,10 +295,6 @@ public class Chunk implements IWorld{
                 if(tileEntity != null){
                     this.addTileEntity(tileEntity);
                 }
-            }
-
-            if(tile.doesRandomUpdates()){
-                this.randomUpdateTileAmount++;
             }
         }
 

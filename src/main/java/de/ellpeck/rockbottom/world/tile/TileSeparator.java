@@ -1,12 +1,16 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.gui.GuiSeparator;
 import de.ellpeck.rockbottom.gui.container.ContainerSeparator;
 import de.ellpeck.rockbottom.net.NetHandler;
+import de.ellpeck.rockbottom.particle.ParticleManager;
+import de.ellpeck.rockbottom.particle.ParticleSmoke;
 import de.ellpeck.rockbottom.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.render.tile.SeparatorTileRenderer;
 import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Pos2;
+import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.IWorld;
 import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
@@ -111,5 +115,22 @@ public class TileSeparator extends MultiTile{
     @Override
     public int getMainY(){
         return 0;
+    }
+
+    @Override
+    public void updateRandomlyForRendering(World world, int x, int y, TileLayer layer, EntityPlayer player){
+        if(this.isMainPos(x, y, world.getMeta(x, y))){
+            TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
+            if(tile != null && tile.isActive()){
+                ParticleManager manager = RockBottom.get().particleManager;
+
+                if(Util.RANDOM.nextFloat() >= 0.25F){
+                    manager.addParticle(new ParticleSmoke(world, x+1.4, y+2.92, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F));
+                }
+                if(Util.RANDOM.nextFloat() >= 0.25F){
+                    manager.addParticle(new ParticleSmoke(world, x+1.75, y+2.68, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F));
+                }
+            }
+        }
     }
 }

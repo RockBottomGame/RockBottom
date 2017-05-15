@@ -10,11 +10,6 @@ public class TileDirt extends TileBasic{
     }
 
     @Override
-    public boolean doesRandomUpdates(){
-        return true;
-    }
-
-    @Override
     public void updateRandomly(World world, int x, int y){
         if(world.isPosLoaded(x, y+1) && !world.getTile(x, y+1).isFullTile()){
             world.setTile(x, y, ContentRegistry.TILE_GRASS);

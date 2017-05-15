@@ -14,11 +14,6 @@ public class TileSapling extends TileBasic{
     }
 
     @Override
-    public boolean doesRandomUpdates(){
-        return true;
-    }
-
-    @Override
     public boolean canPlaceInLayer(TileLayer layer){
         return layer == TileLayer.MAIN;
     }

@@ -180,11 +180,11 @@ public class Tile{
         return true;
     }
 
-    public boolean doesRandomUpdates(){
-        return false;
+    public void updateRandomly(World world, int x, int y){
+
     }
 
-    public void updateRandomly(World world, int x, int y){
+    public void updateRandomlyForRendering(World world, int x, int y, TileLayer layer, EntityPlayer player){
 
     }
 

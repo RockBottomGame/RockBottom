@@ -27,7 +27,7 @@ public final class Main{
             container.start();
         }
         catch(SlickException e){
-            Log.error("Exception initializing game! ", e);
+            Log.error("Exception initializing game", e);
         }
         finally{
             NetHandler.shutdown();

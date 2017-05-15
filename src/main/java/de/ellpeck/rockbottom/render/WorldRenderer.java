@@ -116,6 +116,8 @@ public class WorldRenderer{
             }
         }
 
+        particles.render(game, manager, g, world);
+
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
@@ -125,8 +127,6 @@ public class WorldRenderer{
                 }
             }
         });
-
-        particles.render(game, manager, g, world);
 
         g.resetTransform();
     }

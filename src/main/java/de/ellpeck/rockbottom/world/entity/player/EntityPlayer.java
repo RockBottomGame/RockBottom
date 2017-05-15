@@ -27,6 +27,7 @@ import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.EntityLiving;
+import de.ellpeck.rockbottom.world.tile.Tile;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.util.Log;
 
@@ -148,6 +149,19 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                             entity.item = left;
                         }
                     }
+                }
+            }
+        }
+
+        if(NetHandler.isThePlayer(this)){
+            for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES; i++){
+                TileLayer layer = TileLayer.LAYERS[Util.RANDOM.nextInt(TileLayer.LAYERS.length)];
+                int x = Util.floor(this.x)+Util.RANDOM.nextInt(33)-16;
+                int y = Util.floor(this.y)+Util.RANDOM.nextInt(33)-16;
+
+                if(this.world.isPosLoaded(x, y)){
+                    Tile tile = this.world.getTile(layer, x, y);
+                    tile.updateRandomlyForRendering(this.world, x, y, layer, this);
                 }
             }
         }
