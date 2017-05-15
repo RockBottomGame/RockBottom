@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDropItem;
-import de.ellpeck.rockbottom.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
@@ -73,7 +73,7 @@ public class GuiContainer extends Gui{
             float mouseX = game.getMouseInGuiX();
             float mouseY = game.getMouseInGuiY();
 
-            IItemRenderer.renderItemInGui(game, manager, g, this.holdingInst, mouseX-4F, mouseY-4F, 0.8F, Color.white);
+            Util.renderItemInGui(game, manager, g, this.holdingInst, mouseX-4F, mouseY-4F, 0.8F, Color.white);
         }
     }
 

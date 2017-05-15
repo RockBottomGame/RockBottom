@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.construction.IRecipe;
 import de.ellpeck.rockbottom.gui.GuiContainer;
 import de.ellpeck.rockbottom.item.ItemInstance;
-import de.ellpeck.rockbottom.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -37,7 +37,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
         List<ItemInstance> outputs = this.recipe.getOutputs();
         ItemInstance instance = outputs.get(0);
-        IItemRenderer.renderItemInGui(game, manager, g, instance, this.x, this.y, 1F, this.canConstruct ? Color.white : TRANSPARENT);
+        Util.renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Color.white : TRANSPARENT);
     }
 
     @Override

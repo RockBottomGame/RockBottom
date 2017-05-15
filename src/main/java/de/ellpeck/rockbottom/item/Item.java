@@ -49,7 +49,7 @@ public class Item{
         return "name."+this.name;
     }
 
-    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc){
+    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
         desc.add(instance.getDisplayName());
     }
 

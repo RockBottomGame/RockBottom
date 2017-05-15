@@ -61,7 +61,7 @@ public class AssetManager{
             GameContainer container = game.getContainer();
 
             if(!game.settings.hardwareCursor){
-                container.setMouseCursor(this.getImage("gui.cursor").getScaledCopy(game.settings.cursorScale), 0, 0);
+                container.setMouseCursor(this.getImage("gui.cursor").getScaledCopy(3F), 0, 0);
             }
             else{
                 container.setDefaultMouseCursor();

@@ -1,6 +1,9 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.ContentRegistry;
+import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.assets.AssetManager;
+import de.ellpeck.rockbottom.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.item.Item;
 import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.item.ItemTile;
@@ -16,6 +19,7 @@ import de.ellpeck.rockbottom.world.entity.Entity;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntity;
+import org.newdawn.slick.Input;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -247,5 +251,18 @@ public class Tile{
 
     public void onScheduledUpdate(World world, int x, int y, TileLayer layer){
 
+    }
+
+    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
+        if(isAdvanced){
+            for(TileLayer layer : TileLayer.LAYERS){
+                if(this.canPlaceInLayer(layer)){
+                    desc.add(FormattingCode.GRAY+manager.localize("info.layer_placement", manager.localize(layer.name)));
+                }
+            }
+        }
+        else{
+            desc.add(FormattingCode.DARK_GRAY+manager.localize("info.advanced_info", Input.getKeyName(RockBottom.get().settings.keyAdvancedInfo.key)));
+        }
     }
 }

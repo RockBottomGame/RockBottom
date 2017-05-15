@@ -20,9 +20,10 @@ public final class ContentRegistry{
     public static final Tile TILE_DIRT = new TileDirt(1).addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
     public static final Tile TILE_ROCK = new TileBasic(2, "rock").setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
     public static final Tile TILE_GRASS = new TileGrass(3).addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
+    public static final Tile TILE_WOOD_BOARDS = new TileBasic(4, "wood_boards").setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
     public static final Tile TILE_TORCH = new TileTorch(5).setHardness(0F).setForceDrop().register();
     public static final Tile TILE_CHEST = new TileChest(7).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
-    public static final Tile TILE_LOG = new TileLog(8).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+    public static final Tile TILE_LOG = new TileLog(8).setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
     public static final Tile TILE_LEAVES = new TileLeaves(9).setHardness(0.25F).setForceDrop().register();
     public static final Tile TILE_SAPLING = new TileSapling(10).setHardness(0F).setForceDrop().register();
     public static final Tile TILE_COAL_ORE = new TileCoalOre(11).setHardness(8F).addEffectiveTool(ToolType.PICKAXE, 1).register();
@@ -30,7 +31,7 @@ public final class ContentRegistry{
     public static final Tile TILE_SMELTER = new TileSmelter(13).setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
     public static final Tile TILE_SEPARATOR = new TileSeparator(14).setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
 
-    public static final Item ITEM_SUPER_TOOL = new ItemTool(8192, "super_tool").addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
+    public static final Item ITEM_SUPER_TOOL = new ItemTool(8192, "super_tool").addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
     public static final Item ITEM_WOOD_PICK = new ItemTool(8193, "pick_wood").addToolType(ToolType.PICKAXE, 1).register();
     public static final Item ITEM_ROCK_PICK = new ItemTool(8194, "pick_rock").addToolType(ToolType.PICKAXE, 2).register();
     public static final Item ITEM_COAL = new ItemBasic(8195, "coal").register();

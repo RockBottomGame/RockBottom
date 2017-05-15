@@ -136,7 +136,7 @@ public class GuiManager{
                             float mouseX = game.getMouseInGuiX();
                             float mouseY = game.getMouseInGuiY();
 
-                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+2*game.settings.cursorScale, mouseY, game.settings.cursorScale*3F, Color.white);
+                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.settings.guiScale, mouseY, 36F/game.settings.guiScale, Color.white);
                         }
                     }
                 }

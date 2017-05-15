@@ -19,9 +19,16 @@ public final class ConstructionRegistry{
     public static final List<SeparatorRecipe> SEPARATOR_RECIPES = new ArrayList<>();
 
     public static void init(){
-        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_TORCH, 3),
-                new ItemInstance(ContentRegistry.TILE_LOG),
-                new ItemInstance(ContentRegistry.TILE_COAL_ORE)));
+        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_TORCH, 8),
+                new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS),
+                new ItemInstance(ContentRegistry.ITEM_COAL, 2)));
+        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 5),
+                new ItemInstance(ContentRegistry.TILE_LOG)));
+        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.ITEM_WOOD_PICK),
+                new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 16)));
+        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.ITEM_ROCK_PICK),
+                new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 8),
+                new ItemInstance(ContentRegistry.TILE_ROCK, 8)));
 
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_COAL), 800);
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_SLAG), 200);

@@ -40,4 +40,9 @@ public class ClientChunk extends Chunk{
     public int getScheduledUpdateAmount(){
         return 0;
     }
+
+    @Override
+    public boolean shouldUnload(){
+        return false;
+    }
 }

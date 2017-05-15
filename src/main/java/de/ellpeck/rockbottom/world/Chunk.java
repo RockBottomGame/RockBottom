@@ -570,7 +570,7 @@ public class Chunk implements IWorld{
     }
 
     public boolean shouldUnload(){
-        return !NetHandler.isClient() && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
+        return this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
     }
 
     public void setDirty(){

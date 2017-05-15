@@ -2,16 +2,12 @@ package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
 import de.ellpeck.rockbottom.item.ItemInstance;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
-import de.ellpeck.rockbottom.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.util.Util;
 import org.newdawn.slick.Graphics;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ComponentHotbarSlot extends GuiComponent{
 
@@ -26,7 +22,7 @@ public class ComponentHotbarSlot extends GuiComponent{
 
     @Override
     public void render(RockBottom game, AssetManager manager, Graphics g){
-        IItemRenderer.renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
+        Util.renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
 
         if(this.inv.selectedSlot == this.id){
             manager.getImage("gui.selection_arrow").draw(this.x+0.75F, 1);
@@ -38,9 +34,7 @@ public class ComponentHotbarSlot extends GuiComponent{
         if(this.isMouseOver(game)){
             ItemInstance instance = this.inv.get(this.id);
             if(instance != null){
-                List<String> desc = new ArrayList<>();
-                instance.getItem().describeItem(manager, instance, desc);
-                Gui.drawHoverInfoAtMouse(game, manager, g, true, 0, desc);
+                Util.describeItem(game, manager, g, instance);
             }
         }
     }

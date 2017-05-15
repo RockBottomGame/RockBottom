@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.render.item.ItemTileRenderer;
-import de.ellpeck.rockbottom.world.TileLayer;
 import de.ellpeck.rockbottom.world.tile.Tile;
 
 import java.util.List;
@@ -25,14 +24,9 @@ public class ItemTile extends ItemBasic{
     }
 
     @Override
-    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc){
-        super.describeItem(manager, instance, desc);
+    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
+        super.describeItem(manager, instance, desc, isAdvanced);
 
-        Tile tile = this.getTile();
-        for(TileLayer layer : TileLayer.LAYERS){
-            if(tile.canPlaceInLayer(layer)){
-                desc.add("&2"+manager.localize("info.layer_placement", manager.localize(layer.name)));
-            }
-        }
+        this.getTile().describeItem(manager, instance, desc, isAdvanced);
     }
 }

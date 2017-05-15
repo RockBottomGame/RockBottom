@@ -43,7 +43,7 @@ public class Gui{
         float mouseX = game.getMouseInGuiX();
         float mouseY = game.getMouseInGuiY();
 
-        drawHoverInfo(game, manager, g, mouseX+1.5F*game.settings.cursorScale, mouseY+1.5F*game.settings.cursorScale, 0.25F, firstLineOffset, false, maxLength, text);
+        drawHoverInfo(game, manager, g, mouseX+18F/game.settings.guiScale, mouseY+18F/game.settings.guiScale, 0.25F, firstLineOffset, false, maxLength, text);
     }
 
     public static void drawHoverInfo(RockBottom game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){

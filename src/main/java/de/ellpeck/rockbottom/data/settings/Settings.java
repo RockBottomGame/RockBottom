@@ -15,7 +15,7 @@ public class Settings implements IPropSettings{
     public static final float DEFAULT_GUI_R = 0.32156864F;
     public static final float DEFAULT_GUI_G = 0.5882353F;
     public static final float DEFAULT_GUI_B = 0.32156864F;
-    private static final String[] DEFAULT_NAMES = new String[]{"Bob", "Doley", "Jason", "Huffelpuff", "Megan", "Jennifer", "Bottle", "Bus Stop", "ThePlayer99", "Genelele", "Karina", "Heinz", "Ketchup", "Dan", "David", "Penguin", "Hubert", "Penny", "Vinny", "Xx_TheBestLP_xX", "Bozo", "Patrick", "InigoMontoya", "Pebbles", "Noodles"};
+    private static final String[] DEFAULT_NAMES = new String[]{"Bob", "Doley", "Jason", "Huffelpuff", "Megan", "Jennifer", "Bottle", "Bus Stop", "ThePlayer99", "Genelele", "Karina", "Heinz", "Ketchup", "Dan", "David", "Penguin", "Hubert", "Penny", "Vinny", "Xx_TheBestLP_xX", "Bozo", "Patrick", "InigoMontoya", "Pebbles", "Noodles", "Milkshake"};
     public List<Keybind> keybinds = new ArrayList<>();
     public Keybind keyInventory = new Keybind("inventory", Input.KEY_E);
     public Keybind keyMenu = new Keybind("menu", Input.KEY_ESCAPE);
@@ -24,6 +24,7 @@ public class Settings implements IPropSettings{
     public Keybind keyJump = new Keybind("jump", Input.KEY_SPACE);
     public Keybind keyBackground = new Keybind("background", Input.KEY_LSHIFT);
     public Keybind keyChat = new Keybind("chat", Input.KEY_ENTER);
+    public Keybind keyAdvancedInfo = new Keybind("advanced_info", Input.KEY_LSHIFT);
     public String chatName;
 
     public int targetFps;
@@ -33,7 +34,6 @@ public class Settings implements IPropSettings{
     public int renderScale;
     public Color guiColor;
 
-    public float cursorScale;
     public boolean hardwareCursor;
     public boolean cursorInfos;
 
@@ -66,7 +66,6 @@ public class Settings implements IPropSettings{
 
         this.guiColor = new Color(this.getProp(props, "gui_r", DEFAULT_GUI_R), this.getProp(props, "gui_g", DEFAULT_GUI_G), this.getProp(props, "gui_b", DEFAULT_GUI_B));
 
-        this.cursorScale = this.getProp(props, "cursor_scale", 3F);
         this.hardwareCursor = this.getProp(props, "hardware_cursor", false);
         this.cursorInfos = this.getProp(props, "cursor_infos", true);
 
@@ -101,7 +100,6 @@ public class Settings implements IPropSettings{
         this.setProp(props, "gui_g", this.guiColor.g);
         this.setProp(props, "gui_b", this.guiColor.b);
 
-        this.setProp(props, "cursor_scale", this.cursorScale);
         this.setProp(props, "hardware_cursor", this.hardwareCursor);
         this.setProp(props, "cursor_infos", this.cursorInfos);
 
