@@ -18,7 +18,7 @@ public class GuiSeparator extends GuiContainer{
     public void initGui(RockBottom game){
         super.initGui(game);
 
-        this.components.add(new ComponentProgressBar(this, this.guiLeft+80, this.guiTop+15, 40, 8, PROGRESS_COLOR, false, this.tile:: getSmeltPercentage));
-        this.components.add(new ComponentProgressBar(this, this.guiLeft+74, this.guiTop+30, 8, 18, FIRE_COLOR, true, this.tile:: getFuelPercentage));
+        this.components.add(new ComponentProgressBar(this, this.guiLeft+70, this.guiTop+15, 40, 8, PROGRESS_COLOR, false, this.tile:: getSmeltPercentage));
+        this.components.add(new ComponentProgressBar(this, this.guiLeft+64, this.guiTop+30, 8, 18, FIRE_COLOR, true, this.tile:: getFuelPercentage));
     }
 }

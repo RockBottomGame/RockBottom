@@ -3,6 +3,8 @@ package de.ellpeck.rockbottom.world.tile;
 import de.ellpeck.rockbottom.gui.GuiSeparator;
 import de.ellpeck.rockbottom.gui.container.ContainerSeparator;
 import de.ellpeck.rockbottom.net.NetHandler;
+import de.ellpeck.rockbottom.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.render.tile.SeparatorTileRenderer;
 import de.ellpeck.rockbottom.util.BoundBox;
 import de.ellpeck.rockbottom.util.Pos2;
 import de.ellpeck.rockbottom.world.IWorld;
@@ -20,6 +22,11 @@ public class TileSeparator extends MultiTile{
     }
 
     @Override
+    protected ITileRenderer createRenderer(String name){
+        return new SeparatorTileRenderer(name);
+    }
+
+    @Override
     public boolean canProvideTileEntity(){
         return true;
     }
@@ -34,7 +41,7 @@ public class TileSeparator extends MultiTile{
         if(this.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
             if(tile != null && tile.isActive()){
-                return 20;
+                return 30;
             }
         }
         return 0;

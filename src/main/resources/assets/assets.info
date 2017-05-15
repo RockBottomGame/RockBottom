@@ -30,6 +30,11 @@ tex.tiles.separator.1.0=sub:/tiles/separator.png,8,16,8,8
 tex.tiles.separator.0.1=sub:/tiles/separator.png,0,8,8,8
 tex.tiles.separator.1.1=sub:/tiles/separator.png,8,8,8,8
 tex.tiles.separator.1.2=sub:/tiles/separator.png,8,0,8,8
+tex.tiles.separator.active.0.0=sub:/tiles/separator_active.png,0,16,8,8
+tex.tiles.separator.active.1.0=sub:/tiles/separator_active.png,8,16,8,8
+tex.tiles.separator.active.0.1=sub:/tiles/separator_active.png,0,8,8,8
+tex.tiles.separator.active.1.1=sub:/tiles/separator_active.png,8,8,8,8
+tex.tiles.separator.active.1.2=sub:/tiles/separator_active.png,8,0,8,8
 tex.tiles.separator.item=/tiles/separator_item.png
 
 tex.items.super_tool=/items/super_tool.png

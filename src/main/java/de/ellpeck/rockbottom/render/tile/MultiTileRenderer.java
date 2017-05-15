@@ -23,7 +23,8 @@ public class MultiTileRenderer<T extends MultiTile> extends DefaultTileRenderer<
 
     @Override
     public Image getParticleTexture(RockBottom game, AssetManager manager, Graphics g, T tile, int meta){
-        return manager.getImage(this.texture+"."+tile.getMainX()+"."+tile.getMainY());
+        Pos2 innerCoord = tile.getInnerCoord(meta);
+        return manager.getImage(this.texture+"."+innerCoord.getX()+"."+innerCoord.getY());
     }
 
     @Override
