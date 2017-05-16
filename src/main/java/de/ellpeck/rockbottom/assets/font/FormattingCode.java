@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.assets.font;
 
+import de.ellpeck.rockbottom.util.Util;
+import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
 
 public class FormattingCode{
@@ -53,6 +55,9 @@ public class FormattingCode{
                         }
                     }
                 }
+            }
+            else if(formatChar == 'r'){
+                return new FormattingCode('r', Util.getWheelColor((System.currentTimeMillis()/10)%256), 2);
             }
             else{
                 for(FormattingCode code : DEFAULT_CODES){

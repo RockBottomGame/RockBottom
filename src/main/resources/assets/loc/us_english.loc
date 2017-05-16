@@ -10,6 +10,13 @@ name.copper_ingot=Copper Ingot
 name.smelter=Smelter
 name.separator=Separator
 name.wood_boards=Wood Boards
+name.log=Log
+name.leaves=Leaves
+name.pick_wood=Wood Pickaxe
+name.pick_rock=Rock Pickaxe
+name.sapling=Sapling
+name.copper_ore=Copper Ore
+name.super_tool=&rSUPER TOOL
 
 info.layer_placement=Can be placed in %s
 info.health=Health

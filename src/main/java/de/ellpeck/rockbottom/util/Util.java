@@ -67,6 +67,16 @@ public final class Util{
         return new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
     }
 
+    public static Color getWheelColor(float pos){
+        if(pos < 85F){
+            return new Color((pos*3F)/255F, (255F-pos*3F)/255F, 0F);
+        }
+        if(pos < 170F){
+            return new Color((255F-(pos -= 85F)*3F)/255F, 0F, (pos*3F)/255F);
+        }
+        return new Color(0F, ((pos -= 170F)*3F)/255F, (255F-pos*3F)/255F);
+    }
+
     public static String trimString(String s, int length){
         if(s.length() <= length){
             return s;
