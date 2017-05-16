@@ -28,5 +28,5 @@ public abstract class Command{
         return this.level;
     }
 
-    public abstract String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager, ChatLog chat);
+    public abstract String execute(String[] args, EntityPlayer player, String playerName, RockBottom game, AssetManager manager, ChatLog chat);
 }

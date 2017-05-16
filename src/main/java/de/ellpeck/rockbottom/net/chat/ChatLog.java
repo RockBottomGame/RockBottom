@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.util.Log;
 
 import java.util.*;
 
@@ -20,6 +21,7 @@ public class ChatLog{
         registerCommand(new CommandAddPermission());
         registerCommand(new CommandSpawnItem());
         registerCommand(new CommandTeleport());
+        registerCommand(new CommandMe());
     }
 
     public final List<String> messages = new ArrayList<>();
@@ -32,6 +34,8 @@ public class ChatLog{
     public void displayMessage(String message){
         this.messages.add(0, message);
         this.newMessageCounter.add(0, 400);
+
+        Log.info("Chat: "+message);
     }
 
     public void sendPlayerMessage(String message, EntityPlayer player, String playerName){
@@ -45,7 +49,7 @@ public class ChatLog{
                 if(command != null){
                     if(player.getCommandLevel() >= command.getLevel()){
                         RockBottom game = RockBottom.get();
-                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, game, game.assetManager, this);
+                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, playerName, game, game.assetManager, this);
                     }
                     else{
                         cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
@@ -55,14 +59,15 @@ public class ChatLog{
                     cmdFeedback = FormattingCode.RED+"Unknown command, use /help for a list of commands.";
                 }
 
+                Log.info("Player with id "+player.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
+
                 if(cmdFeedback != null){
                     this.sendMessageToPlayer(player, cmdFeedback);
                 }
-
-                return;
             }
-
-            this.broadcastMessage(playerName+" &4"+message);
+            else{
+                this.broadcastMessage(player.getChatColorFormat()+"["+playerName+"] &4"+message);
+            }
         }
     }
 

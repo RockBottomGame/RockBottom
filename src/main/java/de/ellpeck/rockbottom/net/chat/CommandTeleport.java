@@ -14,7 +14,7 @@ public class CommandTeleport extends Command{
     }
 
     @Override
-    public String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager, ChatLog chat){
+    public String execute(String[] args, EntityPlayer player, String playerName, RockBottom game, AssetManager manager, ChatLog chat){
         try{
             int x = Integer.parseInt(args[0]);
             int y = Integer.parseInt(args[1]);

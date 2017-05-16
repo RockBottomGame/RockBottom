@@ -18,7 +18,7 @@ public class CommandAddPermission extends Command{
     }
 
     @Override
-    public String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager, ChatLog chat){
+    public String execute(String[] args, EntityPlayer player, String playerName, RockBottom game, AssetManager manager, ChatLog chat){
         try{
             UUID id = UUID.fromString(args[0]);
             int level = Integer.parseInt(args[1]);

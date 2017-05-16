@@ -361,4 +361,8 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
             }
         }
     }
+
+    public String getChatColorFormat(){
+        return "&("+this.color.r+","+this.color.g+","+this.color.b+")";
+    }
 }

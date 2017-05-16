@@ -12,7 +12,7 @@ public class CommandHelp extends Command{
     }
 
     @Override
-    public String execute(String[] args, EntityPlayer player, RockBottom game, AssetManager manager, ChatLog chat){
+    public String execute(String[] args, EntityPlayer player, String playerName, RockBottom game, AssetManager manager, ChatLog chat){
         chat.sendMessageToPlayer(player, FormattingCode.GREEN+"List of all commands:");
 
         for(Command command : ChatLog.COMMAND_REGISTRY.values()){

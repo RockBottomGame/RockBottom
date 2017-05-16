@@ -78,14 +78,11 @@ public class GuiChat extends Gui{
             String text = this.inputField.getText();
 
             if(text != null && !text.isEmpty()){
-                Color color = game.player.color;
-                String name = "&("+color.r+","+color.g+","+color.b+")["+game.settings.chatName+"]";
-
                 if(NetHandler.isClient()){
-                    NetHandler.sendToServer(new PacketSendChat(game.player.getUniqueId(), text, name));
+                    NetHandler.sendToServer(new PacketSendChat(game.player.getUniqueId(), text, game.settings.chatName));
                 }
                 else{
-                    game.chatLog.sendPlayerMessage(text, game.player, name);
+                    game.chatLog.sendPlayerMessage(text, game.player, game.settings.chatName);
                 }
 
                 this.inputField.setText("");
