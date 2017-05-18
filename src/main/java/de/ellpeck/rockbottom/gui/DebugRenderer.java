@@ -24,6 +24,11 @@ public final class DebugRenderer{
 
         list.add("Avg FPS: "+game.fpsAverage);
         list.add("Avg TPS: "+game.tpsAverage);
+        list.add("Aspect: "+container.getWidth()+", "+container.getHeight());
+        list.add("Screen: "+container.getScreenWidth()+", "+container.getScreenHeight());
+        list.add("World: "+game.getWidthInWorld()+", "+game.getHeightInWorld());
+        list.add("Gui: "+game.getWidthInGui()+", "+game.getHeightInGui());
+        list.add("Vsync: "+container.isVSyncRequested()+", Fullscreen: "+container.isFullscreen());
         list.add("");
 
         String chunks = "Loaded Chunks: "+world.loadedChunks.size();

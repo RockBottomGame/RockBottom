@@ -45,13 +45,13 @@ public abstract class TileEntityFueled extends TileEntity{
                     }
                 }
             }
+        }
 
-            boolean active = this.isActive();
-            if(this.lastActive != active){
-                this.lastActive = active;
+        boolean active = this.isActive();
+        if(this.lastActive != active){
+            this.lastActive = active;
 
-                this.onActiveChange(active);
-            }
+            this.onActiveChange(active);
         }
     }
 

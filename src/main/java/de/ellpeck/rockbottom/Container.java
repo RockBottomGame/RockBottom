@@ -15,13 +15,17 @@ import java.security.PrivilegedAction;
 
 public class Container extends AppGameContainer{
 
+    protected final RockBottom game;
+
     public Container(RockBottom game) throws SlickException{
         super(game, 1280, 720, false);
+        this.game = game;
     }
 
     @Override
     protected void setup() throws SlickException{
         Display.setTitle(this.game.getTitle());
+        Display.setResizable(true);
 
         Log.info("LWJGL version: "+Sys.getVersion());
         Log.info("Display mode: "+this.targetDisplayMode);
@@ -72,6 +76,21 @@ public class Container extends AppGameContainer{
         catch(SlickException e){
             Log.error("Failed to initialize game", e);
             this.running = false;
+        }
+    }
+
+    @Override
+    protected void gameLoop() throws SlickException{
+        super.gameLoop();
+
+        if(!this.isFullscreen() && Display.wasResized()){
+            this.width = Display.getWidth();
+            this.height = Display.getHeight();
+
+            this.initGL();
+            this.enterOrtho();
+
+            this.game.guiManager.shouldReInit = true;
         }
     }
 
