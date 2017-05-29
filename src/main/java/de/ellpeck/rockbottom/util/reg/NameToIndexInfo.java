@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.net.NetUtil;
 import io.netty.buffer.ByteBuf;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.Map;
@@ -27,10 +26,14 @@ public class NameToIndexInfo implements IPropSettings{
             String key = entry.getKey();
 
             if(this.getId(key) < 0){
-                int id = this.reg.getSize();
+                for(int i = 0; i <= this.reg.max; i++){
+                    if(this.get(i) == null){
+                        this.reg.register(i, key);
 
-                this.reg.register(id, key);
-                this.needsSave = true;
+                        this.needsSave = true;
+                        break;
+                    }
+                }
             }
         }
     }
