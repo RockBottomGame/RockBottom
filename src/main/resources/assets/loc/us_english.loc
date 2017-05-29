@@ -64,6 +64,7 @@ button.all_construction=Show unconstructible Recipes
 button.cursor_infos=Cursor Indicators Off
 button.cursor_infos_toggled=Cursor Indicators On
 button.graphics=Graphics
+button.construction_amount=Amount
 
 layer.main=Foreground
 layer.background=Background

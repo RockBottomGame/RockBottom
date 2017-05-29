@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.construction.IRecipe;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.gui.component.ComponentRecipeButton;
+import de.ellpeck.rockbottom.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.IInvChangeCallback;
 import de.ellpeck.rockbottom.inventory.IInventory;
@@ -24,6 +25,8 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
     private static boolean isConstructionOpen;
     private static boolean shouldShowAll;
+    private static int craftAmount = 1;
+
     private final List<ComponentRecipeButton> constructionButtons = new ArrayList<>();
 
     public GuiInventory(EntityPlayer player){
@@ -37,6 +40,12 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, "gui.construction", game.assetManager.localize("button.construction")));
 
         if(isConstructionOpen){
+            this.components.add(new ComponentSlider(this, 2, this.guiLeft-104, this.guiTop+71, 88, 12, craftAmount, 1, 128, new ComponentSlider.ICallback(){
+                @Override
+                public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
+                    craftAmount = number;
+                }
+            }, game.assetManager.localize("button.construction_amount")));
             this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, "gui.all_construction", game.assetManager.localize("button.all_construction")));
             this.initConstructionButtons();
         }
@@ -56,7 +65,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
             boolean matches = IRecipe.matchesInv(recipe, this.player.inv);
 
             if(matches || shouldShowAll){
-                this.constructionButtons.add(new ComponentRecipeButton(this, 2+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.indexOf(recipe), matches));
+                this.constructionButtons.add(new ComponentRecipeButton(this, 3+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.indexOf(recipe), matches));
 
                 x += 18;
                 if((i+1)%5 == 0){
@@ -118,10 +127,10 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
                 if(but.id == button){
                     if(but.canConstruct){
                         if(NetHandler.isClient()){
-                            NetHandler.sendToServer(new PacketManualConstruction(game.player.getUniqueId(), but.recipeId));
+                            NetHandler.sendToServer(new PacketManualConstruction(game.player.getUniqueId(), but.recipeId, craftAmount));
                         }
                         else{
-                            ContainerInventory.doManualCraft(game.player, but.recipe);
+                            ContainerInventory.doManualCraft(game.player, but.recipe, craftAmount);
                         }
                         return true;
                     }

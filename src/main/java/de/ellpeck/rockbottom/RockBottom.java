@@ -31,7 +31,7 @@ import java.util.UUID;
 
 public class RockBottom extends BasicGame{
 
-    public static final String VERSION = "0.0.2";
+    public static final String VERSION = "0.0.3";
     private static RockBottom instance;
 
     private final List<IAction> scheduledActions = new ArrayList<>();
@@ -58,7 +58,7 @@ public class RockBottom extends BasicGame{
     private int fpsAccumulator;
 
     public RockBottom(){
-        super("Rock Bottom "+RockBottom.VERSION);
+        super("Rock Bottom "+VERSION);
 
         Log.info("Setting game instance to "+this);
         instance = this;

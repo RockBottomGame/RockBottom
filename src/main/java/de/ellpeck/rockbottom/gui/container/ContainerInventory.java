@@ -12,24 +12,29 @@ public class ContainerInventory extends ItemContainer{
         this.addPlayerInventory(player, 0, 0);
     }
 
-    public static void doManualCraft(EntityPlayer player, IRecipe recipe){
-        if(IRecipe.matchesInv(recipe, player.inv)){
-            for(ItemInstance input : recipe.getInputs()){
-                for(int i = 0; i < player.inv.getSlotAmount(); i++){
-                    ItemInstance inv = player.inv.get(i);
+    public static void doManualCraft(EntityPlayer player, IRecipe recipe, int amount){
+        for(int a = 0; a < amount; a++){
+            if(IRecipe.matchesInv(recipe, player.inv)){
+                for(ItemInstance input : recipe.getInputs()){
+                    for(int i = 0; i < player.inv.getSlotAmount(); i++){
+                        ItemInstance inv = player.inv.get(i);
 
-                    if(inv != null && inv.isItemEqual(input) && inv.getAmount() >= input.getAmount()){
-                        player.inv.remove(i, input.getAmount());
-                        break;
+                        if(inv != null && inv.isItemEqual(input) && inv.getAmount() >= input.getAmount()){
+                            player.inv.remove(i, input.getAmount());
+                            break;
+                        }
+                    }
+                }
+
+                for(ItemInstance output : recipe.getOutputs()){
+                    ItemInstance left = player.inv.addExistingFirst(output, false);
+                    if(left != null){
+                        EntityItem.spawn(player.world, left, player.x, player.y, 0F, 0F);
                     }
                 }
             }
-
-            for(ItemInstance output : recipe.getOutputs()){
-                ItemInstance left = player.inv.addExistingFirst(output, false);
-                if(left != null){
-                    EntityItem.spawn(player.world, left, player.x, player.y, 0F, 0F);
-                }
+            else{
+                break;
             }
         }
     }

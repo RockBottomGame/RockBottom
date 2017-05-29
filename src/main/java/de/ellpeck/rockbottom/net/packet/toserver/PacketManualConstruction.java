@@ -16,10 +16,12 @@ public class PacketManualConstruction implements IPacket{
 
     private UUID playerId;
     private int recipeIndex;
+    private int amount;
 
-    public PacketManualConstruction(UUID playerId, int recipeIndex){
+    public PacketManualConstruction(UUID playerId, int recipeIndex, int amount){
         this.playerId = playerId;
         this.recipeIndex = recipeIndex;
+        this.amount = amount;
     }
 
     public PacketManualConstruction(){
@@ -30,12 +32,14 @@ public class PacketManualConstruction implements IPacket{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeInt(this.recipeIndex);
+        buf.writeInt(this.amount);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.recipeIndex = buf.readInt();
+        this.amount = buf.readInt();
     }
 
     @Override
@@ -46,7 +50,7 @@ public class PacketManualConstruction implements IPacket{
                 if(player != null){
                     IRecipe recipe = ConstructionRegistry.MANUAL_RECIPES.get(this.recipeIndex);
                     if(recipe != null){
-                        ContainerInventory.doManualCraft(player, recipe);
+                        ContainerInventory.doManualCraft(player, recipe, this.amount);
                     }
                 }
             }
