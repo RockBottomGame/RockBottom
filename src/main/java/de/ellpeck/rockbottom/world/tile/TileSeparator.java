@@ -21,8 +21,8 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 
 public class TileSeparator extends MultiTile{
 
-    public TileSeparator(int id){
-        super(id, "separator");
+    public TileSeparator(){
+        super("separator");
     }
 
     @Override

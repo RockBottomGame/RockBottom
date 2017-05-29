@@ -28,7 +28,8 @@ public class Container extends AppGameContainer{
         Display.setResizable(true);
 
         Log.info("LWJGL version: "+Sys.getVersion());
-        Log.info("Display mode: "+this.targetDisplayMode);
+        Log.info("Display: "+this.originalDisplayMode);
+        Log.info("Target: "+this.targetDisplayMode);
 
         AccessController.doPrivileged((PrivilegedAction)() -> {
             try{
@@ -98,7 +99,7 @@ public class Container extends AppGameContainer{
         Image image = new Image(AssetManager.getResource("/assets/loading.png"), "loading", false);
         image.setFilter(Image.FILTER_NEAREST);
 
-        image.draw(0, 0, this.targetDisplayMode.getWidth(), this.targetDisplayMode.getHeight());
+        image.draw(0, 0, this.getWidth(), this.getHeight());
         Display.update();
     }
 }

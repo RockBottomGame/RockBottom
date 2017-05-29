@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.util.*;
+import de.ellpeck.rockbottom.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.world.entity.Entity;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.gen.IWorldGenerator;
@@ -299,7 +300,7 @@ public class Chunk implements IWorld{
         }
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, tile, meta));
+            NetHandler.sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.getIdForTile(tile), meta));
         }
 
         if(!this.isGenerating){
@@ -527,6 +528,16 @@ public class Chunk implements IWorld{
         return -1;
     }
 
+    @Override
+    public int getIdForTile(Tile tile){
+        return this.world.getIdForTile(tile);
+    }
+
+    @Override
+    public Tile getTileForId(int id){
+        return this.world.getTileForId(id);
+    }
+
     public byte getCombinedLightInner(int x, int y){
         byte artificial = this.getArtificialLightInner(x, y);
         byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
@@ -573,7 +584,7 @@ public class Chunk implements IWorld{
 
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    ids[x][y] = (short)ContentRegistry.TILE_REGISTRY.getId(this.getTileInner(layer, x, y));
+                    ids[x][y] = (short)this.getIdForTile(this.getTileInner(layer, x, y));
                 }
             }
 
@@ -590,7 +601,7 @@ public class Chunk implements IWorld{
         for(Entity entity : this.entities){
             if(entity.doesSave() && !(entity instanceof EntityPlayer)){
                 DataSet entitySet = new DataSet();
-                entitySet.addInt("id", ContentRegistry.ENTITY_REGISTRY.getId(entity.getClass()));
+                entitySet.addString("name", ContentRegistry.ENTITY_REGISTRY.getName(entity.getClass()));
                 entity.save(entitySet);
 
                 set.addDataSet("e_"+entityId, entitySet);
@@ -623,7 +634,7 @@ public class Chunk implements IWorld{
             updateSet.addInt("y_"+updateId, update.y);
             updateSet.addInt("l_"+updateId, update.layer.ordinal());
             updateSet.addInt("t_"+updateId, update.time);
-            updateSet.addInt("i_"+updateId, ContentRegistry.TILE_REGISTRY.getId(update.tile));
+            updateSet.addInt("i_"+updateId, this.getIdForTile(update.tile));
 
             updateId++;
         }
@@ -645,7 +656,7 @@ public class Chunk implements IWorld{
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        Tile tile = ContentRegistry.TILE_REGISTRY.get(ids[x][y]);
+                        Tile tile = this.getTileForId(ids[x][y]);
                         if(tile != null){
                             this.setTileInner(layer, x, y, tile, meta[x][y]);
                         }
@@ -664,15 +675,15 @@ public class Chunk implements IWorld{
             for(int i = 0; i < entityAmount; i++){
                 DataSet entitySet = set.getDataSet("e_"+i);
 
-                int id = entitySet.getInt("id");
-                Entity entity = Entity.create(id, this.world);
+                String name = entitySet.getString("name");
+                Entity entity = Entity.create(name, this.world);
 
                 if(entity != null){
                     entity.load(entitySet);
                     this.addEntity(entity);
                 }
                 else{
-                    Log.error("Couldn't load entity with id "+id+" and data "+entitySet);
+                    Log.error("Couldn't load entity with name "+name+" and data "+entitySet);
                 }
             }
 
@@ -700,7 +711,7 @@ public class Chunk implements IWorld{
                 int time = updateSet.getInt("t_"+i);
 
                 int id = updateSet.getInt("i_"+i);
-                Tile tile = ContentRegistry.TILE_REGISTRY.get(id);
+                Tile tile = this.getTileForId(id);
 
                 if(tile != null){
                     TileLayer layer = TileLayer.LAYERS[updateSet.getInt("l_"+i)];

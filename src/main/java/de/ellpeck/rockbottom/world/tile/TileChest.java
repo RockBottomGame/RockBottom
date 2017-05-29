@@ -16,8 +16,8 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
 public class TileChest extends TileBasic{
 
-    public TileChest(int id){
-        super(id, "chest");
+    public TileChest(){
+        super("chest");
     }
 
     @Override

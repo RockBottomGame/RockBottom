@@ -10,8 +10,8 @@ import java.util.List;
 
 public class TileCoalOre extends TileBasic{
 
-    public TileCoalOre(int id){
-        super(id, "coal_ore");
+    public TileCoalOre(){
+        super("coal_ore");
     }
 
     @Override

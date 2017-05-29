@@ -47,8 +47,8 @@ public class ItemInstance{
     }
 
     public static ItemInstance load(DataSet set){
-        short id = set.getShort("item_id");
-        Item item = ContentRegistry.ITEM_REGISTRY.get(id);
+        String name = set.getString("item_name");
+        Item item = ContentRegistry.ITEM_REGISTRY.get(name);
 
         if(item != null){
             int amount = set.getInt("amount");
@@ -57,14 +57,14 @@ public class ItemInstance{
             return new ItemInstance(item, amount, meta);
         }
         else{
-            Log.info("Could not load item instance from data set "+set+" because id "+id+" is missing!");
+            Log.info("Could not load item instance from data set "+set+" because name "+name+" is missing!");
 
             return null;
         }
     }
 
     public void save(DataSet set){
-        set.addShort("item_id", (short)ContentRegistry.ITEM_REGISTRY.getId(this.item));
+        set.addString("item_name", ContentRegistry.ITEM_REGISTRY.getName(this.item));
         set.addInt("amount", this.amount);
         set.addShort("meta", this.meta);
     }

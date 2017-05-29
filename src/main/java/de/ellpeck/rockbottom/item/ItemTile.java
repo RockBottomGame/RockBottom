@@ -10,8 +10,8 @@ import java.util.List;
 
 public class ItemTile extends ItemBasic{
 
-    public ItemTile(int id, String name){
-        super(id, name);
+    public ItemTile(String name){
+        super(name);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class ItemTile extends ItemBasic{
     }
 
     public Tile getTile(){
-        return ContentRegistry.TILE_REGISTRY.get(this.id);
+        return ContentRegistry.TILE_REGISTRY.get(this.getName());
     }
 
     @Override

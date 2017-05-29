@@ -39,7 +39,7 @@ public class CommandPermissions implements IPropSettings{
 
     @Override
     public String getName(){
-        return "Command Permission Settings";
+        return "Command permission settings";
     }
 
     public int getCommandLevel(EntityPlayer player){

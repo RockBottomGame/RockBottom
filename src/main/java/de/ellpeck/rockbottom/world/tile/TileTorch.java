@@ -10,8 +10,8 @@ import de.ellpeck.rockbottom.world.World;
 
 public class TileTorch extends TileBasic{
 
-    public TileTorch(int id){
-        super(id, "torch");
+    public TileTorch(){
+        super("torch");
     }
 
     @Override

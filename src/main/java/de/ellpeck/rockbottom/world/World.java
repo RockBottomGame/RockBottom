@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.util.*;
+import de.ellpeck.rockbottom.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.world.entity.Entity;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.tile.Tile;
@@ -35,8 +36,11 @@ public class World implements IWorld{
     protected File playerDirectory;
     protected int saveTicksCounter;
 
-    public World(WorldInfo info){
+    public NameToIndexInfo tileRegInfo;
+
+    public World(WorldInfo info, NameToIndexInfo tileRegInfo){
         this.info = info;
+        this.tileRegInfo = tileRegInfo;
         this.generatorRandom.setSeed(this.info.seed);
     }
 
@@ -279,6 +283,18 @@ public class World implements IWorld{
         return chunk.getLowestAirUpwards(layer, x, y);
     }
 
+    @Override
+    public int getIdForTile(Tile tile){
+        String name = ContentRegistry.TILE_REGISTRY.getName(tile);
+        return this.tileRegInfo.getId(name);
+    }
+
+    @Override
+    public Tile getTileForId(int id){
+        String name = this.tileRegInfo.get(id);
+        return ContentRegistry.TILE_REGISTRY.get(name);
+    }
+
     public Chunk getChunk(double x, double y){
         return this.getChunkFromGridCoords(Util.toGridPos(x), Util.toGridPos(y));
     }
@@ -445,7 +461,7 @@ public class World implements IWorld{
         tile.onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
         if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, PacketParticles.tile(x, y, tile, meta));
+            NetHandler.sendToAllPlayers(this, PacketParticles.tile(this, x, y, tile, meta));
         }
 
         RockBottom.get().particleManager.addTileParticles(this, x, y, tile, meta);

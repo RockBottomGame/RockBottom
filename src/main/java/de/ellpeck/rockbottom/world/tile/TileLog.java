@@ -10,8 +10,8 @@ import de.ellpeck.rockbottom.world.entity.Entity;
 
 public class TileLog extends TileBasic{
 
-    public TileLog(int id){
-        super(id, "log");
+    public TileLog(){
+        super("log");
     }
 
     public static void scheduleDestroyAround(World world, int x, int y){

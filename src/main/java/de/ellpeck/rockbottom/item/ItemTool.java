@@ -10,8 +10,8 @@ public class ItemTool extends ItemBasic{
 
     private final Map<ToolType, Integer> toolTypes = new HashMap<>();
 
-    public ItemTool(int id, String name){
-        super(id, name);
+    public ItemTool(String name){
+        super(name);
         this.maxAmount = 1;
     }
 

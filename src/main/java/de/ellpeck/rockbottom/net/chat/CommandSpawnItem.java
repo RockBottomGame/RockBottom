@@ -19,8 +19,7 @@ public class CommandSpawnItem extends Command{
     @Override
     public String execute(String[] args, EntityPlayer player, String playerName, RockBottom game, AssetManager manager, ChatLog chat){
         try{
-            int id = Integer.parseInt(args[0]);
-            Item item = ContentRegistry.ITEM_REGISTRY.get(id);
+            Item item = ContentRegistry.ITEM_REGISTRY.get(args[0]);
 
             if(item != null){
                 int amount = args.length < 2 ? 1 : Integer.parseInt(args[1]);
@@ -31,7 +30,7 @@ public class CommandSpawnItem extends Command{
                 return FormattingCode.GREEN+"Added "+amount+"x "+instance.getDisplayName()+"!";
             }
             else{
-                return FormattingCode.RED+"Item with id "+id+" not found!";
+                return FormattingCode.RED+"Item with name "+args[0]+" not found!";
             }
         }
         catch(Exception e){

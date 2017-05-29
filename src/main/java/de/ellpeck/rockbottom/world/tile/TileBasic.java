@@ -7,8 +7,8 @@ public class TileBasic extends Tile{
 
     protected final ITileRenderer renderer;
 
-    public TileBasic(int id, String name){
-        super(id, name);
+    public TileBasic(String name){
+        super(name);
         this.renderer = this.createRenderer(name);
     }
 

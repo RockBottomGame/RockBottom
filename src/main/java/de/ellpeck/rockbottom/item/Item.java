@@ -11,11 +11,9 @@ import java.util.Map;
 public class Item{
 
     protected final String name;
-    protected final int id;
     protected int maxAmount = 999;
 
-    public Item(int id, String name){
-        this.id = id;
+    public Item(String name){
         this.name = name;
     }
 
@@ -23,18 +21,9 @@ public class Item{
         return null;
     }
 
-    public int getId(){
-        return this.id;
-    }
-
     public Item register(){
-        ContentRegistry.ITEM_REGISTRY.register(this.getId(), this);
+        ContentRegistry.ITEM_REGISTRY.register(this.getName(), this);
         return this;
-    }
-
-    @Override
-    public int hashCode(){
-        return this.getId();
     }
 
     public int getMaxAmount(){
@@ -55,7 +44,7 @@ public class Item{
 
     @Override
     public String toString(){
-        return this.getName()+"@"+this.getId();
+        return this.getName();
     }
 
     public int getDespawnTime(ItemInstance instance){

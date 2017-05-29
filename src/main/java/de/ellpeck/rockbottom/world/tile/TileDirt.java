@@ -5,8 +5,8 @@ import de.ellpeck.rockbottom.world.World;
 
 public class TileDirt extends TileBasic{
 
-    public TileDirt(int id){
-        super(id, "dirt");
+    public TileDirt(){
+        super("dirt");
     }
 
     @Override

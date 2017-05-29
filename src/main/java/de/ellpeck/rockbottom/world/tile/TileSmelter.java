@@ -21,8 +21,8 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmelter;
 
 public class TileSmelter extends MultiTile{
 
-    public TileSmelter(int id){
-        super(id, "smelter");
+    public TileSmelter(){
+        super("smelter");
     }
 
     @Override

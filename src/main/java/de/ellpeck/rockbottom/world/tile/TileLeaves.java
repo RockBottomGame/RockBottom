@@ -12,8 +12,8 @@ import java.util.List;
 
 public class TileLeaves extends TileBasic{
 
-    public TileLeaves(int id){
-        super(id, "leaves");
+    public TileLeaves(){
+        super("leaves");
     }
 
     @Override

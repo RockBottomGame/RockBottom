@@ -12,13 +12,13 @@ public abstract class MultiTile extends TileBasic{
 
     protected final boolean[][] structure;
 
-    public MultiTile(int id, String name){
-        super(id, name);
+    public MultiTile(String name){
+        super(name);
 
         this.structure = this.makeStructure();
 
         if(!this.areDimensionsValid()){
-            throw new RuntimeException("MultiTile with id "+id+" and name "+name+" has invalid structure dimensions!");
+            throw new RuntimeException("MultiTile with name "+name+" has invalid structure dimensions!");
         }
     }
 

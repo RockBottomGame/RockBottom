@@ -78,4 +78,8 @@ public interface IWorld{
     void setDirty(int x, int y);
 
     int getLowestAirUpwards(TileLayer layer, int x, int y);
+
+    int getIdForTile(Tile tile);
+
+    Tile getTileForId(int id);
 }

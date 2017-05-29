@@ -9,8 +9,8 @@ import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 
 public class TileSapling extends TileBasic{
 
-    public TileSapling(int id){
-        super(id, "sapling");
+    public TileSapling(){
+        super("sapling");
     }
 
     @Override

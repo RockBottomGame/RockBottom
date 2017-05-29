@@ -16,6 +16,7 @@ import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.util.IAction;
 import de.ellpeck.rockbottom.util.Util;
+import de.ellpeck.rockbottom.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.World.WorldInfo;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -206,7 +207,16 @@ public class RockBottom extends BasicGame{
     public void startWorld(File worldFile, WorldInfo info){
         Log.info("Starting world with file "+worldFile);
 
-        this.world = new World(info);
+        NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "name_to_index_info.dat"), Short.MAX_VALUE);
+        this.dataManager.loadPropSettings(tileRegInfo);
+
+        tileRegInfo.populate(ContentRegistry.TILE_REGISTRY);
+
+        if(tileRegInfo.needsSave()){
+            this.dataManager.savePropSettings(tileRegInfo);
+        }
+
+        this.world = new World(info, tileRegInfo);
         this.world.initFiles(worldFile);
 
         if(this.world.info.seed == 0){
@@ -222,10 +232,10 @@ public class RockBottom extends BasicGame{
         Log.info("Successfully started world with file "+worldFile);
     }
 
-    public void joinWorld(DataSet playerSet, WorldInfo info){
+    public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo){
         Log.info("Joining world");
 
-        this.world = new ClientWorld(info);
+        this.world = new ClientWorld(info, tileRegInfo);
 
         this.player = this.world.createPlayer(this.uniqueId, null);
         this.player.load(playerSet);

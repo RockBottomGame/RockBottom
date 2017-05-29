@@ -122,7 +122,7 @@ public class Settings implements IPropSettings{
 
     @Override
     public String getName(){
-        return "Game Settings";
+        return "Game settings";
     }
 
     private <T> void setProp(Properties props, String name, T val){

@@ -36,14 +36,14 @@ public class Entity extends MovableWorldObject{
         this.uniqueId = UUID.randomUUID();
     }
 
-    public static Entity create(int id, World world){
-        Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.get(id);
+    public static Entity create(String name, World world){
+        Class<? extends Entity> entityClass = ContentRegistry.ENTITY_REGISTRY.get(name);
 
         try{
             return entityClass.getConstructor(World.class).newInstance(world);
         }
         catch(Exception e){
-            Log.error("Couldn't initialize entity with id "+id, e);
+            Log.error("Couldn't initialize entity with name "+name, e);
             return null;
         }
     }

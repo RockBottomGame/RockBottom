@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.data.set.part.num.array.PartShortShortArray;
 import de.ellpeck.rockbottom.data.settings.IPropSettings;
-import de.ellpeck.rockbottom.util.Registry;
+import de.ellpeck.rockbottom.util.reg.IndexRegistry;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class DataManager{
 
-    public static final Registry<Class<? extends DataPart>> PART_REGISTRY = new Registry<>("part_registry", Byte.MAX_VALUE);
+    public static final IndexRegistry<Class<? extends DataPart>> PART_REGISTRY = new IndexRegistry<>("part_registry", Byte.MAX_VALUE);
 
     static{
         PART_REGISTRY.register(0, PartInt.class);

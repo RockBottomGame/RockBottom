@@ -16,8 +16,10 @@ import java.util.UUID;
 
 public class PacketEntityChange implements IPacket{
 
+    private static final String PLAYER_NAME = "player";
+
     private final DataSet entitySet = new DataSet();
-    private int id;
+    private String name;
     private UUID uniqueId;
 
     private boolean remove;
@@ -28,13 +30,10 @@ public class PacketEntityChange implements IPacket{
 
         if(!this.remove){
             if(entity instanceof EntityPlayer){
-                this.id = -2;
+                this.name = PLAYER_NAME;
             }
             else{
-                this.id = ContentRegistry.ENTITY_REGISTRY.getId(entity.getClass());
-                if(this.id == -1){
-                    Log.error("Entity with class "+entity.getClass()+" is being sent to the client without being registered!");
-                }
+                this.name = ContentRegistry.ENTITY_REGISTRY.getName(entity.getClass());
             }
 
             entity.save(this.entitySet);
@@ -51,7 +50,7 @@ public class PacketEntityChange implements IPacket{
         buf.writeBoolean(this.remove);
 
         if(!this.remove){
-            buf.writeInt(this.id);
+            NetUtil.writeStringToBuffer(this.name, buf);
             NetUtil.writeSetToBuffer(this.entitySet, buf);
         }
     }
@@ -62,7 +61,7 @@ public class PacketEntityChange implements IPacket{
         this.remove = buf.readBoolean();
 
         if(!this.remove){
-            this.id = buf.readInt();
+            this.name = NetUtil.readStringFromBuffer(buf);
             NetUtil.readSetFromBuffer(this.entitySet, buf);
         }
     }
@@ -80,11 +79,11 @@ public class PacketEntityChange implements IPacket{
                 }
                 else{
                     if(entity == null){
-                        if(this.id == -2){
+                        if(PLAYER_NAME.equals(this.name)){
                             entity = new EntityPlayer(game.world);
                         }
                         else{
-                            entity = Entity.create(this.id, game.world);
+                            entity = Entity.create(this.name, game.world);
                         }
 
                         if(entity != null){

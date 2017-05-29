@@ -30,15 +30,13 @@ public class Tile{
 
     public static final BoundBox DEFAULT_BOUNDS = new BoundBox(0, 0, 1, 1);
 
-    protected final int id;
     protected final String name;
 
     protected Map<ToolType, Integer> effectiveTools = new HashMap<>();
     protected boolean forceDrop;
     protected float hardness = 1F;
 
-    public Tile(int id, String name){
-        this.id = id;
+    public Tile(String name){
         this.name = name;
     }
 
@@ -92,7 +90,7 @@ public class Tile{
     }
 
     public Tile register(){
-        ContentRegistry.TILE_REGISTRY.register(this.getId(), this);
+        ContentRegistry.TILE_REGISTRY.register(this.getName(), this);
 
         if(this.hasItem()){
             this.createItemTile().register();
@@ -102,20 +100,16 @@ public class Tile{
     }
 
     protected ItemTile createItemTile(){
-        return new ItemTile(this.getId(), this.getName());
+        return new ItemTile(this.getName());
     }
 
     protected boolean hasItem(){
         return true;
     }
 
-    public int getId(){
-        return this.id;
-    }
-
     public Item getItem(){
         if(this.hasItem()){
-            return ContentRegistry.ITEM_REGISTRY.get(this.id);
+            return ContentRegistry.ITEM_REGISTRY.get(this.getName());
         }
         else{
             return null;
@@ -157,11 +151,6 @@ public class Tile{
         else{
             return null;
         }
-    }
-
-    @Override
-    public int hashCode(){
-        return this.getId();
     }
 
     public TileEntity provideTileEntity(World world, int x, int y){
@@ -246,7 +235,7 @@ public class Tile{
 
     @Override
     public String toString(){
-        return this.getName()+"@"+this.getId();
+        return this.getName();
     }
 
     public void onScheduledUpdate(World world, int x, int y, TileLayer layer){

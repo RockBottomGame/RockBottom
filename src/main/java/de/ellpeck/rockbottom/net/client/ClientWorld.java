@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.client;
 import de.ellpeck.rockbottom.Constants;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.util.Pos2;
+import de.ellpeck.rockbottom.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.Entity;
@@ -13,8 +14,8 @@ import java.util.UUID;
 
 public class ClientWorld extends World{
 
-    public ClientWorld(WorldInfo info){
-        super(info);
+    public ClientWorld(WorldInfo info, NameToIndexInfo tileRegInfo){
+        super(info, tileRegInfo);
     }
 
     @Override
