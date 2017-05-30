@@ -90,7 +90,7 @@ public class Font{
         this.drawString(x, y, s, 0, s.length(), scale, color);
     }
 
-    public void drawCutOffString(float x, float y, String s, float scale, int length, boolean fromRight){
+    public void drawCutOffString(float x, float y, String s, float scale, int length, boolean fromRight, boolean basedOnCharAmount){
         int strgLength = s.length();
 
         int amount = 0;
@@ -106,7 +106,7 @@ public class Font{
 
             amount++;
 
-            if(this.getWidth(accumulated, scale) >= length){
+            if((basedOnCharAmount ? this.removeFormatting(accumulated).length() : this.getWidth(accumulated, scale)) >= length){
                 break;
             }
         }
@@ -199,10 +199,11 @@ public class Font{
         String accumulated = "";
 
         for(String line : lines){
+            FormattingCode trailingCode = FormattingCode.NONE;
+
             for(String subLine : line.split("\n")){
                 String[] words = subLine.split(" ");
 
-                FormattingCode trailingCode = FormattingCode.NONE;
                 for(String word : words){
                     if(wrapFormatting){
                         for(int i = 0; i < word.length()-1; i++){
@@ -223,8 +224,10 @@ public class Font{
                 }
 
                 result.add(accumulated.trim());
-                accumulated = "";
+                accumulated = trailingCode.toString();
             }
+
+            accumulated = "";
         }
 
         return result;

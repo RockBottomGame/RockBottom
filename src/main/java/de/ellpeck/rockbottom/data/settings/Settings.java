@@ -62,7 +62,7 @@ public class Settings implements IPropSettings{
         this.targetFps = this.getProp(props, "target_fps", 60);
         this.autosaveIntervalSeconds = this.getProp(props, "autosave_interval", 60);
 
-        this.textSpeed = this.getProp(props, "text_speed", 1F);
+        this.textSpeed = this.getProp(props, "text_speed", 0.5F);
         this.guiScale = this.getProp(props, "gui_scale", 4);
         this.renderScale = this.getProp(props, "render_scale", 48);
 

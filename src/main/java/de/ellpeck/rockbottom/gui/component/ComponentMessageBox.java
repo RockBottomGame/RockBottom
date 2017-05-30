@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.gui.Gui;
 import de.ellpeck.rockbottom.util.Util;
 import org.newdawn.slick.Graphics;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ComponentMessageBox extends ComponentButton{
@@ -27,17 +28,18 @@ public class ComponentMessageBox extends ComponentButton{
 
         Font font = RockBottom.get().assetManager.getFont();
         this.text = font.splitTextToLength(this.sizeX-10, textScale, true, dialogLocKeys);
-        this.possibleLineAmount = Util.floor((this.sizeY-10)/font.getHeight(textScale));
+        this.possibleLineAmount = Util.ceil((this.sizeY-10)/font.getHeight(textScale));
 
         this.pageAmount = Util.ceil((float)this.text.size()/(float)this.possibleLineAmount);
         this.letterAmountPerPage = new int[this.pageAmount];
+
         for(int page = 0; page < this.pageAmount; page++){
             int letterAmount = 0;
             for(int i = 0; i < this.possibleLineAmount; i++){
-                int index = i+(this.possibleLineAmount*this.page);
+                int index = i+(this.possibleLineAmount*page);
 
                 if(this.text.size() > index){
-                    letterAmount += this.text.get(index).length();
+                    letterAmount += font.removeFormatting(this.text.get(index)).length();
                 }
                 else{
                     break;
@@ -60,10 +62,10 @@ public class ComponentMessageBox extends ComponentButton{
 
             if(this.text.size() > index){
                 String s = this.text.get(index);
-                int length = s.length();
+                int length = font.removeFormatting(s).length();
 
                 if(this.typedLetter-accumulatedLength < length){
-                    font.drawString(this.x+5, this.y+5+(line*height), s.substring(0, (int)this.typedLetter-accumulatedLength), this.textScale);
+                    font.drawCutOffString(this.x+5, this.y+5+(line*height), s, this.textScale, (int)this.typedLetter-accumulatedLength, false, true);
                     break;
                 }
                 else{
