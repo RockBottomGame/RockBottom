@@ -199,30 +199,32 @@ public class Font{
         String accumulated = "";
 
         for(String line : lines){
-            String[] words = line.split(" ");
+            for(String subLine : line.split("\n")){
+                String[] words = subLine.split(" ");
 
-            FormattingCode trailingCode = FormattingCode.NONE;
-            for(String word : words){
-                if(wrapFormatting){
-                    for(int i = 0; i < word.length()-1; i++){
-                        FormattingCode format = FormattingCode.getFormat(word, i);
-                        if(format != FormattingCode.NONE){
-                            trailingCode = format;
+                FormattingCode trailingCode = FormattingCode.NONE;
+                for(String word : words){
+                    if(wrapFormatting){
+                        for(int i = 0; i < word.length()-1; i++){
+                            FormattingCode format = FormattingCode.getFormat(word, i);
+                            if(format != FormattingCode.NONE){
+                                trailingCode = format;
+                            }
                         }
+                    }
+
+                    if(this.getWidth(accumulated+word, scale) >= length){
+                        result.add(accumulated.trim());
+                        accumulated = trailingCode+word+" ";
+                    }
+                    else{
+                        accumulated += word+" ";
                     }
                 }
 
-                if(this.getWidth(accumulated+word, scale) >= length){
-                    result.add(accumulated.trim());
-                    accumulated = trailingCode+word+" ";
-                }
-                else{
-                    accumulated += word+" ";
-                }
+                result.add(accumulated.trim());
+                accumulated = "";
             }
-
-            result.add(accumulated.trim());
-            accumulated = "";
         }
 
         return result;
