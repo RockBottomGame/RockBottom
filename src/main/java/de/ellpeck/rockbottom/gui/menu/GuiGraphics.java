@@ -23,6 +23,12 @@ public class GuiGraphics extends Gui{
 
         this.components.add(new ComponentToggleButton(this, 0, this.guiLeft, this.guiTop, 150, 16, game.settings.hardwareCursor, "button.hardware_cursor", game.assetManager.localize("info.hardware_cursor")));
         this.components.add(new ComponentToggleButton(this, 5, this.guiLeft, this.guiTop+20, 150, 16, game.settings.cursorInfos, "button.cursor_infos", game.assetManager.localize("info.cursor_infos")));
+        this.components.add(new ComponentSlider(this, 7, this.guiLeft, this.guiTop+40, 150, 16, (int)(game.settings.textSpeed*10F), 1, 100, new ComponentSlider.ICallback(){
+            @Override
+            public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
+                game.settings.textSpeed = (float)number/10F;
+            }
+        }, game.assetManager.localize("button.text_speed")));
 
         this.components.add(new ComponentSlider(this, 3, this.guiLeft+154, this.guiTop, 150, 16, game.settings.renderScale, 1, 128, new ComponentSlider.ICallback(){
             @Override

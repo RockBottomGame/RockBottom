@@ -30,6 +30,7 @@ public class Settings implements IPropSettings{
     public int targetFps;
     public int autosaveIntervalSeconds;
 
+    public float textSpeed;
     public int guiScale;
     public int renderScale;
     public Color guiColor;
@@ -61,6 +62,7 @@ public class Settings implements IPropSettings{
         this.targetFps = this.getProp(props, "target_fps", 60);
         this.autosaveIntervalSeconds = this.getProp(props, "autosave_interval", 60);
 
+        this.textSpeed = this.getProp(props, "text_speed", 1F);
         this.guiScale = this.getProp(props, "gui_scale", 4);
         this.renderScale = this.getProp(props, "render_scale", 48);
 
@@ -93,6 +95,7 @@ public class Settings implements IPropSettings{
         this.setProp(props, "target_fps", this.targetFps);
         this.setProp(props, "autosave_interval", this.autosaveIntervalSeconds);
 
+        this.setProp(props, "text_speed", this.textSpeed);
         this.setProp(props, "gui_scale", this.guiScale);
         this.setProp(props, "render_scale", this.renderScale);
 

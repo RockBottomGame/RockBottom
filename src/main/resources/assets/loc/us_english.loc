@@ -65,6 +65,7 @@ button.cursor_infos=Cursor Indicators Off
 button.cursor_infos_toggled=Cursor Indicators On
 button.graphics=Graphics
 button.construction_amount=Amount
+button.text_speed=Text Speed
 
 layer.main=Foreground
 layer.background=Background
