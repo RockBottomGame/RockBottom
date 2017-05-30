@@ -12,7 +12,7 @@ public class WorldGenCopper extends WorldGenOre{
 
     @Override
     public int getHighestGridPos(){
-        return -4;
+        return -3;
     }
 
     @Override

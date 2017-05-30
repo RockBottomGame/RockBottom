@@ -29,6 +29,19 @@ public final class ConstructionRegistry{
         MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.ITEM_ROCK_PICK),
                 new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 8),
                 new ItemInstance(ContentRegistry.TILE_ROCK, 8)));
+        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_SMELTER),
+                new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 20),
+                new ItemInstance(ContentRegistry.TILE_ROCK, 40),
+                new ItemInstance(ContentRegistry.ITEM_COAL, 10)));
+        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_SEPARATOR),
+                new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 30),
+                new ItemInstance(ContentRegistry.TILE_ROCK, 60),
+                new ItemInstance(ContentRegistry.ITEM_COAL, 15),
+                new ItemInstance(ContentRegistry.ITEM_COPPER_CLUSTER, 5)));
+        MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.ITEM_SUPER_TOOL),
+                new ItemInstance(ContentRegistry.ITEM_COPPER_INGOT, 30),
+                new ItemInstance(ContentRegistry.ITEM_COPPER_GRIT, 20),
+                new ItemInstance(ContentRegistry.ITEM_SLAG, 5)));
 
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_COAL), 800);
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_SLAG), 200);

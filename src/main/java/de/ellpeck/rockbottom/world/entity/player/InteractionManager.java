@@ -131,7 +131,7 @@ public class InteractionManager{
 
                             int effectiveness = getToolEffectiveness(player, player.inv.get(player.inv.selectedSlot), tile, layer, this.mousedTileX, this.mousedTileY);
                             if(effectiveness > 0){
-                                progressAmount += effectiveness/200F;
+                                progressAmount += effectiveness/100F/hardness;
                             }
 
                             this.breakProgress += progressAmount;
