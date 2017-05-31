@@ -74,20 +74,18 @@ public class InteractionManager{
         }
     }
 
-    public static int getToolEffectiveness(EntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
+    public static boolean isToolEffective(EntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
         if(instance != null){
             Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
             if(!tools.isEmpty()){
                 for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                    int level = entry.getValue();
-
-                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), level)){
-                        return level;
+                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())){
+                        return true;
                     }
                 }
             }
         }
-        return 0;
+        return false;
     }
 
     public void update(RockBottom game){
@@ -129,9 +127,10 @@ public class InteractionManager{
                             float hardness = tile.getHardness(player.world, this.mousedTileX, this.mousedTileY, layer);
                             float progressAmount = 0.05F/hardness;
 
-                            int effectiveness = getToolEffectiveness(player, player.inv.get(player.inv.selectedSlot), tile, layer, this.mousedTileX, this.mousedTileY);
-                            if(effectiveness > 0){
-                                progressAmount += effectiveness/100F/hardness;
+                            ItemInstance selected = player.inv.get(player.inv.selectedSlot);
+                            boolean effective = isToolEffective(player, selected, tile, layer, this.mousedTileX, this.mousedTileY);
+                            if(selected != null){
+                                progressAmount *= selected.getItem().getMiningSpeed(player.world, this.mousedTileX, this.mousedTileY, layer, tile, effective);
                             }
 
                             this.breakProgress += progressAmount;
@@ -143,7 +142,7 @@ public class InteractionManager{
                                     NetHandler.sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
                                 }
                                 else{
-                                    tile.doBreak(game.world, this.mousedTileX, this.mousedTileY, layer, player, effectiveness > 0);
+                                    tile.doBreak(game.world, this.mousedTileX, this.mousedTileY, layer, player, effective);
                                 }
                             }
                             else{

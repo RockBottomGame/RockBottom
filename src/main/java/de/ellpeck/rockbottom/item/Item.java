@@ -3,6 +3,9 @@ package de.ellpeck.rockbottom.item;
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.world.TileLayer;
+import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.world.tile.Tile;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,5 +56,9 @@ public class Item{
 
     public Map<ToolType, Integer> getToolTypes(ItemInstance instance){
         return Collections.emptyMap();
+    }
+
+    public float getMiningSpeed(World world, int x, int y, TileLayer layer, Tile tile, boolean isRightTool){
+        return 1F;
     }
 }

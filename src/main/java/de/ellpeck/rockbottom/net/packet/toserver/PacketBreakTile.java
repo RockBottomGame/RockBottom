@@ -55,7 +55,7 @@ public class PacketBreakTile implements IPacket{
                 if(tile.canBreak(game.world, this.x, this.y, this.layer)){
                     EntityPlayer player = game.world.getPlayer(this.playerId);
 
-                    boolean isRightTool = player != null && InteractionManager.getToolEffectiveness(player, player.inv.get(player.inv.selectedSlot), tile, this.layer, this.x, this.y) > 0;
+                    boolean isRightTool = player != null && InteractionManager.isToolEffective(player, player.inv.get(player.inv.selectedSlot), tile, this.layer, this.x, this.y);
                     tile.doBreak(game.world, this.x, this.y, this.layer, player, isRightTool);
                 }
             }
