@@ -6,6 +6,9 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.EntityTickEvent;
+import de.ellpeck.rockbottom.api.event.impl.TileEntityTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
@@ -108,7 +111,10 @@ public class Chunk implements IChunk{
     protected void updateEntities(IGameInstance game){
         for(int i = 0; i < this.entities.size(); i++){
             Entity entity = this.entities.get(i);
-            entity.update(game);
+
+            if(RockBottomAPI.getEventHandler().fireEvent(new EntityTickEvent(entity)) != EventResult.CANCELLED){
+                entity.update(game);
+            }
 
             if(entity.shouldBeRemoved()){
                 this.world.removeEntity(entity);
@@ -140,7 +146,10 @@ public class Chunk implements IChunk{
 
         for(int i = 0; i < this.tileEntities.size(); i++){
             TileEntity tile = this.tileEntities.get(i);
-            tile.update(game);
+
+            if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
+                tile.update(game);
+            }
 
             if(tile.shouldRemove()){
                 this.removeTileEntity(tile.x, tile.y);

@@ -42,7 +42,7 @@ public class EventHandler implements IEventHandler{
     }
 
     @Override
-    public <T extends Event> void unregisterAllListeners(Class<T> type){
+    public void unregisterAllListeners(Class<? extends Event> type){
         if(this.registry.containsKey(type)){
             this.registry.remove(type);
 

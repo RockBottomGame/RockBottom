@@ -6,7 +6,7 @@ public interface IEventHandler{
 
     <T extends Event> void unregisterListener(Class<T> type, IEventListener<T> listener);
 
-    <T extends Event> void unregisterAllListeners(Class<T> type);
+    void unregisterAllListeners(Class<? extends Event> type);
 
     EventResult fireEvent(Event event);
 }

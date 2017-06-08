@@ -5,6 +5,8 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -66,28 +68,30 @@ public class World implements IWorld{
     public void update(RockBottom game){
         this.checkListSync();
 
-        for(int i = 0; i < this.loadedChunks.size(); i++){
-            IChunk chunk = this.loadedChunks.get(i);
-            chunk.update(game);
+        if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
+            for(int i = 0; i < this.loadedChunks.size(); i++){
+                IChunk chunk = this.loadedChunks.get(i);
+                chunk.update(game);
 
-            if(chunk.shouldUnload()){
-                this.unloadChunk(chunk);
-                i--;
+                if(chunk.shouldUnload()){
+                    this.unloadChunk(chunk);
+                    i--;
+                }
             }
-        }
 
-        this.info.totalTimeInWorld++;
+            this.info.totalTimeInWorld++;
 
-        this.info.currentWorldTime++;
-        if(this.info.currentWorldTime >= Constants.TIME_PER_DAY){
-            this.info.currentWorldTime = 0;
-        }
+            this.info.currentWorldTime++;
+            if(this.info.currentWorldTime >= Constants.TIME_PER_DAY){
+                this.info.currentWorldTime = 0;
+            }
 
-        this.saveTicksCounter++;
-        if(this.saveTicksCounter >= game.getSettings().autosaveIntervalSeconds*Constants.TARGET_TPS){
-            this.saveTicksCounter = 0;
+            this.saveTicksCounter++;
+            if(this.saveTicksCounter >= game.getSettings().autosaveIntervalSeconds*Constants.TARGET_TPS){
+                this.saveTicksCounter = 0;
 
-            this.save();
+                this.save();
+            }
         }
     }
 
