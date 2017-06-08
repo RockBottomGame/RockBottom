@@ -53,6 +53,15 @@ public class IndexRegistry<T> implements IRegistry<Integer, T>{
         return -1;
     }
 
+    public int getNextFreeId(){
+        for(int i = 0; i <= this.max; i++){
+            if(!this.map.containsKey(i)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     public int getSize(){
         return this.map.size();

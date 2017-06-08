@@ -26,14 +26,8 @@ public class NameToIndexInfo implements IPropSettings{
             String key = entry.getKey();
 
             if(this.getId(key) < 0){
-                for(int i = 0; i <= this.reg.max; i++){
-                    if(this.get(i) == null){
-                        this.reg.register(i, key);
-
-                        this.needsSave = true;
-                        break;
-                    }
-                }
+                this.reg.register(this.reg.getNextFreeId(), key);
+                this.needsSave = true;
             }
         }
     }

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.api;
 
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -28,24 +29,30 @@ public final class RockBottomAPI{
     private static boolean init;
     private static IApiHandler apiHandler;
     private static INetHandler netHandler;
+    private static IEventHandler eventHandler;
     private static IGameInstance gameInstance;
 
     public static IApiHandler getApiHandler(){
         return apiHandler;
     }
 
-    public static IGameInstance getGame(){
-        return gameInstance;
-    }
-
     public static INetHandler getNet(){
         return netHandler;
     }
 
-    public static void set(IApiHandler api, INetHandler net, IGameInstance instance){
+    public static IEventHandler getEventHandler(){
+        return eventHandler;
+    }
+
+    public static IGameInstance getGame(){
+        return gameInstance;
+    }
+
+    public static void set(IApiHandler api, INetHandler net, IEventHandler event, IGameInstance instance){
         if(!init){
             apiHandler = api;
             netHandler = net;
+            eventHandler = event;
             gameInstance = instance;
 
             init = true;

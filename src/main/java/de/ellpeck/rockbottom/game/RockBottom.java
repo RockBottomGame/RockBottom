@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.apiimpl.ApiHandler;
+import de.ellpeck.rockbottom.game.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.data.DataManager;
@@ -68,7 +69,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
         super("Rock Bottom "+VERSION);
 
         Log.info("Setting game instance to "+this);
-        RockBottomAPI.set(new ApiHandler(), new NetHandler(), this);
+        RockBottomAPI.set(new ApiHandler(), new NetHandler(), new EventHandler(), this);
     }
 
     public static IGameInstance get(){
