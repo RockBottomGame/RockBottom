@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.api.event.impl;
 
 import de.ellpeck.rockbottom.api.event.Event;
-import de.ellpeck.rockbottom.game.world.World;
+import de.ellpeck.rockbottom.api.world.IWorld;
 
 public class WorldTickEvent extends Event{
 
-    public final World world;
+    public final IWorld world;
 
-    public WorldTickEvent(World world){
+    public WorldTickEvent(IWorld world){
         this.world = world;
     }
 }
