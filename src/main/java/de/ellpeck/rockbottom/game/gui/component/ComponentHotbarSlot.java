@@ -1,41 +1,43 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.net.packet.toserver.PacketHotbar;
-import de.ellpeck.rockbottom.game.inventory.InventoryPlayer;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.util.Util;
+import de.ellpeck.rockbottom.game.net.packet.toserver.PacketHotbar;
 import org.newdawn.slick.Graphics;
 
 public class ComponentHotbarSlot extends GuiComponent{
 
-    private final InventoryPlayer inv;
+    private final AbstractEntityPlayer player;
+    private final Inventory inv;
     private final int id;
 
-    public ComponentHotbarSlot(InventoryPlayer inventory, int id, int x, int y){
+    public ComponentHotbarSlot(AbstractEntityPlayer player, Inventory inventory, int id, int x, int y){
         super(null, x, y, 14, 14);
+        this.player = player;
         this.inv = inventory;
         this.id = id;
     }
 
     @Override
-    public void render(IGameInstance game, AssetManager manager, Graphics g){
-        Util.renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+        RockBottomAPI.getApiHandler().renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
 
-        if(this.inv.selectedSlot == this.id){
+        if(this.player.getSelectedSlot() == this.id){
             manager.getImage("gui.selection_arrow").draw(this.x+0.75F, 1);
         }
     }
 
     @Override
-    public void renderOverlay(IGameInstance game, AssetManager manager, Graphics g){
+    public void renderOverlay(IGameInstance game, IAssetManager manager, Graphics g){
         if(this.isMouseOver(game)){
             ItemInstance instance = this.inv.get(this.id);
             if(instance != null){
-                Util.describeItem(game, manager, g, instance);
+                RockBottomAPI.getApiHandler().describeItem(game, manager, g, instance);
             }
         }
     }
@@ -43,11 +45,11 @@ public class ComponentHotbarSlot extends GuiComponent{
     @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isMouseOver(game)){
-            if(this.inv.selectedSlot != this.id){
-                this.inv.selectedSlot = this.id;
+            if(this.player.getSelectedSlot() != this.id){
+                this.player.setSelectedSlot(this.id);
 
-                if(NetHandler.isClient()){
-                    NetHandler.sendToServer(new PacketHotbar(game.getPlayer().getUniqueId(), this.id));
+                if(RockBottomAPI.getNet().isClient()){
+                    RockBottomAPI.getNet().sendToServer(new PacketHotbar(game.getPlayer().getUniqueId(), this.id));
                 }
 
                 return true;

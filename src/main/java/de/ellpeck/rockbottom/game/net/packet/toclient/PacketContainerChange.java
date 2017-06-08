@@ -1,13 +1,12 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.game.gui.container.ContainerSlot;
-import de.ellpeck.rockbottom.game.gui.container.ItemContainer;
+import de.ellpeck.rockbottom.api.gui.container.ContainerSlot;
+import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.net.NetUtil;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.net.NetUtil;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -56,7 +55,7 @@ public class PacketContainerChange implements IPacket{
     public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             if(game.getPlayer() != null){
-                ItemContainer container = this.isInv ? game.getPlayer().inventoryContainer : game.getPlayer().getContainer();
+                ItemContainer container = this.isInv ? game.getPlayer().getInvContainer() : game.getPlayer().getContainer();
                 if(container != null && container.getSlotAmount() > this.index){
                     ContainerSlot slot = container.getSlot(this.index);
                     slot.set(this.instance);

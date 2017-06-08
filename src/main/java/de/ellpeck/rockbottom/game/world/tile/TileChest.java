@@ -1,16 +1,17 @@
 package de.ellpeck.rockbottom.game.world.tile;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.gui.GuiChest;
 import de.ellpeck.rockbottom.game.gui.container.ContainerChest;
-import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.render.tile.ChestTileRenderer;
-import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.game.world.tile.entity.TileEntityChest;
 
 public class TileChest extends TileBasic{
@@ -35,7 +36,7 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, EntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, AbstractEntityPlayer player){
         TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
         if(chest != null){
             player.openGuiContainer(new GuiChest(player), new ContainerChest(player, chest));
@@ -67,7 +68,7 @@ public class TileChest extends TileBasic{
     public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
             if(chest != null){
                 chest.dropInventory(chest.inventory);

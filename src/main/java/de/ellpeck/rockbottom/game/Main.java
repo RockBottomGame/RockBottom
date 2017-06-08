@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game;
 
 import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.game.net.NetHandler;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.game.util.LogSystem;
 import de.ellpeck.rockbottom.game.util.LogSystem.LogLevel;
 import org.newdawn.slick.SlickException;
@@ -31,7 +31,7 @@ public final class Main{
             Log.error("Exception initializing game", e);
         }
         finally{
-            NetHandler.shutdown();
+            RockBottomAPI.getNet().shutdown();
         }
 
         Log.info("Game shutting down");

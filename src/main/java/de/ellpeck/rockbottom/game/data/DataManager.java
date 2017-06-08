@@ -12,7 +12,11 @@ import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortShortArray;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
+import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
+import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDropItem;
 import de.ellpeck.rockbottom.game.RockBottom;
+import de.ellpeck.rockbottom.game.net.packet.toclient.*;
+import de.ellpeck.rockbottom.game.net.packet.toserver.*;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -37,6 +41,32 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PART_REGISTRY.register(10, PartShort.class);
         RockBottomAPI.PART_REGISTRY.register(11, PartBoolean.class);
         RockBottomAPI.PART_REGISTRY.register(12, PartString.class);
+
+        RockBottomAPI.PACKET_REGISTRY.register(0, PacketJoin.class);
+        RockBottomAPI.PACKET_REGISTRY.register(1, PacketChunk.class);
+        RockBottomAPI.PACKET_REGISTRY.register(2, PacketInitialServerData.class);
+        RockBottomAPI.PACKET_REGISTRY.register(3, PacketDisconnect.class);
+        RockBottomAPI.PACKET_REGISTRY.register(4, PacketTileChange.class);
+        RockBottomAPI.PACKET_REGISTRY.register(5, PacketMetaChange.class);
+        RockBottomAPI.PACKET_REGISTRY.register(6, PacketEntityChange.class);
+        RockBottomAPI.PACKET_REGISTRY.register(7, PacketBreakTile.class);
+        RockBottomAPI.PACKET_REGISTRY.register(8, PacketParticles.class);
+        RockBottomAPI.PACKET_REGISTRY.register(9, PacketEntityUpdate.class);
+        RockBottomAPI.PACKET_REGISTRY.register(10, PacketPlayerMovement.class);
+        RockBottomAPI.PACKET_REGISTRY.register(11, PacketInteract.class);
+        RockBottomAPI.PACKET_REGISTRY.register(12, PacketHotbar.class);
+        RockBottomAPI.PACKET_REGISTRY.register(13, PacketTileEntityData.class);
+        RockBottomAPI.PACKET_REGISTRY.register(14, PacketSlotModification.class);
+        RockBottomAPI.PACKET_REGISTRY.register(15, PacketOpenUnboundContainer.class);
+        RockBottomAPI.PACKET_REGISTRY.register(16, PacketContainerData.class);
+        RockBottomAPI.PACKET_REGISTRY.register(17, PacketContainerChange.class);
+        RockBottomAPI.PACKET_REGISTRY.register(18, PacketChatMessage.class);
+        RockBottomAPI.PACKET_REGISTRY.register(19, PacketSendChat.class);
+        RockBottomAPI.PACKET_REGISTRY.register(20, PacketHealth.class);
+        RockBottomAPI.PACKET_REGISTRY.register(21, PacketRespawn.class);
+        RockBottomAPI.PACKET_REGISTRY.register(22, PacketDropItem.class);
+        RockBottomAPI.PACKET_REGISTRY.register(23, PacketChunkUnload.class);
+        RockBottomAPI.PACKET_REGISTRY.register(24, PacketManualConstruction.class);
     }
 
     private final File gameDirectory;

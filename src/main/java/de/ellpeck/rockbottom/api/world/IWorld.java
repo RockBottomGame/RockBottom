@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.api.world;
 
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 
 import java.util.List;
@@ -32,9 +32,9 @@ public interface IWorld extends IChunkOrWorld{
 
     void notifyNeighborsOfChange(int x, int y, TileLayer layer);
 
-    EntityPlayer createPlayer(UUID id, Channel channel);
+    AbstractEntityPlayer createPlayer(UUID id, Channel channel);
 
-    EntityPlayer getPlayer(UUID id);
+    AbstractEntityPlayer getPlayer(UUID id);
 
     void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean shouldDrop);
 
@@ -46,5 +46,5 @@ public interface IWorld extends IChunkOrWorld{
 
     boolean isClient();
 
-    void savePlayer(EntityPlayer player);
+    void savePlayer(AbstractEntityPlayer player);
 }

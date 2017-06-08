@@ -1,10 +1,9 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.net.NetUtil;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.net.NetUtil;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -45,7 +44,7 @@ public class PacketSendChat implements IPacket{
     public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             if(game.getWorld() != null){
-                EntityPlayer player = game.getWorld().getPlayer(this.playerId);
+                AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
                     game.getChatLog().sendPlayerMessage(this.message, player, this.playerName);
                 }

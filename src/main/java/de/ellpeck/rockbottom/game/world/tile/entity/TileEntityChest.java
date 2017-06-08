@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.world.tile.entity;
 
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.inventory.TileInventory;

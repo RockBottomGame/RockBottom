@@ -1,13 +1,12 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.entity.player.InteractionManager;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -56,9 +55,9 @@ public class PacketBreakTile implements IPacket{
             if(world != null){
                 Tile tile = world.getTile(this.layer, this.x, this.y);
                 if(tile.canBreak(world, this.x, this.y, this.layer)){
-                    EntityPlayer player = world.getPlayer(this.playerId);
+                    AbstractEntityPlayer player = world.getPlayer(this.playerId);
 
-                    boolean isRightTool = player != null && InteractionManager.isToolEffective(player, player.inv.get(player.inv.selectedSlot), tile, this.layer, this.x, this.y);
+                    boolean isRightTool = player != null && RockBottomAPI.getGame().getInteractionManager().isToolEffective(player, player.getInv().get(player.getSelectedSlot()), tile, this.layer, this.x, this.y);
                     tile.doBreak(world, this.x, this.y, this.layer, player, isRightTool);
                 }
             }

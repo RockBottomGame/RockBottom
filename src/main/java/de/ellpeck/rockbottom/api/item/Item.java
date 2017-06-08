@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.api.item;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.item.ToolType;
-import de.ellpeck.rockbottom.game.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +41,7 @@ public class Item{
         return "name."+this.name;
     }
 
-    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
+    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
         desc.add(instance.getDisplayName());
     }
 

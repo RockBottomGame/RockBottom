@@ -1,9 +1,10 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.menu.GuiSelectWorld;
 import de.ellpeck.rockbottom.game.util.Util;
 import org.newdawn.slick.util.Log;
@@ -37,7 +38,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     @Override
     protected String getText(){
         if(this.exists){
-            AssetManager manager = RockBottom.get().getAssetManager();
+            IAssetManager manager = RockBottom.get().getAssetManager();
             return manager.localize("info."+(this.gui.deleteMode ? "delete_world" : "world"), this.id+1);
         }
         else{
@@ -48,7 +49,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     @Override
     protected String[] getHover(){
         if(this.exists){
-            AssetManager manager = RockBottom.get().getAssetManager();
+            IAssetManager manager = RockBottom.get().getAssetManager();
 
             String[] hover = new String[2];
             hover[0] = manager.localize("info.seed")+": "+this.info.seed;

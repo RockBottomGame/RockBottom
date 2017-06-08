@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.game.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.Font;
-import de.ellpeck.rockbottom.game.gui.component.ComponentInputField;
-import de.ellpeck.rockbottom.game.net.NetHandler;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketSendChat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -24,14 +24,14 @@ public class GuiChat extends Gui{
         super(100, 100);
     }
 
-    public static void drawMessages(IGameInstance game, AssetManager manager, Graphics g, List<String> messages, int maxCount){
+    public static void drawMessages(IGameInstance game, IAssetManager manager, Graphics g, List<String> messages, int maxCount){
         Font font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
         int sizeX = (int)game.getWidthInGui()/2;
         int y = (int)game.getHeightInGui()-26-(int)fontHeight;
 
-        boolean alternate = game.getChatLog().messages.size()%2 == 0;
+        boolean alternate = game.getChatLog().getMessages().size()%2 == 0;
         int messageCounter = 0;
 
         for(String message : messages){
@@ -67,10 +67,10 @@ public class GuiChat extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        drawMessages(game, manager, g, game.getChatLog().messages, 20);
+        drawMessages(game, manager, g, game.getChatLog().getMessages(), 20);
     }
 
     @Override
@@ -79,8 +79,8 @@ public class GuiChat extends Gui{
             String text = this.inputField.getText();
 
             if(text != null && !text.isEmpty()){
-                if(NetHandler.isClient()){
-                    NetHandler.sendToServer(new PacketSendChat(game.getPlayer().getUniqueId(), text, game.getSettings().chatName));
+                if(RockBottomAPI.getNet().isClient()){
+                    RockBottomAPI.getNet().sendToServer(new PacketSendChat(game.getPlayer().getUniqueId(), text, game.getSettings().chatName));
                 }
                 else{
                     game.getChatLog().sendPlayerMessage(text, game.getPlayer(), game.getSettings().chatName);

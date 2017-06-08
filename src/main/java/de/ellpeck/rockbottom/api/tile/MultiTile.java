@@ -1,13 +1,12 @@
 package de.ellpeck.rockbottom.api.tile;
 
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.game.render.tile.MultiTileRenderer;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.tile.TileBasic;
 
 public abstract class MultiTile extends TileBasic{
 
@@ -68,7 +67,7 @@ public abstract class MultiTile extends TileBasic{
     }
 
     @Override
-    public void doPlace(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
+    public void doPlace(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
         int startX = x-this.getMainX();
         int startY = y-this.getMainY();
 
@@ -83,7 +82,7 @@ public abstract class MultiTile extends TileBasic{
     }
 
     @Override
-    public void doBreak(IWorld world, int x, int y, TileLayer layer, EntityPlayer breaker, boolean isRightTool){
+    public void doBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer breaker, boolean isRightTool){
         Pos2 start = this.getBottomLeft(x, y, world.getMeta(x, y));
 
         for(int addX = 0; addX < this.getWidth(); addX++){

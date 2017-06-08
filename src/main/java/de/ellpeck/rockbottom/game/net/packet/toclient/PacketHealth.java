@@ -1,8 +1,7 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

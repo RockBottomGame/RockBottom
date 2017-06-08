@@ -1,13 +1,12 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.net.NetUtil;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.net.NetUtil;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.newdawn.slick.util.Log;
@@ -20,7 +19,7 @@ public class PacketInitialServerData implements IPacket{
     private WorldInfo info;
     private NameToIndexInfo tileRegInfo;
 
-    public PacketInitialServerData(EntityPlayer player, WorldInfo info, NameToIndexInfo tileRegInfo){
+    public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, NameToIndexInfo tileRegInfo){
         player.save(this.playerSet);
         this.info = info;
         this.tileRegInfo = tileRegInfo;

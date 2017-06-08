@@ -1,13 +1,14 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.game.ContentRegistry;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.game.render.WorldRenderer;
-import de.ellpeck.rockbottom.game.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
@@ -26,7 +27,7 @@ public class MainMenuBackground{
 
     private int timer;
 
-    public void init(RockBottom game){
+    public void init(IGameInstance game){
         this.tileAmountX = Util.ceil(game.getWidthInGui()/TILE_SIZE);
         this.tileAmountY = Util.ceil(game.getHeightInGui()/TILE_SIZE);
         this.menuTileGrid = new Tile[this.tileAmountX][this.tileAmountY];
@@ -86,7 +87,7 @@ public class MainMenuBackground{
         }
     }
 
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(RockBottom game, IAssetManager manager, Graphics g){
         g.setBackground(WorldRenderer.SKY_COLORS[WorldRenderer.SKY_COLORS.length-1]);
 
         float offsetY = (float)game.getHeightInGui()-this.tileAmountY*TILE_SIZE;

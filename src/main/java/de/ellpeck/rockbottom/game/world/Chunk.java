@@ -18,11 +18,11 @@ import de.ellpeck.rockbottom.game.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.game.world.gen.WorldGenerators;
-import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import org.newdawn.slick.util.Log;
 
 import java.util.*;
@@ -125,7 +125,7 @@ public class Chunk implements IChunk{
                     IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
                     chunk.addEntity(entity);
 
-                    if(NetHandler.isServer()){
+                    if(RockBottomAPI.getNet().isServer()){
                         for(EntityPlayer player : chunk.getPlayersInRange()){
                             if(!this.playersInRange.contains(player)){
                                 player.sendPacket(new PacketEntityChange(entity, false));
@@ -314,8 +314,8 @@ public class Chunk implements IChunk{
             }
         }
 
-        if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForTile(tile), meta));
+        if(RockBottomAPI.getNet().isServer()){
+            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForTile(tile), meta));
         }
 
         if(!this.isGenerating){
@@ -340,8 +340,8 @@ public class Chunk implements IChunk{
     public void setMetaInner(TileLayer layer, int x, int y, int meta){
         this.setMetaFast(layer.ordinal(), x, y, meta);
 
-        if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this.world, new PacketMetaChange(this.x+x, this.y+y, layer, meta));
+        if(RockBottomAPI.getNet().isServer()){
+            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketMetaChange(this.x+x, this.y+y, layer, meta));
         }
 
         if(!this.isGenerating){
@@ -684,7 +684,7 @@ public class Chunk implements IChunk{
                 DataSet entitySet = set.getDataSet("e_"+i);
 
                 String name = entitySet.getString("name");
-                Entity entity = Entity.create(name, this.world);
+                Entity entity = Util.createEntity(name, this.world);
 
                 if(entity != null){
                     entity.load(entitySet);

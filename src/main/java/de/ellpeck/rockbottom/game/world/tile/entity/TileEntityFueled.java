@@ -1,8 +1,9 @@
 package de.ellpeck.rockbottom.game.world.tile.entity;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -25,7 +26,7 @@ public abstract class TileEntityFueled extends TileEntity{
     public void update(IGameInstance game){
         super.update(game);
 
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             boolean smelted = this.tryTickAction();
 
             if(this.coalTime > 0){

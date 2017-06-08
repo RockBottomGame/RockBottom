@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game.net.encode;
 
-import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -11,7 +11,7 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket>{
 
     @Override
     protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf) throws Exception{
-        int id = NetHandler.PACKET_REGISTRY.getId(packet.getClass());
+        int id = RockBottomAPI.PACKET_REGISTRY.getId(packet.getClass());
 
         if(id >= 0){
             buf.writeByte(id);

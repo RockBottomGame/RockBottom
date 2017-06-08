@@ -2,34 +2,33 @@ package de.ellpeck.rockbottom.game.world.entity.player;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.game.data.settings.CommandPermissions;
-import de.ellpeck.rockbottom.game.gui.Gui;
+import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
+import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.game.gui.container.ContainerInventory;
-import de.ellpeck.rockbottom.game.gui.container.ItemContainer;
-import de.ellpeck.rockbottom.game.inventory.IInvChangeCallback;
-import de.ellpeck.rockbottom.game.inventory.IInventory;
+import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
+import de.ellpeck.rockbottom.api.inventory.IInventory;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.game.inventory.InventoryPlayer;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketContainerChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketOpenUnboundContainer;
-import de.ellpeck.rockbottom.game.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.game.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.game.world.World;
-import de.ellpeck.rockbottom.game.world.entity.EntityItem;
-import de.ellpeck.rockbottom.game.world.entity.EntityLiving;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.util.Log;
 
@@ -37,10 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
+public class EntityPlayer extends AbstractEntityPlayer{
 
-    public final InventoryPlayer inv = new InventoryPlayer(this);
-    public final ItemContainer inventoryContainer = new ContainerInventory(this);
+    private final InventoryPlayer inv = new InventoryPlayer(this);
+    private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
     private final IEntityRenderer renderer;
     public Color color = Util.randomColor(Util.RANDOM);
@@ -64,14 +63,16 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         return this.renderer;
     }
 
+    @Override
     public void openGuiContainer(Gui gui, ItemContainer container){
         this.openContainer(container);
 
-        if(NetHandler.isThePlayer(this)){
+        if(RockBottomAPI.getNet().isThePlayer(this)){
             RockBottom.get().getGuiManager().openGui(gui);
         }
     }
 
+    @Override
     public void openContainer(ItemContainer container){
         if(this.currentContainer != null){
             for(IInventory inv : this.currentContainer.containedInventories){
@@ -86,13 +87,13 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         this.currentContainer = container;
 
         if(this.currentContainer != null){
-            if(NetHandler.isClient()){
+            if(RockBottomAPI.getNet().isClient()){
                 int id = this.currentContainer.getUnboundId();
                 if(id >= 0){
-                    NetHandler.sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
+                    RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
                 }
             }
-            else if(NetHandler.isServer()){
+            else if(RockBottomAPI.getNet().isServer()){
                 this.sendPacket(new PacketContainerData(container));
             }
 
@@ -105,8 +106,8 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
             }
         }
         else{
-            if(NetHandler.isClient()){
-                NetHandler.sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), PacketOpenUnboundContainer.CLOSE_ID));
+            if(RockBottomAPI.getNet().isClient()){
+                RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), PacketOpenUnboundContainer.CLOSE_ID));
             }
         }
 
@@ -118,10 +119,12 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         }
     }
 
+    @Override
     public void closeContainer(){
         this.openContainer(null);
     }
 
+    @Override
     public ItemContainer getContainer(){
         return this.currentContainer;
     }
@@ -130,7 +133,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     public void update(IGameInstance game){
         super.update(game);
 
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             if(this.isDead()){
                 this.respawnTimer++;
 
@@ -155,7 +158,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
             }
         }
 
-        if(NetHandler.isThePlayer(this)){
+        if(RockBottomAPI.getNet().isThePlayer(this)){
             for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES; i++){
                 TileLayer layer = TileLayer.LAYERS[Util.RANDOM.nextInt(TileLayer.LAYERS.length)];
                 int x = Util.floor(this.x)+Util.RANDOM.nextInt(33)-16;
@@ -174,24 +177,9 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         return 1;
     }
 
-    public void resetAndSpawn(IGameInstance game){
-        this.respawnTimer = 0;
-        this.dead = false;
-        this.motionX = 0;
-        this.motionY = 0;
-        this.fallAmount = 0;
-        this.health = this.getMaxHealth();
-
-        if(game.getGuiManager() != null){
-            game.getGuiManager().closeGui();
-        }
-
-        this.setPos(this.world.getSpawnX()+0.5, this.world.getLowestAirUpwards(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
-    }
-
     @Override
     public void onGroundHit(){
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             if(this.fallAmount >= 20){
                 this.health -= this.fallAmount*1.5;
             }
@@ -236,6 +224,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         this.color = new Color(set.getFloat("color_r"), set.getFloat("color_g"), set.getFloat("color_b"));
     }
 
+    @Override
     public void sendPacket(IPacket packet){
 
     }
@@ -248,23 +237,9 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     }
 
-    public void move(int type){
-        if(type == 0){
-            this.motionX -= 0.2;
-            this.facing = Direction.LEFT;
-        }
-        else if(type == 1){
-            this.motionX += 0.2;
-            this.facing = Direction.RIGHT;
-        }
-        else if(type == 2){
-            this.jump(0.28);
-        }
-    }
-
     @Override
     public void onChange(IInventory inv, int slot, ItemInstance newInstance){
-        if(NetHandler.isServer()){
+        if(RockBottomAPI.getNet().isServer()){
             boolean isInv = inv instanceof InventoryPlayer;
             ItemContainer container = isInv ? this.inventoryContainer : this.currentContainer;
 
@@ -281,7 +256,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     public void moveToChunk(IChunk newChunk){
         super.moveToChunk(newChunk);
 
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             List<IChunk> nowLoaded = new ArrayList<>();
 
             for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
@@ -335,12 +310,13 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         }
     }
 
+    @Override
     public int getCommandLevel(){
-        if(NetHandler.isServer()){
-            CommandPermissions permissions = NetHandler.getCommandPermissions();
+        if(RockBottomAPI.getNet().isServer()){
+            CommandPermissions permissions = RockBottomAPI.getNet().getCommandPermissions();
             int level = permissions.getCommandLevel(this);
 
-            if(level < Constants.ADMIN_PERMISSION && NetHandler.isThePlayer(this)){
+            if(level < Constants.ADMIN_PERMISSION && RockBottomAPI.getNet().isThePlayer(this)){
                 level = Constants.ADMIN_PERMISSION;
 
                 permissions.setCommandLevel(this, level);
@@ -358,7 +334,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
 
     @Override
     public void onRemoveFromWorld(){
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             for(IChunk chunk : this.chunksInRange){
                 chunk.getPlayersInRange().remove(this);
                 chunk.getPlayersLeftRange().remove(this);
@@ -367,7 +343,59 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         }
     }
 
+    @Override
+    public ItemContainer getInvContainer(){
+        return this.inventoryContainer;
+    }
+
+    @Override
+    public Inventory getInv(){
+        return this.inv;
+    }
+
+    @Override
+    public int getSelectedSlot(){
+        return this.inv.selectedSlot;
+    }
+
+    @Override
+    public void setSelectedSlot(int slot){
+        this.inv.selectedSlot = slot;
+    }
+
+    @Override
     public String getChatColorFormat(){
         return "&("+this.color.r+","+this.color.g+","+this.color.b+")";
+    }
+
+    @Override
+    public void resetAndSpawn(IGameInstance game){
+        this.respawnTimer = 0;
+        this.dead = false;
+        this.motionX = 0;
+        this.motionY = 0;
+        this.fallAmount = 0;
+        this.health = this.getMaxHealth();
+
+        if(game.getGuiManager() != null){
+            game.getGuiManager().closeGui();
+        }
+
+        this.setPos(this.world.getSpawnX()+0.5, this.world.getLowestAirUpwards(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
+    }
+
+    @Override
+    public void move(int type){
+        if(type == 0){
+            this.motionX -= 0.2;
+            this.facing = Direction.LEFT;
+        }
+        else if(type == 1){
+            this.motionX += 0.2;
+            this.facing = Direction.RIGHT;
+        }
+        else if(type == 2){
+            this.jump(0.28);
+        }
     }
 }

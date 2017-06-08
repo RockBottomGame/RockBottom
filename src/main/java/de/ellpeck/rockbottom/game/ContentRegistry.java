@@ -2,12 +2,13 @@ package de.ellpeck.rockbottom.game;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.game.world.tile.*;
 import de.ellpeck.rockbottom.api.item.Item;
-import de.ellpeck.rockbottom.game.item.ItemBasic;
+import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.game.item.ItemTool;
-import de.ellpeck.rockbottom.game.item.ToolType;
-import de.ellpeck.rockbottom.game.world.entity.EntityItem;
+import de.ellpeck.rockbottom.api.item.ToolType;
+import de.ellpeck.rockbottom.api.entity.EntityItem;
 import org.newdawn.slick.util.Log;
 
 public final class ContentRegistry{

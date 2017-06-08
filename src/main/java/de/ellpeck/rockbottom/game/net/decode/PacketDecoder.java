@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game.net.decode;
 
-import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -14,7 +14,7 @@ public class PacketDecoder extends ByteToMessageDecoder{
     protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> out) throws Exception{
         int id = buf.readByte();
 
-        Class<? extends IPacket> packetClass = NetHandler.PACKET_REGISTRY.get(id);
+        Class<? extends IPacket> packetClass = RockBottomAPI.PACKET_REGISTRY.get(id);
         if(packetClass != null){
             IPacket packet = packetClass.newInstance();
 

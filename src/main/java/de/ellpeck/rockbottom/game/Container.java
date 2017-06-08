@@ -91,7 +91,7 @@ public class Container extends AppGameContainer{
             this.initGL();
             this.enterOrtho();
 
-            this.game.getGuiManager().shouldReInit = true;
+            this.game.getGuiManager().setReInit();
         }
     }
 

@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.game.gui.Gui;
-import de.ellpeck.rockbottom.game.gui.GuiManager;
-import de.ellpeck.rockbottom.game.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.IGuiManager;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.game.gui.component.ComponentMessageBox;
 import org.newdawn.slick.Graphics;
 
@@ -21,7 +20,7 @@ public class GuiMainMenu extends Gui{
     @Override
     public void initGui(IGameInstance game){
         super.initGui(game);
-        AssetManager assetManager = game.getAssetManager();
+        IAssetManager assetManager = game.getAssetManager();
 
         int width = (int)game.getWidthInGui();
 
@@ -44,7 +43,7 @@ public class GuiMainMenu extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         manager.getFont().drawStringFromRight((float)game.getWidthInGui()-2F, (float)game.getHeightInGui()-7F, "Copyright 2017 Ellpeck", 0.25F);
@@ -62,7 +61,7 @@ public class GuiMainMenu extends Gui{
 
     @Override
     public boolean onButtonActivated(IGameInstance game, int button){
-        GuiManager guiManager = game.getGuiManager();
+        IGuiManager guiManager = game.getGuiManager();
 
         if(button == 0){
             guiManager.openGui(new GuiSelectWorld(this));

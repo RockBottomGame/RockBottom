@@ -1,9 +1,10 @@
 package de.ellpeck.rockbottom.game.world.tile;
 
+import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.ContentRegistry;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.Entity;
 
 import java.util.Collections;
 import java.util.List;

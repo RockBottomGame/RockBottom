@@ -1,137 +1,116 @@
 package de.ellpeck.rockbottom.game.net;
 
-import de.ellpeck.rockbottom.api.util.reg.IndexRegistry;
+import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.game.net.client.Client;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
-import de.ellpeck.rockbottom.game.net.packet.toclient.*;
-import de.ellpeck.rockbottom.game.net.packet.toserver.*;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.net.server.Server;
 import de.ellpeck.rockbottom.game.world.World;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import io.netty.channel.epoll.Epoll;
 import io.netty.channel.group.ChannelGroup;
 import org.newdawn.slick.util.Log;
 
-public final class NetHandler{
+public final class NetHandler implements INetHandler{
 
-    public static final boolean HAS_EPOLL = Epoll.isAvailable();
+    private Client client;
+    private Server server;
 
-    public static final IndexRegistry<Class<? extends IPacket>> PACKET_REGISTRY = new IndexRegistry<>("packet_registry", Byte.MAX_VALUE);
-    private static Client client;
-    private static Server server;
-
-    static{
-        PACKET_REGISTRY.register(0, PacketJoin.class);
-        PACKET_REGISTRY.register(1, PacketChunk.class);
-        PACKET_REGISTRY.register(2, PacketInitialServerData.class);
-        PACKET_REGISTRY.register(3, PacketDisconnect.class);
-        PACKET_REGISTRY.register(4, PacketTileChange.class);
-        PACKET_REGISTRY.register(5, PacketMetaChange.class);
-        PACKET_REGISTRY.register(6, PacketEntityChange.class);
-        PACKET_REGISTRY.register(7, PacketBreakTile.class);
-        PACKET_REGISTRY.register(8, PacketParticles.class);
-        PACKET_REGISTRY.register(9, PacketEntityUpdate.class);
-        PACKET_REGISTRY.register(10, PacketPlayerMovement.class);
-        PACKET_REGISTRY.register(11, PacketInteract.class);
-        PACKET_REGISTRY.register(12, PacketHotbar.class);
-        PACKET_REGISTRY.register(13, PacketTileEntityData.class);
-        PACKET_REGISTRY.register(14, PacketSlotModification.class);
-        PACKET_REGISTRY.register(15, PacketOpenUnboundContainer.class);
-        PACKET_REGISTRY.register(16, PacketContainerData.class);
-        PACKET_REGISTRY.register(17, PacketContainerChange.class);
-        PACKET_REGISTRY.register(18, PacketChatMessage.class);
-        PACKET_REGISTRY.register(19, PacketSendChat.class);
-        PACKET_REGISTRY.register(20, PacketHealth.class);
-        PACKET_REGISTRY.register(21, PacketRespawn.class);
-        PACKET_REGISTRY.register(22, PacketDropItem.class);
-        PACKET_REGISTRY.register(23, PacketChunkUnload.class);
-        PACKET_REGISTRY.register(24, PacketManualConstruction.class);
-    }
-
-    public static void init(String ip, int port, boolean isServer) throws Exception{
-        if(isActive()){
-            Log.error("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+client+", Server: "+server);
+    @Override
+    public void init(String ip, int port, boolean isServer) throws Exception{
+        if(this.isActive()){
+            Log.error("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+this.client+", Server: "+this.server);
         }
         else{
             if(isServer){
-                server = new Server(ip, port);
+                this.server = new Server(ip, port);
                 Log.info("Started server with ip "+ip+" on port "+port);
             }
             else{
-                client = new Client(ip, port);
+                this.client = new Client(ip, port);
                 Log.info("Started client with ip "+ip+" on port "+port);
             }
         }
     }
 
-    public static void shutdown(){
-        if(isClient()){
-            client.shutdown();
-            client = null;
+    @Override
+    public void shutdown(){
+        if(this.isClient()){
+            this.client.shutdown();
+            this.client = null;
 
             Log.info("Shut down client!");
         }
 
-        if(isServer()){
-            server.shutdown();
-            server = null;
+        if(this.isServer()){
+            this.server.shutdown();
+            this.server = null;
 
             Log.info("Shut down server!");
         }
     }
 
-    public static boolean isThePlayer(EntityPlayer player){
+    @Override
+    public boolean isThePlayer(AbstractEntityPlayer player){
         return RockBottom.get().getPlayer() == player;
     }
 
-    public static boolean isClient(){
-        return client != null;
+    @Override
+    public boolean isClient(){
+        return this.client != null;
     }
 
-    public static boolean isServer(){
-        return server != null;
+    @Override
+    public boolean isServer(){
+        return this.server != null;
     }
 
-    public static boolean isActive(){
-        return isClient() || isServer();
+    @Override
+    public boolean isActive(){
+        return this.isClient() || this.isServer();
     }
 
-    public static boolean isConnectedToServer(){
-        return isClient() && client.channel.isOpen();
+    @Override
+    public boolean isConnectedToServer(){
+        return this.isClient() && this.client.channel.isOpen();
     }
 
-    public static ChannelGroup getConnectedClients(){
-        if(isServer()){
-            return server.connectedChannels;
+    @Override
+    public ChannelGroup getConnectedClients(){
+        if(this.isServer()){
+            return this.server.connectedChannels;
         }
         else{
             return null;
         }
     }
 
-    public static CommandPermissions getCommandPermissions(){
-        if(isServer()){
-            return server.commandPermissions;
+    @Override
+    public CommandPermissions getCommandPermissions(){
+        if(this.isServer()){
+            return this.server.commandPermissions;
         }
         else{
             return null;
         }
     }
 
-    public static void sendToServer(IPacket packet){
-        client.channel.writeAndFlush(packet);
+    @Override
+    public void sendToServer(IPacket packet){
+        this.client.channel.writeAndFlush(packet);
     }
 
-    public static void sendToAllPlayers(IWorld world, IPacket packet){
-        sendToAllPlayersExcept(world, packet, null);
+    @Override
+    public void sendToAllPlayers(IWorld world, IPacket packet){
+        this.sendToAllPlayersExcept(world, packet, null);
     }
 
-    public static void sendToAllPlayersExcept(IWorld world, IPacket packet, Entity except){
-        if(NetHandler.isServer()){
+    @Override
+    public void sendToAllPlayersExcept(IWorld world, IPacket packet, Entity except){
+        if(this.isServer()){
             if(world instanceof World){
                 for(EntityPlayer player : ((World)world).players){
                     if(player != except){

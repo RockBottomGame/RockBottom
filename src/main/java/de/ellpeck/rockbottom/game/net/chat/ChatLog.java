@@ -1,37 +1,36 @@
 package de.ellpeck.rockbottom.game.net.chat;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.net.chat.Command;
+import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.game.gui.GuiChat;
-import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketChatMessage;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class ChatLog{
-
-    public static final Map<String, Command> COMMAND_REGISTRY = new HashMap<>();
+public class ChatLog implements IChatLog{
 
     static{
-        registerCommand(new CommandHelp());
-        registerCommand(new CommandAddPermission());
-        registerCommand(new CommandSpawnItem());
-        registerCommand(new CommandTeleport());
-        registerCommand(new CommandMe());
+        IChatLog.registerCommand(new CommandHelp());
+        IChatLog.registerCommand(new CommandAddPermission());
+        IChatLog.registerCommand(new CommandSpawnItem());
+        IChatLog.registerCommand(new CommandTeleport());
+        IChatLog.registerCommand(new CommandMe());
     }
 
-    public final List<String> messages = new ArrayList<>();
+    private final List<String> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
 
-    public static void registerCommand(Command command){
-        COMMAND_REGISTRY.put(command.getName(), command);
-    }
-
+    @Override
     public void displayMessage(String message){
         this.messages.add(0, message);
         this.newMessageCounter.add(0, 400);
@@ -39,13 +38,14 @@ public class ChatLog{
         Log.info("Chat: "+message);
     }
 
-    public void sendPlayerMessage(String message, EntityPlayer player, String playerName){
-        if(NetHandler.isServer()){
+    @Override
+    public void sendPlayerMessage(String message, AbstractEntityPlayer player, String playerName){
+        if(RockBottomAPI.getNet().isServer()){
             if(message.startsWith("/")){
                 String cmdFeedback;
 
                 String[] split = message.substring(1).split(" ");
-                Command command = COMMAND_REGISTRY.get(split[0]);
+                Command command = RockBottomAPI.COMMAND_REGISTRY.get(split[0]);
 
                 if(command != null){
                     if(player.getCommandLevel() >= command.getLevel()){
@@ -72,9 +72,10 @@ public class ChatLog{
         }
     }
 
-    public void sendMessageToPlayer(EntityPlayer player, String message){
-        if(NetHandler.isServer()){
-            if(NetHandler.isThePlayer(player)){
+    @Override
+    public void sendMessageToPlayer(AbstractEntityPlayer player, String message){
+        if(RockBottomAPI.getNet().isServer()){
+            if(RockBottomAPI.getNet().isThePlayer(player)){
                 this.displayMessage(message);
             }
             else{
@@ -83,14 +84,20 @@ public class ChatLog{
         }
     }
 
+    @Override
     public void broadcastMessage(String message){
-        if(NetHandler.isServer()){
+        if(RockBottomAPI.getNet().isServer()){
             this.displayMessage(message);
-            NetHandler.sendToAllPlayers(RockBottom.get().getWorld(), new PacketChatMessage(message));
+            RockBottomAPI.getNet().sendToAllPlayers(RockBottom.get().getWorld(), new PacketChatMessage(message));
         }
     }
 
-    public void drawNewMessages(RockBottom game, AssetManager manager, Graphics g){
+    @Override
+    public List<String> getMessages(){
+        return this.messages;
+    }
+
+    public void drawNewMessages(RockBottom game, IAssetManager manager, Graphics g){
         if(!this.newMessageCounter.isEmpty()){
             GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size());
         }

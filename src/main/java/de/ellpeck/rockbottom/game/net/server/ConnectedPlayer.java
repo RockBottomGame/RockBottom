@@ -1,15 +1,14 @@
 package de.ellpeck.rockbottom.game.net.server;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.world.IChunk;
-import de.ellpeck.rockbottom.game.RockBottom;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.net.packet.toclient.*;
-import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
-import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.net.packet.IPacket;
-import de.ellpeck.rockbottom.game.world.Chunk;
 import de.ellpeck.rockbottom.game.world.World;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;
@@ -32,7 +31,7 @@ public class ConnectedPlayer extends EntityPlayer{
         super.update(game);
 
         if(this.ticksExisted%80 == 0){
-            if(!NetHandler.getConnectedClients().contains(this.channel)){
+            if(!RockBottomAPI.getNet().getConnectedClients().contains(this.channel)){
                 game.scheduleAction(() -> {
                     game.getWorld().savePlayer(this);
                     game.getWorld().removeEntity(this);
@@ -48,7 +47,7 @@ public class ConnectedPlayer extends EntityPlayer{
         if(this.health != this.lastHealth && this.world.getWorldInfo().totalTimeInWorld%10 == 0){
             this.lastHealth = this.health;
 
-            if(NetHandler.isServer()){
+            if(RockBottomAPI.getNet().isServer()){
                 this.sendPacket(new PacketHealth(this.health));
             }
         }

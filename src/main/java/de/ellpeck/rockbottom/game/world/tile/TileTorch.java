@@ -1,9 +1,10 @@
 package de.ellpeck.rockbottom.game.world.tile;
 
+import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.game.render.tile.TorchTileRenderer;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 

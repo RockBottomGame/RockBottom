@@ -1,11 +1,12 @@
 package de.ellpeck.rockbottom.game.world.tile;
 
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.ContentRegistry;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.Entity;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +32,7 @@ public class TileGrass extends TileBasic{
     }
 
     @Override
-    public void doPlace(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
+    public void doPlace(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
         super.doPlace(world, x, y, layer, instance, placer);
         this.onChangeAround(world, x, y, layer, x, y, layer);
     }

@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.api.data.settings;
 
-import de.ellpeck.rockbottom.game.data.DataManager;
+import de.ellpeck.rockbottom.api.data.IDataManager;
 
 import java.io.File;
 import java.util.Properties;
@@ -11,7 +11,7 @@ public interface IPropSettings{
 
     void save(Properties props);
 
-    File getFile(DataManager manager);
+    File getFile(IDataManager manager);
 
     String getName();
 }

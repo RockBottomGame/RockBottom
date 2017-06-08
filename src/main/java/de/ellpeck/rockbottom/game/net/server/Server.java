@@ -1,8 +1,7 @@
 package de.ellpeck.rockbottom.game.net.server;
 
+import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.settings.CommandPermissions;
-import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.decode.PacketDecoder;
 import de.ellpeck.rockbottom.game.net.encode.PacketEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -10,6 +9,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.group.ChannelGroup;
@@ -33,13 +33,13 @@ public class Server{
     public Server(String ip, int port) throws Exception{
         RockBottom.get().getDataManager().loadPropSettings(this.commandPermissions);
 
-        this.group = NetHandler.HAS_EPOLL ?
+        this.group = Epoll.isAvailable() ?
                 new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollServer", true)) :
                 new NioEventLoopGroup(0, new DefaultThreadFactory("NioServer", true));
 
         this.channel = new ServerBootstrap()
                 .group(this.group)
-                .channel(NetHandler.HAS_EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer(){
                     @Override
                     protected void initChannel(Channel channel) throws Exception{

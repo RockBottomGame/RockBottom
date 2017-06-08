@@ -124,7 +124,7 @@ public class ItemInstance{
     }
 
     public String getDisplayName(){
-        return RockBottom.get().getAssetManager().localize(this.item.getUnlocalizedName(this));
+        return RockBottomAPI.getGame().getAssetManager().localize(this.item.getUnlocalizedName(this));
     }
 
     @Override

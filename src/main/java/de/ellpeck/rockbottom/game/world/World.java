@@ -3,6 +3,8 @@ package de.ellpeck.rockbottom.game.world;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -15,14 +17,12 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.ContentRegistry;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.game.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;
 
@@ -107,8 +107,8 @@ public class World implements IWorld{
             }
         }
 
-        if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayersExcept(this, new PacketEntityChange(entity, false), entity);
+        if(RockBottomAPI.getNet().isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, false), entity);
         }
     }
 
@@ -129,8 +129,8 @@ public class World implements IWorld{
 
         entity.onRemoveFromWorld();
 
-        if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayersExcept(this, new PacketEntityChange(entity, true), entity);
+        if(RockBottomAPI.getNet().isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, true), entity);
         }
     }
 
@@ -434,7 +434,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public void savePlayer(EntityPlayer player){
+    public void savePlayer(AbstractEntityPlayer player){
         DataSet playerSet = new DataSet();
         player.save(playerSet);
 
@@ -486,8 +486,8 @@ public class World implements IWorld{
 
         tile.onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
-        if(NetHandler.isServer()){
-            NetHandler.sendToAllPlayers(this, PacketParticles.tile(this, x, y, tile, meta));
+        if(RockBottomAPI.getNet().isServer()){
+            RockBottomAPI.getNet().sendToAllPlayers(this, PacketParticles.tile(this, x, y, tile, meta));
         }
 
         RockBottom.get().getParticleManager().addTileParticles(this, x, y, tile, meta);

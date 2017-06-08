@@ -1,12 +1,16 @@
 package de.ellpeck.rockbottom.game.assets;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.assets.AssetImage;
+import de.ellpeck.rockbottom.api.assets.AssetSound;
+import de.ellpeck.rockbottom.api.assets.IAsset;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.font.AssetFont;
-import de.ellpeck.rockbottom.game.assets.font.Font;
-import de.ellpeck.rockbottom.game.assets.local.AssetLocale;
-import de.ellpeck.rockbottom.game.assets.local.Locale;
+import de.ellpeck.rockbottom.api.assets.font.AssetFont;
+import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
+import de.ellpeck.rockbottom.api.assets.local.Locale;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -16,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class AssetManager{
+public class AssetManager implements IAssetManager{
 
     private final Map<String, IAsset> assets = new HashMap<>();
     private AssetSound missingSound;
@@ -57,6 +61,7 @@ public class AssetManager{
         this.reloadCursor(game);
     }
 
+    @Override
     public void reloadCursor(IGameInstance game){
         try{
             GameContainer container = game.getContainer();
@@ -114,6 +119,7 @@ public class AssetManager{
         }
     }
 
+    @Override
     public Map<String, IAsset> getAllOfType(Class<? extends IAsset> type){
         Map<String, IAsset> assets = new HashMap<>();
 
@@ -128,7 +134,8 @@ public class AssetManager{
         return assets;
     }
 
-    private <T> T getAssetWithFallback(String path, IAsset<T> fallback){
+    @Override
+    public <T> T getAssetWithFallback(String path, IAsset<T> fallback){
         IAsset asset = this.assets.get(path);
 
         if(asset == null){
@@ -141,32 +148,34 @@ public class AssetManager{
         return (T)asset.get();
     }
 
+    @Override
     public Image getImage(String path){
         return this.getAssetWithFallback("tex."+path, this.missingTexture);
     }
 
+    @Override
     public Sound getSound(String path){
         return this.getAssetWithFallback("sound."+path, this.missingSound);
     }
 
+    @Override
     public Locale getLocale(String path){
         return this.getAssetWithFallback("loc."+path, this.missingLocale);
     }
 
+    @Override
     public Font getFont(String path){
         return this.getAssetWithFallback("font."+path, this.missingFont);
     }
 
+    @Override
     public String localize(String unloc, Object... format){
         return this.currentLocale.localize(unloc, format);
     }
 
+    @Override
     public Font getFont(){
         return this.currentFont;
-    }
-
-    public static InputStream getResource(String s){
-        return AssetManager.class.getResourceAsStream(s);
     }
 
     private static Image loadImage(String key, String path, String value) throws Exception{
@@ -185,5 +194,14 @@ public class AssetManager{
         else{
             return new Image(getResource(path+value), key, false);
         }
+    }
+
+    @Override
+    public InputStream getResourceStream(String s){
+        return getResource(s);
+    }
+
+    public static InputStream getResource(String s){
+        return AssetManager.class.getResourceAsStream(s);
     }
 }

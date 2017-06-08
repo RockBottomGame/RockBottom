@@ -1,14 +1,15 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.game.construction.IRecipe;
-import de.ellpeck.rockbottom.game.gui.GuiContainer;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.game.RockBottom;
+import de.ellpeck.rockbottom.game.construction.IRecipe;
+import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -19,7 +20,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
     private static final Color TRANSPARENT = new Color(1F, 1F, 1F, 0.5F);
 
-    public final EntityPlayer player;
+    public final AbstractEntityPlayer player;
     public final IRecipe recipe;
     public final int recipeId;
     public final boolean canConstruct;
@@ -33,17 +34,17 @@ public class ComponentRecipeButton extends ComponentButton{
     }
 
     @Override
-    public void render(IGameInstance game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         List<ItemInstance> outputs = this.recipe.getOutputs();
         ItemInstance instance = outputs.get(0);
-        Util.renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Color.white : TRANSPARENT);
+        RockBottomAPI.getApiHandler().renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Color.white : TRANSPARENT);
     }
 
     @Override
     protected String[] getHover(){
-        AssetManager manager = RockBottom.get().getAssetManager();
+        IAssetManager manager = RockBottom.get().getAssetManager();
 
         List<ItemInstance> inputs = this.recipe.getInputs();
         List<ItemInstance> outputs = this.recipe.getOutputs();
@@ -59,7 +60,7 @@ public class ComponentRecipeButton extends ComponentButton{
         for(ItemInstance inst : inputs){
             FormattingCode code;
 
-            if(!this.canConstruct && !this.player.inv.containsItem(inst)){
+            if(!this.canConstruct && !this.player.getInv().containsItem(inst)){
                 code = FormattingCode.RED;
             }
             else{

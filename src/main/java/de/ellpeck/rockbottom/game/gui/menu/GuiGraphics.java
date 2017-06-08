@@ -1,13 +1,12 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.data.settings.Settings;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
+import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.game.gui.component.ComponentColorPicker;
-import de.ellpeck.rockbottom.game.gui.Gui;
-import de.ellpeck.rockbottom.game.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.game.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.game.gui.component.ComponentToggleButton;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -22,7 +21,7 @@ public class GuiGraphics extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
         Settings settings = game.getSettings();
-        AssetManager assetManager = game.getAssetManager();
+        IAssetManager assetManager = game.getAssetManager();
 
         this.components.add(new ComponentToggleButton(this, 0, this.guiLeft, this.guiTop, 150, 16, settings.hardwareCursor, "button.hardware_cursor", assetManager.localize("info.hardware_cursor")));
         this.components.add(new ComponentToggleButton(this, 5, this.guiLeft, this.guiTop+20, 150, 16, settings.cursorInfos, "button.cursor_infos", assetManager.localize("info.cursor_infos")));
@@ -44,7 +43,7 @@ public class GuiGraphics extends Gui{
             public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
                 settings.guiScale = number;
                 game.getDataManager().savePropSettings(settings);
-                game.getGuiManager().shouldReInit = true;
+                game.getGuiManager().setReInit();
             }
         }, assetManager.localize("button.gui_scale")));
         this.components.add(new ComponentSlider(this, 4, this.guiLeft+154, this.guiTop+40, 150, 16, settings.targetFps, 30, 256, new ComponentSlider.ICallback(){
@@ -65,7 +64,7 @@ public class GuiGraphics extends Gui{
             public void onLetGo(float mouseX, float mouseY, Color color){
                 settings.guiColor = color;
                 game.getDataManager().savePropSettings(settings);
-                game.getGuiManager().shouldReInit = true;
+                game.getGuiManager().setReInit();
             }
         }));
         this.components.add(new ComponentButton(this, 6, this.guiLeft+99, this.guiTop+94, 16, 16, "!", assetManager.localize("info.reset")));
@@ -74,7 +73,7 @@ public class GuiGraphics extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+62, manager.localize("info.gui_color"), 0.35F, false);
@@ -100,7 +99,7 @@ public class GuiGraphics extends Gui{
         else if(button == 6){
             settings.guiColor = new Color(Settings.DEFAULT_GUI_R, Settings.DEFAULT_GUI_G, Settings.DEFAULT_GUI_B);
             game.getDataManager().savePropSettings(settings);
-            game.getGuiManager().shouldReInit = true;
+            game.getGuiManager().setReInit();
             return true;
         }
         return false;

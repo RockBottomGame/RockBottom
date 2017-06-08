@@ -2,12 +2,13 @@ package de.ellpeck.rockbottom.game.net.chat;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.game.data.settings.CommandPermissions;
-import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
+import de.ellpeck.rockbottom.api.net.chat.Command;
+import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -19,12 +20,12 @@ public class CommandAddPermission extends Command{
     }
 
     @Override
-    public String execute(String[] args, EntityPlayer player, String playerName, IGameInstance game, AssetManager manager, ChatLog chat){
+    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IAssetManager manager, IChatLog chat){
         try{
             UUID id = UUID.fromString(args[0]);
             int level = Integer.parseInt(args[1]);
 
-            CommandPermissions perms = NetHandler.getCommandPermissions();
+            CommandPermissions perms = RockBottomAPI.getNet().getCommandPermissions();
             perms.setCommandLevel(id, level);
 
             game.getDataManager().savePropSettings(perms);

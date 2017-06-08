@@ -1,24 +1,23 @@
 package de.ellpeck.rockbottom.game.world.tile;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.particle.IParticleManager;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.gui.GuiSeparator;
 import de.ellpeck.rockbottom.game.gui.container.ContainerSeparator;
-import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.particle.ParticleManager;
 import de.ellpeck.rockbottom.game.particle.ParticleSmoke;
-import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.game.render.tile.SeparatorTileRenderer;
-import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.game.world.World;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.game.world.tile.entity.TileEntitySeparator;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
 
 public class TileSeparator extends MultiTile{
 
@@ -53,7 +52,7 @@ public class TileSeparator extends MultiTile{
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, EntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, AbstractEntityPlayer player){
         Pos2 main = this.getMainPos(x, y, world.getMeta(x, y));
         TileEntitySeparator tile = world.getTileEntity(main.getX(), main.getY(), TileEntitySeparator.class);
 
@@ -70,7 +69,7 @@ public class TileSeparator extends MultiTile{
     public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             Pos2 main = this.getMainPos(x, y, world.getMeta(x, y));
             TileEntitySeparator tile = world.getTileEntity(main.getX(), main.getY(), TileEntitySeparator.class);
             if(tile != null){
@@ -119,11 +118,11 @@ public class TileSeparator extends MultiTile{
     }
 
     @Override
-    public void updateRandomlyForRendering(IWorld world, int x, int y, TileLayer layer, EntityPlayer player){
+    public void updateRandomlyForRendering(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         if(this.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
             if(tile != null && tile.isActive()){
-                ParticleManager manager = RockBottom.get().getParticleManager();
+                IParticleManager manager = RockBottom.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
                     manager.addParticle(new ParticleSmoke(world, x+1.4, y+2.92, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F));

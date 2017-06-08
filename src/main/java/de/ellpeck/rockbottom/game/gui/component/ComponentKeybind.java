@@ -1,9 +1,10 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.data.settings.Settings;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.game.gui.menu.GuiKeybinds;
 import org.newdawn.slick.Input;
 
@@ -20,7 +21,7 @@ public class ComponentKeybind extends ComponentButton{
 
     @Override
     protected String getText(){
-        AssetManager manager = RockBottom.get().getAssetManager();
+        IAssetManager manager = RockBottom.get().getAssetManager();
         return manager.localize("key."+this.bind.name)+": "+(this.isActive() ? "<?>" : Input.getKeyName(this.bind.key));
     }
 

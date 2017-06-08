@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.gui.Gui;
-import de.ellpeck.rockbottom.game.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.game.gui.component.ComponentInputField;
-import de.ellpeck.rockbottom.game.net.NetHandler;
+import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketJoin;
 import org.newdawn.slick.util.Log;
 
@@ -38,15 +38,15 @@ public class GuiJoinServer extends Gui{
             try{
                 String[] separated = this.inputField.getText().split(":");
                 if(separated.length == 1){
-                    NetHandler.init(separated[0], 8000, false);
+                    RockBottomAPI.getNet().init(separated[0], 8000, false);
                 }
                 else{
                     int port = Integer.parseInt(separated[1]);
-                    NetHandler.init(separated[0], port, false);
+                    RockBottomAPI.getNet().init(separated[0], port, false);
                 }
 
                 Log.info("Attempting to join server");
-                NetHandler.sendToServer(new PacketJoin(game.getUniqueId(), RockBottom.VERSION));
+                RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), RockBottom.VERSION));
             }
             catch(Exception e){
                 Log.error("Couldn't connect to server", e);

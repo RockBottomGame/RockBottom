@@ -1,8 +1,8 @@
 package de.ellpeck.rockbottom.api.util.reg;
 
-import de.ellpeck.rockbottom.game.data.DataManager;
+import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
-import de.ellpeck.rockbottom.game.net.NetUtil;
+import de.ellpeck.rockbottom.api.net.NetUtil;
 import io.netty.buffer.ByteBuf;
 
 import java.io.File;
@@ -88,7 +88,7 @@ public class NameToIndexInfo implements IPropSettings{
     }
 
     @Override
-    public File getFile(DataManager manager){
+    public File getFile(IDataManager manager){
         return this.file;
     }
 

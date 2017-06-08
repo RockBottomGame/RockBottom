@@ -1,17 +1,16 @@
 package de.ellpeck.rockbottom.game.render;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.world.IChunk;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.particle.ParticleManager;
-import de.ellpeck.rockbottom.game.render.entity.IEntityRenderer;
-import de.ellpeck.rockbottom.game.world.Chunk;
+import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.world.World;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.world.entity.player.InteractionManager;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -45,7 +44,7 @@ public class WorldRenderer{
         }
     }
 
-    public void render(RockBottom game, AssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
+    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
         g.scale(game.getSettings().renderScale, game.getSettings().renderScale);
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
@@ -132,7 +131,7 @@ public class WorldRenderer{
         g.resetTransform();
     }
 
-    private void doBreakAnimation(InteractionManager input, AssetManager manager, int tileX, int tileY){
+    private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
                 Image brk = manager.getImage("break."+Util.ceil(input.breakProgress*8F));

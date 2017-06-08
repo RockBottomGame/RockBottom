@@ -2,8 +2,10 @@ package de.ellpeck.rockbottom.game;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -12,7 +14,7 @@ import de.ellpeck.rockbottom.game.apiimpl.ApiHandler;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.data.DataManager;
-import de.ellpeck.rockbottom.game.data.settings.Settings;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.game.gui.*;
 import de.ellpeck.rockbottom.game.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.game.gui.menu.GuiMenu;
@@ -66,7 +68,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
         super("Rock Bottom "+VERSION);
 
         Log.info("Setting game instance to "+this);
-        RockBottomAPI.set(new ApiHandler(), this);
+        RockBottomAPI.set(new ApiHandler(), new NetHandler(), this);
     }
 
     public static IGameInstance get(){
@@ -129,15 +131,15 @@ public class RockBottom extends BasicGame implements IGameInstance{
             }
         }
 
-        if(NetHandler.isClient()){
-            if(!NetHandler.isConnectedToServer()){
+        if(RockBottomAPI.getNet().isClient()){
+            if(!RockBottomAPI.getNet().isConnectedToServer()){
                 this.quitWorld();
             }
         }
 
         if(this.world != null && this.player != null){
             Gui gui = this.guiManager.getGui();
-            if(gui == null || !gui.doesPauseGame() || NetHandler.isActive()){
+            if(gui == null || !gui.doesPauseGame() || RockBottomAPI.getNet().isActive()){
                 this.world.update(this);
                 this.interactionManager.update(this);
 
@@ -177,10 +179,10 @@ public class RockBottom extends BasicGame implements IGameInstance{
                 return;
             }
             else if(key == this.settings.keyInventory.key){
-                this.player.openGuiContainer(new GuiInventory(this.player), this.player.inventoryContainer);
+                this.player.openGuiContainer(new GuiInventory(this.player), this.player.getInvContainer());
                 return;
             }
-            else if(key == this.settings.keyChat.key && NetHandler.isActive()){
+            else if(key == this.settings.keyChat.key && RockBottomAPI.getNet().isActive()){
                 this.guiManager.openGui(new GuiChat());
                 return;
             }
@@ -259,12 +261,12 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public void quitWorld(){
         Log.info("Quitting current world");
 
-        if(NetHandler.isClient()){
+        if(RockBottomAPI.getNet().isClient()){
             Log.info("Sending disconnection packet");
-            NetHandler.sendToServer(new PacketDisconnect(this.player.getUniqueId()));
+            RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
         }
 
-        NetHandler.shutdown();
+        RockBottomAPI.getNet().shutdown();
 
         this.world = null;
         this.player = null;
@@ -362,7 +364,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
-    public AssetManager getAssetManager(){
+    public IAssetManager getAssetManager(){
         return this.assetManager;
     }
 

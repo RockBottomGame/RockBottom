@@ -1,11 +1,10 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.Font;
-import de.ellpeck.rockbottom.game.gui.Gui;
-import de.ellpeck.rockbottom.game.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import org.newdawn.slick.Graphics;
 
 public class GuiCredits extends Gui{
@@ -22,7 +21,7 @@ public class GuiCredits extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         Font font = manager.getFont();

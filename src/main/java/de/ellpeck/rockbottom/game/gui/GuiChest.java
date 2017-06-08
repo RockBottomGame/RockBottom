@@ -1,10 +1,11 @@
 package de.ellpeck.rockbottom.game.gui;
 
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.gui.GuiContainer;
 
 public class GuiChest extends GuiContainer{
 
-    public GuiChest(EntityPlayer player){
+    public GuiChest(AbstractEntityPlayer player){
         super(player, 198, 150);
     }
 }

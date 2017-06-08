@@ -1,18 +1,18 @@
 package de.ellpeck.rockbottom.api;
 
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
+import de.ellpeck.rockbottom.api.gui.IGuiManager;
+import de.ellpeck.rockbottom.api.net.chat.IChatLog;
+import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.data.settings.Settings;
-import de.ellpeck.rockbottom.game.gui.GuiManager;
-import de.ellpeck.rockbottom.game.net.chat.ChatLog;
-import de.ellpeck.rockbottom.game.particle.ParticleManager;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.entity.player.InteractionManager;
 import org.newdawn.slick.GameContainer;
 
 import java.io.File;
@@ -50,19 +50,19 @@ public interface IGameInstance{
 
     Settings getSettings();
 
-    EntityPlayer getPlayer();
+    AbstractEntityPlayer getPlayer();
 
-    GuiManager getGuiManager();
+    IGuiManager getGuiManager();
 
-    InteractionManager getInteractionManager();
+    IInteractionManager getInteractionManager();
 
-    ChatLog getChatLog();
+    IChatLog getChatLog();
 
     IWorld getWorld();
 
-    AssetManager getAssetManager();
+    IAssetManager getAssetManager();
 
-    ParticleManager getParticleManager();
+    IParticleManager getParticleManager();
 
     UUID getUniqueId();
 

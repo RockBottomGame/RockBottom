@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.game.inventory;
 
-import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 
 public class TileInventory extends Inventory{
 

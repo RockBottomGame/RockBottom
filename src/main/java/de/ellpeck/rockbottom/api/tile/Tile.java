@@ -1,22 +1,21 @@
 package de.ellpeck.rockbottom.api.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.item.Item;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemTile;
+import de.ellpeck.rockbottom.api.item.ToolType;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.item.ItemTile;
-import de.ellpeck.rockbottom.game.item.ToolType;
-import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.game.world.entity.Entity;
-import de.ellpeck.rockbottom.game.world.entity.EntityItem;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import org.newdawn.slick.Input;
 
 import java.util.Collections;
@@ -122,7 +121,7 @@ public class Tile{
 
     }
 
-    public boolean onInteractWith(IWorld world, int x, int y, EntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, AbstractEntityPlayer player){
         return false;
     }
 
@@ -171,15 +170,15 @@ public class Tile{
 
     }
 
-    public void updateRandomlyForRendering(IWorld world, int x, int y, TileLayer layer, EntityPlayer player){
+    public void updateRandomlyForRendering(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
 
     }
 
-    public void doBreak(IWorld world, int x, int y, TileLayer layer, EntityPlayer breaker, boolean isRightTool){
+    public void doBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer breaker, boolean isRightTool){
         world.destroyTile(x, y, layer, breaker, this.forceDrop || isRightTool);
     }
 
-    public void doPlace(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, EntityPlayer placer){
+    public void doPlace(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
         world.setTile(layer, x, y, this, this.getPlacementMeta(world, x, y, layer, instance));
     }
 
@@ -240,7 +239,7 @@ public class Tile{
 
     }
 
-    public void describeItem(AssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
+    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
         if(isAdvanced){
             for(TileLayer layer : TileLayer.LAYERS){
                 if(this.canPlaceInLayer(layer)){
@@ -249,7 +248,7 @@ public class Tile{
             }
         }
         else{
-            desc.add(FormattingCode.DARK_GRAY+manager.localize("info.advanced_info", Input.getKeyName(RockBottom.get().getSettings().keyAdvancedInfo.key)));
+            desc.add(FormattingCode.DARK_GRAY+manager.localize("info.advanced_info", Input.getKeyName(RockBottomAPI.getGame().getSettings().keyAdvancedInfo.key)));
         }
     }
 }

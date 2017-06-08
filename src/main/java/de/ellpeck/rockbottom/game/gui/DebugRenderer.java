@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.game.gui;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.world.World;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.game.world.Chunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public final class DebugRenderer{
 
-    public static void render(RockBottom game, AssetManager manager, World world, EntityPlayer player, GameContainer container, Graphics g){
+    public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, GameContainer container, Graphics g){
         g.setColor(Color.black);
         g.drawOval((float)container.getWidth()/2F-5F, (float)container.getHeight()/2F-5F, 10, 10);
 
@@ -33,13 +33,13 @@ public final class DebugRenderer{
         list.add("");
 
         String chunks = "Loaded Chunks: "+world.loadedChunks.size();
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             chunks += ", PlayerChunks: "+player.chunksInRange.size();
         }
         list.add(chunks);
 
         list.add("Entities: "+world.getAllEntities().size());
-        if(!NetHandler.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             list.add("Players: "+world.players.size());
         }
         list.add("TileEntities: "+world.getAllTileEntities().size());
@@ -66,7 +66,7 @@ public final class DebugRenderer{
         if(world.isPosLoaded(x, y)){
             IChunk chunk = world.getChunk(x, y);
             list.add("ChunkPos: "+chunk.getGridX()+", "+chunk.getGridY());
-            if(!NetHandler.isClient()){
+            if(!RockBottomAPI.getNet().isClient()){
                 list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
             }
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));

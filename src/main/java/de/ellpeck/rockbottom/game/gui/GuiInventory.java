@@ -1,19 +1,20 @@
 package de.ellpeck.rockbottom.game.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.game.construction.BasicRecipe;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.construction.IRecipe;
 import de.ellpeck.rockbottom.game.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.game.gui.component.ComponentRecipeButton;
-import de.ellpeck.rockbottom.game.gui.component.ComponentSlider;
+import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.game.gui.container.ContainerInventory;
-import de.ellpeck.rockbottom.game.inventory.IInvChangeCallback;
-import de.ellpeck.rockbottom.game.inventory.IInventory;
-import de.ellpeck.rockbottom.game.net.NetHandler;
+import de.ellpeck.rockbottom.api.inventory.IInvChangeCallback;
+import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Graphics;
@@ -62,7 +63,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
         for(int i = 0; i < ConstructionRegistry.MANUAL_RECIPES.size(); i++){
             BasicRecipe recipe = ConstructionRegistry.MANUAL_RECIPES.get(i);
-            boolean matches = IRecipe.matchesInv(recipe, this.player.inv);
+            boolean matches = IRecipe.matchesInv(recipe, this.player.getInv());
 
             if(matches || shouldShowAll){
                 this.constructionButtons.add(new ComponentRecipeButton(this, 3+i, this.guiLeft-104+x, this.guiTop+y, 16, 16, recipe, ConstructionRegistry.MANUAL_RECIPES.indexOf(recipe), matches));
@@ -79,7 +80,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     }
 
     @Override
-    public void render(IGameInstance game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
         if(isConstructionOpen){
             if(this.constructionButtons.isEmpty()){
                 manager.getFont().drawSplitString(this.guiLeft-104, this.guiTop, FormattingCode.GRAY+manager.localize("info.need_items"), 0.25F, 88);
@@ -92,13 +93,13 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     @Override
     public void onOpened(IGameInstance game){
         super.onOpened(game);
-        this.player.inv.addChangeCallback(this);
+        this.player.getInv().addChangeCallback(this);
     }
 
     @Override
     public void onClosed(IGameInstance game){
         super.onClosed(game);
-        this.player.inv.removeChangeCallback(this);
+        this.player.getInv().removeChangeCallback(this);
     }
 
     @Override
@@ -126,8 +127,8 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
             for(ComponentRecipeButton but : this.constructionButtons){
                 if(but.id == button){
                     if(but.canConstruct){
-                        if(NetHandler.isClient()){
-                            NetHandler.sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), but.recipeId, craftAmount));
+                        if(RockBottomAPI.getNet().isClient()){
+                            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), but.recipeId, craftAmount));
                         }
                         else{
                             ContainerInventory.doManualCraft(game.getPlayer(), but.recipe, craftAmount);

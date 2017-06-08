@@ -1,11 +1,10 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.settings.Settings;
-import de.ellpeck.rockbottom.game.gui.Gui;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
+import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.game.gui.component.ComponentKeybind;
-import de.ellpeck.rockbottom.game.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 
 public class GuiKeybinds extends Gui{
 
