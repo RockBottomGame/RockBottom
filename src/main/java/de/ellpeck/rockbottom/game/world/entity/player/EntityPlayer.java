@@ -4,9 +4,15 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
+import de.ellpeck.rockbottom.api.inventory.IInventory;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
@@ -16,14 +22,8 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
-import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.game.gui.container.ContainerInventory;
-import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
-import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.game.inventory.InventoryPlayer;
-import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketContainerChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketOpenUnboundContainer;
@@ -43,7 +43,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
     private final IEntityRenderer renderer;
     public Color color = Util.randomColor(Util.RANDOM);
-    public List<IChunk> chunksInRange = new ArrayList<>();
+    private final List<IChunk> chunksInRange = new ArrayList<>();
     private ItemContainer currentContainer;
     private int respawnTimer;
 
@@ -229,10 +229,12 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     }
 
+    @Override
     public void onChunkLoaded(IChunk chunk){
 
     }
 
+    @Override
     public void onChunkUnloaded(IChunk chunk){
 
     }
@@ -272,13 +274,13 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 int nowIndex = nowLoaded.indexOf(chunk);
 
                 if(nowIndex < 0){
-                    List<EntityPlayer> inRange = chunk.getPlayersInRange();
+                    List<AbstractEntityPlayer> inRange = chunk.getPlayersInRange();
                     if(inRange.contains(this)){
                         inRange.remove(this);
                         unload++;
                     }
 
-                    List<EntityPlayer> outOfRange = chunk.getPlayersLeftRange();
+                    List<AbstractEntityPlayer> outOfRange = chunk.getPlayersLeftRange();
                     if(!outOfRange.contains(this)){
                         outOfRange.add(this);
                         chunk.getLeftPlayerTimers().put(this, new MutableInt(Constants.CHUNK_LOAD_TIME));
@@ -292,7 +294,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
             Log.debug("Player with id "+this.getUniqueId()+" leaving range of "+unload+" chunks and loading "+newLoad+" new ones");
 
             for(IChunk chunk : nowLoaded){
-                List<EntityPlayer> inRange = chunk.getPlayersInRange();
+                List<AbstractEntityPlayer> inRange = chunk.getPlayersInRange();
                 if(!inRange.contains(this)){
                     inRange.add(this);
                 }
@@ -308,6 +310,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
             }
         }
+    }
+
+    @Override
+    public List<IChunk> getChunksInRange(){
+        return this.chunksInRange;
     }
 
     @Override

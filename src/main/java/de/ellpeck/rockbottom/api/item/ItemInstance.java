@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.api.item;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import org.newdawn.slick.util.Log;

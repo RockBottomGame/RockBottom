@@ -2,20 +2,20 @@ package de.ellpeck.rockbottom.api.world;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.MutableInt;
-import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 
 import java.util.List;
 import java.util.Map;
 
 public interface IChunk extends IChunkOrWorld{
 
-    List<EntityPlayer> getPlayersInRange();
+    List<AbstractEntityPlayer> getPlayersInRange();
 
-    List<EntityPlayer> getPlayersLeftRange();
+    List<AbstractEntityPlayer> getPlayersLeftRange();
 
-    Map<EntityPlayer, MutableInt> getLeftPlayerTimers();
+    Map<AbstractEntityPlayer, MutableInt> getLeftPlayerTimers();
 
     int getGridX();
 

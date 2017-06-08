@@ -4,7 +4,10 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.util.Pos2;
@@ -13,16 +16,13 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.ContentRegistry;
-import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.game.world.gen.WorldGenerators;
-import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import org.newdawn.slick.util.Log;
 
 import java.util.*;
@@ -37,9 +37,9 @@ public class Chunk implements IChunk{
 
     public final int gridX;
     public final int gridY;
-    public final List<EntityPlayer> playersInRange = new ArrayList<>();
-    public final List<EntityPlayer> playersOutOfRangeCached = new ArrayList<>();
-    public final Map<EntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
+    public final List<AbstractEntityPlayer> playersInRange = new ArrayList<>();
+    public final List<AbstractEntityPlayer> playersOutOfRangeCached = new ArrayList<>();
+    public final Map<AbstractEntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final World world;
     protected final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
@@ -126,7 +126,7 @@ public class Chunk implements IChunk{
                     chunk.addEntity(entity);
 
                     if(RockBottomAPI.getNet().isServer()){
-                        for(EntityPlayer player : chunk.getPlayersInRange()){
+                        for(AbstractEntityPlayer player : chunk.getPlayersInRange()){
                             if(!this.playersInRange.contains(player)){
                                 player.sendPacket(new PacketEntityChange(entity, false));
 
@@ -186,13 +186,13 @@ public class Chunk implements IChunk{
         }
 
         for(int i = 0; i < this.playersOutOfRangeCached.size(); i++){
-            EntityPlayer player = this.playersOutOfRangeCached.get(i);
+            AbstractEntityPlayer player = this.playersOutOfRangeCached.get(i);
 
             MutableInt time = this.playersOutOfRangeCachedTimers.get(player);
             time.add(-1);
 
             if(time.get() <= 0){
-                player.chunksInRange.remove(this);
+                player.getChunksInRange().remove(this);
                 player.onChunkUnloaded(this);
 
                 this.playersOutOfRangeCached.remove(i);
@@ -744,17 +744,17 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public List<EntityPlayer> getPlayersInRange(){
+    public List<AbstractEntityPlayer> getPlayersInRange(){
         return this.playersInRange;
     }
 
     @Override
-    public List<EntityPlayer> getPlayersLeftRange(){
+    public List<AbstractEntityPlayer> getPlayersLeftRange(){
         return this.playersOutOfRangeCached;
     }
 
     @Override
-    public Map<EntityPlayer, MutableInt> getLeftPlayerTimers(){
+    public Map<AbstractEntityPlayer, MutableInt> getLeftPlayerTimers(){
         return this.playersOutOfRangeCachedTimers;
     }
 

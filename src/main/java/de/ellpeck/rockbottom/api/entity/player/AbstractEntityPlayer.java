@@ -7,7 +7,10 @@ import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInvChangeCallback;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+
+import java.util.List;
 
 public abstract class AbstractEntityPlayer extends EntityLiving implements IInvChangeCallback{
 
@@ -28,6 +31,12 @@ public abstract class AbstractEntityPlayer extends EntityLiving implements IInvC
     public abstract void sendPacket(IPacket packet);
 
     public abstract void move(int type);
+
+    public abstract void onChunkLoaded(IChunk chunk);
+
+    public abstract void onChunkUnloaded(IChunk chunk);
+
+    public abstract List<IChunk> getChunksInRange();
 
     public abstract int getCommandLevel();
 

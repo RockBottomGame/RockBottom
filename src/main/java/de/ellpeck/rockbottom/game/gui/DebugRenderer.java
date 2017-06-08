@@ -34,7 +34,7 @@ public final class DebugRenderer{
 
         String chunks = "Loaded Chunks: "+world.loadedChunks.size();
         if(!RockBottomAPI.getNet().isClient()){
-            chunks += ", PlayerChunks: "+player.chunksInRange.size();
+            chunks += ", PlayerChunks: "+player.getChunksInRange().size();
         }
         list.add(chunks);
 
