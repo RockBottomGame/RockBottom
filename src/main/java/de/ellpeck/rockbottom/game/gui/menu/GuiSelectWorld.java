@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.gui.Gui;
 import de.ellpeck.rockbottom.game.gui.component.ComponentToggleButton;
@@ -15,7 +16,7 @@ public class GuiSelectWorld extends Gui{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
 
         int xStart = (int)game.getWidthInGui()/2-264/2;
@@ -34,13 +35,13 @@ public class GuiSelectWorld extends Gui{
 
         int bottomY = (int)game.getHeightInGui();
         this.components.add(new ComponentToggleButton(this, -2, this.guiLeft+this.sizeX/2-60, bottomY-50, 120, 16, this.deleteMode, "button.delete", "Activates Delete mode. Click a world's button to delete it"));
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, bottomY-30, 80, 16, game.assetManager.localize("button.back")));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, bottomY-30, 80, 16, game.getAssetManager().localize("button.back")));
     }
 
     @Override
-    public boolean onButtonActivated(RockBottom game, int button){
+    public boolean onButtonActivated(IGameInstance game, int button){
         if(button == -1){
-            game.guiManager.openGui(this.parent);
+            game.getGuiManager().openGui(this.parent);
             return true;
         }
         else if(button == -2){

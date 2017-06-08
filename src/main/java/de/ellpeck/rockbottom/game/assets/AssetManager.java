@@ -1,11 +1,12 @@
 package de.ellpeck.rockbottom.game.assets;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.font.AssetFont;
 import de.ellpeck.rockbottom.game.assets.font.Font;
 import de.ellpeck.rockbottom.game.assets.local.AssetLocale;
 import de.ellpeck.rockbottom.game.assets.local.Locale;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -56,11 +57,11 @@ public class AssetManager{
         this.reloadCursor(game);
     }
 
-    public void reloadCursor(RockBottom game){
+    public void reloadCursor(IGameInstance game){
         try{
             GameContainer container = game.getContainer();
 
-            if(!game.settings.hardwareCursor){
+            if(!game.getSettings().hardwareCursor){
                 container.setMouseCursor(this.getImage("gui.cursor").getScaledCopy(3F), 0, 0);
             }
             else{

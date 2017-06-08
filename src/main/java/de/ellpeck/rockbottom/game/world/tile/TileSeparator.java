@@ -123,7 +123,7 @@ public class TileSeparator extends MultiTile{
         if(this.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
             if(tile != null && tile.isActive()){
-                ParticleManager manager = RockBottom.get().particleManager;
+                ParticleManager manager = RockBottom.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
                     manager.addParticle(new ParticleSmoke(world, x+1.4, y+2.92, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F));

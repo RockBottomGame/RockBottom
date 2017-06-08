@@ -1,8 +1,12 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.world.IChunk;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.world.Chunk;
+import de.ellpeck.rockbottom.game.world.World;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.newdawn.slick.util.Log;
@@ -35,14 +39,15 @@ public class PacketChunkUnload implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
+            IWorld world = game.getWorld();
+            if(world != null){
                 Log.debug("Unloading chunk at "+this.gridX+", "+this.gridY);
 
-                if(game.world.isChunkLoaded(this.gridX, this.gridY)){
-                    Chunk chunk = game.world.getChunkFromGridCoords(this.gridX, this.gridY);
-                    game.world.unloadChunk(chunk);
+                if(world.isChunkLoaded(this.gridX, this.gridY)){
+                    IChunk chunk = world.getChunkFromGridCoords(this.gridX, this.gridY);
+                    world.unloadChunk(chunk);
                 }
             }
             return true;

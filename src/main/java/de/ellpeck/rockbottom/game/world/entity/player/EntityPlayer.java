@@ -1,13 +1,15 @@
 package de.ellpeck.rockbottom.game.world.entity.player;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.world.IChunk;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.game.gui.Gui;
 import de.ellpeck.rockbottom.game.gui.container.ContainerInventory;
@@ -15,7 +17,7 @@ import de.ellpeck.rockbottom.game.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.game.inventory.IInvChangeCallback;
 import de.ellpeck.rockbottom.game.inventory.IInventory;
 import de.ellpeck.rockbottom.game.inventory.InventoryPlayer;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketContainerChange;
@@ -46,13 +48,13 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     private ItemContainer currentContainer;
     private int respawnTimer;
 
-    public EntityPlayer(World world){
+    public EntityPlayer(IWorld world){
         super(world);
         this.renderer = new PlayerEntityRenderer();
         this.facing = Direction.RIGHT;
     }
 
-    public EntityPlayer(World world, UUID uniqueId){
+    public EntityPlayer(IWorld world, UUID uniqueId){
         this(world);
         this.uniqueId = uniqueId;
     }
@@ -66,7 +68,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         this.openContainer(container);
 
         if(NetHandler.isThePlayer(this)){
-            RockBottom.get().guiManager.openGui(gui);
+            RockBottom.get().getGuiManager().openGui(gui);
         }
     }
 
@@ -125,7 +127,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         super.update(game);
 
         if(!NetHandler.isClient()){
@@ -172,7 +174,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         return 1;
     }
 
-    public void resetAndSpawn(RockBottom game){
+    public void resetAndSpawn(IGameInstance game){
         this.respawnTimer = 0;
         this.dead = false;
         this.motionX = 0;
@@ -180,8 +182,8 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
         this.fallAmount = 0;
         this.health = this.getMaxHealth();
 
-        if(game.guiManager != null){
-            game.guiManager.closeGui();
+        if(game.getGuiManager() != null){
+            game.getGuiManager().closeGui();
         }
 
         this.setPos(this.world.getSpawnX()+0.5, this.world.getLowestAirUpwards(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
@@ -342,7 +344,7 @@ public class EntityPlayer extends EntityLiving implements IInvChangeCallback{
                 level = Constants.ADMIN_PERMISSION;
 
                 permissions.setCommandLevel(this, level);
-                RockBottom.get().dataManager.savePropSettings(permissions);
+                RockBottom.get().getDataManager().savePropSettings(permissions);
 
                 Log.info("Setting command level for server host with id "+this.getUniqueId()+" to "+level+"!");
             }

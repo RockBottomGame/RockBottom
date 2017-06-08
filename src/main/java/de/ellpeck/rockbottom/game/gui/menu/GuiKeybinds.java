@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.data.settings.Settings;
 import de.ellpeck.rockbottom.game.gui.Gui;
@@ -15,13 +16,13 @@ public class GuiKeybinds extends Gui{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
 
         int x = 0;
         int y = 0;
-        for(int i = 0; i < game.settings.keybinds.size(); i++){
-            Settings.Keybind bind = game.settings.keybinds.get(i);
+        for(int i = 0; i < game.getSettings().keybinds.size(); i++){
+            Settings.Keybind bind = game.getSettings().keybinds.get(i);
             this.components.add(new ComponentKeybind(this, i, this.guiLeft+x, this.guiTop+y, bind));
 
             y += 20;
@@ -31,20 +32,20 @@ public class GuiKeybinds extends Gui{
             }
         }
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.back")));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize("button.back")));
     }
 
     @Override
-    public boolean onButtonActivated(RockBottom game, int button){
+    public boolean onButtonActivated(IGameInstance game, int button){
         if(button == -1){
-            game.guiManager.openGui(this.parent);
+            game.getGuiManager().openGui(this.parent);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(!super.onMouseAction(game, button, x, y)){
             this.activeKeybind = -1;
         }

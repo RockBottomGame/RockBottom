@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.world.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
@@ -44,10 +45,10 @@ public class PacketTileEntityData implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                TileEntity tile = game.world.getTileEntity(this.x, this.y);
+            if(game.getWorld() != null){
+                TileEntity tile = game.getWorld().getTileEntity(this.x, this.y);
                 if(tile != null){
                     tile.fromBuf(this.tileBuf);
                 }

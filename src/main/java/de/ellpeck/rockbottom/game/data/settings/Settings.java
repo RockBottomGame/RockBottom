@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.data.settings;
 
+import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.game.data.DataManager;
 import de.ellpeck.rockbottom.game.util.Util;
 import org.newdawn.slick.Color;
@@ -120,7 +121,7 @@ public class Settings implements IPropSettings{
 
     @Override
     public File getFile(DataManager manager){
-        return manager.settingsFile;
+        return manager.getSettingsFile();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.world.Chunk;
@@ -48,12 +50,12 @@ public class PacketTileChange implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                if(game.world.isPosLoaded(this.x, this.y)){
-                    Chunk chunk = game.world.getChunk(this.x, this.y);
-                    chunk.setTileInner(this.layer, this.x-chunk.x, this.y-chunk.y, game.world.getTileForId(this.tileId), this.meta);
+            if(game.getWorld() != null){
+                if(game.getWorld().isPosLoaded(this.x, this.y)){
+                    IChunk chunk = game.getWorld().getChunk(this.x, this.y);
+                    chunk.setTileInner(this.layer, this.x-chunk.getX(), this.y-chunk.getY(), game.getWorld().getTileForId(this.tileId), this.meta);
                 }
             }
             return true;

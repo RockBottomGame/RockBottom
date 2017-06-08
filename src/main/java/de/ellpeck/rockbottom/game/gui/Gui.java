@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.game.gui;
 
-import de.ellpeck.rockbottom.game.RockBottom;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.Font;
 import de.ellpeck.rockbottom.game.gui.component.GuiComponent;
@@ -35,18 +35,18 @@ public class Gui{
         this.parent = parent;
     }
 
-    public static void drawHoverInfoAtMouse(RockBottom game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, String... text){
+    public static void drawHoverInfoAtMouse(IGameInstance game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, String... text){
         drawHoverInfoAtMouse(game, manager, g, firstLineOffset, maxLength, Arrays.asList(text));
     }
 
-    public static void drawHoverInfoAtMouse(RockBottom game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, List<String> text){
+    public static void drawHoverInfoAtMouse(IGameInstance game, AssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, List<String> text){
         float mouseX = game.getMouseInGuiX();
         float mouseY = game.getMouseInGuiY();
 
-        drawHoverInfo(game, manager, g, mouseX+18F/game.settings.guiScale, mouseY+18F/game.settings.guiScale, 0.25F, firstLineOffset, false, maxLength, text);
+        drawHoverInfo(game, manager, g, mouseX+18F/game.getSettings().guiScale, mouseY+18F/game.getSettings().guiScale, 0.25F, firstLineOffset, false, maxLength, text);
     }
 
-    public static void drawHoverInfo(RockBottom game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){
+    public static void drawHoverInfo(IGameInstance game, AssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){
         Font font = manager.getFont();
 
         float boxWidth = 0F;
@@ -102,15 +102,15 @@ public class Gui{
         g.popTransform();
     }
 
-    public void onOpened(RockBottom game){
+    public void onOpened(IGameInstance game){
 
     }
 
-    public void onClosed(RockBottom game){
+    public void onClosed(IGameInstance game){
 
     }
 
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         if(!this.components.isEmpty()){
             this.components.clear();
         }
@@ -118,16 +118,16 @@ public class Gui{
         this.initGuiVars(game);
     }
 
-    protected void initGuiVars(RockBottom game){
+    protected void initGuiVars(IGameInstance game){
         this.guiLeft = (int)game.getWidthInGui()/2-this.sizeX/2;
         this.guiTop = (int)game.getHeightInGui()/2-this.sizeY/2;
     }
 
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         this.components.forEach(component -> component.update(game));
     }
 
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         for(GuiComponent component : this.components){
             if(component.onMouseAction(game, button, x, y)){
                 return true;
@@ -136,14 +136,14 @@ public class Gui{
         return false;
     }
 
-    public boolean onKeyboardAction(RockBottom game, int button, char character){
+    public boolean onKeyboardAction(IGameInstance game, int button, char character){
         for(GuiComponent component : this.components){
             if(component.onKeyboardAction(game, button, character)){
                 return true;
             }
         }
 
-        if(button == game.settings.keyMenu.key || (button == game.settings.keyInventory.key && this instanceof GuiContainer)){
+        if(button == game.getSettings().keyMenu.key || (button == game.getSettings().keyInventory.key && this instanceof GuiContainer)){
             if(this.tryEscape(game)){
                 return true;
             }
@@ -152,20 +152,20 @@ public class Gui{
         return false;
     }
 
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         this.components.forEach(component -> component.render(game, manager, g));
     }
 
-    public void renderOverlay(RockBottom game, AssetManager manager, Graphics g){
+    public void renderOverlay(IGameInstance game, AssetManager manager, Graphics g){
         this.components.forEach(component -> component.renderOverlay(game, manager, g));
     }
 
-    protected boolean tryEscape(RockBottom game){
+    protected boolean tryEscape(IGameInstance game){
         if(this.parent != null){
-            game.guiManager.openGui(this.parent);
+            game.getGuiManager().openGui(this.parent);
         }
         else{
-            game.guiManager.closeGui();
+            game.getGuiManager().closeGui();
         }
 
         return true;
@@ -175,11 +175,11 @@ public class Gui{
         return true;
     }
 
-    public boolean isMouseOverComponent(RockBottom game){
+    public boolean isMouseOverComponent(IGameInstance game){
         return this.components.stream().anyMatch(component -> component.isMouseOver(game));
     }
 
-    public boolean isMouseOver(RockBottom game){
+    public boolean isMouseOver(IGameInstance game){
         if(Mouse.isInsideWindow()){
             int mouseX = (int)game.getMouseInGuiX();
             int mouseY = (int)game.getMouseInGuiY();
@@ -192,7 +192,7 @@ public class Gui{
         }
     }
 
-    public boolean onButtonActivated(RockBottom game, int button){
+    public boolean onButtonActivated(IGameInstance game, int button){
         return false;
     }
 

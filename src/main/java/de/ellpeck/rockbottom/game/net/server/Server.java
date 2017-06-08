@@ -31,7 +31,7 @@ public class Server{
     public CommandPermissions commandPermissions = new CommandPermissions();
 
     public Server(String ip, int port) throws Exception{
-        RockBottom.get().dataManager.loadPropSettings(this.commandPermissions);
+        RockBottom.get().getDataManager().loadPropSettings(this.commandPermissions);
 
         this.group = NetHandler.HAS_EPOLL ?
                 new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollServer", true)) :

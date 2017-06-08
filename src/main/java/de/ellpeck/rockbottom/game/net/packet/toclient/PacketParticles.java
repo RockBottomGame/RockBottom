@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.world.World;
@@ -56,12 +57,12 @@ public class PacketParticles implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
+            if(game.getWorld() != null){
                 if(this.type == 0){
-                    Tile tile = game.world.getTileForId(this.args[0]);
-                    game.particleManager.addTileParticles(game.world, this.x, this.y, tile, this.args[1]);
+                    Tile tile = game.getWorld().getTileForId(this.args[0]);
+                    game.getParticleManager().addTileParticles(game.getWorld(), this.x, this.y, tile, this.args[1]);
                 }
             }
             return true;

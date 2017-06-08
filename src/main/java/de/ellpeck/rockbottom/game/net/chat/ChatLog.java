@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.chat;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
@@ -48,8 +49,8 @@ public class ChatLog{
 
                 if(command != null){
                     if(player.getCommandLevel() >= command.getLevel()){
-                        RockBottom game = RockBottom.get();
-                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, playerName, game, game.assetManager, this);
+                        IGameInstance game = RockBottom.get();
+                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, playerName, game, game.getAssetManager(), this);
                     }
                     else{
                         cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
@@ -85,7 +86,7 @@ public class ChatLog{
     public void broadcastMessage(String message){
         if(NetHandler.isServer()){
             this.displayMessage(message);
-            NetHandler.sendToAllPlayers(RockBottom.get().world, new PacketChatMessage(message));
+            NetHandler.sendToAllPlayers(RockBottom.get().getWorld(), new PacketChatMessage(message));
         }
     }
 

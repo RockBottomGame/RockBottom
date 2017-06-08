@@ -122,7 +122,7 @@ public class TileSmelter extends MultiTile{
         if(this.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySmelter tile = world.getTileEntity(x, y, TileEntitySmelter.class);
             if(tile != null && tile.isActive()){
-                ParticleManager manager = RockBottom.get().particleManager;
+                ParticleManager manager = RockBottom.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
                     manager.addParticle(new ParticleSmoke(world, x+0.4, y+2, Util.RANDOM.nextGaussian()*0.01, 0, 0.08F));

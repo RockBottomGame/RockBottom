@@ -1,10 +1,11 @@
 package de.ellpeck.rockbottom.game.world.tile.entity;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.inventory.IInventory;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.game.util.Util;
@@ -23,7 +24,7 @@ public class TileEntity{
         this.y = y;
     }
 
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         if(NetHandler.isServer()){
             if(this.world.getWorldInfo().totalTimeInWorld%this.getSyncInterval() == 0 && this.needsSync()){
                 this.sendToClients();

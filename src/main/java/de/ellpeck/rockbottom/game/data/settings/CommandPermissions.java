@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.data.settings;
 
+import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.game.data.DataManager;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 
@@ -34,7 +35,7 @@ public class CommandPermissions implements IPropSettings{
 
     @Override
     public File getFile(DataManager manager){
-        return manager.commandPermissionFile;
+        return manager.getCommandPermsFile();
     }
 
     @Override

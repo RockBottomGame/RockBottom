@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.gui.Gui;
 
@@ -16,11 +17,11 @@ public class ComponentToggleButton extends ComponentButton{
 
     @Override
     protected String getText(){
-        return RockBottom.get().assetManager.localize(this.locKey+(this.isToggled ? "_toggled" : ""));
+        return RockBottom.get().getAssetManager().localize(this.locKey+(this.isToggled ? "_toggled" : ""));
     }
 
     @Override
-    public boolean onPressed(RockBottom game){
+    public boolean onPressed(IGameInstance game){
         this.isToggled = !this.isToggled;
         return false;
     }

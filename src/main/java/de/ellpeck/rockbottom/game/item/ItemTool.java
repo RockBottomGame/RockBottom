@@ -1,8 +1,8 @@
 package de.ellpeck.rockbottom.game.item;
 
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.render.item.IItemRenderer;
-import de.ellpeck.rockbottom.game.world.World;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.game.render.item.ToolItemRenderer;
 import de.ellpeck.rockbottom.api.world.TileLayer;

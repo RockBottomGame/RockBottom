@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.Font;
@@ -14,14 +15,14 @@ public class GuiCredits extends Gui{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.assetManager.localize("button.back")));
+        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize("button.back")));
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         Font font = manager.getFont();
@@ -33,9 +34,9 @@ public class GuiCredits extends Gui{
     }
 
     @Override
-    public boolean onButtonActivated(RockBottom game, int button){
+    public boolean onButtonActivated(IGameInstance game, int button){
         if(button == -1){
-            game.guiManager.openGui(this.parent);
+            game.getGuiManager().openGui(this.parent);
             return true;
         }
         return false;

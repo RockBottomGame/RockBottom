@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.NetUtil;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -41,12 +42,12 @@ public class PacketSendChat implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                EntityPlayer player = game.world.getPlayer(this.playerId);
+            if(game.getWorld() != null){
+                EntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
-                    game.chatLog.sendPlayerMessage(this.message, player, this.playerName);
+                    game.getChatLog().sendPlayerMessage(this.message, player, this.playerName);
                 }
             }
             return true;

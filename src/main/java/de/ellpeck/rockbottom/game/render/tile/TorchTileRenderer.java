@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.render.tile;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -14,7 +15,7 @@ public class TorchTileRenderer extends DefaultTileRenderer{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, Color filter){
+    public void render(IGameInstance game, AssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, Color filter){
         int meta = world.getMeta(x, y);
 
         String tex = this.texture;

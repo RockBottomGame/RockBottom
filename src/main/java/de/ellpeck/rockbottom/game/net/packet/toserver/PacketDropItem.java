@@ -1,8 +1,9 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.NetUtil;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.world.entity.EntityItem;
@@ -46,10 +47,10 @@ public class PacketDropItem implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                EntityPlayer player = game.world.getPlayer(this.playerId);
+            if(game.getWorld() != null){
+                EntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
                     EntityItem.spawn(player.world, this.instance, player.x, player.y+1, player.facing.x*0.25, 0);
                 }

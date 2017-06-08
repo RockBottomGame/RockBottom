@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.api.world;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -48,4 +50,18 @@ public interface IChunk extends IChunkOrWorld{
     byte getArtificialLightInner(int x, int y);
 
     void setArtificialLightInner(int x, int y, byte light);
+
+    void setGenerating(boolean generating);
+
+    boolean needsSave();
+
+    boolean shouldUnload();
+
+    void save(DataSet set);
+
+    void update(IGameInstance game);
+
+    byte getCombinedLightInner(int x, int y);
+
+    int getScheduledUpdateAmount();
 }

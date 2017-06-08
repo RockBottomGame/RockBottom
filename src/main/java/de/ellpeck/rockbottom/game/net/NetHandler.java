@@ -85,7 +85,7 @@ public final class NetHandler{
     }
 
     public static boolean isThePlayer(EntityPlayer player){
-        return RockBottom.get().player == player;
+        return RockBottom.get().getPlayer() == player;
     }
 
     public static boolean isClient(){

@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.game.net;
 
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -10,7 +11,7 @@ public final class NetUtil{
 
     public static void writeSetToBuffer(DataSet set, ByteBuf buf){
         try{
-            DataSet.writeSet(new ByteBufOutputStream(buf), set);
+            RockBottomAPI.getApiHandler().writeSet(new ByteBufOutputStream(buf), set);
         }
         catch(Exception e){
             Log.error("Couldn't write data set to buffer", e);
@@ -19,7 +20,7 @@ public final class NetUtil{
 
     public static void readSetFromBuffer(DataSet set, ByteBuf buf){
         try{
-            DataSet.readSet(new ByteBufInputStream(buf), set);
+            RockBottomAPI.getApiHandler().readSet(new ByteBufInputStream(buf), set);
         }
         catch(Exception e){
             Log.error("Couldn't read data set from buffer", e);

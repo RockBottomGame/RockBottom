@@ -1,11 +1,12 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.gui.GuiContainer;
 import de.ellpeck.rockbottom.game.gui.container.ContainerSlot;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.game.util.Util;
 import org.newdawn.slick.Graphics;
@@ -24,12 +25,12 @@ public class ComponentSlot extends GuiComponent{
     }
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isMouseOver(game)){
             ItemInstance slotInst = this.slot.get();
             ItemInstance slotCopy = slotInst == null ? null : slotInst.copy();
 
-            if(button == game.settings.buttonGuiAction1){
+            if(button == game.getSettings().buttonGuiAction1){
                 if(this.container.holdingInst == null){
                     if(slotCopy != null){
                         if(this.setToInv(null)){
@@ -72,7 +73,7 @@ public class ComponentSlot extends GuiComponent{
                     }
                 }
             }
-            else if(button == game.settings.buttonGuiAction2){
+            else if(button == game.getSettings().buttonGuiAction2){
                 if(this.container.holdingInst == null){
                     if(slotCopy != null){
                         int half = Util.ceil((double)slotCopy.getAmount()/2);
@@ -119,7 +120,7 @@ public class ComponentSlot extends GuiComponent{
             this.slot.set(inst);
 
             if(NetHandler.isClient()){
-                NetHandler.sendToServer(new PacketSlotModification(RockBottom.get().player.getUniqueId(), this.componentId, inst));
+                NetHandler.sendToServer(new PacketSlotModification(RockBottom.get().getPlayer().getUniqueId(), this.componentId, inst));
             }
             return true;
         }
@@ -129,12 +130,12 @@ public class ComponentSlot extends GuiComponent{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         Util.renderSlotInGui(game, manager, g, this.slot.get(), this.x, this.y, 1F);
     }
 
     @Override
-    public void renderOverlay(RockBottom game, AssetManager manager, Graphics g){
+    public void renderOverlay(IGameInstance game, AssetManager manager, Graphics g){
         if(this.container.holdingInst == null && this.isMouseOver(game)){
             ItemInstance instance = this.slot.get();
             if(instance != null){

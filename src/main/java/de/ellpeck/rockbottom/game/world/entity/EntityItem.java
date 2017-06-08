@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.game.world.entity;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.game.render.entity.ItemEntityRenderer;
-import de.ellpeck.rockbottom.game.world.World;
 
 public class EntityItem extends Entity{
 
@@ -41,7 +41,7 @@ public class EntityItem extends Entity{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         super.update(game);
 
         if(this.pickupDelay > 0){

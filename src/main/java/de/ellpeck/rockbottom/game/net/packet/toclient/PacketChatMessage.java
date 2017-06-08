@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.NetUtil;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
@@ -30,9 +31,9 @@ public class PacketChatMessage implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            game.chatLog.displayMessage(this.message);
+            game.getChatLog().displayMessage(this.message);
             return true;
         });
     }

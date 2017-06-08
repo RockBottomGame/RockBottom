@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.api.util.reg;
 
 import de.ellpeck.rockbottom.game.data.DataManager;
-import de.ellpeck.rockbottom.game.data.settings.IPropSettings;
+import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.game.net.NetUtil;
 import io.netty.buffer.ByteBuf;
 

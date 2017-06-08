@@ -1,9 +1,10 @@
 package de.ellpeck.rockbottom.game.net.client;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.world.Chunk;
 import de.ellpeck.rockbottom.game.world.World;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -28,7 +29,7 @@ public class ClientChunk extends Chunk{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         this.checkListSync();
 
         if(!this.isGenerating){

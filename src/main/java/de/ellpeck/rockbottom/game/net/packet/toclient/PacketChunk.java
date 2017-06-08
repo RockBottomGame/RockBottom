@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
@@ -72,13 +73,13 @@ public class PacketChunk implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
+            if(game.getWorld() != null){
                 Log.debug("Receiving chunk at "+this.chunkX+", "+this.chunkY);
 
-                Chunk chunk = game.world.getChunkFromGridCoords(this.chunkX, this.chunkY);
-                chunk.isGenerating = true;
+                IChunk chunk = game.getWorld().getChunkFromGridCoords(this.chunkX, this.chunkY);
+                chunk.setGenerating(true);
 
                 int index = 0;
                 for(int i = 0; i < TileLayer.LAYERS.length; i++){
@@ -96,7 +97,7 @@ public class PacketChunk implements IPacket{
                     }
                 }
 
-                chunk.isGenerating = false;
+                chunk.setGenerating(false);
 
                 return true;
             }

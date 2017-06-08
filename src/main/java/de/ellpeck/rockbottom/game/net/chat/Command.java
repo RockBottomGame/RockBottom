@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.chat;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -28,5 +29,5 @@ public abstract class Command{
         return this.level;
     }
 
-    public abstract String execute(String[] args, EntityPlayer player, String playerName, RockBottom game, AssetManager manager, ChatLog chat);
+    public abstract String execute(String[] args, EntityPlayer player, String playerName, IGameInstance game, AssetManager manager, ChatLog chat);
 }

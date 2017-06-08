@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.Font;
@@ -7,7 +8,7 @@ import de.ellpeck.rockbottom.game.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.game.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.game.gui.menu.MainMenuBackground;
 import de.ellpeck.rockbottom.api.item.Item;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -31,7 +32,7 @@ public class GuiManager{
         Log.debug("Re-initializing Gui Manager");
 
         if(game.isInWorld()){
-            this.initInWorldComponents(game, game.player);
+            this.initInWorldComponents(game, game.getPlayer());
             this.background = null;
         }
         else{
@@ -58,7 +59,7 @@ public class GuiManager{
             this.onScreenComponents.add(new ComponentHotbarSlot(player.inv, i, x, 3));
         }
 
-        int maxHealthParts = Util.floor(game.player.getMaxHealth()/20);
+        int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
         this.onScreenComponents.add(new ComponentHealth(null, (int)game.getWidthInGui()-3-maxHealthParts*13, (int)game.getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
@@ -73,7 +74,7 @@ public class GuiManager{
             this.shouldReInit = false;
         }
 
-        game.chatLog.updateNewMessages();
+        game.getChatLog().updateNewMessages();
 
         if(this.gui != null){
             this.gui.update(game);
@@ -85,7 +86,7 @@ public class GuiManager{
     }
 
     public void render(RockBottom game, AssetManager manager, Graphics g, EntityPlayer player){
-        g.scale(game.settings.guiScale, game.settings.guiScale);
+        g.scale(game.getSettings().guiScale, game.getSettings().guiScale);
 
         Font font = manager.getFont();
         float width = (float)game.getWidthInGui();
@@ -105,7 +106,7 @@ public class GuiManager{
             }
 
             if(gui == null || !(gui instanceof GuiChat)){
-                game.chatLog.drawNewMessages(game, manager, g);
+                game.getChatLog().drawNewMessages(game, manager, g);
             }
 
             if(gui != null){
@@ -124,7 +125,7 @@ public class GuiManager{
 
         font.drawString(2, height-font.getHeight(0.25F), game.getTitle(), 0.25F);
 
-        if(game.settings.cursorInfos){
+        if(game.getSettings().cursorInfos){
             if(player != null && gui == null && Mouse.isInsideWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
                     ItemInstance holding = player.inv.get(player.inv.selectedSlot);
@@ -136,7 +137,7 @@ public class GuiManager{
                             float mouseX = game.getMouseInGuiX();
                             float mouseY = game.getMouseInGuiY();
 
-                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.settings.guiScale, mouseY, 36F/game.settings.guiScale, Color.white);
+                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getSettings().guiScale, mouseY, 36F/game.getSettings().guiScale, Color.white);
                         }
                     }
                 }
@@ -145,7 +146,7 @@ public class GuiManager{
     }
 
     public void openGui(Gui gui){
-        RockBottom game = RockBottom.get();
+        IGameInstance game = RockBottom.get();
 
         if(this.gui != null){
             this.gui.onClosed(game);

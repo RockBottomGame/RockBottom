@@ -1,10 +1,13 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.net.NetUtil;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
+import de.ellpeck.rockbottom.game.world.World;
 import de.ellpeck.rockbottom.game.world.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
@@ -66,28 +69,30 @@ public class PacketEntityChange implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                Entity entity = game.world.getEntity(this.uniqueId);
+            IWorld world = game.getWorld();
+
+            if(world != null){
+                Entity entity = world.getEntity(this.uniqueId);
 
                 if(this.remove){
                     if(entity != null){
-                        game.world.removeEntity(entity);
+                        world.removeEntity(entity);
                     }
                 }
                 else{
                     if(entity == null){
                         if(PLAYER_NAME.equals(this.name)){
-                            entity = new EntityPlayer(game.world);
+                            entity = new EntityPlayer(world);
                         }
                         else{
-                            entity = Entity.create(this.name, game.world);
+                            entity = Entity.create(this.name, world);
                         }
 
                         if(entity != null){
                             entity.load(this.entitySet);
-                            game.world.addEntity(entity);
+                            world.addEntity(entity);
                         }
                     }
                     else{

@@ -1,10 +1,11 @@
-package de.ellpeck.rockbottom.game.item;
+package de.ellpeck.rockbottom.api.item;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
+import de.ellpeck.rockbottom.game.item.ItemBasic;
 import de.ellpeck.rockbottom.game.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.game.render.item.ItemTileRenderer;
-import de.ellpeck.rockbottom.api.tile.Tile;
 
 import java.util.List;
 

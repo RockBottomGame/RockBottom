@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.Gui;
@@ -17,25 +18,25 @@ public class GuiMenu extends Gui{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, this.sizeX, 16, game.assetManager.localize("button.settings")));
+        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, this.sizeX, 16, game.getAssetManager().localize("button.settings")));
         if(!NetHandler.isClient()){
             this.components.add(new ComponentButton(this, 1, this.guiLeft, this.guiTop+20, this.sizeX, 16, null){
                 @Override
                 protected String getText(){
-                    return game.assetManager.localize("button."+(NetHandler.isServer() ? "close" : "open")+"_server");
+                    return game.getAssetManager().localize("button."+(NetHandler.isServer() ? "close" : "open")+"_server");
                 }
             });
         }
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, game.assetManager.localize("button.main_menu")));
-        this.components.add(new ComponentButton(this, -2, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.assetManager.localize("button.close")));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, game.getAssetManager().localize("button.main_menu")));
+        this.components.add(new ComponentButton(this, -2, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize("button.close")));
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         super.update(game);
 
         if(!NetHandler.isClient()){
@@ -49,7 +50,7 @@ public class GuiMenu extends Gui{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         if(!NetHandler.isClient()){
@@ -61,17 +62,17 @@ public class GuiMenu extends Gui{
     }
 
     @Override
-    public boolean onButtonActivated(RockBottom game, int button){
+    public boolean onButtonActivated(IGameInstance game, int button){
         if(button == -1){
             game.quitWorld();
             return true;
         }
         else if(button == -2){
-            game.guiManager.closeGui();
+            game.getGuiManager().closeGui();
             return true;
         }
         else if(button == 0){
-            game.guiManager.openGui(new GuiSettings(this));
+            game.getGuiManager().openGui(new GuiSettings(this));
         }
         else if(button == 1){
             if(NetHandler.isServer()){
@@ -79,7 +80,7 @@ public class GuiMenu extends Gui{
             }
             else{
                 try{
-                    NetHandler.init(null, game.settings.serverStartPort, true);
+                    NetHandler.init(null, game.getSettings().serverStartPort, true);
                 }
                 catch(Exception e){
                     Log.error("Couldn't start server", e);

@@ -1,11 +1,12 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketHotbar;
 import de.ellpeck.rockbottom.game.inventory.InventoryPlayer;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.util.Util;
 import org.newdawn.slick.Graphics;
 
@@ -21,7 +22,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         Util.renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
 
         if(this.inv.selectedSlot == this.id){
@@ -30,7 +31,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public void renderOverlay(RockBottom game, AssetManager manager, Graphics g){
+    public void renderOverlay(IGameInstance game, AssetManager manager, Graphics g){
         if(this.isMouseOver(game)){
             ItemInstance instance = this.inv.get(this.id);
             if(instance != null){
@@ -40,13 +41,13 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isMouseOver(game)){
             if(this.inv.selectedSlot != this.id){
                 this.inv.selectedSlot = this.id;
 
                 if(NetHandler.isClient()){
-                    NetHandler.sendToServer(new PacketHotbar(game.player.getUniqueId(), this.id));
+                    NetHandler.sendToServer(new PacketHotbar(game.getPlayer().getUniqueId(), this.id));
                 }
 
                 return true;

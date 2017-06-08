@@ -1,14 +1,18 @@
 package de.ellpeck.rockbottom.game.data;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.part.PartBoolean;
+import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
+import de.ellpeck.rockbottom.api.data.set.part.PartString;
+import de.ellpeck.rockbottom.api.data.set.part.PartUniqueId;
+import de.ellpeck.rockbottom.api.data.set.part.num.*;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteByteArray;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortShortArray;
+import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
-import de.ellpeck.rockbottom.game.data.set.part.*;
-import de.ellpeck.rockbottom.game.data.set.part.num.*;
-import de.ellpeck.rockbottom.game.data.set.part.num.array.PartByteByteArray;
-import de.ellpeck.rockbottom.game.data.set.part.num.array.PartIntArray;
-import de.ellpeck.rockbottom.game.data.set.part.num.array.PartShortShortArray;
-import de.ellpeck.rockbottom.game.data.settings.IPropSettings;
-import de.ellpeck.rockbottom.api.util.reg.IndexRegistry;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -17,31 +21,29 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.UUID;
 
-public class DataManager{
-
-    public static final IndexRegistry<Class<? extends DataPart>> PART_REGISTRY = new IndexRegistry<>("part_registry", Byte.MAX_VALUE);
+public class DataManager implements IDataManager{
 
     static{
-        PART_REGISTRY.register(0, PartInt.class);
-        PART_REGISTRY.register(1, PartFloat.class);
-        PART_REGISTRY.register(2, PartDouble.class);
-        PART_REGISTRY.register(3, PartIntArray.class);
-        PART_REGISTRY.register(4, PartShortShortArray.class);
-        PART_REGISTRY.register(5, PartByteByteArray.class);
-        PART_REGISTRY.register(6, PartDataSet.class);
-        PART_REGISTRY.register(7, PartLong.class);
-        PART_REGISTRY.register(8, PartUniqueId.class);
-        PART_REGISTRY.register(9, PartByte.class);
-        PART_REGISTRY.register(10, PartShort.class);
-        PART_REGISTRY.register(11, PartBoolean.class);
-        PART_REGISTRY.register(12, PartString.class);
+        RockBottomAPI.PART_REGISTRY.register(0, PartInt.class);
+        RockBottomAPI.PART_REGISTRY.register(1, PartFloat.class);
+        RockBottomAPI.PART_REGISTRY.register(2, PartDouble.class);
+        RockBottomAPI.PART_REGISTRY.register(3, PartIntArray.class);
+        RockBottomAPI.PART_REGISTRY.register(4, PartShortShortArray.class);
+        RockBottomAPI.PART_REGISTRY.register(5, PartByteByteArray.class);
+        RockBottomAPI.PART_REGISTRY.register(6, PartDataSet.class);
+        RockBottomAPI.PART_REGISTRY.register(7, PartLong.class);
+        RockBottomAPI.PART_REGISTRY.register(8, PartUniqueId.class);
+        RockBottomAPI.PART_REGISTRY.register(9, PartByte.class);
+        RockBottomAPI.PART_REGISTRY.register(10, PartShort.class);
+        RockBottomAPI.PART_REGISTRY.register(11, PartBoolean.class);
+        RockBottomAPI.PART_REGISTRY.register(12, PartString.class);
     }
 
-    public File gameDirectory;
-    public File saveDirectory;
-    public File gameDataFile;
-    public File settingsFile;
-    public File commandPermissionFile;
+    private final File gameDirectory;
+    private final File saveDirectory;
+    private final File gameDataFile;
+    private final File settingsFile;
+    private final File commandPermissionFile;
 
     public DataManager(RockBottom game){
         this.gameDirectory = new File(".", "rockbottom");
@@ -54,18 +56,44 @@ public class DataManager{
         DataSet set = new DataSet();
         set.read(this.gameDataFile);
 
-        game.uniqueId = set.getUniqueId("game_id");
+        game.setUniqueId(set.getUniqueId("game_id"));
 
-        if(game.uniqueId == null){
-            game.uniqueId = UUID.randomUUID();
-            set.addUniqueId("game_id", game.uniqueId);
+        if(game.getUniqueId() == null){
+            game.setUniqueId(UUID.randomUUID());
+            set.addUniqueId("game_id", game.getUniqueId());
 
-            Log.info("Created new game unique id "+game.uniqueId+"!");
+            Log.info("Created new game unique id "+game.getUniqueId()+"!");
         }
 
         set.write(this.gameDataFile);
     }
 
+    @Override
+    public File getGameDir(){
+        return this.gameDirectory;
+    }
+
+    @Override
+    public File getWorldsDir(){
+        return this.saveDirectory;
+    }
+
+    @Override
+    public File getGameDataFile(){
+        return this.gameDataFile;
+    }
+
+    @Override
+    public File getSettingsFile(){
+        return this.settingsFile;
+    }
+
+    @Override
+    public File getCommandPermsFile(){
+        return this.commandPermissionFile;
+    }
+
+    @Override
     public void loadPropSettings(IPropSettings settings){
         Properties props = new Properties();
         boolean loaded = false;
@@ -92,6 +120,7 @@ public class DataManager{
         }
     }
 
+    @Override
     public void savePropSettings(IPropSettings settings){
         Properties props = new Properties();
         settings.save(props);

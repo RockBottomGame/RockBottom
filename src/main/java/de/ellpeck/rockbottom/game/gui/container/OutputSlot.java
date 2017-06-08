@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game.gui.container;
 
 import de.ellpeck.rockbottom.game.inventory.IInventory;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 
 public class OutputSlot extends ContainerSlot{
 

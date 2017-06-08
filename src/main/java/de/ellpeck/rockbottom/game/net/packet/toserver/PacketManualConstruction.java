@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.construction.IRecipe;
@@ -43,10 +44,10 @@ public class PacketManualConstruction implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                EntityPlayer player = game.world.getPlayer(this.playerId);
+            if(game.getWorld() != null){
+                EntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
                     IRecipe recipe = ConstructionRegistry.MANUAL_RECIPES.get(this.recipeIndex);
                     if(recipe != null){

@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game.inventory;
 
-import de.ellpeck.rockbottom.game.data.set.DataSet;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 
 import java.util.ArrayList;
 import java.util.List;

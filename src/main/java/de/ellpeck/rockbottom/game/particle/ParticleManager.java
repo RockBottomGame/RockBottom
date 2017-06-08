@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.game.particle;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.render.WorldRenderer;
@@ -31,7 +32,7 @@ public class ParticleManager{
     public void render(RockBottom game, AssetManager manager, Graphics g, World world){
         this.particles.forEach(particle -> {
             int light = world.getCombinedLight(Util.floor(particle.x), Util.floor(particle.y));
-            particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F, WorldRenderer.MAIN_COLORS[game.isLightDebug ? Constants.MAX_LIGHT : light]);
+            particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F, WorldRenderer.MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
         });
     }
 
@@ -39,7 +40,7 @@ public class ParticleManager{
         this.particles.add(particle);
     }
 
-    public void addTileParticles(World world, int x, int y, Tile tile, int meta){
+    public void addTileParticles(IWorld world, int x, int y, Tile tile, int meta){
         for(int i = 0; i < 15; i++){
             double motionX = Util.RANDOM.nextGaussian()*0.1F;
             double motionY = Util.RANDOM.nextGaussian()*0.1F;

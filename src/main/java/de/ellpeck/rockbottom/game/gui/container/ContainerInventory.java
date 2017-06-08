@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game.gui.container;
 
 import de.ellpeck.rockbottom.game.construction.IRecipe;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.world.entity.EntityItem;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 

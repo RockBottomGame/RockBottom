@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.api.world;
 
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import io.netty.buffer.ByteBuf;
 
 import java.io.File;

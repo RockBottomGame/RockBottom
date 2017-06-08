@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.Gui;
@@ -9,7 +10,7 @@ import org.newdawn.slick.Image;
 
 public class ComponentColorPicker extends GuiComponent{
 
-    private final Image image = RockBottom.get().assetManager.getImage("gui.colorpick");
+    private final Image image = RockBottom.get().getAssetManager().getImage("gui.colorpick");
 
     private final ICallback callback;
     private boolean wasMouseDown;
@@ -23,7 +24,7 @@ public class ComponentColorPicker extends GuiComponent{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         this.image.draw(this.x, this.y, this.sizeX, this.sizeY);
 
         g.setColor(this.colorOutline);
@@ -32,7 +33,7 @@ public class ComponentColorPicker extends GuiComponent{
 
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isMouseOver(game)){
             if(!this.wasMouseDown){
                 this.callback.onFirstClick(game.getMouseInGuiX(), game.getMouseInGuiY(), this.color);
@@ -45,12 +46,12 @@ public class ComponentColorPicker extends GuiComponent{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         if(this.wasMouseDown){
             float mouseX = game.getMouseInGuiX();
             float mouseY = game.getMouseInGuiY();
 
-            if(game.getContainer().getInput().isMouseButtonDown(game.settings.buttonGuiAction1)){
+            if(game.getContainer().getInput().isMouseButtonDown(game.getSettings().buttonGuiAction1)){
                 this.onClickOrMove(game, mouseX, mouseY);
             }
             else{
@@ -60,7 +61,7 @@ public class ComponentColorPicker extends GuiComponent{
         }
     }
 
-    private void onClickOrMove(RockBottom game, float mouseX, float mouseY){
+    private void onClickOrMove(IGameInstance game, float mouseX, float mouseY){
         if(this.isMouseOver(game)){
             float x = (mouseX-this.x)/this.sizeX*this.image.getWidth();
             float y = (mouseY-this.y)/this.sizeY*this.image.getHeight();

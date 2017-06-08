@@ -9,11 +9,10 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
-import de.ellpeck.rockbottom.game.item.ItemTile;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemTile;
 import de.ellpeck.rockbottom.game.item.ToolType;
 import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.world.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.EntityItem;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -136,7 +135,7 @@ public class Tile{
             List<ItemInstance> drops = this.getDrops(world, x, y, destroyer);
             if(drops != null && !drops.isEmpty()){
                 for(ItemInstance inst : drops){
-                    EntityItem.spawn(world, inst, x+0.5, y+0.5, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
+                    EntityItem.spawn(world, inst, x+0.5, y+0.5, RockBottomAPI.RANDOM.nextGaussian()*0.1, RockBottomAPI.RANDOM.nextGaussian()*0.1);
                 }
             }
         }
@@ -250,7 +249,7 @@ public class Tile{
             }
         }
         else{
-            desc.add(FormattingCode.DARK_GRAY+manager.localize("info.advanced_info", Input.getKeyName(RockBottom.get().settings.keyAdvancedInfo.key)));
+            desc.add(FormattingCode.DARK_GRAY+manager.localize("info.advanced_info", Input.getKeyName(RockBottom.get().getSettings().keyAdvancedInfo.key)));
         }
     }
 }

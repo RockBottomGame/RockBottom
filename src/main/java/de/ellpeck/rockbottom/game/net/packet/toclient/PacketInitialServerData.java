@@ -1,8 +1,9 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.net.NetUtil;
@@ -48,9 +49,9 @@ public class PacketInitialServerData implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world == null){
+            if(game.getWorld() == null){
                 Log.info("Received initial server data, joining world");
                 game.joinWorld(this.playerSet, this.info, this.tileRegInfo);
             }

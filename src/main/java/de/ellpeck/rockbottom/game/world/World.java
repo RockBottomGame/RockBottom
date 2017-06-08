@@ -2,18 +2,19 @@ package de.ellpeck.rockbottom.game.world;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
+import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.ContentRegistry;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketParticles;
@@ -33,8 +34,8 @@ public class World implements IWorld{
 
     public final Random generatorRandom = new Random();
 
-    public final List<Chunk> loadedChunks = new ArrayList<>();
-    protected final Map<Pos2, Chunk> chunkLookup = new HashMap<>();
+    public final List<IChunk> loadedChunks = new ArrayList<>();
+    protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
 
     public List<EntityPlayer> players = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class World implements IWorld{
         this.checkListSync();
 
         for(int i = 0; i < this.loadedChunks.size(); i++){
-            Chunk chunk = this.loadedChunks.get(i);
+            IChunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
 
             if(chunk.shouldUnload()){
@@ -83,7 +84,7 @@ public class World implements IWorld{
         }
 
         this.saveTicksCounter++;
-        if(this.saveTicksCounter >= game.settings.autosaveIntervalSeconds*Constants.TARGET_TPS){
+        if(this.saveTicksCounter >= game.getSettings().autosaveIntervalSeconds*Constants.TARGET_TPS){
             this.saveTicksCounter = 0;
 
             this.save();
@@ -92,7 +93,7 @@ public class World implements IWorld{
 
     @Override
     public void addEntity(Entity entity){
-        Chunk chunk = this.getChunk(entity.x, entity.y);
+        IChunk chunk = this.getChunk(entity.x, entity.y);
         chunk.addEntity(entity);
 
         if(entity instanceof EntityPlayer){
@@ -113,13 +114,13 @@ public class World implements IWorld{
 
     @Override
     public void addTileEntity(TileEntity tile){
-        Chunk chunk = this.getChunk(tile.x, tile.y);
+        IChunk chunk = this.getChunk(tile.x, tile.y);
         chunk.addTileEntity(tile);
     }
 
     @Override
     public void removeEntity(Entity entity){
-        Chunk chunk = this.getChunk(entity.x, entity.y);
+        IChunk chunk = this.getChunk(entity.x, entity.y);
         chunk.removeEntity(entity);
 
         if(entity instanceof EntityPlayer){
@@ -135,26 +136,26 @@ public class World implements IWorld{
 
     @Override
     public void removeTileEntity(int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         chunk.removeTileEntity(x, y);
     }
 
     @Override
     public TileEntity getTileEntity(int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getTileEntity(x, y);
     }
 
     @Override
     public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getTileEntity(x, y, tileClass);
     }
 
     @Override
     public List<Entity> getAllEntities(){
         List<Entity> entities = new ArrayList<>();
-        for(Chunk chunk : this.loadedChunks){
+        for(IChunk chunk : this.loadedChunks){
             entities.addAll(chunk.getAllEntities());
         }
         return entities;
@@ -163,7 +164,7 @@ public class World implements IWorld{
     @Override
     public List<TileEntity> getAllTileEntities(){
         List<TileEntity> tiles = new ArrayList<>();
-        for(Chunk chunk : this.loadedChunks){
+        for(IChunk chunk : this.loadedChunks){
             tiles.addAll(chunk.getAllTileEntities());
         }
         return tiles;
@@ -171,7 +172,7 @@ public class World implements IWorld{
 
     @Override
     public Entity getEntity(UUID id){
-        for(Chunk chunk : this.loadedChunks){
+        for(IChunk chunk : this.loadedChunks){
             Entity entity = chunk.getEntity(id);
             if(entity != null){
                 return entity;
@@ -205,7 +206,7 @@ public class World implements IWorld{
         List<T> entities = new ArrayList<>();
         for(int x = minChunkX; x <= maxChunkX; x++){
             for(int y = minChunkY; y <= maxChunkY; y++){
-                Chunk chunk = this.getChunkFromGridCoords(x, y);
+                IChunk chunk = this.getChunkFromGridCoords(x, y);
                 entities.addAll(chunk.getEntities(area, type, test));
             }
         }
@@ -234,31 +235,31 @@ public class World implements IWorld{
 
     @Override
     public byte getCombinedLight(int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getCombinedLight(x, y);
     }
 
     @Override
     public byte getSkyLight(int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getSkyLight(x, y);
     }
 
     @Override
     public byte getArtificialLight(int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getArtificialLight(x, y);
     }
 
     @Override
     public void setSkyLight(int x, int y, byte light){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         chunk.setSkyLight(x, y, light);
     }
 
     @Override
     public void setArtificialLight(int x, int y, byte light){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         chunk.setArtificialLight(x, y, light);
     }
 
@@ -274,19 +275,19 @@ public class World implements IWorld{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         chunk.scheduleUpdate(x, y, layer, time);
     }
 
     @Override
     public void setDirty(int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         chunk.setDirty(x, y);
     }
 
     @Override
     public int getLowestAirUpwards(TileLayer layer, int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getLowestAirUpwards(layer, x, y);
     }
 
@@ -308,13 +309,18 @@ public class World implements IWorld{
     }
 
     @Override
-    public Chunk getChunk(double x, double y){
+    public NameToIndexInfo getTileRegInfo(){
+        return this.tileRegInfo;
+    }
+
+    @Override
+    public IChunk getChunk(double x, double y){
         return this.getChunkFromGridCoords(Util.toGridPos(x), Util.toGridPos(y));
     }
 
     @Override
-    public Chunk getChunkFromGridCoords(int gridX, int gridY){
-        Chunk chunk = this.chunkLookup.get(new Pos2(gridX, gridY));
+    public IChunk getChunkFromGridCoords(int gridX, int gridY){
+        IChunk chunk = this.chunkLookup.get(new Pos2(gridX, gridY));
 
         if(chunk == null){
             chunk = this.loadChunk(gridX, gridY);
@@ -335,11 +341,12 @@ public class World implements IWorld{
         return chunk;
     }
 
-    public void unloadChunk(Chunk chunk){
+    @Override
+    public void unloadChunk(IChunk chunk){
         this.saveChunk(chunk);
 
         this.loadedChunks.remove(chunk);
-        this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
+        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
     }
 
     @Override
@@ -349,7 +356,7 @@ public class World implements IWorld{
 
     @Override
     public Tile getTile(TileLayer layer, int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getTile(layer, x, y);
     }
 
@@ -360,7 +367,7 @@ public class World implements IWorld{
 
     @Override
     public int getMeta(TileLayer layer, int x, int y){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         return chunk.getMeta(layer, x, y);
     }
 
@@ -381,7 +388,7 @@ public class World implements IWorld{
 
     @Override
     public void setTile(TileLayer layer, int x, int y, Tile tile, int meta){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         chunk.setTile(layer, x, y, tile, meta);
     }
 
@@ -392,10 +399,11 @@ public class World implements IWorld{
 
     @Override
     public void setMeta(TileLayer layer, int x, int y, int meta){
-        Chunk chunk = this.getChunk(x, y);
+        IChunk chunk = this.getChunk(x, y);
         chunk.setMeta(layer, x, y, meta);
     }
 
+    @Override
     public void notifyNeighborsOfChange(int x, int y, TileLayer layer){
         for(Direction direction : Direction.ADJACENT){
             int offX = x+direction.x;
@@ -412,7 +420,7 @@ public class World implements IWorld{
         long timeStarted = System.currentTimeMillis();
         Log.info("Saving world...");
 
-        for(Chunk chunk : this.loadedChunks){
+        for(IChunk chunk : this.loadedChunks){
             this.saveChunk(chunk);
         }
 
@@ -425,6 +433,7 @@ public class World implements IWorld{
         Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
     }
 
+    @Override
     public void savePlayer(EntityPlayer player){
         DataSet playerSet = new DataSet();
         player.save(playerSet);
@@ -432,6 +441,7 @@ public class World implements IWorld{
         playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
     }
 
+    @Override
     public EntityPlayer createPlayer(UUID id, Channel channel){
         EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, channel) : new EntityPlayer(this, id);
 
@@ -450,6 +460,7 @@ public class World implements IWorld{
         return player;
     }
 
+    @Override
     public EntityPlayer getPlayer(UUID id){
         for(EntityPlayer player : this.players){
             if(id.equals(player.getUniqueId())){
@@ -459,12 +470,12 @@ public class World implements IWorld{
         return null;
     }
 
-    protected void saveChunk(Chunk chunk){
-        if(chunk.needsSave){
+    protected void saveChunk(IChunk chunk){
+        if(chunk.needsSave()){
             DataSet set = new DataSet();
             chunk.save(set);
 
-            set.write(new File(this.chunksDirectory, "c_"+chunk.gridX+"_"+chunk.gridY+".dat"));
+            set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+"_"+chunk.getGridY()+".dat"));
         }
     }
 
@@ -479,7 +490,7 @@ public class World implements IWorld{
             NetHandler.sendToAllPlayers(this, PacketParticles.tile(this, x, y, tile, meta));
         }
 
-        RockBottom.get().particleManager.addTileParticles(this, x, y, tile, meta);
+        RockBottom.get().getParticleManager().addTileParticles(this, x, y, tile, meta);
 
         this.setTile(layer, x, y, ContentRegistry.TILE_AIR);
     }
@@ -489,6 +500,7 @@ public class World implements IWorld{
         return 0;
     }
 
+    @Override
     public void causeLightUpdate(int x, int y){
         MutableInt recurseCount = new MutableInt(0);
         this.causeLightUpdate(x, y, recurseCount);
@@ -619,6 +631,7 @@ public class World implements IWorld{
         }
     }
 
+    @Override
     public boolean isClient(){
         return false;
     }

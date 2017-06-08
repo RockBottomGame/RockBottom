@@ -1,12 +1,13 @@
 package de.ellpeck.rockbottom.game.world.entity;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.game.render.entity.IEntityRenderer;
@@ -56,7 +57,7 @@ public class Entity extends MovableWorldObject{
         return null;
     }
 
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         if(!this.isDead()){
             this.applyMotion();
 

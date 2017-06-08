@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.Gui;
@@ -9,7 +10,7 @@ import org.newdawn.slick.Graphics;
 
 public class GuiComponent{
 
-    public final Color guiColor = RockBottom.get().settings.guiColor;
+    public final Color guiColor = RockBottom.get().getSettings().guiColor;
     public final Color colorButton = this.guiColor.multiply(new Color(1F, 1F, 1F, 0.5F));
     public final Color colorButtonUnselected = this.colorButton.darker(0.4F);
     public final Color colorOutline = this.guiColor.darker(0.3F);
@@ -27,19 +28,19 @@ public class GuiComponent{
         this.sizeY = sizeY;
     }
 
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
 
     }
 
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
 
     }
 
-    public void renderOverlay(RockBottom game, AssetManager manager, Graphics g){
+    public void renderOverlay(IGameInstance game, AssetManager manager, Graphics g){
 
     }
 
-    public boolean isMouseOver(RockBottom game){
+    public boolean isMouseOver(IGameInstance game){
         if(Mouse.isInsideWindow()){
             int mouseX = (int)game.getMouseInGuiX();
             int mouseY = (int)game.getMouseInGuiY();
@@ -51,11 +52,11 @@ public class GuiComponent{
         }
     }
 
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         return false;
     }
 
-    public boolean onKeyboardAction(RockBottom game, int button, char character){
+    public boolean onKeyboardAction(IGameInstance game, int button, char character){
         return false;
     }
 }

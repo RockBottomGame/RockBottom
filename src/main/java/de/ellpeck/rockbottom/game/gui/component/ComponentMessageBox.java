@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.Font;
@@ -25,7 +26,7 @@ public class ComponentMessageBox extends ComponentButton{
         super(gui, id, x, y, sizeX, sizeY, null);
         this.textScale = textScale;
 
-        Font font = RockBottom.get().assetManager.getFont();
+        Font font = RockBottom.get().getAssetManager().getFont();
         this.text = font.splitTextToLength(this.sizeX-10, textScale, true, dialogLocKeys);
         this.possibleLineAmount = Util.ceil((this.sizeY-10)/font.getHeight(textScale));
 
@@ -49,7 +50,7 @@ public class ComponentMessageBox extends ComponentButton{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         Font font = manager.getFont();
@@ -80,16 +81,16 @@ public class ComponentMessageBox extends ComponentButton{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         super.update(game);
 
         if(this.typedLetter < this.letterAmountPerPage[this.page]){
-            this.typedLetter += game.settings.textSpeed;
+            this.typedLetter += game.getSettings().textSpeed;
         }
     }
 
     @Override
-    public boolean onPressed(RockBottom game){
+    public boolean onPressed(IGameInstance game){
         int lastTyped = this.letterAmountPerPage[this.page];
 
         if(this.typedLetter < lastTyped){

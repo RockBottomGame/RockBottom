@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.game.gui;
 
-import de.ellpeck.rockbottom.game.RockBottom;
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.game.construction.BasicRecipe;
@@ -12,7 +13,6 @@ import de.ellpeck.rockbottom.game.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.game.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.game.inventory.IInvChangeCallback;
 import de.ellpeck.rockbottom.game.inventory.IInventory;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -34,10 +34,10 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, "gui.construction", game.assetManager.localize("button.construction")));
+        this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, "gui.construction", game.getAssetManager().localize("button.construction")));
 
         if(isConstructionOpen){
             this.components.add(new ComponentSlider(this, 2, this.guiLeft-104, this.guiTop+71, 88, 12, craftAmount, 1, 128, new ComponentSlider.ICallback(){
@@ -45,8 +45,8 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
                 public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                     craftAmount = number;
                 }
-            }, game.assetManager.localize("button.construction_amount")));
-            this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, "gui.all_construction", game.assetManager.localize("button.all_construction")));
+            }, game.getAssetManager().localize("button.construction_amount")));
+            this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, "gui.all_construction", game.getAssetManager().localize("button.all_construction")));
             this.initConstructionButtons();
         }
     }
@@ -79,7 +79,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         if(isConstructionOpen){
             if(this.constructionButtons.isEmpty()){
                 manager.getFont().drawSplitString(this.guiLeft-104, this.guiTop, FormattingCode.GRAY+manager.localize("info.need_items"), 0.25F, 88);
@@ -90,19 +90,19 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     }
 
     @Override
-    public void onOpened(RockBottom game){
+    public void onOpened(IGameInstance game){
         super.onOpened(game);
         this.player.inv.addChangeCallback(this);
     }
 
     @Override
-    public void onClosed(RockBottom game){
+    public void onClosed(IGameInstance game){
         super.onClosed(game);
         this.player.inv.removeChangeCallback(this);
     }
 
     @Override
-    protected void initGuiVars(RockBottom game){
+    protected void initGuiVars(IGameInstance game){
         super.initGuiVars(game);
 
         if(isConstructionOpen){
@@ -111,7 +111,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     }
 
     @Override
-    public boolean onButtonActivated(RockBottom game, int button){
+    public boolean onButtonActivated(IGameInstance game, int button){
         if(button == 1){
             shouldShowAll = !shouldShowAll;
             this.initConstructionButtons();
@@ -127,10 +127,10 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
                 if(but.id == button){
                     if(but.canConstruct){
                         if(NetHandler.isClient()){
-                            NetHandler.sendToServer(new PacketManualConstruction(game.player.getUniqueId(), but.recipeId, craftAmount));
+                            NetHandler.sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), but.recipeId, craftAmount));
                         }
                         else{
-                            ContainerInventory.doManualCraft(game.player, but.recipe, craftAmount);
+                            ContainerInventory.doManualCraft(game.getPlayer(), but.recipe, craftAmount);
                         }
                         return true;
                     }

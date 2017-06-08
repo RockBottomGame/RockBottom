@@ -1,9 +1,10 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.gui.container.ItemContainer;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.NetUtil;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
@@ -58,10 +59,10 @@ public class PacketContainerData implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.player != null){
-                ItemContainer container = game.player.getContainer();
+            if(game.getPlayer() != null){
+                ItemContainer container = game.getPlayer().getContainer();
                 if(container != null && container.getSlotAmount() == this.data.length){
                     for(int i = 0; i < this.data.length; i++){
                         container.getSlot(i).set(this.data[i]);

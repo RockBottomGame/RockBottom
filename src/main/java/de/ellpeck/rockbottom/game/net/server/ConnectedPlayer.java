@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.server;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.toclient.*;
@@ -27,14 +28,14 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         super.update(game);
 
         if(this.ticksExisted%80 == 0){
             if(!NetHandler.getConnectedClients().contains(this.channel)){
                 game.scheduleAction(() -> {
-                    game.world.savePlayer(this);
-                    game.world.removeEntity(this);
+                    game.getWorld().savePlayer(this);
+                    game.getWorld().removeEntity(this);
 
                     Log.info("Saving and removing disconnected player with id "+this.getUniqueId()+" from world");
 
@@ -54,7 +55,7 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
-    public void resetAndSpawn(RockBottom game){
+    public void resetAndSpawn(IGameInstance game){
         super.resetAndSpawn(game);
 
         this.sendPacket(new PacketRespawn());

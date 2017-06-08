@@ -3,11 +3,10 @@ package de.ellpeck.rockbottom.api.item;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
 import de.ellpeck.rockbottom.game.item.ToolType;
 import de.ellpeck.rockbottom.game.render.item.IItemRenderer;
-import de.ellpeck.rockbottom.api.world.TileLayer;
 
 import java.util.Collections;
 import java.util.List;

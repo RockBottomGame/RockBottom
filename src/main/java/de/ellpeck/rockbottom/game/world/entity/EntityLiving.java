@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.game.world.entity;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.world.World;
 
@@ -10,13 +12,13 @@ public abstract class EntityLiving extends Entity{
     protected int health;
     protected boolean jumping;
 
-    public EntityLiving(World world){
+    public EntityLiving(IWorld world){
         super(world);
         this.health = this.getMaxHealth();
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         super.update(game);
 
         if(this.jumping && this.collidedVert){

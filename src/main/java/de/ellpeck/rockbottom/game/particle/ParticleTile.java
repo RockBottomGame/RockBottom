@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.particle;
 
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
@@ -16,7 +17,7 @@ public class ParticleTile extends Particle{
     private final int meta;
     private Color renderPixel;
 
-    public ParticleTile(World world, double x, double y, double motionX, double motionY, Tile tile, int meta){
+    public ParticleTile(IWorld world, double x, double y, double motionX, double motionY, Tile tile, int meta){
         super(world, x, y, motionX, motionY, Util.RANDOM.nextInt(30)+10);
         this.tile = tile;
         this.meta = meta;

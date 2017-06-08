@@ -1,9 +1,11 @@
 package de.ellpeck.rockbottom.game.gui.menu;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.game.gui.Gui;
+import de.ellpeck.rockbottom.game.gui.GuiManager;
 import de.ellpeck.rockbottom.game.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.game.gui.component.ComponentMessageBox;
 import org.newdawn.slick.Graphics;
@@ -17,8 +19,9 @@ public class GuiMainMenu extends Gui{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
+        AssetManager assetManager = game.getAssetManager();
 
         int width = (int)game.getWidthInGui();
 
@@ -27,12 +30,12 @@ public class GuiMainMenu extends Gui{
         int start = (parts-buttonWidth)/2;
         int y = (int)game.getHeightInGui()-30;
 
-        this.components.add(new ComponentButton(this, 0, start, y, buttonWidth, 16, game.assetManager.localize("button.play")));
-        this.components.add(new ComponentButton(this, 1, start+parts, y, buttonWidth, 16, game.assetManager.localize("button.join")));
-        this.components.add(new ComponentButton(this, 2, start+parts*2, y, buttonWidth, 16, game.assetManager.localize("button.settings")));
-        this.components.add(new ComponentButton(this, 3, start+parts*3, y, buttonWidth, 16, game.assetManager.localize("button.quit")));
+        this.components.add(new ComponentButton(this, 0, start, y, buttonWidth, 16, assetManager.localize("button.play")));
+        this.components.add(new ComponentButton(this, 1, start+parts, y, buttonWidth, 16, assetManager.localize("button.join")));
+        this.components.add(new ComponentButton(this, 2, start+parts*2, y, buttonWidth, 16, assetManager.localize("button.settings")));
+        this.components.add(new ComponentButton(this, 3, start+parts*3, y, buttonWidth, 16, assetManager.localize("button.quit")));
 
-        this.components.add(new ComponentButton(this, 4, width-47, 2, 45, 10, game.assetManager.localize("button.credits")));
+        this.components.add(new ComponentButton(this, 4, width-47, 2, 45, 10, assetManager.localize("button.credits")));
 
         if(!infoBox){
             this.components.add(new ComponentMessageBox(this, 5, this.guiLeft+this.sizeX/2-75, this.guiTop+this.sizeY/2-25, 150, 50, 0.25F, FormattingCode.YELLOW+"Hello! \nThis is Rock Bottom by Ellpeck! \nYou have been given a super alpha copy of this game (that's what this is) to test out and tell me what you think about it. \nI'd really appreciate if you were to give the game a go and, while you try out everything there is to try at the moment (which is probably like 20-30 minutes of actual stuff to do), make a list of things you like, dislike or that you want added, removed or changed. Any questions or bug reports you have should also go on that list. \nWhen you're done, just give it to me in some way. \nWhile you do this, though, note that there is a lot of stuff planned for the game and that everything you see and do is subject to mild or heavy changes, however, every item you see is craftable and both copper and coal generate in the world. There might also be some easter eggs. \nAnyway, &rthanks a lot, and have fun! <3"));
@@ -41,7 +44,7 @@ public class GuiMainMenu extends Gui{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         manager.getFont().drawStringFromRight((float)game.getWidthInGui()-2F, (float)game.getHeightInGui()-7F, "Copyright 2017 Ellpeck", 0.25F);
@@ -53,22 +56,24 @@ public class GuiMainMenu extends Gui{
     }
 
     @Override
-    protected boolean tryEscape(RockBottom game){
+    protected boolean tryEscape(IGameInstance game){
         return false;
     }
 
     @Override
-    public boolean onButtonActivated(RockBottom game, int button){
+    public boolean onButtonActivated(IGameInstance game, int button){
+        GuiManager guiManager = game.getGuiManager();
+
         if(button == 0){
-            game.guiManager.openGui(new GuiSelectWorld(this));
+            guiManager.openGui(new GuiSelectWorld(this));
             return true;
         }
         else if(button == 1){
-            game.guiManager.openGui(new GuiJoinServer(this));
+            guiManager.openGui(new GuiJoinServer(this));
             return true;
         }
         else if(button == 2){
-            game.guiManager.openGui(new GuiSettings(this));
+            guiManager.openGui(new GuiSettings(this));
             return true;
         }
         else if(button == 3){
@@ -76,7 +81,7 @@ public class GuiMainMenu extends Gui{
             return true;
         }
         else if(button == 4){
-            game.guiManager.openGui(new GuiCredits(this));
+            guiManager.openGui(new GuiCredits(this));
             return true;
         }
         else if(button == 5){

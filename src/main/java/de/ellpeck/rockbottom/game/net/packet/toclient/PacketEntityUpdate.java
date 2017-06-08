@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.world.entity.Entity;
@@ -49,10 +50,10 @@ public class PacketEntityUpdate implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                Entity entity = game.world.getEntity(this.uniqueId);
+            if(game.getWorld() != null){
+                Entity entity = game.getWorld().getEntity(this.uniqueId);
                 if(entity != null){
                     entity.setPos(this.x, this.y);
                     entity.motionX = this.motionX;

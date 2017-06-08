@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.game.gui;
 
-import de.ellpeck.rockbottom.game.RockBottom;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.gui.component.ComponentProgressBar;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.world.tile.entity.TileEntitySeparator;
@@ -15,7 +15,7 @@ public class GuiSeparator extends GuiContainer{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
 
         this.components.add(new ComponentProgressBar(this, this.guiLeft+70, this.guiTop+15, 40, 8, PROGRESS_COLOR, false, this.tile:: getSmeltPercentage));

@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.api.tile;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.game.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;

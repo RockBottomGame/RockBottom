@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.Font;
@@ -30,7 +31,7 @@ public class ComponentInputField extends GuiComponent{
     }
 
     @Override
-    public boolean onKeyboardAction(RockBottom game, int button, char character){
+    public boolean onKeyboardAction(IGameInstance game, int button, char character){
         if(this.isActive){
             if(button == Input.KEY_BACK){
                 if(!this.text.isEmpty()){
@@ -71,7 +72,7 @@ public class ComponentInputField extends GuiComponent{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         this.counter++;
     }
 
@@ -80,7 +81,7 @@ public class ComponentInputField extends GuiComponent{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         if(this.renderBox){
             g.setColor(this.isMouseOver(game) ? this.colorButton : this.colorButtonUnselected);
             g.fillRect(this.x, this.y, this.sizeX, this.sizeY);
@@ -106,8 +107,8 @@ public class ComponentInputField extends GuiComponent{
     }
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
-        if(button == game.settings.buttonGuiAction1){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
+        if(button == game.getSettings().buttonGuiAction1){
             if(this.selectable){
                 if(this.isMouseOver(game)){
                     this.isActive = true;
@@ -118,7 +119,7 @@ public class ComponentInputField extends GuiComponent{
                 }
             }
         }
-        else if(button == game.settings.buttonGuiAction2){
+        else if(button == game.getSettings().buttonGuiAction2){
             if(this.isMouseOver(game)){
                 this.text = "";
 

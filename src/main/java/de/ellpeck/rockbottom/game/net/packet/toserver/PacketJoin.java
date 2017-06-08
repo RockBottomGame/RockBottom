@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.net.NetUtil;
@@ -40,14 +42,16 @@ public class PacketJoin implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
+            IWorld world = game.getWorld();
+
             if(RockBottom.VERSION.equals(this.version)){
-                if(game.world != null){
-                    if(game.world.getPlayer(this.id) == null){
-                        EntityPlayer player = game.world.createPlayer(this.id, context.channel());
-                        game.world.addEntity(player);
-                        player.sendPacket(new PacketInitialServerData(player, game.world.getWorldInfo(), game.world.tileRegInfo));
+                if(world != null){
+                    if(world.getPlayer(this.id) == null){
+                        EntityPlayer player = world.createPlayer(this.id, context.channel());
+                        world.addEntity(player);
+                        player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getTileRegInfo()));
 
                         Log.info("Player with id "+this.id+" joined, sending initial server data");
                     }

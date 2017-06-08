@@ -1,10 +1,17 @@
 package de.ellpeck.rockbottom.game;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.util.IAction;
+import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
+import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.game.apiimpl.ApiHandler;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.data.DataManager;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
 import de.ellpeck.rockbottom.game.data.settings.Settings;
 import de.ellpeck.rockbottom.game.gui.*;
 import de.ellpeck.rockbottom.game.gui.menu.GuiMainMenu;
@@ -15,11 +22,8 @@ import de.ellpeck.rockbottom.game.net.client.ClientWorld;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.game.particle.ParticleManager;
 import de.ellpeck.rockbottom.game.render.WorldRenderer;
-import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.game.world.World;
-import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.world.entity.player.InteractionManager;
 import org.newdawn.slick.*;
@@ -30,28 +34,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class RockBottom extends BasicGame{
+public class RockBottom extends BasicGame implements IGameInstance{
 
     public static final String VERSION = "0.0.3";
-    private static RockBottom instance;
 
     private final List<IAction> scheduledActions = new ArrayList<>();
-    public DataManager dataManager;
-    public Settings settings;
-    public EntityPlayer player;
-    public GuiManager guiManager;
-    public InteractionManager interactionManager;
-    public ChatLog chatLog;
-    public World world;
-    public AssetManager assetManager;
-    public ParticleManager particleManager;
-    public int tpsAverage;
-    public int fpsAverage;
-    public UUID uniqueId;
-    public boolean isDebug;
-    public boolean isLightDebug;
-    public boolean isForegroundDebug;
-    public boolean isBackgroundDebug;
+    private DataManager dataManager;
+
+    private Settings settings;
+    private EntityPlayer player;
+    private GuiManager guiManager;
+    private InteractionManager interactionManager;
+    private ChatLog chatLog;
+    private World world;
+    private AssetManager assetManager;
+    private ParticleManager particleManager;
+    private int tpsAverage;
+    private int fpsAverage;
+    private UUID uniqueId;
+    private boolean isDebug;
+    private boolean isLightDebug;
+    private boolean isForegroundDebug;
+    private boolean isBackgroundDebug;
     private Container container;
     private WorldRenderer worldRenderer;
     private long lastPollTime;
@@ -62,11 +66,11 @@ public class RockBottom extends BasicGame{
         super("Rock Bottom "+VERSION);
 
         Log.info("Setting game instance to "+this);
-        instance = this;
+        RockBottomAPI.set(new ApiHandler(), this);
     }
 
-    public static RockBottom get(){
-        return instance;
+    public static IGameInstance get(){
+        return RockBottomAPI.getGame();
     }
 
     @Override
@@ -201,10 +205,12 @@ public class RockBottom extends BasicGame{
         this.guiManager.render(this, this.assetManager, g, this.player);
     }
 
+    @Override
     public boolean isInWorld(){
         return this.world != null;
     }
 
+    @Override
     public void startWorld(File worldFile, WorldInfo info){
         Log.info("Starting world with file "+worldFile);
 
@@ -233,6 +239,7 @@ public class RockBottom extends BasicGame{
         Log.info("Successfully started world with file "+worldFile);
     }
 
+    @Override
     public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo){
         Log.info("Joining world");
 
@@ -248,6 +255,7 @@ public class RockBottom extends BasicGame{
         Log.info("Successfully joined world");
     }
 
+    @Override
     public void quitWorld(){
         Log.info("Quitting current world");
 
@@ -267,6 +275,7 @@ public class RockBottom extends BasicGame{
         Log.info("Successfully quit current world");
     }
 
+    @Override
     public void openIngameMenu(){
         this.guiManager.openGui(new GuiMenu());
 
@@ -275,37 +284,129 @@ public class RockBottom extends BasicGame{
         }
     }
 
+    @Override
     public void scheduleAction(IAction action){
         synchronized(this.scheduledActions){
             this.scheduledActions.add(action);
         }
     }
 
-    public Container getContainer(){
+    @Override
+    public GameContainer getContainer(){
         return this.container;
     }
 
+    @Override
     public double getWidthInWorld(){
         return (double)this.container.getWidth()/(double)this.settings.renderScale;
     }
 
+    @Override
     public double getHeightInWorld(){
         return (double)this.container.getHeight()/(double)this.settings.renderScale;
     }
 
+    @Override
     public double getWidthInGui(){
         return (double)this.container.getWidth()/(double)this.settings.guiScale;
     }
 
+    @Override
     public double getHeightInGui(){
         return (double)this.container.getHeight()/(double)this.settings.guiScale;
     }
 
+    @Override
     public float getMouseInGuiX(){
         return (float)this.container.getInput().getMouseX()/(float)this.settings.guiScale;
     }
 
+    @Override
     public float getMouseInGuiY(){
         return (float)this.container.getInput().getMouseY()/(float)this.settings.guiScale;
+    }
+
+    @Override
+    public IDataManager getDataManager(){
+        return this.dataManager;
+    }
+
+    @Override
+    public Settings getSettings(){
+        return this.settings;
+    }
+
+    @Override
+    public EntityPlayer getPlayer(){
+        return this.player;
+    }
+
+    @Override
+    public GuiManager getGuiManager(){
+        return this.guiManager;
+    }
+
+    @Override
+    public InteractionManager getInteractionManager(){
+        return this.interactionManager;
+    }
+
+    @Override
+    public ChatLog getChatLog(){
+        return this.chatLog;
+    }
+
+    @Override
+    public IWorld getWorld(){
+        return this.world;
+    }
+
+    @Override
+    public AssetManager getAssetManager(){
+        return this.assetManager;
+    }
+
+    @Override
+    public ParticleManager getParticleManager(){
+        return this.particleManager;
+    }
+
+    public void setUniqueId(UUID uniqueId){
+        this.uniqueId = uniqueId;
+    }
+
+    @Override
+    public UUID getUniqueId(){
+        return this.uniqueId;
+    }
+
+    @Override
+    public boolean isDebug(){
+        return this.isDebug;
+    }
+
+    @Override
+    public boolean isLightDebug(){
+        return this.isLightDebug;
+    }
+
+    @Override
+    public boolean isForegroundDebug(){
+        return this.isForegroundDebug;
+    }
+
+    @Override
+    public boolean isBackgroundDebug(){
+        return this.isBackgroundDebug;
+    }
+
+    @Override
+    public int getTpsAverage(){
+        return this.tpsAverage;
+    }
+
+    @Override
+    public int getFpsAverage(){
+        return this.fpsAverage;
     }
 }

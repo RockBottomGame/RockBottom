@@ -1,18 +1,18 @@
-package de.ellpeck.rockbottom.game.data.set.part.num.array;
+package de.ellpeck.rockbottom.api.data.set.part.num.array;
 
-import de.ellpeck.rockbottom.game.data.set.part.BasicDataPart;
+import de.ellpeck.rockbottom.api.data.set.part.BasicDataPart;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.util.Arrays;
 
-public class PartShortShortArray extends BasicDataPart<short[][]>{
+public class PartByteByteArray extends BasicDataPart<byte[][]>{
 
-    public PartShortShortArray(String name){
+    public PartByteByteArray(String name){
         super(name);
     }
 
-    public PartShortShortArray(String name, short[][] data){
+    public PartByteByteArray(String name, byte[][] data){
         super(name, data);
     }
 
@@ -20,11 +20,11 @@ public class PartShortShortArray extends BasicDataPart<short[][]>{
     public void write(DataOutput stream) throws Exception{
         stream.writeInt(this.data.length);
 
-        for(short[] array : this.data){
+        for(byte[] array : this.data){
             stream.writeInt(array.length);
 
-            for(int b : array){
-                stream.writeShort(b);
+            for(byte b : array){
+                stream.writeByte(b);
             }
         }
     }
@@ -32,14 +32,14 @@ public class PartShortShortArray extends BasicDataPart<short[][]>{
     @Override
     public void read(DataInput stream) throws Exception{
         int amount = stream.readInt();
-        this.data = new short[amount][];
+        this.data = new byte[amount][];
 
         for(int i = 0; i < amount; i++){
             int innerAmount = stream.readInt();
-            this.data[i] = new short[innerAmount];
+            this.data[i] = new byte[innerAmount];
 
             for(int j = 0; j < innerAmount; j++){
-                this.data[i][j] = stream.readShort();
+                this.data[i][j] = stream.readByte();
             }
         }
     }

@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.Gui;
@@ -26,7 +27,7 @@ public class ComponentButton extends GuiComponent{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         if(this.hasBackground){
             g.setColor(this.isMouseOver(game) ? this.colorButton : this.colorButtonUnselected);
             g.fillRect(this.x, this.y, this.sizeX, this.sizeY);
@@ -50,7 +51,7 @@ public class ComponentButton extends GuiComponent{
     }
 
     @Override
-    public void renderOverlay(RockBottom game, AssetManager manager, Graphics g){
+    public void renderOverlay(IGameInstance game, AssetManager manager, Graphics g){
         if(this.isMouseOver(game)){
             String[] hover = this.getHover();
             if(hover != null && hover.length > 0){
@@ -60,8 +61,8 @@ public class ComponentButton extends GuiComponent{
     }
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
-        if(button == game.settings.buttonGuiAction1 && this.isMouseOver(game)){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
+        if(button == game.getSettings().buttonGuiAction1 && this.isMouseOver(game)){
             if(this.onPressed(game)){
                 return true;
             }
@@ -72,7 +73,7 @@ public class ComponentButton extends GuiComponent{
         return false;
     }
 
-    public boolean onPressed(RockBottom game){
+    public boolean onPressed(IGameInstance game){
         return false;
     }
 }

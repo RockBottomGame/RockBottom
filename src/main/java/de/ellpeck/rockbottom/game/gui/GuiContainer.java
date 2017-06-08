@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.component.ComponentSlot;
@@ -9,7 +10,7 @@ import de.ellpeck.rockbottom.game.net.packet.toserver.PacketDropItem;
 import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.game.gui.container.ContainerSlot;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.world.entity.EntityItem;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -28,7 +29,7 @@ public class GuiContainer extends Gui{
     }
 
     @Override
-    public void onClosed(RockBottom game){
+    public void onClosed(IGameInstance game){
         if(this.holdingInst != null){
             this.dropHeldItem();
         }
@@ -37,12 +38,12 @@ public class GuiContainer extends Gui{
     }
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(super.onMouseAction(game, button, x, y)){
             return true;
         }
 
-        if(this.holdingInst != null && button == game.settings.buttonGuiAction1){
+        if(this.holdingInst != null && button == game.getSettings().buttonGuiAction1){
             if(!this.isMouseOver(game)){
                 this.dropHeldItem();
                 this.holdingInst = null;
@@ -55,7 +56,7 @@ public class GuiContainer extends Gui{
     }
 
     @Override
-    public void initGui(RockBottom game){
+    public void initGui(IGameInstance game){
         super.initGui(game);
 
         ItemContainer container = this.player.getContainer();
@@ -66,7 +67,7 @@ public class GuiContainer extends Gui{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         if(this.holdingInst != null){

@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.game.data.settings;
+package de.ellpeck.rockbottom.api.data.settings;
 
 import de.ellpeck.rockbottom.game.data.DataManager;
 

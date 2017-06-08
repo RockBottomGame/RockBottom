@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.game.net.chat;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
@@ -18,7 +19,7 @@ public class CommandAddPermission extends Command{
     }
 
     @Override
-    public String execute(String[] args, EntityPlayer player, String playerName, RockBottom game, AssetManager manager, ChatLog chat){
+    public String execute(String[] args, EntityPlayer player, String playerName, IGameInstance game, AssetManager manager, ChatLog chat){
         try{
             UUID id = UUID.fromString(args[0]);
             int level = Integer.parseInt(args[1]);
@@ -26,7 +27,7 @@ public class CommandAddPermission extends Command{
             CommandPermissions perms = NetHandler.getCommandPermissions();
             perms.setCommandLevel(id, level);
 
-            game.dataManager.savePropSettings(perms);
+            game.getDataManager().savePropSettings(perms);
 
             return FormattingCode.GREEN+"Added permission level of "+level+" for player with id "+id+"!";
         }

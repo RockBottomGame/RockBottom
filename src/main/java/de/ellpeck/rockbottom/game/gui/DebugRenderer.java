@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui;
 
+import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.net.NetHandler;
@@ -22,8 +23,8 @@ public final class DebugRenderer{
 
         List<String> list = new ArrayList<>();
 
-        list.add("Avg FPS: "+game.fpsAverage);
-        list.add("Avg TPS: "+game.tpsAverage);
+        list.add("Avg FPS: "+game.getFpsAverage());
+        list.add("Avg TPS: "+game.getTpsAverage());
         list.add("Aspect: "+container.getWidth()+", "+container.getHeight());
         list.add("Screen: "+container.getScreenWidth()+", "+container.getScreenHeight());
         list.add("World: "+game.getWidthInWorld()+", "+game.getHeightInWorld());
@@ -42,9 +43,9 @@ public final class DebugRenderer{
             list.add("Players: "+world.players.size());
         }
         list.add("TileEntities: "+world.getAllTileEntities().size());
-        list.add("Particles: "+game.particleManager.getAmount());
+        list.add("Particles: "+game.getParticleManager().getAmount());
         int scheduledTileAmount = 0;
-        for(Chunk chunk : world.loadedChunks){
+        for(IChunk chunk : world.loadedChunks){
             scheduledTileAmount += chunk.getScheduledUpdateAmount();
         }
         list.add("Scheduled Tile Updates: "+scheduledTileAmount);
@@ -57,16 +58,16 @@ public final class DebugRenderer{
         list.add("Pos: "+player.x+", "+player.y);
         list.add("");
 
-        int x = game.interactionManager.mousedTileX;
-        int y = game.interactionManager.mousedTileY;
+        int x = game.getInteractionManager().mousedTileX;
+        int y = game.getInteractionManager().mousedTileY;
         list.add("Mouse:");
         list.add("ScreenPos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);
         if(world.isPosLoaded(x, y)){
-            Chunk chunk = world.getChunk(x, y);
-            list.add("ChunkPos: "+chunk.gridX+", "+chunk.gridY);
+            IChunk chunk = world.getChunk(x, y);
+            list.add("ChunkPos: "+chunk.getGridX()+", "+chunk.getGridY());
             if(!NetHandler.isClient()){
-                list.add("ChunkPlayers: "+chunk.playersInRange.size()+", PlayersCached: "+chunk.playersOutOfRangeCached.size());
+                list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
             }
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
             list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));

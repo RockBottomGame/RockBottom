@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.game.inventory;
 
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 
 public interface IInvChangeCallback{
 

@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -48,15 +50,16 @@ public class PacketBreakTile implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                Tile tile = game.world.getTile(this.layer, this.x, this.y);
-                if(tile.canBreak(game.world, this.x, this.y, this.layer)){
-                    EntityPlayer player = game.world.getPlayer(this.playerId);
+            IWorld world = game.getWorld();
+            if(world != null){
+                Tile tile = world.getTile(this.layer, this.x, this.y);
+                if(tile.canBreak(world, this.x, this.y, this.layer)){
+                    EntityPlayer player = world.getPlayer(this.playerId);
 
                     boolean isRightTool = player != null && InteractionManager.isToolEffective(player, player.inv.get(player.inv.selectedSlot), tile, this.layer, this.x, this.y);
-                    tile.doBreak(game.world, this.x, this.y, this.layer, player, isRightTool);
+                    tile.doBreak(world, this.x, this.y, this.layer, player, isRightTool);
                 }
             }
             return true;

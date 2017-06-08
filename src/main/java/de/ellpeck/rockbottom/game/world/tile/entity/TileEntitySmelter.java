@@ -3,10 +3,9 @@ package de.ellpeck.rockbottom.game.world.tile.entity;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.construction.SmelterRecipe;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.inventory.TileInventory;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
-import de.ellpeck.rockbottom.game.world.World;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import io.netty.buffer.ByteBuf;
 
 public class TileEntitySmelter extends TileEntityFueled{

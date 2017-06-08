@@ -1,11 +1,12 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.game.construction.IRecipe;
 import de.ellpeck.rockbottom.game.gui.GuiContainer;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Color;
@@ -32,7 +33,7 @@ public class ComponentRecipeButton extends ComponentButton{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         List<ItemInstance> outputs = this.recipe.getOutputs();
@@ -42,7 +43,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
     @Override
     protected String[] getHover(){
-        AssetManager manager = RockBottom.get().assetManager;
+        AssetManager manager = RockBottom.get().getAssetManager();
 
         List<ItemInstance> inputs = this.recipe.getInputs();
         List<ItemInstance> outputs = this.recipe.getOutputs();

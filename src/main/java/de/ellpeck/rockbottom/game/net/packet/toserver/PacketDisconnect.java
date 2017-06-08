@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -34,12 +35,12 @@ public class PacketDisconnect implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            EntityPlayer player = game.world.getPlayer(this.id);
+            EntityPlayer player = game.getWorld().getPlayer(this.id);
 
-            game.world.savePlayer(player);
-            game.world.removeEntity(player);
+            game.getWorld().savePlayer(player);
+            game.getWorld().removeEntity(player);
 
             Log.info("Saving and removing disconnected player with id "+this.id+" from world");
 

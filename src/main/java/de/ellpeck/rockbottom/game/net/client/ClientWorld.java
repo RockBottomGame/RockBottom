@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.game.net.client;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
@@ -30,9 +31,9 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public void unloadChunk(Chunk chunk){
+    public void unloadChunk(IChunk chunk){
         this.loadedChunks.remove(chunk);
-        this.chunkLookup.remove(new Pos2(chunk.gridX, chunk.gridY));
+        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class ClientWorld extends World{
         this.checkListSync();
 
         for(int i = 0; i < this.loadedChunks.size(); i++){
-            Chunk chunk = this.loadedChunks.get(i);
+            IChunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
 
             if(chunk.shouldUnload()){
@@ -63,13 +64,8 @@ public class ClientWorld extends World{
     }
 
     @Override
-    protected void saveChunk(Chunk chunk){
+    protected void saveChunk(IChunk chunk){
         throw new UnsupportedOperationException("Cannot save chunk in client world");
-    }
-
-    @Override
-    public void savePlayer(EntityPlayer player){
-        throw new UnsupportedOperationException("Cannot save player in client world");
     }
 
     @Override
@@ -92,13 +88,13 @@ public class ClientWorld extends World{
 
     @Override
     public void addEntity(Entity entity){
-        Chunk chunk = this.getChunk(entity.x, entity.y);
+        IChunk chunk = this.getChunk(entity.x, entity.y);
         chunk.addEntity(entity);
     }
 
     @Override
     public void removeEntity(Entity entity){
-        Chunk chunk = this.getChunk(entity.x, entity.y);
+        IChunk chunk = this.getChunk(entity.x, entity.y);
         chunk.removeEntity(entity);
 
         entity.onRemoveFromWorld();

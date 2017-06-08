@@ -1,10 +1,11 @@
 package de.ellpeck.rockbottom.game.net.packet.toserver;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.game.gui.container.ContainerSlot;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.NetUtil;
 import de.ellpeck.rockbottom.game.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
@@ -48,10 +49,10 @@ public class PacketSlotModification implements IPacket{
     }
 
     @Override
-    public void handle(RockBottom game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            if(game.world != null){
-                EntityPlayer player = game.world.getPlayer(this.playerId);
+            if(game.getWorld() != null){
+                EntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
                     ItemContainer container = player.getContainer();
                     if(container != null){

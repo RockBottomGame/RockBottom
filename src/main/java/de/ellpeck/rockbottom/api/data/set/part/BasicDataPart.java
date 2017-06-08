@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.game.data.set.part;
+package de.ellpeck.rockbottom.api.data.set.part;
 
 public abstract class BasicDataPart<T> extends DataPart<T>{
 

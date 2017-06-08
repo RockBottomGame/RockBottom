@@ -1,9 +1,8 @@
 package de.ellpeck.rockbottom.game.world.tile.entity;
 
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.game.inventory.TileInventory;
-import de.ellpeck.rockbottom.game.world.World;
 
 public class TileEntityChest extends TileEntity{
 

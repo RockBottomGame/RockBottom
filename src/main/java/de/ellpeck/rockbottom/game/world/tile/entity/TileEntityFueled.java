@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.game.world.tile.entity;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.game.net.NetHandler;
-import de.ellpeck.rockbottom.game.world.World;
 import io.netty.buffer.ByteBuf;
 
 public abstract class TileEntityFueled extends TileEntity{
@@ -22,7 +22,7 @@ public abstract class TileEntityFueled extends TileEntity{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         super.update(game);
 
         if(!NetHandler.isClient()){

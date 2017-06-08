@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.Gui;
@@ -15,10 +16,10 @@ public class ComponentHealth extends GuiComponent{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         if(game.isInWorld()){
-            int healthParts = Util.floor(game.player.getHealth()/20);
-            int maxHealthParts = Util.floor(game.player.getMaxHealth()/20);
+            int healthParts = Util.floor(game.getPlayer().getHealth()/20);
+            int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
 
             Image heart = manager.getImage("gui.heart");
             Image heartEmpty = manager.getImage("gui.heart_empty");
@@ -32,10 +33,10 @@ public class ComponentHealth extends GuiComponent{
     }
 
     @Override
-    public void renderOverlay(RockBottom game, AssetManager manager, Graphics g){
+    public void renderOverlay(IGameInstance game, AssetManager manager, Graphics g){
         if(game.isInWorld()){
             if(this.isMouseOver(game)){
-                Gui.drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize("info.health")+":", game.player.getHealth()+"/"+game.player.getMaxHealth());
+                Gui.drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize("info.health")+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());
             }
         }
     }

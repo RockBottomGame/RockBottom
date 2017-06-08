@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.game.world;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.MutableInt;
@@ -11,8 +13,6 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.ContentRegistry;
-import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.game.data.set.DataSet;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketMetaChange;
@@ -105,7 +105,7 @@ public class Chunk implements IChunk{
         }
     }
 
-    protected void updateEntities(RockBottom game){
+    protected void updateEntities(IGameInstance game){
         for(int i = 0; i < this.entities.size(); i++){
             Entity entity = this.entities.get(i);
             entity.update(game);
@@ -122,11 +122,11 @@ public class Chunk implements IChunk{
                     this.removeEntity(entity);
                     i--;
 
-                    Chunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
+                    IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
                     chunk.addEntity(entity);
 
                     if(NetHandler.isServer()){
-                        for(EntityPlayer player : chunk.playersInRange){
+                        for(EntityPlayer player : chunk.getPlayersInRange()){
                             if(!this.playersInRange.contains(player)){
                                 player.sendPacket(new PacketEntityChange(entity, false));
 
@@ -149,7 +149,8 @@ public class Chunk implements IChunk{
         }
     }
 
-    public void update(RockBottom game){
+    @Override
+    public void update(IGameInstance game){
         this.checkListSync();
 
         if(!this.isGenerating){
@@ -528,6 +529,7 @@ public class Chunk implements IChunk{
         return -1;
     }
 
+    @Override
     public byte getCombinedLightInner(int x, int y){
         byte artificial = this.getArtificialLightInner(x, y);
         byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
@@ -563,6 +565,17 @@ public class Chunk implements IChunk{
         }
     }
 
+    @Override
+    public void setGenerating(boolean generating){
+        this.isGenerating = generating;
+    }
+
+    @Override
+    public boolean needsSave(){
+        return this.needsSave;
+    }
+
+    @Override
     public boolean shouldUnload(){
         return this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
     }
@@ -571,6 +584,7 @@ public class Chunk implements IChunk{
         this.needsSave = true;
     }
 
+    @Override
     public void save(DataSet set){
         for(int i = 0; i < TileLayer.LAYERS.length; i++){
             TileLayer layer = TileLayer.LAYERS[i];
@@ -724,6 +738,7 @@ public class Chunk implements IChunk{
         this.isGenerating = false;
     }
 
+    @Override
     public int getScheduledUpdateAmount(){
         return this.scheduledUpdates.size();
     }

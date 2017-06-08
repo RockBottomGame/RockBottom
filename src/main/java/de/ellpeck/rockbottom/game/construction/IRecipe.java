@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game.construction;
 
 import de.ellpeck.rockbottom.game.inventory.IInventory;
-import de.ellpeck.rockbottom.game.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 
 import java.util.List;
 

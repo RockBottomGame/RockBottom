@@ -1,6 +1,6 @@
-package de.ellpeck.rockbottom.game.data.set.part.num;
+package de.ellpeck.rockbottom.api.data.set.part.num;
 
-import de.ellpeck.rockbottom.game.data.set.part.BasicDataPart;
+import de.ellpeck.rockbottom.api.data.set.part.BasicDataPart;
 
 import java.io.DataInput;
 import java.io.DataOutput;

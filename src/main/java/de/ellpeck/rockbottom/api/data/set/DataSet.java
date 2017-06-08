@@ -1,55 +1,20 @@
-package de.ellpeck.rockbottom.game.data.set;
+package de.ellpeck.rockbottom.api.data.set;
 
-import de.ellpeck.rockbottom.game.data.DataManager;
-import de.ellpeck.rockbottom.game.data.set.part.*;
-import de.ellpeck.rockbottom.game.data.set.part.num.*;
-import de.ellpeck.rockbottom.game.data.set.part.num.array.PartByteByteArray;
-import de.ellpeck.rockbottom.game.data.set.part.num.array.PartIntArray;
-import de.ellpeck.rockbottom.game.data.set.part.num.array.PartShortShortArray;
-import org.newdawn.slick.util.Log;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.part.*;
+import de.ellpeck.rockbottom.api.data.set.part.num.*;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteByteArray;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortShortArray;
 
-import java.io.*;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class DataSet{
 
-    private final Map<String, DataPart> data = new HashMap<>();
-
-    public static void writeSet(DataOutput stream, DataSet set) throws Exception{
-        stream.writeInt(set.data.size());
-
-        for(DataPart part : set.data.values()){
-            writePart(stream, part);
-        }
-    }
-
-    public static void readSet(DataInput stream, DataSet set) throws Exception{
-        int amount = stream.readInt();
-
-        for(int i = 0; i < amount; i++){
-            DataPart part = readPart(stream);
-            set.data.put(part.getName(), part);
-        }
-    }
-
-    public static void writePart(DataOutput stream, DataPart part) throws Exception{
-        stream.writeByte(DataManager.PART_REGISTRY.getId(part.getClass()));
-        stream.writeUTF(part.getName());
-        part.write(stream);
-    }
-
-    public static DataPart readPart(DataInput stream) throws Exception{
-        int id = stream.readByte();
-        String name = stream.readUTF();
-
-        Class<? extends DataPart> partClass = DataManager.PART_REGISTRY.get(id);
-        DataPart part = partClass.getConstructor(String.class).newInstance(name);
-        part.read(stream);
-
-        return part;
-    }
+    public final Map<String, DataPart> data = new HashMap<>();
 
     public void addPart(DataPart part){
         this.data.put(part.getName(), part);
@@ -173,36 +138,11 @@ public class DataSet{
     }
 
     public void write(File file){
-        try{
-            if(!file.exists()){
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-
-            DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
-            writeSet(stream, this);
-            stream.close();
-        }
-        catch(Exception e){
-            Log.error("Exception saving a data set to disk!", e);
-        }
+        RockBottomAPI.getApiHandler().writeDataSet(this, file);
     }
 
     public void read(File file){
-        if(!this.data.isEmpty()){
-            this.data.clear();
-        }
-
-        try{
-            if(file.exists()){
-                DataInputStream stream = new DataInputStream(new FileInputStream(file));
-                readSet(stream, this);
-                stream.close();
-            }
-        }
-        catch(Exception e){
-            Log.error("Exception loading a data set from disk!", e);
-        }
+        RockBottomAPI.getApiHandler().readDataSet(this, file);
     }
 
     @Override

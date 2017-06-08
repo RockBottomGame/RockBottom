@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.game.gui.component;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.gui.Gui;
@@ -28,7 +29,7 @@ public class ComponentSlider extends ComponentButton{
     }
 
     @Override
-    public void render(RockBottom game, AssetManager manager, Graphics g){
+    public void render(IGameInstance game, AssetManager manager, Graphics g){
         super.render(game, manager, g);
 
         float percentage = (float)(this.number-this.min)/(float)(this.max-this.min);
@@ -42,7 +43,7 @@ public class ComponentSlider extends ComponentButton{
     }
 
     @Override
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isMouseOver(game)){
             if(!this.wasMouseDown){
                 this.callback.onFirstClick(game.getMouseInGuiX(), game.getMouseInGuiY(), this.min, this.max, this.number);
@@ -55,12 +56,12 @@ public class ComponentSlider extends ComponentButton{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(IGameInstance game){
         if(this.wasMouseDown){
             float mouseX = game.getMouseInGuiX();
             float mouseY = game.getMouseInGuiY();
 
-            if(game.getContainer().getInput().isMouseButtonDown(game.settings.buttonGuiAction1)){
+            if(game.getContainer().getInput().isMouseButtonDown(game.getSettings().buttonGuiAction1)){
                 this.onClickOrMove(mouseX, mouseY);
             }
             else{
