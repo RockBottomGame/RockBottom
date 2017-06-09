@@ -506,4 +506,9 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public int getSortingPriority(){
         return Integer.MAX_VALUE;
     }
+
+    @Override
+    public String getDescription(){
+        return "The base game and all its features";
+    }
 }

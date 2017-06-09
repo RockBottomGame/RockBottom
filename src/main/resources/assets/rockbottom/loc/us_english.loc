@@ -66,6 +66,7 @@ rockbottom/button.cursor_infos_toggled=Cursor Indicators On
 rockbottom/button.graphics=Graphics
 rockbottom/button.construction_amount=Amount
 rockbottom/button.text_speed=Text Speed
+rockbottom/button.mods=Mods
 
 rockbottom/layer.main=Foreground
 rockbottom/layer.background=Background

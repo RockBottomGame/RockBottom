@@ -54,11 +54,22 @@ public class ModLoader implements IModLoader{
                                 if(aClass != null && !aClass.isInterface()){
                                     if(IMod.class.isAssignableFrom(aClass)){
                                         IMod instance = (IMod)aClass.newInstance();
+                                        String id = instance.getId();
 
-                                        this.loadedMods.add(instance);
-                                        loadedAmount++;
+                                        if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
+                                            if(this.getMod(id) == null){
+                                                this.loadedMods.add(instance);
+                                                loadedAmount++;
 
-                                        Log.info("Loaded mod "+instance.getDisplayName()+" with id "+instance.getId()+" and version "+instance.getVersion());
+                                                Log.info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
+                                            }
+                                            else{
+                                                Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
+                                            }
+                                        }
+                                        else{
+                                            Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
+                                        }
 
                                         foundMod = true;
                                         break;
@@ -129,6 +140,16 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
+    public IMod getMod(String id){
+        for(IMod mod : this.loadedMods){
+            if(mod.getId().equals(id)){
+                return mod;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public IResourceName createResourceName(IMod mod, String resource){
         return new ResourceName(mod.getId(), resource);
     }
@@ -136,5 +157,10 @@ public class ModLoader implements IModLoader{
     @Override
     public IResourceName createResourceName(String combined){
         return new ResourceName(combined);
+    }
+
+    @Override
+    public List<IMod> getAllMods(){
+        return Collections.unmodifiableList(this.loadedMods);
     }
 }

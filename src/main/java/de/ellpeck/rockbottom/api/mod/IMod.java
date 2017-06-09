@@ -15,6 +15,10 @@ public interface IMod{
 
     String getResourceLocation();
 
+    default String getDescription(){
+        return "";
+    }
+
     default int getSortingPriority(){
         return 0;
     }

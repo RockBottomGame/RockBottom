@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.api.mod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.io.File;
+import java.util.List;
 
 public interface IModLoader{
 
@@ -18,7 +19,11 @@ public interface IModLoader{
 
     void makeAssets();
 
+    IMod getMod(String id);
+
     IResourceName createResourceName(IMod mod, String resource);
 
     IResourceName createResourceName(String combined);
+
+    List<IMod> getAllMods();
 }
