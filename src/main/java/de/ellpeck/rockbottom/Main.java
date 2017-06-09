@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom;
 
+import de.ellpeck.rockbottom.util.LogSystem;
+import org.newdawn.slick.util.Log;
 import sun.security.action.GetPropertyAction;
 
 import java.io.File;
@@ -15,15 +17,18 @@ public final class Main{
 
     private static final File JAVA_TEMP = new File(AccessController.doPrivileged(new GetPropertyAction("java.io.tmpdir")));
     private static final File TEMP_DIR = new File(JAVA_TEMP, "rockbottom");
-
     public static CustomClassLoader classLoader;
 
     public static void main(String[] args){
+        Log.setLogSystem(new LogSystem(LogSystem.LogLevel.DEBUG));
+
         try{
             URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();
 
             classLoader = new CustomClassLoader(loader.getURLs(), loader);
             Thread.currentThread().setContextClassLoader(classLoader);
+
+            Log.info("Replacing class loader "+loader+" with new loader "+classLoader);
 
             loader.close();
         }
@@ -70,9 +75,13 @@ public final class Main{
         try{
             if(!TEMP_DIR.exists()){
                 TEMP_DIR.mkdirs();
+                TEMP_DIR.deleteOnExit();
             }
 
             File temp = new File(TEMP_DIR, libName);
+            temp.deleteOnExit();
+            Log.info("Creating temporary file "+temp);
+
             FileOutputStream out = new FileOutputStream(temp);
             byte[] buffer = new byte[65536];
 

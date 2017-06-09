@@ -91,8 +91,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     public static void init(){
-        Log.setLogSystem(new LogSystem(LogSystem.LogLevel.DEBUG));
-
         RockBottom game = new RockBottom();
 
         RockBottomAPI.setGameInstance(game);
