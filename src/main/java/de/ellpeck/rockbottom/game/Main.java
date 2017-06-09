@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.game;
 
+
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,8 +40,37 @@ public final class Main{
         }
 
         @Override
-        public void addURL(URL url){
+        public void addURL(URL url) {
             super.addURL(url);
         }
+
+        @Override
+        protected String findLibrary(String libname) {
+            String libName = System.mapLibraryName(libname);
+            InputStream stream = getResourceAsStream("natives/" + libName);
+            if (stream != null) {
+                String s = loadLib(stream, libName);
+                if(s != null){
+                    return s;
+                }
+            }
+            return super.findLibrary(libname);
+        }
+    }
+
+    public static String loadLib(InputStream in, String libName){
+        try {
+            File temp = File.createTempFile(libName, "");
+            FileOutputStream out = new FileOutputStream(temp);
+            byte[] buffer = new byte[65536];
+            int bufferSize;
+            while ((bufferSize = in.read(buffer, 0, buffer.length)) != -1) {
+                out.write(buffer, 0, bufferSize);
+            }
+            return temp.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,0 +1,37 @@
+group 'de.ellpeck.rockbottom'
+version '0.0.3'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(":RockBottomAPI")
+    compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.11.Final'
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": "de.ellpeck.rockbottom.game.Main")
+    }
+}
+
+build.dependsOn(shadowJar)
