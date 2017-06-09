@@ -25,7 +25,6 @@ import java.util.Properties;
 
 public class AssetManager implements IAssetManager{
 
-    private final Map<IMod, String> assetProps = new HashMap<>();
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
     private AssetSound missingSound;
     private AssetImage missingTexture;
@@ -59,8 +58,6 @@ public class AssetManager implements IAssetManager{
     public void create(RockBottom game){
         try{
             Log.info("Loading resources...");
-
-            RockBottomAPI.getModLoader().makeAssets();
             this.loadAssets();
         }
         catch(Exception e){
@@ -95,7 +92,7 @@ public class AssetManager implements IAssetManager{
             GameContainer container = game.getContainer();
 
             if(!game.getSettings().hardwareCursor){
-                container.setMouseCursor(this.getImage(RockBottom.internalRes("gui.cursor")).getScaledCopy(3F), 0, 0);
+                container.setMouseCursor(this.getImage(RockBottom.internalRes("gui.cursor")), 0, 0);
             }
             else{
                 container.setDefaultMouseCursor();
@@ -106,17 +103,11 @@ public class AssetManager implements IAssetManager{
         }
     }
 
-    @Override
-    public void addAssetProp(IMod mod, String path){
-        this.assetProps.put(mod, path);
-    }
-
     private void loadAssets() throws Exception{
-        for(Map.Entry<IMod, String> prop : this.assetProps.entrySet()){
+        for(IMod mod : RockBottomAPI.getModLoader().getAllMods()){
             int loadAmount = 0;
 
-            IMod mod = prop.getKey();
-            String path = prop.getValue();
+            String path = mod.getResourceLocation();
 
             InputStream propStream = getResource(path+"/assets.info");
             if(propStream != null){

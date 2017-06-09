@@ -1,12 +1,20 @@
 package de.ellpeck.rockbottom;
 
+import sun.security.action.GetPropertyAction;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
 
 public final class Main{
+
+    private static final File JAVA_TEMP = new File(AccessController.doPrivileged(new GetPropertyAction("java.io.tmpdir")));
+    private static final File TEMP_DIR = new File(JAVA_TEMP, "rockbottom");
 
     public static CustomClassLoader classLoader;
 
@@ -40,37 +48,51 @@ public final class Main{
         }
 
         @Override
-        public void addURL(URL url) {
+        public void addURL(URL url){
             super.addURL(url);
         }
 
         @Override
-        protected String findLibrary(String libname) {
-            String libName = System.mapLibraryName(libname);
-            InputStream stream = getResourceAsStream("natives/" + libName);
-            if (stream != null) {
-                String s = loadLib(stream, libName);
-                if(s != null){
-                    return s;
+        protected String findLibrary(String libName){
+            String mapped = System.mapLibraryName(libName);
+            InputStream stream = this.getResourceAsStream("natives/"+mapped);
+            if(stream != null){
+                String lib = loadLib(stream, mapped);
+                if(lib != null && !lib.isEmpty()){
+                    return lib;
                 }
             }
-            return super.findLibrary(libname);
+            return super.findLibrary(libName);
         }
     }
 
-    public static String loadLib(InputStream in, String libName){
-        try {
-            File temp = File.createTempFile(libName, "");
+    private static String loadLib(InputStream in, String libName){
+        try{
+            if(!TEMP_DIR.exists()){
+                TEMP_DIR.mkdirs();
+            }
+
+            File temp = new File(TEMP_DIR, libName);
             FileOutputStream out = new FileOutputStream(temp);
             byte[] buffer = new byte[65536];
-            int bufferSize;
-            while ((bufferSize = in.read(buffer, 0, buffer.length)) != -1) {
-                out.write(buffer, 0, bufferSize);
+
+            while(true){
+                int bufferSize = in.read(buffer, 0, buffer.length);
+
+                if(bufferSize != -1){
+                    out.write(buffer, 0, bufferSize);
+                }
+                else{
+                    break;
+                }
             }
+
+            out.close();
+
             return temp.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
+        catch(IOException e){
+            throw new RuntimeException("Couldn't load lib with name "+libName, e);
+        }
     }
 }

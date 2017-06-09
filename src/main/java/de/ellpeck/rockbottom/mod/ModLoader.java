@@ -133,13 +133,6 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
-    public void makeAssets(){
-        for(IMod mod : this.loadedMods){
-            RockBottomAPI.getGame().getAssetManager().addAssetProp(mod, mod.getResourceLocation());
-        }
-    }
-
-    @Override
     public IMod getMod(String id){
         for(IMod mod : this.loadedMods){
             if(mod.getId().equals(id)){

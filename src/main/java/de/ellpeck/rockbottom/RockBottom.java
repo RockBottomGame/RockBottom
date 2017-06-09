@@ -122,7 +122,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
         }
 
         Log.info("Game shutting down");
-        System.exit(0);
     }
 
     @Override

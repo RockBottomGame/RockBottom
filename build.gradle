@@ -30,7 +30,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes("Main-Class": "de.ellpeck.rockbottom.game.Main")
+        attributes("Main-Class": "de.ellpeck.rockbottom.Main")
     }
 }
 
