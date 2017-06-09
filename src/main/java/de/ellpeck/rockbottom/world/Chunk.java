@@ -55,6 +55,7 @@ public class Chunk implements IChunk{
     protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
     public boolean isGenerating;
     protected boolean needsSave;
+    private int internalLoadingTimer;
 
     public Chunk(World world, int gridX, int gridY){
         this.world = world;
@@ -65,6 +66,7 @@ public class Chunk implements IChunk{
         this.gridY = gridY;
 
         this.isGenerating = true;
+        this.internalLoadingTimer = 200;
 
         for(int i = 0; i < TileLayer.LAYERS.length; i++){
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
@@ -192,6 +194,10 @@ public class Chunk implements IChunk{
                     }
                 }
             }
+        }
+
+        if(this.internalLoadingTimer > 0){
+            this.internalLoadingTimer--;
         }
 
         for(int i = 0; i < this.playersOutOfRangeCached.size(); i++){
@@ -586,7 +592,7 @@ public class Chunk implements IChunk{
 
     @Override
     public boolean shouldUnload(){
-        return this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
+        return this.internalLoadingTimer <= 0 &&  this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
     }
 
     public void setDirty(){
