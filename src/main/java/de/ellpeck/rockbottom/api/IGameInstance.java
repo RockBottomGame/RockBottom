@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
+import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.util.IAction;
@@ -16,9 +17,10 @@ import de.ellpeck.rockbottom.api.world.WorldInfo;
 import org.newdawn.slick.GameContainer;
 
 import java.io.File;
+import java.net.URLClassLoader;
 import java.util.UUID;
 
-public interface IGameInstance{
+public interface IGameInstance extends IMod{
 
     boolean isInWorld();
 
@@ -77,4 +79,6 @@ public interface IGameInstance{
     int getTpsAverage();
 
     int getFpsAverage();
+
+    URLClassLoader getClassLoader();
 }

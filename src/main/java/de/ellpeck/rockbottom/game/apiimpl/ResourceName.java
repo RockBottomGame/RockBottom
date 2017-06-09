@@ -23,10 +23,6 @@ public class ResourceName implements IResourceName{
     }
 
     private void set(String domain, String resourceName){
-        if(domain == null || domain.isEmpty()){
-            domain = "rockbottom";
-        }
-
         this.domain = domain;
         this.resourceName = resourceName;
     }

@@ -1,40 +1,45 @@
 package de.ellpeck.rockbottom.game;
 
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.game.util.LogSystem;
-import de.ellpeck.rockbottom.game.util.LogSystem.LogLevel;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.util.Log;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public final class Main{
 
-    public static void main(String[] args){
-        Log.setLogSystem(new LogSystem(LogLevel.DEBUG));
+    public static CustomClassLoader classLoader;
 
-        RockBottom game = new RockBottom();
+    public static void main(String[] args){
+        try{
+            URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();
+
+            classLoader = new CustomClassLoader(loader.getURLs(), loader);
+            Thread.currentThread().setContextClassLoader(classLoader);
+
+            loader.close();
+        }
+        catch(Exception e){
+            throw new RuntimeException("Failed to override original class loader", e);
+        }
 
         try{
-            Container container = new Container(game);
-            container.setForceExit(false);
-            container.setUpdateOnlyWhenVisible(false);
-            container.setAlwaysRender(true);
-            container.setShowFPS(false);
-
-            int interval = 1000/Constants.TARGET_TPS;
-            container.setMinimumLogicUpdateInterval(interval);
-            container.setMaximumLogicUpdateInterval(interval);
-
-            container.start();
+            Class gameClass = Class.forName("de.ellpeck.rockbottom.game.RockBottom", false, classLoader);
+            Method method = gameClass.getMethod("init");
+            method.invoke(null);
         }
-        catch(SlickException e){
-            Log.error("Exception initializing game", e);
+        catch(Exception e){
+            throw new RuntimeException("Could not initialize game", e);
         }
-        finally{
-            RockBottomAPI.getNet().shutdown();
+    }
+
+    public static class CustomClassLoader extends URLClassLoader{
+
+        public CustomClassLoader(URL[] urls, ClassLoader parent){
+            super(urls, parent);
         }
 
-        Log.info("Game shutting down");
-        System.exit(0);
+        @Override
+        public void addURL(URL url){
+            super.addURL(url);
+        }
     }
 }

@@ -34,10 +34,11 @@ public class AssetManager implements IAssetManager{
     private Locale currentLocale;
     private Font currentFont;
 
-    public void create(RockBottom game) throws SlickException{
+    public void create(RockBottom game){
         try{
             Log.info("Loading resources...");
-            this.addAssetProp(null, "/assets/rockbottom");
+
+            RockBottomAPI.getModLoader().makeAssets();
             this.loadAssets();
         }
         catch(Exception e){
@@ -90,6 +91,8 @@ public class AssetManager implements IAssetManager{
 
     private void loadAssets() throws Exception{
         for(Map.Entry<IMod, String> prop : this.assetProps.entrySet()){
+            int loadAmount = 0;
+
             IMod mod = prop.getKey();
             String path = prop.getValue();
 
@@ -102,6 +105,7 @@ public class AssetManager implements IAssetManager{
                     String value = props.getProperty(key);
                     IResourceName name = RockBottomAPI.createRes(mod, key);
 
+                    boolean didLoad = true;
                     try{
                         if(key.startsWith("font.")){
                             InputStream image = getResource(path+value+".png");
@@ -140,6 +144,14 @@ public class AssetManager implements IAssetManager{
                                     Log.info("Loaded localization resource "+name+" with data "+value);
                                 }
                             }
+                            else{
+                                Log.warn("Couldn't load resource with key "+key+" and value "+value+" from assets.info for mod "+mod.getDisplayName()+" at path "+path+"!");
+                                didLoad = false;
+                            }
+                        }
+
+                        if(didLoad){
+                            loadAmount++;
                         }
                     }
                     catch(Exception e){
@@ -147,7 +159,11 @@ public class AssetManager implements IAssetManager{
                     }
                 }
             }
-            else Log.error("Mod "+mod.getDisplayName()+" is missing assets.info file at path "+path);
+            else{
+                Log.error("Mod "+mod.getDisplayName()+" is missing assets.info file at path "+path);
+            }
+
+            Log.info("Loaded "+loadAmount+" assets from assets.info file for mod "+mod.getDisplayName()+" at path "+path);
         }
     }
 

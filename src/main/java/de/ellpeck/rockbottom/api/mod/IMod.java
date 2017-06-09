@@ -15,7 +15,11 @@ public interface IMod{
 
     String getResourceLocation();
 
-    default void preInit(IGameInstance game, IAssetManager assetManager, IApiHandler apiHandler, IEventHandler eventHandler){
+    default int getSortingPriority(){
+        return 0;
+    }
+
+    default void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
 
     }
 

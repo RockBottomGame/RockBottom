@@ -4,8 +4,8 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 public enum TileLayer{
-    MAIN(RockBottomAPI.createRes(null, "layer.main")),
-    BACKGROUND(RockBottomAPI.createRes(null, "layer.background"));
+    MAIN(RockBottomAPI.createInternalRes("layer.main")),
+    BACKGROUND(RockBottomAPI.createInternalRes("layer.background"));
 
     public static final TileLayer[] LAYERS = values();
 

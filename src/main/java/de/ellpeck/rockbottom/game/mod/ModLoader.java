@@ -2,38 +2,24 @@ package de.ellpeck.rockbottom.game.mod;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.game.Main;
 import de.ellpeck.rockbottom.game.apiimpl.ResourceName;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ModLoader implements IModLoader{
 
-    private final CustomClassLoader classLoader;
     private final List<IMod> loadedMods = new ArrayList<>();
 
     public ModLoader(){
-        ClassLoader loader = this.getClass().getClassLoader();
-        if(loader instanceof URLClassLoader){
-            URLClassLoader original = (URLClassLoader)loader;
-
-            this.classLoader = new CustomClassLoader(original.getURLs(), original);
-            Thread.currentThread().setContextClassLoader(this.classLoader);
-        }
-        else{
-            throw new RuntimeException("Class loader "+loader+" is not an URL class loader! This shouldn't happen!");
-        }
+        this.loadedMods.add(RockBottomAPI.getGame());
     }
 
     @Override
@@ -43,6 +29,8 @@ public class ModLoader implements IModLoader{
             Log.info("Mods folder not found, creating at "+dir);
         }
         else{
+            int loadedAmount = 0;
+
             Log.info("Loading mods from mods folder "+dir);
 
             for(File file : dir.listFiles()){
@@ -52,7 +40,7 @@ public class ModLoader implements IModLoader{
                         JarFile jar = new JarFile(file);
                         Enumeration<JarEntry> entries = jar.entries();
 
-                        this.classLoader.addURL(file.toURI().toURL());
+                        Main.classLoader.addURL(file.toURI().toURL());
 
                         boolean foundMod = false;
                         while(entries.hasMoreElements()){
@@ -61,13 +49,14 @@ public class ModLoader implements IModLoader{
 
                             if(entryName != null && entryName.endsWith(".class") && !entryName.contains("$")){
                                 String actualClassName = entryName.substring(0, entryName.length()-6).replace("/", ".");
-                                Class aClass = Class.forName(actualClassName, false, this.classLoader);
+                                Class aClass = Class.forName(actualClassName, false, Main.classLoader);
 
                                 if(aClass != null && !aClass.isInterface()){
                                     if(IMod.class.isAssignableFrom(aClass)){
                                         IMod instance = (IMod)aClass.newInstance();
 
                                         this.loadedMods.add(instance);
+                                        loadedAmount++;
 
                                         Log.info("Loaded mod "+instance.getDisplayName()+" with id "+instance.getId()+" and version "+instance.getVersion());
 
@@ -91,19 +80,28 @@ public class ModLoader implements IModLoader{
                 }
             }
 
-            Log.info("Loaded a total of "+this.loadedMods.size()+" mods");
+            Log.info("Loaded a total of "+loadedAmount+" mods");
         }
+    }
+
+    @Override
+    public void sortMods(){
+        Log.info("Sorting mods");
+
+        this.loadedMods.sort(Comparator.comparingInt(IMod:: getSortingPriority).reversed());
+
+        Log.info("----- Loaded Mods -----");
+        for(IMod mod : this.loadedMods){
+            Log.info(mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")");
+        }
+        Log.info("-----------------------");
     }
 
     @Override
     public void preInit(){
         IGameInstance game = RockBottomAPI.getGame();
-        IAssetManager assets = game.getAssetManager();
-
         for(IMod mod : this.loadedMods){
-            assets.addAssetProp(mod, mod.getResourceLocation());
-
-            mod.preInit(game, assets, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
+            mod.preInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
@@ -124,29 +122,19 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
+    public void makeAssets(){
+        for(IMod mod : this.loadedMods){
+            RockBottomAPI.getGame().getAssetManager().addAssetProp(mod, mod.getResourceLocation());
+        }
+    }
+
+    @Override
     public IResourceName createResourceName(IMod mod, String resource){
-        return new ResourceName(mod == null ? null : mod.getId(), resource);
+        return new ResourceName(mod.getId(), resource);
     }
 
     @Override
     public IResourceName createResourceName(String combined){
         return new ResourceName(combined);
-    }
-
-    @Override
-    public URLClassLoader getClassLoader(){
-        return this.classLoader;
-    }
-
-    private static class CustomClassLoader extends URLClassLoader{
-
-        public CustomClassLoader(URL[] urls, ClassLoader parent){
-            super(urls, parent);
-        }
-
-        @Override
-        public void addURL(URL url){
-            super.addURL(url);
-        }
     }
 }

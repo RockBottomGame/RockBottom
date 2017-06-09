@@ -7,12 +7,12 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.net.INetHandler;
+import de.ellpeck.rockbottom.api.net.chat.Command;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.IndexRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
-import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.net.chat.Command;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,6 @@ public final class RockBottomAPI{
     public static final IndexRegistry<Class<? extends IPacket>> PACKET_REGISTRY = new IndexRegistry<>("packet_registry", Byte.MAX_VALUE);
     public static final Map<String, Command> COMMAND_REGISTRY = new HashMap<>();
 
-    private static boolean init;
     private static IApiHandler apiHandler;
     private static INetHandler netHandler;
     private static IEventHandler eventHandler;
@@ -56,6 +55,10 @@ public final class RockBottomAPI{
         return modLoader;
     }
 
+    public static IResourceName createInternalRes(String resource){
+        return createRes(gameInstance, resource);
+    }
+
     public static IResourceName createRes(IMod mod, String resource){
         return modLoader.createResourceName(mod, resource);
     }
@@ -64,18 +67,33 @@ public final class RockBottomAPI{
         return modLoader.createResourceName(combined);
     }
 
-    public static void set(IApiHandler api, INetHandler net, IEventHandler event, IGameInstance instance, IModLoader mod){
-        if(!init){
+    public static void setApiHandler(IApiHandler api){
+        if(apiHandler == null){
             apiHandler = api;
-            netHandler = net;
-            eventHandler = event;
-            gameInstance = instance;
-            modLoader = mod;
-
-            init = true;
         }
-        else{
-            throw new UnsupportedOperationException("Cannot set API values after they have been set!");
+    }
+
+    public static void setNetHandler(INetHandler net){
+        if(netHandler == null){
+            netHandler = net;
+        }
+    }
+
+    public static void setEventHandler(IEventHandler event){
+        if(eventHandler == null){
+            eventHandler = event;
+        }
+    }
+
+    public static void setGameInstance(IGameInstance game){
+        if(gameInstance == null){
+            gameInstance = game;
+        }
+    }
+
+    public static void setModLoader(IModLoader mod){
+        if(modLoader == null){
+            modLoader = mod;
         }
     }
 }

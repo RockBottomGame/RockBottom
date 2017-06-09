@@ -27,8 +27,8 @@ import java.util.Map;
 public class Tile{
 
     public static final BoundBox DEFAULT_BOUNDS = new BoundBox(0, 0, 1, 1);
-    private static final IResourceName LOC_ADVANCED = RockBottomAPI.createRes(null, "info.advanced_info");
-    private static final IResourceName LOC_LAYER = RockBottomAPI.createRes(null, "info.layer_placement");
+    private static final IResourceName LOC_ADVANCED = RockBottomAPI.createInternalRes("info.advanced_info");
+    private static final IResourceName LOC_LAYER = RockBottomAPI.createInternalRes("info.layer_placement");
 
     protected final IResourceName name;
 
