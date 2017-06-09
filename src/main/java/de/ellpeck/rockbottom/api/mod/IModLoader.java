@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.api.mod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.io.File;
+import java.net.URLClassLoader;
 
 public interface IModLoader{
 
@@ -17,4 +18,6 @@ public interface IModLoader{
     IResourceName createResourceName(IMod mod, String resource);
 
     IResourceName createResourceName(String combined);
+
+    URLClassLoader getClassLoader();
 }

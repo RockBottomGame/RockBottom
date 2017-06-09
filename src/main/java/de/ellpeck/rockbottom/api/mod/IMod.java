@@ -13,6 +13,8 @@ public interface IMod{
 
     String getVersion();
 
+    String getResourceLocation();
+
     default void preInit(IGameInstance game, IAssetManager assetManager, IApiHandler apiHandler, IEventHandler eventHandler){
 
     }

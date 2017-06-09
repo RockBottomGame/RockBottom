@@ -94,42 +94,60 @@ public class AssetManager implements IAssetManager{
             String path = prop.getValue();
 
             InputStream propStream = getResource(path+"/assets.info");
-            Properties props = new Properties();
-            props.load(propStream);
+            if(propStream != null){
+                Properties props = new Properties();
+                props.load(propStream);
 
-            for(String key : props.stringPropertyNames()){
-                String value = props.getProperty(key);
-                IResourceName name = RockBottomAPI.createRes(mod, key);
+                for(String key : props.stringPropertyNames()){
+                    String value = props.getProperty(key);
+                    IResourceName name = RockBottomAPI.createRes(mod, key);
 
-                try{
-                    if(key.startsWith("font.")){
-                        InputStream image = getResource(path+value+".png");
-                        InputStream info = getResource(path+value+".info");
+                    try{
+                        if(key.startsWith("font.")){
+                            InputStream image = getResource(path+value+".png");
+                            InputStream info = getResource(path+value+".info");
 
-                        this.assets.put(name, new AssetFont(Font.fromStream(image, info, key)));
-                        Log.info("Loaded font resource "+name+" with data "+value);
-                    }
-                    else if(key.startsWith("tex.")){
-                        this.assets.put(name, new AssetImage(loadImage(key, path, value)));
-                        Log.info("Loaded png resource "+name+" with data "+value);
-                    }
-                    else{
-                        InputStream stream = getResource(path+value);
-
-                        if(key.startsWith("sound.")){
-                            this.assets.put(name, new AssetSound(new Sound(stream, key)));
-                            Log.info("Loaded ogg resource "+name+" with data "+value);
+                            this.assets.put(name, new AssetFont(Font.fromStream(image, info, key)));
+                            Log.info("Loaded font resource "+name+" with data "+value);
                         }
-                        else if(key.startsWith("loc.")){
-                            this.assets.put(name, new AssetLocale(Locale.fromStream(stream, key)));
-                            Log.info("Loaded localization resource "+name+" with data "+value);
+                        else if(key.startsWith("tex.")){
+                            this.assets.put(name, new AssetImage(loadImage(key, path, value)));
+                            Log.info("Loaded png resource "+name+" with data "+value);
+                        }
+                        else{
+                            InputStream stream = getResource(path+value);
+
+                            if(key.startsWith("sound.")){
+                                this.assets.put(name, new AssetSound(new Sound(stream, key)));
+                                Log.info("Loaded ogg resource "+name+" with data "+value);
+                            }
+                            else if(key.startsWith("loc.")){
+                                boolean merged = false;
+
+                                Locale loaded = Locale.fromStream(stream, key);
+                                for(IAsset asset : this.getAllOfType(AssetLocale.class).values()){
+                                    if(asset instanceof AssetLocale){
+                                        AssetLocale locale = (AssetLocale)asset;
+                                        if(locale.get().merge(loaded)){
+                                            merged = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(!merged){
+                                    this.assets.put(name, new AssetLocale(loaded));
+                                    Log.info("Loaded localization resource "+name+" with data "+value);
+                                }
+                            }
                         }
                     }
-                }
-                catch(Exception e){
-                    Log.error("Failed loading resource "+name+" with data "+value+"!", e);
+                    catch(Exception e){
+                        Log.error("Failed loading resource "+name+" with data "+value+"!", e);
+                    }
                 }
             }
+            else Log.error("Mod "+mod.getDisplayName()+" is missing assets.info file at path "+path);
         }
     }
 

@@ -40,6 +40,18 @@ public class Locale{
         return locale;
     }
 
+    public boolean merge(Locale otherLocale){
+        if(this.name.equals(otherLocale.name)){
+            this.localization.putAll(otherLocale.localization);
+
+            Log.info("Merged locale "+this.name+" with "+otherLocale.localization.size()+" bits of additional localization information");
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public String localize(IResourceName unloc, Object... format){
         String loc = this.localization.get(unloc);
 
