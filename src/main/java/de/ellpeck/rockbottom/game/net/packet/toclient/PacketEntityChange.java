@@ -2,12 +2,12 @@ package de.ellpeck.rockbottom.game.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.util.Util;
-import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

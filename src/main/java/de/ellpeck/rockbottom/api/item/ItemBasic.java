@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.api.item;
 
-import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.render.item.DefaultItemRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;

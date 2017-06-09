@@ -2,9 +2,9 @@ package de.ellpeck.rockbottom.game.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.game.gui.menu.GuiKeybinds;
 import org.newdawn.slick.Input;
 

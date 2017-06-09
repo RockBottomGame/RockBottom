@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.api.net;
 
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.channel.group.ChannelGroup;
 
 public interface INetHandler{

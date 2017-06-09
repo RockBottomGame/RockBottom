@@ -51,6 +51,15 @@ public class Settings implements IPropSettings{
         return DEFAULT_NAMES[RockBottomAPI.RANDOM.nextInt(DEFAULT_NAMES.length)];
     }
 
+    public static String trimString(String s, int length){
+        if(s.length() <= length){
+            return s;
+        }
+        else{
+            return s.substring(0, length);
+        }
+    }
+
     @Override
     public void load(Properties props){
         for(Keybind bind : this.keybinds){
@@ -146,15 +155,6 @@ public class Settings implements IPropSettings{
 
     private String getProp(Properties props, String name, String def){
         return props.getProperty(name, def);
-    }
-
-    public static String trimString(String s, int length){
-        if(s.length() <= length){
-            return s;
-        }
-        else{
-            return s.substring(0, length);
-        }
     }
 
     public class Keybind{

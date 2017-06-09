@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.game.net.client;
 
-import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.decode.PacketDecoder;
 import de.ellpeck.rockbottom.game.net.encode.PacketEncoder;
 import io.netty.bootstrap.Bootstrap;

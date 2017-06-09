@@ -2,11 +2,11 @@ package de.ellpeck.rockbottom.game.world.gen;
 
 import de.ellpeck.rockbottom.game.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.game.world.gen.landscape.WorldGenBasicUnderground;
+import de.ellpeck.rockbottom.game.world.gen.landscape.WorldGenDebugLandscape;
 import de.ellpeck.rockbottom.game.world.gen.landscape.WorldGenHills;
 import de.ellpeck.rockbottom.game.world.gen.landscape.WorldGenHollow;
-import de.ellpeck.rockbottom.game.world.gen.ore.WorldGenCopper;
-import de.ellpeck.rockbottom.game.world.gen.landscape.WorldGenDebugLandscape;
 import de.ellpeck.rockbottom.game.world.gen.ore.WorldGenCoal;
+import de.ellpeck.rockbottom.game.world.gen.ore.WorldGenCopper;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;

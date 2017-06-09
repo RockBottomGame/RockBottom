@@ -13,9 +13,8 @@ import java.util.Properties;
 public class NameToIndexInfo implements IPropSettings{
 
     private final IndexRegistry<IResourceName> reg;
-
-    private boolean needsSave;
     private final File file;
+    private boolean needsSave;
 
     public NameToIndexInfo(String name, File file, int max){
         this.file = file;

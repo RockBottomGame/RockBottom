@@ -3,11 +3,11 @@ package de.ellpeck.rockbottom.api.entity;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 
 import java.util.UUID;
 
@@ -22,11 +22,10 @@ public class Entity extends MovableWorldObject{
 
     public int ticksExisted;
     public int fallAmount;
-    protected boolean dead;
-    protected UUID uniqueId;
-
     public double lastX;
     public double lastY;
+    protected boolean dead;
+    protected UUID uniqueId;
 
     public Entity(IWorld world){
         super(world);

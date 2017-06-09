@@ -42,8 +42,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
     private final IEntityRenderer renderer;
-    public Color color = Util.randomColor(Util.RANDOM);
     private final List<IChunk> chunksInRange = new ArrayList<>();
+    public Color color = Util.randomColor(Util.RANDOM);
     private ItemContainer currentContainer;
     private int respawnTimer;
 

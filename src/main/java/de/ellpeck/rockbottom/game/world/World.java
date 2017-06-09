@@ -3,11 +3,12 @@ package de.ellpeck.rockbottom.game.world;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.MutableInt;
@@ -25,7 +26,6 @@ import de.ellpeck.rockbottom.game.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.game.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;
 
@@ -39,15 +39,12 @@ public class World implements IWorld{
 
     public final List<IChunk> loadedChunks = new ArrayList<>();
     protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
-
-    public List<EntityPlayer> players = new ArrayList<>();
-
     protected final WorldInfo info;
+    public List<EntityPlayer> players = new ArrayList<>();
+    public NameToIndexInfo tileRegInfo;
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
-
-    public NameToIndexInfo tileRegInfo;
 
     public World(WorldInfo info, NameToIndexInfo tileRegInfo){
         this.info = info;

@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.game.world.tile.entity;
 
+import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.construction.SeparatorRecipe;
-import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.inventory.TileInventory;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.game.util.Util;
 import io.netty.buffer.ByteBuf;
 
 public class TileEntitySeparator extends TileEntityFueled{

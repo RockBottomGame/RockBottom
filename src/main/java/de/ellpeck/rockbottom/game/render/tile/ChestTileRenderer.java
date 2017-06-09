@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.world.tile.entity.TileEntityChest;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;

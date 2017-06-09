@@ -30,7 +30,7 @@ public class GuiMenu extends Gui{
             this.components.add(new ComponentButton(this, 1, this.guiLeft, this.guiTop+20, this.sizeX, 16, null){
                 @Override
                 protected String getText(){
-                    return game.getAssetManager().localize(RockBottomAPI.getNet().isServer() ? LOC_CLOSE_SERVER :LOC_OPEN_SERVER);
+                    return game.getAssetManager().localize(RockBottomAPI.getNet().isServer() ? LOC_CLOSE_SERVER : LOC_OPEN_SERVER);
                 }
             });
         }

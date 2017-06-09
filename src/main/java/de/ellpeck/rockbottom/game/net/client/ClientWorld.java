@@ -1,14 +1,14 @@
 package de.ellpeck.rockbottom.game.net.client;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.RockBottom;
-import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.game.world.Chunk;
 import de.ellpeck.rockbottom.game.world.World;
-import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 

@@ -2,8 +2,8 @@ package de.ellpeck.rockbottom.game.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.game.world.World;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.game.world.World;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

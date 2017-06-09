@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.game.gui.container;
 
+import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
-import de.ellpeck.rockbottom.game.construction.IRecipe;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.game.construction.IRecipe;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;
 
 public class ContainerInventory extends ItemContainer{

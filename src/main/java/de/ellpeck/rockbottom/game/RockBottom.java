@@ -18,7 +18,6 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.apiimpl.ApiHandler;
 import de.ellpeck.rockbottom.game.apiimpl.EventHandler;
-import de.ellpeck.rockbottom.game.apiimpl.ResourceName;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.data.DataManager;
@@ -85,6 +84,45 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
     public static IGameInstance get(){
         return RockBottomAPI.getGame();
+    }
+
+    public static IResourceName internalRes(String resource){
+        return RockBottomAPI.createRes(get(), resource);
+    }
+
+    public static void init(){
+        Log.setLogSystem(new LogSystem(LogSystem.LogLevel.DEBUG));
+
+        RockBottom game = new RockBottom();
+
+        RockBottomAPI.setGameInstance(game);
+        RockBottomAPI.setModLoader(new ModLoader());
+        RockBottomAPI.setApiHandler(new ApiHandler());
+        RockBottomAPI.setEventHandler(new EventHandler());
+        RockBottomAPI.setNetHandler(new NetHandler());
+
+        try{
+            Container container = new Container(game);
+            container.setForceExit(false);
+            container.setUpdateOnlyWhenVisible(false);
+            container.setAlwaysRender(true);
+            container.setShowFPS(false);
+
+            int interval = 1000/Constants.TARGET_TPS;
+            container.setMinimumLogicUpdateInterval(interval);
+            container.setMaximumLogicUpdateInterval(interval);
+
+            container.start();
+        }
+        catch(SlickException e){
+            Log.error("Exception initializing game", e);
+        }
+        finally{
+            RockBottomAPI.getNet().shutdown();
+        }
+
+        Log.info("Game shutting down");
+        System.exit(0);
     }
 
     @Override
@@ -319,10 +357,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
         }
     }
 
-    public static IResourceName internalRes(String resource){
-        return RockBottomAPI.createRes(get(), resource);
-    }
-
     @Override
     public GameContainer getContainer(){
         return this.container;
@@ -445,41 +479,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
     @Override
     public URLClassLoader getClassLoader(){
         return Main.classLoader;
-    }
-
-    public static void init(){
-        Log.setLogSystem(new LogSystem(LogSystem.LogLevel.DEBUG));
-
-        RockBottom game = new RockBottom();
-
-        RockBottomAPI.setGameInstance(game);
-        RockBottomAPI.setModLoader(new ModLoader());
-        RockBottomAPI.setApiHandler(new ApiHandler());
-        RockBottomAPI.setEventHandler(new EventHandler());
-        RockBottomAPI.setNetHandler(new NetHandler());
-
-        try{
-            Container container = new Container(game);
-            container.setForceExit(false);
-            container.setUpdateOnlyWhenVisible(false);
-            container.setAlwaysRender(true);
-            container.setShowFPS(false);
-
-            int interval = 1000/Constants.TARGET_TPS;
-            container.setMinimumLogicUpdateInterval(interval);
-            container.setMaximumLogicUpdateInterval(interval);
-
-            container.start();
-        }
-        catch(SlickException e){
-            Log.error("Exception initializing game", e);
-        }
-        finally{
-            RockBottomAPI.getNet().shutdown();
-        }
-
-        Log.info("Game shutting down");
-        System.exit(0);
     }
 
     @Override

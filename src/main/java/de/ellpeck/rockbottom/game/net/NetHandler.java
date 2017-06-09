@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.game.net;
 
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.INetHandler;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.client.Client;
-import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.game.net.server.Server;
 import de.ellpeck.rockbottom.game.world.World;
 import de.ellpeck.rockbottom.game.world.entity.player.EntityPlayer;

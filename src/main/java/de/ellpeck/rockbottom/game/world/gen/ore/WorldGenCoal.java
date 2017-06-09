@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.game.world.gen.ore;
 
-import de.ellpeck.rockbottom.game.ContentRegistry;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.game.ContentRegistry;
 
 public class WorldGenCoal extends WorldGenOre{
 

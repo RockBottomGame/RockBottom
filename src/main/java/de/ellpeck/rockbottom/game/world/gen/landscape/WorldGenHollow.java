@@ -4,8 +4,6 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.ContentRegistry;
-import de.ellpeck.rockbottom.game.world.Chunk;
-import de.ellpeck.rockbottom.game.world.World;
 import de.ellpeck.rockbottom.game.world.gen.IWorldGenerator;
 
 import java.util.Random;

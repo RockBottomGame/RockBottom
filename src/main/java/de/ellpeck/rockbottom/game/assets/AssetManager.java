@@ -34,6 +34,28 @@ public class AssetManager implements IAssetManager{
     private Locale currentLocale;
     private Font currentFont;
 
+    private static Image loadImage(String key, String path, String value) throws Exception{
+        if(value.startsWith("sub.")){
+            String[] parts = value.substring(4).split(",");
+
+            Image main = new Image(getResource(path+parts[0]), key, false);
+
+            int x = Integer.parseInt(parts[1]);
+            int y = Integer.parseInt(parts[2]);
+            int width = Integer.parseInt(parts[3]);
+            int height = Integer.parseInt(parts[4]);
+
+            return main.getSubImage(x, y, width, height);
+        }
+        else{
+            return new Image(getResource(path+value), key, false);
+        }
+    }
+
+    public static InputStream getResource(String s){
+        return AssetManager.class.getResourceAsStream(s);
+    }
+
     public void create(RockBottom game){
         try{
             Log.info("Loading resources...");
@@ -226,30 +248,8 @@ public class AssetManager implements IAssetManager{
         return this.currentFont;
     }
 
-    private static Image loadImage(String key, String path, String value) throws Exception{
-        if(value.startsWith("sub.")){
-            String[] parts = value.substring(4).split(",");
-
-            Image main = new Image(getResource(path+parts[0]), key, false);
-
-            int x = Integer.parseInt(parts[1]);
-            int y = Integer.parseInt(parts[2]);
-            int width = Integer.parseInt(parts[3]);
-            int height = Integer.parseInt(parts[4]);
-
-            return main.getSubImage(x, y, width, height);
-        }
-        else{
-            return new Image(getResource(path+value), key, false);
-        }
-    }
-
     @Override
     public InputStream getResourceStream(String s){
         return getResource(s);
-    }
-
-    public static InputStream getResource(String s){
-        return AssetManager.class.getResourceAsStream(s);
     }
 }
