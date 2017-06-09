@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.util.Util;
 import de.ellpeck.rockbottom.game.particle.ParticleManager;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
@@ -134,7 +135,7 @@ public class WorldRenderer{
     private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
-                Image brk = manager.getImage("break."+Util.ceil(input.breakProgress*8F));
+                Image brk = manager.getImage(RockBottom.internalRes("break."+Util.ceil(input.breakProgress*8F)));
                 brk.draw(tileX, -tileY, 1F, 1F);
             }
         }

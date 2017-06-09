@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.api.util.reg;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.api.net.NetUtil;
@@ -11,7 +12,7 @@ import java.util.Properties;
 
 public class NameToIndexInfo implements IPropSettings{
 
-    private final IndexRegistry<String> reg;
+    private final IndexRegistry<IResourceName> reg;
 
     private boolean needsSave;
     private final File file;
@@ -22,8 +23,8 @@ public class NameToIndexInfo implements IPropSettings{
     }
 
     public <T> void populate(NameRegistry<T> registry){
-        for(Map.Entry<String, T> entry : registry.map.entrySet()){
-            String key = entry.getKey();
+        for(Map.Entry<IResourceName, T> entry : registry.map.entrySet()){
+            IResourceName key = entry.getKey();
 
             if(this.getId(key) < 0){
                 this.reg.register(this.reg.getNextFreeId(), key);
@@ -32,11 +33,11 @@ public class NameToIndexInfo implements IPropSettings{
         }
     }
 
-    public int getId(String name){
+    public int getId(IResourceName name){
         return this.reg.getId(name);
     }
 
-    public String get(int id){
+    public IResourceName get(int id){
         return this.reg.get(id);
     }
 
@@ -50,7 +51,7 @@ public class NameToIndexInfo implements IPropSettings{
 
         for(String key : props.stringPropertyNames()){
             int index = Integer.parseInt(key);
-            this.reg.map.put(index, props.getProperty(key));
+            this.reg.map.put(index, RockBottomAPI.createRes(props.getProperty(key)));
         }
     }
 
@@ -59,14 +60,14 @@ public class NameToIndexInfo implements IPropSettings{
 
         int amount = buf.readInt();
         for(int i = 0; i < amount; i++){
-            this.reg.map.put(buf.readInt(), NetUtil.readStringFromBuffer(buf));
+            this.reg.map.put(buf.readInt(), RockBottomAPI.createRes(NetUtil.readStringFromBuffer(buf)));
         }
     }
 
     @Override
     public void save(Properties props){
-        for(Map.Entry<Integer, String> entry : this.reg.map.entrySet()){
-            props.setProperty(entry.getKey().toString(), entry.getValue());
+        for(Map.Entry<Integer, IResourceName> entry : this.reg.map.entrySet()){
+            props.setProperty(entry.getKey().toString(), entry.getValue().toString());
         }
 
         this.needsSave = false;
@@ -75,9 +76,9 @@ public class NameToIndexInfo implements IPropSettings{
     public void toBuffer(ByteBuf buf){
         buf.writeInt(this.reg.getSize());
 
-        for(Map.Entry<Integer, String> entry : this.reg.map.entrySet()){
+        for(Map.Entry<Integer, IResourceName> entry : this.reg.map.entrySet()){
             buf.writeInt(entry.getKey());
-            NetUtil.writeStringToBuffer(entry.getValue(), buf);
+            NetUtil.writeStringToBuffer(entry.getValue().toString(), buf);
         }
     }
 

@@ -21,7 +21,7 @@ public class CommandSpawnItem extends Command{
     @Override
     public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IAssetManager manager, IChatLog chat){
         try{
-            Item item = RockBottomAPI.ITEM_REGISTRY.get(args[0]);
+            Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(args[0]));
 
             if(item != null){
                 int amount = args.length < 2 ? 1 : Integer.parseInt(args[1]);

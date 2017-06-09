@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.game.gui.menu;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.gui.component.ComponentKeybind;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 
@@ -31,7 +32,7 @@ public class GuiKeybinds extends Gui{
             }
         }
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize("button.back")));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
     }
 
     @Override

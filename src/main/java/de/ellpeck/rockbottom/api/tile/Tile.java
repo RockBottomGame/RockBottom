@@ -3,19 +3,20 @@ package de.ellpeck.rockbottom.api.tile;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ItemTile;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import org.newdawn.slick.Input;
 
 import java.util.Collections;
@@ -26,14 +27,16 @@ import java.util.Map;
 public class Tile{
 
     public static final BoundBox DEFAULT_BOUNDS = new BoundBox(0, 0, 1, 1);
+    private static final IResourceName LOC_ADVANCED = RockBottomAPI.createRes(null, "info.advanced_info");
+    private static final IResourceName LOC_LAYER = RockBottomAPI.createRes(null, "info.layer_placement");
 
-    protected final String name;
+    protected final IResourceName name;
 
     protected Map<ToolType, Integer> effectiveTools = new HashMap<>();
     protected boolean forceDrop;
     protected float hardness = 1F;
 
-    public Tile(String name){
+    public Tile(IResourceName name){
         this.name = name;
     }
 
@@ -226,13 +229,13 @@ public class Tile{
         return false;
     }
 
-    public String getName(){
+    public IResourceName getName(){
         return this.name;
     }
 
     @Override
     public String toString(){
-        return this.getName();
+        return this.getName().toString();
     }
 
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
@@ -243,12 +246,12 @@ public class Tile{
         if(isAdvanced){
             for(TileLayer layer : TileLayer.LAYERS){
                 if(this.canPlaceInLayer(layer)){
-                    desc.add(FormattingCode.GRAY+manager.localize("info.layer_placement", manager.localize(layer.name)));
+                    desc.add(FormattingCode.GRAY+manager.localize(LOC_LAYER, manager.localize(layer.name)));
                 }
             }
         }
         else{
-            desc.add(FormattingCode.DARK_GRAY+manager.localize("info.advanced_info", Input.getKeyName(RockBottomAPI.getGame().getSettings().keyAdvancedInfo.key)));
+            desc.add(FormattingCode.DARK_GRAY+manager.localize(LOC_ADVANCED, Input.getKeyName(RockBottomAPI.getGame().getSettings().keyAdvancedInfo.key)));
         }
     }
 }

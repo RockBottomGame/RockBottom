@@ -15,9 +15,9 @@ public final class ContentRegistry{
 
     public static final Tile TILE_AIR = new TileAir().register();
     public static final Tile TILE_DIRT = new TileDirt().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-    public static final Tile TILE_ROCK = new TileBasic("rock").setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
+    public static final Tile TILE_ROCK = new TileBasic(RockBottom.internalRes("rock")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
     public static final Tile TILE_GRASS = new TileGrass().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-    public static final Tile TILE_WOOD_BOARDS = new TileBasic("wood_boards").setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+    public static final Tile TILE_WOOD_BOARDS = new TileBasic(RockBottom.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
     public static final Tile TILE_TORCH = new TileTorch().setHardness(0F).setForceDrop().register();
     public static final Tile TILE_CHEST = new TileChest().addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
     public static final Tile TILE_LOG = new TileLog().setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
@@ -28,17 +28,17 @@ public final class ContentRegistry{
     public static final Tile TILE_SMELTER = new TileSmelter().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
     public static final Tile TILE_SEPARATOR = new TileSeparator().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
 
-    public static final Item ITEM_SUPER_TOOL = new ItemTool("super_tool", 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
-    public static final Item ITEM_WOOD_PICK = new ItemTool("pick_wood", 2F).addToolType(ToolType.PICKAXE, 1).register();
-    public static final Item ITEM_ROCK_PICK = new ItemTool("pick_rock", 4F).addToolType(ToolType.PICKAXE, 2).register();
-    public static final Item ITEM_COAL = new ItemBasic("coal").register();
-    public static final Item ITEM_COPPER_CLUSTER = new ItemBasic("copper_cluster").register();
-    public static final Item ITEM_COPPER_GRIT = new ItemBasic("copper_grit").register();
-    public static final Item ITEM_COPPER_INGOT = new ItemBasic("copper_ingot").register();
-    public static final Item ITEM_SLAG = new ItemBasic("slag").register();
+    public static final Item ITEM_SUPER_TOOL = new ItemTool(RockBottom.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
+    public static final Item ITEM_WOOD_PICK = new ItemTool(RockBottom.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
+    public static final Item ITEM_ROCK_PICK = new ItemTool(RockBottom.internalRes("pick_rock"), 4F).addToolType(ToolType.PICKAXE, 2).register();
+    public static final Item ITEM_COAL = new ItemBasic(RockBottom.internalRes("coal")).register();
+    public static final Item ITEM_COPPER_CLUSTER = new ItemBasic(RockBottom.internalRes("copper_cluster")).register();
+    public static final Item ITEM_COPPER_GRIT = new ItemBasic(RockBottom.internalRes("copper_grit")).register();
+    public static final Item ITEM_COPPER_INGOT = new ItemBasic(RockBottom.internalRes("copper_ingot")).register();
+    public static final Item ITEM_SLAG = new ItemBasic(RockBottom.internalRes("slag")).register();
 
     public static void init(){
-        RockBottomAPI.ENTITY_REGISTRY.register("item", EntityItem.class);
+        RockBottomAPI.ENTITY_REGISTRY.register(RockBottom.internalRes("item"), EntityItem.class);
 
         Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
         Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");

@@ -2,6 +2,8 @@ package de.ellpeck.rockbottom.api;
 
 public final class Constants{
 
+    public static final String RESOURCE_SEPARATOR = "/";
+
     public static final int TARGET_TPS = 40;
     public static final int RANDOM_TILE_UPDATES = 5;
     public static final int RANDOM_TILE_RENDER_UPDATES = 200;

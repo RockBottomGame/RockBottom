@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.game.ContentRegistry;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.render.WorldRenderer;
@@ -97,7 +98,7 @@ public class MainMenuBackground{
                 if(tile != null){
                     ITileRenderer renderer = tile.getRenderer();
                     if(renderer instanceof DefaultTileRenderer){
-                        String tex = ((DefaultTileRenderer)renderer).texture;
+                        IResourceName tex = ((DefaultTileRenderer)renderer).texture;
                         manager.getImage(tex).draw(x*TILE_SIZE, offsetY+y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     }
                 }

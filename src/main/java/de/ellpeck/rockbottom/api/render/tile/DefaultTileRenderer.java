@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.api.render.tile;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -10,10 +11,10 @@ import org.newdawn.slick.Image;
 
 public class DefaultTileRenderer<T extends Tile> implements ITileRenderer<T>{
 
-    public final String texture;
+    public final IResourceName texture;
 
-    public DefaultTileRenderer(String texture){
-        this.texture = "tiles."+texture;
+    public DefaultTileRenderer(IResourceName texture){
+        this.texture = texture.addPrefix("tiles.");
     }
 
     @Override

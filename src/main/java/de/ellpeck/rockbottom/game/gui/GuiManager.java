@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.game.gui.component.ComponentHotbarSlot;
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class GuiManager implements IGuiManager{
 
+    private static final IResourceName LOC_DEAD = RockBottom.internalRes("info.dead");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private boolean shouldReInit;
     private MainMenuBackground background;
@@ -105,7 +107,7 @@ public class GuiManager implements IGuiManager{
         Gui gui = this.getGui();
 
         if(player != null && player.isDead()){
-            String deathInfo = manager.localize("info.dead");
+            String deathInfo = manager.localize(LOC_DEAD);
             font.drawCenteredString(width/2F, height/2F, deathInfo, 2F, true);
         }
         else{

@@ -24,8 +24,8 @@ public class GuiJoinServer extends Gui{
         this.inputField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-80, this.guiTop, 160, 16, true, true, false, 128, false);
         this.components.add(this.inputField);
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.getAssetManager().localize("button.connect")));
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, game.getAssetManager().localize("button.back")));
+        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.getAssetManager().localize(RockBottom.internalRes("button.connect"))));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
     }
 
     @Override

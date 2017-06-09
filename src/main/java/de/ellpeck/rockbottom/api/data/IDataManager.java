@@ -8,6 +8,8 @@ public interface IDataManager{
 
     File getGameDir();
 
+    File getModsDir();
+
     File getWorldsDir();
 
     File getGameDataFile();

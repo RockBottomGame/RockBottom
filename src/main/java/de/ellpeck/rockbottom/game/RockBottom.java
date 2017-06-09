@@ -11,12 +11,15 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.IEventListener;
 import de.ellpeck.rockbottom.api.event.impl.EntityTickEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.IAction;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.apiimpl.ApiHandler;
 import de.ellpeck.rockbottom.game.apiimpl.EventHandler;
+import de.ellpeck.rockbottom.game.apiimpl.ResourceName;
 import de.ellpeck.rockbottom.game.assets.AssetManager;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.data.DataManager;
@@ -26,6 +29,7 @@ import de.ellpeck.rockbottom.game.gui.GuiInventory;
 import de.ellpeck.rockbottom.game.gui.GuiManager;
 import de.ellpeck.rockbottom.game.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.game.gui.menu.GuiMenu;
+import de.ellpeck.rockbottom.game.mod.ModLoader;
 import de.ellpeck.rockbottom.game.net.NetHandler;
 import de.ellpeck.rockbottom.game.net.chat.ChatLog;
 import de.ellpeck.rockbottom.game.net.client.ClientWorld;
@@ -76,7 +80,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
         super("Rock Bottom "+VERSION);
 
         Log.info("Setting game instance to "+this);
-        RockBottomAPI.set(new ApiHandler(), new NetHandler(), new EventHandler(), this);
+        RockBottomAPI.set(new ApiHandler(), new NetHandler(), new EventHandler(), this, new ModLoader());
     }
 
     public static IGameInstance get(){
@@ -86,11 +90,15 @@ public class RockBottom extends BasicGame implements IGameInstance{
     @Override
     public void init(GameContainer container) throws SlickException{
         Log.info("----- Initializing game -----");
-
         this.dataManager = new DataManager(this);
+
+        IModLoader modLoader = RockBottomAPI.getModLoader();
+        modLoader.loadModsFromDir(this.dataManager.getModsDir());
 
         this.settings = new Settings();
         this.dataManager.loadPropSettings(this.settings);
+
+        modLoader.preInit();
 
         this.container = (Container)container;
         this.container.setTargetFrameRate(this.settings.targetFps);
@@ -102,12 +110,16 @@ public class RockBottom extends BasicGame implements IGameInstance{
         ConstructionRegistry.init();
         WorldRenderer.init();
 
+        modLoader.init();
+
         this.guiManager = new GuiManager();
         this.interactionManager = new InteractionManager();
         this.chatLog = new ChatLog();
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
+
+        modLoader.postInit();
 
         Log.info("----- Done initializing game -----");
         this.quitWorld();
@@ -299,6 +311,10 @@ public class RockBottom extends BasicGame implements IGameInstance{
         synchronized(this.scheduledActions){
             this.scheduledActions.add(action);
         }
+    }
+
+    public static IResourceName internalRes(String resource){
+        return new ResourceName(null, resource);
     }
 
     @Override

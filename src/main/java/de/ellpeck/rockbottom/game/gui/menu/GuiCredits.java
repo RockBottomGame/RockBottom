@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.game.RockBottom;
 import org.newdawn.slick.Graphics;
 
 public class GuiCredits extends Gui{
@@ -17,7 +18,7 @@ public class GuiCredits extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize("button.back")));
+        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
     }
 
     @Override

@@ -5,15 +5,16 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class DefaultItemRenderer implements IItemRenderer{
 
-    protected final String texture;
+    protected final IResourceName texture;
 
-    public DefaultItemRenderer(String texture){
-        this.texture = "items."+texture;
+    public DefaultItemRenderer(IResourceName texture){
+        this.texture = texture.addPrefix("items.");
     }
 
     @Override

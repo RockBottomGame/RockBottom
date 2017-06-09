@@ -22,7 +22,7 @@ public class ComponentKeybind extends ComponentButton{
     @Override
     protected String getText(){
         IAssetManager manager = RockBottom.get().getAssetManager();
-        return manager.localize("key."+this.bind.name)+": "+(this.isActive() ? "<?>" : Input.getKeyName(this.bind.key));
+        return manager.localize(RockBottom.internalRes("key."+this.bind.name))+": "+(this.isActive() ? "<?>" : Input.getKeyName(this.bind.key));
     }
 
     @Override

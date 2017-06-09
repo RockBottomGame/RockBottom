@@ -6,6 +6,8 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.construction.BasicRecipe;
 import de.ellpeck.rockbottom.game.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.game.construction.IRecipe;
@@ -24,6 +26,7 @@ import java.util.List;
 
 public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
+    private static final IResourceName LOC_NEED = RockBottom.internalRes("info.need_items");
     private static boolean isConstructionOpen;
     private static boolean shouldShowAll;
     private static int craftAmount = 1;
@@ -38,7 +41,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, "gui.construction", game.getAssetManager().localize("button.construction")));
+        this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, RockBottom.internalRes("gui.construction"), game.getAssetManager().localize(RockBottom.internalRes("button.construction"))));
 
         if(isConstructionOpen){
             this.components.add(new ComponentSlider(this, 2, this.guiLeft-104, this.guiTop+71, 88, 12, craftAmount, 1, 128, new ComponentSlider.ICallback(){
@@ -46,8 +49,8 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
                 public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                     craftAmount = number;
                 }
-            }, game.getAssetManager().localize("button.construction_amount")));
-            this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, "gui.all_construction", game.getAssetManager().localize("button.all_construction")));
+            }, game.getAssetManager().localize(RockBottom.internalRes("button.construction_amount"))));
+            this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, RockBottom.internalRes("gui.all_construction"), game.getAssetManager().localize(RockBottom.internalRes("button.all_construction"))));
             this.initConstructionButtons();
         }
     }
@@ -83,7 +86,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
         if(isConstructionOpen){
             if(this.constructionButtons.isEmpty()){
-                manager.getFont().drawSplitString(this.guiLeft-104, this.guiTop, FormattingCode.GRAY+manager.localize("info.need_items"), 0.25F, 88);
+                manager.getFont().drawSplitString(this.guiLeft-104, this.guiTop, FormattingCode.GRAY+manager.localize(LOC_NEED), 0.25F, 88);
             }
         }
 

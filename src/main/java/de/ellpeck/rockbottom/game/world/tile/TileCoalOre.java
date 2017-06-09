@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.game.ContentRegistry;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.game.RockBottom;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public class TileCoalOre extends TileBasic{
 
     public TileCoalOre(){
-        super("coal_ore");
+        super(RockBottom.internalRes("coal_ore"));
     }
 
     @Override

@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import org.newdawn.slick.Color;
@@ -71,7 +72,7 @@ public final class Util{
         return new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
     }
 
-    public static Entity createEntity(String name, IWorld world){
+    public static Entity createEntity(IResourceName name, IWorld world){
         Class<? extends Entity> entityClass = RockBottomAPI.ENTITY_REGISTRY.get(name);
 
         try{

@@ -3,6 +3,8 @@ package de.ellpeck.rockbottom.api.assets;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.local.Locale;
+import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
@@ -13,19 +15,21 @@ public interface IAssetManager{
 
     void reloadCursor(IGameInstance game);
 
-    Map<String, IAsset> getAllOfType(Class<? extends IAsset> type);
+    void addAssetProp(IMod mod, String path);
 
-    <T> T getAssetWithFallback(String path, IAsset<T> fallback);
+    Map<IResourceName, IAsset> getAllOfType(Class<? extends IAsset> type);
 
-    Image getImage(String path);
+    <T> T getAssetWithFallback(IResourceName path, IAsset<T> fallback);
 
-    Sound getSound(String path);
+    Image getImage(IResourceName path);
 
-    Locale getLocale(String path);
+    Sound getSound(IResourceName path);
 
-    Font getFont(String path);
+    Locale getLocale(IResourceName path);
 
-    String localize(String unloc, Object... format);
+    Font getFont(IResourceName path);
+
+    String localize(IResourceName unloc, Object... format);
 
     Font getFont();
 

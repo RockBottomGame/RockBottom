@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.game.gui.component;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.gui.menu.GuiSelectWorld;
@@ -12,6 +13,11 @@ import org.newdawn.slick.util.Log;
 import java.io.File;
 
 public class ComponentSelectWorldButton extends ComponentButton{
+
+    private static final IResourceName LOC_DELETE = RockBottom.internalRes("info.delete_world");
+    private static final IResourceName LOC_WORLD = RockBottom.internalRes("info.world");
+    private static final IResourceName LOC_SEED = RockBottom.internalRes("info.seed");
+    private static final IResourceName LOC_TIME = RockBottom.internalRes("info.time");
 
     private final GuiSelectWorld gui;
     private final File worldFile;
@@ -39,7 +45,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     protected String getText(){
         if(this.exists){
             IAssetManager manager = RockBottom.get().getAssetManager();
-            return manager.localize("info."+(this.gui.deleteMode ? "delete_world" : "world"), this.id+1);
+            return manager.localize(this.gui.deleteMode ? LOC_DELETE : LOC_WORLD, this.id+1);
         }
         else{
             return "-----";
@@ -52,8 +58,8 @@ public class ComponentSelectWorldButton extends ComponentButton{
             IAssetManager manager = RockBottom.get().getAssetManager();
 
             String[] hover = new String[2];
-            hover[0] = manager.localize("info.seed")+": "+this.info.seed;
-            hover[1] = manager.localize("info.time")+": "+this.info.currentWorldTime;
+            hover[0] = manager.localize(LOC_SEED)+": "+this.info.seed;
+            hover[1] = manager.localize(LOC_TIME)+": "+this.info.currentWorldTime;
             return hover;
         }
         return super.getHover();

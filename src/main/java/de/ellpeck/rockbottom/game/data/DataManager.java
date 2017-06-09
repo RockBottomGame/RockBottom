@@ -70,6 +70,7 @@ public class DataManager implements IDataManager{
     }
 
     private final File gameDirectory;
+    private final File modsDirectory;
     private final File saveDirectory;
     private final File gameDataFile;
     private final File settingsFile;
@@ -77,6 +78,7 @@ public class DataManager implements IDataManager{
 
     public DataManager(RockBottom game){
         this.gameDirectory = new File(".", "rockbottom");
+        this.modsDirectory = new File(this.gameDirectory, "mods");
         this.saveDirectory = new File(this.gameDirectory, "save");
 
         this.gameDataFile = new File(this.gameDirectory, "game_info.dat");
@@ -101,6 +103,11 @@ public class DataManager implements IDataManager{
     @Override
     public File getGameDir(){
         return this.gameDirectory;
+    }
+
+    @Override
+    public File getModsDir(){
+        return this.modsDirectory;
     }
 
     @Override

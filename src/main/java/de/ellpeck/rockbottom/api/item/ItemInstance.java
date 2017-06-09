@@ -47,7 +47,7 @@ public class ItemInstance{
 
     public static ItemInstance load(DataSet set){
         String name = set.getString("item_name");
-        Item item = RockBottomAPI.ITEM_REGISTRY.get(name);
+        Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(name));
 
         if(item != null){
             int amount = set.getInt("amount");
@@ -63,7 +63,7 @@ public class ItemInstance{
     }
 
     public void save(DataSet set){
-        set.addString("item_name", RockBottomAPI.ITEM_REGISTRY.getId(this.item));
+        set.addString("item_name", RockBottomAPI.ITEM_REGISTRY.getId(this.item).toString());
         set.addInt("amount", this.amount);
         set.addShort("meta", this.meta);
     }

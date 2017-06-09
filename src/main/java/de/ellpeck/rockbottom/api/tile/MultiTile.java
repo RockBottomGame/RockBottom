@@ -5,26 +5,21 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 
 public abstract class MultiTile extends TileBasic{
 
-    protected final boolean[][] structure;
+    private boolean[][] structure;
 
-    public MultiTile(String name){
+    public MultiTile(IResourceName name){
         super(name);
-
-        this.structure = this.makeStructure();
-
-        if(!this.areDimensionsValid()){
-            throw new RuntimeException("MultiTile with name "+name+" has invalid structure dimensions!");
-        }
     }
 
     @Override
-    protected ITileRenderer createRenderer(String name){
-        return new MultiTileRenderer(name);
+    protected ITileRenderer createRenderer(IResourceName name){
+        return new MultiTileRenderer(name, this);
     }
 
     protected abstract boolean[][] makeStructure();
@@ -38,6 +33,14 @@ public abstract class MultiTile extends TileBasic{
     public abstract int getMainY();
 
     public boolean isStructurePart(int x, int y){
+        if(this.structure == null){
+            this.structure = this.makeStructure();
+
+            if(!this.areDimensionsValid()){
+                throw new RuntimeException("MultiTile with name "+this.name+" has invalid structure dimensions!");
+            }
+        }
+
         return this.structure[this.getHeight()-1-y][x];
     }
 

@@ -4,8 +4,11 @@ import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.item.Item;
+import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.IndexRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
@@ -31,6 +34,7 @@ public final class RockBottomAPI{
     private static INetHandler netHandler;
     private static IEventHandler eventHandler;
     private static IGameInstance gameInstance;
+    private static IModLoader modLoader;
 
     public static IApiHandler getApiHandler(){
         return apiHandler;
@@ -48,12 +52,25 @@ public final class RockBottomAPI{
         return gameInstance;
     }
 
-    public static void set(IApiHandler api, INetHandler net, IEventHandler event, IGameInstance instance){
+    public static IModLoader getModLoader(){
+        return modLoader;
+    }
+
+    public static IResourceName createRes(IMod mod, String resource){
+        return modLoader.createResourceName(mod, resource);
+    }
+
+    public static IResourceName createRes(String combined){
+        return modLoader.createResourceName(combined);
+    }
+
+    public static void set(IApiHandler api, INetHandler net, IEventHandler event, IGameInstance instance, IModLoader mod){
         if(!init){
             apiHandler = api;
             netHandler = net;
             eventHandler = event;
             gameInstance = instance;
+            modLoader = mod;
 
             init = true;
         }

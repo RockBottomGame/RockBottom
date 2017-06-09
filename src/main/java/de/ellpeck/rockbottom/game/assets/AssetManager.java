@@ -1,16 +1,19 @@
 package de.ellpeck.rockbottom.game.assets;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetImage;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
 import de.ellpeck.rockbottom.api.assets.IAsset;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.util.Pos2;
-import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.api.assets.font.AssetFont;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
 import de.ellpeck.rockbottom.api.assets.local.Locale;
+import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.game.RockBottom;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -22,7 +25,8 @@ import java.util.Properties;
 
 public class AssetManager implements IAssetManager{
 
-    private final Map<String, IAsset> assets = new HashMap<>();
+    private final Map<IMod, String> assetProps = new HashMap<>();
+    private final Map<IResourceName, IAsset> assets = new HashMap<>();
     private AssetSound missingSound;
     private AssetImage missingTexture;
     private AssetLocale missingLocale;
@@ -33,6 +37,7 @@ public class AssetManager implements IAssetManager{
     public void create(RockBottom game) throws SlickException{
         try{
             Log.info("Loading resources...");
+            this.addAssetProp(null, "/assets/rockbottom");
             this.loadAssets();
         }
         catch(Exception e){
@@ -55,8 +60,8 @@ public class AssetManager implements IAssetManager{
         Log.info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
 
-        this.currentLocale = this.getLocale("us_english");
-        this.currentFont = this.getFont("default");
+        this.currentLocale = this.getLocale(RockBottom.internalRes("us_english"));
+        this.currentFont = this.getFont(RockBottom.internalRes("default"));
 
         this.reloadCursor(game);
     }
@@ -67,7 +72,7 @@ public class AssetManager implements IAssetManager{
             GameContainer container = game.getContainer();
 
             if(!game.getSettings().hardwareCursor){
-                container.setMouseCursor(this.getImage("gui.cursor").getScaledCopy(3F), 0, 0);
+                container.setMouseCursor(this.getImage(RockBottom.internalRes("gui.cursor")).getScaledCopy(3F), 0, 0);
             }
             else{
                 container.setDefaultMouseCursor();
@@ -78,52 +83,61 @@ public class AssetManager implements IAssetManager{
         }
     }
 
+    @Override
+    public void addAssetProp(IMod mod, String path){
+        this.assetProps.put(mod, path);
+    }
+
     private void loadAssets() throws Exception{
-        String path = "/assets";
+        for(Map.Entry<IMod, String> prop : this.assetProps.entrySet()){
+            IMod mod = prop.getKey();
+            String path = prop.getValue();
 
-        InputStream propStream = getResource(path+"/assets.info");
-        Properties props = new Properties();
-        props.load(propStream);
+            InputStream propStream = getResource(path+"/assets.info");
+            Properties props = new Properties();
+            props.load(propStream);
 
-        for(String key : props.stringPropertyNames()){
-            String value = props.getProperty(key);
+            for(String key : props.stringPropertyNames()){
+                String value = props.getProperty(key);
+                IResourceName name = RockBottomAPI.createRes(mod, key);
 
-            try{
-                if(key.startsWith("font.")){
-                    InputStream image = getResource(path+value+".png");
-                    InputStream info = getResource(path+value+".info");
+                try{
+                    if(key.startsWith("font.")){
+                        InputStream image = getResource(path+value+".png");
+                        InputStream info = getResource(path+value+".info");
 
-                    this.assets.put(key, new AssetFont(Font.fromStream(image, info, key)));
-                    Log.info("Loaded font resource "+key+" with data "+value);
-                }
-                else if(key.startsWith("tex.")){
-                    this.assets.put(key, new AssetImage(loadImage(key, path, value)));
-                    Log.info("Loaded png resource "+key+" with data "+value);
-                }
-                else{
-                    InputStream stream = getResource(path+value);
-
-                    if(key.startsWith("sound.")){
-                        this.assets.put(key, new AssetSound(new Sound(stream, key)));
-                        Log.info("Loaded ogg resource "+key+" with data "+value);
+                        this.assets.put(name, new AssetFont(Font.fromStream(image, info, key)));
+                        Log.info("Loaded font resource "+name+" with data "+value);
                     }
-                    else if(key.startsWith("loc.")){
-                        this.assets.put(key, new AssetLocale(Locale.fromStream(stream, key)));
-                        Log.info("Loaded localization resource "+key+" with data "+value);
+                    else if(key.startsWith("tex.")){
+                        this.assets.put(name, new AssetImage(loadImage(key, path, value)));
+                        Log.info("Loaded png resource "+name+" with data "+value);
+                    }
+                    else{
+                        InputStream stream = getResource(path+value);
+
+                        if(key.startsWith("sound.")){
+                            this.assets.put(name, new AssetSound(new Sound(stream, key)));
+                            Log.info("Loaded ogg resource "+name+" with data "+value);
+                        }
+                        else if(key.startsWith("loc.")){
+                            this.assets.put(name, new AssetLocale(Locale.fromStream(stream, key)));
+                            Log.info("Loaded localization resource "+name+" with data "+value);
+                        }
                     }
                 }
-            }
-            catch(Exception e){
-                Log.error("Failed loading resource "+key+" with data "+value+"!", e);
+                catch(Exception e){
+                    Log.error("Failed loading resource "+name+" with data "+value+"!", e);
+                }
             }
         }
     }
 
     @Override
-    public Map<String, IAsset> getAllOfType(Class<? extends IAsset> type){
-        Map<String, IAsset> assets = new HashMap<>();
+    public Map<IResourceName, IAsset> getAllOfType(Class<? extends IAsset> type){
+        Map<IResourceName, IAsset> assets = new HashMap<>();
 
-        for(Map.Entry<String, IAsset> entry : this.assets.entrySet()){
+        for(Map.Entry<IResourceName, IAsset> entry : this.assets.entrySet()){
             IAsset asset = entry.getValue();
 
             if(type.isAssignableFrom(asset.getClass())){
@@ -135,7 +149,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public <T> T getAssetWithFallback(String path, IAsset<T> fallback){
+    public <T> T getAssetWithFallback(IResourceName path, IAsset<T> fallback){
         IAsset asset = this.assets.get(path);
 
         if(asset == null){
@@ -149,27 +163,27 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Image getImage(String path){
-        return this.getAssetWithFallback("tex."+path, this.missingTexture);
+    public Image getImage(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("tex."), this.missingTexture);
     }
 
     @Override
-    public Sound getSound(String path){
-        return this.getAssetWithFallback("sound."+path, this.missingSound);
+    public Sound getSound(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("sound."), this.missingSound);
     }
 
     @Override
-    public Locale getLocale(String path){
-        return this.getAssetWithFallback("loc."+path, this.missingLocale);
+    public Locale getLocale(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("loc."), this.missingLocale);
     }
 
     @Override
-    public Font getFont(String path){
-        return this.getAssetWithFallback("font."+path, this.missingFont);
+    public Font getFont(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("font."), this.missingFont);
     }
 
     @Override
-    public String localize(String unloc, Object... format){
+    public String localize(IResourceName unloc, Object... format){
         return this.currentLocale.localize(unloc, format);
     }
 
@@ -179,7 +193,7 @@ public class AssetManager implements IAssetManager{
     }
 
     private static Image loadImage(String key, String path, String value) throws Exception{
-        if(value.startsWith("sub:")){
+        if(value.startsWith("sub.")){
             String[] parts = value.substring(4).split(",");
 
             Image main = new Image(getResource(path+parts[0]), key, false);

@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketSlotModification;
@@ -29,6 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ApiHandler implements IApiHandler{
+
+    private static final IResourceName SLOT_NAME = RockBottom.internalRes("gui.slot");
 
     @Override
     public void writeDataSet(DataSet set, File file){
@@ -238,7 +241,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
-        this.drawScaledImage(g, manager.getImage("gui.slot"), x, y, scale, game.getSettings().guiColor);
+        this.drawScaledImage(g, manager.getImage(SLOT_NAME), x, y, scale, game.getSettings().guiColor);
 
         if(slot != null){
             this.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Color.white);

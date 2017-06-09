@@ -5,17 +5,18 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.render.item.ItemTileRenderer;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.util.List;
 
 public class ItemTile extends ItemBasic{
 
-    public ItemTile(String name){
+    public ItemTile(IResourceName name){
         super(name);
     }
 
     @Override
-    protected IItemRenderer createRenderer(String name){
+    protected IItemRenderer createRenderer(IResourceName name){
         return new ItemTileRenderer();
     }
 

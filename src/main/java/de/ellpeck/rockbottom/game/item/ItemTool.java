@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.game.item;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolType;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -17,7 +18,7 @@ public class ItemTool extends ItemBasic{
     private final float miningSpeed;
     private final Map<ToolType, Integer> toolTypes = new HashMap<>();
 
-    public ItemTool(String name, float miningSpeed){
+    public ItemTool(IResourceName name, float miningSpeed){
         super(name);
         this.miningSpeed = miningSpeed;
         this.maxAmount = 1;
@@ -29,7 +30,7 @@ public class ItemTool extends ItemBasic{
     }
 
     @Override
-    protected IItemRenderer createRenderer(String name){
+    protected IItemRenderer createRenderer(IResourceName name){
         return new ToolItemRenderer(name);
     }
 

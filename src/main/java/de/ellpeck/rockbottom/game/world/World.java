@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -297,13 +298,13 @@ public class World implements IWorld{
 
     @Override
     public int getIdForTile(Tile tile){
-        String name = RockBottomAPI.TILE_REGISTRY.getId(tile);
+        IResourceName name = RockBottomAPI.TILE_REGISTRY.getId(tile);
         return this.tileRegInfo.getId(name);
     }
 
     @Override
     public Tile getTileForId(int id){
-        String name = this.tileRegInfo.get(id);
+        IResourceName name = this.tileRegInfo.get(id);
         return RockBottomAPI.TILE_REGISTRY.get(name);
     }
 

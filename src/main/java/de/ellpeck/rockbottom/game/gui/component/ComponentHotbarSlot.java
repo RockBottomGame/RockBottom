@@ -7,10 +7,14 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.net.packet.toserver.PacketHotbar;
 import org.newdawn.slick.Graphics;
 
 public class ComponentHotbarSlot extends GuiComponent{
+
+    private static final IResourceName TEX_ARROW = RockBottom.internalRes("gui.selection_arrow");
 
     private final AbstractEntityPlayer player;
     private final Inventory inv;
@@ -28,7 +32,7 @@ public class ComponentHotbarSlot extends GuiComponent{
         RockBottomAPI.getApiHandler().renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
 
         if(this.player.getSelectedSlot() == this.id){
-            manager.getImage("gui.selection_arrow").draw(this.x+0.75F, 1);
+            manager.getImage(TEX_ARROW).draw(this.x+0.75F, 1);
         }
     }
 

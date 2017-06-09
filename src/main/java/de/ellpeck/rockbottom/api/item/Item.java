@@ -2,10 +2,11 @@ package de.ellpeck.rockbottom.api.item;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,11 +14,14 @@ import java.util.Map;
 
 public class Item{
 
-    protected final String name;
+    protected final IResourceName name;
+    protected final IResourceName unlocName;
+
     protected int maxAmount = 999;
 
-    public Item(String name){
+    public Item(IResourceName name){
         this.name = name;
+        this.unlocName = this.name.addPrefix("item.");
     }
 
     public IItemRenderer getRenderer(){
@@ -33,12 +37,12 @@ public class Item{
         return this.maxAmount;
     }
 
-    public String getName(){
+    public IResourceName getName(){
         return this.name;
     }
 
-    public String getUnlocalizedName(ItemInstance instance){
-        return "name."+this.name;
+    public IResourceName getUnlocalizedName(ItemInstance instance){
+        return this.unlocName;
     }
 
     public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
@@ -47,7 +51,7 @@ public class Item{
 
     @Override
     public String toString(){
-        return this.getName();
+        return this.getName().toString();
     }
 
     public int getDespawnTime(ItemInstance instance){

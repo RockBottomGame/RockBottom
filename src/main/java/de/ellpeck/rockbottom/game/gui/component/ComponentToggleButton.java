@@ -18,7 +18,7 @@ public class ComponentToggleButton extends ComponentButton{
 
     @Override
     protected String getText(){
-        return RockBottom.get().getAssetManager().localize(this.locKey+(this.isToggled ? "_toggled" : ""));
+        return RockBottom.get().getAssetManager().localize(RockBottom.internalRes(this.locKey+(this.isToggled ? "_toggled" : "")));
     }
 
     @Override

@@ -7,8 +7,10 @@ import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.gui.GuiChest;
 import de.ellpeck.rockbottom.game.gui.container.ContainerChest;
 import de.ellpeck.rockbottom.game.render.tile.ChestTileRenderer;
@@ -17,12 +19,12 @@ import de.ellpeck.rockbottom.game.world.tile.entity.TileEntityChest;
 public class TileChest extends TileBasic{
 
     public TileChest(){
-        super("chest");
+        super(RockBottom.internalRes("chest"));
     }
 
     @Override
-    protected ITileRenderer createRenderer(String name){
-        return new ChestTileRenderer();
+    protected ITileRenderer createRenderer(IResourceName name){
+        return new ChestTileRenderer(name);
     }
 
     @Override

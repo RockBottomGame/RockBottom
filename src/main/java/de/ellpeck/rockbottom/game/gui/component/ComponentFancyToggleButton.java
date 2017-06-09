@@ -2,19 +2,22 @@ package de.ellpeck.rockbottom.game.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 public class ComponentFancyToggleButton extends ComponentFancyButton{
 
+    private final IResourceName texToggled;
     private boolean isToggled;
 
-    public ComponentFancyToggleButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, boolean defaultState, String texture, String... hover){
+    public ComponentFancyToggleButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, boolean defaultState, IResourceName texture, String... hover){
         super(gui, id, x, y, sizeX, sizeY, texture, hover);
         this.isToggled = defaultState;
+        this.texToggled = this.texture.addSuffix("_toggled");
     }
 
     @Override
-    protected String getTexture(){
-        return this.texture+(this.isToggled ? "_toggled" : "");
+    protected IResourceName getTexture(){
+        return this.isToggled ? this.texToggled : this.texture;
     }
 
     @Override

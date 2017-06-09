@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.game.RockBottom;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public class TileLeaves extends TileBasic{
 
     public TileLeaves(){
-        super("leaves");
+        super(RockBottom.internalRes("leaves"));
     }
 
     @Override

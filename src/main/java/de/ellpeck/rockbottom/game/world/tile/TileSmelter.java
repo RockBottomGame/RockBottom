@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.game.RockBottom;
@@ -22,12 +23,12 @@ import de.ellpeck.rockbottom.game.world.tile.entity.TileEntitySmelter;
 public class TileSmelter extends MultiTile{
 
     public TileSmelter(){
-        super("smelter");
+        super(RockBottom.internalRes("smelter"));
     }
 
     @Override
-    protected ITileRenderer createRenderer(String name){
-        return new SmelterTileRenderer(name);
+    protected ITileRenderer createRenderer(IResourceName name){
+        return new SmelterTileRenderer(name, this);
     }
 
     @Override

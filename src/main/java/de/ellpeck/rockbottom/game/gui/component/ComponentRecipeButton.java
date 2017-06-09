@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.construction.IRecipe;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
@@ -19,6 +20,8 @@ import java.util.List;
 public class ComponentRecipeButton extends ComponentButton{
 
     private static final Color TRANSPARENT = new Color(1F, 1F, 1F, 0.5F);
+    private static final IResourceName LOC_CONSTRUCTS = RockBottom.internalRes("info.constructs");
+    private static final IResourceName LOC_USES = RockBottom.internalRes("info.uses");
 
     public final AbstractEntityPlayer player;
     public final IRecipe recipe;
@@ -51,12 +54,12 @@ public class ComponentRecipeButton extends ComponentButton{
 
         List<String> hover = new ArrayList<>();
 
-        hover.add(manager.localize("info.constructs")+":");
+        hover.add(manager.localize(LOC_CONSTRUCTS)+":");
         for(ItemInstance inst : outputs){
             hover.add(FormattingCode.YELLOW+" "+inst.getDisplayName()+" x"+inst.getAmount());
         }
 
-        hover.add(manager.localize("info.uses")+":");
+        hover.add(manager.localize(LOC_USES)+":");
         for(ItemInstance inst : inputs){
             FormattingCode code;
 

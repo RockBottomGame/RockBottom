@@ -8,11 +8,12 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.game.RockBottom;
 
 public class TileLog extends TileBasic{
 
     public TileLog(){
-        super("log");
+        super(RockBottom.internalRes("log"));
     }
 
     public static void scheduleDestroyAround(IWorld world, int x, int y){

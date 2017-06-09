@@ -4,18 +4,19 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import org.newdawn.slick.Graphics;
 
 public class ComponentFancyButton extends ComponentButton{
 
-    protected final String texture;
+    protected final IResourceName texture;
 
-    public ComponentFancyButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, String texture, String... hover){
+    public ComponentFancyButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, IResourceName texture, String... hover){
         super(gui, id, x, y, sizeX, sizeY, null, hover);
         this.texture = texture;
     }
 
-    protected String getTexture(){
+    protected IResourceName getTexture(){
         return this.texture;
     }
 

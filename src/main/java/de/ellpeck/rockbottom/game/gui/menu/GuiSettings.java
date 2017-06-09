@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
+import de.ellpeck.rockbottom.game.RockBottom;
 import org.newdawn.slick.Graphics;
 
 public class GuiSettings extends Gui{
@@ -24,29 +25,29 @@ public class GuiSettings extends Gui{
         IAssetManager assetManager = game.getAssetManager();
         Settings settings = game.getSettings();
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, 150, 16, assetManager.localize("button.controls")));
-        this.components.add(new ComponentButton(this, 1, this.guiLeft+154, this.guiTop, 150, 16, assetManager.localize("button.graphics")));
+        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.controls"))));
+        this.components.add(new ComponentButton(this, 1, this.guiLeft+154, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.graphics"))));
 
         this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+30, 130, 16, true, true, false, 24, true);
         this.chatNameField.setText(settings.chatName);
         this.components.add(this.chatNameField);
-        this.components.add(new ComponentButton(this, 2, this.guiLeft+134, this.guiTop+30, 16, 16, "?", assetManager.localize("info.randomize_name")));
+        this.components.add(new ComponentButton(this, 2, this.guiLeft+134, this.guiTop+30, 16, 16, "?", assetManager.localize(RockBottom.internalRes("info.randomize_name"))));
 
         this.components.add(new ComponentSlider(this, 3, this.guiLeft, this.guiTop+55, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 settings.autosaveIntervalSeconds = number;
             }
-        }, assetManager.localize("button.autosave_interval"), assetManager.localize("info.autosave_interval")));
+        }, assetManager.localize(RockBottom.internalRes("button.autosave_interval")), assetManager.localize(RockBottom.internalRes("info.autosave_interval"))));
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, assetManager.localize("button.back")));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, assetManager.localize(RockBottom.internalRes("button.back"))));
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+22, manager.localize("button.chat_name"), 0.35F, false);
+        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+22, manager.localize(RockBottom.internalRes("button.chat_name")), 0.35F, false);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.game.world.tile;
 
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.render.tile.TorchTileRenderer;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -11,11 +13,11 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 public class TileTorch extends TileBasic{
 
     public TileTorch(){
-        super("torch");
+        super(RockBottom.internalRes("torch"));
     }
 
     @Override
-    protected ITileRenderer createRenderer(String name){
+    protected ITileRenderer createRenderer(IResourceName name){
         return new TorchTileRenderer();
     }
 

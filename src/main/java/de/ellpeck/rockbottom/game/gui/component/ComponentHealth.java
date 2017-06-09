@@ -5,12 +5,18 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.game.RockBottom;
 import de.ellpeck.rockbottom.game.util.Util;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 public class ComponentHealth extends GuiComponent{
+
+    private static final IResourceName TEX_HEART = RockBottom.internalRes("gui.heart");
+    private static final IResourceName TEX_HEART_EMPTY = RockBottom.internalRes("gui.heart_empty");
+    private static final IResourceName LOC_HEALTH = RockBottom.internalRes("info.health");
 
     public ComponentHealth(Gui gui, int x, int y, int sizeX, int sizeY){
         super(gui, x, y, sizeX, sizeY);
@@ -22,8 +28,8 @@ public class ComponentHealth extends GuiComponent{
             int healthParts = Util.floor(game.getPlayer().getHealth()/20);
             int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
 
-            Image heart = manager.getImage("gui.heart");
-            Image heartEmpty = manager.getImage("gui.heart_empty");
+            Image heart = manager.getImage(TEX_HEART);
+            Image heartEmpty = manager.getImage(TEX_HEART_EMPTY);
 
             int currX = 0;
             for(int i = 0; i < maxHealthParts; i++){
@@ -37,7 +43,7 @@ public class ComponentHealth extends GuiComponent{
     public void renderOverlay(IGameInstance game, IAssetManager manager, Graphics g){
         if(game.isInWorld()){
             if(this.isMouseOver(game)){
-                RockBottomAPI.getApiHandler().drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize("info.health")+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());
+                RockBottomAPI.getApiHandler().drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize(LOC_HEALTH)+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());
             }
         }
     }

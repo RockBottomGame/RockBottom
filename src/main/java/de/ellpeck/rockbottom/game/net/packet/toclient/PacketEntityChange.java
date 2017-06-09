@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class PacketEntityChange implements IPacket{
 
-    private static final String PLAYER_NAME = "player";
+    private static final String PLAYER_NAME = "rockbottom:player";
 
     private final DataSet entitySet = new DataSet();
     private String name;
@@ -34,7 +34,7 @@ public class PacketEntityChange implements IPacket{
                 this.name = PLAYER_NAME;
             }
             else{
-                this.name = RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass());
+                this.name = RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString();
             }
 
             entity.save(this.entitySet);
@@ -86,7 +86,7 @@ public class PacketEntityChange implements IPacket{
                             entity = new EntityPlayer(world);
                         }
                         else{
-                            entity = Util.createEntity(this.name, world);
+                            entity = Util.createEntity(RockBottomAPI.createRes(this.name), world);
                         }
 
                         if(entity != null){

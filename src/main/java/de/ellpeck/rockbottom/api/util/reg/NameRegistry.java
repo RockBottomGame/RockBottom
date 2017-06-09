@@ -7,17 +7,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class NameRegistry<T> implements IRegistry<String, T>{
+public class NameRegistry<T> implements IRegistry<IResourceName, T>{
 
     protected final String name;
-    protected final Map<String, T> map = new HashMap<>();
+    protected final Map<IResourceName, T> map = new HashMap<>();
 
     public NameRegistry(String name){
         this.name = name;
     }
 
     @Override
-    public void register(String name, T value){
+    public void register(IResourceName name, T value){
         if(name == null || name.isEmpty()){
             throw new IndexOutOfBoundsException("Tried registering "+value+" with name "+name+" which is invalid into registry "+this);
         }
@@ -31,7 +31,7 @@ public class NameRegistry<T> implements IRegistry<String, T>{
     }
 
     @Override
-    public T get(String name){
+    public T get(IResourceName name){
         if(name == null || name.isEmpty()){
             Log.warn("Tried getting value of "+name+" for registry "+this+" which is invalid");
             return null;
@@ -42,8 +42,8 @@ public class NameRegistry<T> implements IRegistry<String, T>{
     }
 
     @Override
-    public String getId(T value){
-        for(Entry<String, T> entry : this.map.entrySet()){
+    public IResourceName getId(T value){
+        for(Entry<IResourceName, T> entry : this.map.entrySet()){
             if(value.equals(entry.getValue())){
                 return entry.getKey();
             }
@@ -57,7 +57,7 @@ public class NameRegistry<T> implements IRegistry<String, T>{
     }
 
     @Override
-    public Map<String, T> getUnmodifiable(){
+    public Map<IResourceName, T> getUnmodifiable(){
         return Collections.unmodifiableMap(this.map);
     }
 
