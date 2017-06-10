@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.data;
 
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -77,7 +78,7 @@ public class DataManager implements IDataManager{
     private final File commandPermissionFile;
 
     public DataManager(RockBottom game){
-        this.gameDirectory = new File(".", "rockbottom");
+        this.gameDirectory = Main.gameDir;
         this.modsDirectory = new File(this.gameDirectory, "mods");
         this.saveDirectory = new File(this.gameDirectory, "save");
 

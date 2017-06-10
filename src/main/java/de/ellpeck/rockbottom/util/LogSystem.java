@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.util;
 
 import org.newdawn.slick.util.DefaultLogSystem;
+import org.newdawn.slick.util.Log;
 
 import java.util.Date;
 
@@ -8,8 +9,12 @@ public class LogSystem extends DefaultLogSystem{
 
     private final LogLevel level;
 
-    public LogSystem(LogLevel level){
+    private LogSystem(LogLevel level){
         this.level = level;
+    }
+
+    public static void init(){
+        Log.setLogSystem(new LogSystem(LogLevel.DEBUG));
     }
 
     @Override
@@ -57,7 +62,7 @@ public class LogSystem extends DefaultLogSystem{
         }
     }
 
-    public enum LogLevel{
+    private enum LogLevel{
         NONE,
         ERROR,
         WARN,

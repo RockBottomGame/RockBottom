@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.util.LogSystem;
 import org.newdawn.slick.util.Log;
-import sun.security.action.GetPropertyAction;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,16 +10,29 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.security.AccessController;
+import java.util.Arrays;
 
 public final class Main{
 
-    private static final File JAVA_TEMP = new File(AccessController.doPrivileged(new GetPropertyAction("java.io.tmpdir")));
-    private static final File TEMP_DIR = new File(JAVA_TEMP, "rockbottom");
     public static CustomClassLoader classLoader;
+    public static File gameDir;
+    public static File tempDir;
 
     public static void main(String[] args){
-        Log.setLogSystem(new LogSystem(LogSystem.LogLevel.DEBUG));
+        LogSystem.init();
+
+        Log.info("Found launch args "+Arrays.toString(args));
+
+        try{
+            gameDir = new File(args[0]);
+            Log.info("Setting game folder to "+gameDir);
+
+            tempDir = new File(args[1]);
+            Log.info("Setting temp folder to "+tempDir);
+        }
+        catch(Exception e){
+            throw new RuntimeException("Couldn't parse launch args", e);
+        }
 
         try{
             URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();
@@ -73,13 +85,7 @@ public final class Main{
 
     private static String loadLib(InputStream in, String libName){
         try{
-            if(!TEMP_DIR.exists()){
-                TEMP_DIR.mkdirs();
-                TEMP_DIR.deleteOnExit();
-            }
-
-            File temp = new File(TEMP_DIR, libName);
-            temp.deleteOnExit();
+            File temp = new File(tempDir, libName);
             Log.info("Creating temporary file "+temp);
 
             FileOutputStream out = new FileOutputStream(temp);
