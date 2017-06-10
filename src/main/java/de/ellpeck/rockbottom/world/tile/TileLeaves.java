@@ -33,7 +33,7 @@ public class TileLeaves extends TileBasic{
     }
 
     @Override
-    public List<ItemInstance> getDrops(IWorld world, int x, int y, Entity destroyer){
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
         return Collections.emptyList();
     }
 

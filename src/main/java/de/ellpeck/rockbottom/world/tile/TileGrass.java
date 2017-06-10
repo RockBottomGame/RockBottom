@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.ContentRegistry;
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.ContentRegistry;
-import de.ellpeck.rockbottom.RockBottom;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +19,7 @@ public class TileGrass extends TileBasic{
     }
 
     @Override
-    public List<ItemInstance> getDrops(IWorld world, int x, int y, Entity destroyer){
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
         return Collections.singletonList(new ItemInstance(ContentRegistry.TILE_DIRT));
     }
 
