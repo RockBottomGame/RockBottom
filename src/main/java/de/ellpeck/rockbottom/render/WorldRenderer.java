@@ -46,24 +46,23 @@ public class WorldRenderer{
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
-        g.scale(game.getSettings().renderScale, game.getSettings().renderScale);
+        float scale = game.getSettings().renderScale;
+        g.scale(scale,scale);
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
         g.setBackground(SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight]);
 
         double width = game.getWidthInWorld();
         double height = game.getHeightInWorld();
-        double worldAtScreenX = player.x-width/2;
-        double worldAtScreenY = -player.y-height/2;
-
-        g.translate((float)-worldAtScreenX, (float)-worldAtScreenY);
+        float transX = (float)(player.x-width/2);
+        float transY = (float)(-player.y-height/2);
 
         List<Entity> entities = new ArrayList<>();
 
-        int topLeftX = Util.toGridPos(worldAtScreenX);
-        int topLeftY = Util.toGridPos(-worldAtScreenY+1);
-        int bottomRightX = Util.toGridPos(worldAtScreenX+width);
-        int bottomRightY = Util.toGridPos(-worldAtScreenY-height);
+        int topLeftX = Util.toGridPos(transX);
+        int topLeftY = Util.toGridPos(-transY+1);
+        int bottomRightX = Util.toGridPos(transX+width);
+        int bottomRightY = Util.toGridPos(-transY-height);
 
         int minX = Math.min(topLeftX, bottomRightX);
         int minY = Math.min(topLeftY, bottomRightY);
@@ -80,7 +79,7 @@ public class WorldRenderer{
                             int tileX = chunk.getX()+x;
                             int tileY = chunk.getY()+y;
 
-                            if(tileX >= worldAtScreenX-1 && -tileY >= worldAtScreenY-1 && tileX < worldAtScreenX+width && -tileY < worldAtScreenY+height){
+                            if(tileX >= transX-1 && -tileY >= transY-1 && tileX < transX+width && -tileY < transY+height){
                                 Tile tile = chunk.getTileInner(x, y);
                                 byte light = chunk.getCombinedLightInner(x, y);
 
@@ -89,10 +88,10 @@ public class WorldRenderer{
                                         Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
                                         ITileRenderer rendererBack = tileBack.getRenderer();
                                         if(rendererBack != null){
-                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX, -tileY, BACKGROUND_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
+                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX-transX, -tileY-transY, BACKGROUND_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
 
                                             if(input.breakingLayer == TileLayer.BACKGROUND){
-                                                this.doBreakAnimation(input, manager, tileX, tileY);
+                                                this.doBreakAnimation(input, manager, tileX, tileY, transX, transY);
                                             }
                                         }
                                     }
@@ -101,10 +100,10 @@ public class WorldRenderer{
                                 if(!game.isForegroundDebug()){
                                     ITileRenderer renderer = tile.getRenderer();
                                     if(renderer != null){
-                                        renderer.render(game, manager, g, world, tile, tileX, tileY, tileX, -tileY, MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
+                                        renderer.render(game, manager, g, world, tile, tileX, tileY, tileX-transX, -tileY-transY, MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
 
                                         if(input.breakingLayer == TileLayer.MAIN){
-                                            this.doBreakAnimation(input, manager, tileX, tileY);
+                                            this.doBreakAnimation(input, manager, tileX, tileY, transX, transY);
                                         }
                                     }
                                 }
@@ -117,14 +116,14 @@ public class WorldRenderer{
             }
         }
 
-        particles.render(game, manager, g, world);
+        particles.render(game, manager, g, world, transX, transY);
 
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
                     int light = world.getCombinedLight(Util.floor(entity.x), Util.floor(entity.y));
-                    renderer.render(game, manager, g, world, entity, (float)entity.x, (float)-entity.y+1F, MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
+                    renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
                 }
             }
         });
@@ -132,11 +131,11 @@ public class WorldRenderer{
         g.resetTransform();
     }
 
-    private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY){
+    private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
                 Image brk = manager.getImage(RockBottom.internalRes("break."+Util.ceil(input.breakProgress*8F)));
-                brk.draw(tileX, -tileY, 1F, 1F);
+                brk.draw(tileX-transX, -tileY-transY, 1F, 1F);
             }
         }
     }

@@ -32,10 +32,10 @@ public class ParticleManager implements IParticleManager{
         }
     }
 
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, World world){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, World world, float transX, float transY){
         this.particles.forEach(particle -> {
             int light = world.getCombinedLight(Util.floor(particle.x), Util.floor(particle.y));
-            particle.render(game, manager, g, (float)particle.x, (float)-particle.y+1F, WorldRenderer.MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
+            particle.render(game, manager, g, (float)particle.x-transX, (float)-particle.y-transY+1F, WorldRenderer.MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
         });
     }
 
