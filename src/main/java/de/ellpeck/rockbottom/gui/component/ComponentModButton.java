@@ -18,8 +18,8 @@ public class ComponentModButton extends ComponentButton{
 
     @Override
     public boolean onPressed(IGameInstance game){
-        if(this.gui.selectedMod != this.mod){
-            this.gui.selectedMod = this.mod;
+        if(this.gui.getSelectedMod() != this.mod){
+            this.gui.selectMod(this.mod);
             return true;
         }
         else{

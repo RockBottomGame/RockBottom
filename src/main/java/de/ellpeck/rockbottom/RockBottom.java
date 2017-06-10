@@ -21,10 +21,7 @@ import de.ellpeck.rockbottom.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.data.DataManager;
-import de.ellpeck.rockbottom.gui.DebugRenderer;
-import de.ellpeck.rockbottom.gui.GuiChat;
-import de.ellpeck.rockbottom.gui.GuiInventory;
-import de.ellpeck.rockbottom.gui.GuiManager;
+import de.ellpeck.rockbottom.gui.*;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
 import de.ellpeck.rockbottom.mod.ModLoader;
@@ -34,7 +31,6 @@ import de.ellpeck.rockbottom.net.client.ClientWorld;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.WorldRenderer;
-import de.ellpeck.rockbottom.util.LogSystem;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -520,5 +516,10 @@ public class RockBottom extends BasicGame implements IGameInstance{
     @Override
     public String getDescription(){
         return "The base game and all its features";
+    }
+
+    @Override
+    public Class<? extends Gui> getModGuiClass(){
+        return GuiTestMod.class;
     }
 }
