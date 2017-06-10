@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
+import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
@@ -20,6 +21,10 @@ public class ConnectedPlayer extends EntityPlayer{
     private final Channel channel;
 
     private int lastHealth;
+
+    private double lastCalcX;
+    private double lastCalcY;
+    private int fallCalcTicks;
 
     public ConnectedPlayer(World world, UUID uniqueId, Channel channel){
         super(world, uniqueId);
@@ -41,8 +46,35 @@ public class ConnectedPlayer extends EntityPlayer{
                     return true;
                 });
             }
+
+            double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, this.x, this.y);
+            double maxDist = 1.25*this.fallCalcTicks+MOVE_SPEED*(80-this.fallCalcTicks)+5;
+
+            if(distanceSq > maxDist*maxDist){
+                this.x = this.lastCalcX;
+                this.y = this.lastCalcY;
+
+                this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY));
+                Log.warn("Player with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
+            }
+            else{
+                this.lastCalcX = this.x;
+                this.lastCalcY = this.y;
+            }
+
+            this.fallCalcTicks = 0;
         }
 
+        if(this.fallAmount >= 40){
+            this.fallCalcTicks++;
+        }
+
+        if(this.lastX != this.x || this.lastY != this.y){
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY), this);
+
+            this.lastX = this.x;
+            this.lastY = this.y;
+        }
 
         if(this.health != this.lastHealth && this.world.getWorldInfo().totalTimeInWorld%10 == 0){
             this.lastHealth = this.health;
@@ -61,8 +93,8 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
-    public int getUpdateFrequency(){
-        return 80;
+    public boolean doesSync(){
+        return false;
     }
 
     @Override

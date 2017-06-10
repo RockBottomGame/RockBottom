@@ -12,11 +12,17 @@ import java.util.UUID;
 public class PacketPlayerMovement implements IPacket{
 
     private UUID playerId;
-    private int type;
+    private double x;
+    private double y;
+    private double motionX;
+    private double motionY;
 
-    public PacketPlayerMovement(UUID playerId, int type){
+    public PacketPlayerMovement(UUID playerId, double x, double y, double motionX, double motionY){
         this.playerId = playerId;
-        this.type = type;
+        this.x = x;
+        this.y = y;
+        this.motionX = motionX;
+        this.motionY = motionY;
     }
 
     public PacketPlayerMovement(){
@@ -26,13 +32,19 @@ public class PacketPlayerMovement implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
-        buf.writeInt(this.type);
+        buf.writeDouble(this.x);
+        buf.writeDouble(this.y);
+        buf.writeDouble(this.motionX);
+        buf.writeDouble(this.motionY);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.playerId = new UUID(buf.readLong(), buf.readLong());
-        this.type = buf.readInt();
+        this.x = buf.readDouble();
+        this.y = buf.readDouble();
+        this.motionX = buf.readDouble();
+        this.motionY = buf.readDouble();
     }
 
     @Override
@@ -41,7 +53,9 @@ public class PacketPlayerMovement implements IPacket{
             if(game.getWorld() != null){
                 AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
-                    player.move(this.type);
+                    player.setPos(this.x, this.y);
+                    player.motionX = this.motionX;
+                    player.motionY = this.motionY;
                 }
             }
             return true;

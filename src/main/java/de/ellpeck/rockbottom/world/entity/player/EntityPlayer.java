@@ -38,6 +38,8 @@ import java.util.UUID;
 
 public class EntityPlayer extends AbstractEntityPlayer{
 
+    public static final float MOVE_SPEED = 0.2F;
+
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
@@ -173,7 +175,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
-    public int getUpdateFrequency(){
+    public int getSyncFrequency(){
         return 1;
     }
 
@@ -394,11 +396,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public void move(int type){
         if(type == 0){
-            this.motionX -= 0.2;
+            this.motionX -= MOVE_SPEED;
             this.facing = Direction.LEFT;
         }
         else if(type == 1){
-            this.motionX += 0.2;
+            this.motionX += MOVE_SPEED;
             this.facing = Direction.RIGHT;
         }
         else if(type == 2){

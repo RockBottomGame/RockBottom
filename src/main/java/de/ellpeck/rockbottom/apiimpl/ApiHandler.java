@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -14,7 +15,6 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.util.Util;
@@ -136,12 +136,14 @@ public class ApiHandler implements IApiHandler{
         entity.ticksExisted++;
 
         if(RockBottomAPI.getNet().isServer()){
-            if(entity.ticksExisted%entity.getUpdateFrequency() == 0){
-                if(entity.lastX != entity.x || entity.lastY != entity.y){
-                    RockBottomAPI.getNet().sendToAllPlayers(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.x, entity.y, entity.motionX, entity.motionY));
+            if(entity.doesSync()){
+                if(entity.ticksExisted%entity.getSyncFrequency() == 0){
+                    if(entity.lastX != entity.x || entity.lastY != entity.y){
+                        RockBottomAPI.getNet().sendToAllPlayers(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.x, entity.y, entity.motionX, entity.motionY));
 
-                    entity.lastX = entity.x;
-                    entity.lastY = entity.y;
+                        entity.lastX = entity.x;
+                        entity.lastY = entity.y;
+                    }
                 }
             }
         }
