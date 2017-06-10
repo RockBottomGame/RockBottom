@@ -280,7 +280,7 @@ public class ApiHandler implements IApiHandler{
         float mouseX = game.getMouseInGuiX();
         float mouseY = game.getMouseInGuiY();
 
-        this.drawHoverInfo(game, manager, g, mouseX+18F/game.getSettings().guiScale, mouseY+18F/game.getSettings().guiScale, 0.25F, firstLineOffset, false, maxLength, text);
+        this.drawHoverInfo(game, manager, g, mouseX+18F/game.getGuiScale(), mouseY+18F/game.getGuiScale(), 0.25F, firstLineOffset, false, maxLength, text);
     }
 
     @Override

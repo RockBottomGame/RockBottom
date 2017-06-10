@@ -264,7 +264,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
             }
         }
 
-        g.setLineWidth(this.settings.guiScale);
+        g.setLineWidth(this.getGuiScale());
         this.guiManager.render(this, this.assetManager, g, this.player);
     }
 
@@ -360,33 +360,47 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
+    public int getGuiScale(){
+        return this.settings.guiScale;
+    }
+
+    @Override
+    public int getWorldScale(){
+        int scale = this.settings.renderScale;
+        if((scale%2 == 0) != (this.container.getHeight()%2 == 0)){
+            scale++;
+        }
+        return scale;
+    }
+
+    @Override
     public double getWidthInWorld(){
-        return (double)this.container.getWidth()/(double)this.settings.renderScale;
+        return (double)this.container.getWidth()/(double)this.getWorldScale();
     }
 
     @Override
     public double getHeightInWorld(){
-        return (double)this.container.getHeight()/(double)this.settings.renderScale;
+        return (double)this.container.getHeight()/(double)this.getWorldScale();
     }
 
     @Override
     public double getWidthInGui(){
-        return (double)this.container.getWidth()/(double)this.settings.guiScale;
+        return (double)this.container.getWidth()/(double)this.getGuiScale();
     }
 
     @Override
     public double getHeightInGui(){
-        return (double)this.container.getHeight()/(double)this.settings.guiScale;
+        return (double)this.container.getHeight()/(double)this.getGuiScale();
     }
 
     @Override
     public float getMouseInGuiX(){
-        return (float)this.container.getInput().getMouseX()/(float)this.settings.guiScale;
+        return (float)this.container.getInput().getMouseX()/(float)this.getGuiScale();
     }
 
     @Override
     public float getMouseInGuiY(){
-        return (float)this.container.getInput().getMouseY()/(float)this.settings.guiScale;
+        return (float)this.container.getInput().getMouseY()/(float)this.getGuiScale();
     }
 
     @Override

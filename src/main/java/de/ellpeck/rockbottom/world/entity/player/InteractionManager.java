@@ -90,8 +90,8 @@ public class InteractionManager implements IInteractionManager{
 
                 double worldAtScreenX = player.x-game.getWidthInWorld()/2;
                 double worldAtScreenY = -player.y-game.getHeightInWorld()/2;
-                this.mousedTileX = Util.floor(worldAtScreenX+mouseX/(double)settings.renderScale);
-                this.mousedTileY = -Util.floor(worldAtScreenY+mouseY/(double)settings.renderScale);
+                this.mousedTileX = Util.floor(worldAtScreenX+mouseX/(double)game.getWorldScale());
+                this.mousedTileY = -Util.floor(worldAtScreenY+mouseY/(double)game.getWorldScale());
 
                 if(input.isKeyDown(settings.keyLeft.key)){
                     moveAndSend(player, 0);

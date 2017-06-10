@@ -98,7 +98,7 @@ public class GuiManager implements IGuiManager{
     }
 
     public void render(RockBottom game, IAssetManager manager, Graphics g, EntityPlayer player){
-        g.scale(game.getSettings().guiScale, game.getSettings().guiScale);
+        g.scale(game.getGuiScale(), game.getGuiScale());
 
         Font font = manager.getFont();
         float width = (float)game.getWidthInGui();
@@ -149,7 +149,7 @@ public class GuiManager implements IGuiManager{
                             float mouseX = game.getMouseInGuiX();
                             float mouseY = game.getMouseInGuiY();
 
-                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getSettings().guiScale, mouseY, 36F/game.getSettings().guiScale, Color.white);
+                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getGuiScale(), mouseY, 36F/game.getGuiScale(), Color.white);
                         }
                     }
                 }

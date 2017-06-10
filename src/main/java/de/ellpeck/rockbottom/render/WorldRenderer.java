@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.render;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -9,7 +10,6 @@ import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
@@ -46,8 +46,8 @@ public class WorldRenderer{
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
-        float scale = game.getSettings().renderScale;
-        g.scale(scale,scale);
+        int scale = game.getWorldScale();
+        g.scale(scale, scale);
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
         g.setBackground(SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight]);
