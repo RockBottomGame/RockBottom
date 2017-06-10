@@ -3,8 +3,10 @@ package de.ellpeck.rockbottom.render;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -127,6 +129,8 @@ public class WorldRenderer{
                 }
             }
         });
+
+        RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player));
 
         g.resetTransform();
     }

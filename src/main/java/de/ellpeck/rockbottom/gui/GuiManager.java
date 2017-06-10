@@ -1,9 +1,11 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.impl.OverlayRenderEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
@@ -134,6 +136,8 @@ public class GuiManager implements IGuiManager{
                 this.onScreenComponents.forEach(comp -> comp.renderOverlay(game, manager, g));
             }
         }
+
+        RockBottomAPI.getEventHandler().fireEvent(new OverlayRenderEvent(game, manager, g, player, this, gui));
 
         font.drawString(2, height-font.getHeight(0.25F), game.getTitle(), 0.25F);
 
