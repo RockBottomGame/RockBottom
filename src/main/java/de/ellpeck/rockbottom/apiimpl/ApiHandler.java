@@ -174,7 +174,7 @@ public class ApiHandler implements IApiHandler{
                         }
                     }
                     else{
-                        if(slotCopy.isItemEqual(slot.container.holdingInst)){
+                        if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
                             int possible = Math.min(slotCopy.getMaxAmount()-slotCopy.getAmount(), slot.container.holdingInst.getAmount());
                             if(possible > 0){
                                 if(this.setToInv(slotCopy.addAmount(possible), slot)){
@@ -222,7 +222,7 @@ public class ApiHandler implements IApiHandler{
                             return true;
                         }
                     }
-                    else if(slotCopy.isItemEqual(slot.container.holdingInst)){
+                    else if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
                         if(slotCopy.getAmount() < slotCopy.getMaxAmount()){
                             if(this.setToInv(slotCopy.addAmount(1), slot)){
                                 slot.container.holdingInst.removeAmount(1);

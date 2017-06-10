@@ -50,7 +50,7 @@ public class TileEntitySmelter extends TileEntityFueled{
                     ItemInstance recipeOut = recipe.getOutput();
                     ItemInstance output = this.inventory.get(OUTPUT);
 
-                    if(output == null || (output.isItemEqual(recipeOut) && output.getAmount()+recipeOut.getAmount() <= output.getMaxAmount())){
+                    if(output == null || (output.isEffectivelyEqual(recipeOut) && output.getAmount()+recipeOut.getAmount() <= output.getMaxAmount())){
                         hasRecipeAndSpace = true;
 
                         if(this.coalTime > 0){

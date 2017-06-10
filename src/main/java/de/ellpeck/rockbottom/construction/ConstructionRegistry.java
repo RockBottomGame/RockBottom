@@ -61,7 +61,7 @@ public final class ConstructionRegistry{
 
     public static int getFuelValue(ItemInstance instance){
         for(Map.Entry<ItemInstance, Integer> entry : FUEL_REGISTRY.entrySet()){
-            if(instance.isItemEqual(entry.getKey())){
+            if(instance.isEffectivelyEqual(entry.getKey())){
                 return entry.getValue();
             }
         }
@@ -70,7 +70,7 @@ public final class ConstructionRegistry{
 
     public static SmelterRecipe getSmelterRecipe(ItemInstance input){
         for(SmelterRecipe recipe : SMELTER_RECIPES){
-            if(input.isItemEqual(recipe.getInput())){
+            if(input.isEffectivelyEqual(recipe.getInput())){
                 return recipe;
             }
         }
@@ -79,7 +79,7 @@ public final class ConstructionRegistry{
 
     public static SeparatorRecipe getSeparatorRecipe(ItemInstance input){
         for(SeparatorRecipe recipe : SEPARATOR_RECIPES){
-            if(input.isItemEqual(recipe.getInput())){
+            if(input.isEffectivelyEqual(recipe.getInput())){
                 return recipe;
             }
         }

@@ -52,11 +52,11 @@ public class TileEntitySeparator extends TileEntityFueled{
                     ItemInstance recipeOut = recipe.getOutput();
                     ItemInstance output = this.inventory.get(OUTPUT);
 
-                    if(output == null || (output.isItemEqual(recipeOut) && output.fitsAmount(recipeOut.getAmount()))){
+                    if(output == null || (output.isEffectivelyEqual(recipeOut) && output.fitsAmount(recipeOut.getAmount()))){
                         ItemInstance recipeBy = recipe.getByproduct();
                         ItemInstance byproduct = this.inventory.get(BYPRODUCT);
 
-                        if(recipeBy == null || byproduct == null || (byproduct.isItemEqual(recipeBy) && byproduct.fitsAmount(recipeBy.getAmount()))){
+                        if(recipeBy == null || byproduct == null || (byproduct.isEffectivelyEqual(recipeBy) && byproduct.fitsAmount(recipeBy.getAmount()))){
                             hasRecipeAndSpace = true;
 
                             if(this.coalTime > 0){
