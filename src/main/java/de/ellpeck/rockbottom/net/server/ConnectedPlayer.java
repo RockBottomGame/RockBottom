@@ -54,6 +54,10 @@ public class ConnectedPlayer extends EntityPlayer{
                 this.x = this.lastCalcX;
                 this.y = this.lastCalcY;
 
+                this.motionX = 0;
+                this.motionY = 0;
+                this.fallAmount = 0;
+
                 this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY));
                 Log.warn("Player with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
             }
