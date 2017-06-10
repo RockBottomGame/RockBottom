@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetImage;
@@ -13,7 +14,6 @@ import de.ellpeck.rockbottom.api.assets.local.Locale;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.RockBottom;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -105,78 +105,82 @@ public class AssetManager implements IAssetManager{
 
     private void loadAssets() throws Exception{
         for(IMod mod : RockBottomAPI.getModLoader().getAllMods()){
-            int loadAmount = 0;
-
             String path = mod.getResourceLocation();
+            if(path != null && !path.isEmpty()){
+                int loadAmount = 0;
 
-            InputStream propStream = getResource(path+"/assets.info");
-            if(propStream != null){
-                Properties props = new Properties();
-                props.load(propStream);
+                InputStream propStream = getResource(path+"/assets.info");
+                if(propStream != null){
+                    Properties props = new Properties();
+                    props.load(propStream);
 
-                for(String key : props.stringPropertyNames()){
-                    String value = props.getProperty(key);
-                    IResourceName name = RockBottomAPI.createRes(mod, key);
+                    for(String key : props.stringPropertyNames()){
+                        String value = props.getProperty(key);
+                        IResourceName name = RockBottomAPI.createRes(mod, key);
 
-                    boolean didLoad = true;
-                    try{
-                        if(key.startsWith("font.")){
-                            InputStream image = getResource(path+value+".png");
-                            InputStream info = getResource(path+value+".info");
+                        boolean didLoad = true;
+                        try{
+                            if(key.startsWith("font.")){
+                                InputStream image = getResource(path+value+".png");
+                                InputStream info = getResource(path+value+".info");
 
-                            this.assets.put(name, new AssetFont(Font.fromStream(image, info, key)));
-                            Log.info("Loaded font resource "+name+" with data "+value);
-                        }
-                        else if(key.startsWith("tex.")){
-                            this.assets.put(name, new AssetImage(loadImage(key, path, value)));
-                            Log.info("Loaded png resource "+name+" with data "+value);
-                        }
-                        else{
-                            InputStream stream = getResource(path+value);
-
-                            if(key.startsWith("sound.")){
-                                this.assets.put(name, new AssetSound(new Sound(stream, key)));
-                                Log.info("Loaded ogg resource "+name+" with data "+value);
+                                this.assets.put(name, new AssetFont(Font.fromStream(image, info, key)));
+                                Log.info("Loaded font resource "+name+" with data "+value);
                             }
-                            else if(key.startsWith("loc.")){
-                                boolean merged = false;
-
-                                Locale loaded = Locale.fromStream(stream, key);
-                                for(IAsset asset : this.getAllOfType(AssetLocale.class).values()){
-                                    if(asset instanceof AssetLocale){
-                                        AssetLocale locale = (AssetLocale)asset;
-                                        if(locale.get().merge(loaded)){
-                                            merged = true;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if(!merged){
-                                    this.assets.put(name, new AssetLocale(loaded));
-                                    Log.info("Loaded localization resource "+name+" with data "+value);
-                                }
+                            else if(key.startsWith("tex.")){
+                                this.assets.put(name, new AssetImage(loadImage(key, path, value)));
+                                Log.info("Loaded png resource "+name+" with data "+value);
                             }
                             else{
-                                Log.warn("Couldn't load resource with key "+key+" and value "+value+" from assets.info for mod "+mod.getDisplayName()+" at path "+path+"!");
-                                didLoad = false;
+                                InputStream stream = getResource(path+value);
+
+                                if(key.startsWith("sound.")){
+                                    this.assets.put(name, new AssetSound(new Sound(stream, key)));
+                                    Log.info("Loaded ogg resource "+name+" with data "+value);
+                                }
+                                else if(key.startsWith("loc.")){
+                                    boolean merged = false;
+
+                                    Locale loaded = Locale.fromStream(stream, key);
+                                    for(IAsset asset : this.getAllOfType(AssetLocale.class).values()){
+                                        if(asset instanceof AssetLocale){
+                                            AssetLocale locale = (AssetLocale)asset;
+                                            if(locale.get().merge(loaded)){
+                                                merged = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if(!merged){
+                                        this.assets.put(name, new AssetLocale(loaded));
+                                        Log.info("Loaded localization resource "+name+" with data "+value);
+                                    }
+                                }
+                                else{
+                                    Log.warn("Couldn't load resource with key "+key+" and value "+value+" from assets.info for mod "+mod.getDisplayName()+" at path "+path+"!");
+                                    didLoad = false;
+                                }
+                            }
+
+                            if(didLoad){
+                                loadAmount++;
                             }
                         }
-
-                        if(didLoad){
-                            loadAmount++;
+                        catch(Exception e){
+                            Log.error("Failed loading resource "+name+" with data "+value+"!", e);
                         }
                     }
-                    catch(Exception e){
-                        Log.error("Failed loading resource "+name+" with data "+value+"!", e);
-                    }
                 }
+                else{
+                    Log.error("Mod "+mod.getDisplayName()+" is missing assets.info file at path "+path);
+                }
+
+                Log.info("Loaded "+loadAmount+" assets from assets.info file for mod "+mod.getDisplayName()+" at path "+path);
             }
             else{
-                Log.error("Mod "+mod.getDisplayName()+" is missing assets.info file at path "+path);
+                Log.info("Skipping mod "+mod.getDisplayName()+" that doesn't have a resource location");
             }
-
-            Log.info("Loaded "+loadAmount+" assets from assets.info file for mod "+mod.getDisplayName()+" at path "+path);
         }
     }
 
