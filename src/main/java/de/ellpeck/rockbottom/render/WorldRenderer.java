@@ -130,7 +130,7 @@ public class WorldRenderer{
             }
         });
 
-        RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player));
+        RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, transX, transY));
 
         g.resetTransform();
     }
