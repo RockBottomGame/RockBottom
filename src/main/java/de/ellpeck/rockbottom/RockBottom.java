@@ -21,7 +21,10 @@ import de.ellpeck.rockbottom.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.data.DataManager;
-import de.ellpeck.rockbottom.gui.*;
+import de.ellpeck.rockbottom.gui.DebugRenderer;
+import de.ellpeck.rockbottom.gui.GuiChat;
+import de.ellpeck.rockbottom.gui.GuiInventory;
+import de.ellpeck.rockbottom.gui.GuiManager;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
 import de.ellpeck.rockbottom.mod.ModLoader;
@@ -318,9 +321,11 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public void quitWorld(){
         Log.info("Quitting current world");
 
-        if(RockBottomAPI.getNet().isClient()){
-            Log.info("Sending disconnection packet");
-            RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
+        if(this.player != null){
+            if(RockBottomAPI.getNet().isClient()){
+                Log.info("Sending disconnection packet");
+                RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
+            }
         }
 
         RockBottomAPI.getNet().shutdown();
