@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.net;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.net.client.Client;
 import de.ellpeck.rockbottom.net.server.Server;
 import de.ellpeck.rockbottom.world.World;
@@ -100,7 +100,9 @@ public final class NetHandler implements INetHandler{
 
     @Override
     public void sendToServer(IPacket packet){
-        this.client.channel.writeAndFlush(packet);
+        if(this.isClient()){
+            this.client.channel.writeAndFlush(packet);
+        }
     }
 
     @Override
