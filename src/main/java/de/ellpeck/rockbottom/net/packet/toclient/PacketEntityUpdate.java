@@ -54,7 +54,8 @@ public class PacketEntityUpdate implements IPacket{
             if(game.getWorld() != null){
                 Entity entity = game.getWorld().getEntity(this.uniqueId);
                 if(entity != null){
-                    entity.setPos(this.x, this.y);
+                    entity.x = this.x;
+                    entity.y = this.y;
                     entity.motionX = this.motionX;
                     entity.motionY = this.motionY;
                 }

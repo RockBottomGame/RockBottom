@@ -90,6 +90,15 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
+    public void setPos(double x, double y){
+        super.setPos(x, y);
+
+        this.lastCalcX = x;
+        this.lastCalcY = y;
+        this.fallCalcTicks = 0;
+    }
+
+    @Override
     public void resetAndSpawn(IGameInstance game){
         super.resetAndSpawn(game);
 
