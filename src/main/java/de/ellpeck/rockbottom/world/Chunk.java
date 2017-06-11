@@ -300,6 +300,10 @@ public class Chunk implements IChunk{
 
     @Override
     public void setTileInner(TileLayer layer, int x, int y, Tile tile, int meta){
+        if(tile == null){
+            throw new IllegalArgumentException("Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
+        }
+
         Tile lastTile = this.getTileInner(layer, x, y);
 
         boolean lastAir = lastTile.isAir();
