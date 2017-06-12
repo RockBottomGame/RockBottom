@@ -56,6 +56,7 @@ public class PacketInitialServerData implements IPacket{
             }
             else{
                 Log.error("Received initial server data while already being in a world!");
+                context.channel().disconnect();
             }
 
             return true;
