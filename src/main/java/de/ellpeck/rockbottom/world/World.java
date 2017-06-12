@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.world;
 
+import de.ellpeck.rockbottom.ContentRegistry;
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -19,8 +21,6 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.ContentRegistry;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
@@ -296,7 +296,12 @@ public class World implements IWorld{
     @Override
     public int getIdForTile(Tile tile){
         IResourceName name = RockBottomAPI.TILE_REGISTRY.getId(tile);
-        return this.tileRegInfo.getId(name);
+        if(name != null){
+            return this.tileRegInfo.getId(name);
+        }
+        else{
+            return -1;
+        }
     }
 
     @Override

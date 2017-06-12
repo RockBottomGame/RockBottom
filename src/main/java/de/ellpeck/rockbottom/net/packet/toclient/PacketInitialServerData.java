@@ -55,7 +55,7 @@ public class PacketInitialServerData implements IPacket{
                 game.joinWorld(this.playerSet, this.info, this.tileRegInfo);
             }
             else{
-                Log.warn("Received initial server data while already being in a world!");
+                Log.error("Received initial server data while already being in a world!");
             }
 
             return true;

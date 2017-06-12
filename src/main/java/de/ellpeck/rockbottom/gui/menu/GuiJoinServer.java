@@ -46,7 +46,7 @@ public class GuiJoinServer extends Gui{
                 }
 
                 Log.info("Attempting to join server");
-                RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), RockBottom.VERSION));
+                RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), RockBottom.VERSION, RockBottomAPI.getModLoader().getAllMods()));
             }
             catch(Exception e){
                 Log.error("Couldn't connect to server", e);

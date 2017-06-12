@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.net.client.Client;
 import de.ellpeck.rockbottom.net.server.Server;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import org.newdawn.slick.util.Log;
 
