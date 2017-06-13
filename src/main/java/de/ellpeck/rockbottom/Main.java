@@ -29,6 +29,11 @@ public final class Main{
 
             tempDir = new File(args[1]);
             Log.info("Setting temp folder to "+tempDir);
+
+            if(!tempDir.exists()){
+                tempDir.mkdirs();
+                Log.info("Creating temp folder at "+tempDir);
+            }
         }
         catch(Exception e){
             throw new RuntimeException("Couldn't parse launch args", e);
@@ -86,7 +91,12 @@ public final class Main{
     private static String loadLib(InputStream in, String libName){
         try{
             File temp = new File(tempDir, libName);
-            Log.info("Creating temporary file "+temp);
+            if(temp.exists()){
+                Log.info("File "+temp+" already exists, using existing version");
+            }
+            else{
+                Log.info("Creating temporary file "+temp);
+            }
 
             FileOutputStream out = new FileOutputStream(temp);
             byte[] buffer = new byte[65536];

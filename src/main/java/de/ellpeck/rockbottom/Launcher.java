@@ -20,12 +20,7 @@ public final class Launcher{
 
         try{
             String temp = System.getProperty("java.io.tmpdir");
-
             tempDir = new File(temp+File.separator+"rockbottom"+RANDOM.nextInt());
-            if(!tempDir.exists()){
-                tempDir.mkdirs();
-                Log.info("Creating temp folder at "+tempDir);
-            }
 
             File gameDir = new File(".", "rockbottom");
 
