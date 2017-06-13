@@ -120,7 +120,7 @@ public class ModLoader implements IModLoader{
         Log.info("----- Loaded Mods -----");
         for(IMod mod : this.allMods){
             String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")";
-            if(!this.activeMods.contains(mod)){
+            if(this.modSettings.isDisabled(mod.getId())){
                 s += " [DISABLED]";
             }
             Log.info(s);
