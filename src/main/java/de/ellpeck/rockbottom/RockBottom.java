@@ -71,6 +71,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
     private boolean isLightDebug;
     private boolean isForegroundDebug;
     private boolean isBackgroundDebug;
+    private boolean isItemInfoDebug;
     private Container container;
     private WorldRenderer worldRenderer;
     private long lastPollTime;
@@ -236,6 +237,10 @@ public class RockBottom extends BasicGame implements IGameInstance{
             }
             else if(key == Input.KEY_F4){
                 this.isBackgroundDebug = !this.isBackgroundDebug;
+                return;
+            }
+            else if(key == Input.KEY_F5){
+                this.isItemInfoDebug = !this.isItemInfoDebug;
                 return;
             }
             else if(key == this.settings.keyInventory.key){
@@ -476,6 +481,11 @@ public class RockBottom extends BasicGame implements IGameInstance{
     @Override
     public boolean isBackgroundDebug(){
         return this.isBackgroundDebug;
+    }
+
+    @Override
+    public boolean isItemInfoDebug(){
+        return this.isItemInfoDebug;
     }
 
     @Override

@@ -6,9 +6,12 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.TooltipEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.item.Item;
@@ -267,7 +270,17 @@ public class ApiHandler implements IApiHandler{
         List<String> desc = new ArrayList<>();
         instance.getItem().describeItem(manager, instance, desc, advanced);
 
-        this.drawHoverInfoAtMouse(game, manager, g, true, 0, desc);
+        if(game.isItemInfoDebug()){
+            desc.add("");
+            desc.add(FormattingCode.GRAY+"Name: "+instance.getItem().getName().toString());
+            desc.add(FormattingCode.GRAY+"Meta: "+instance.getMeta());
+            desc.add(FormattingCode.GRAY+"Data: "+instance.getAdditionalData());
+            desc.add(FormattingCode.GRAY+"Max Amount: "+instance.getMaxAmount());
+        }
+
+        if(RockBottomAPI.getEventHandler().fireEvent(new TooltipEvent(instance, game, manager, g, desc)) != EventResult.CANCELLED){
+            this.drawHoverInfoAtMouse(game, manager, g, true, 0, desc);
+        }
     }
 
     @Override
