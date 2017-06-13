@@ -69,7 +69,7 @@ public class PacketJoin implements IPacket{
 
             boolean shouldKick = true;
             if(RockBottom.VERSION.equals(this.version)){
-                if(this.hasAllMods(new ArrayList<>(RockBottomAPI.getModLoader().getAllMods()))){
+                if(this.hasAllMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()))){
                     if(world != null){
                         if(world.getPlayer(this.id) == null){
                             AbstractEntityPlayer player = world.createPlayer(this.id, context.channel());

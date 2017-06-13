@@ -532,4 +532,9 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public String getDescription(){
         return "The base game and all its features";
     }
+
+    @Override
+    public boolean isDisableable(){
+        return false;
+    }
 }

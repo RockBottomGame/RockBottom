@@ -104,7 +104,7 @@ public class AssetManager implements IAssetManager{
     }
 
     private void loadAssets() throws Exception{
-        for(IMod mod : RockBottomAPI.getModLoader().getAllMods()){
+        for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             String path = mod.getResourceLocation();
             if(path != null && !path.isEmpty()){
                 int loadAmount = 0;

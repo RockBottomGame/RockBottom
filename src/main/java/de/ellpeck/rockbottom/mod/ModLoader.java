@@ -1,11 +1,12 @@
 package de.ellpeck.rockbottom.mod;
 
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.apiimpl.ResourceName;
 import org.newdawn.slick.util.Log;
 
@@ -16,14 +17,22 @@ import java.util.jar.JarFile;
 
 public class ModLoader implements IModLoader{
 
-    private final List<IMod> loadedMods = new ArrayList<>();
+    private final List<IMod> allMods = new ArrayList<>();
+    private final List<IMod> activeMods = new ArrayList<>();
+    private final List<IMod> disabledMods = new ArrayList<>();
+
+    private final ModSettings modSettings = new ModSettings();
 
     public ModLoader(){
-        this.loadedMods.add(RockBottomAPI.getGame());
+        IGameInstance game = RockBottomAPI.getGame();
+        this.allMods.add(game);
+        this.activeMods.add(game);
     }
 
     @Override
     public void loadModsFromDir(File dir){
+        RockBottomAPI.getGame().getDataManager().loadPropSettings(this.modSettings);
+
         if(!dir.exists()){
             dir.mkdirs();
             Log.info("Mods folder not found, creating at "+dir);
@@ -58,10 +67,17 @@ public class ModLoader implements IModLoader{
 
                                         if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
                                             if(this.getMod(id) == null){
-                                                this.loadedMods.add(instance);
-                                                loadedAmount++;
+                                                if(this.modSettings.isDisabled(id)){
+                                                    this.disabledMods.add(instance);
+                                                    Log.info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
+                                                }
+                                                else{
+                                                    this.activeMods.add(instance);
+                                                    Log.info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
+                                                }
 
-                                                Log.info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
+                                                this.allMods.add(instance);
+                                                loadedAmount++;
                                             }
                                             else{
                                                 Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
@@ -99,11 +115,15 @@ public class ModLoader implements IModLoader{
     public void sortMods(){
         Log.info("Sorting mods");
 
-        this.loadedMods.sort(Comparator.comparingInt(IMod:: getSortingPriority).reversed());
+        this.allMods.sort(Comparator.comparingInt(IMod:: getSortingPriority).reversed());
 
         Log.info("----- Loaded Mods -----");
-        for(IMod mod : this.loadedMods){
-            Log.info(mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")");
+        for(IMod mod : this.allMods){
+            String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")";
+            if(!this.activeMods.contains(mod)){
+                s += " [DISABLED]";
+            }
+            Log.info(s);
         }
         Log.info("-----------------------");
     }
@@ -111,7 +131,7 @@ public class ModLoader implements IModLoader{
     @Override
     public void preInit(){
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.loadedMods){
+        for(IMod mod : this.activeMods){
             mod.preInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
@@ -119,7 +139,7 @@ public class ModLoader implements IModLoader{
     @Override
     public void init(){
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.loadedMods){
+        for(IMod mod : this.activeMods){
             mod.init(game, game.getAssetManager(), RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
@@ -127,14 +147,14 @@ public class ModLoader implements IModLoader{
     @Override
     public void postInit(){
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.loadedMods){
+        for(IMod mod : this.activeMods){
             mod.postInit(game, game.getAssetManager(), RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
     @Override
     public IMod getMod(String id){
-        for(IMod mod : this.loadedMods){
+        for(IMod mod : this.allMods){
             if(mod.getId().equals(id)){
                 return mod;
             }
@@ -154,6 +174,21 @@ public class ModLoader implements IModLoader{
 
     @Override
     public List<IMod> getAllMods(){
-        return Collections.unmodifiableList(this.loadedMods);
+        return Collections.unmodifiableList(this.allMods);
+    }
+
+    @Override
+    public List<IMod> getActiveMods(){
+        return Collections.unmodifiableList(this.activeMods);
+    }
+
+    @Override
+    public List<IMod> getDisabledMods(){
+        return Collections.unmodifiableList(this.disabledMods);
+    }
+
+    @Override
+    public ModSettings getModSettings(){
+        return this.modSettings;
     }
 }
