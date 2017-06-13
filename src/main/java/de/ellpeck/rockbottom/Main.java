@@ -93,6 +93,7 @@ public final class Main{
             File temp = new File(tempDir, libName);
             if(temp.exists()){
                 Log.info("File "+temp+" already exists, using existing version");
+                return temp.getAbsolutePath();
             }
             else{
                 Log.info("Creating temporary file "+temp);

@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -21,11 +22,12 @@ import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
+import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketRespawn;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.util.Util;
@@ -386,11 +388,17 @@ public class EntityPlayer extends AbstractEntityPlayer{
         this.fallAmount = 0;
         this.health = this.getMaxHealth();
 
-        if(game.getGuiManager() != null){
-            game.getGuiManager().closeGui();
+        if(RockBottomAPI.getNet().isThePlayer(this)){
+            if(game.getGuiManager() != null){
+                game.getGuiManager().closeGui();
+            }
         }
 
         this.setPos(this.world.getSpawnX()+0.5, this.world.getLowestAirUpwards(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
+
+        if(RockBottomAPI.getNet().isServer()){
+            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketRespawn(this.getUniqueId()));
+        }
     }
 
     @Override

@@ -637,10 +637,4 @@ public class World implements IWorld{
             return 1F-(float)(this.info.currentWorldTime-noon)/(float)noon;
         }
     }
-
-    @Override
-    public boolean isClient(){
-        return false;
-    }
-
 }

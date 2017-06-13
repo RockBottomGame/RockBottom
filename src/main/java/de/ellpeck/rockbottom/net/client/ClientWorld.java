@@ -82,11 +82,6 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public boolean isClient(){
-        return true;
-    }
-
-    @Override
     public void addEntity(Entity entity){
         IChunk chunk = this.getChunk(entity.x, entity.y);
         chunk.addEntity(entity);

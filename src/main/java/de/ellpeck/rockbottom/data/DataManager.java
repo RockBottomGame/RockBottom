@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteByteArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortShortArray;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
+import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDropItem;
 import de.ellpeck.rockbottom.RockBottom;
@@ -68,6 +69,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(22, PacketDropItem.class);
         RockBottomAPI.PACKET_REGISTRY.register(23, PacketChunkUnload.class);
         RockBottomAPI.PACKET_REGISTRY.register(24, PacketManualConstruction.class);
+        RockBottomAPI.PACKET_REGISTRY.register(25, PacketDeath.class);
     }
 
     private final File gameDirectory;

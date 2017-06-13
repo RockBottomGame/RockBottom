@@ -99,13 +99,6 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
-    public void resetAndSpawn(IGameInstance game){
-        super.resetAndSpawn(game);
-
-        this.sendPacket(new PacketRespawn());
-    }
-
-    @Override
     public boolean doesSync(){
         return false;
     }

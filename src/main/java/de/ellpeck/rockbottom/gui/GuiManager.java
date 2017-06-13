@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -13,7 +14,6 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.MainMenuBackground;
@@ -90,8 +90,10 @@ public class GuiManager implements IGuiManager{
 
         game.getChatLog().updateNewMessages();
 
-        if(this.gui != null){
-            this.gui.update(game);
+        if(game.getPlayer() == null || !game.getPlayer().isDead()){
+            if(this.gui != null){
+                this.gui.update(game);
+            }
         }
 
         if(this.background != null){
@@ -142,7 +144,7 @@ public class GuiManager implements IGuiManager{
         font.drawString(2, height-font.getHeight(0.25F), game.getTitle(), 0.25F);
 
         if(game.getSettings().cursorInfos){
-            if(player != null && gui == null && Mouse.isInsideWindow()){
+            if(player != null && !player.isDead() && gui == null && Mouse.isInsideWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
                     ItemInstance holding = player.getInv().get(player.getSelectedSlot());
                     if(holding != null){
@@ -195,13 +197,15 @@ public class GuiManager implements IGuiManager{
     }
 
     public boolean onMouseAction(RockBottom game, int button, float x, float y){
-        if(this.gui != null){
-            return this.gui.onMouseAction(game, button, x, y);
-        }
-        else{
-            for(GuiComponent comp : this.onScreenComponents){
-                if(comp.onMouseAction(game, button, x, y)){
-                    return true;
+        if(game.getPlayer() == null || !game.getPlayer().isDead()){
+            if(this.gui != null){
+                return this.gui.onMouseAction(game, button, x, y);
+            }
+            else{
+                for(GuiComponent comp : this.onScreenComponents){
+                    if(comp.onMouseAction(game, button, x, y)){
+                        return true;
+                    }
                 }
             }
         }
@@ -209,10 +213,13 @@ public class GuiManager implements IGuiManager{
     }
 
     public boolean onKeyboardAction(RockBottom game, int button, char character){
-        if(this.background != null){
-            this.background.onKeyInput(button);
-        }
+        if(game.getPlayer() == null || !game.getPlayer().isDead()){
+            if(this.background != null){
+                this.background.onKeyInput(button);
+            }
 
-        return this.gui != null && this.gui.onKeyboardAction(game, button, character);
+            return this.gui != null && this.gui.onKeyboardAction(game, button, character);
+        }
+        return false;
     }
 }

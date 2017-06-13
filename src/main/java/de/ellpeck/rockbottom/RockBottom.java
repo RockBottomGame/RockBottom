@@ -348,7 +348,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public void openIngameMenu(){
         this.guiManager.openGui(new GuiMenu());
 
-        if(!this.world.isClient()){
+        if(!RockBottomAPI.getNet().isClient()){
             this.world.save();
         }
     }
