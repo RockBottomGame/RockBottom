@@ -41,7 +41,7 @@ public class GuiMods extends Gui{
         this.modGuiButton.isVisible = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
         this.components.add(this.modGuiButton);
 
-        this.disabledButton = new ComponentButton(this, 1, x-57, 26, 55, 10, "");
+        this.disabledButton = new ComponentButton(this, 1, x-57, 26, 55, 10, "", game.getAssetManager().localize(RockBottom.internalRes("info.requires_restart")));
         this.updateDisableButton(game);
         this.components.add(this.disabledButton);
     }
@@ -64,17 +64,18 @@ public class GuiMods extends Gui{
 
             int width = (int)game.getWidthInGui()-100;
             float center = 100+(width/2);
-            font.drawCenteredString(center, 35, this.selectedMod.getDisplayName(), 1F, false);
-            font.drawCenteredString(center, 60, "Version: "+FormattingCode.GRAY+this.selectedMod.getVersion(), 0.35F, false);
-            font.drawCenteredString(center, 70, "Mod ID: "+FormattingCode.GRAY+this.selectedMod.getId(), 0.35F, false);
+            font.drawCenteredString(center, 45, this.selectedMod.getDisplayName(), 0.75F, false);
+            font.drawCenteredString(center, 70, "Version: "+FormattingCode.GRAY+this.selectedMod.getVersion(), 0.35F, false);
+            font.drawCenteredString(center, 80, "Mod ID: "+FormattingCode.GRAY+this.selectedMod.getId(), 0.35F, false);
 
-            font.drawSplitString(120, 80, this.selectedMod.getDescription(), 0.4F, width-30);
+            font.drawSplitString(120, 90, this.selectedMod.getDescription(), 0.4F, width-30);
         }
     }
 
     public void selectMod(IMod mod){
         this.selectedMod = mod;
         this.modGuiButton.isVisible = mod.getModGuiClass() != null;
+        this.updateDisableButton(RockBottomAPI.getGame());
     }
 
     public IMod getSelectedMod(){
@@ -98,9 +99,10 @@ public class GuiMods extends Gui{
         }
         else if(button == 1){
             ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
-            settings.setDisabled(this.selectedMod.getId(), settings.isDisabled(this.selectedMod.getId()));
-
+            settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));
             game.getDataManager().savePropSettings(settings);
+
+            this.updateDisableButton(game);
             return true;
         }
         else if(button == -1){

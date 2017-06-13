@@ -37,6 +37,7 @@ rockbottom/info.cursor_infos=If the in-game cursor should display tool and tile 
 rockbottom/info.gui_color=Gui Color Scheme
 rockbottom/info.reset=Reset
 rockbottom/info.advanced_info=Press %s for more info
+rockbottom/info.requires_restart=Requires game restart
 
 rockbottom/button.back=Back
 rockbottom/button.settings=Settings
@@ -69,6 +70,7 @@ rockbottom/button.text_speed=Text Speed
 rockbottom/button.mods=Mods
 rockbottom/button.mod_info=Mod Gui
 rockbottom/button.disable=Disable
+rockbottom/button.enable=Enable
 
 rockbottom/layer.main=Foreground
 rockbottom/layer.background=Background
