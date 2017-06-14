@@ -103,12 +103,12 @@ public class ModLoader implements IModLoader{
                 this.recursiveLoad(original, file.listFiles(), amount);
             }
             else{
-                String name = file.getName();
+                String name = file.getAbsolutePath();
                 if(name != null && name.endsWith(".class")){
                     try{
                         Main.classLoader.addURL(file.toURI().toURL());
 
-                        if(this.findMod(name)){
+                        if(this.findMod(name.replace(original.getAbsolutePath(), "").replace(File.separator, ".").replaceFirst(".", ""))){
                             amount.add(1);
                         }
                     }
