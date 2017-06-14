@@ -18,7 +18,7 @@ public class Container extends AppGameContainer{
     protected final RockBottom game;
 
     public Container(RockBottom game) throws SlickException{
-        super(game, 1280, 720, false);
+        super(game, Main.width, Main.height, Main.fullscreen);
         this.game = game;
     }
 

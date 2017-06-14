@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.gui.menu;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
 import org.newdawn.slick.Color;
@@ -59,6 +59,7 @@ public class GuiGraphics extends Gui{
                 return this.number >= this.max ? this.text+": "+assetManager.localize(RockBottom.internalRes("info.unlimited")) : super.getText();
             }
         });
+        this.components.add(new ComponentToggleButton(this, 8, this.guiLeft+154, this.guiTop+60, 150, 16, !settings.fullscreen, "button.fullscreen"));
 
         this.components.add(new ComponentColorPicker(this, this.guiLeft+55, this.guiTop+70, 40, 40, settings.guiColor, new ComponentColorPicker.ICallback(){
             @Override
@@ -102,6 +103,11 @@ public class GuiGraphics extends Gui{
             game.getDataManager().savePropSettings(settings);
             game.getGuiManager().setReInit();
             return true;
+        }
+        else if(button == 8){
+            settings.fullscreen = !settings.fullscreen;
+            game.getDataManager().savePropSettings(settings);
+            game.setFullscreen(settings.fullscreen);
         }
         return false;
     }

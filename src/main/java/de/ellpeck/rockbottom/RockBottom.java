@@ -38,6 +38,7 @@ import de.ellpeck.rockbottom.util.Util;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
@@ -77,6 +78,8 @@ public class RockBottom extends BasicGame implements IGameInstance{
     private long lastPollTime;
     private int tpsAccumulator;
     private int fpsAccumulator;
+    private int lastWidth;
+    private int lastHeight;
 
     public RockBottom(){
         super(NAME+" "+VERSION);
@@ -147,6 +150,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
         this.dataManager.loadPropSettings(this.settings);
 
         this.container.setTargetFrameRate(this.settings.targetFps);
+        this.setFullscreen(this.settings.fullscreen);
 
         this.assetManager = new AssetManager();
         this.assetManager.create(this);
@@ -167,6 +171,32 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
+    }
+
+    @Override
+    public void setFullscreen(boolean fullscreen){
+        try{
+            if(this.container.isFullscreen() != fullscreen){
+                if(fullscreen){
+                    this.lastWidth = this.container.getWidth();
+                    this.lastHeight = this.container.getHeight();
+
+                    this.container.setDisplayMode(this.container.getScreenWidth(), this.container.getScreenHeight(), true);
+                }
+                else{
+                    this.container.setDisplayMode(this.lastWidth, this.lastHeight, false);
+                    Display.setResizable(false); //Workaround for stupid LWJGL bug
+                    Display.setResizable(true);
+                }
+
+                if(this.guiManager != null){
+                    this.guiManager.setReInit();
+                }
+            }
+        }
+        catch(Exception e){
+            Log.error("Failed to set fullscreen", e);
+        }
     }
 
     @Override

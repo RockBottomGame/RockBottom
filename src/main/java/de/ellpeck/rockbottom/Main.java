@@ -18,9 +18,14 @@ import java.util.Arrays;
 public final class Main{
 
     public static CustomClassLoader classLoader;
+
     public static File gameDir;
     public static File tempDir;
     public static File unpackedModsDir;
+
+    public static int width;
+    public static int height;
+    public static boolean fullscreen;
 
     public static void main(String[] args){
         LogSystem.init();
@@ -28,9 +33,12 @@ public final class Main{
         Log.info("Found launch args "+Arrays.toString(args));
 
         OptionParser parser = new OptionParser();
-        OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).required();
+        OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(new File(".", "rockbottom"));
         OptionSpec<File> optionTempDir = parser.accepts("tempDir").withRequiredArg().ofType(File.class).required();
         OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
+        OptionSpec<Integer> optionWidth = parser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(1280);
+        OptionSpec<Integer> optionHeight = parser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(720);
+        OptionSpec optionFullscreen = parser.accepts("fullscreen");
 
         OptionSet options = parser.parse(args);
         gameDir = options.valueOf(optionGameDir);
@@ -43,6 +51,10 @@ public final class Main{
         if(unpackedModsDir != null){
             Log.info("Setting unpacked mods folder to "+unpackedModsDir);
         }
+
+        width = options.valueOf(optionWidth);
+        height = options.valueOf(optionHeight);
+        fullscreen = options.has(optionFullscreen);
 
         try{
             URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();

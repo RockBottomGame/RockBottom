@@ -22,8 +22,6 @@ public final class Launcher{
             String temp = System.getProperty("java.io.tmpdir");
             tempDir = new File(temp+File.separator+"rockbottom"+RANDOM.nextInt());
 
-            File gameDir = new File(".", "rockbottom");
-
             String javaHome = System.getProperty("java.home");
             String javaBin = javaHome+File.separator+"bin"+File.separator+"java";
             String classPath = System.getProperty("java.class.path");
@@ -35,7 +33,6 @@ public final class Launcher{
             arguments.add(classPath);
             arguments.add(className);
 
-            arguments.addAll(Arrays.asList("--gameDir", gameDir.toString()));
             arguments.addAll(Arrays.asList("--tempDir", tempDir.toString()));
             arguments.addAll(Arrays.asList(args));
 
