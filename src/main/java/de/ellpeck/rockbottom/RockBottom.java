@@ -128,7 +128,10 @@ public class RockBottom extends BasicGame implements IGameInstance{
         this.dataManager = new DataManager(this);
 
         IModLoader modLoader = RockBottomAPI.getModLoader();
-        modLoader.loadModsFromDir(this.dataManager.getModsDir());
+        modLoader.loadJarMods(this.dataManager.getModsDir());
+        if(Main.unpackedModsDir != null){
+            modLoader.loadUnpackedMods(Main.unpackedModsDir);
+        }
         modLoader.sortMods();
 
         modLoader.preInit();

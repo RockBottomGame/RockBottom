@@ -1,6 +1,9 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.util.LogSystem;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -17,26 +20,28 @@ public final class Main{
     public static CustomClassLoader classLoader;
     public static File gameDir;
     public static File tempDir;
+    public static File unpackedModsDir;
 
     public static void main(String[] args){
         LogSystem.init();
 
         Log.info("Found launch args "+Arrays.toString(args));
 
-        try{
-            gameDir = new File(args[0]);
-            Log.info("Setting game folder to "+gameDir);
+        OptionParser parser = new OptionParser();
+        OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).required();
+        OptionSpec<File> optionTempDir = parser.accepts("tempDir").withRequiredArg().ofType(File.class).required();
+        OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
 
-            tempDir = new File(args[1]);
-            Log.info("Setting temp folder to "+tempDir);
+        OptionSet options = parser.parse(args);
+        gameDir = options.valueOf(optionGameDir);
+        Log.info("Setting game folder to "+gameDir);
 
-            if(!tempDir.exists()){
-                tempDir.mkdirs();
-                Log.info("Creating temp folder at "+tempDir);
-            }
-        }
-        catch(Exception e){
-            throw new RuntimeException("Couldn't parse launch args", e);
+        tempDir = options.valueOf(optionTempDir);
+        Log.info("Setting temp folder to "+tempDir);
+
+        unpackedModsDir = options.valueOf(optionUnpackedDir);
+        if(unpackedModsDir != null){
+            Log.info("Setting unpacked mods folder to "+unpackedModsDir);
         }
 
         try{
@@ -90,6 +95,10 @@ public final class Main{
 
     private static String loadLib(InputStream in, String libName){
         try{
+            if(!tempDir.exists()){
+                tempDir.mkdirs();
+            }
+
             File temp = new File(tempDir, libName);
             if(temp.exists()){
                 Log.info("File "+temp+" already exists, using existing version");

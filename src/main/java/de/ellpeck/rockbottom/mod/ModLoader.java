@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
+import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.apiimpl.ResourceName;
 import org.newdawn.slick.util.Log;
@@ -30,7 +31,7 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
-    public void loadModsFromDir(File dir){
+    public void loadJarMods(File dir){
         RockBottomAPI.getGame().getDataManager().loadPropSettings(this.modSettings);
 
         if(!dir.exists()){
@@ -38,9 +39,9 @@ public class ModLoader implements IModLoader{
             Log.info("Mods folder not found, creating at "+dir);
         }
         else{
-            int loadedAmount = 0;
+            int amount = 0;
 
-            Log.info("Loading mods from mods folder "+dir);
+            Log.info("Loading jar mods from mods folder "+dir);
 
             for(File file : dir.listFiles()){
                 String name = file.getName();
@@ -56,50 +57,20 @@ public class ModLoader implements IModLoader{
                             JarEntry entry = entries.nextElement();
                             String entryName = entry.getName();
 
-                            if(entryName != null && entryName.endsWith(".class") && !entryName.contains("$")){
-                                String actualClassName = entryName.substring(0, entryName.length()-6).replace("/", ".");
-                                Class aClass = Class.forName(actualClassName, false, Main.classLoader);
+                            if(this.findMod(entryName)){
+                                amount++;
 
-                                if(aClass != null && !aClass.isInterface()){
-                                    if(IMod.class.isAssignableFrom(aClass)){
-                                        IMod instance = (IMod)aClass.newInstance();
-                                        String id = instance.getId();
-
-                                        if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
-                                            if(this.getMod(id) == null){
-                                                if(this.modSettings.isDisabled(id)){
-                                                    this.disabledMods.add(instance);
-                                                    Log.info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
-                                                }
-                                                else{
-                                                    this.activeMods.add(instance);
-                                                    Log.info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
-                                                }
-
-                                                this.allMods.add(instance);
-                                                loadedAmount++;
-                                            }
-                                            else{
-                                                Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
-                                            }
-                                        }
-                                        else{
-                                            Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
-                                        }
-
-                                        foundMod = true;
-                                        break;
-                                    }
-                                }
+                                foundMod = true;
+                                break;
                             }
                         }
 
                         if(!foundMod){
-                            Log.warn("Found jar file "+file+" that doesn't contain a mod");
+                            Log.warn("Jar file "+file+" doesn't contain a valid mod");
                         }
                     }
                     catch(Exception e){
-                        Log.error("Loading mod from file "+file+" failed", e);
+                        Log.error("Loading jar mod from file "+file+" failed", e);
                     }
                 }
                 else{
@@ -107,8 +78,86 @@ public class ModLoader implements IModLoader{
                 }
             }
 
-            Log.info("Loaded a total of "+loadedAmount+" mods");
+            Log.info("Loaded a total of "+amount+" jar mods");
         }
+    }
+
+    @Override
+    public void loadUnpackedMods(File dir){
+        if(dir.exists()){
+            Log.info("Loading unpacked mods from folder "+dir);
+
+            MutableInt amount = new MutableInt(0);
+            this.recursiveLoad(dir, dir.listFiles(), amount);
+
+            Log.info("Loaded a total of "+amount.get()+" unpacked mods");
+        }
+        else{
+            Log.info("Not loading unpacked mods from folder "+dir+" as it doesn't exist");
+        }
+    }
+
+    private void recursiveLoad(File original, File[] files, MutableInt amount){
+        for(File file : files){
+            if(file.isDirectory()){
+                this.recursiveLoad(original, file.listFiles(), amount);
+            }
+            else{
+                String name = file.getName();
+                if(name != null && name.endsWith(".class")){
+                    try{
+                        Main.classLoader.addURL(file.toURI().toURL());
+
+                        if(this.findMod(name)){
+                            amount.add(1);
+                        }
+                    }
+                    catch(Exception e){
+                        Log.error("Loading unpacked mod from file "+file+" failed", e);
+                    }
+                }
+                else{
+                    Log.warn("Found non-class file "+file+" in unpacked mods folder "+original);
+                }
+            }
+        }
+    }
+
+    private boolean findMod(String className) throws Exception{
+        if(className != null && className.endsWith(".class") && !className.contains("$")){
+            String actualClassName = className.substring(0, className.length()-6).replace("/", ".");
+            Class aClass = Class.forName(actualClassName, false, Main.classLoader);
+
+            if(aClass != null && !aClass.isInterface()){
+                if(IMod.class.isAssignableFrom(aClass)){
+                    IMod instance = (IMod)aClass.newInstance();
+                    String id = instance.getId();
+
+                    if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
+                        if(this.getMod(id) == null){
+                            if(this.modSettings.isDisabled(id)){
+                                this.disabledMods.add(instance);
+                                Log.info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
+                            }
+                            else{
+                                this.activeMods.add(instance);
+                                Log.info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
+                            }
+
+                            this.allMods.add(instance);
+                            return true;
+                        }
+                        else{
+                            Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
+                        }
+                    }
+                    else{
+                        Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

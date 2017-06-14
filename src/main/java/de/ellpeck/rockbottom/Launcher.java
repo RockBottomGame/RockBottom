@@ -35,8 +35,8 @@ public final class Launcher{
             arguments.add(classPath);
             arguments.add(className);
 
-            arguments.add(gameDir.toString());
-            arguments.add(tempDir.toString());
+            arguments.addAll(Arrays.asList("--gameDir", gameDir.toString()));
+            arguments.addAll(Arrays.asList("--tempDir", tempDir.toString()));
             arguments.addAll(Arrays.asList(args));
 
             ProcessBuilder builder = new ProcessBuilder(arguments);

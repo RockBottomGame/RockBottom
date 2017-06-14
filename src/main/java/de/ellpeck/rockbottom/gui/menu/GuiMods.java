@@ -98,12 +98,14 @@ public class GuiMods extends Gui{
             }
         }
         else if(button == 1){
-            ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
-            settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));
-            game.getDataManager().savePropSettings(settings);
+            if(this.selectedMod.isDisableable()){
+                ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
+                settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));
+                game.getDataManager().savePropSettings(settings);
 
-            this.updateDisableButton(game);
-            return true;
+                this.updateDisableButton(game);
+                return true;
+            }
         }
         else if(button == -1){
             game.getGuiManager().openGui(this.parent);
