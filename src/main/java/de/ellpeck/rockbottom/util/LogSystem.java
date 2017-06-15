@@ -3,10 +3,13 @@ package de.ellpeck.rockbottom.util;
 import org.newdawn.slick.util.DefaultLogSystem;
 import org.newdawn.slick.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LogSystem extends DefaultLogSystem{
 
+    private static final DateFormat FORMAT = new SimpleDateFormat("HH:mm:ss.S");
     private final LogLevel level;
 
     private LogSystem(LogLevel level){
@@ -54,7 +57,7 @@ public class LogSystem extends DefaultLogSystem{
 
     private void format(LogLevel level, String message, Throwable t){
         if(this.level == level || this.level.ordinal() >= level.ordinal()){
-            out.println("["+new Date()+"] ["+level+"] "+message);
+            out.println("["+FORMAT.format(new Date())+"] ["+level+"] "+message);
 
             if(t != null){
                 t.printStackTrace(out);

@@ -30,7 +30,8 @@ public class GuiCredits extends Gui{
         int y = (int)game.getHeightInGui()-30;
 
         font.drawCenteredString(x, y-30, "Made by Ellpeck", 0.75F, false);
-        font.drawCenteredString(x, y, "Name suggested by witsend66", 0.35F, false);
+        font.drawCenteredString(x, y-10, "Art by wiiv", 0.6F, false);
+        font.drawCenteredString(x, y+10, "Name suggested by witsend66", 0.35F, false);
     }
 
     @Override
