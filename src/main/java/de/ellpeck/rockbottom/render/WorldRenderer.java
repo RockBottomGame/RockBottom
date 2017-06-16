@@ -49,7 +49,6 @@ public class WorldRenderer{
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
         int scale = game.getWorldScale();
-        g.scale(scale, scale);
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
         g.setBackground(SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight]);
@@ -90,10 +89,10 @@ public class WorldRenderer{
                                         Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
                                         ITileRenderer rendererBack = tileBack.getRenderer();
                                         if(rendererBack != null){
-                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, tileX-transX, -tileY-transY, BACKGROUND_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
+                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, BACKGROUND_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
 
                                             if(input.breakingLayer == TileLayer.BACKGROUND){
-                                                this.doBreakAnimation(input, manager, tileX, tileY, transX, transY);
+                                                this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
                                             }
                                         }
                                     }
@@ -102,10 +101,10 @@ public class WorldRenderer{
                                 if(!game.isForegroundDebug()){
                                     ITileRenderer renderer = tile.getRenderer();
                                     if(renderer != null){
-                                        renderer.render(game, manager, g, world, tile, tileX, tileY, tileX-transX, -tileY-transY, MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
+                                        renderer.render(game, manager, g, world, tile, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, MAIN_COLORS[game.isLightDebug() ? Constants.MAX_LIGHT : light]);
 
                                         if(input.breakingLayer == TileLayer.MAIN){
-                                            this.doBreakAnimation(input, manager, tileX, tileY, transX, transY);
+                                            this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
                                         }
                                     }
                                 }
@@ -117,6 +116,8 @@ public class WorldRenderer{
                 }
             }
         }
+
+        g.scale(scale, scale);
 
         particles.render(game, manager, g, world, transX, transY);
 
@@ -135,11 +136,11 @@ public class WorldRenderer{
         g.resetTransform();
     }
 
-    private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY){
+    private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY, float scale){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
                 Image brk = manager.getImage(RockBottom.internalRes("break."+Util.ceil(input.breakProgress*8F)));
-                brk.draw(tileX-transX, -tileY-transY, 1F, 1F);
+                brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
             }
         }
     }

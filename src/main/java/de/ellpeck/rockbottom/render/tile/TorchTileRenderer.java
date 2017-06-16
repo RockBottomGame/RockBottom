@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.render.tile;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.RockBottom;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -24,7 +24,7 @@ public class TorchTileRenderer extends DefaultTileRenderer{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, Color filter){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, float scale, Color filter){
         int meta = world.getMeta(x, y);
 
         IResourceName tex;
@@ -41,6 +41,6 @@ public class TorchTileRenderer extends DefaultTileRenderer{
             tex = this.texture;
         }
 
-        manager.getImage(tex).draw(renderX, renderY, 1F, 1F, filter);
+        manager.getImage(tex).draw(renderX, renderY, scale, scale, filter);
     }
 }

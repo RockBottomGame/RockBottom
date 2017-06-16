@@ -20,7 +20,7 @@ public class ChestTileRenderer extends DefaultTileRenderer{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, Color filter){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, float scale, Color filter){
         IResourceName tex;
 
         TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
@@ -31,6 +31,6 @@ public class ChestTileRenderer extends DefaultTileRenderer{
             tex = this.texture;
         }
 
-        manager.getImage(tex).draw(renderX, renderY, 1F, 1F, filter);
+        manager.getImage(tex).draw(renderX, renderY, scale, scale, filter);
     }
 }
