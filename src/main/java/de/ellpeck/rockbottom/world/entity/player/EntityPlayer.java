@@ -163,10 +163,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
         }
 
         if(RockBottomAPI.getNet().isThePlayer(this)){
+            int range = 32;
             for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES; i++){
                 TileLayer layer = TileLayer.LAYERS[Util.RANDOM.nextInt(TileLayer.LAYERS.length)];
-                int x = Util.floor(this.x)+Util.RANDOM.nextInt(33)-16;
-                int y = Util.floor(this.y)+Util.RANDOM.nextInt(33)-16;
+                int x = Util.floor(this.x)+Util.RANDOM.nextInt(range*2+1)-range;
+                int y = Util.floor(this.y)+Util.RANDOM.nextInt(range*2+1)-range;
 
                 if(this.world.isPosLoaded(x, y)){
                     Tile tile = this.world.getTile(layer, x, y);
