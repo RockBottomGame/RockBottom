@@ -38,6 +38,7 @@ rockbottom/info.gui_color=Gui Color Scheme
 rockbottom/info.reset=Reset
 rockbottom/info.advanced_info=Press %s for more info
 rockbottom/info.requires_restart=Requires game restart
+rockbottom/info.size=Size: %sx%s tiles
 
 rockbottom/button.back=Back
 rockbottom/button.settings=Settings
