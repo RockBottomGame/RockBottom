@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
@@ -23,6 +24,7 @@ public class GuiJoinServer extends Gui{
 
         this.inputField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-80, this.guiTop, 160, 16, true, true, false, 128, false);
         this.components.add(this.inputField);
+        this.inputField.setText(game.getSettings().lastServerIp);
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.getAssetManager().localize(RockBottom.internalRes("button.connect"))));
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
@@ -53,5 +55,17 @@ public class GuiJoinServer extends Gui{
             }
         }
         return false;
+    }
+
+    @Override
+    public void onClosed(IGameInstance game){
+        super.onClosed(game);
+
+        Settings settings = game.getSettings();
+        String text = this.inputField.getText();
+        if(!settings.lastServerIp.equals(text)){
+            settings.lastServerIp = text;
+            game.getDataManager().savePropSettings(settings);
+        }
     }
 }
