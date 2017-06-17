@@ -80,6 +80,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
     private int fpsAccumulator;
     private int lastWidth;
     private int lastHeight;
+    private int totalTicks;
 
     public RockBottom(){
         super(NAME+" "+VERSION);
@@ -200,7 +201,13 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
+    public int getTotalTicks(){
+        return this.totalTicks;
+    }
+
+    @Override
     public void update(GameContainer container, int delta) throws SlickException{
+        this.totalTicks++;
         this.tpsAccumulator++;
 
         long time = container.getTime();

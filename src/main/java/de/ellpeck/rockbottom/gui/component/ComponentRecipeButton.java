@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.gui.component;
 
+import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -9,7 +11,6 @@ import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.construction.IRecipe;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -47,7 +48,8 @@ public class ComponentRecipeButton extends ComponentButton{
 
     @Override
     protected String[] getHover(){
-        IAssetManager manager = RockBottom.get().getAssetManager();
+        IGameInstance game = RockBottom.get();
+        IAssetManager manager = game.getAssetManager();
 
         List<ItemInstance> inputs = this.recipe.getInputs();
         List<ItemInstance> outputs = this.recipe.getOutputs();
@@ -70,7 +72,17 @@ public class ComponentRecipeButton extends ComponentButton{
                 code = FormattingCode.GREEN;
             }
 
-            hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
+            if(inst.getMeta() == Constants.META_WILDCARD){
+                int meta = (game.getTotalTicks()/Constants.TARGET_TPS)%(inst.getItem().getHighestPossibleMeta()+1);
+
+                ItemInstance copy = inst.copy();
+                copy.setMeta(meta);
+
+                hover.add(code+" "+copy.getDisplayName()+" x"+copy.getAmount());
+            }
+            else{
+                hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
+            }
         }
 
         return hover.toArray(new String[hover.size()]);

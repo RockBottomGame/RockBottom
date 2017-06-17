@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.construction;
 
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.ContentRegistry;
 
@@ -21,7 +22,7 @@ public final class ConstructionRegistry{
     public static void init(){
         MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_TORCH, 8),
                 new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS),
-                new ItemInstance(ContentRegistry.ITEM_COAL, 2)));
+                new ItemInstance(ContentRegistry.ITEM_COAL, 2, Constants.META_WILDCARD)));
         MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 5),
                 new ItemInstance(ContentRegistry.TILE_LOG)));
         MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.ITEM_WOOD_PICK),
@@ -32,11 +33,11 @@ public final class ConstructionRegistry{
         MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_SMELTER),
                 new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 20),
                 new ItemInstance(ContentRegistry.TILE_ROCK, 40),
-                new ItemInstance(ContentRegistry.ITEM_COAL, 10)));
+                new ItemInstance(ContentRegistry.ITEM_COAL, 10, Constants.META_WILDCARD)));
         MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.TILE_SEPARATOR),
                 new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS, 30),
                 new ItemInstance(ContentRegistry.TILE_ROCK, 60),
-                new ItemInstance(ContentRegistry.ITEM_COAL, 15),
+                new ItemInstance(ContentRegistry.ITEM_COAL, 15, Constants.META_WILDCARD),
                 new ItemInstance(ContentRegistry.ITEM_COPPER_CLUSTER, 5)));
         MANUAL_RECIPES.add(new BasicRecipe(new ItemInstance(ContentRegistry.ITEM_SUPER_TOOL),
                 new ItemInstance(ContentRegistry.ITEM_COPPER_INGOT, 30),
@@ -46,13 +47,13 @@ public final class ConstructionRegistry{
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.TILE_LOG), 600);
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS), 120);
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_COAL), 1800);
-        FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_CHARCOAL), 1600);
+        FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_COAL, 1, 1), 1600);
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_SLAG), 200);
 
         SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(ContentRegistry.ITEM_COPPER_INGOT),
                 new ItemInstance(ContentRegistry.ITEM_COPPER_GRIT),
                 300));
-        SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(ContentRegistry.ITEM_CHARCOAL),
+        SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(ContentRegistry.ITEM_COAL, 1, 1),
                 new ItemInstance(ContentRegistry.TILE_LOG),
                 800));
 
@@ -65,7 +66,7 @@ public final class ConstructionRegistry{
 
     public static int getFuelValue(ItemInstance instance){
         for(Map.Entry<ItemInstance, Integer> entry : FUEL_REGISTRY.entrySet()){
-            if(instance.isEffectivelyEqual(entry.getKey())){
+            if(instance.isEffectivelyEqualWithWildcard(entry.getKey())){
                 return entry.getValue();
             }
         }
@@ -74,7 +75,7 @@ public final class ConstructionRegistry{
 
     public static SmelterRecipe getSmelterRecipe(ItemInstance input){
         for(SmelterRecipe recipe : SMELTER_RECIPES){
-            if(input.isEffectivelyEqual(recipe.getInput())){
+            if(input.isEffectivelyEqualWithWildcard(recipe.getInput())){
                 return recipe;
             }
         }
@@ -83,7 +84,7 @@ public final class ConstructionRegistry{
 
     public static SeparatorRecipe getSeparatorRecipe(ItemInstance input){
         for(SeparatorRecipe recipe : SEPARATOR_RECIPES){
-            if(input.isEffectivelyEqual(recipe.getInput())){
+            if(input.isEffectivelyEqualWithWildcard(recipe.getInput())){
                 return recipe;
             }
         }

@@ -21,7 +21,7 @@ public class ContainerInventory extends ItemContainer{
                     for(int i = 0; i < player.getInv().getSlotAmount(); i++){
                         ItemInstance inv = player.getInv().get(i);
 
-                        if(inv != null && inv.isEffectivelyEqual(input) && inv.getAmount() >= input.getAmount()){
+                        if(inv != null && inv.isEffectivelyEqualWithWildcard(input) && inv.getAmount() >= input.getAmount()){
                             player.getInv().remove(i, input.getAmount());
                             break;
                         }
