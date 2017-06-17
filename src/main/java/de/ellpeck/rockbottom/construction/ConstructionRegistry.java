@@ -45,12 +45,16 @@ public final class ConstructionRegistry{
 
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.TILE_LOG), 600);
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.TILE_WOOD_BOARDS), 120);
-        FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_COAL), 1200);
+        FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_COAL), 1800);
+        FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_CHARCOAL), 1600);
         FUEL_REGISTRY.put(new ItemInstance(ContentRegistry.ITEM_SLAG), 200);
 
         SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(ContentRegistry.ITEM_COPPER_INGOT),
                 new ItemInstance(ContentRegistry.ITEM_COPPER_GRIT),
                 300));
+        SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(ContentRegistry.ITEM_CHARCOAL),
+                new ItemInstance(ContentRegistry.TILE_LOG),
+                800));
 
         SEPARATOR_RECIPES.add(new SeparatorRecipe(new ItemInstance(ContentRegistry.ITEM_COPPER_GRIT, 2),
                 new ItemInstance(ContentRegistry.ITEM_COPPER_CLUSTER),

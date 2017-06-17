@@ -3,6 +3,7 @@ rockbottom/item.dirt=Dirt
 rockbottom/item.torch=Torch
 rockbottom/item.chest=Chest
 rockbottom/item.coal=Coal
+rockbottom/item.charcoal=Charcoal
 rockbottom/item.copper_cluster=Copper Cluster
 rockbottom/item.copper_grit=Copper Grit
 rockbottom/item.slag=Slag

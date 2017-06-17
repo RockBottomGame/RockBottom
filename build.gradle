@@ -31,7 +31,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes("Main-Class": "de.ellpeck.rockbottom.GameLauncher")
+        attributes("Main-Class": "de.ellpeck.rockbottom.Launcher")
     }
 }
 

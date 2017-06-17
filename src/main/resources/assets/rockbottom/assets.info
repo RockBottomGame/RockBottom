@@ -42,6 +42,7 @@ tex.items.super_tool=/items/super_tool.png
 tex.items.pick_wood=/items/pick_wood.png
 tex.items.pick_rock=/items/pick_rock.png
 tex.items.coal=/items/coal.png
+tex.items.charcoal=/items/charcoal.png
 tex.items.copper_cluster=/items/copper_cluster.png
 tex.items.copper_grit=/items/copper_grit.png
 tex.items.copper_ingot=/items/copper_ingot.png

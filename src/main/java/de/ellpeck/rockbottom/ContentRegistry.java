@@ -41,6 +41,7 @@ public final class ContentRegistry{
     public static final Item ITEM_WOOD_PICK = new ItemTool(RockBottom.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
     public static final Item ITEM_ROCK_PICK = new ItemTool(RockBottom.internalRes("pick_rock"), 4F).addToolType(ToolType.PICKAXE, 2).register();
     public static final Item ITEM_COAL = new ItemBasic(RockBottom.internalRes("coal")).register();
+    public static final Item ITEM_CHARCOAL = new ItemBasic(RockBottom.internalRes("charcoal")).register();
     public static final Item ITEM_COPPER_CLUSTER = new ItemBasic(RockBottom.internalRes("copper_cluster")).register();
     public static final Item ITEM_COPPER_GRIT = new ItemBasic(RockBottom.internalRes("copper_grit")).register();
     public static final Item ITEM_COPPER_INGOT = new ItemBasic(RockBottom.internalRes("copper_ingot")).register();

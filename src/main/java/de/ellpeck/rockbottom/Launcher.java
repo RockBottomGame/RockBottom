@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public final class GameLauncher{
+public final class Launcher{
 
     private static final Random RANDOM = new Random();
 
