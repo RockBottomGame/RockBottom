@@ -76,6 +76,8 @@ public class GuiSettings extends Gui{
 
     @Override
     public void onClosed(IGameInstance game){
+        super.onClosed(game);
+
         String name = this.chatNameField.getText().trim();
         if(!name.isEmpty()){
             game.getSettings().chatName = name;
