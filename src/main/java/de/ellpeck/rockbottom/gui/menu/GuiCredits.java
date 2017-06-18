@@ -1,14 +1,19 @@
 package de.ellpeck.rockbottom.gui.menu;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.RockBottom;
 import org.newdawn.slick.Graphics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GuiCredits extends Gui{
+
+    private List<String> credits = new ArrayList<>();
+    private int renderY;
 
     public GuiCredits(Gui parent){
         super(100, 100, parent);
@@ -19,19 +24,46 @@ public class GuiCredits extends Gui{
         super.initGui(game);
 
         this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+
+        this.renderY = (int)game.getHeightInGui();
+
+        this.credits.add("A game by Ellpeck");
+        this.credits.add("");
+        this.credits.add("");
+        this.credits.add("Programming");
+        this.credits.add("  Ellpeck");
+        this.credits.add("");
+        this.credits.add("Additional Programming");
+        this.credits.add("  canitzp");
+        this.credits.add("  xdjackiexd");
+        this.credits.add("");
+        this.credits.add("Art");
+        this.credits.add("  wiiv");
+        this.credits.add("");
+        this.credits.add("Special Thanks");
+        this.credits.add("  witsend66 (Game name)");
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        Font font = manager.getFont();
-        int x = this.guiLeft+this.sizeX/2;
-        int y = (int)game.getHeightInGui()-30;
+        int y = this.renderY;
+        for(String s : this.credits){
+            manager.getFont().drawString(20, y, s, 0.75F);
+            y += manager.getFont().getHeight(0.75F);
+        }
+    }
 
-        font.drawCenteredString(x, y-30, "Made by Ellpeck", 0.75F, false);
-        font.drawCenteredString(x, y-10, "Art by wiiv", 0.6F, false);
-        font.drawCenteredString(x, y+10, "Name suggested by witsend66", 0.35F, false);
+    @Override
+    public void update(IGameInstance game){
+        super.update(game);
+
+        this.renderY--;
+
+        if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.75F))){
+            this.renderY = (int)game.getHeightInGui();
+        }
     }
 
     @Override
@@ -40,11 +72,6 @@ public class GuiCredits extends Gui{
             game.getGuiManager().openGui(this.parent);
             return true;
         }
-        return false;
-    }
-
-    @Override
-    public boolean hasGradient(){
         return false;
     }
 }
