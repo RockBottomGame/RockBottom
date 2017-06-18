@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GuiCredits extends Gui{
 
-    private List<String> credits = new ArrayList<>();
+    private final List<String> credits = new ArrayList<>();
     private int renderY;
 
     public GuiCredits(Gui parent){
@@ -46,13 +46,13 @@ public class GuiCredits extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        super.render(game, manager, g);
-
         int y = this.renderY;
         for(String s : this.credits){
             manager.getFont().drawString(20, y, s, 0.75F);
             y += manager.getFont().getHeight(0.75F);
         }
+
+        super.render(game, manager, g);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -11,10 +12,12 @@ import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.api.util.Util;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 
 public class MainMenuBackground{
 
+    private static final IResourceName RES_LOGO = RockBottom.internalRes("logo");
     private static final int[] KONAMI_CODE = new int[]{Input.KEY_UP, Input.KEY_UP, Input.KEY_DOWN, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_B, Input.KEY_A};
     private static final int TILE_SIZE = 16;
     private int konamiAt;
@@ -40,7 +43,7 @@ public class MainMenuBackground{
         this.timer++;
 
         if(this.stackAtY < this.tileAmountY){
-            if(this.timer%8 == 0 && Util.RANDOM.nextBoolean()){
+            if(this.timer%6 == 0 && Util.RANDOM.nextBoolean()){
                 int placeY = this.tileAmountY-this.stackAtY-1;
 
                 int placeX;
@@ -105,7 +108,7 @@ public class MainMenuBackground{
             }
         }
 
-        manager.getFont().drawString(10, 5, "&aRock", 3F);
-        manager.getFont().drawStringFromRight((float)game.getWidthInGui()-10, 55, "&aBottom", 3F);
+        Image logo = manager.getImage(RES_LOGO);
+        logo.draw((int)game.getWidthInGui()/2-logo.getWidth()/2, (int)game.getHeightInGui()/3-logo.getHeight()/2);
     }
 }

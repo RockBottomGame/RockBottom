@@ -8,7 +8,6 @@ import org.lwjgl.opengl.PixelFormat;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.opengl.ImageData;
 import org.newdawn.slick.opengl.ImageIOImageData;
 import org.newdawn.slick.opengl.LoadableImageData;
 import org.newdawn.slick.util.Log;
