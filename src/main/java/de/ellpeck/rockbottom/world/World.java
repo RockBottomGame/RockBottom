@@ -24,7 +24,7 @@ import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
-import de.ellpeck.rockbottom.util.Util;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;

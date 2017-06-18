@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.world.gen;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenBasicUnderground;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenDebugLandscape;
@@ -9,43 +11,32 @@ import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import org.newdawn.slick.util.Log;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public final class WorldGenerators{
 
-    private static final List<IWorldGenerator> GENERATORS = new ArrayList<>();
     private static boolean initialized;
 
     static{
-        registerGenerator(new WorldGenDebugLandscape());
-        registerGenerator(new WorldGenHills());
-        registerGenerator(new WorldGenBasicUnderground());
-        registerGenerator(new WorldGenTrees());
-        registerGenerator(new WorldGenCoal());
-        registerGenerator(new WorldGenCopper());
-        registerGenerator(new WorldGenHollow());
+        RockBottomAPI.WORLD_GENERATORS.add(new WorldGenDebugLandscape());
+        RockBottomAPI.WORLD_GENERATORS.add(new WorldGenHills());
+        RockBottomAPI.WORLD_GENERATORS.add(new WorldGenBasicUnderground());
+        RockBottomAPI.WORLD_GENERATORS.add(new WorldGenTrees());
+        RockBottomAPI.WORLD_GENERATORS.add(new WorldGenCoal());
+        RockBottomAPI.WORLD_GENERATORS.add(new WorldGenCopper());
+        RockBottomAPI.WORLD_GENERATORS.add(new WorldGenHollow());
     }
 
     public static List<IWorldGenerator> getGenerators(){
         if(!initialized){
-            Log.info("Initializing and sorting a total of "+GENERATORS.size()+" world generators");
+            Log.info("Initializing and sorting a total of "+RockBottomAPI.WORLD_GENERATORS.size()+" world generators");
 
-            GENERATORS.sort(Comparator.comparingInt(IWorldGenerator:: getPriority));
+            RockBottomAPI.WORLD_GENERATORS.sort(Comparator.comparingInt(IWorldGenerator:: getPriority));
             initialized = true;
         }
 
-        return Collections.unmodifiableList(GENERATORS);
-    }
-
-    public static void registerGenerator(IWorldGenerator generator){
-        if(!initialized){
-            GENERATORS.add(generator);
-        }
-        else{
-            throw new RuntimeException("Tried registering world generator "+generator+" after generators were already accessed!");
-        }
+        return Collections.unmodifiableList(RockBottomAPI.WORLD_GENERATORS);
     }
 }

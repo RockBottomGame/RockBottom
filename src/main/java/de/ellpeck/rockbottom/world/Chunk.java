@@ -22,9 +22,9 @@ import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
-import de.ellpeck.rockbottom.util.Util;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.world.gen.IWorldGenerator;
+import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.world.gen.WorldGenerators;
 import org.newdawn.slick.util.Log;
 

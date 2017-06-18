@@ -17,7 +17,7 @@ import de.ellpeck.rockbottom.gui.GuiSeparator;
 import de.ellpeck.rockbottom.gui.container.ContainerSeparator;
 import de.ellpeck.rockbottom.particle.ParticleSmoke;
 import de.ellpeck.rockbottom.render.tile.SeparatorTileRenderer;
-import de.ellpeck.rockbottom.util.Util;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 
 public class TileSeparator extends MultiTile{

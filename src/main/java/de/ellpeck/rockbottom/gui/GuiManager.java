@@ -17,7 +17,7 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.MainMenuBackground;
-import de.ellpeck.rockbottom.util.Util;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;

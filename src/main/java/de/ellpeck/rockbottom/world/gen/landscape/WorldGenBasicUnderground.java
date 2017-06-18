@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.ContentRegistry;
-import de.ellpeck.rockbottom.world.gen.IWorldGenerator;
+import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 
 import java.util.Random;
 

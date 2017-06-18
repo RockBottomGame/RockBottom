@@ -18,7 +18,7 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketBreakTile;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketInteract;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketPlayerMovement;
-import de.ellpeck.rockbottom.util.Util;
+import de.ellpeck.rockbottom.api.util.Util;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 

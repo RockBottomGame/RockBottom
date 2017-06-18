@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.particle.ParticleTile;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.WorldRenderer;
-import de.ellpeck.rockbottom.util.Util;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.World;
 import org.newdawn.slick.Graphics;
 
