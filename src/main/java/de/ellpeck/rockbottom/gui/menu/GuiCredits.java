@@ -17,15 +17,6 @@ public class GuiCredits extends Gui{
 
     public GuiCredits(Gui parent){
         super(100, 100, parent);
-    }
-
-    @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
-
-        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
-
-        this.renderY = (int)game.getHeightInGui();
 
         this.credits.add("A game by Ellpeck");
         this.credits.add("");
@@ -42,6 +33,15 @@ public class GuiCredits extends Gui{
         this.credits.add("");
         this.credits.add("Special Thanks");
         this.credits.add("  witsend66 (Game name)");
+    }
+
+    @Override
+    public void initGui(IGameInstance game){
+        super.initGui(game);
+
+        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+
+        this.renderY = (int)game.getHeightInGui();
     }
 
     @Override
