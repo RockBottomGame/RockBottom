@@ -152,6 +152,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
         this.container.setTargetFrameRate(this.settings.targetFps);
         this.setFullscreen(this.settings.fullscreen);
+        this.container.setVSync(this.settings.vsync);
 
         this.assetManager = new AssetManager();
         this.assetManager.create(this);

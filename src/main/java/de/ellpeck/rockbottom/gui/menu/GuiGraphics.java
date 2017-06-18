@@ -60,6 +60,7 @@ public class GuiGraphics extends Gui{
             }
         });
         this.components.add(new ComponentToggleButton(this, 8, this.guiLeft+154, this.guiTop+60, 150, 16, !settings.fullscreen, "button.fullscreen"));
+        this.components.add(new ComponentToggleButton(this, 9, this.guiLeft+154, this.guiTop+80, 150, 16, !settings.vsync, "button.vsync"));
 
         this.components.add(new ComponentColorPicker(this, this.guiLeft+55, this.guiTop+70, 40, 40, settings.guiColor, new ComponentColorPicker.ICallback(){
             @Override
@@ -108,6 +109,12 @@ public class GuiGraphics extends Gui{
             settings.fullscreen = !settings.fullscreen;
             game.getDataManager().savePropSettings(settings);
             game.setFullscreen(settings.fullscreen);
+            return true;
+        }
+        else if(button == 9){
+            settings.vsync = !settings.vsync;
+            game.getContainer().setVSync(settings.vsync);
+            return true;
         }
         return false;
     }

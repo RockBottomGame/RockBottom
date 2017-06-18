@@ -75,6 +75,8 @@ rockbottom/button.disable=Disable
 rockbottom/button.enable=Enable
 rockbottom/button.fullscreen=Fullscreen On
 rockbottom/button.fullscreen_toggled=Fullscreen Off
+rockbottom/button.vsync=Vsync On
+rockbottom/button.vsync_toggled=Vsync Off
 
 rockbottom/layer.main=Foreground
 rockbottom/layer.background=Background
