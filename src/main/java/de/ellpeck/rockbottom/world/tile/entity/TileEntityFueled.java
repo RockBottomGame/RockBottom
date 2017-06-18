@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import io.netty.buffer.ByteBuf;
 
 public abstract class TileEntityFueled extends TileEntity{
@@ -36,7 +35,7 @@ public abstract class TileEntityFueled extends TileEntity{
                 if(this.coalTime <= 0){
                     ItemInstance inst = this.getFuel();
                     if(inst != null){
-                        int amount = (int)(ConstructionRegistry.getFuelValue(inst)*this.getFuelModifier());
+                        int amount = (int)(RockBottomAPI.getFuelValue(inst)*this.getFuelModifier());
                         if(amount > 0){
                             this.maxCoalTime = amount;
                             this.coalTime = amount;

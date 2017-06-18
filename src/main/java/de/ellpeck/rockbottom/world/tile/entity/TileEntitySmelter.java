@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.world.tile.entity;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
-import de.ellpeck.rockbottom.construction.SmelterRecipe;
+import de.ellpeck.rockbottom.api.construction.SmelterRecipe;
 import de.ellpeck.rockbottom.inventory.TileInventory;
 import io.netty.buffer.ByteBuf;
 
@@ -42,7 +42,7 @@ public class TileEntitySmelter extends TileEntityFueled{
 
         ItemInstance input = this.inventory.get(INPUT);
         if(input != null){
-            SmelterRecipe recipe = ConstructionRegistry.getSmelterRecipe(input);
+            SmelterRecipe recipe = RockBottomAPI.getSmelterRecipe(input);
             if(recipe != null){
                 ItemInstance recipeIn = recipe.getInput();
 

@@ -39,15 +39,15 @@ public class GuiManager implements IGuiManager{
     public void reInitSelf(IGameInstance game){
         Log.debug("Re-initializing Gui Manager");
 
+        if(!this.onScreenComponents.isEmpty()){
+            this.onScreenComponents.clear();
+        }
+
         if(game.isInWorld()){
             this.initInWorldComponents(game, game.getPlayer());
             this.background = null;
         }
         else{
-            if(!this.onScreenComponents.isEmpty()){
-                this.onScreenComponents.clear();
-            }
-
             this.background = new MainMenuBackground();
             this.background.init(game);
         }
@@ -58,10 +58,6 @@ public class GuiManager implements IGuiManager{
     @Override
     public void initInWorldComponents(IGameInstance game, AbstractEntityPlayer player){
         double width = game.getWidthInGui();
-
-        if(!this.onScreenComponents.isEmpty()){
-            this.onScreenComponents.clear();
-        }
 
         for(int i = 0; i < 8; i++){
             int x = (int)(width/2-59.25+i*15);
