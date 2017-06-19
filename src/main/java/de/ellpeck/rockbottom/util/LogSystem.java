@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class LogSystem extends DefaultLogSystem{
 
-    private static final DateFormat FORMAT = new SimpleDateFormat("HH:mm:ss.S");
+    private static final DateFormat FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
     private final LogLevel level;
 
     private LogSystem(LogLevel level){

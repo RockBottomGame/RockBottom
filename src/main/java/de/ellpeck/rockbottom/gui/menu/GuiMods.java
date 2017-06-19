@@ -14,6 +14,9 @@ import de.ellpeck.rockbottom.gui.component.ComponentModButton;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
 
+import java.awt.*;
+import java.io.IOException;
+
 public class GuiMods extends Gui{
 
     private IMod selectedMod;
@@ -34,14 +37,18 @@ public class GuiMods extends Gui{
             i++;
         }
 
-        int x = (int)game.getWidthInGui();
-        this.components.add(new ComponentButton(this, -1, x-47, 2, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+        int width = (int)game.getWidthInGui();
+        int height = (int)game.getHeightInGui();
 
-        this.modGuiButton = new ComponentButton(this, 0, x-57, 14, 55, 10, game.getAssetManager().localize(RockBottom.internalRes("button.mod_info")));
+        this.components.add(new ComponentButton(this, -1, width-47, 14, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+
+        this.components.add(new ComponentButton(this, -2, width-77, 2, 75, 10, game.getAssetManager().localize(RockBottom.internalRes("button.mods_folder"))));
+
+        this.modGuiButton = new ComponentButton(this, 0, 100+(width-100)/2-60, height-30, 55, 16, game.getAssetManager().localize(RockBottom.internalRes("button.mod_info")));
         this.modGuiButton.isVisible = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
         this.components.add(this.modGuiButton);
 
-        this.disabledButton = new ComponentButton(this, 1, x-57, 26, 55, 10, "", game.getAssetManager().localize(RockBottom.internalRes("info.requires_restart")));
+        this.disabledButton = new ComponentButton(this, 1, 100+(width-100)/2+5, height-30, 55, 16, "", game.getAssetManager().localize(RockBottom.internalRes("info.requires_restart")));
         this.updateDisableButton(game);
         this.components.add(this.disabledButton);
     }
@@ -68,7 +75,7 @@ public class GuiMods extends Gui{
             font.drawCenteredString(center, 70, "Version: "+FormattingCode.GRAY+this.selectedMod.getVersion(), 0.35F, false);
             font.drawCenteredString(center, 80, "Mod ID: "+FormattingCode.GRAY+this.selectedMod.getId(), 0.35F, false);
 
-            font.drawSplitString(120, 90, this.selectedMod.getDescription(), 0.4F, width-30);
+            font.drawSplitString(120, 100, this.selectedMod.getDescription(), 0.4F, width-30);
         }
     }
 
@@ -110,6 +117,14 @@ public class GuiMods extends Gui{
         else if(button == -1){
             game.getGuiManager().openGui(this.parent);
             return true;
+        }
+        else if(button == -2){
+            try{
+                Desktop.getDesktop().open(game.getDataManager().getModsDir());
+            }
+            catch(IOException e){
+                Log.error("Couldn't open mods folder", e);
+            }
         }
         return false;
     }
