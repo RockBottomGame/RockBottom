@@ -18,11 +18,13 @@ public class PacketInitialServerData implements IPacket{
     private final DataSet playerSet = new DataSet();
     private WorldInfo info;
     private NameToIndexInfo tileRegInfo;
+    private NameToIndexInfo biomeRegInfo;
 
-    public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, NameToIndexInfo tileRegInfo){
+    public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
         player.save(this.playerSet);
         this.info = info;
         this.tileRegInfo = tileRegInfo;
+        this.biomeRegInfo = biomeRegInfo;
     }
 
     public PacketInitialServerData(){
@@ -34,6 +36,7 @@ public class PacketInitialServerData implements IPacket{
         NetUtil.writeSetToBuffer(this.playerSet, buf);
         this.info.toBuffer(buf);
         this.tileRegInfo.toBuffer(buf);
+        this.biomeRegInfo.toBuffer(buf);
     }
 
     @Override
@@ -45,6 +48,9 @@ public class PacketInitialServerData implements IPacket{
 
         this.tileRegInfo = new NameToIndexInfo("tile_reg_client_world", null, Short.MAX_VALUE);
         this.tileRegInfo.fromBuffer(buf);
+
+        this.biomeRegInfo = new NameToIndexInfo("biome_reg_client_world", null, Short.MAX_VALUE);
+        this.biomeRegInfo.fromBuffer(buf);
     }
 
     @Override
@@ -52,7 +58,7 @@ public class PacketInitialServerData implements IPacket{
         game.scheduleAction(() -> {
             if(game.getWorld() == null){
                 Log.info("Received initial server data, joining world");
-                game.joinWorld(this.playerSet, this.info, this.tileRegInfo);
+                game.joinWorld(this.playerSet, this.info, this.tileRegInfo, this.biomeRegInfo);
             }
             else{
                 Log.error("Received initial server data while already being in a world!");

@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -322,16 +323,13 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public void startWorld(File worldFile, WorldInfo info){
         Log.info("Starting world with file "+worldFile);
 
-        NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "name_to_index_info.dat"), Short.MAX_VALUE);
-        this.dataManager.loadPropSettings(tileRegInfo);
+        NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), Short.MAX_VALUE);
+        this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_REGISTRY);
 
-        tileRegInfo.populate(RockBottomAPI.TILE_REGISTRY);
+        NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), Short.MAX_VALUE);
+        this.populateIndexInfo(biomeRegInfo, RockBottomAPI.BIOME_REGISTRY);
 
-        if(tileRegInfo.needsSave()){
-            this.dataManager.savePropSettings(tileRegInfo);
-        }
-
-        this.world = new World(info, tileRegInfo);
+        this.world = new World(info, tileRegInfo, biomeRegInfo);
         this.world.initFiles(worldFile);
 
         if(info.seed == 0){
@@ -347,11 +345,20 @@ public class RockBottom extends BasicGame implements IGameInstance{
         Log.info("Successfully started world with file "+worldFile);
     }
 
+    private void populateIndexInfo(NameToIndexInfo info, NameRegistry reg){
+        this.dataManager.loadPropSettings(info);
+        info.populate(reg);
+
+        if(info.needsSave()){
+            this.dataManager.savePropSettings(info);
+        }
+    }
+
     @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo){
+    public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
         Log.info("Joining world");
 
-        this.world = new ClientWorld(info, tileRegInfo);
+        this.world = new ClientWorld(info, tileRegInfo, biomeRegInfo);
 
         this.player = this.world.createPlayer(this.uniqueId, null);
         this.player.load(playerSet);

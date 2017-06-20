@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world;
 
+import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -11,20 +12,16 @@ import de.ellpeck.rockbottom.api.event.impl.EntityTickEvent;
 import de.ellpeck.rockbottom.api.event.impl.TileEntityTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
-import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.MutableInt;
-import de.ellpeck.rockbottom.api.util.Pos2;
-import de.ellpeck.rockbottom.api.util.Pos3;
+import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.ContentRegistry;
+import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
+import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.world.gen.WorldGenerators;
 import org.newdawn.slick.util.Log;
 
@@ -45,6 +42,7 @@ public class Chunk implements IChunk{
     public final Map<AbstractEntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final World world;
     protected final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final List<Entity> entities = new ArrayList<>();
@@ -68,11 +66,13 @@ public class Chunk implements IChunk{
         this.isGenerating = true;
         this.internalLoadingTimer = 200;
 
-        for(int i = 0; i < TileLayer.LAYERS.length; i++){
-            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                for(int i = 0; i < TileLayer.LAYERS.length; i++){
                     this.tileGrid[i][x][y] = ContentRegistry.TILE_AIR;
                 }
+
+                this.biomeGrid[x][y] = ContentRegistry.BIOME_SKY;
             }
         }
     }
@@ -549,6 +549,16 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public Biome getBiome(int x, int y){
+        return this.getBiomeInner(x-this.x, y-this.y);
+    }
+
+    @Override
+    public void setBiome(int x, int y, Biome biome){
+        this.setBiomeInner(x-this.x, y-this.y, biome);
+    }
+
+    @Override
     public byte getCombinedLightInner(int x, int y){
         byte artificial = this.getArtificialLightInner(x, y);
         byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
@@ -596,7 +606,7 @@ public class Chunk implements IChunk{
 
     @Override
     public boolean shouldUnload(){
-        return this.internalLoadingTimer <= 0 &&  this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
+        return this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
     }
 
     public void setDirty(){
@@ -619,6 +629,14 @@ public class Chunk implements IChunk{
 
             set.addByteByteArray("m_"+i, this.metaGrid[i]);
         }
+
+        short[][] biomes = new short[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                biomes[x][y] = (short)this.world.getIdForBiome(this.getBiomeInner(x, y));
+            }
+        }
+        set.addShortShortArray("b", biomes);
 
         for(int i = 0; i < this.lightGrid.length; i++){
             set.addByteByteArray("li_"+i, this.lightGrid[i]);
@@ -694,6 +712,19 @@ public class Chunk implements IChunk{
                 }
             }
 
+            short[][] biomes = set.getShortShortArray("b", Constants.CHUNK_SIZE);
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    Biome biome = this.world.getBiomeForId(biomes[x][y]);
+                    if(biome != null){
+                        this.setBiomeInner(x, y, biome);
+                    }
+                    else{
+                        Log.warn("Could not load biome at "+x+" "+y+" because id "+biomes[x][y]+" is missing!");
+                    }
+                }
+            }
+
             for(int i = 0; i < this.lightGrid.length; i++){
                 this.lightGrid[i] = set.getByteByteArray("li_"+i, Constants.CHUNK_SIZE);
             }
@@ -760,6 +791,20 @@ public class Chunk implements IChunk{
     @Override
     public int getScheduledUpdateAmount(){
         return this.scheduledUpdates.size();
+    }
+
+    @Override
+    public Biome getBiomeInner(int x, int y){
+        return this.biomeGrid[x][y];
+    }
+
+    @Override
+    public void setBiomeInner(int x, int y, Biome biome){
+        if(biome == null){
+            throw new IllegalArgumentException("Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+"!");
+        }
+
+        this.biomeGrid[x][y] = biome;
     }
 
     @Override

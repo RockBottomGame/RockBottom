@@ -70,8 +70,9 @@ public final class DebugRenderer{
                 list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
             }
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
-            list.add("Tile: "+world.getTile(x, y)+" / "+world.getTile(TileLayer.BACKGROUND, x, y));
+            list.add("Tile: "+world.getTile(x, y).getName()+" / "+world.getTile(TileLayer.BACKGROUND, x, y).getName());
             list.add("Meta: "+world.getMeta(x, y)+" / "+world.getMeta(TileLayer.BACKGROUND, x, y));
+            list.add("Biome: "+world.getBiome(x, y).getName());
         }
 
         for(int i = 0; i < list.size(); i++){

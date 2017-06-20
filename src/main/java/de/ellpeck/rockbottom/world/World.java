@@ -11,20 +11,17 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
-import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.Direction;
-import de.ellpeck.rockbottom.api.util.MutableInt;
-import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 import org.newdawn.slick.util.Log;
@@ -41,14 +38,16 @@ public class World implements IWorld{
     protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
     protected final WorldInfo info;
     public List<EntityPlayer> players = new ArrayList<>();
-    public NameToIndexInfo tileRegInfo;
+    private final NameToIndexInfo tileRegInfo;
+    private final NameToIndexInfo biomeRegInfo;
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
 
-    public World(WorldInfo info, NameToIndexInfo tileRegInfo){
+    public World(WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
         this.info = info;
         this.tileRegInfo = tileRegInfo;
+        this.biomeRegInfo = biomeRegInfo;
         this.generatorRandom.setSeed(this.info.seed);
     }
 
@@ -294,6 +293,18 @@ public class World implements IWorld{
     }
 
     @Override
+    public Biome getBiome(int x, int y){
+        IChunk chunk = this.getChunk(x, y);
+        return chunk.getBiome(x, y);
+    }
+
+    @Override
+    public void setBiome(int x, int y, Biome biome){
+        IChunk chunk = this.getChunk(x, y);
+        chunk.setBiome(x, y, biome);
+    }
+
+    @Override
     public int getIdForTile(Tile tile){
         IResourceName name = RockBottomAPI.TILE_REGISTRY.getId(tile);
         if(name != null){
@@ -318,6 +329,28 @@ public class World implements IWorld{
     @Override
     public NameToIndexInfo getTileRegInfo(){
         return this.tileRegInfo;
+    }
+
+    @Override
+    public int getIdForBiome(Biome biome){
+        IResourceName name = RockBottomAPI.BIOME_REGISTRY.getId(biome);
+        if(name != null){
+            return this.biomeRegInfo.getId(name);
+        }
+        else{
+            return -1;
+        }
+    }
+
+    @Override
+    public Biome getBiomeForId(int id){
+        IResourceName name = this.biomeRegInfo.get(id);
+        return RockBottomAPI.BIOME_REGISTRY.get(name);
+    }
+
+    @Override
+    public NameToIndexInfo getBiomeRegInfo(){
+        return null;
     }
 
     @Override

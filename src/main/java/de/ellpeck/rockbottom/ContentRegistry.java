@@ -8,6 +8,8 @@ import de.ellpeck.rockbottom.api.item.ItemMeta;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.item.ItemTool;
 import de.ellpeck.rockbottom.world.tile.TileAir;
 import de.ellpeck.rockbottom.world.tile.TileChest;
@@ -46,6 +48,9 @@ public final class ContentRegistry{
     public static final Item ITEM_COPPER_GRIT = new ItemBasic(RockBottom.internalRes("copper_grit")).register();
     public static final Item ITEM_COPPER_INGOT = new ItemBasic(RockBottom.internalRes("copper_ingot")).register();
     public static final Item ITEM_SLAG = new ItemBasic(RockBottom.internalRes("slag")).register();
+
+    public static final Biome BIOME_SKY = new BiomeBasic(RockBottom.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
+    public static final Biome BIOME_GRASSLAND = new BiomeBasic(RockBottom.internalRes("grassland"), 1, -1, 1000).register();
 
     public static void init(){
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottom.internalRes("item"), EntityItem.class);

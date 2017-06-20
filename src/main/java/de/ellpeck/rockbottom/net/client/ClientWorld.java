@@ -16,8 +16,8 @@ import java.util.UUID;
 
 public class ClientWorld extends World{
 
-    public ClientWorld(WorldInfo info, NameToIndexInfo tileRegInfo){
-        super(info, tileRegInfo);
+    public ClientWorld(WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
+        super(info, tileRegInfo, biomeRegInfo);
     }
 
     @Override

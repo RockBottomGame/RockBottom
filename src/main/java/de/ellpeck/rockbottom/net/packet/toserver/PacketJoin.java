@@ -74,7 +74,7 @@ public class PacketJoin implements IPacket{
                         if(world.getPlayer(this.id) == null){
                             AbstractEntityPlayer player = world.createPlayer(this.id, context.channel());
                             world.addEntity(player);
-                            player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getTileRegInfo()));
+                            player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getTileRegInfo(), world.getBiomeRegInfo()));
 
                             shouldKick = false;
                             Log.info("Player with id "+this.id+" joined, sending initial server data");
