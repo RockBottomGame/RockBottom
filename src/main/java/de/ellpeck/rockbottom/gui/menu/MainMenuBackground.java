@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -54,19 +55,19 @@ public class MainMenuBackground{
 
                 Tile tile;
                 if(this.konamiAt >= KONAMI_CODE.length){
-                    tile = ContentRegistry.TILE_LEAVES;
+                    tile = GameContent.TILE_LEAVES;
                 }
                 else{
                     float f = Util.RANDOM.nextFloat();
 
                     if(f >= 0.9F){
-                        tile = ContentRegistry.TILE_COPPER_ORE;
+                        tile = GameContent.TILE_COPPER_ORE;
                     }
                     else if(f >= 0.75F){
-                        tile = ContentRegistry.TILE_COAL_ORE;
+                        tile = GameContent.TILE_COAL_ORE;
                     }
                     else{
-                        tile = ContentRegistry.TILE_ROCK;
+                        tile = GameContent.TILE_ROCK;
                     }
                 }
                 this.menuTileGrid[placeX][placeY] = tile;

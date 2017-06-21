@@ -6,53 +6,41 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemMeta;
 import de.ellpeck.rockbottom.api.item.ToolType;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
-import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.item.ItemTool;
-import de.ellpeck.rockbottom.world.tile.TileAir;
-import de.ellpeck.rockbottom.world.tile.TileChest;
-import de.ellpeck.rockbottom.world.tile.TileCoalOre;
-import de.ellpeck.rockbottom.world.tile.TileCopperOre;
-import de.ellpeck.rockbottom.world.tile.TileDirt;
-import de.ellpeck.rockbottom.world.tile.TileGrass;
-import de.ellpeck.rockbottom.world.tile.TileLeaves;
-import de.ellpeck.rockbottom.world.tile.TileLog;
-import de.ellpeck.rockbottom.world.tile.TileSeparator;
-import de.ellpeck.rockbottom.world.tile.TileSmelter;
-import de.ellpeck.rockbottom.world.tile.TileTorch;
+import de.ellpeck.rockbottom.world.tile.*;
 import org.newdawn.slick.util.Log;
 
 public final class ContentRegistry{
 
-    public static final Tile TILE_AIR = new TileAir().register();
-    public static final Tile TILE_DIRT = new TileDirt().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-    public static final Tile TILE_ROCK = new TileBasic(RockBottom.internalRes("rock")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
-    public static final Tile TILE_GRASS = new TileGrass().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-    public static final Tile TILE_WOOD_BOARDS = new TileBasic(RockBottom.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
-    public static final Tile TILE_TORCH = new TileTorch().setHardness(0F).setForceDrop().register();
-    public static final Tile TILE_CHEST = new TileChest().addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
-    public static final Tile TILE_LOG = new TileLog().setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
-    public static final Tile TILE_LEAVES = new TileLeaves().setHardness(0.25F).setForceDrop().register();
-    public static final Tile TILE_COAL_ORE = new TileCoalOre().setHardness(12F).addEffectiveTool(ToolType.PICKAXE, 1).register();
-    public static final Tile TILE_COPPER_ORE = new TileCopperOre().setHardness(18F).addEffectiveTool(ToolType.PICKAXE, 2).register();
-    public static final Tile TILE_SMELTER = new TileSmelter().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
-    public static final Tile TILE_SEPARATOR = new TileSeparator().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
-
-    public static final Item ITEM_SUPER_TOOL = new ItemTool(RockBottom.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
-    public static final Item ITEM_WOOD_PICK = new ItemTool(RockBottom.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
-    public static final Item ITEM_ROCK_PICK = new ItemTool(RockBottom.internalRes("pick_rock"), 4F).addToolType(ToolType.PICKAXE, 2).register();
-    public static final Item ITEM_COAL = new ItemMeta(RockBottom.internalRes("coal")).addSubItem(RockBottom.internalRes("charcoal")).register();
-    public static final Item ITEM_COPPER_CLUSTER = new ItemBasic(RockBottom.internalRes("copper_cluster")).register();
-    public static final Item ITEM_COPPER_GRIT = new ItemBasic(RockBottom.internalRes("copper_grit")).register();
-    public static final Item ITEM_COPPER_INGOT = new ItemBasic(RockBottom.internalRes("copper_ingot")).register();
-    public static final Item ITEM_SLAG = new ItemBasic(RockBottom.internalRes("slag")).register();
-
-    public static final Biome BIOME_SKY = new BiomeBasic(RockBottom.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
-    public static final Biome BIOME_GRASSLAND = new BiomeBasic(RockBottom.internalRes("grassland"), 1, -1, 1000).register();
-
     public static void init(){
+        new TileAir().register();
+        new TileDirt().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
+        new TileBasic(RockBottom.internalRes("rock")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
+        new TileGrass().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
+        new TileBasic(RockBottom.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+        new TileTorch().setHardness(0F).setForceDrop().register();
+        new TileChest().addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+        new TileLog().setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+        new TileLeaves().setHardness(0.25F).setForceDrop().register();
+        new TileCoalOre().setHardness(12F).addEffectiveTool(ToolType.PICKAXE, 1).register();
+        new TileCopperOre().setHardness(18F).addEffectiveTool(ToolType.PICKAXE, 2).register();
+        new TileSmelter().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
+        new TileSeparator().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
+
+        new ItemTool(RockBottom.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
+        new ItemTool(RockBottom.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
+        new ItemTool(RockBottom.internalRes("pick_rock"), 4F).addToolType(ToolType.PICKAXE, 2).register();
+        new ItemMeta(RockBottom.internalRes("coal")).addSubItem(RockBottom.internalRes("charcoal")).register();
+        new ItemBasic(RockBottom.internalRes("copper_cluster")).register();
+        new ItemBasic(RockBottom.internalRes("copper_grit")).register();
+        new ItemBasic(RockBottom.internalRes("copper_ingot")).register();
+        new ItemBasic(RockBottom.internalRes("slag")).register();
+
+        new BiomeBasic(RockBottom.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
+        new BiomeBasic(RockBottom.internalRes("grassland"), 1, -1, 1000).register();
+
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottom.internalRes("item"), EntityItem.class);
 
         Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");

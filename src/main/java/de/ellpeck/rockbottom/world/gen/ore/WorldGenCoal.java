@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.gen.ore;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.api.world.gen.WorldGenOre;
@@ -28,7 +29,7 @@ public class WorldGenCoal extends WorldGenOre{
 
     @Override
     public Tile getOreTile(){
-        return ContentRegistry.TILE_COAL_ORE;
+        return GameContent.TILE_COAL_ORE;
     }
 
     @Override

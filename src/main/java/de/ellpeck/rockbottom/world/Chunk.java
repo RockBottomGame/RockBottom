@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world;
 
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -69,10 +70,10 @@ public class Chunk implements IChunk{
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                 for(int i = 0; i < TileLayer.LAYERS.length; i++){
-                    this.tileGrid[i][x][y] = ContentRegistry.TILE_AIR;
+                    this.tileGrid[i][x][y] = GameContent.TILE_AIR;
                 }
 
-                this.biomeGrid[x][y] = ContentRegistry.BIOME_SKY;
+                this.biomeGrid[x][y] = GameContent.BIOME_SKY;
             }
         }
     }

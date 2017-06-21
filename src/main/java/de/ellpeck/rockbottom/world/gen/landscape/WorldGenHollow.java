@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.gen.landscape;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.ContentRegistry;
@@ -21,7 +22,7 @@ public class WorldGenHollow implements IWorldGenerator{
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                 int middleDistY = Math.abs(Constants.CHUNK_SIZE/2-y);
                 if(middleDistY <= 3 || rand.nextInt(middleDistY) <= 2){
-                    world.setTile(chunk.getX()+x, chunk.getY()+y, ContentRegistry.TILE_AIR);
+                    world.setTile(chunk.getX()+x, chunk.getY()+y, GameContent.TILE_AIR);
                 }
             }
         }

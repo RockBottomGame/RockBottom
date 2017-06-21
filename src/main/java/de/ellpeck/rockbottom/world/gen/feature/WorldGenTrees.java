@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -34,7 +35,7 @@ public class WorldGenTrees implements IWorldGenerator{
         if(tile instanceof TileDirt || tile instanceof TileGrass){
             int height = rand.nextInt(6)+8;
             for(int h = 0; h <= height; h++){
-                world.setTile(x, y+h, ContentRegistry.TILE_LOG);
+                world.setTile(x, y+h, GameContent.TILE_LOG);
             }
 
             int branches = rand.nextInt(2)+1;
@@ -56,7 +57,7 @@ public class WorldGenTrees implements IWorldGenerator{
 
             if(l <= length){
                 if(world.getTile(x, startY+yAdd).isAir()){
-                    world.setTile(x, startY+yAdd, ContentRegistry.TILE_LOG);
+                    world.setTile(x, startY+yAdd, GameContent.TILE_LOG);
                 }
             }
 
@@ -64,7 +65,7 @@ public class WorldGenTrees implements IWorldGenerator{
             int leafAmountUp = rand.nextInt(3)+1;
             for(int lY = -leafAmountDown; lY <= leafAmountUp; lY++){
                 if(world.getTile(x, startY+yAdd+lY).isAir()){
-                    world.setTile(x, startY+yAdd+lY, ContentRegistry.TILE_LEAVES);
+                    world.setTile(x, startY+yAdd+lY, GameContent.TILE_LEAVES);
                 }
             }
 

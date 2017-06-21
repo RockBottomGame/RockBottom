@@ -36,9 +36,6 @@ public class ComponentSelectWorldButton extends ComponentButton{
         if(this.exists){
             this.info.load();
         }
-        else{
-            this.info.currentWorldTime = 3000;
-        }
     }
 
     @Override

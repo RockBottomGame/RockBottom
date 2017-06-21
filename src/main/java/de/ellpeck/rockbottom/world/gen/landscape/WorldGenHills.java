@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.gen.landscape;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -25,12 +26,12 @@ public class WorldGenHills implements IWorldGenerator{
 
             int height = (int)(noise*30);
             for(int y = 0; y <= height; y++){
-                chunk.setTileInner(x, y, y == height ? ContentRegistry.TILE_GRASS : ContentRegistry.TILE_DIRT);
+                chunk.setTileInner(x, y, y == height ? GameContent.TILE_GRASS : GameContent.TILE_DIRT);
             }
 
             int backgroundHeight = (int)(noise*28);
             for(int y = 0; y < backgroundHeight; y++){
-                chunk.setTileInner(TileLayer.BACKGROUND, x, y, ContentRegistry.TILE_DIRT);
+                chunk.setTileInner(TileLayer.BACKGROUND, x, y, GameContent.TILE_DIRT);
             }
         }
     }

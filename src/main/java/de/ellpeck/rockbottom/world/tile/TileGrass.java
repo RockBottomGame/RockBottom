@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -20,14 +21,14 @@ public class TileGrass extends TileBasic{
 
     @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
-        return Collections.singletonList(new ItemInstance(ContentRegistry.TILE_DIRT));
+        return Collections.singletonList(new ItemInstance(GameContent.TILE_DIRT));
     }
 
     @Override
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(layer == changedLayer){
             if(world.getTile(layer, x, y+1).isFullTile()){
-                world.setTile(layer, x, y, ContentRegistry.TILE_DIRT);
+                world.setTile(layer, x, y, GameContent.TILE_DIRT);
             }
         }
     }

@@ -1,9 +1,9 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.ContentRegistry;
-import de.ellpeck.rockbottom.RockBottom;
 
 public class TileDirt extends TileBasic{
 
@@ -14,7 +14,7 @@ public class TileDirt extends TileBasic{
     @Override
     public void updateRandomly(IWorld world, int x, int y){
         if(world.isPosLoaded(x, y+1) && !world.getTile(x, y+1).isFullTile()){
-            world.setTile(x, y, ContentRegistry.TILE_GRASS);
+            world.setTile(x, y, GameContent.TILE_GRASS);
         }
     }
 }

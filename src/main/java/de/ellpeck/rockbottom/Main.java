@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -27,7 +28,7 @@ public final class Main{
     public static int height;
     public static boolean fullscreen;
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Throwable{
         LogSystem.init();
 
         Log.info("Found launch args "+Arrays.toString(args));
@@ -75,9 +76,13 @@ public final class Main{
             Method method = gameClass.getMethod("init");
             method.invoke(null);
         }
-        catch(Exception e){
+        catch(NoSuchMethodException | IllegalAccessException | ClassNotFoundException e){
             throw new RuntimeException("Could not initialize game", e);
         }
+        catch(InvocationTargetException e){
+            throw new RuntimeException("Detected game crash", e.getCause());
+        }
+
     }
 
     public static class CustomClassLoader extends URLClassLoader{

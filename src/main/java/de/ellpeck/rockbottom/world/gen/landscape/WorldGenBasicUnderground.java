@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.gen.landscape;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -25,10 +26,10 @@ public class WorldGenBasicUnderground implements IWorldGenerator{
                     Tile tile;
 
                     if(chunk.getGridY() == -1 && rand.nextInt(y+1) >= 8){
-                        tile = ContentRegistry.TILE_DIRT;
+                        tile = GameContent.TILE_DIRT;
                     }
                     else{
-                        tile = ContentRegistry.TILE_ROCK;
+                        tile = GameContent.TILE_ROCK;
                     }
 
                     chunk.setTileInner(layer, x, y, tile);

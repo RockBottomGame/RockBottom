@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world;
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -532,7 +533,7 @@ public class World implements IWorld{
 
         RockBottom.get().getParticleManager().addTileParticles(this, x, y, tile, meta);
 
-        this.setTile(layer, x, y, ContentRegistry.TILE_AIR);
+        this.setTile(layer, x, y, GameContent.TILE_AIR);
     }
 
     @Override
