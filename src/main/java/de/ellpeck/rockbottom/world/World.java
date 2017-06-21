@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world;
 
-import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
@@ -38,9 +37,9 @@ public class World implements IWorld{
     public final List<IChunk> loadedChunks = new ArrayList<>();
     protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
     protected final WorldInfo info;
-    public List<EntityPlayer> players = new ArrayList<>();
     private final NameToIndexInfo tileRegInfo;
     private final NameToIndexInfo biomeRegInfo;
+    public List<EntityPlayer> players = new ArrayList<>();
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;

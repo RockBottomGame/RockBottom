@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -9,15 +10,14 @@ import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.gui.GuiSeparator;
 import de.ellpeck.rockbottom.gui.container.ContainerSeparator;
 import de.ellpeck.rockbottom.particle.ParticleSmoke;
 import de.ellpeck.rockbottom.render.tile.SeparatorTileRenderer;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 
 public class TileSeparator extends MultiTile{

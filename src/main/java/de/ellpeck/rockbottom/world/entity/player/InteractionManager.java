@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
@@ -12,13 +13,12 @@ import de.ellpeck.rockbottom.api.item.ItemTile;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketBreakTile;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketInteract;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketPlayerMovement;
-import de.ellpeck.rockbottom.api.util.Util;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 

@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.net.chat;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -7,7 +8,6 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 import org.newdawn.slick.Graphics;

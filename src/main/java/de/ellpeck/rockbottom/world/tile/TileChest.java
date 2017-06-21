@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -10,7 +11,6 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.gui.GuiChest;
 import de.ellpeck.rockbottom.gui.container.ContainerChest;
 import de.ellpeck.rockbottom.render.tile.ChestTileRenderer;

@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.gui.component;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.util.Util;
 import org.newdawn.slick.Graphics;
 

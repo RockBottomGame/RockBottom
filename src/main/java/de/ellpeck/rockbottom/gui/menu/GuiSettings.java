@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -8,7 +9,6 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
-import de.ellpeck.rockbottom.RockBottom;
 import org.newdawn.slick.Graphics;
 
 public class GuiSettings extends Gui{

@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.client;
 
-import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

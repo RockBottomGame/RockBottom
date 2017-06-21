@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -158,16 +157,16 @@ public class PacketJoin implements IPacket{
             this.version = version;
         }
 
-        public void toBuffer(ByteBuf buf){
-            NetUtil.writeStringToBuffer(this.id, buf);
-            NetUtil.writeStringToBuffer(this.version, buf);
-        }
-
         public static ModInfo fromBuffer(ByteBuf buf){
             String id = NetUtil.readStringFromBuffer(buf);
             String version = NetUtil.readStringFromBuffer(buf);
 
             return new ModInfo(id, version);
+        }
+
+        public void toBuffer(ByteBuf buf){
+            NetUtil.writeStringToBuffer(this.id, buf);
+            NetUtil.writeStringToBuffer(this.version, buf);
         }
 
         @Override

@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.server;
 
-import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.net.decode.PacketDecoder;
 import de.ellpeck.rockbottom.net.encode.PacketEncoder;
 import io.netty.bootstrap.ServerBootstrap;

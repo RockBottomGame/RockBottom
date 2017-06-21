@@ -28,7 +28,7 @@ public final class Main{
     public static int height;
     public static boolean fullscreen;
 
-    public static void main(String[] args) throws Throwable{
+    public static void main(String[] args){
         LogSystem.init();
 
         Log.info("Found launch args "+Arrays.toString(args));
@@ -85,31 +85,6 @@ public final class Main{
 
     }
 
-    public static class CustomClassLoader extends URLClassLoader{
-
-        public CustomClassLoader(URL[] urls, ClassLoader parent){
-            super(urls, parent);
-        }
-
-        @Override
-        public void addURL(URL url){
-            super.addURL(url);
-        }
-
-        @Override
-        protected String findLibrary(String libName){
-            String mapped = System.mapLibraryName(libName);
-            InputStream stream = this.getResourceAsStream("natives/"+mapped);
-            if(stream != null){
-                String lib = loadLib(stream, mapped);
-                if(lib != null && !lib.isEmpty()){
-                    return lib;
-                }
-            }
-            return super.findLibrary(libName);
-        }
-    }
-
     private static String loadLib(InputStream in, String libName){
         try{
             if(!tempDir.exists()){
@@ -145,6 +120,31 @@ public final class Main{
         }
         catch(IOException e){
             throw new RuntimeException("Couldn't load lib with name "+libName, e);
+        }
+    }
+
+    public static class CustomClassLoader extends URLClassLoader{
+
+        public CustomClassLoader(URL[] urls, ClassLoader parent){
+            super(urls, parent);
+        }
+
+        @Override
+        public void addURL(URL url){
+            super.addURL(url);
+        }
+
+        @Override
+        protected String findLibrary(String libName){
+            String mapped = System.mapLibraryName(libName);
+            InputStream stream = this.getResourceAsStream("natives/"+mapped);
+            if(stream != null){
+                String lib = loadLib(stream, mapped);
+                if(lib != null && !lib.isEmpty()){
+                    return lib;
+                }
+            }
+            return super.findLibrary(libName);
         }
     }
 }
