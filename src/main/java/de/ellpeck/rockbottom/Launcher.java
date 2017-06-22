@@ -15,7 +15,7 @@ public final class Launcher{
     private static final Random RANDOM = new Random();
 
     public static void main(String[] args){
-        LogSystem.init(LogLevel.INFO);
+        LogSystem.init(LogLevel.DEBUG);
 
         File tempDir = null;
 

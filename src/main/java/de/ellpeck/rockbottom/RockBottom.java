@@ -39,13 +39,21 @@ import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URLClassLoader;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -293,6 +301,11 @@ public class RockBottom extends BasicGame implements IGameInstance{
                 this.guiManager.openGui(new GuiChat());
                 return;
             }
+        }
+
+        if(key == this.settings.keyScreenshot.key){
+            this.takeScreenshot();
+            return;
         }
 
         this.interactionManager.onKeyboardAction(this, key, c);
@@ -584,5 +597,47 @@ public class RockBottom extends BasicGame implements IGameInstance{
     @Override
     public boolean isDisableable(){
         return false;
+    }
+
+    private void takeScreenshot(){
+        try{
+            Log.info("Taking screenshot");
+
+            GL11.glReadBuffer(GL11.GL_FRONT);
+            int width = this.container.getWidth();
+            int height = this.container.getHeight();
+            int colors = 4;
+
+            ByteBuffer buf = BufferUtils.createByteBuffer(width*height*colors);
+            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+            for(int x = 0; x < width; x++){
+                for(int y = 0; y < height; y++){
+                    int i = (x+(y*width))*colors;
+
+                    int r = buf.get(i) & 0xFF;
+                    int g = buf.get(i+1) & 0xFF;
+                    int b = buf.get(i+2) & 0xFF;
+
+                    image.setRGB(x, height-(y+1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+                }
+            }
+
+            File dir = this.dataManager.getScreenshotDir();
+            if(!dir.exists()){
+                dir.mkdirs();
+                Log.info("Creating screenshot folder at "+dir);
+            }
+
+            File file = new File(dir, new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date())+".png");
+            ImageIO.write(image, "png", file);
+
+            Log.info("Saved screenshot to "+file);
+        }
+        catch(Exception e){
+            Log.error("Couldn't take screenshot", e);
+        }
     }
 }

@@ -12,7 +12,7 @@ public class GuiKeybinds extends Gui{
     public int activeKeybind = -1;
 
     public GuiKeybinds(Gui parent){
-        super(304, 100, parent);
+        super(304, 150, parent);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class GuiKeybinds extends Gui{
             this.components.add(new ComponentKeybind(this, i, this.guiLeft+x, this.guiTop+y, bind));
 
             y += 20;
-            if(i == 3){
+            if(i == 4){
                 x += 154;
                 y = 0;
             }
