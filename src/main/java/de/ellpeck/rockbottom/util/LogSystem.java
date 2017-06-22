@@ -16,8 +16,8 @@ public class LogSystem extends DefaultLogSystem{
         this.level = level;
     }
 
-    public static void init(){
-        Log.setLogSystem(new LogSystem(LogLevel.DEBUG));
+    public static void init(LogLevel level){
+        Log.setLogSystem(new LogSystem(level));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class LogSystem extends DefaultLogSystem{
         }
     }
 
-    private enum LogLevel{
+    public enum LogLevel{
         NONE,
         ERROR,
         WARN,

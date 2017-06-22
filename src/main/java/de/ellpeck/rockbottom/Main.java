@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.util.LogSystem;
+import de.ellpeck.rockbottom.util.LogSystem.LogLevel;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -29,11 +30,8 @@ public final class Main{
     public static boolean fullscreen;
 
     public static void main(String[] args){
-        LogSystem.init();
-
-        Log.info("Found launch args "+Arrays.toString(args));
-
         OptionParser parser = new OptionParser();
+        OptionSpec<LogLevel> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(LogLevel.class).defaultsTo(LogLevel.DEBUG);
         OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(new File(".", "rockbottom"));
         OptionSpec<File> optionTempDir = parser.accepts("tempDir").withRequiredArg().ofType(File.class).required();
         OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
@@ -42,6 +40,12 @@ public final class Main{
         OptionSpec optionFullscreen = parser.accepts("fullscreen");
 
         OptionSet options = parser.parse(args);
+
+        LogLevel level = options.valueOf(optionLogLevel);
+        LogSystem.init(level);
+        Log.info("Found launch args "+Arrays.toString(args));
+        Log.info("Setting log level to "+level);
+
         gameDir = options.valueOf(optionGameDir);
         Log.info("Setting game folder to "+gameDir);
 

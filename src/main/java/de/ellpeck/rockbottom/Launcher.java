@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.util.LogSystem;
+import de.ellpeck.rockbottom.util.LogSystem.LogLevel;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -14,7 +15,7 @@ public final class Launcher{
     private static final Random RANDOM = new Random();
 
     public static void main(String[] args){
-        LogSystem.init();
+        LogSystem.init(LogLevel.INFO);
 
         File tempDir = null;
 
