@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.render;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -49,6 +50,7 @@ public class WorldRenderer{
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
+        IApiHandler api = RockBottomAPI.getApiHandler();
         int scale = game.getWorldScale();
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
@@ -84,14 +86,14 @@ public class WorldRenderer{
                             if(tileX >= transX-1 && -tileY >= transY-1 && tileX < transX+width && -tileY < transY+height){
                                 Tile tile = chunk.getTileInner(x, y);
 
-                                int[] light = this.calcLight(world, chunk.getX()+x, chunk.getY()+y);
+                                int[] light = api.interpolateLight(world, chunk.getX()+x, chunk.getY()+y);
 
                                 if(!game.isBackgroundDebug()){
                                     if(!tile.isFullTile() || game.isForegroundDebug()){
                                         Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
                                         ITileRenderer rendererBack = tileBack.getRenderer();
                                         if(rendererBack != null){
-                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, this.calcColor(light, BACKGROUND_COLORS));
+                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.BACKGROUND));
 
                                             if(input.breakingLayer == TileLayer.BACKGROUND){
                                                 this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
@@ -103,7 +105,7 @@ public class WorldRenderer{
                                 if(!game.isForegroundDebug()){
                                     ITileRenderer renderer = tile.getRenderer();
                                     if(renderer != null){
-                                        renderer.render(game, manager, g, world, tile, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, this.calcColor(light, MAIN_COLORS));
+                                        renderer.render(game, manager, g, world, tile, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.MAIN));
 
                                         if(input.breakingLayer == TileLayer.MAIN){
                                             this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
@@ -127,7 +129,8 @@ public class WorldRenderer{
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
-                    renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, this.calcColor(this.calcLight(world, Util.floor(entity.x), Util.floor(entity.y)), MAIN_COLORS));
+                    int light = world.getCombinedLight(Util.floor(entity.x), Util.floor(entity.y));
+                    renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, api.getColorByLight(light, TileLayer.MAIN));
                 }
             }
         });
@@ -143,37 +146,6 @@ public class WorldRenderer{
                 Image brk = manager.getTexture(RockBottom.internalRes("break."+Util.ceil(input.breakProgress*8F)));
                 brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
             }
-        }
-    }
-
-    private Color[] calcColor(int[] lights, Color[] allColors){
-        Color[] colors = new Color[lights.length];
-        for(int i = 0; i < colors.length; i++){
-            colors[i] = allColors[lights[i]];
-        }
-        return colors;
-    }
-
-    private int[] calcLight(World world, int x, int y){
-        if(RockBottomAPI.getGame().isLightDebug()){
-            return new int[]{Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT};
-        }
-        else{
-            Direction[] dirs = Direction.SURROUNDING_INCLUDING_NONE;
-            byte[] lightAround = new byte[dirs.length];
-            for(int i = 0; i < dirs.length; i++){
-                Direction dir = dirs[i];
-                if(world.isPosLoaded(x+dir.x, y+dir.y)){
-                    lightAround[i] = world.getCombinedLight(x+dir.x, y+dir.y);
-                }
-            }
-
-            int[] light = new int[4];
-            light[Image.TOP_LEFT] = (lightAround[0]+lightAround[8]+lightAround[1]+lightAround[2])/4;
-            light[Image.TOP_RIGHT] = (lightAround[0]+lightAround[2]+lightAround[3]+lightAround[4])/4;
-            light[Image.BOTTOM_RIGHT] = (lightAround[0]+lightAround[4]+lightAround[5]+lightAround[6])/4;
-            light[Image.BOTTOM_LEFT] = (lightAround[0]+lightAround[6]+lightAround[7]+lightAround[8])/4;
-            return light;
         }
     }
 }

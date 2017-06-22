@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.apiimpl;
 
 import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -17,10 +18,14 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
+import de.ellpeck.rockbottom.render.WorldRenderer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -352,6 +357,44 @@ public class ApiHandler implements IApiHandler{
         g.scale(scale, scale);
         image.draw(x/scale, y/scale, color);
         g.popTransform();
+    }
+
+    @Override
+    public int[] interpolateLight(IWorld world, int x, int y){
+        if(RockBottomAPI.getGame().isLightDebug()){
+            return new int[]{Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT};
+        }
+        else{
+            Direction[] dirs = Direction.SURROUNDING_INCLUDING_NONE;
+            byte[] lightAround = new byte[dirs.length];
+            for(int i = 0; i < dirs.length; i++){
+                Direction dir = dirs[i];
+                if(world.isPosLoaded(x+dir.x, y+dir.y)){
+                    lightAround[i] = world.getCombinedLight(x+dir.x, y+dir.y);
+                }
+            }
+
+            int[] light = new int[4];
+            light[Image.TOP_LEFT] = (lightAround[0]+lightAround[8]+lightAround[1]+lightAround[2])/4;
+            light[Image.TOP_RIGHT] = (lightAround[0]+lightAround[2]+lightAround[3]+lightAround[4])/4;
+            light[Image.BOTTOM_RIGHT] = (lightAround[0]+lightAround[4]+lightAround[5]+lightAround[6])/4;
+            light[Image.BOTTOM_LEFT] = (lightAround[0]+lightAround[6]+lightAround[7]+lightAround[8])/4;
+            return light;
+        }
+    }
+
+    @Override
+    public Color[] interpolateWorldColor(int[] interpolatedLight, TileLayer layer){
+        Color[] colors = new Color[interpolatedLight.length];
+        for(int i = 0; i < colors.length; i++){
+            colors[i] = this.getColorByLight(interpolatedLight[i], layer);
+        }
+        return colors;
+    }
+
+    @Override
+    public Color getColorByLight(int light, TileLayer layer){
+        return (layer == TileLayer.BACKGROUND ? WorldRenderer.BACKGROUND_COLORS : WorldRenderer.MAIN_COLORS)[light];
     }
 
     private boolean setToInv(ItemInstance inst, ComponentSlot slot){
