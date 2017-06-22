@@ -3,7 +3,10 @@ package de.ellpeck.rockbottom.gui.menu;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.event.Event;
+import de.ellpeck.rockbottom.api.event.impl.MainMenuBackgroundEvent;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -67,6 +70,10 @@ public class MainMenuBackground{
                     else{
                         tile = GameContent.TILE_ROCK;
                     }
+
+                    MainMenuBackgroundEvent event = new MainMenuBackgroundEvent(tile);
+                    RockBottomAPI.getEventHandler().fireEvent(event);
+                    tile = event.tileToPlace;
                 }
                 this.menuTileGrid[placeX][placeY] = tile;
 
