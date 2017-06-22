@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.assets;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.AssetImage;
+import de.ellpeck.rockbottom.api.assets.AssetTexture;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
 import de.ellpeck.rockbottom.api.assets.IAsset;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
 import de.ellpeck.rockbottom.api.assets.local.Locale;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.render.Texture;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import org.newdawn.slick.*;
@@ -27,27 +28,27 @@ public class AssetManager implements IAssetManager{
 
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
     private AssetSound missingSound;
-    private AssetImage missingTexture;
+    private AssetTexture missingTexture;
     private AssetLocale missingLocale;
     private AssetFont missingFont;
     private Locale currentLocale;
     private Font currentFont;
 
-    private static Image loadImage(String key, String path, String value) throws Exception{
+    private static Texture loadTexture(String key, String path, String value) throws Exception{
         if(value.startsWith("sub.")){
             String[] parts = value.substring(4).split(",");
 
-            Image main = new Image(getResource(path+parts[0]), key, false);
+            Texture main = new Texture(getResource(path+parts[0]), key, false);
 
             int x = Integer.parseInt(parts[1]);
             int y = Integer.parseInt(parts[2]);
             int width = Integer.parseInt(parts[3]);
             int height = Integer.parseInt(parts[4]);
 
-            return main.getSubImage(x, y, width, height);
+            return main.getSubTexture(x, y, width, height);
         }
         else{
-            return new Image(getResource(path+value), key, false);
+            return new Texture(getResource(path+value), key, false);
         }
     }
 
@@ -71,12 +72,12 @@ public class AssetManager implements IAssetManager{
                 buffer.setRGBA(x, y, areEqual ? 255 : 0, 0, areEqual ? 0 : 255, 255);
             }
         }
-        this.missingTexture = new AssetImage(buffer.getImage());
+        this.missingTexture = new AssetTexture(new Texture(buffer));
         this.missingSound = new AssetSound(null);
         this.missingLocale = new AssetLocale(new Locale("fallback"));
         this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0)))));
 
-        Log.info("Loaded "+this.getAllOfType(AssetImage.class).size()+" image resources!");
+        Log.info("Loaded "+this.getAllOfType(AssetTexture.class).size()+" image resources!");
         Log.info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
 
@@ -92,7 +93,7 @@ public class AssetManager implements IAssetManager{
             GameContainer container = game.getContainer();
 
             if(!game.getSettings().hardwareCursor){
-                container.setMouseCursor(this.getImage(RockBottom.internalRes("gui.cursor")), 0, 0);
+                container.setMouseCursor(this.getTexture(RockBottom.internalRes("gui.cursor")), 0, 0);
             }
             else{
                 container.setDefaultMouseCursor();
@@ -128,7 +129,7 @@ public class AssetManager implements IAssetManager{
                                 Log.info("Loaded font resource "+name+" with data "+value);
                             }
                             else if(key.startsWith("tex.")){
-                                this.assets.put(name, new AssetImage(loadImage(key, path, value)));
+                                this.assets.put(name, new AssetTexture(loadTexture(key, path, value)));
                                 Log.info("Loaded png resource "+name+" with data "+value);
                             }
                             else{
@@ -214,7 +215,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Image getImage(IResourceName path){
+    public Texture getTexture(IResourceName path){
         return this.getAssetWithFallback(path.addPrefix("tex."), this.missingTexture);
     }
 

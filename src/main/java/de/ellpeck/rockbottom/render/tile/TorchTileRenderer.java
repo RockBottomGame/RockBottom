@@ -24,7 +24,7 @@ public class TorchTileRenderer extends DefaultTileRenderer{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, float scale, Color filter){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, Tile tile, int x, int y, float renderX, float renderY, float scale, Color[] light){
         int meta = world.getMeta(x, y);
 
         IResourceName tex;
@@ -41,6 +41,6 @@ public class TorchTileRenderer extends DefaultTileRenderer{
             tex = this.texture;
         }
 
-        manager.getImage(tex).draw(renderX, renderY, scale, scale, filter);
+        manager.getTexture(tex).drawWithLight(renderX, renderY, scale, scale, light);
     }
 }

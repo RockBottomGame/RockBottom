@@ -245,7 +245,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
-        this.drawScaledImage(g, manager.getImage(SLOT_NAME), x, y, scale, game.getSettings().guiColor);
+        this.drawScaledImage(g, manager.getTexture(SLOT_NAME), x, y, scale, game.getSettings().guiColor);
 
         if(slot != null){
             this.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Color.white);

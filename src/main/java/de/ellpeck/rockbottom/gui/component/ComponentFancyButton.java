@@ -24,6 +24,6 @@ public class ComponentFancyButton extends ComponentButton{
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        manager.getImage(this.getTexture()).draw(this.x, this.y, this.sizeX, this.sizeY);
+        manager.getTexture(this.getTexture()).draw(this.x, this.y, this.sizeX, this.sizeY);
     }
 }

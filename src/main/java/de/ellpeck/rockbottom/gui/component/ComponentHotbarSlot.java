@@ -32,7 +32,7 @@ public class ComponentHotbarSlot extends GuiComponent{
         RockBottomAPI.getApiHandler().renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
 
         if(this.player.getSelectedSlot() == this.id){
-            manager.getImage(TEX_ARROW).draw(this.x+0.75F, 1);
+            manager.getTexture(TEX_ARROW).draw(this.x+0.75F, 1);
         }
     }
 

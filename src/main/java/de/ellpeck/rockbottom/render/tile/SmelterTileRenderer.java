@@ -21,15 +21,15 @@ public class SmelterTileRenderer extends MultiTileRenderer<TileSmelter>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSmelter tile, int x, int y, float renderX, float renderY, float scale, Color filter){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSmelter tile, int x, int y, float renderX, float renderY, float scale, Color[] light){
         if(tile.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySmelter tileEntity = world.getTileEntity(x, y, TileEntitySmelter.class);
             if(tileEntity != null && tileEntity.isActive()){
-                manager.getImage(this.texActive).draw(renderX, renderY, scale, scale, filter);
+                manager.getTexture(this.texActive).drawWithLight(renderX, renderY, scale, scale, light);
                 return;
             }
         }
 
-        super.render(game, manager, g, world, tile, x, y, renderX, renderY, scale, filter);
+        super.render(game, manager, g, world, tile, x, y, renderX, renderY, scale, light);
     }
 }

@@ -11,7 +11,7 @@ import org.newdawn.slick.Image;
 
 public class ComponentColorPicker extends GuiComponent{
 
-    private final Image image = RockBottom.get().getAssetManager().getImage(RockBottom.internalRes("gui.colorpick"));
+    private final Image image = RockBottom.get().getAssetManager().getTexture(RockBottom.internalRes("gui.colorpick"));
 
     private final ICallback callback;
     private boolean wasMouseDown;

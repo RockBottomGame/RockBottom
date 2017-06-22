@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.event.Event;
 import de.ellpeck.rockbottom.api.event.impl.MainMenuBackgroundEvent;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -108,13 +107,13 @@ public class MainMenuBackground{
                     ITileRenderer renderer = tile.getRenderer();
                     if(renderer instanceof DefaultTileRenderer){
                         IResourceName tex = ((DefaultTileRenderer)renderer).texture;
-                        manager.getImage(tex).draw(x*TILE_SIZE, offsetY+y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        manager.getTexture(tex).draw(x*TILE_SIZE, offsetY+y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     }
                 }
             }
         }
 
-        Image logo = manager.getImage(RES_LOGO);
+        Image logo = manager.getTexture(RES_LOGO);
         logo.draw((int)game.getWidthInGui()/2-logo.getWidth()/2, (int)game.getHeightInGui()/3-logo.getHeight()/2);
     }
 }

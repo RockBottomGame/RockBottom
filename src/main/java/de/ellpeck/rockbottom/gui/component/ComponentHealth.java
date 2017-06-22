@@ -28,8 +28,8 @@ public class ComponentHealth extends GuiComponent{
             int healthParts = Util.floor(game.getPlayer().getHealth()/20);
             int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
 
-            Image heart = manager.getImage(TEX_HEART);
-            Image heartEmpty = manager.getImage(TEX_HEART_EMPTY);
+            Image heart = manager.getTexture(TEX_HEART);
+            Image heartEmpty = manager.getTexture(TEX_HEART_EMPTY);
 
             int currX = 0;
             for(int i = 0; i < maxHealthParts; i++){
