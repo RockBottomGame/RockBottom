@@ -14,12 +14,10 @@ public class PacketSendChat implements IPacket{
 
     private UUID playerId;
     private String message;
-    private String playerName;
 
-    public PacketSendChat(UUID playerId, String message, String playerName){
+    public PacketSendChat(UUID playerId, String message){
         this.playerId = playerId;
         this.message = message;
-        this.playerName = playerName;
     }
 
     public PacketSendChat(){
@@ -30,14 +28,12 @@ public class PacketSendChat implements IPacket{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         NetUtil.writeStringToBuffer(this.message, buf);
-        NetUtil.writeStringToBuffer(this.playerName, buf);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.message = NetUtil.readStringFromBuffer(buf);
-        this.playerName = NetUtil.readStringFromBuffer(buf);
     }
 
     @Override
@@ -46,7 +42,7 @@ public class PacketSendChat implements IPacket{
             if(game.getWorld() != null){
                 AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
-                    game.getChatLog().sendPlayerMessage(this.message, player, this.playerName);
+                    game.getChatLog().sendPlayerMessage(this.message, player);
                 }
             }
             return true;

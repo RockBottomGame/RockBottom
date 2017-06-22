@@ -104,7 +104,7 @@ public class World implements IWorld{
                 this.players.add(player);
             }
             else{
-                Log.error("Tried adding player "+player+" with id "+player.getUniqueId()+" to world that already contained it!");
+                Log.error("Tried adding player "+player.getName()+" with id "+player.getUniqueId()+" to world that already contained it!");
             }
         }
 
@@ -350,7 +350,7 @@ public class World implements IWorld{
 
     @Override
     public NameToIndexInfo getBiomeRegInfo(){
-        return null;
+        return this.biomeRegInfo;
     }
 
     @Override
@@ -482,8 +482,8 @@ public class World implements IWorld{
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, Channel channel){
-        EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, channel) : new EntityPlayer(this, id);
+    public EntityPlayer createPlayer(UUID id, String name, Channel channel){
+        EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, name, channel) : new EntityPlayer(this, id, name);
 
         File file = new File(this.playerDirectory, id+".dat");
         if(file.exists()){
@@ -491,11 +491,11 @@ public class World implements IWorld{
             set.read(file);
 
             player.load(set);
-            Log.info("Loading player with unique id "+id+"!");
+            Log.info("Loading player "+name+" with unique id "+id+"!");
         }
         else{
             player.resetAndSpawn(RockBottom.get());
-            Log.info("Adding new player with unique id "+id+" to world!");
+            Log.info("Adding new player "+name+" with unique id "+id+" to world!");
         }
         return player;
     }
@@ -504,6 +504,16 @@ public class World implements IWorld{
     public EntityPlayer getPlayer(UUID id){
         for(EntityPlayer player : this.players){
             if(id.equals(player.getUniqueId())){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public AbstractEntityPlayer getPlayer(String name){
+        for(EntityPlayer player : this.players){
+            if(name.equals(player.getName())){
                 return player;
             }
         }

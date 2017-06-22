@@ -12,7 +12,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color filter){
-        g.setColor(entity.color.multiply(filter));
+        g.setColor(entity.getColor().multiply(filter));
         g.fillRect(x-0.5F, y-1.5F, 1F, 2F);
     }
 }

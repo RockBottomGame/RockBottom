@@ -336,7 +336,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
             info.seed = Util.RANDOM.nextLong();
         }
 
-        this.player = this.world.createPlayer(this.uniqueId, null);
+        this.player = this.world.createPlayer(this.uniqueId, this.settings.chatName, null);
         this.world.addEntity(this.player);
 
         this.guiManager.reInitSelf(this);
@@ -360,7 +360,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
         this.world = new ClientWorld(info, tileRegInfo, biomeRegInfo);
 
-        this.player = this.world.createPlayer(this.uniqueId, null);
+        this.player = this.world.createPlayer(this.uniqueId, this.settings.chatName, null);
         this.player.load(playerSet);
         this.world.addEntity(this.player);
 

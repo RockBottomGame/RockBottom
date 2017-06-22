@@ -26,8 +26,8 @@ public class ConnectedPlayer extends EntityPlayer{
     private double lastCalcY;
     private int fallCalcTicks;
 
-    public ConnectedPlayer(World world, UUID uniqueId, Channel channel){
-        super(world, uniqueId);
+    public ConnectedPlayer(World world, UUID uniqueId, String name, Channel channel){
+        super(world, uniqueId, name);
         this.channel = channel;
     }
 
@@ -41,7 +41,7 @@ public class ConnectedPlayer extends EntityPlayer{
                     game.getWorld().savePlayer(this);
                     game.getWorld().removeEntity(this);
 
-                    Log.info("Saving and removing disconnected player with id "+this.getUniqueId()+" from world");
+                    Log.info("Saving and removing disconnected player "+this.getName()+" with id "+this.getUniqueId()+" from world");
 
                     return true;
                 });
@@ -59,7 +59,7 @@ public class ConnectedPlayer extends EntityPlayer{
                 this.fallAmount = 0;
 
                 this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY));
-                Log.warn("Player with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
+                Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
             }
             else{
                 this.lastCalcX = this.x;
@@ -112,7 +112,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
     @Override
     public void onChunkLoaded(IChunk chunk){
-        Log.debug("Sending chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player with id "+this.getUniqueId());
+        Log.debug("Sending chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunk(chunk));
 
@@ -129,7 +129,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
     @Override
     public void onChunkUnloaded(IChunk chunk){
-        Log.debug("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player with id "+this.getUniqueId());
+        Log.debug("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
     }

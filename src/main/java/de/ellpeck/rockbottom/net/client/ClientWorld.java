@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.client;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
@@ -74,11 +75,16 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, Channel channel){
+    public AbstractEntityPlayer getPlayer(String name){
+        throw new UnsupportedOperationException("Cannot get player in client world");
+    }
+
+    @Override
+    public EntityPlayer createPlayer(UUID id, String name, Channel channel){
         if(channel != null){
             throw new UnsupportedOperationException("Cannot create a connected player in a client world");
         }
-        return new EntityPlayer(this, id);
+        return new EntityPlayer(this, id, name);
     }
 
     @Override

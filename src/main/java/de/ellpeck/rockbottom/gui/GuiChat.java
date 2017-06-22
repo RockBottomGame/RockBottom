@@ -80,10 +80,10 @@ public class GuiChat extends Gui{
 
             if(text != null && !text.isEmpty()){
                 if(RockBottomAPI.getNet().isClient()){
-                    RockBottomAPI.getNet().sendToServer(new PacketSendChat(game.getPlayer().getUniqueId(), text, game.getSettings().chatName));
+                    RockBottomAPI.getNet().sendToServer(new PacketSendChat(game.getPlayer().getUniqueId(), text));
                 }
                 else{
-                    game.getChatLog().sendPlayerMessage(text, game.getPlayer(), game.getSettings().chatName);
+                    game.getChatLog().sendPlayerMessage(text, game.getPlayer());
                 }
 
                 this.inputField.setText("");

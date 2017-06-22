@@ -46,7 +46,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
     private final IEntityRenderer renderer;
     private final List<IChunk> chunksInRange = new ArrayList<>();
-    public Color color = Util.randomColor(Util.RANDOM);
+    private Color color = Util.randomColor(Util.RANDOM);
+    private String name;
     private ItemContainer currentContainer;
     private int respawnTimer;
 
@@ -56,9 +57,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
         this.facing = Direction.RIGHT;
     }
 
-    public EntityPlayer(IWorld world, UUID uniqueId){
+    public EntityPlayer(IWorld world, UUID uniqueId, String name){
         this(world);
         this.uniqueId = uniqueId;
+        this.name = name;
     }
 
     @Override
@@ -115,10 +117,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
         }
 
         if(this.currentContainer == null){
-            Log.debug("Closed Container for player with unique id "+this.getUniqueId());
+            Log.debug("Closed Container for player "+this.getName()+" with unique id "+this.getUniqueId());
         }
         else{
-            Log.debug("Opened Container "+this.currentContainer+" for player with unique id "+this.getUniqueId());
+            Log.debug("Opened Container "+this.currentContainer+" for player "+this.getName()+" with unique id "+this.getUniqueId());
         }
     }
 
@@ -295,7 +297,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
             }
 
-            Log.debug("Player with id "+this.getUniqueId()+" leaving range of "+unload+" chunks and loading "+newLoad+" new ones");
+            Log.debug("Player "+this.getName()+" with id "+this.getUniqueId()+" leaving range of "+unload+" chunks and loading "+newLoad+" new ones");
 
             for(IChunk chunk : nowLoaded){
                 List<AbstractEntityPlayer> inRange = chunk.getPlayersInRange();
@@ -333,7 +335,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 permissions.setCommandLevel(this, level);
                 RockBottom.get().getDataManager().savePropSettings(permissions);
 
-                Log.info("Setting command level for server host with id "+this.getUniqueId()+" to "+level+"!");
+                Log.info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+"!");
             }
 
             return level;
@@ -377,6 +379,21 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public String getChatColorFormat(){
         return "&("+this.color.r+","+this.color.g+","+this.color.b+")";
+    }
+
+    @Override
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @Override
+    public String getName(){
+        return this.name;
+    }
+
+    @Override
+    public Color getColor(){
+        return this.color;
     }
 
     @Override

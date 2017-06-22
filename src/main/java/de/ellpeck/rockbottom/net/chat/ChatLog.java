@@ -39,7 +39,7 @@ public class ChatLog implements IChatLog{
     }
 
     @Override
-    public void sendPlayerMessage(String message, AbstractEntityPlayer player, String playerName){
+    public void sendPlayerMessage(String message, AbstractEntityPlayer player){
         if(RockBottomAPI.getNet().isServer()){
             if(message.startsWith("/")){
                 String cmdFeedback;
@@ -50,7 +50,7 @@ public class ChatLog implements IChatLog{
                 if(command != null){
                     if(player.getCommandLevel() >= command.getLevel()){
                         IGameInstance game = RockBottom.get();
-                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, playerName, game, game.getAssetManager(), this);
+                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, player.getName(), game, game.getAssetManager(), this);
                     }
                     else{
                         cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
@@ -60,14 +60,14 @@ public class ChatLog implements IChatLog{
                     cmdFeedback = FormattingCode.RED+"Unknown command, use /help for a list of commands.";
                 }
 
-                Log.info("Player with id "+player.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
+                Log.info("Player "+player.getName()+" with id "+player.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
 
                 if(cmdFeedback != null){
                     this.sendMessageToPlayer(player, cmdFeedback);
                 }
             }
             else{
-                this.broadcastMessage(player.getChatColorFormat()+"["+playerName+"] &4"+message);
+                this.broadcastMessage(player.getChatColorFormat()+"["+player.getName()+"] &4"+message);
             }
         }
     }

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -9,6 +10,7 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketName;
 import org.newdawn.slick.Graphics;
 
 public class GuiSettings extends Gui{
@@ -79,8 +81,16 @@ public class GuiSettings extends Gui{
         super.onClosed(game);
 
         String name = this.chatNameField.getText().trim();
-        if(!name.isEmpty()){
+        if(!name.isEmpty() && !game.getSettings().chatName.equals(name)){
             game.getSettings().chatName = name;
+
+            if(game.getPlayer() != null){
+                game.getPlayer().setName(name);
+
+                if(RockBottomAPI.getNet().isClient()){
+                    RockBottomAPI.getNet().sendToServer(new PacketName(game.getPlayer().getUniqueId(), name));
+                }
+            }
         }
 
         game.getDataManager().savePropSettings(game.getSettings());
