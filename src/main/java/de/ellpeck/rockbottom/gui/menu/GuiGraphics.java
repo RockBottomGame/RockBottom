@@ -61,6 +61,7 @@ public class GuiGraphics extends Gui{
         });
         this.components.add(new ComponentToggleButton(this, 8, this.guiLeft+154, this.guiTop+60, 150, 16, !settings.fullscreen, "button.fullscreen"));
         this.components.add(new ComponentToggleButton(this, 9, this.guiLeft+154, this.guiTop+80, 150, 16, !settings.vsync, "button.vsync"));
+        this.components.add(new ComponentToggleButton(this, 10, this.guiLeft+154, this.guiTop+100, 150, 16, !settings.smoothLighting, "button.smooth_lighting"));
 
         this.components.add(new ComponentColorPicker(this, this.guiLeft+55, this.guiTop+70, 40, 40, settings.guiColor, new ComponentColorPicker.ICallback(){
             @Override
@@ -114,6 +115,10 @@ public class GuiGraphics extends Gui{
         else if(button == 9){
             settings.vsync = !settings.vsync;
             game.getContainer().setVSync(settings.vsync);
+            return true;
+        }
+        else if(button == 10){
+            settings.smoothLighting = !settings.smoothLighting;
             return true;
         }
         return false;

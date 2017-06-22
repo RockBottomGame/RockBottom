@@ -361,8 +361,14 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public int[] interpolateLight(IWorld world, int x, int y){
-        if(RockBottomAPI.getGame().isLightDebug()){
+        IGameInstance game = RockBottomAPI.getGame();
+
+        if(game.isLightDebug()){
             return new int[]{Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT};
+        }
+        else if(!game.getSettings().smoothLighting){
+            int light = world.getCombinedLight(x, y);
+            return new int[]{light, light, light, light};
         }
         else{
             Direction[] dirs = Direction.SURROUNDING_INCLUDING_NONE;
