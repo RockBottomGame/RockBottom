@@ -250,7 +250,8 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale){
-        this.drawScaledImage(g, manager.getTexture(SLOT_NAME), x, y, scale, game.getSettings().guiColor);
+        Image texture = manager.getTexture(SLOT_NAME);
+        texture.draw(x, y, texture.getWidth()*scale, texture.getHeight()*scale, game.getSettings().guiColor);
 
         if(slot != null){
             this.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Color.white);
@@ -352,21 +353,8 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void drawScaledImage(Graphics g, Image image, float x, float y, float scale, Color color){
-        g.pushTransform();
-        g.scale(scale, scale);
-        image.draw(x/scale, y/scale, color);
-        g.popTransform();
-    }
-
-    @Override
     public int[] interpolateLight(IWorld world, int x, int y){
-        IGameInstance game = RockBottomAPI.getGame();
-
-        if(game.isLightDebug()){
-            return new int[]{Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT, Constants.MAX_LIGHT};
-        }
-        else if(!game.getSettings().smoothLighting){
+        if(!RockBottomAPI.getGame().getSettings().smoothLighting){
             int light = world.getCombinedLight(x, y);
             return new int[]{light, light, light, light};
         }
@@ -400,7 +388,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public Color getColorByLight(int light, TileLayer layer){
-        return (layer == TileLayer.BACKGROUND ? WorldRenderer.BACKGROUND_COLORS : WorldRenderer.MAIN_COLORS)[light];
+        return (layer == TileLayer.BACKGROUND ? WorldRenderer.BACKGROUND_COLORS : WorldRenderer.MAIN_COLORS)[RockBottomAPI.getGame().isLightDebug() ? Constants.MAX_LIGHT : light];
     }
 
     private boolean setToInv(ItemInstance inst, ComponentSlot slot){

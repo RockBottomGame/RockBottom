@@ -33,7 +33,8 @@ public class ComponentHealth extends GuiComponent{
 
             int currX = 0;
             for(int i = 0; i < maxHealthParts; i++){
-                RockBottomAPI.getApiHandler().drawScaledImage(g, healthParts > i ? heart : heartEmpty, this.x+currX, this.y, 0.75F, Color.white);
+                Image toUse = healthParts > i ? heart : heartEmpty;
+                toUse.draw(this.x+currX, this.y, toUse.getWidth()*0.75F, toUse.getHeight()*0.75F, Color.white);
                 currX += 13;
             }
         }

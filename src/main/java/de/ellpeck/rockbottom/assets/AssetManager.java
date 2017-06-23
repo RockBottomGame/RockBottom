@@ -3,26 +3,29 @@ package de.ellpeck.rockbottom.assets;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.AssetTexture;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
 import de.ellpeck.rockbottom.api.assets.IAsset;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.anim.Animation;
+import de.ellpeck.rockbottom.api.assets.anim.AnimationRow;
+import de.ellpeck.rockbottom.api.assets.anim.AssetAnimation;
 import de.ellpeck.rockbottom.api.assets.font.AssetFont;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
 import de.ellpeck.rockbottom.api.assets.local.Locale;
+import de.ellpeck.rockbottom.api.assets.tex.AssetTexture;
+import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.mod.IMod;
-import de.ellpeck.rockbottom.api.render.Texture;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import org.newdawn.slick.*;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.ImageBuffer;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.util.Log;
 
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class AssetManager implements IAssetManager{
 
@@ -31,6 +34,7 @@ public class AssetManager implements IAssetManager{
     private AssetTexture missingTexture;
     private AssetLocale missingLocale;
     private AssetFont missingFont;
+    private AssetAnimation missingAnimation;
     private Locale currentLocale;
     private Font currentFont;
 
@@ -76,9 +80,11 @@ public class AssetManager implements IAssetManager{
         this.missingSound = new AssetSound(null);
         this.missingLocale = new AssetLocale(new Locale("fallback"));
         this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0)))));
+        this.missingAnimation = new AssetAnimation(new Animation(this.missingTexture.get(), 1, 1, new ArrayList<>(Collections.singletonList(new AnimationRow(1, 1F)))));
 
-        Log.info("Loaded "+this.getAllOfType(AssetTexture.class).size()+" image resources!");
+        Log.info("Loaded "+this.getAllOfType(AssetTexture.class).size()+" texture resources!");
         Log.info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");
+        Log.info("Loaded "+this.getAllOfType(AssetAnimation.class).size()+" animations!");
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
 
         this.currentLocale = this.getLocale(RockBottom.internalRes("us_english"));
@@ -121,12 +127,20 @@ public class AssetManager implements IAssetManager{
 
                         boolean didLoad = true;
                         try{
-                            if(key.startsWith("font.")){
+                            if(key.startsWith("anim.")){
                                 String[] split = value.split(",");
-                                InputStream image = getResource(path+split[0]);
+                                InputStream texture = getResource(path+split[0]);
                                 InputStream info = getResource(path+split[1]);
 
-                                this.assets.put(name, new AssetFont(Font.fromStream(image, info, key)));
+                                this.assets.put(name, new AssetAnimation(Animation.fromStream(texture, info, key)));
+                                Log.info("Loaded animation resource "+name+" with data "+value);
+                            }
+                            else if(key.startsWith("font.")){
+                                String[] split = value.split(",");
+                                InputStream texture = getResource(path+split[0]);
+                                InputStream info = getResource(path+split[1]);
+
+                                this.assets.put(name, new AssetFont(Font.fromStream(texture, info, key)));
                                 Log.info("Loaded font resource "+name+" with data "+value);
                             }
                             else if(key.startsWith("tex.")){
@@ -218,6 +232,11 @@ public class AssetManager implements IAssetManager{
     @Override
     public Texture getTexture(IResourceName path){
         return this.getAssetWithFallback(path.addPrefix("tex."), this.missingTexture);
+    }
+
+    @Override
+    public Animation getAnimation(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("anim."), this.missingAnimation);
     }
 
     @Override
