@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
@@ -50,6 +51,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private String name;
     private ItemContainer currentContainer;
     private int respawnTimer;
+    private final PlayerDesign design = new PlayerDesign();
 
     public EntityPlayer(IWorld world){
         super(world);
@@ -216,6 +218,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void save(DataSet set){
         super.save(set);
         this.inv.save(set);
+        this.design.save(set);
 
         set.addFloat("color_r", this.color.r);
         set.addFloat("color_g", this.color.g);
@@ -226,6 +229,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void load(DataSet set){
         super.load(set);
         this.inv.load(set);
+        this.design.load(set);
 
         this.color = new Color(set.getFloat("color_r"), set.getFloat("color_g"), set.getFloat("color_b"));
     }
@@ -394,6 +398,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public Color getColor(){
         return this.color;
+    }
+
+    @Override
+    public PlayerDesign getDesign(){
+        return this.design;
     }
 
     @Override

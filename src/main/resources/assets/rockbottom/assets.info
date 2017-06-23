@@ -63,6 +63,10 @@ tex.gui.colorpick=/gui/colorpick.png
 
 anim.player.base.male_white=/player/base/male_white.png,/player/base/male_white.anim
 anim.player.arm.hanging_white=/player/arm/hanging_white.png,/player/arm/hanging_white.anim
+anim.player.accessory.sunglasses=/player/accessory/sunglasses.png,/player/accessory/sunglasses.anim
+anim.player.boot.basic=/player/boot/basic.png,/player/boot/basic.anim
+anim.player.shirt.basic=/player/shirt/basic.png,/player/shirt/basic.anim
+anim.player.sleeve.hanging_basic=/player/sleeve/hanging_basic.png,/player/sleeve/hanging_basic.anim
 
 tex.particle.smoke=/particle/smoke.png
 
