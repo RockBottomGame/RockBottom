@@ -73,7 +73,7 @@ public class InteractionManager implements IInteractionManager{
         player.move(type);
 
         if(RockBottomAPI.getNet().isClient()){
-            RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(player.getUniqueId(), player.x, player.y, player.motionX, player.motionY));
+            RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(player.getUniqueId(), player.x, player.y, player.motionX, player.motionY, player.facing));
         }
     }
 

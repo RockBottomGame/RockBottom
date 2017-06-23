@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.packet.toserver;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.util.Direction;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -16,13 +17,15 @@ public class PacketPlayerMovement implements IPacket{
     private double y;
     private double motionX;
     private double motionY;
+    private Direction facing;
 
-    public PacketPlayerMovement(UUID playerId, double x, double y, double motionX, double motionY){
+    public PacketPlayerMovement(UUID playerId, double x, double y, double motionX, double motionY, Direction facing){
         this.playerId = playerId;
         this.x = x;
         this.y = y;
         this.motionX = motionX;
         this.motionY = motionY;
+        this.facing = facing;
     }
 
     public PacketPlayerMovement(){
@@ -36,6 +39,7 @@ public class PacketPlayerMovement implements IPacket{
         buf.writeDouble(this.y);
         buf.writeDouble(this.motionX);
         buf.writeDouble(this.motionY);
+        buf.writeInt(this.facing.ordinal());
     }
 
     @Override
@@ -45,6 +49,7 @@ public class PacketPlayerMovement implements IPacket{
         this.y = buf.readDouble();
         this.motionX = buf.readDouble();
         this.motionY = buf.readDouble();
+        this.facing = Direction.SURROUNDING_INCLUDING_NONE[buf.readInt()];
     }
 
     @Override
@@ -57,6 +62,7 @@ public class PacketPlayerMovement implements IPacket{
                     player.y = this.y;
                     player.motionX = this.motionX;
                     player.motionY = this.motionY;
+                    player.facing = this.facing;
                 }
             }
             return true;

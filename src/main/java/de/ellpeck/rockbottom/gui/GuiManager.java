@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.ComponentRenderEvent;
 import de.ellpeck.rockbottom.api.event.impl.GuiOpenEvent;
 import de.ellpeck.rockbottom.api.event.impl.OverlayRenderEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -113,7 +114,12 @@ public class GuiManager implements IGuiManager{
             font.drawCenteredString(width/2F, height/2F, deathInfo, 2F, true);
         }
         else{
-            this.onScreenComponents.forEach(comp -> comp.render(game, manager, g));
+            for(int i = 0; i < this.onScreenComponents.size(); i++){
+                GuiComponent component = this.onScreenComponents.get(i);
+                if(RockBottomAPI.getEventHandler().fireEvent(new ComponentRenderEvent(null, i, component)) != EventResult.CANCELLED){
+                    component.render(game, manager, g);
+                }
+            }
 
             if(!game.isInWorld()){
                 this.background.render(game, manager, g);

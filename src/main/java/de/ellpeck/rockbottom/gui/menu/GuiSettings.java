@@ -36,13 +36,6 @@ public class GuiSettings extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        super.render(game, manager, g);
-
-        manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+22, manager.localize(RockBottom.internalRes("button.chat_name")), 0.35F, false);
-    }
-
-    @Override
     public boolean onButtonActivated(IGameInstance game, int button){
         IGuiManager guiManager = game.getGuiManager();
 

@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
@@ -24,13 +25,14 @@ public class PacketJoin implements IPacket{
 
     private String version;
     private UUID id;
-    private PlayerDesign design;
+    private IPlayerDesign design;
 
     private final List<ModInfo> modInfos = new ArrayList<>();
 
-    public PacketJoin(UUID id, String version, List<IMod> mods){
+    public PacketJoin(UUID id, String version, IPlayerDesign design, List<IMod> mods){
         this.id = id;
         this.version = version;
+        this.design = design;
 
         for(IMod mod : mods){
             this.modInfos.add(new ModInfo(mod.getId(), mod.getVersion()));

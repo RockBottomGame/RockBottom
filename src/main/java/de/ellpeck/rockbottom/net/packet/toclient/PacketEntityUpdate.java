@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.util.Direction;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -16,13 +17,15 @@ public class PacketEntityUpdate implements IPacket{
     private double y;
     private double motionX;
     private double motionY;
+    private Direction facing;
 
-    public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY){
+    public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY, Direction facing){
         this.uniqueId = uniqueId;
         this.x = x;
         this.y = y;
         this.motionX = motionX;
         this.motionY = motionY;
+        this.facing = facing;
     }
 
     public PacketEntityUpdate(){
@@ -37,6 +40,7 @@ public class PacketEntityUpdate implements IPacket{
         buf.writeDouble(this.y);
         buf.writeDouble(this.motionX);
         buf.writeDouble(this.motionY);
+        buf.writeInt(this.facing.ordinal());
     }
 
     @Override
@@ -46,6 +50,7 @@ public class PacketEntityUpdate implements IPacket{
         this.y = buf.readDouble();
         this.motionX = buf.readDouble();
         this.motionY = buf.readDouble();
+        this.facing = Direction.SURROUNDING_INCLUDING_NONE[buf.readInt()];
     }
 
     @Override
@@ -58,6 +63,7 @@ public class PacketEntityUpdate implements IPacket{
                     entity.y = this.y;
                     entity.motionX = this.motionX;
                     entity.motionY = this.motionY;
+                    entity.facing = this.facing;
                 }
             }
             return true;

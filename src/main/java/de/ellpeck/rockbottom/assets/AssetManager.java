@@ -80,7 +80,7 @@ public class AssetManager implements IAssetManager{
         this.missingSound = new AssetSound(null);
         this.missingLocale = new AssetLocale(new Locale("fallback"));
         this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0)))));
-        this.missingAnimation = new AssetAnimation(new Animation(this.missingTexture.get(), 1, 1, new ArrayList<>(Collections.singletonList(new AnimationRow(1, 1F)))));
+        this.missingAnimation = new AssetAnimation(new Animation(this.missingTexture.get(), 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(1, 1F)))));
 
         Log.info("Loaded "+this.getAllOfType(AssetTexture.class).size()+" texture resources!");
         Log.info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");

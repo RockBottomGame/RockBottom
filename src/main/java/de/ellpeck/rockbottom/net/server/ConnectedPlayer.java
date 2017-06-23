@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
-import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
@@ -60,7 +59,7 @@ public class ConnectedPlayer extends EntityPlayer{
                 this.motionY = 0;
                 this.fallAmount = 0;
 
-                this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY));
+                this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
                 Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
             }
             else{
@@ -76,7 +75,7 @@ public class ConnectedPlayer extends EntityPlayer{
         }
 
         if(this.lastX != this.x || this.lastY != this.y){
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY), this);
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing), this);
 
             this.lastX = this.x;
             this.lastY = this.y;
