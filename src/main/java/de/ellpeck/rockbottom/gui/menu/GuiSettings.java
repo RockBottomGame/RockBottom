@@ -8,12 +8,11 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
-import org.newdawn.slick.Graphics;
 
 public class GuiSettings extends Gui{
 
     public GuiSettings(Gui parent){
-        super(304, 100, parent);
+        super(304, 150, parent);
     }
 
     @Override
@@ -22,10 +21,10 @@ public class GuiSettings extends Gui{
         IAssetManager assetManager = game.getAssetManager();
         Settings settings = game.getSettings();
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.controls"))));
-        this.components.add(new ComponentButton(this, 1, this.guiLeft+154, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.graphics"))));
+        this.components.add(new ComponentButton(this, 0, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.controls"))));
+        this.components.add(new ComponentButton(this, 1, this.guiLeft+this.sizeX/2-75, this.guiTop+20, 150, 16, assetManager.localize(RockBottom.internalRes("button.graphics"))));
 
-        this.components.add(new ComponentSlider(this, 3, this.guiLeft, this.guiTop+55, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
+        this.components.add(new ComponentSlider(this, 3, this.guiLeft+this.sizeX/2-75, this.guiTop+55, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 settings.autosaveIntervalSeconds = number;

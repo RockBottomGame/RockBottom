@@ -15,7 +15,7 @@ import org.newdawn.slick.Graphics;
 public class GuiGraphics extends Gui{
 
     public GuiGraphics(Gui parent){
-        super(304, 135, parent);
+        super(304, 150, parent);
     }
 
     @Override
