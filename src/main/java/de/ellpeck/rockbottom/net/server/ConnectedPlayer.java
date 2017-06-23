@@ -80,11 +80,11 @@ public class ConnectedPlayer extends EntityPlayer{
             this.lastY = this.y;
         }
 
-        if(this.health != this.lastHealth && this.world.getWorldInfo().totalTimeInWorld%10 == 0){
-            this.lastHealth = this.health;
+        if(this.getHealth() != this.lastHealth && this.world.getWorldInfo().totalTimeInWorld%10 == 0){
+            this.lastHealth = this.getHealth();
 
             if(RockBottomAPI.getNet().isServer()){
-                this.sendPacket(new PacketHealth(this.health));
+                this.sendPacket(new PacketHealth(this.getHealth()));
             }
         }
     }

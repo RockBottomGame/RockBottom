@@ -6,6 +6,8 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.GuiOpenEvent;
 import de.ellpeck.rockbottom.api.event.impl.OverlayRenderEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
@@ -163,22 +165,25 @@ public class GuiManager implements IGuiManager{
     public void openGui(Gui gui){
         IGameInstance game = RockBottom.get();
 
-        if(this.gui != null){
-            this.gui.onClosed(game);
-        }
+        GuiOpenEvent event = new GuiOpenEvent(gui);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            if(this.gui != null){
+                this.gui.onClosed(game);
+            }
 
-        this.gui = gui;
+            this.gui = event.gui;
 
-        if(this.gui != null){
-            this.gui.onOpened(game);
-            this.gui.initGui(game);
-        }
+            if(this.gui != null){
+                this.gui.onOpened(game);
+                this.gui.initGui(game);
+            }
 
-        if(this.gui == null){
-            Log.debug("Closed Gui");
-        }
-        else{
-            Log.debug("Opened Gui "+this.gui);
+            if(this.gui == null){
+                Log.debug("Closed Gui");
+            }
+            else{
+                Log.debug("Opened Gui "+this.gui);
+            }
         }
     }
 

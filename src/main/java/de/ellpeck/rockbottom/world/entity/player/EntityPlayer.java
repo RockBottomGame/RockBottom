@@ -8,6 +8,8 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
@@ -81,48 +83,51 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public void openContainer(ItemContainer container){
-        if(this.currentContainer != null){
-            for(IInventory inv : this.currentContainer.containedInventories){
-                if(inv != this.inv){
-                    inv.removeChangeCallback(this);
+        ContainerOpenEvent event = new ContainerOpenEvent(this, container);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            if(this.currentContainer != null){
+                for(IInventory inv : this.currentContainer.containedInventories){
+                    if(inv != this.inv){
+                        inv.removeChangeCallback(this);
+                    }
+                }
+
+                this.currentContainer.onClosed();
+            }
+
+            this.currentContainer = event.container;
+
+            if(this.currentContainer != null){
+                if(RockBottomAPI.getNet().isClient()){
+                    int id = this.currentContainer.getUnboundId();
+                    if(id >= 0){
+                        RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
+                    }
+                }
+                else if(RockBottomAPI.getNet().isServer()){
+                    this.sendPacket(new PacketContainerData(this.currentContainer));
+                }
+
+                this.currentContainer.onOpened();
+
+                for(IInventory inv : this.currentContainer.containedInventories){
+                    if(inv != this.inv){
+                        inv.addChangeCallback(this);
+                    }
+                }
+            }
+            else{
+                if(RockBottomAPI.getNet().isClient()){
+                    RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), PacketOpenUnboundContainer.CLOSE_ID));
                 }
             }
 
-            this.currentContainer.onClosed();
-        }
-
-        this.currentContainer = container;
-
-        if(this.currentContainer != null){
-            if(RockBottomAPI.getNet().isClient()){
-                int id = this.currentContainer.getUnboundId();
-                if(id >= 0){
-                    RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
-                }
+            if(this.currentContainer == null){
+                Log.debug("Closed Container for player "+this.getName()+" with unique id "+this.getUniqueId());
             }
-            else if(RockBottomAPI.getNet().isServer()){
-                this.sendPacket(new PacketContainerData(container));
+            else{
+                Log.debug("Opened Container "+this.currentContainer+" for player "+this.getName()+" with unique id "+this.getUniqueId());
             }
-
-            this.currentContainer.onOpened();
-
-            for(IInventory inv : this.currentContainer.containedInventories){
-                if(inv != this.inv){
-                    inv.addChangeCallback(this);
-                }
-            }
-        }
-        else{
-            if(RockBottomAPI.getNet().isClient()){
-                RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), PacketOpenUnboundContainer.CLOSE_ID));
-            }
-        }
-
-        if(this.currentContainer == null){
-            Log.debug("Closed Container for player "+this.getName()+" with unique id "+this.getUniqueId());
-        }
-        else{
-            Log.debug("Opened Container "+this.currentContainer+" for player "+this.getName()+" with unique id "+this.getUniqueId());
         }
     }
 
@@ -189,7 +194,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void onGroundHit(){
         if(!RockBottomAPI.getNet().isClient()){
             if(this.fallAmount >= 20){
-                this.health -= this.fallAmount*1.5;
+                this.takeDamage((int)(this.fallAmount*1.5));
             }
         }
     }
@@ -412,7 +417,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         this.motionX = 0;
         this.motionY = 0;
         this.fallAmount = 0;
-        this.health = this.getMaxHealth();
+        this.setHealth(this.getMaxHealth());
 
         if(RockBottomAPI.getNet().isThePlayer(this)){
             if(game.getGuiManager() != null){
