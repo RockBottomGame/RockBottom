@@ -16,7 +16,8 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.render.PlayerDesign;
+import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
@@ -49,22 +50,17 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
     private final IEntityRenderer renderer;
     private final List<IChunk> chunksInRange = new ArrayList<>();
-    private Color color = Util.randomColor(Util.RANDOM);
-    private String name;
     private ItemContainer currentContainer;
     private int respawnTimer;
-    private final PlayerDesign design = new PlayerDesign();
 
-    public EntityPlayer(IWorld world){
+    private final IPlayerDesign design;
+
+    public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design){
         super(world);
         this.renderer = new PlayerEntityRenderer();
         this.facing = Direction.RIGHT;
-    }
-
-    public EntityPlayer(IWorld world, UUID uniqueId, String name){
-        this(world);
         this.uniqueId = uniqueId;
-        this.name = name;
+        this.design = design;
     }
 
     @Override
@@ -223,20 +219,12 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void save(DataSet set){
         super.save(set);
         this.inv.save(set);
-        this.design.save(set);
-
-        set.addFloat("color_r", this.color.r);
-        set.addFloat("color_g", this.color.g);
-        set.addFloat("color_b", this.color.b);
     }
 
     @Override
     public void load(DataSet set){
         super.load(set);
         this.inv.load(set);
-        this.design.load(set);
-
-        this.color = new Color(set.getFloat("color_r"), set.getFloat("color_g"), set.getFloat("color_b"));
     }
 
     @Override
@@ -387,26 +375,22 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public String getChatColorFormat(){
-        return "&("+this.color.r+","+this.color.g+","+this.color.b+")";
-    }
-
-    @Override
-    public void setName(String name){
-        this.name = name;
+        Color color = this.design.getColor();
+        return "&("+color.r+","+color.g+","+color.b+")";
     }
 
     @Override
     public String getName(){
-        return this.name;
+        return this.design.getName();
     }
 
     @Override
     public Color getColor(){
-        return this.color;
+        return this.design.getColor();
     }
 
     @Override
-    public PlayerDesign getDesign(){
+    public IPlayerDesign getDesign(){
         return this.design;
     }
 

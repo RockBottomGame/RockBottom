@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,6 +33,9 @@ public class PacketEntityChange implements IPacket{
         if(!this.remove){
             if(entity instanceof EntityPlayer){
                 this.name = PLAYER_NAME;
+
+                EntityPlayer player = (EntityPlayer)entity;
+                player.getDesign().save(this.entitySet);
             }
             else{
                 this.name = RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString();
@@ -83,7 +87,9 @@ public class PacketEntityChange implements IPacket{
                 else{
                     if(entity == null){
                         if(PLAYER_NAME.equals(this.name)){
-                            entity = new EntityPlayer(world);
+                            PlayerDesign design = new PlayerDesign();
+                            design.load(this.entitySet);
+                            entity = new EntityPlayer(world, this.uniqueId, design);
                         }
                         else{
                             entity = Util.createEntity(RockBottomAPI.createRes(this.name), world);

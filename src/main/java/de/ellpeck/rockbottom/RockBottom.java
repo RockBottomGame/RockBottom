@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
+import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -23,10 +24,7 @@ import de.ellpeck.rockbottom.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.data.DataManager;
-import de.ellpeck.rockbottom.gui.DebugRenderer;
-import de.ellpeck.rockbottom.gui.GuiChat;
-import de.ellpeck.rockbottom.gui.GuiInventory;
-import de.ellpeck.rockbottom.gui.GuiManager;
+import de.ellpeck.rockbottom.gui.*;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
 import de.ellpeck.rockbottom.mod.ModLoader;
@@ -35,10 +33,12 @@ import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.net.client.ClientWorld;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.particle.ParticleManager;
+import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
+import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -48,7 +48,6 @@ import org.newdawn.slick.util.Log;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -68,6 +67,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
     private Settings settings;
     private EntityPlayer player;
+    private PlayerDesign playerDesign;
     private GuiManager guiManager;
     private InteractionManager interactionManager;
     private ChatLog chatLog;
@@ -165,6 +165,35 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
         this.assetManager = new AssetManager();
         this.assetManager.create(this);
+
+        this.setPlayerDesign();
+    }
+
+    private void setPlayerDesign(){
+        DataSet gameInfo = this.dataManager.getGameInfo();
+
+        this.playerDesign = new PlayerDesign();
+        this.playerDesign.load(gameInfo);
+
+        boolean shouldSave = false;
+
+        if(Strings.isNullOrEmpty(this.playerDesign.getName())){
+            this.playerDesign.setName(GuiPlayerEditor.getRandomChatName());
+
+            Log.info("Assigning random player name "+this.playerDesign.getName());
+            shouldSave = true;
+        }
+        if(Color.black.equals(this.playerDesign.getColor())){
+            this.playerDesign.setColor(Util.randomColor(Util.RANDOM));
+
+            Log.info("Assigning random player color "+this.playerDesign.getColor());
+            shouldSave = true;
+        }
+
+        if(shouldSave){
+            this.playerDesign.save(gameInfo);
+            gameInfo.write(this.dataManager.getGameDataFile());
+        }
     }
 
     @Override
@@ -213,6 +242,11 @@ public class RockBottom extends BasicGame implements IGameInstance{
     @Override
     public int getTotalTicks(){
         return this.totalTicks;
+    }
+
+    @Override
+    public PlayerDesign getPlayerDesign(){
+        return this.playerDesign;
     }
 
     @Override
@@ -349,7 +383,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
             info.seed = Util.RANDOM.nextLong();
         }
 
-        this.player = this.world.createPlayer(this.uniqueId, this.settings.chatName, null);
+        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
         this.world.addEntity(this.player);
 
         this.guiManager.reInitSelf(this);
@@ -373,7 +407,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
         this.world = new ClientWorld(info, tileRegInfo, biomeRegInfo);
 
-        this.player = this.world.createPlayer(this.uniqueId, this.settings.chatName, null);
+        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
         this.player.load(playerSet);
         this.world.addEntity(this.player);
 

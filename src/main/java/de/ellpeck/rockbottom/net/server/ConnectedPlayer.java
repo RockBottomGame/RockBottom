@@ -5,6 +5,8 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
+import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
@@ -26,8 +28,8 @@ public class ConnectedPlayer extends EntityPlayer{
     private double lastCalcY;
     private int fallCalcTicks;
 
-    public ConnectedPlayer(World world, UUID uniqueId, String name, Channel channel){
-        super(world, uniqueId, name);
+    public ConnectedPlayer(World world, UUID uniqueId, IPlayerDesign design, Channel channel){
+        super(world, uniqueId, design);
         this.channel = channel;
     }
 

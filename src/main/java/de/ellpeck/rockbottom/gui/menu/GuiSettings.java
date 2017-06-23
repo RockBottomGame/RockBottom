@@ -2,20 +2,15 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketName;
 import org.newdawn.slick.Graphics;
 
 public class GuiSettings extends Gui{
-
-    private ComponentInputField chatNameField;
 
     public GuiSettings(Gui parent){
         super(304, 100, parent);
@@ -29,11 +24,6 @@ public class GuiSettings extends Gui{
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.controls"))));
         this.components.add(new ComponentButton(this, 1, this.guiLeft+154, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.graphics"))));
-
-        this.chatNameField = new ComponentInputField(this, this.guiLeft, this.guiTop+30, 130, 16, true, true, false, 24, true);
-        this.chatNameField.setText(settings.chatName);
-        this.components.add(this.chatNameField);
-        this.components.add(new ComponentButton(this, 2, this.guiLeft+134, this.guiTop+30, 16, 16, "?", assetManager.localize(RockBottom.internalRes("info.randomize_name"))));
 
         this.components.add(new ComponentSlider(this, 3, this.guiLeft, this.guiTop+55, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
             @Override
@@ -68,31 +58,12 @@ public class GuiSettings extends Gui{
             guiManager.openGui(new GuiGraphics(this));
             return true;
         }
-        else if(button == 2){
-            game.getSettings().chatName = Settings.getRandomChatName();
-            this.chatNameField.setText(game.getSettings().chatName);
-            return true;
-        }
         return false;
     }
 
     @Override
     public void onClosed(IGameInstance game){
         super.onClosed(game);
-
-        String name = this.chatNameField.getText().trim();
-        if(!name.isEmpty() && !game.getSettings().chatName.equals(name)){
-            game.getSettings().chatName = name;
-
-            if(game.getPlayer() != null){
-                game.getPlayer().setName(name);
-
-                if(RockBottomAPI.getNet().isClient()){
-                    RockBottomAPI.getNet().sendToServer(new PacketName(game.getPlayer().getUniqueId(), name));
-                }
-            }
-        }
-
         game.getDataManager().savePropSettings(game.getSettings());
     }
 }

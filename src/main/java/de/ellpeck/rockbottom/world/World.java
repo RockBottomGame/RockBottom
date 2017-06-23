@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
+import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.*;
@@ -482,8 +484,8 @@ public class World implements IWorld{
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, String name, Channel channel){
-        EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, name, channel) : new EntityPlayer(this, id, name);
+    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel){
+        EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, design, channel) : new EntityPlayer(this, id, design);
 
         File file = new File(this.playerDirectory, id+".dat");
         if(file.exists()){
@@ -491,11 +493,11 @@ public class World implements IWorld{
             set.read(file);
 
             player.load(set);
-            Log.info("Loading player "+name+" with unique id "+id+"!");
+            Log.info("Loading player "+design.getName()+" with unique id "+id+"!");
         }
         else{
             player.resetAndSpawn(RockBottom.get());
-            Log.info("Adding new player "+name+" with unique id "+id+" to world!");
+            Log.info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
         }
         return player;
     }

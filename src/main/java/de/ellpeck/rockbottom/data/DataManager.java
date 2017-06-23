@@ -70,7 +70,6 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(23, PacketChunkUnload.class);
         RockBottomAPI.PACKET_REGISTRY.register(24, PacketManualConstruction.class);
         RockBottomAPI.PACKET_REGISTRY.register(25, PacketDeath.class);
-        RockBottomAPI.PACKET_REGISTRY.register(26, PacketName.class);
     }
 
     private final File gameDirectory;
@@ -81,6 +80,7 @@ public class DataManager implements IDataManager{
     private final File settingsFile;
     private final File commandPermissionFile;
     private final File modSettingsFile;
+    private final DataSet gameInfo = new DataSet();
 
     public DataManager(RockBottom game){
         this.gameDirectory = Main.gameDir;
@@ -93,19 +93,17 @@ public class DataManager implements IDataManager{
         this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.properties");
         this.modSettingsFile = new File(this.gameDirectory, "mod_settings.properties");
 
-        DataSet set = new DataSet();
-        set.read(this.gameDataFile);
+        this.gameInfo.read(this.gameDataFile);
 
-        game.setUniqueId(set.getUniqueId("game_id"));
-
+        game.setUniqueId(this.gameInfo.getUniqueId("game_id"));
         if(game.getUniqueId() == null){
             game.setUniqueId(UUID.randomUUID());
-            set.addUniqueId("game_id", game.getUniqueId());
+
+            this.gameInfo.addUniqueId("game_id", game.getUniqueId());
+            this.gameInfo.write(this.gameDataFile);
 
             Log.info("Created new game unique id "+game.getUniqueId()+"!");
         }
-
-        set.write(this.gameDataFile);
     }
 
     @Override
@@ -146,6 +144,11 @@ public class DataManager implements IDataManager{
     @Override
     public File getModSettingsFile(){
         return this.modSettingsFile;
+    }
+
+    @Override
+    public DataSet getGameInfo(){
+        return this.gameInfo;
     }
 
     @Override

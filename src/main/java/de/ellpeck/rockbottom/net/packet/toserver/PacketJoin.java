@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import io.netty.buffer.ByteBuf;
@@ -23,13 +24,12 @@ public class PacketJoin implements IPacket{
 
     private String version;
     private UUID id;
-    private String name;
+    private PlayerDesign design;
 
     private final List<ModInfo> modInfos = new ArrayList<>();
 
-    public PacketJoin(UUID id, String name, String version, List<IMod> mods){
+    public PacketJoin(UUID id, String version, List<IMod> mods){
         this.id = id;
-        this.name = name;
         this.version = version;
 
         for(IMod mod : mods){
@@ -46,7 +46,7 @@ public class PacketJoin implements IPacket{
         buf.writeLong(this.id.getMostSignificantBits());
         buf.writeLong(this.id.getLeastSignificantBits());
         NetUtil.writeStringToBuffer(this.version, buf);
-        NetUtil.writeStringToBuffer(this.name, buf);
+        this.design.toBuf(buf);
 
         buf.writeInt(this.modInfos.size());
         for(ModInfo info : this.modInfos){
@@ -58,7 +58,9 @@ public class PacketJoin implements IPacket{
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.id = new UUID(buf.readLong(), buf.readLong());
         this.version = NetUtil.readStringFromBuffer(buf);
-        this.name = NetUtil.readStringFromBuffer(buf);
+
+        this.design = new PlayerDesign();
+        this.design.fromBuf(buf);
 
         int amount = buf.readInt();
         for(int i = 0; i < amount; i++){
@@ -76,26 +78,26 @@ public class PacketJoin implements IPacket{
                 if(this.hasAllMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()))){
                     if(world != null){
                         if(world.getPlayer(this.id) == null){
-                            AbstractEntityPlayer player = world.createPlayer(this.id, this.name, context.channel());
+                            AbstractEntityPlayer player = world.createPlayer(this.id, this.design, context.channel());
                             player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getTileRegInfo(), world.getBiomeRegInfo()));
                             world.addEntity(player);
 
                             shouldKick = false;
-                            Log.info("Player "+this.name+" with id "+this.id+" joined, sending initial server data");
+                            Log.info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
                         }
                         else{
-                            Log.error("Player "+this.name+" with id "+this.id+" tried joining while already connected!");
+                            Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");
                         }
                     }
                 }
             }
             else{
-                Log.error("Player "+this.name+" with id "+this.id+" tried joining with game version "+this.version+", server version is "+RockBottom.VERSION+"!");
+                Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining with game version "+this.version+", server version is "+RockBottom.VERSION+"!");
             }
 
             if(shouldKick){
                 context.channel().disconnect();
-                Log.info("Disconnecting player "+this.name+" with id "+this.id);
+                Log.info("Disconnecting player "+this.design.getName()+" with id "+this.id);
             }
 
             return true;
@@ -108,7 +110,7 @@ public class PacketJoin implements IPacket{
             for(ModInfo info : this.modInfos){
                 if(mod.getId().equals(info.id)){
                     if(!mod.getVersion().equals(info.version)){
-                        Log.error("Player "+this.name+" with id "+this.id+" tried joining with invalid version "+info.version+" of mod "+mod.getDisplayName()+", expected was "+mod.getVersion());
+                        Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining with invalid version "+info.version+" of mod "+mod.getDisplayName()+", expected was "+mod.getVersion());
                         return false;
                     }
                     else{
@@ -123,12 +125,12 @@ public class PacketJoin implements IPacket{
         }
 
         if(!mods.isEmpty()){
-            Log.error("Player "+this.name+" with id "+this.id+" tried joining with missing mods "+this.listMods(mods));
+            Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining with missing mods "+this.listMods(mods));
             return false;
         }
 
         if(!this.modInfos.isEmpty()){
-            Log.warn("Player "+this.name+" with id "+this.id+" has mods that aren't on the server: "+this.modInfos);
+            Log.warn("Player "+this.design.getName()+" with id "+this.id+" has mods that aren't on the server: "+this.modInfos);
         }
 
         return true;

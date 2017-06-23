@@ -17,7 +17,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         boolean isMoving = Math.abs(entity.motionX) >= 0.01;
         int row = entity.facing == Direction.RIGHT ? (isMoving ? 0 : 2) : (isMoving ? 1 : 3);
 
-        for(Animation anim : entity.getDesign().animations){
+        for(Animation anim : entity.getDesign().getAnimations()){
             anim.drawRow(entity.ticksExisted, row, x-0.5F, y-1.5F, 1F, light);
         }
     }
