@@ -61,6 +61,9 @@ tex.gui.all_construction=/gui/all_construction.png
 tex.gui.all_construction_toggled=/gui/all_construction_crossed.png
 tex.gui.colorpick=/gui/colorpick.png
 
+anim.player.base.male_white=/player/base/male_white.png,/player/base/male_white.anim
+anim.player.arm.hanging_white=/player/arm/hanging_white.png,/player/arm/hanging_white.anim
+
 tex.particle.smoke=/particle/smoke.png
 
 font.default=/font/default.png,/font/default.info
