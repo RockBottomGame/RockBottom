@@ -63,6 +63,6 @@ tex.gui.colorpick=/gui/colorpick.png
 
 tex.particle.smoke=/particle/smoke.png
 
-font.default=/font/default
+font.default=/font/default.png,/font/default.info
 
 loc.us_english=/loc/us_english.loc

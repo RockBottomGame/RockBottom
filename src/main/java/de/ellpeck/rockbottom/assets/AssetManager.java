@@ -122,8 +122,9 @@ public class AssetManager implements IAssetManager{
                         boolean didLoad = true;
                         try{
                             if(key.startsWith("font.")){
-                                InputStream image = getResource(path+value+".png");
-                                InputStream info = getResource(path+value+".info");
+                                String[] split = value.split(",");
+                                InputStream image = getResource(path+split[0]);
+                                InputStream info = getResource(path+split[1]);
 
                                 this.assets.put(name, new AssetFont(Font.fromStream(image, info, key)));
                                 Log.info("Loaded font resource "+name+" with data "+value);
