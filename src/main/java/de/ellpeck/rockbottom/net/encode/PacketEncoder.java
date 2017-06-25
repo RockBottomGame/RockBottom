@@ -15,7 +15,13 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket>{
 
         if(id >= 0){
             buf.writeByte(id);
-            packet.toBuffer(buf);
+
+            try{
+                packet.toBuffer(buf);
+            }
+            catch(Exception e){
+                Log.error("Couldn't write packet "+packet.getClass()+" with id "+id+" to buffer", e);
+            }
         }
         else{
             Log.error("Found unregistered packet "+packet.getClass());

@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.newdawn.slick.util.Log;
 
 import java.util.List;
 
@@ -18,11 +19,17 @@ public class PacketDecoder extends ByteToMessageDecoder{
         if(packetClass != null){
             IPacket packet = packetClass.newInstance();
 
-            packet.fromBuffer(buf);
+            try{
+                packet.fromBuffer(buf);
+            }
+            catch(Exception e){
+                Log.error("Couldn't read packet "+packetClass+" with id "+id+" from buffer", e);
+            }
+
             out.add(packet);
         }
         else{
-            throw new NullPointerException("Found unknown packet with id "+id);
+            Log.error("Found unknown packet with id "+id);
         }
     }
 }
