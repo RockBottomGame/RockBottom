@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.packet.toserver;
 import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.NetUtil;
@@ -15,6 +16,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.newdawn.slick.util.Log;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,7 +50,10 @@ public class PacketJoin implements IPacket{
         buf.writeLong(this.id.getMostSignificantBits());
         buf.writeLong(this.id.getLeastSignificantBits());
         NetUtil.writeStringToBuffer(this.version, buf);
-        this.design.toBuf(buf);
+
+        DataSet set = new DataSet();
+        this.design.save(set);
+        NetUtil.writeSetToBuffer(set, buf);
 
         buf.writeInt(this.modInfos.size());
         for(ModInfo info : this.modInfos){
@@ -61,8 +66,10 @@ public class PacketJoin implements IPacket{
         this.id = new UUID(buf.readLong(), buf.readLong());
         this.version = NetUtil.readStringFromBuffer(buf);
 
+        DataSet set = new DataSet();
+        NetUtil.readSetFromBuffer(set, buf);
         this.design = new PlayerDesign();
-        this.design.fromBuf(buf);
+        this.design.load(set);
 
         int amount = buf.readInt();
         for(int i = 0; i < amount; i++){

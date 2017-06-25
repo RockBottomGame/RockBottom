@@ -11,7 +11,6 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
-import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -178,15 +177,15 @@ public class RockBottom extends BasicGame implements IGameInstance{
         boolean shouldSave = false;
 
         if(Strings.isNullOrEmpty(this.playerDesign.getName())){
-            this.playerDesign.setName(GuiPlayerEditor.getRandomChatName());
+            this.playerDesign.setName(PlayerDesign.getRandomName());
 
             Log.info("Assigning random player name "+this.playerDesign.getName());
             shouldSave = true;
         }
-        if(Color.black.equals(this.playerDesign.getColor())){
-            this.playerDesign.setColor(Util.randomColor(Util.RANDOM));
+        if(Color.black.equals(this.playerDesign.getFavoriteColor())){
+            this.playerDesign.setFavoriteColor(Util.randomColor(Util.RANDOM));
 
-            Log.info("Assigning random player color "+this.playerDesign.getColor());
+            Log.info("Assigning random player color "+this.playerDesign.getFavoriteColor());
             shouldSave = true;
         }
 

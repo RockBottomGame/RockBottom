@@ -18,108 +18,109 @@
 
 package de.ellpeck.rockbottom.render;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.anim.Animation;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import io.netty.buffer.ByteBuf;
+import de.ellpeck.rockbottom.api.util.Util;
 import org.newdawn.slick.Color;
 
 public class PlayerDesign implements IPlayerDesign{
 
-    private final int[] indices = new int[LAYERS.size()];
-    private final Animation[] animations = new Animation[LAYERS.size()];
-
+    private static final String[] DEFAULT_NAMES = new String[]{"Bob", "Doley", "Jason", "Huffelpuff", "Megan", "Jennifer", "Bottle", "Bus Stop", "ThePlayer99", "Genelele", "Karina", "Heinz", "Ketchup", "Dan", "David", "Penguin", "Hubert", "Penny", "Vinny", "Xx_TheBestLP_xX", "Bozo", "Patrick", "InigoMontoya", "Pebbles", "Noodles", "Milkshake"};
     private String name;
     private Color color;
 
-    public PlayerDesign(){
-        for(int i = 0; i < LAYERS.size(); i++){
-            this.setAnimation(i);
-        }
-    }
+    private int base;
+    private Color eyeColor;
 
-    @Override
-    public void setAnimation(int layer){
-        IResourceName animName = LAYERS.get(layer).get(this.indices[layer]);
-        String layerName = LAYER_NAMES.get(layer);
+    private int shirt;
+    private Color shirtColor;
 
-        IResourceName path = animName.addPrefix("player."+layerName+".");
-        this.animations[layer] = RockBottomAPI.getGame().getAssetManager().getAnimation(path);
+    private int sleeves;
+    private Color sleevesColor;
+
+    private int pants;
+    private Color pantsColor;
+
+    private int footwear;
+    private Color footwearColor;
+
+    private int hair;
+    private Color hairColor;
+
+    private int accessory;
+
+    public static String getRandomName(){
+        return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
     }
 
     @Override
     public void save(DataSet set){
-        for(int i = 0; i < this.indices.length; i++){
-            set.addInt("design_layer_"+i, this.indices[i]);
-        }
-        set.addString("design_name", this.name);
+        set.addString("name", this.name);
+        set.addInt("color", Util.toIntColor(this.color));
 
-        set.addFloat("design_color_r", this.color.r);
-        set.addFloat("design_color_g", this.color.g);
-        set.addFloat("design_color_b", this.color.b);
+        set.addInt("base", this.base);
+        set.addInt("eye_color", Util.toIntColor(this.eyeColor));
+
+        set.addInt("shirt", this.shirt);
+        set.addInt("shirt_color", Util.toIntColor(this.shirtColor));
+
+        set.addInt("sleeves", this.sleeves);
+        set.addInt("sleeves_color", Util.toIntColor(this.sleevesColor));
+
+        set.addInt("pants", this.pants);
+        set.addInt("pants_color", Util.toIntColor(this.pantsColor));
+
+        set.addInt("footwear", this.footwear);
+        set.addInt("footwear_color", Util.toIntColor(this.footwearColor));
+
+        set.addInt("hair", this.hair);
+        set.addInt("hair_color", Util.toIntColor(this.hairColor));
+
+        set.addInt("accessory", this.accessory);
     }
 
     @Override
     public void load(DataSet set){
-        for(int i = 0; i < this.indices.length; i++){
-            int index = set.getInt("design_layer_"+i);
-
-            if(index != this.indices[i]){
-                this.indices[i] = index;
-                this.setAnimation(i);
-            }
-        }
-
         this.name = set.getString("design_name");
-        this.color = new Color(set.getFloat("design_color_r"), set.getFloat("design_color_g"), set.getFloat("design_color_b"));
+        this.color = new Color(set.getInt("design_color"));
+
+        this.base = set.getInt("base");
+        this.eyeColor = loadColor(set, "eye_color", Color.black);
+
+        this.shirt = set.getInt("shirt");
+        this.shirtColor = loadColor(set, "shirt_color", Color.white);
+
+        this.sleeves = set.getInt("sleeves");
+        this.sleevesColor = loadColor(set, "sleeves_color", Color.white);
+
+        this.pants = set.getInt("pants");
+        this.pantsColor = loadColor(set, "pants_color", Color.blue);
+
+        this.footwear = set.getInt("footwear");
+        this.footwearColor = loadColor(set, "footwear_color", Color.darkGray);
+
+        this.hair = set.getInt("hair");
+        this.hairColor = loadColor(set, "hair_color", Color.black);
+
+        this.accessory = set.getInt("accessory");
     }
 
-    @Override
-    public void toBuf(ByteBuf buf){
-        for(int index : this.indices){
-            buf.writeInt(index);
+    private static Color loadColor(DataSet set, String key, Color def){
+        if(set.hasKey(key)){
+            return new Color(set.getInt(key));
         }
-        NetUtil.writeStringToBuffer(this.name, buf);
-
-        buf.writeFloat(this.color.r);
-        buf.writeFloat(this.color.g);
-        buf.writeFloat(this.color.b);
-    }
-
-    @Override
-    public void fromBuf(ByteBuf buf){
-        for(int i = 0; i < this.indices.length; i++){
-            int index = buf.readInt();
-
-            if(index != this.indices[i]){
-                this.indices[i] = index;
-                this.setAnimation(i);
-            }
+        else{
+            return def;
         }
-        this.name = NetUtil.readStringFromBuffer(buf);
-        this.color = new Color(buf.readFloat(), buf.readFloat(), buf.readFloat());
     }
 
     @Override
-    public int[] getIndices(){
-        return this.indices;
-    }
-
-    @Override
-    public Animation[] getAnimations(){
-        return this.animations;
-    }
-
-    @Override
-    public Color getColor(){
+    public Color getFavoriteColor(){
         return this.color;
     }
 
     @Override
-    public void setColor(Color color){
+    public void setFavoriteColor(Color color){
         this.color = color;
     }
 
@@ -131,5 +132,135 @@ public class PlayerDesign implements IPlayerDesign{
     @Override
     public void setName(String name){
         this.name = name;
+    }
+
+    @Override
+    public int getBase(){
+        return this.base;
+    }
+
+    @Override
+    public Color getEyeColor(){
+        return this.eyeColor;
+    }
+
+    @Override
+    public int getShirt(){
+        return this.shirt;
+    }
+
+    @Override
+    public Color getShirtColor(){
+        return this.shirtColor;
+    }
+
+    @Override
+    public int getSleeves(){
+        return this.sleeves;
+    }
+
+    @Override
+    public Color getSleevesColor(){
+        return this.sleevesColor;
+    }
+
+    @Override
+    public int getPants(){
+        return this.pants;
+    }
+
+    @Override
+    public Color getPantsColor(){
+        return this.pantsColor;
+    }
+
+    @Override
+    public int getFootwear(){
+        return this.footwear;
+    }
+
+    @Override
+    public Color getFootwearColor(){
+        return this.footwearColor;
+    }
+
+    @Override
+    public int getHair(){
+        return this.hair;
+    }
+
+    @Override
+    public Color getHairColor(){
+        return this.hairColor;
+    }
+
+    @Override
+    public int getAccessory(){
+        return this.accessory;
+    }
+
+    @Override
+    public void setBase(int base){
+        this.base = base;
+    }
+
+    @Override
+    public void setEyeColor(Color eyeColor){
+        this.eyeColor = eyeColor;
+    }
+
+    @Override
+    public void setShirt(int shirt){
+        this.shirt = shirt;
+    }
+
+    @Override
+    public void setShirtColor(Color shirtColor){
+        this.shirtColor = shirtColor;
+    }
+
+    @Override
+    public void setSleeves(int sleeves){
+        this.sleeves = sleeves;
+    }
+
+    @Override
+    public void setSleevesColor(Color sleevesColor){
+        this.sleevesColor = sleevesColor;
+    }
+
+    @Override
+    public void setPants(int pants){
+        this.pants = pants;
+    }
+
+    @Override
+    public void setPantsColor(Color pantsColor){
+        this.pantsColor = pantsColor;
+    }
+
+    @Override
+    public void setFootwear(int footwear){
+        this.footwear = footwear;
+    }
+
+    @Override
+    public void setFootwearColor(Color footwearColor){
+        this.footwearColor = footwearColor;
+    }
+
+    @Override
+    public void setHair(int hair){
+        this.hair = hair;
+    }
+
+    @Override
+    public void setHairColor(Color hairColor){
+        this.hairColor = hairColor;
+    }
+
+    @Override
+    public void setAccessory(int accessory){
+        this.accessory = accessory;
     }
 }
