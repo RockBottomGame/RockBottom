@@ -55,6 +55,31 @@ public class PlayerDesign implements IPlayerDesign{
         return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
     }
 
+    public static void randomizeDesign(IPlayerDesign design){
+        design.setName(getRandomName());
+        design.setFavoriteColor(Util.randomColor(Util.RANDOM));
+
+        design.setBase(Util.RANDOM.nextInt(BASE.size()));
+        design.setEyeColor(Util.randomColor(Util.RANDOM));
+
+        design.setHair(Util.RANDOM.nextInt(HAIR.size()));
+        design.setHairColor(Util.randomColor(Util.RANDOM));
+
+        design.setShirt(Util.RANDOM.nextInt(SHIRT.size()));
+        design.setShirtColor(Util.randomColor(Util.RANDOM));
+
+        design.setSleeves(Util.RANDOM.nextInt(SLEEVES.size()));
+        design.setSleevesColor(Util.randomColor(Util.RANDOM));
+
+        design.setPants(Util.RANDOM.nextInt(PANTS.size()));
+        design.setPantsColor(Util.randomColor(Util.RANDOM));
+
+        design.setFootwear(Util.RANDOM.nextInt(FOOTWEAR.size()));
+        design.setFavoriteColor(Util.randomColor(Util.RANDOM));
+
+        design.setAccessory(Util.RANDOM.nextInt(ACCESSORIES.size()));
+    }
+
     @Override
     public void saveToFile(){
         IDataManager dataManager = RockBottom.get().getDataManager();

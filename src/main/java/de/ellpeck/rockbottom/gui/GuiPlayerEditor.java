@@ -31,7 +31,7 @@ public class GuiPlayerEditor extends Gui{
 
         IPlayerDesign design = game.getPlayerDesign();
         IAssetManager assetManager = game.getAssetManager();
-        int x = (int)game.getWidthInGui()/2-10;
+        int x = (int)game.getWidthInGui()/2;
         int colorX = x+82;
 
         this.components.add(new Slider(this, 0, x, 5, design.getBase(), IPlayerDesign.BASE.size()-1, design:: setBase, assetManager.localize(RockBottom.internalRes("button.player_design.base"))));
@@ -64,7 +64,7 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(this.nameField);
         this.components.add(new ColorPicker(this, colorX, 131, design.getFavoriteColor(), design:: setFavoriteColor));
 
-        this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-100, 131, 80, 16, this.previewType+1, 1, 4, new ComponentSlider.ICallback(){
+        this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-98, 131, 80, 16, this.previewType+1, 1, 4, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 GuiPlayerEditor.this.previewType = number-1;
@@ -79,7 +79,7 @@ public class GuiPlayerEditor extends Gui{
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        int x = (int)game.getWidthInGui()/2-90;
+        int x = (int)game.getWidthInGui()/2-98;
         PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 5, 60F, this.previewType, game.getTotalTicks(), ".hanging", Color.white);
     }
 
@@ -88,7 +88,12 @@ public class GuiPlayerEditor extends Gui{
         super.onClosed(game);
 
         IPlayerDesign design = game.getPlayerDesign();
-        design.setName(this.nameField.getText());
+
+        String text = this.nameField.getText().trim();
+        if(!text.isEmpty()){
+            design.setName(text);
+        }
+
         design.saveToFile();
     }
 
@@ -102,30 +107,9 @@ public class GuiPlayerEditor extends Gui{
         }
         else if(button == -3){
             IPlayerDesign design = game.getPlayerDesign();
-            this.nameField.setText(PlayerDesign.getRandomName());
+            PlayerDesign.randomizeDesign(design);
 
-            design.setFavoriteColor(Util.randomColor(Util.RANDOM));
-
-            design.setBase(Util.RANDOM.nextInt(IPlayerDesign.BASE.size()));
-            design.setEyeColor(Util.randomColor(Util.RANDOM));
-
-            design.setHair(Util.RANDOM.nextInt(IPlayerDesign.HAIR.size()));
-            design.setHairColor(Util.randomColor(Util.RANDOM));
-
-            design.setShirt(Util.RANDOM.nextInt(IPlayerDesign.SHIRT.size()));
-            design.setShirtColor(Util.randomColor(Util.RANDOM));
-
-            design.setSleeves(Util.RANDOM.nextInt(IPlayerDesign.SLEEVES.size()));
-            design.setSleevesColor(Util.randomColor(Util.RANDOM));
-
-            design.setPants(Util.RANDOM.nextInt(IPlayerDesign.PANTS.size()));
-            design.setPantsColor(Util.randomColor(Util.RANDOM));
-
-            design.setFootwear(Util.RANDOM.nextInt(IPlayerDesign.FOOTWEAR.size()));
-            design.setFavoriteColor(Util.randomColor(Util.RANDOM));
-
-            design.setAccessory(Util.RANDOM.nextInt(IPlayerDesign.ACCESSORIES.size()));
-
+            this.initGui(game);
             return true;
         }
         else{
