@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 group 'de.ellpeck.rockbottom'
 version '0.0.6'
 
@@ -29,14 +31,24 @@ dependencies {
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.9'
 }
 
+task processSources(type: Copy) {
+    from sourceSets.main.allSource
+    into 'build/processedSrc'
+    filter(ReplaceTokens, tokens: ["VERSION": version])
+}
+
+compileJava {
+    source = processSources.destinationDir
+}
+
 jar {
     manifest {
         attributes("Main-Class": "de.ellpeck.rockbottom.Launcher")
     }
 }
 
-shadowJar{
-    dependencies{
+shadowJar {
+    dependencies {
         exclude(dependency('org.lwjgl.lwjgl:lwjgl-platform::'))
         exclude(dependency('net.java.jinput:jinput-platform::'))
     }
