@@ -18,6 +18,9 @@ import org.newdawn.slick.Graphics;
 
 public class GuiPlayerEditor extends Gui{
 
+    private static final String WIIV_IS_COOL = "wiiv is cool";
+    private int wiivIndex;
+
     private int previewType;
     private ComponentInputField nameField;
 
@@ -81,6 +84,34 @@ public class GuiPlayerEditor extends Gui{
 
         int x = (int)game.getWidthInGui()/2-88;
         PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 5, 60F, this.previewType, game.getTotalTicks(), ".hanging", Color.white);
+    }
+
+    @Override
+    public boolean onKeyboardAction(IGameInstance game, int button, char character){
+        if(!super.onKeyboardAction(game, button, character)){
+            if(this.wiivIndex < WIIV_IS_COOL.length()){
+                if(WIIV_IS_COOL.charAt(this.wiivIndex) == character){
+                    this.wiivIndex++;
+
+                    if(this.wiivIndex >= WIIV_IS_COOL.length()){
+                        IPlayerDesign desgin = game.getPlayerDesign();
+                        desgin.setBase(-1);
+
+                        this.wiivIndex = 0;
+                        this.initGui(game);
+                    }
+
+                    return true;
+                }
+                else{
+                    this.wiivIndex = 0;
+                }
+            }
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     @Override

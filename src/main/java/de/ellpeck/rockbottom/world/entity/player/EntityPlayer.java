@@ -49,10 +49,9 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
     private final IEntityRenderer renderer;
     private final List<IChunk> chunksInRange = new ArrayList<>();
+    private final IPlayerDesign design;
     private ItemContainer currentContainer;
     private int respawnTimer;
-
-    private final IPlayerDesign design;
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design){
         super(world);

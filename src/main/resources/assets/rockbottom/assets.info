@@ -72,6 +72,7 @@ anim.player.arm.skin_2.hanging=/player/arm/hanging/skin_2.png,/player/arm/hangin
 anim.player.arm.skin_3.hanging=/player/arm/hanging/skin_3.png,/player/arm/hanging/skin_3.anim
 anim.player.arm.skin_4.hanging=/player/arm/hanging/skin_4.png,/player/arm/hanging/skin_4.anim
 anim.player.arm.skin_5.hanging=/player/arm/hanging/skin_5.png,/player/arm/hanging/skin_5.anim
+anim.player.arm.skin_s.hanging=/player/arm/hanging/skin_s.png,/player/arm/hanging/skin_s.anim
 
 anim.player.base.eyes=/player/base/eyes.png,/player/base/eyes.anim
 anim.player.base.male_skin_1=/player/base/male_skin_1.png,/player/base/male_skin_1.anim
@@ -79,6 +80,7 @@ anim.player.base.male_skin_2=/player/base/male_skin_2.png,/player/base/male_skin
 anim.player.base.male_skin_3=/player/base/male_skin_3.png,/player/base/male_skin_3.anim
 anim.player.base.male_skin_4=/player/base/male_skin_4.png,/player/base/male_skin_4.anim
 anim.player.base.male_skin_5=/player/base/male_skin_5.png,/player/base/male_skin_5.anim
+anim.player.base.male_skin_s=/player/base/male_skin_s.png,/player/base/male_skin_s.anim
 
 anim.player.footwear.boots=/player/footwear/boots.png,/player/footwear/boots.anim
 anim.player.footwear.flip_flops=/player/footwear/flip_flops.png,/player/footwear/flip_flops.anim

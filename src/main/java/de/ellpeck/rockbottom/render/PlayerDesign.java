@@ -80,6 +80,15 @@ public class PlayerDesign implements IPlayerDesign{
         design.setAccessory(Util.RANDOM.nextInt(ACCESSORIES.size()));
     }
 
+    private static Color loadColor(DataSet set, String key, Color def){
+        if(set.hasKey(key)){
+            return new Color(set.getInt(key));
+        }
+        else{
+            return def;
+        }
+    }
+
     @Override
     public void saveToFile(){
         IDataManager dataManager = RockBottom.get().getDataManager();
@@ -148,15 +157,6 @@ public class PlayerDesign implements IPlayerDesign{
         this.hairColor = loadColor(set, "hair_color", new Color(0x331809));
 
         this.accessory = set.getInt("accessory");
-    }
-
-    private static Color loadColor(DataSet set, String key, Color def){
-        if(set.hasKey(key)){
-            return new Color(set.getInt(key));
-        }
-        else{
-            return def;
-        }
     }
 
     @Override

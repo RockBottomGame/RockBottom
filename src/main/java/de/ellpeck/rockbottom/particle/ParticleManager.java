@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.particle;
 
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -11,7 +10,6 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.world.World;
 import org.newdawn.slick.Graphics;
 

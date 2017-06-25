@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.render.entity;
 
+import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -13,17 +14,13 @@ import org.newdawn.slick.Graphics;
 
 public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
-    @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color light){
-        IPlayerDesign design = entity.getDesign();
-        boolean isMoving = Math.abs(entity.motionX) >= 0.01;
-        int row = entity.facing == Direction.RIGHT ? (isMoving ? 0 : 2) : (isMoving ? 1 : 3);
-
-        renderPlayer(manager, design, x-0.5F, y-1.5F, 1F, row, entity.ticksExisted, ".hanging", light);
-    }
+    private static final IResourceName SPECIAL_BASE = RockBottom.internalRes("player.base.male_skin_s");
+    private static final IResourceName SPECIAL_ARMS = RockBottom.internalRes("player.arm.skin_s");
 
     public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, int time, String arms, Color light){
-        manager.getAnimation(IPlayerDesign.BASE.get(design.getBase())).drawRow(time, row, x, y, scale, light);
+        int base = design.getBase();
+
+        manager.getAnimation(base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).drawRow(time, row, x, y, scale, light);
         manager.getAnimation(IPlayerDesign.EYES).drawRow(time, row, x, y, scale, light.multiply(design.getEyeColor()));
 
         IResourceName pants = IPlayerDesign.PANTS.get(design.getPants());
@@ -36,7 +33,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
             manager.getAnimation(shirt).drawRow(time, row, x, y, scale, light.multiply(design.getShirtColor()));
         }
 
-        manager.getAnimation(IPlayerDesign.ARMS.get(design.getBase()).addSuffix(arms)).drawRow(time, row, x, y, scale, light);
+        manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix(arms)).drawRow(time, row, x, y, scale, light);
 
         IResourceName sleeves = IPlayerDesign.SLEEVES.get(design.getSleeves());
         if(sleeves != null){
@@ -57,5 +54,14 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         if(accessory != null){
             manager.getAnimation(accessory).drawRow(time, row, x, y, scale, light);
         }
+    }
+
+    @Override
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color light){
+        IPlayerDesign design = entity.getDesign();
+        boolean isMoving = Math.abs(entity.motionX) >= 0.01;
+        int row = entity.facing == Direction.RIGHT ? (isMoving ? 0 : 2) : (isMoving ? 1 : 3);
+
+        renderPlayer(manager, design, x-0.5F, y-1.5F, 1F, row, entity.ticksExisted, ".hanging", light);
     }
 }

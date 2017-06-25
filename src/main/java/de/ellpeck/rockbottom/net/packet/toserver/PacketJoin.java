@@ -9,14 +9,13 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
-import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
+import de.ellpeck.rockbottom.render.PlayerDesign;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.newdawn.slick.util.Log;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,11 +24,10 @@ import java.util.UUID;
 
 public class PacketJoin implements IPacket{
 
+    private final List<ModInfo> modInfos = new ArrayList<>();
     private String version;
     private UUID id;
     private IPlayerDesign design;
-
-    private final List<ModInfo> modInfos = new ArrayList<>();
 
     public PacketJoin(UUID id, String version, IPlayerDesign design, List<IMod> mods){
         this.id = id;
