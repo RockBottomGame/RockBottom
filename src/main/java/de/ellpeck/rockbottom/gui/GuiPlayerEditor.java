@@ -79,7 +79,7 @@ public class GuiPlayerEditor extends Gui{
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        int x = (int)game.getWidthInGui()/2-98;
+        int x = (int)game.getWidthInGui()/2-88;
         PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 5, 60F, this.previewType, game.getTotalTicks(), ".hanging", Color.white);
     }
 

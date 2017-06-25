@@ -107,13 +107,18 @@ public class Container extends AppGameContainer{
         super.gameLoop();
 
         if(!this.isFullscreen() && Display.wasResized()){
-            this.width = Display.getWidth();
-            this.height = Display.getHeight();
+            int width = Display.getWidth();
+            int height = Display.getHeight();
 
-            this.initGL();
-            this.enterOrtho();
+            if(width != this.width || height != this.height){
+                this.width = width;
+                this.height = height;
 
-            this.game.getGuiManager().setReInit();
+                this.initGL();
+                this.enterOrtho();
+
+                this.game.getGuiManager().setReInit();
+            }
         }
     }
 }
