@@ -57,7 +57,7 @@ import java.util.UUID;
 
 public class RockBottom extends BasicGame implements IGameInstance{
 
-    public static final String VERSION = "@VERSION@";
+    public static final String VERSION = "0.0.7";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
 
