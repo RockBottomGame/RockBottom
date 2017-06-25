@@ -7,15 +7,14 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import org.newdawn.slick.util.Log;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 public final class Main{
 
@@ -84,7 +83,23 @@ public final class Main{
             throw new RuntimeException("Could not initialize game", e);
         }
         catch(InvocationTargetException e){
-            throw new RuntimeException("Detected game crash", e.getCause());
+            File dir = new File(gameDir, "crashes");
+            if(!dir.exists()){
+                dir.mkdirs();
+            }
+
+            File file = new File(dir, new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date())+".txt");
+
+            try{
+                PrintWriter writer = new PrintWriter(file);
+                e.fillInStackTrace().printStackTrace(writer);
+                writer.flush();
+            }
+            catch(Exception e2){
+                Log.error("Couldn't save crash report to "+file, e2);
+            }
+
+            throw new RuntimeException("Detected game crash, saving report to "+file, e);
         }
 
     }
