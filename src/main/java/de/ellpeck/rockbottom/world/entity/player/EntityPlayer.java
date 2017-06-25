@@ -375,7 +375,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public String getChatColorFormat(){
         Color color = this.design.getFavoriteColor();
-        return "&("+color.r+","+color.g+","+color.b+")";
+        return Util.colorToFormattingCode(color);
     }
 
     @Override

@@ -80,6 +80,7 @@ public class DataManager implements IDataManager{
     private final File settingsFile;
     private final File commandPermissionFile;
     private final File modSettingsFile;
+    private final File playerDesignFile;
     private final DataSet gameInfo = new DataSet();
 
     public DataManager(RockBottom game){
@@ -89,6 +90,7 @@ public class DataManager implements IDataManager{
         this.screenshotDirectory = new File(this.gameDirectory, "screenshot");
 
         this.gameDataFile = new File(this.gameDirectory, "game_info.dat");
+        this.playerDesignFile = new File(this.gameDirectory, "player_design.dat");
         this.settingsFile = new File(this.gameDirectory, "settings.properties");
         this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.properties");
         this.modSettingsFile = new File(this.gameDirectory, "mod_settings.properties");
@@ -144,6 +146,11 @@ public class DataManager implements IDataManager{
     @Override
     public File getModSettingsFile(){
         return this.modSettingsFile;
+    }
+
+    @Override
+    public File getPlayerDesignFile(){
+        return this.playerDesignFile;
     }
 
     @Override

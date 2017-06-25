@@ -145,8 +145,6 @@ public class GuiManager implements IGuiManager{
 
         RockBottomAPI.getEventHandler().fireEvent(new OverlayRenderEvent(game, manager, g, player, this, gui));
 
-        font.drawString(2, height-font.getHeight(0.25F), game.getTitle(), 0.25F);
-
         if(game.getSettings().cursorInfos){
             if(player != null && !player.isDead() && gui == null && Mouse.isInsideWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){

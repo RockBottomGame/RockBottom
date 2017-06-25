@@ -18,6 +18,8 @@
 
 package de.ellpeck.rockbottom.render;
 
+import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -54,6 +56,24 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public void saveToFile(){
+        IDataManager dataManager = RockBottom.get().getDataManager();
+
+        DataSet set = new DataSet();
+        this.save(set);
+        set.write(dataManager.getPlayerDesignFile());
+    }
+
+    @Override
+    public void loadFromFile(){
+        IDataManager dataManager = RockBottom.get().getDataManager();
+
+        DataSet set = new DataSet();
+        set.read(dataManager.getPlayerDesignFile());
+        this.load(set);
+    }
+
+    @Override
     public void save(DataSet set){
         set.addString("name", this.name);
         set.addInt("color", Util.toIntColor(this.color));
@@ -81,8 +101,8 @@ public class PlayerDesign implements IPlayerDesign{
 
     @Override
     public void load(DataSet set){
-        this.name = set.getString("design_name");
-        this.color = new Color(set.getInt("design_color"));
+        this.name = set.getString("name");
+        this.color = new Color(set.getInt("color"));
 
         this.base = set.getInt("base");
         this.eyeColor = loadColor(set, "eye_color", Color.black);
@@ -100,7 +120,7 @@ public class PlayerDesign implements IPlayerDesign{
         this.footwearColor = loadColor(set, "footwear_color", Color.darkGray);
 
         this.hair = set.getInt("hair");
-        this.hairColor = loadColor(set, "hair_color", Color.black);
+        this.hairColor = loadColor(set, "hair_color", new Color(0x331809));
 
         this.accessory = set.getInt("accessory");
     }

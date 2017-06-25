@@ -169,10 +169,8 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     private void setPlayerDesign(){
-        DataSet gameInfo = this.dataManager.getGameInfo();
-
         this.playerDesign = new PlayerDesign();
-        this.playerDesign.load(gameInfo);
+        this.playerDesign.loadFromFile();
 
         boolean shouldSave = false;
 
@@ -190,8 +188,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
         }
 
         if(shouldSave){
-            this.playerDesign.save(gameInfo);
-            gameInfo.write(this.dataManager.getGameDataFile());
+            this.playerDesign.saveToFile();
         }
     }
 
