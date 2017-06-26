@@ -5,13 +5,20 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
+import de.ellpeck.rockbottom.apiimpl.SimplexNoise;
 
 import java.util.Random;
 
 public class WorldGenHills implements IWorldGenerator{
 
-    private final Random noiseRandom = new Random();
+    private INoiseGen noiseGen;
+
+    @Override
+    public void initWorld(IWorld world, Random rand){
+        this.noiseGen = new SimplexNoise(rand);
+    }
 
     @Override
     public boolean shouldGenerate(IWorld world, IChunk chunk, Random rand){
@@ -21,31 +28,30 @@ public class WorldGenHills implements IWorldGenerator{
     @Override
     public void generate(IWorld world, IChunk chunk, Random rand){
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            float noise = this.getSmoothedNoise(world, chunk.getX(), x);
+            double noise = this.getSmoothedNoise(chunk.getX(), x);
 
-            int height = (int)(noise*30);
+            int height = (int)(noise*3);
             for(int y = 0; y <= height; y++){
                 chunk.setTileInner(x, y, y == height ? GameContent.TILE_GRASS : GameContent.TILE_DIRT);
             }
 
-            int backgroundHeight = (int)(noise*28);
+            int backgroundHeight = (int)(noise*2);
             for(int y = 0; y < backgroundHeight; y++){
                 chunk.setTileInner(TileLayer.BACKGROUND, x, y, GameContent.TILE_DIRT);
             }
         }
     }
 
-    private float getSmoothedNoise(IWorld world, int chunkX, int x){
-        float cornersOut = (this.getNoise(world, chunkX, x+2)+this.getNoise(world, chunkX, x-2))/32F;
-        float corners = (this.getNoise(world, chunkX, x+1)+this.getNoise(world, chunkX, x-1))/16F;
-        float center = this.getNoise(world, chunkX, x)/8F;
+    private double getSmoothedNoise(int chunkX, int x){
+        double cornersOut = (this.getNoise(chunkX, x+2)+this.getNoise(chunkX, x-2))/4F;
+        double corners = (this.getNoise(chunkX, x+1)+this.getNoise(chunkX, x-1))/2F;
+        double center = this.getNoise(chunkX, x);
 
         return cornersOut+corners+center;
     }
 
-    private float getNoise(IWorld world, int chunkX, int x){
-        this.noiseRandom.setSeed(chunkX*182+x*238+world.getWorldInfo().seed);
-        return this.noiseRandom.nextFloat();
+    private double getNoise(int chunkX, int x){
+        return (this.noiseGen.make2dNoise(chunkX, x)+1)/2;
     }
 
     @Override
