@@ -1,2 +1,2 @@
-include ":RockBottomAPI"
-project(":RockBottomAPI").projectDir = file("../RockBottomAPI")
+include ":API"
+project(":API").projectDir = file("../API")
