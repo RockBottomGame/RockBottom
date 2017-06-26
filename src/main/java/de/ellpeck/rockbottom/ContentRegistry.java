@@ -11,7 +11,6 @@ import de.ellpeck.rockbottom.item.ItemTool;
 import de.ellpeck.rockbottom.world.gen.cave.WorldGenBasicCaves;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenBasicUnderground;
-import de.ellpeck.rockbottom.world.gen.landscape.WorldGenDebugLandscape;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenHills;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
@@ -49,7 +48,6 @@ public final class ContentRegistry{
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottom.internalRes("item"), EntityItem.class);
 
-        RockBottomAPI.WORLD_GENERATORS.add(WorldGenDebugLandscape.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenHills.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicUnderground.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenTrees.class);
