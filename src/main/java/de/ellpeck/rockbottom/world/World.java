@@ -19,6 +19,7 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
@@ -40,16 +41,31 @@ public class World implements IWorld{
     protected final WorldInfo info;
     private final NameToIndexInfo tileRegInfo;
     private final NameToIndexInfo biomeRegInfo;
-    public List<EntityPlayer> players = new ArrayList<>();
+    public final List<EntityPlayer> players = new ArrayList<>();
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
+    private final List<IWorldGenerator> generators = new ArrayList<>();
 
     public World(WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
         this.info = info;
         this.tileRegInfo = tileRegInfo;
         this.biomeRegInfo = biomeRegInfo;
         this.generatorRandom.setSeed(this.info.seed);
+
+        for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS){
+            try{
+                IWorldGenerator generator = genClass.newInstance();
+                generator.initWorld(this, this.generatorRandom);
+                this.generators.add(generator);
+            }
+            catch(InstantiationException | IllegalAccessException e){
+                Log.error("Couldn't initialize world generator with class "+genClass, e);
+            }
+        }
+        this.generators.sort(Comparator.comparingInt(IWorldGenerator:: getPriority));
+
+        Log.info("Added a total of "+this.generators.size()+" generators to world");
     }
 
     public void initFiles(File worldDirectory){
@@ -450,7 +466,9 @@ public class World implements IWorld{
             int offX = x+direction.x;
             int offY = y+direction.y;
 
-            this.getTile(layer, offX, offY).onChangeAround(this, offX, offY, layer, x, y, layer);
+            if(this.isPosLoaded(offX, offY)){
+                this.getTile(layer, offX, offY).onChangeAround(this, offX, offY, layer, x, y, layer);
+            }
         }
 
         TileLayer opp = layer.getOpposite();
@@ -480,6 +498,11 @@ public class World implements IWorld{
         player.save(playerSet);
 
         playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
+    }
+
+    @Override
+    public List<IWorldGenerator> getSortedGenerators(){
+        return this.generators;
     }
 
     @Override

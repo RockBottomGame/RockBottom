@@ -22,7 +22,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.world.gen.WorldGenerators;
 import org.newdawn.slick.util.Log;
 
 import java.util.*;
@@ -84,9 +83,7 @@ public class Chunk implements IChunk{
 
         isGeneratingChunk = true;
 
-        List<IWorldGenerator> gens = WorldGenerators.getGenerators();
-
-        for(IWorldGenerator generator : gens){
+        for(IWorldGenerator generator : this.world.getSortedGenerators()){
             if(generator.shouldGenerate(this.world, this, rand)){
                 generator.generate(this.world, this, rand);
             }

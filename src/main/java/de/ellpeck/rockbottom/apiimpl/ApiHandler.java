@@ -23,6 +23,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.render.WorldRenderer;
@@ -35,6 +36,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class ApiHandler implements IApiHandler{
 
@@ -389,6 +391,11 @@ public class ApiHandler implements IApiHandler{
     @Override
     public Color getColorByLight(int light, TileLayer layer){
         return (layer == TileLayer.BACKGROUND ? WorldRenderer.BACKGROUND_COLORS : WorldRenderer.MAIN_COLORS)[RockBottomAPI.getGame().isLightDebug() ? Constants.MAX_LIGHT : light];
+    }
+
+    @Override
+    public INoiseGen makeSimplexNoise(Random random){
+        return new SimplexNoise(random);
     }
 
     private boolean setToInv(ItemInstance inst, ComponentSlot slot){

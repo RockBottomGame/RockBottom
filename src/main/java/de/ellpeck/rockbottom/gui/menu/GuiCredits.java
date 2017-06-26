@@ -13,7 +13,7 @@ import java.util.List;
 public class GuiCredits extends Gui{
 
     private final List<String> credits = new ArrayList<>();
-    private int renderY;
+    private float renderY;
 
     public GuiCredits(Gui parent){
         super(100, 100, parent);
@@ -24,15 +24,25 @@ public class GuiCredits extends Gui{
         this.credits.add("Programming");
         this.credits.add("  Ellpeck");
         this.credits.add("");
+        this.credits.add("");
         this.credits.add("Additional Programming");
         this.credits.add("  canitzp");
         this.credits.add("  xdjackiexd");
         this.credits.add("");
+        this.credits.add("");
         this.credits.add("Art");
         this.credits.add("  wiiv");
         this.credits.add("");
+        this.credits.add("");
+        this.credits.add("Libraries and Additional Code");
+        this.credits.add("  The Slick2D Java Game Library");
+        this.credits.add("  The Lightweight Java Game Library");
+        this.credits.add("");
+        this.credits.add("  Stefan Gustavson (Simplex Noise Impl)");
+        this.credits.add("");
+        this.credits.add("");
         this.credits.add("Special Thanks");
-        this.credits.add("  witsend66 (Game name)");
+        this.credits.add("  witsend66 (Game Name)");
     }
 
     @Override
@@ -46,10 +56,10 @@ public class GuiCredits extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        int y = this.renderY;
+        float y = this.renderY;
         for(String s : this.credits){
-            manager.getFont().drawString(20, y, s, 0.75F);
-            y += manager.getFont().getHeight(0.75F);
+            manager.getFont().drawString(20, y, s, 0.45F);
+            y += manager.getFont().getHeight(0.45F);
         }
 
         super.render(game, manager, g);
@@ -59,9 +69,9 @@ public class GuiCredits extends Gui{
     public void update(IGameInstance game){
         super.update(game);
 
-        this.renderY--;
+        this.renderY-=0.45F;
 
-        if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.75F))){
+        if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
             this.renderY = (int)game.getHeightInGui();
         }
     }

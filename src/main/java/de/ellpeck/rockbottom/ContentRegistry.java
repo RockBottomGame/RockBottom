@@ -8,6 +8,13 @@ import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.item.ItemTool;
+import de.ellpeck.rockbottom.world.gen.cave.WorldGenBasicCaves;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
+import de.ellpeck.rockbottom.world.gen.landscape.WorldGenBasicUnderground;
+import de.ellpeck.rockbottom.world.gen.landscape.WorldGenDebugLandscape;
+import de.ellpeck.rockbottom.world.gen.landscape.WorldGenHills;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.tile.*;
 import org.newdawn.slick.util.Log;
 
@@ -41,6 +48,14 @@ public final class ContentRegistry{
         new BiomeBasic(RockBottom.internalRes("grassland"), 1, -1, 1000).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottom.internalRes("item"), EntityItem.class);
+
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenDebugLandscape.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenHills.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicUnderground.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenTrees.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenCoal.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenCopper.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicCaves.class);
 
         Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
         Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
