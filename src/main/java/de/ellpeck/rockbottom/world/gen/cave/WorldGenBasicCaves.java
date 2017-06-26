@@ -28,7 +28,7 @@ public class WorldGenBasicCaves implements IWorldGenerator{
 
     @Override
     public void generate(IWorld world, IChunk chunk, Random rand){
-        double[][] noise = new double[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+        /*double[][] noise = new double[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
 
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
@@ -84,7 +84,7 @@ public class WorldGenBasicCaves implements IWorldGenerator{
                     chunk.setTileInner(x, y, GameContent.TILE_AIR);
                 }
             }
-        }
+        }*/
     }
 
     @Override
