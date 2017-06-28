@@ -19,11 +19,15 @@
 package de.ellpeck.rockbottom.render;
 
 import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import org.newdawn.slick.Color;
+
+import java.util.List;
 
 public class PlayerDesign implements IPlayerDesign{
 
@@ -50,6 +54,12 @@ public class PlayerDesign implements IPlayerDesign{
     private Color hairColor;
 
     private int accessory;
+
+    private int mouth;
+    private Color mouthColor;
+
+    private int eyebrows;
+    private Color eyebrowsColor;
 
     public static String getRandomName(){
         return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
@@ -78,15 +88,32 @@ public class PlayerDesign implements IPlayerDesign{
         design.setFavoriteColor(Util.randomColor(Util.RANDOM));
 
         design.setAccessory(Util.RANDOM.nextInt(ACCESSORIES.size()));
+
+        design.setEyebrows(Util.RANDOM.nextInt(EYEBROWS.size()));
+        design.setEyebrowsColor(Util.randomColor(Util.RANDOM));
+
+        design.setMouth(Util.RANDOM.nextInt(MOUTH.size()));
+        design.setMouthColor(Util.randomColor(Util.RANDOM));
     }
 
-    private static Color loadColor(DataSet set, String key, Color def){
-        if(set.hasKey(key)){
-            return new Color(set.getInt(key));
+    private static int loadIndex(String s, List<IResourceName> list){
+        if(s != null && !s.isEmpty()){
+            int index = list.indexOf(RockBottomAPI.createRes(s));
+            return Math.max(0, index);
         }
         else{
-            return def;
+            return 0;
         }
+    }
+
+    private static String saveIndex(int index, List<IResourceName> list){
+        if(index >= 0 && index < list.size()){
+            IResourceName name = list.get(index);
+            if(name != null){
+                return name.toString();
+            }
+        }
+        return "";
     }
 
     @Override
@@ -112,25 +139,31 @@ public class PlayerDesign implements IPlayerDesign{
         set.addString("name", this.name);
         set.addInt("color", Util.toIntColor(this.color));
 
-        set.addInt("base", this.base);
+        set.addString("base", saveIndex(this.base, BASE));
         set.addInt("eye_color", Util.toIntColor(this.eyeColor));
 
-        set.addInt("shirt", this.shirt);
+        set.addString("shirt", saveIndex(this.shirt, SHIRT));
         set.addInt("shirt_color", Util.toIntColor(this.shirtColor));
 
-        set.addInt("sleeves", this.sleeves);
+        set.addString("sleeves", saveIndex(this.sleeves, SLEEVES));
         set.addInt("sleeves_color", Util.toIntColor(this.sleevesColor));
 
-        set.addInt("pants", this.pants);
+        set.addString("pants", saveIndex(this.pants, PANTS));
         set.addInt("pants_color", Util.toIntColor(this.pantsColor));
 
-        set.addInt("footwear", this.footwear);
+        set.addString("footwear", saveIndex(this.footwear, FOOTWEAR));
         set.addInt("footwear_color", Util.toIntColor(this.footwearColor));
 
-        set.addInt("hair", this.hair);
+        set.addString("hair", saveIndex(this.hair, HAIR));
         set.addInt("hair_color", Util.toIntColor(this.hairColor));
 
-        set.addInt("accessory", this.accessory);
+        set.addString("accessory", saveIndex(this.accessory, ACCESSORIES));
+
+        set.addString("eyebrows", saveIndex(this.eyebrows, EYEBROWS));
+        set.addInt("eyebrows_color", Util.toIntColor(this.eyebrowsColor));
+
+        set.addString("mouth", saveIndex(this.mouth, MOUTH));
+        set.addInt("mouth_color", Util.toIntColor(this.mouthColor));
     }
 
     @Override
@@ -138,25 +171,31 @@ public class PlayerDesign implements IPlayerDesign{
         this.name = set.getString("name");
         this.color = new Color(set.getInt("color"));
 
-        this.base = set.getInt("base");
-        this.eyeColor = loadColor(set, "eye_color", Color.black);
+        this.base = loadIndex(set.getString("base"), BASE);
+        this.eyeColor = new Color(set.getInt("eye_color"));
 
-        this.shirt = set.getInt("shirt");
-        this.shirtColor = loadColor(set, "shirt_color", Color.white);
+        this.shirt = loadIndex(set.getString("shirt"), SHIRT);
+        this.shirtColor = new Color(set.getInt("shirt_color"));
 
-        this.sleeves = set.getInt("sleeves");
-        this.sleevesColor = loadColor(set, "sleeves_color", Color.white);
+        this.sleeves = loadIndex(set.getString("sleeves"), SLEEVES);
+        this.sleevesColor = new Color(set.getInt("sleeves_color"));
 
-        this.pants = set.getInt("pants");
-        this.pantsColor = loadColor(set, "pants_color", Color.blue);
+        this.pants = loadIndex(set.getString("pants"), PANTS);
+        this.pantsColor = new Color(set.getInt("pants_color"));
 
-        this.footwear = set.getInt("footwear");
-        this.footwearColor = loadColor(set, "footwear_color", Color.darkGray);
+        this.footwear = loadIndex(set.getString("footwear"), FOOTWEAR);
+        this.footwearColor = new Color(set.getInt("footwear_color"));
 
-        this.hair = set.getInt("hair");
-        this.hairColor = loadColor(set, "hair_color", new Color(0x331809));
+        this.hair = loadIndex(set.getString("hair"), HAIR);
+        this.hairColor = new Color(set.getInt("hair_color"));
 
-        this.accessory = set.getInt("accessory");
+        this.eyebrows = loadIndex(set.getString("eyebrows"), EYEBROWS);
+        this.eyebrowsColor = new Color(set.getInt("eyebrows_color"));
+
+        this.mouth = loadIndex(set.getString("mouth"), MOUTH);
+        this.mouthColor = new Color(set.getInt("mouth_color"));
+
+        this.accessory = loadIndex(set.getString("accessory"), ACCESSORIES);
     }
 
     @Override
@@ -245,6 +284,26 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getEyebrows(){
+        return this.eyebrows;
+    }
+
+    @Override
+    public int getMouth(){
+        return this.mouth;
+    }
+
+    @Override
+    public Color getMouthColor(){
+        return this.mouthColor;
+    }
+
+    @Override
+    public Color getEyebrowsColor(){
+        return this.eyebrowsColor;
+    }
+
+    @Override
     public void setBase(int base){
         this.base = base;
     }
@@ -307,5 +366,25 @@ public class PlayerDesign implements IPlayerDesign{
     @Override
     public void setAccessory(int accessory){
         this.accessory = accessory;
+    }
+
+    @Override
+    public void setEyebrows(int eyebrows){
+        this.eyebrows = eyebrows;
+    }
+
+    @Override
+    public void setMouth(int mouth){
+        this.mouth = mouth;
+    }
+
+    @Override
+    public void setMouthColor(Color mouthColor){
+        this.mouthColor = mouthColor;
+    }
+
+    @Override
+    public void setEyebrowsColor(Color eyebrowsColor){
+        this.eyebrowsColor = eyebrowsColor;
     }
 }

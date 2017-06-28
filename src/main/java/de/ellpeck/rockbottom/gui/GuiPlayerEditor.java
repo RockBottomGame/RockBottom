@@ -35,27 +35,34 @@ public class GuiPlayerEditor extends Gui{
         IPlayerDesign design = game.getPlayerDesign();
         IAssetManager assetManager = game.getAssetManager();
         int x = (int)game.getWidthInGui()/2;
+        int y = 5;
         int colorX = x+82;
 
-        this.components.add(new Slider(this, 0, x, 5, design.getBase(), IPlayerDesign.BASE.size()-1, design:: setBase, assetManager.localize(RockBottom.internalRes("button.player_design.base"))));
-        this.components.add(new ColorPicker(this, colorX, 5, design.getEyeColor(), (design:: setEyeColor)));
-
-        this.components.add(new Slider(this, 1, x, 23, design.getHair(), IPlayerDesign.HAIR.size()-1, design:: setHair, assetManager.localize(RockBottom.internalRes("button.player_design.hair"))));
-        this.components.add(new ColorPicker(this, colorX, 23, design.getHairColor(), design:: setHairColor));
-
-        this.components.add(new Slider(this, 2, x, 41, design.getShirt(), IPlayerDesign.SHIRT.size()-1, design:: setShirt, assetManager.localize(RockBottom.internalRes("button.player_design.shirt"))));
-        this.components.add(new ColorPicker(this, colorX, 41, design.getShirtColor(), design:: setShirtColor));
-
-        this.components.add(new Slider(this, 3, x, 59, design.getSleeves(), IPlayerDesign.SLEEVES.size()-1, design:: setSleeves, assetManager.localize(RockBottom.internalRes("button.player_design.sleeves"))));
-        this.components.add(new ColorPicker(this, colorX, 59, design.getSleevesColor(), design:: setSleevesColor));
-
-        this.components.add(new Slider(this, 4, x, 77, design.getPants(), IPlayerDesign.PANTS.size()-1, design:: setPants, assetManager.localize(RockBottom.internalRes("button.player_design.pants"))));
-        this.components.add(new ColorPicker(this, colorX, 77, design.getPantsColor(), design:: setPantsColor));
-
-        this.components.add(new Slider(this, 5, x, 95, design.getFootwear(), IPlayerDesign.FOOTWEAR.size()-1, design:: setFootwear, assetManager.localize(RockBottom.internalRes("button.player_design.footwear"))));
-        this.components.add(new ColorPicker(this, colorX, 95, design.getFootwearColor(), design:: setFootwearColor));
-
-        this.components.add(new Slider(this, 6, x, 113, design.getAccessory(), IPlayerDesign.ACCESSORIES.size()-1, design:: setAccessory, assetManager.localize(RockBottom.internalRes("button.player_design.accessory"))));
+        this.components.add(new Slider(this, 0, x, y, design.getBase(), IPlayerDesign.BASE.size()-1, design:: setBase, assetManager.localize(RockBottom.internalRes("button.player_design.base"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getEyeColor(), (design:: setEyeColor)));
+        y += 14;
+        this.components.add(new Slider(this, 1, x, y, design.getEyebrows(), IPlayerDesign.EYEBROWS.size()-1, design:: setEyebrows, assetManager.localize(RockBottom.internalRes("button.player_design.eyebrows"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getEyebrowsColor(), design:: setEyebrowsColor));
+        y += 14;
+        this.components.add(new Slider(this, 2, x, y, design.getMouth(), IPlayerDesign.MOUTH.size()-1, design:: setMouth, assetManager.localize(RockBottom.internalRes("button.player_design.mouth"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getMouthColor(), design:: setMouthColor));
+        y += 14;
+        this.components.add(new Slider(this, 3, x, y, design.getHair(), IPlayerDesign.HAIR.size()-1, design:: setHair, assetManager.localize(RockBottom.internalRes("button.player_design.hair"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getHairColor(), design:: setHairColor));
+        y += 14;
+        this.components.add(new Slider(this, 4, x, y, design.getShirt(), IPlayerDesign.SHIRT.size()-1, design:: setShirt, assetManager.localize(RockBottom.internalRes("button.player_design.shirt"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getShirtColor(), design:: setShirtColor));
+        y += 14;
+        this.components.add(new Slider(this, 5, x, y, design.getSleeves(), IPlayerDesign.SLEEVES.size()-1, design:: setSleeves, assetManager.localize(RockBottom.internalRes("button.player_design.sleeves"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getSleevesColor(), design:: setSleevesColor));
+        y += 14;
+        this.components.add(new Slider(this, 6, x, y, design.getPants(), IPlayerDesign.PANTS.size()-1, design:: setPants, assetManager.localize(RockBottom.internalRes("button.player_design.pants"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getPantsColor(), design:: setPantsColor));
+        y += 14;
+        this.components.add(new Slider(this, 7, x, y, design.getFootwear(), IPlayerDesign.FOOTWEAR.size()-1, design:: setFootwear, assetManager.localize(RockBottom.internalRes("button.player_design.footwear"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getFootwearColor(), design:: setFootwearColor));
+        y += 14;
+        this.components.add(new Slider(this, 8, x, y, design.getAccessory(), IPlayerDesign.ACCESSORIES.size()-1, design:: setAccessory, assetManager.localize(RockBottom.internalRes("button.player_design.accessory"))));
 
         this.nameField = new ComponentInputField(this, x, 131, 80, 16, true, true, false, 24, true){
             @Override
@@ -65,9 +72,14 @@ public class GuiPlayerEditor extends Gui{
         };
         this.nameField.setText(design.getName());
         this.components.add(this.nameField);
-        this.components.add(new ColorPicker(this, colorX, 131, design.getFavoriteColor(), design:: setFavoriteColor));
+        this.components.add(new ComponentColorPicker(this, colorX, 131, 16, 16, design.getFavoriteColor(), new ComponentColorPicker.ICallback(){
+            @Override
+            public void onChange(float mouseX, float mouseY, Color color){
+                design.setFavoriteColor(color);
+            }
+        }));
 
-        this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-98, 131, 80, 16, this.previewType+1, 1, 4, new ComponentSlider.ICallback(){
+        this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-98, 131, 80, 16, this.previewType+1, 1, 6, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 GuiPlayerEditor.this.previewType = number-1;
@@ -151,7 +163,7 @@ public class GuiPlayerEditor extends Gui{
     private static class Slider extends ComponentSlider{
 
         public Slider(Gui gui, int id, int x, int y, int initialNumber, int max, IChange callback, String text, String... hover){
-            super(gui, id, x, y, 80, 16, initialNumber, 0, max, new ICallback(){
+            super(gui, id, x, y, 80, 12, initialNumber, 0, max, new ICallback(){
                 @Override
                 public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                     callback.onNumberChange(number);
@@ -173,7 +185,7 @@ public class GuiPlayerEditor extends Gui{
     private static class ColorPicker extends ComponentColorPicker{
 
         public ColorPicker(Gui gui, int x, int y, Color defaultColor, IChange callback){
-            super(gui, x, y, 16, 16, defaultColor, new ICallback(){
+            super(gui, x, y, 12, 12, defaultColor, new ICallback(){
                 @Override
                 public void onChange(float mouseX, float mouseY, Color color){
                     callback.onChange(color);

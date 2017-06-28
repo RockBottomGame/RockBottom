@@ -18,7 +18,7 @@ public class GuiCredits extends Gui{
     public GuiCredits(Gui parent){
         super(100, 100, parent);
 
-        this.credits.add("A game by Ellpeck");
+        this.credits.add(RockBottom.NAME+" - a Game by Ellpeck");
         this.credits.add("");
         this.credits.add("");
         this.credits.add("Programming");
@@ -42,6 +42,7 @@ public class GuiCredits extends Gui{
         this.credits.add("");
         this.credits.add("");
         this.credits.add("Special Thanks");
+        this.credits.add("  TTFTCUTS (A lot of Terrain Gen help)");
         this.credits.add("  witsend66 (Game Name)");
     }
 
@@ -69,7 +70,7 @@ public class GuiCredits extends Gui{
     public void update(IGameInstance game){
         super.update(game);
 
-        this.renderY-=0.45F;
+        this.renderY-=0.65F;
 
         if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
             this.renderY = (int)game.getHeightInGui();

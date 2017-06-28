@@ -89,6 +89,8 @@ rockbottom/button.player_design.footwear=Footwear
 rockbottom/button.player_design.hair=Hair
 rockbottom/button.player_design.accessory=Accessory
 rockbottom/button.player_design.preview=Preview
+rockbottom/button.player_design.eyebrows=Eyebrows
+rockbottom/button.player_design.mouth=Mouth
 
 rockbottom/layer.main=Foreground
 rockbottom/layer.background=Background

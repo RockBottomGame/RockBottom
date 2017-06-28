@@ -118,7 +118,7 @@ public class SimplexNoise implements INoiseGen{
             n2 = t2*t2*dot(GRAD_3[gi2], x2, y2);
         }
 
-        return 70*(n0+n1+n2);
+        return (70*(n0+n1+n2)+1)/2;
     }
 
     @Override
@@ -241,7 +241,7 @@ public class SimplexNoise implements INoiseGen{
             n3 = t3*t3*dot(GRAD_3[gi3], x3, y3, z3);
         }
 
-        return 32*(n0+n1+n2+n3);
+        return (32*(n0+n1+n2+n3)+1)/2;
     }
 
     @Override
@@ -386,7 +386,7 @@ public class SimplexNoise implements INoiseGen{
             t4 *= t4;
             n4 = t4*t4*dot(GRAD_4[gi4], x4, y4, z4, w4);
         }
-        return 27*(n0+n1+n2+n3+n4);
+        return (27*(n0+n1+n2+n3+n4)+1)/2;
     }
 
     private static class Grad{

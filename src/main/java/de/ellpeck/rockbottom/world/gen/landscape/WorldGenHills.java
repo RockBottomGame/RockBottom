@@ -28,7 +28,7 @@ public class WorldGenHills implements IWorldGenerator{
     @Override
     public void generate(IWorld world, IChunk chunk, Random rand){
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            double noise = this.getSmoothedNoise(chunk.getX(), x);
+            double noise = this.noiseGen.make2dNoise((double)(chunk.getX()+x)/10, 0);
 
             int height = (int)(noise*3);
             for(int y = 0; y <= height; y++){
@@ -40,18 +40,6 @@ public class WorldGenHills implements IWorldGenerator{
                 chunk.setTileInner(TileLayer.BACKGROUND, x, y, GameContent.TILE_DIRT);
             }
         }
-    }
-
-    private double getSmoothedNoise(int chunkX, int x){
-        double cornersOut = (this.getNoise(chunkX, x+2)+this.getNoise(chunkX, x-2))/4F;
-        double corners = (this.getNoise(chunkX, x+1)+this.getNoise(chunkX, x-1))/2F;
-        double center = this.getNoise(chunkX, x);
-
-        return cornersOut+corners+center;
-    }
-
-    private double getNoise(int chunkX, int x){
-        return (this.noiseGen.make2dNoise((chunkX+x)/5, 0)+1)/2;
     }
 
     @Override
