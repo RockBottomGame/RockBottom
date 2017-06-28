@@ -454,21 +454,31 @@ public class RockBottom extends BasicGame implements IGameInstance{
 
     @Override
     public int getWorldScale(){
-        int scale = this.settings.renderScale;
-        if((scale%2 == 0) != (this.container.getHeight()%2 == 0)){
-            scale++;
-        }
-        return scale;
+        return this.settings.renderScale;
     }
 
     @Override
     public double getWidthInWorld(){
-        return (double)this.container.getWidth()/(double)this.getWorldScale();
+        int width = this.container.getWidth();
+        int scale = this.getWorldScale();
+
+        if((scale%2 == 0) != (width%2 == 0)){
+            width++;
+        }
+
+        return (double)width/(double)scale;
     }
 
     @Override
     public double getHeightInWorld(){
-        return (double)this.container.getHeight()/(double)this.getWorldScale();
+        int height = this.container.getHeight();
+        int scale = this.getWorldScale();
+
+        if((scale%2 == 0) != (height%2 == 0)){
+            height++;
+        }
+
+        return (double)height/(double)scale;
     }
 
     @Override
