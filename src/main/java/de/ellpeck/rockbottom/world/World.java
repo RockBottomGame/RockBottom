@@ -1,8 +1,8 @@
 package de.ellpeck.rockbottom.world;
 
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -21,6 +21,7 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
@@ -79,7 +80,7 @@ public class World implements IWorld{
         }
     }
 
-    public void update(RockBottom game){
+    public void update(AbstractGame game){
         this.checkListSync();
 
         if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
@@ -101,7 +102,7 @@ public class World implements IWorld{
             }
 
             this.saveTicksCounter++;
-            if(this.saveTicksCounter >= game.getSettings().autosaveIntervalSeconds*Constants.TARGET_TPS){
+            if(this.saveTicksCounter >= game.getAutosaveInterval()*Constants.TARGET_TPS){
                 this.saveTicksCounter = 0;
 
                 this.save();
@@ -518,7 +519,7 @@ public class World implements IWorld{
             Log.info("Loading player "+design.getName()+" with unique id "+id+"!");
         }
         else{
-            player.resetAndSpawn(RockBottom.get());
+            player.resetAndSpawn(AbstractGame.get());
             Log.info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
         }
         return player;
@@ -564,7 +565,10 @@ public class World implements IWorld{
             RockBottomAPI.getNet().sendToAllPlayers(this, PacketParticles.tile(this, x, y, tile, meta));
         }
 
-        RockBottom.get().getParticleManager().addTileParticles(this, x, y, tile, meta);
+        IGameInstance game = AbstractGame.get();
+        if(!game.isDedicatedServer()){
+            game.getParticleManager().addTileParticles(this, x, y, tile, meta);
+        }
 
         this.setTile(layer, x, y, GameContent.TILE_AIR);
     }

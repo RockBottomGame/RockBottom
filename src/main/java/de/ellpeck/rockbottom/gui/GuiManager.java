@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -32,7 +33,7 @@ import java.util.List;
 
 public class GuiManager implements IGuiManager{
 
-    private static final IResourceName LOC_DEAD = RockBottom.internalRes("info.dead");
+    private static final IResourceName LOC_DEAD = AbstractGame.internalRes("info.dead");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private boolean shouldReInit;
     private MainMenuBackground background;
@@ -46,7 +47,7 @@ public class GuiManager implements IGuiManager{
             this.onScreenComponents.clear();
         }
 
-        if(game.isInWorld()){
+        if(game.getWorld() != null){
             this.initInWorldComponents(game, game.getPlayer());
             this.background = null;
         }
@@ -121,7 +122,7 @@ public class GuiManager implements IGuiManager{
                 }
             }
 
-            if(!game.isInWorld()){
+            if(game.getWorld() == null){
                 this.background.render(game, manager, g);
             }
 
@@ -167,7 +168,7 @@ public class GuiManager implements IGuiManager{
 
     @Override
     public void openGui(Gui gui){
-        IGameInstance game = RockBottom.get();
+        IGameInstance game = AbstractGame.get();
 
         GuiOpenEvent event = new GuiOpenEvent(gui);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){

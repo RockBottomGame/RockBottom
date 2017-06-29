@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.net.server;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.net.decode.PacketDecoder;
 import de.ellpeck.rockbottom.net.encode.PacketEncoder;
@@ -31,7 +31,7 @@ public class Server{
     public CommandPermissions commandPermissions = new CommandPermissions();
 
     public Server(String ip, int port) throws Exception{
-        RockBottom.get().getDataManager().loadPropSettings(this.commandPermissions);
+        AbstractGame.get().getDataManager().loadPropSettings(this.commandPermissions);
 
         this.group = Epoll.isAvailable() ?
                 new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollServer", true)) :

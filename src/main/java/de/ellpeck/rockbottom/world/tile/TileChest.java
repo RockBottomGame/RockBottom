@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -19,7 +19,7 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 public class TileChest extends TileBasic{
 
     public TileChest(){
-        super(RockBottom.internalRes("chest"));
+        super(AbstractGame.internalRes("chest"));
     }
 
     @Override

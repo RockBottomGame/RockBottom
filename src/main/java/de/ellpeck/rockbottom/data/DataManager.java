@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.data;
 
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -17,6 +16,7 @@ import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDropItem;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 import org.newdawn.slick.util.Log;
@@ -83,7 +83,7 @@ public class DataManager implements IDataManager{
     private final File playerDesignFile;
     private final DataSet gameInfo = new DataSet();
 
-    public DataManager(RockBottom game){
+    public DataManager(AbstractGame game){
         this.gameDirectory = Main.gameDir;
         this.modsDirectory = new File(this.gameDirectory, "mods");
         this.saveDirectory = new File(this.gameDirectory, "save");
@@ -95,16 +95,18 @@ public class DataManager implements IDataManager{
         this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.properties");
         this.modSettingsFile = new File(this.gameDirectory, "mod_settings.properties");
 
-        this.gameInfo.read(this.gameDataFile);
+        if(!game.isDedicatedServer()){
+            this.gameInfo.read(this.gameDataFile);
 
-        game.setUniqueId(this.gameInfo.getUniqueId("game_id"));
-        if(game.getUniqueId() == null){
-            game.setUniqueId(UUID.randomUUID());
+            game.setUniqueId(this.gameInfo.getUniqueId("game_id"));
+            if(game.getUniqueId() == null){
+                game.setUniqueId(UUID.randomUUID());
 
-            this.gameInfo.addUniqueId("game_id", game.getUniqueId());
-            this.gameInfo.write(this.gameDataFile);
+                this.gameInfo.addUniqueId("game_id", game.getUniqueId());
+                this.gameInfo.write(this.gameDataFile);
 
-            Log.info("Created new game unique id "+game.getUniqueId()+"!");
+                Log.info("Created new game unique id "+game.getUniqueId()+"!");
+            }
         }
     }
 

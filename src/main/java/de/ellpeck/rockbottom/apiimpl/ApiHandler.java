@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.apiimpl;
 
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
@@ -11,19 +10,23 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.TooltipEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.render.WorldRenderer;
@@ -33,14 +36,11 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.util.Log;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ApiHandler implements IApiHandler{
 
-    private static final IResourceName SLOT_NAME = RockBottom.internalRes("gui.slot");
+    private static final IResourceName SLOT_NAME = AbstractGame.internalRes("gui.slot");
 
     @Override
     public void writeDataSet(DataSet set, File file){
@@ -398,12 +398,27 @@ public class ApiHandler implements IApiHandler{
         return new SimplexNoise(random);
     }
 
+    @Override
+    public boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
+        if(instance != null){
+            Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
+            if(!tools.isEmpty()){
+                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean setToInv(ItemInstance inst, ComponentSlot slot){
         if(inst == null ? slot.slot.canRemove() : slot.slot.canPlace(inst)){
             slot.slot.set(inst);
 
             if(RockBottomAPI.getNet().isClient()){
-                RockBottomAPI.getNet().sendToServer(new PacketSlotModification(RockBottom.get().getPlayer().getUniqueId(), slot.componentId, inst));
+                RockBottomAPI.getNet().sendToServer(new PacketSlotModification(AbstractGame.get().getPlayer().getUniqueId(), slot.componentId, inst));
             }
             return true;
         }

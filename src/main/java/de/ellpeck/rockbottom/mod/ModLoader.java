@@ -189,7 +189,7 @@ public class ModLoader implements IModLoader{
     public void init(){
         IGameInstance game = RockBottomAPI.getGame();
         for(IMod mod : this.activeMods){
-            mod.init(game, game.getAssetManager(), RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
+            mod.init(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
@@ -197,7 +197,7 @@ public class ModLoader implements IModLoader{
     public void postInit(){
         IGameInstance game = RockBottomAPI.getGame();
         for(IMod mod : this.activeMods){
-            mod.postInit(game, game.getAssetManager(), RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
+            mod.postInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 

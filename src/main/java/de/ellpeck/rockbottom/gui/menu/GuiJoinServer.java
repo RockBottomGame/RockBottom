@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -26,8 +26,8 @@ public class GuiJoinServer extends Gui{
         this.components.add(this.inputField);
         this.inputField.setText(game.getSettings().lastServerIp);
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.getAssetManager().localize(RockBottom.internalRes("button.connect"))));
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.connect"))));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class GuiJoinServer extends Gui{
                 }
 
                 Log.info("Attempting to join server");
-                RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), RockBottom.VERSION, game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
+                RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), AbstractGame.VERSION, game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
             }
             catch(Exception e){
                 Log.error("Couldn't connect to server", e);

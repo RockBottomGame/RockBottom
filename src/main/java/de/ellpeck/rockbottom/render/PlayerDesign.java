@@ -18,7 +18,7 @@
 
 package de.ellpeck.rockbottom.render;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -117,7 +117,7 @@ public class PlayerDesign implements IPlayerDesign{
 
     @Override
     public void saveToFile(){
-        IDataManager dataManager = RockBottom.get().getDataManager();
+        IDataManager dataManager = AbstractGame.get().getDataManager();
 
         DataSet set = new DataSet();
         this.save(set);
@@ -126,7 +126,7 @@ public class PlayerDesign implements IPlayerDesign{
 
     @Override
     public void loadFromFile(){
-        IDataManager dataManager = RockBottom.get().getDataManager();
+        IDataManager dataManager = AbstractGame.get().getDataManager();
 
         DataSet set = new DataSet();
         set.read(dataManager.getPlayerDesignFile());

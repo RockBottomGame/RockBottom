@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.net.client;
 
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -9,6 +8,7 @@ import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -39,7 +39,7 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public void update(RockBottom game){
+    public void update(AbstractGame game){
         this.checkListSync();
 
         for(int i = 0; i < this.loadedChunks.size(); i++){

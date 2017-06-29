@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -21,17 +21,17 @@ public class GuiSettings extends Gui{
         IAssetManager assetManager = game.getAssetManager();
         Settings settings = game.getSettings();
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, assetManager.localize(RockBottom.internalRes("button.controls"))));
-        this.components.add(new ComponentButton(this, 1, this.guiLeft+this.sizeX/2-75, this.guiTop+20, 150, 16, assetManager.localize(RockBottom.internalRes("button.graphics"))));
+        this.components.add(new ComponentButton(this, 0, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, assetManager.localize(AbstractGame.internalRes("button.controls"))));
+        this.components.add(new ComponentButton(this, 1, this.guiLeft+this.sizeX/2-75, this.guiTop+20, 150, 16, assetManager.localize(AbstractGame.internalRes("button.graphics"))));
 
         this.components.add(new ComponentSlider(this, 3, this.guiLeft+this.sizeX/2-75, this.guiTop+55, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 settings.autosaveIntervalSeconds = number;
             }
-        }, assetManager.localize(RockBottom.internalRes("button.autosave_interval")), assetManager.localize(RockBottom.internalRes("info.autosave_interval"))));
+        }, assetManager.localize(AbstractGame.internalRes("button.autosave_interval")), assetManager.localize(AbstractGame.internalRes("info.autosave_interval"))));
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, assetManager.localize(RockBottom.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, assetManager.localize(AbstractGame.internalRes("button.back"))));
     }
 
     @Override

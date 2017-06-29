@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 public class TileLog extends TileBasic{
 
     public TileLog(){
-        super(RockBottom.internalRes("log"));
+        super(AbstractGame.internalRes("log"));
     }
 
     public static void scheduleDestroyAround(IWorld world, int x, int y){

@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -40,15 +40,15 @@ public class GuiMods extends Gui{
         int width = (int)game.getWidthInGui();
         int height = (int)game.getHeightInGui();
 
-        this.components.add(new ComponentButton(this, -1, width-47, 14, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, -1, width-47, 14, 45, 10, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
 
-        this.components.add(new ComponentButton(this, -2, width-77, 2, 75, 10, game.getAssetManager().localize(RockBottom.internalRes("button.mods_folder"))));
+        this.components.add(new ComponentButton(this, -2, width-77, 2, 75, 10, game.getAssetManager().localize(AbstractGame.internalRes("button.mods_folder"))));
 
-        this.modGuiButton = new ComponentButton(this, 0, 100+(width-100)/2-60, height-30, 55, 16, game.getAssetManager().localize(RockBottom.internalRes("button.mod_info")));
+        this.modGuiButton = new ComponentButton(this, 0, 100+(width-100)/2-60, height-30, 55, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.mod_info")));
         this.modGuiButton.isVisible = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
         this.components.add(this.modGuiButton);
 
-        this.disabledButton = new ComponentButton(this, 1, 100+(width-100)/2+5, height-30, 55, 16, "", game.getAssetManager().localize(RockBottom.internalRes("info.requires_restart")));
+        this.disabledButton = new ComponentButton(this, 1, 100+(width-100)/2+5, height-30, 55, 16, "", game.getAssetManager().localize(AbstractGame.internalRes("info.requires_restart")));
         this.updateDisableButton(game);
         this.components.add(this.disabledButton);
     }
@@ -58,7 +58,7 @@ public class GuiMods extends Gui{
 
         if(this.selectedMod != null){
             String s = "button."+(RockBottomAPI.getModLoader().getModSettings().isDisabled(this.selectedMod.getId()) ? "enable" : "disable");
-            this.disabledButton.setText(game.getAssetManager().localize(RockBottom.internalRes(s)));
+            this.disabledButton.setText(game.getAssetManager().localize(AbstractGame.internalRes(s)));
         }
     }
 

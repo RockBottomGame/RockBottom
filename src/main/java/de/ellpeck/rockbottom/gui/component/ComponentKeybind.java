@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.component;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -21,8 +21,8 @@ public class ComponentKeybind extends ComponentButton{
 
     @Override
     protected String getText(){
-        IAssetManager manager = RockBottom.get().getAssetManager();
-        return manager.localize(RockBottom.internalRes("key."+this.bind.name))+": "+(this.isActive() ? "<?>" : Input.getKeyName(this.bind.key));
+        IAssetManager manager = AbstractGame.get().getAssetManager();
+        return manager.localize(AbstractGame.internalRes("key."+this.bind.name))+": "+(this.isActive() ? "<?>" : Input.getKeyName(this.bind.key));
     }
 
     @Override

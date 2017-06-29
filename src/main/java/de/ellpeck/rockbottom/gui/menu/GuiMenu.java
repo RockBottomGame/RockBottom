@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.Main;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -12,9 +13,9 @@ import org.newdawn.slick.util.Log;
 
 public class GuiMenu extends Gui{
 
-    private static final IResourceName LOC_OPEN_SERVER = RockBottom.internalRes("button.open_server");
-    private static final IResourceName LOC_CLOSE_SERVER = RockBottom.internalRes("button.close_server");
-    private static final IResourceName LOC_SAVED = RockBottom.internalRes("info.saved");
+    private static final IResourceName LOC_OPEN_SERVER = AbstractGame.internalRes("button.open_server");
+    private static final IResourceName LOC_CLOSE_SERVER = AbstractGame.internalRes("button.close_server");
+    private static final IResourceName LOC_SAVED = AbstractGame.internalRes("info.saved");
     private int savingTimer;
 
     public GuiMenu(){
@@ -25,7 +26,7 @@ public class GuiMenu extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, this.sizeX, 16, game.getAssetManager().localize(RockBottom.internalRes("button.settings"))));
+        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop, this.sizeX, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.settings"))));
         if(!RockBottomAPI.getNet().isClient()){
             this.components.add(new ComponentButton(this, 1, this.guiLeft, this.guiTop+20, this.sizeX, 16, null){
                 @Override
@@ -35,8 +36,8 @@ public class GuiMenu extends Gui{
             });
         }
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, game.getAssetManager().localize(RockBottom.internalRes("button.main_menu"))));
-        this.components.add(new ComponentButton(this, -2, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize(RockBottom.internalRes("button.close"))));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.main_menu"))));
+        this.components.add(new ComponentButton(this, -2, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.close"))));
     }
 
     @Override
@@ -84,7 +85,7 @@ public class GuiMenu extends Gui{
             }
             else{
                 try{
-                    RockBottomAPI.getNet().init(null, game.getSettings().serverStartPort, true);
+                    RockBottomAPI.getNet().init(null, Main.port, true);
                 }
                 catch(Exception e){
                     Log.error("Couldn't start server", e);

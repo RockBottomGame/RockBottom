@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 public class TileAir extends Tile{
 
     public TileAir(){
-        super(RockBottom.internalRes("air"));
+        super(AbstractGame.internalRes("air"));
     }
 
     @Override

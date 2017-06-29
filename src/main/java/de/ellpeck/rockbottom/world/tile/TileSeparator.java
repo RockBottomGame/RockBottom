@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -23,7 +23,7 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 public class TileSeparator extends MultiTile{
 
     public TileSeparator(){
-        super(RockBottom.internalRes("separator"));
+        super(AbstractGame.internalRes("separator"));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class TileSeparator extends MultiTile{
         if(this.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
             if(tile != null && tile.isActive()){
-                IParticleManager manager = RockBottom.get().getParticleManager();
+                IParticleManager manager = AbstractGame.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
                     manager.addParticle(new ParticleSmoke(world, x+1.11, y+2.75, -Util.RANDOM.nextFloat()*0.05, 0, 0.09F));

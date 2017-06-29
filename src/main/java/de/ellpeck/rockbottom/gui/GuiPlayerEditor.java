@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -38,30 +38,30 @@ public class GuiPlayerEditor extends Gui{
         int y = 5;
         int colorX = x+82;
 
-        this.components.add(new Slider(this, 0, x, y, design.getBase(), IPlayerDesign.BASE.size()-1, design:: setBase, assetManager.localize(RockBottom.internalRes("button.player_design.base"))));
+        this.components.add(new Slider(this, 0, x, y, design.getBase(), IPlayerDesign.BASE.size()-1, design:: setBase, assetManager.localize(AbstractGame.internalRes("button.player_design.base"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getEyeColor(), (design:: setEyeColor)));
         y += 14;
-        this.components.add(new Slider(this, 1, x, y, design.getEyebrows(), IPlayerDesign.EYEBROWS.size()-1, design:: setEyebrows, assetManager.localize(RockBottom.internalRes("button.player_design.eyebrows"))));
+        this.components.add(new Slider(this, 1, x, y, design.getEyebrows(), IPlayerDesign.EYEBROWS.size()-1, design:: setEyebrows, assetManager.localize(AbstractGame.internalRes("button.player_design.eyebrows"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getEyebrowsColor(), design:: setEyebrowsColor));
         y += 14;
-        this.components.add(new Slider(this, 2, x, y, design.getMouth(), IPlayerDesign.MOUTH.size()-1, design:: setMouth, assetManager.localize(RockBottom.internalRes("button.player_design.mouth"))));
+        this.components.add(new Slider(this, 2, x, y, design.getMouth(), IPlayerDesign.MOUTH.size()-1, design:: setMouth, assetManager.localize(AbstractGame.internalRes("button.player_design.mouth"))));
         y += 14;
-        this.components.add(new Slider(this, 3, x, y, design.getHair(), IPlayerDesign.HAIR.size()-1, design:: setHair, assetManager.localize(RockBottom.internalRes("button.player_design.hair"))));
+        this.components.add(new Slider(this, 3, x, y, design.getHair(), IPlayerDesign.HAIR.size()-1, design:: setHair, assetManager.localize(AbstractGame.internalRes("button.player_design.hair"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getHairColor(), design:: setHairColor));
         y += 14;
-        this.components.add(new Slider(this, 4, x, y, design.getShirt(), IPlayerDesign.SHIRT.size()-1, design:: setShirt, assetManager.localize(RockBottom.internalRes("button.player_design.shirt"))));
+        this.components.add(new Slider(this, 4, x, y, design.getShirt(), IPlayerDesign.SHIRT.size()-1, design:: setShirt, assetManager.localize(AbstractGame.internalRes("button.player_design.shirt"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getShirtColor(), design:: setShirtColor));
         y += 14;
-        this.components.add(new Slider(this, 5, x, y, design.getSleeves(), IPlayerDesign.SLEEVES.size()-1, design:: setSleeves, assetManager.localize(RockBottom.internalRes("button.player_design.sleeves"))));
+        this.components.add(new Slider(this, 5, x, y, design.getSleeves(), IPlayerDesign.SLEEVES.size()-1, design:: setSleeves, assetManager.localize(AbstractGame.internalRes("button.player_design.sleeves"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getSleevesColor(), design:: setSleevesColor));
         y += 14;
-        this.components.add(new Slider(this, 6, x, y, design.getPants(), IPlayerDesign.PANTS.size()-1, design:: setPants, assetManager.localize(RockBottom.internalRes("button.player_design.pants"))));
+        this.components.add(new Slider(this, 6, x, y, design.getPants(), IPlayerDesign.PANTS.size()-1, design:: setPants, assetManager.localize(AbstractGame.internalRes("button.player_design.pants"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getPantsColor(), design:: setPantsColor));
         y += 14;
-        this.components.add(new Slider(this, 7, x, y, design.getFootwear(), IPlayerDesign.FOOTWEAR.size()-1, design:: setFootwear, assetManager.localize(RockBottom.internalRes("button.player_design.footwear"))));
+        this.components.add(new Slider(this, 7, x, y, design.getFootwear(), IPlayerDesign.FOOTWEAR.size()-1, design:: setFootwear, assetManager.localize(AbstractGame.internalRes("button.player_design.footwear"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getFootwearColor(), design:: setFootwearColor));
         y += 14;
-        this.components.add(new Slider(this, 8, x, y, design.getAccessory(), IPlayerDesign.ACCESSORIES.size()-1, design:: setAccessory, assetManager.localize(RockBottom.internalRes("button.player_design.accessory"))));
+        this.components.add(new Slider(this, 8, x, y, design.getAccessory(), IPlayerDesign.ACCESSORIES.size()-1, design:: setAccessory, assetManager.localize(AbstractGame.internalRes("button.player_design.accessory"))));
 
         this.nameField = new ComponentInputField(this, x, 131, 80, 16, true, true, false, 24, true){
             @Override
@@ -83,10 +83,10 @@ public class GuiPlayerEditor extends Gui{
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 GuiPlayerEditor.this.previewType = number-1;
             }
-        }, assetManager.localize(RockBottom.internalRes("button.player_design.preview"))));
+        }, assetManager.localize(AbstractGame.internalRes("button.player_design.preview"))));
 
-        this.components.add(new ComponentButton(this, -3, this.guiLeft+this.sizeX/2+33, (int)game.getHeightInGui()-20, 16, 16, "?", assetManager.localize(RockBottom.internalRes("info.randomize"))));
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-49, (int)game.getHeightInGui()-20, 80, 16, assetManager.localize(RockBottom.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, -3, this.guiLeft+this.sizeX/2+33, (int)game.getHeightInGui()-20, 16, 16, "?", assetManager.localize(AbstractGame.internalRes("info.randomize"))));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-49, (int)game.getHeightInGui()-20, 80, 16, assetManager.localize(AbstractGame.internalRes("button.back"))));
     }
 
     @Override

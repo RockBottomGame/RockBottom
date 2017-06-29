@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -18,7 +18,7 @@ public class GuiCredits extends Gui{
     public GuiCredits(Gui parent){
         super(100, 100, parent);
 
-        this.credits.add(RockBottom.NAME+" - a Game by Ellpeck");
+        this.credits.add(AbstractGame.NAME+" - a Game by Ellpeck");
         this.credits.add("");
         this.credits.add("");
         this.credits.add("Programming");
@@ -50,7 +50,7 @@ public class GuiCredits extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
 
         this.renderY = (int)game.getHeightInGui();
     }

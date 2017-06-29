@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.component;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -11,7 +11,7 @@ import org.newdawn.slick.Image;
 
 public class ComponentColorPicker extends GuiComponent{
 
-    private final Image image = RockBottom.get().getAssetManager().getTexture(RockBottom.internalRes("gui.colorpick"));
+    private final Image image = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
 
     private final ICallback callback;
     private boolean wasMouseDown;

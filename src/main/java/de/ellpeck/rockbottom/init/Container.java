@@ -1,5 +1,6 @@
-package de.ellpeck.rockbottom;
+package de.ellpeck.rockbottom.init;
 
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import org.lwjgl.LWJGLException;
@@ -20,22 +21,22 @@ public class Container extends AppGameContainer{
 
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
 
-    protected final RockBottom game;
+    protected final AbstractGame game;
     private long lastPollTime;
 
-    public Container(RockBottom game) throws SlickException{
+    public Container(AbstractGame game) throws SlickException{
         super(game, Main.width, Main.height, Main.fullscreen);
         this.game = game;
+
+        Log.info("LWJGL version: "+Sys.getVersion());
+        Log.info("Display: "+this.originalDisplayMode);
+        Log.info("Target: "+this.targetDisplayMode);
     }
 
     @Override
     protected void setup() throws SlickException{
         Display.setTitle(this.game.getTitle());
         Display.setResizable(true);
-
-        Log.info("LWJGL version: "+Sys.getVersion());
-        Log.info("Display: "+this.originalDisplayMode);
-        Log.info("Target: "+this.targetDisplayMode);
 
         try{
             String[] icons = new String[]{"16x16.png", "32x32.png", "128x128.png"};
@@ -96,29 +97,12 @@ public class Container extends AppGameContainer{
 
         Log.info("Finished initializing system");
 
-        try{
-            this.game.init(this);
-        }
-        catch(SlickException e){
-            Log.error("Failed to initialize game", e);
-            this.running = false;
-        }
+        this.doSetup();
     }
 
     @Override
-    protected void gameLoop(){
-        this.updateAndRender(this.getDelta());
-
-        long time = this.getTime();
-        if(time-this.lastPollTime >= 1000){
-            this.game.tpsAverage = this.game.tpsAccumulator;
-            this.game.fpsAverage = this.game.fpsAccumulator;
-
-            this.game.tpsAccumulator = 0;
-            this.game.fpsAccumulator = 0;
-
-            this.lastPollTime = time;
-        }
+    protected void gameLoop() throws SlickException{
+        this.doGameLoop();
 
         Display.update();
 
@@ -146,25 +130,12 @@ public class Container extends AppGameContainer{
     }
 
     @Override
-    protected void updateAndRender(int delta){
+    protected void updateAndRender(int delta) throws SlickException{
         this.input.poll(this.width, this.height);
 
         Music.poll(delta);
 
-        this.storedDelta += delta;
-
-        if(this.storedDelta >= INTERVAL){
-            try{
-                long updates = this.storedDelta/INTERVAL;
-                for(int i = 0; i < updates; i++){
-                    this.game.update(this, INTERVAL);
-                    this.storedDelta -= INTERVAL;
-                }
-            }
-            catch(Exception e){
-                throw new RuntimeException("Updating the game failed", e);
-            }
-        }
+        this.doUpdate(delta);
 
         if(this.hasFocus()){
             GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
@@ -173,12 +144,7 @@ public class Container extends AppGameContainer{
             Graphics graphics = this.getGraphics();
             graphics.setAntiAlias(false);
 
-            try{
-                this.game.render(this, graphics);
-            }
-            catch(Exception e){
-                throw new RuntimeException("Rendering the game failed", e);
-            }
+            this.game.render(this, graphics);
 
             graphics.resetTransform();
             graphics.resetLineWidth();
@@ -188,6 +154,43 @@ public class Container extends AppGameContainer{
 
         if(this.targetFPS != -1){
             Display.sync(this.targetFPS);
+        }
+    }
+
+    protected void doSetup(){
+        try{
+            this.game.init(this);
+        }
+        catch(SlickException e){
+            Log.error("Failed to initialize game", e);
+            this.running = false;
+        }
+    }
+
+    protected void doGameLoop() throws SlickException{
+        this.updateAndRender(this.getDelta());
+
+        long time = this.getTime();
+        if(time-this.lastPollTime >= 1000){
+            this.game.tpsAverage = this.game.tpsAccumulator;
+            this.game.fpsAverage = this.game.fpsAccumulator;
+
+            this.game.tpsAccumulator = 0;
+            this.game.fpsAccumulator = 0;
+
+            this.lastPollTime = time;
+        }
+    }
+
+    protected void doUpdate(int delta) throws SlickException{
+        this.storedDelta += delta;
+
+        if(this.storedDelta >= INTERVAL){
+            long updates = this.storedDelta/INTERVAL;
+            for(int i = 0; i < updates; i++){
+                this.game.update(this, INTERVAL);
+                this.storedDelta -= INTERVAL;
+            }
         }
     }
 }

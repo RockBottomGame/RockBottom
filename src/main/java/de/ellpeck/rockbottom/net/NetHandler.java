@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.net;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -55,7 +56,8 @@ public final class NetHandler implements INetHandler{
 
     @Override
     public boolean isThePlayer(AbstractEntityPlayer player){
-        return RockBottom.get().getPlayer() == player;
+        IGameInstance game = AbstractGame.get();
+        return !game.isDedicatedServer() && game.getPlayer() == player;
     }
 
     @Override

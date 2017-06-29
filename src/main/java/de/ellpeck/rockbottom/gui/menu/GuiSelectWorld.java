@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
@@ -35,7 +35,7 @@ public class GuiSelectWorld extends Gui{
 
         int bottomY = (int)game.getHeightInGui();
         this.components.add(new ComponentToggleButton(this, -2, this.guiLeft+this.sizeX/2-60, bottomY-50, 120, 16, this.deleteMode, "button.delete", "Activates Delete mode. Click a world's button to delete it"));
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, bottomY-30, 80, 16, game.getAssetManager().localize(RockBottom.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, bottomY-30, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
     }
 
     @Override

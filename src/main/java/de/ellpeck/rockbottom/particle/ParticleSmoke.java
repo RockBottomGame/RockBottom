@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.particle;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
@@ -13,7 +13,7 @@ import org.newdawn.slick.Image;
 
 public class ParticleSmoke extends Particle{
 
-    private static final IResourceName SMOKE_NAME = RockBottom.internalRes("particle.smoke");
+    private static final IResourceName SMOKE_NAME = AbstractGame.internalRes("particle.smoke");
     private final float scale;
 
     public ParticleSmoke(IWorld world, double x, double y, double motionX, double motionY, float scale){

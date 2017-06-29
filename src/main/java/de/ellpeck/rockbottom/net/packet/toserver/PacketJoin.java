@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.net.packet.toserver;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -81,7 +81,7 @@ public class PacketJoin implements IPacket{
             IWorld world = game.getWorld();
 
             boolean shouldKick = true;
-            if(RockBottom.VERSION.equals(this.version)){
+            if(AbstractGame.VERSION.equals(this.version)){
                 if(this.hasAllMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()))){
                     if(world != null){
                         if(world.getPlayer(this.id) == null){
@@ -99,7 +99,7 @@ public class PacketJoin implements IPacket{
                 }
             }
             else{
-                Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining with game version "+this.version+", server version is "+RockBottom.VERSION+"!");
+                Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining with game version "+this.version+", server version is "+AbstractGame.VERSION+"!");
             }
 
             if(shouldKick){

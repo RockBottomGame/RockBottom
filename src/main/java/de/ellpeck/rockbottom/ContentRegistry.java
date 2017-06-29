@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.item.ItemMeta;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.item.ItemTool;
 import de.ellpeck.rockbottom.world.gen.cave.WorldGenBasicCaves;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
@@ -22,9 +23,9 @@ public final class ContentRegistry{
     public static void init(){
         new TileAir().register();
         new TileDirt().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-        new TileBasic(RockBottom.internalRes("rock")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
+        new TileBasic(AbstractGame.internalRes("rock")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
         new TileGrass().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-        new TileBasic(RockBottom.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+        new TileBasic(AbstractGame.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
         new TileTorch().setHardness(0F).setForceDrop().register();
         new TileChest().addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
         new TileLog().setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
@@ -34,19 +35,19 @@ public final class ContentRegistry{
         new TileSmelter().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
         new TileSeparator().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
 
-        new ItemTool(RockBottom.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
-        new ItemTool(RockBottom.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
-        new ItemTool(RockBottom.internalRes("pick_rock"), 4F).addToolType(ToolType.PICKAXE, 2).register();
-        new ItemMeta(RockBottom.internalRes("coal")).addSubItem(RockBottom.internalRes("charcoal")).register();
-        new ItemBasic(RockBottom.internalRes("copper_cluster")).register();
-        new ItemBasic(RockBottom.internalRes("copper_grit")).register();
-        new ItemBasic(RockBottom.internalRes("copper_ingot")).register();
-        new ItemBasic(RockBottom.internalRes("slag")).register();
+        new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
+        new ItemTool(AbstractGame.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
+        new ItemTool(AbstractGame.internalRes("pick_rock"), 4F).addToolType(ToolType.PICKAXE, 2).register();
+        new ItemMeta(AbstractGame.internalRes("coal")).addSubItem(AbstractGame.internalRes("charcoal")).register();
+        new ItemBasic(AbstractGame.internalRes("copper_cluster")).register();
+        new ItemBasic(AbstractGame.internalRes("copper_grit")).register();
+        new ItemBasic(AbstractGame.internalRes("copper_ingot")).register();
+        new ItemBasic(AbstractGame.internalRes("slag")).register();
 
-        new BiomeBasic(RockBottom.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
-        new BiomeBasic(RockBottom.internalRes("grassland"), 1, -1, 1000).register();
+        new BiomeBasic(AbstractGame.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
+        new BiomeBasic(AbstractGame.internalRes("grassland"), 1, -1, 1000).register();
 
-        RockBottomAPI.ENTITY_REGISTRY.register(RockBottom.internalRes("item"), EntityItem.class);
+        RockBottomAPI.ENTITY_REGISTRY.register(AbstractGame.internalRes("item"), EntityItem.class);
 
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenHills.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicUnderground.class);

@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.render.tile;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
@@ -17,7 +17,7 @@ public class TorchTileRenderer extends DefaultTileRenderer{
     private final IResourceName texBack;
 
     public TorchTileRenderer(){
-        super(RockBottom.internalRes("torch"));
+        super(AbstractGame.internalRes("torch"));
         this.texLeft = this.texture.addSuffix(".left");
         this.texRight = this.texture.addSuffix(".right");
         this.texBack = this.texture.addSuffix(".back");

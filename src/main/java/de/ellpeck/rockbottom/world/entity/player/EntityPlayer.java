@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -71,7 +71,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         this.openContainer(container);
 
         if(RockBottomAPI.getNet().isThePlayer(this)){
-            RockBottom.get().getGuiManager().openGui(gui);
+            AbstractGame.get().getGuiManager().openGui(gui);
         }
     }
 
@@ -328,7 +328,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 level = Constants.ADMIN_PERMISSION;
 
                 permissions.setCommandLevel(this, level);
-                RockBottom.get().getDataManager().savePropSettings(permissions);
+                AbstractGame.get().getDataManager().savePropSettings(permissions);
 
                 Log.info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+"!");
             }

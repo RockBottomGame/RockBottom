@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
-    private static final IResourceName LOC_NEED = RockBottom.internalRes("info.need_items");
+    private static final IResourceName LOC_NEED = AbstractGame.internalRes("info.need_items");
     private static boolean isConstructionOpen;
     private static boolean shouldShowAll;
     private static int craftAmount = 1;
@@ -40,7 +40,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, RockBottom.internalRes("gui.construction"), game.getAssetManager().localize(RockBottom.internalRes("button.construction"))));
+        this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, AbstractGame.internalRes("gui.construction"), game.getAssetManager().localize(AbstractGame.internalRes("button.construction"))));
 
         if(isConstructionOpen){
             this.components.add(new ComponentSlider(this, 2, this.guiLeft-104, this.guiTop+71, 88, 12, craftAmount, 1, 128, new ComponentSlider.ICallback(){
@@ -48,8 +48,8 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
                 public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                     craftAmount = number;
                 }
-            }, game.getAssetManager().localize(RockBottom.internalRes("button.construction_amount"))));
-            this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, RockBottom.internalRes("gui.all_construction"), game.getAssetManager().localize(RockBottom.internalRes("button.all_construction"))));
+            }, game.getAssetManager().localize(AbstractGame.internalRes("button.construction_amount"))));
+            this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, AbstractGame.internalRes("gui.all_construction"), game.getAssetManager().localize(AbstractGame.internalRes("button.all_construction"))));
             this.initConstructionButtons();
         }
     }

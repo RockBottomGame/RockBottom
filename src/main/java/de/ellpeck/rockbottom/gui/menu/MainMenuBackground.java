@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -18,7 +19,7 @@ import org.newdawn.slick.Input;
 
 public class MainMenuBackground{
 
-    private static final IResourceName RES_LOGO = RockBottom.internalRes("logo");
+    private static final IResourceName RES_LOGO = AbstractGame.internalRes("logo");
     private static final int[] KONAMI_CODE = new int[]{Input.KEY_UP, Input.KEY_UP, Input.KEY_DOWN, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_B, Input.KEY_A};
     private static final int TILE_SIZE = 16;
     private int konamiAt;

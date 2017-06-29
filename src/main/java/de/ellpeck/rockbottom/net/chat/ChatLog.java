@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.net.chat;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -49,7 +50,7 @@ public class ChatLog implements IChatLog{
 
                 if(command != null){
                     if(player.getCommandLevel() >= command.getLevel()){
-                        IGameInstance game = RockBottom.get();
+                        IGameInstance game = AbstractGame.get();
                         cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, player.getName(), game, game.getAssetManager(), this);
                     }
                     else{
@@ -88,7 +89,7 @@ public class ChatLog implements IChatLog{
     public void broadcastMessage(String message){
         if(RockBottomAPI.getNet().isServer()){
             this.displayMessage(message);
-            RockBottomAPI.getNet().sendToAllPlayers(RockBottom.get().getWorld(), new PacketChatMessage(message));
+            RockBottomAPI.getNet().sendToAllPlayers(AbstractGame.get().getWorld(), new PacketChatMessage(message));
         }
     }
 

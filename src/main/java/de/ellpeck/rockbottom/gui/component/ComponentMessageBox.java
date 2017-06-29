@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.component;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
@@ -27,7 +27,7 @@ public class ComponentMessageBox extends ComponentButton{
         super(gui, id, x, y, sizeX, sizeY, null);
         this.textScale = textScale;
 
-        Font font = RockBottom.get().getAssetManager().getFont();
+        Font font = AbstractGame.get().getAssetManager().getFont();
         this.text = font.splitTextToLength(this.sizeX-10, textScale, true, dialogLocKeys);
         this.possibleLineAmount = Util.ceil((this.sizeY-10)/font.getHeight(textScale));
 

@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.component;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -14,9 +14,9 @@ import org.newdawn.slick.Image;
 
 public class ComponentHealth extends GuiComponent{
 
-    private static final IResourceName TEX_HEART = RockBottom.internalRes("gui.heart");
-    private static final IResourceName TEX_HEART_EMPTY = RockBottom.internalRes("gui.heart_empty");
-    private static final IResourceName LOC_HEALTH = RockBottom.internalRes("info.health");
+    private static final IResourceName TEX_HEART = AbstractGame.internalRes("gui.heart");
+    private static final IResourceName TEX_HEART_EMPTY = AbstractGame.internalRes("gui.heart_empty");
+    private static final IResourceName LOC_HEALTH = AbstractGame.internalRes("info.health");
 
     public ComponentHealth(Gui gui, int x, int y, int sizeX, int sizeY){
         super(gui, x, y, sizeX, sizeY);
@@ -24,7 +24,7 @@ public class ComponentHealth extends GuiComponent{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        if(game.isInWorld()){
+        if(game.getWorld() != null){
             int healthParts = Util.floor(game.getPlayer().getHealth()/20);
             int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
 
@@ -42,7 +42,7 @@ public class ComponentHealth extends GuiComponent{
 
     @Override
     public void renderOverlay(IGameInstance game, IAssetManager manager, Graphics g){
-        if(game.isInWorld()){
+        if(game.getWorld() != null){
             if(this.isMouseOver(game)){
                 RockBottomAPI.getApiHandler().drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize(LOC_HEALTH)+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());
             }

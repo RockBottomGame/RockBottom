@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -29,15 +29,15 @@ public class GuiMainMenu extends Gui{
         int start = (parts-buttonWidth)/2;
         int y = (int)game.getHeightInGui()-30;
 
-        this.components.add(new ComponentButton(this, 0, start, y, buttonWidth, 16, assetManager.localize(RockBottom.internalRes("button.play"))));
-        this.components.add(new ComponentButton(this, 1, start+parts, y, buttonWidth, 16, assetManager.localize(RockBottom.internalRes("button.join"))));
-        this.components.add(new ComponentButton(this, 6, start+parts*2, y, buttonWidth, 16, assetManager.localize(RockBottom.internalRes("button.player_editor"))));
-        this.components.add(new ComponentButton(this, 2, start+parts*3, y, buttonWidth, 16, assetManager.localize(RockBottom.internalRes("button.settings"))));
+        this.components.add(new ComponentButton(this, 0, start, y, buttonWidth, 16, assetManager.localize(AbstractGame.internalRes("button.play"))));
+        this.components.add(new ComponentButton(this, 1, start+parts, y, buttonWidth, 16, assetManager.localize(AbstractGame.internalRes("button.join"))));
+        this.components.add(new ComponentButton(this, 6, start+parts*2, y, buttonWidth, 16, assetManager.localize(AbstractGame.internalRes("button.player_editor"))));
+        this.components.add(new ComponentButton(this, 2, start+parts*3, y, buttonWidth, 16, assetManager.localize(AbstractGame.internalRes("button.settings"))));
 
-        this.components.add(new ComponentButton(this, 4, width-47, 2, 45, 10, assetManager.localize(RockBottom.internalRes("button.credits"))));
-        this.components.add(new ComponentButton(this, 5, width-47, 14, 45, 10, assetManager.localize(RockBottom.internalRes("button.mods"))));
+        this.components.add(new ComponentButton(this, 4, width-47, 2, 45, 10, assetManager.localize(AbstractGame.internalRes("button.credits"))));
+        this.components.add(new ComponentButton(this, 5, width-47, 14, 45, 10, assetManager.localize(AbstractGame.internalRes("button.mods"))));
 
-        this.components.add(new ComponentButton(this, 3, 2, 2, 45, 10, assetManager.localize(RockBottom.internalRes("button.quit"))));
+        this.components.add(new ComponentButton(this, 3, 2, 2, 45, 10, assetManager.localize(AbstractGame.internalRes("button.quit"))));
     }
 
     @Override

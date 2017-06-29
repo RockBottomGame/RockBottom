@@ -1,28 +1,20 @@
-package de.ellpeck.rockbottom;
+package de.ellpeck.rockbottom.init;
 
-import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.Gui;
-import de.ellpeck.rockbottom.api.mod.IModLoader;
-import de.ellpeck.rockbottom.api.util.IAction;
-import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
-import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.ApiHandler;
 import de.ellpeck.rockbottom.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
-import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiInventory;
@@ -37,114 +29,47 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.WorldRenderer;
-import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.*;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
-public class RockBottom extends BasicGame implements IGameInstance{
+public class RockBottom extends AbstractGame{
 
-    public static final String VERSION = "0.0.7";
-    public static final String NAME = "Rock Bottom";
-    public static final String ID = "rockbottom";
-
-    private final List<IAction> scheduledActions = new ArrayList<>();
-    private DataManager dataManager;
-
-    private Settings settings;
+    protected Settings settings;
     private EntityPlayer player;
     private PlayerDesign playerDesign;
     private GuiManager guiManager;
     private InteractionManager interactionManager;
-    private ChatLog chatLog;
-    private World world;
     private AssetManager assetManager;
     private ParticleManager particleManager;
-    public int tpsAverage;
-    public int fpsAverage;
-    public int tpsAccumulator;
-    public int fpsAccumulator;
     private UUID uniqueId;
     private boolean isDebug;
     private boolean isLightDebug;
     private boolean isForegroundDebug;
     private boolean isBackgroundDebug;
     private boolean isItemInfoDebug;
-    private Container container;
     private WorldRenderer worldRenderer;
     private int lastWidth;
     private int lastHeight;
-    private int totalTicks;
-
-    public RockBottom(){
-        super(NAME+" "+VERSION);
-    }
-
-    public static IGameInstance get(){
-        return RockBottomAPI.getGame();
-    }
-
-    public static IResourceName internalRes(String resource){
-        return RockBottomAPI.createRes(get(), resource);
-    }
 
     public static void init(){
-        RockBottom game = new RockBottom();
-
-        RockBottomAPI.setGameInstance(game);
-        RockBottomAPI.setModLoader(new ModLoader());
-        RockBottomAPI.setApiHandler(new ApiHandler());
-        RockBottomAPI.setEventHandler(new EventHandler());
-        RockBottomAPI.setNetHandler(new NetHandler());
-
-        try{
-            Container container = new Container(game);
-            container.setForceExit(false);
-            container.start();
-        }
-        catch(SlickException e){
-            Log.error("Exception initializing game", e);
-        }
-        finally{
-            RockBottomAPI.getNet().shutdown();
-        }
-
-        Log.info("Game shutting down");
-    }
-
-    @Override
-    public void init(GameContainer container) throws SlickException{
-        this.container = (Container)container;
-        this.dataManager = new DataManager(this);
-
-        IModLoader modLoader = RockBottomAPI.getModLoader();
-        modLoader.loadJarMods(this.dataManager.getModsDir());
-        if(Main.unpackedModsDir != null){
-            modLoader.loadUnpackedMods(Main.unpackedModsDir);
-        }
-        modLoader.sortMods();
-
-        modLoader.preInit();
-        modLoader.init();
-        modLoader.postInit();
-
-        this.quitWorld();
+        doInit(new RockBottom());
     }
 
     @Override
@@ -175,17 +100,18 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
-    public void init(IGameInstance game, IAssetManager assetManager, IApiHandler apiHandler, IEventHandler eventHandler){
-        ContentRegistry.init();
-        ConstructionRegistry.init();
+    public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        super.init(game, apiHandler, eventHandler);
+
         WorldRenderer.init();
     }
 
     @Override
-    public void postInit(IGameInstance game, IAssetManager assetManager, IApiHandler apiHandler, IEventHandler eventHandler){
+    public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        super.postInit(game, apiHandler, eventHandler);
+
         this.guiManager = new GuiManager();
         this.interactionManager = new InteractionManager();
-        this.chatLog = new ChatLog();
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
@@ -218,37 +144,17 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
-    public int getTotalTicks(){
-        return this.totalTicks;
+    protected Container makeContainer() throws SlickException{
+        return new Container(this);
     }
 
     @Override
-    public PlayerDesign getPlayerDesign(){
-        return this.playerDesign;
+    public int getAutosaveInterval(){
+        return this.settings.autosaveIntervalSeconds;
     }
 
     @Override
-    public void update(GameContainer container, int delta) throws SlickException{
-        this.totalTicks++;
-        this.tpsAccumulator++;
-
-        synchronized(this.scheduledActions){
-            for(int i = 0; i < this.scheduledActions.size(); i++){
-                IAction action = this.scheduledActions.get(i);
-
-                if(action.run()){
-                    this.scheduledActions.remove(i);
-                    i--;
-                }
-            }
-        }
-
-        if(RockBottomAPI.getNet().isClient()){
-            if(!RockBottomAPI.getNet().isConnectedToServer()){
-                this.quitWorld();
-            }
-        }
-
+    protected void doUpdate(){
         if(this.world != null && this.player != null){
             Gui gui = this.guiManager.getGui();
             if(gui == null || !gui.doesPauseGame() || RockBottomAPI.getNet().isActive()){
@@ -260,6 +166,58 @@ public class RockBottom extends BasicGame implements IGameInstance{
         }
 
         this.guiManager.update(this);
+    }
+
+    @Override
+    public void startWorld(File worldFile, WorldInfo info){
+        super.startWorld(worldFile, info);
+
+        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
+        this.world.addEntity(this.player);
+
+        this.guiManager.reInitSelf(this);
+        this.guiManager.closeGui();
+    }
+
+    @Override
+    public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
+        Log.info("Joining world");
+
+        this.world = new ClientWorld(info, tileRegInfo, biomeRegInfo);
+
+        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
+        this.player.load(playerSet);
+        this.world.addEntity(this.player);
+
+        this.guiManager.reInitSelf(this);
+        this.guiManager.closeGui();
+    }
+
+    @Override
+    public void quitWorld(){
+        super.quitWorld();
+
+        if(this.player != null){
+            if(RockBottomAPI.getNet().isClient()){
+                Log.info("Sending disconnection packet");
+                RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
+            }
+        }
+
+        this.player = null;
+
+        this.guiManager.reInitSelf(this);
+        this.guiManager.openGui(new GuiMainMenu());
+    }
+
+    @Override
+    public PlayerDesign getPlayerDesign(){
+        return this.playerDesign;
+    }
+
+    @Override
+    public boolean isDedicatedServer(){
+        return false;
     }
 
     @Override
@@ -316,7 +274,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public void render(GameContainer container, Graphics g) throws SlickException{
         this.fpsAccumulator++;
 
-        if(this.isInWorld()){
+        if(this.world != null){
             this.worldRenderer.render(this, this.assetManager, this.particleManager, g, this.world, this.player, this.interactionManager);
 
             if(this.isDebug){
@@ -329,102 +287,12 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
-    public boolean isInWorld(){
-        return this.world != null;
-    }
-
-    @Override
-    public void startWorld(File worldFile, WorldInfo info){
-        Log.info("Starting world with file "+worldFile);
-
-        NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), Short.MAX_VALUE);
-        this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_REGISTRY);
-
-        NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), Short.MAX_VALUE);
-        this.populateIndexInfo(biomeRegInfo, RockBottomAPI.BIOME_REGISTRY);
-
-        if(info.seed == 0){
-            info.seed = Util.RANDOM.nextLong();
-        }
-
-        this.world = new World(info, tileRegInfo, biomeRegInfo);
-        this.world.initFiles(worldFile);
-
-        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
-        this.world.addEntity(this.player);
-
-        this.guiManager.reInitSelf(this);
-        this.guiManager.closeGui();
-
-        Log.info("Successfully started world with file "+worldFile);
-    }
-
-    private void populateIndexInfo(NameToIndexInfo info, NameRegistry reg){
-        this.dataManager.loadPropSettings(info);
-        info.populate(reg);
-
-        if(info.needsSave()){
-            this.dataManager.savePropSettings(info);
-        }
-    }
-
-    @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
-        Log.info("Joining world");
-
-        this.world = new ClientWorld(info, tileRegInfo, biomeRegInfo);
-
-        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
-        this.player.load(playerSet);
-        this.world.addEntity(this.player);
-
-        this.guiManager.reInitSelf(this);
-        this.guiManager.closeGui();
-
-        Log.info("Successfully joined world");
-    }
-
-    @Override
-    public void quitWorld(){
-        Log.info("Quitting current world");
-
-        if(this.player != null){
-            if(RockBottomAPI.getNet().isClient()){
-                Log.info("Sending disconnection packet");
-                RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
-            }
-        }
-
-        RockBottomAPI.getNet().shutdown();
-
-        this.world = null;
-        this.player = null;
-
-        this.guiManager.reInitSelf(this);
-        this.guiManager.openGui(new GuiMainMenu());
-
-        Log.info("Successfully quit current world");
-    }
-
-    @Override
     public void openIngameMenu(){
         this.guiManager.openGui(new GuiMenu());
 
         if(!RockBottomAPI.getNet().isClient()){
             this.world.save();
         }
-    }
-
-    @Override
-    public void scheduleAction(IAction action){
-        synchronized(this.scheduledActions){
-            this.scheduledActions.add(action);
-        }
-    }
-
-    @Override
-    public GameContainer getContainer(){
-        return this.container;
     }
 
     @Override
@@ -482,16 +350,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
-    public IDataManager getDataManager(){
-        return this.dataManager;
-    }
-
-    @Override
-    public Settings getSettings(){
-        return this.settings;
-    }
-
-    @Override
     public EntityPlayer getPlayer(){
         return this.player;
     }
@@ -507,16 +365,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
     }
 
     @Override
-    public ChatLog getChatLog(){
-        return this.chatLog;
-    }
-
-    @Override
-    public IWorld getWorld(){
-        return this.world;
-    }
-
-    @Override
     public IAssetManager getAssetManager(){
         return this.assetManager;
     }
@@ -526,6 +374,7 @@ public class RockBottom extends BasicGame implements IGameInstance{
         return this.particleManager;
     }
 
+    @Override
     public void setUniqueId(UUID uniqueId){
         this.uniqueId = uniqueId;
     }
@@ -558,56 +407,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
     @Override
     public boolean isItemInfoDebug(){
         return this.isItemInfoDebug;
-    }
-
-    @Override
-    public int getTpsAverage(){
-        return this.tpsAverage;
-    }
-
-    @Override
-    public int getFpsAverage(){
-        return this.fpsAverage;
-    }
-
-    @Override
-    public URLClassLoader getClassLoader(){
-        return Main.classLoader;
-    }
-
-    @Override
-    public String getDisplayName(){
-        return NAME;
-    }
-
-    @Override
-    public String getId(){
-        return ID;
-    }
-
-    @Override
-    public String getVersion(){
-        return VERSION;
-    }
-
-    @Override
-    public String getResourceLocation(){
-        return "/assets/rockbottom";
-    }
-
-    @Override
-    public int getSortingPriority(){
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public String getDescription(){
-        return "The base game and all its features";
-    }
-
-    @Override
-    public boolean isDisableable(){
-        return false;
     }
 
     private void takeScreenshot(){
@@ -650,5 +449,10 @@ public class RockBottom extends BasicGame implements IGameInstance{
         catch(Exception e){
             Log.error("Couldn't take screenshot", e);
         }
+    }
+
+    @Override
+    public Settings getSettings(){
+        return this.settings;
     }
 }

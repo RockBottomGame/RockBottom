@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.component;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -14,7 +14,7 @@ import org.newdawn.slick.Graphics;
 
 public class ComponentHotbarSlot extends GuiComponent{
 
-    private static final IResourceName TEX_ARROW = RockBottom.internalRes("gui.selection_arrow");
+    private static final IResourceName TEX_ARROW = AbstractGame.internalRes("gui.selection_arrow");
 
     private final AbstractEntityPlayer player;
     private final Inventory inv;

@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.assets;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
@@ -87,8 +88,8 @@ public class AssetManager implements IAssetManager{
         Log.info("Loaded "+this.getAllOfType(AssetAnimation.class).size()+" animations!");
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
 
-        this.currentLocale = this.getLocale(RockBottom.internalRes("us_english"));
-        this.currentFont = this.getFont(RockBottom.internalRes("default"));
+        this.currentLocale = this.getLocale(AbstractGame.internalRes("us_english"));
+        this.currentFont = this.getFont(AbstractGame.internalRes("default"));
 
         this.reloadCursor(game);
     }
@@ -99,7 +100,7 @@ public class AssetManager implements IAssetManager{
             GameContainer container = game.getContainer();
 
             if(!game.getSettings().hardwareCursor){
-                container.setMouseCursor(this.getTexture(RockBottom.internalRes("gui.cursor")), 0, 0);
+                container.setMouseCursor(this.getTexture(AbstractGame.internalRes("gui.cursor")), 0, 0);
             }
             else{
                 container.setDefaultMouseCursor();

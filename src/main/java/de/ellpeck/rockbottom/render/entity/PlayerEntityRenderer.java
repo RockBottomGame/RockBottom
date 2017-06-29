@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.render.entity;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -14,8 +14,8 @@ import org.newdawn.slick.Graphics;
 
 public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
-    private static final IResourceName SPECIAL_BASE = RockBottom.internalRes("player.base.male_skin_s");
-    private static final IResourceName SPECIAL_ARMS = RockBottom.internalRes("player.arm.skin_s");
+    private static final IResourceName SPECIAL_BASE = AbstractGame.internalRes("player.base.male_skin_s");
+    private static final IResourceName SPECIAL_ARMS = AbstractGame.internalRes("player.arm.skin_s");
 
     private int animStarted;
     private int lastRow;

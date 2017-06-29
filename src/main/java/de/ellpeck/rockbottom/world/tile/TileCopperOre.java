@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -14,7 +14,7 @@ import java.util.List;
 public class TileCopperOre extends TileBasic{
 
     public TileCopperOre(){
-        super(RockBottom.internalRes("copper_ore"));
+        super(AbstractGame.internalRes("copper_ore"));
     }
 
     @Override

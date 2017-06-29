@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
-import de.ellpeck.rockbottom.RockBottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
@@ -10,19 +9,17 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ItemTile;
-import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketBreakTile;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketInteract;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketPlayerMovement;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
-
-import java.util.Map;
 
 public class InteractionManager implements IInteractionManager{
 
@@ -78,7 +75,7 @@ public class InteractionManager implements IInteractionManager{
     }
 
     public void update(RockBottom game){
-        if(game.isInWorld()){
+        if(game.getWorld() != null){
             EntityPlayer player = game.getPlayer();
             Gui gui = game.getGuiManager().getGui();
             Settings settings = game.getSettings();
@@ -118,7 +115,7 @@ public class InteractionManager implements IInteractionManager{
                             float progressAmount = 0.05F/hardness;
 
                             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-                            boolean effective = this.isToolEffective(player, selected, tile, layer, this.mousedTileX, this.mousedTileY);
+                            boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, this.mousedTileX, this.mousedTileY);
                             if(selected != null){
                                 progressAmount *= selected.getItem().getMiningSpeed(player.world, this.mousedTileX, this.mousedTileY, layer, tile, effective);
                             }
@@ -203,7 +200,7 @@ public class InteractionManager implements IInteractionManager{
 
     public void onKeyboardAction(RockBottom game, int button, char character){
         if(!game.getGuiManager().onKeyboardAction(game, button, character)){
-            if(game.isInWorld() && game.getGuiManager().getGui() == null){
+            if(game.getWorld() != null && game.getGuiManager().getGui() == null){
                 for(int i = 0; i < game.getSettings().keysItemSelection.length; i++){
                     if(button == game.getSettings().keysItemSelection[i]){
                         game.getPlayer().setSelectedSlot(i);
@@ -217,21 +214,6 @@ public class InteractionManager implements IInteractionManager{
                 }
             }
         }
-    }
-
-    @Override
-    public boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
-        if(instance != null){
-            Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
-            if(!tools.isEmpty()){
-                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())){
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     @Override

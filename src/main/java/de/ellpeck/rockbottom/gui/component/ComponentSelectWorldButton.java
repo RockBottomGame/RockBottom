@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.component;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
@@ -14,10 +14,10 @@ import java.io.File;
 
 public class ComponentSelectWorldButton extends ComponentButton{
 
-    private static final IResourceName LOC_DELETE = RockBottom.internalRes("info.delete_world");
-    private static final IResourceName LOC_WORLD = RockBottom.internalRes("info.world");
-    private static final IResourceName LOC_SEED = RockBottom.internalRes("info.seed");
-    private static final IResourceName LOC_TIME = RockBottom.internalRes("info.time");
+    private static final IResourceName LOC_DELETE = AbstractGame.internalRes("info.delete_world");
+    private static final IResourceName LOC_WORLD = AbstractGame.internalRes("info.world");
+    private static final IResourceName LOC_SEED = AbstractGame.internalRes("info.seed");
+    private static final IResourceName LOC_TIME = AbstractGame.internalRes("info.time");
 
     private final GuiSelectWorld gui;
     private final File worldFile;
@@ -29,7 +29,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
         super(gui, id, x, y, sizeX, sizeY, null);
         this.gui = gui;
 
-        this.worldFile = new File(RockBottom.get().getDataManager().getWorldsDir(), "world"+(id+1));
+        this.worldFile = new File(AbstractGame.get().getDataManager().getWorldsDir(), "world"+(id+1));
         this.exists = this.worldFile.isDirectory();
 
         this.info = new WorldInfo(this.worldFile);
@@ -41,7 +41,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     @Override
     protected String getText(){
         if(this.exists){
-            IAssetManager manager = RockBottom.get().getAssetManager();
+            IAssetManager manager = AbstractGame.get().getAssetManager();
             return manager.localize(this.gui.deleteMode ? LOC_DELETE : LOC_WORLD, this.id+1);
         }
         else{
@@ -52,7 +52,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     @Override
     protected String[] getHover(){
         if(this.exists){
-            IAssetManager manager = RockBottom.get().getAssetManager();
+            IAssetManager manager = AbstractGame.get().getAssetManager();
 
             String[] hover = new String[2];
             hover[0] = manager.localize(LOC_SEED)+": "+this.info.seed;

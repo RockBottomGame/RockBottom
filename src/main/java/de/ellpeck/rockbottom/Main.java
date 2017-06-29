@@ -28,6 +28,9 @@ public final class Main{
     public static int height;
     public static boolean fullscreen;
 
+    public static boolean isDedicatedServer;
+    public static int port;
+
     public static void main(String[] args){
         OptionParser parser = new OptionParser();
         OptionSpec<LogLevel> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(LogLevel.class).defaultsTo(LogLevel.DEBUG);
@@ -36,7 +39,9 @@ public final class Main{
         OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
         OptionSpec<Integer> optionWidth = parser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(1280);
         OptionSpec<Integer> optionHeight = parser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(720);
+        OptionSpec<Integer> optionPort = parser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(8000);
         OptionSpec optionFullscreen = parser.accepts("fullscreen");
+        OptionSpec optionServer = parser.accepts("server");
 
         OptionSet options = parser.parse(args);
 
@@ -60,6 +65,9 @@ public final class Main{
         height = options.valueOf(optionHeight);
         fullscreen = options.has(optionFullscreen);
 
+        isDedicatedServer = options.has(optionServer);
+        port = options.valueOf(optionPort);
+
         try{
             URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();
 
@@ -75,7 +83,8 @@ public final class Main{
         }
 
         try{
-            Class gameClass = Class.forName("de.ellpeck.rockbottom.RockBottom", false, classLoader);
+            String className = isDedicatedServer ? "RockBottomServer" : "RockBottom";
+            Class gameClass = Class.forName("de.ellpeck.rockbottom.init."+className, false, classLoader);
             Method method = gameClass.getMethod("init");
             method.invoke(null);
         }

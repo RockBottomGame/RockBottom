@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.RockBottom;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -23,7 +23,7 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmelter;
 public class TileSmelter extends MultiTile{
 
     public TileSmelter(){
-        super(RockBottom.internalRes("smelter"));
+        super(AbstractGame.internalRes("smelter"));
     }
 
     @Override
@@ -122,7 +122,7 @@ public class TileSmelter extends MultiTile{
         if(this.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySmelter tile = world.getTileEntity(x, y, TileEntitySmelter.class);
             if(tile != null && tile.isActive()){
-                IParticleManager manager = RockBottom.get().getParticleManager();
+                IParticleManager manager = AbstractGame.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
                     manager.addParticle(new ParticleSmoke(world, x+0.14, y+1.8, -Util.RANDOM.nextFloat()*0.03, 0, 0.08F));
