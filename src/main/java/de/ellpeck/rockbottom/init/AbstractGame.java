@@ -35,7 +35,7 @@ import java.util.List;
 
 public abstract class AbstractGame extends BasicGame implements IGameInstance{
 
-    public static final String VERSION = "0.0.7";
+    public static final String VERSION = "0.0.8";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private final List<IAction> scheduledActions = new ArrayList<>();
