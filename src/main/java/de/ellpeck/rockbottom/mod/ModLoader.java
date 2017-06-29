@@ -194,6 +194,14 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
+    public void initAssets(){
+        IGameInstance game = RockBottomAPI.getGame();
+        for(IMod mod : this.activeMods){
+            mod.initAssets(game, game.getAssetManager(), RockBottomAPI.getApiHandler());
+        }
+    }
+
+    @Override
     public void postInit(){
         IGameInstance game = RockBottomAPI.getGame();
         for(IMod mod : this.activeMods){
