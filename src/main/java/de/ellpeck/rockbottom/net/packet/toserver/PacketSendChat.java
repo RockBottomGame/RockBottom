@@ -42,7 +42,7 @@ public class PacketSendChat implements IPacket{
             if(game.getWorld() != null){
                 AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
-                    game.getChatLog().sendPlayerMessage(this.message, player);
+                    game.getChatLog().sendCommandSenderMessage(this.message, player);
                 }
             }
             return true;

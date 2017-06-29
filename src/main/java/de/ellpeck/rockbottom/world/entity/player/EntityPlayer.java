@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -15,6 +14,7 @@ import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
@@ -27,7 +27,9 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketRespawn;
@@ -375,6 +377,16 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public String getChatColorFormat(){
         Color color = this.design.getFavoriteColor();
         return Util.colorToFormattingCode(color);
+    }
+
+    @Override
+    public void sendMessageTo(IChatLog chat, String message){
+        if(RockBottomAPI.getNet().isThePlayer(this)){
+            chat.displayMessage(message);
+        }
+        else{
+            this.sendPacket(new PacketChatMessage(message));
+        }
     }
 
     @Override

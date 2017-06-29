@@ -83,7 +83,7 @@ public class GuiChat extends Gui{
                     RockBottomAPI.getNet().sendToServer(new PacketSendChat(game.getPlayer().getUniqueId(), text));
                 }
                 else{
-                    game.getChatLog().sendPlayerMessage(text, game.getPlayer());
+                    game.getChatLog().sendCommandSenderMessage(text, game.getPlayer());
                 }
 
                 this.inputField.setText("");

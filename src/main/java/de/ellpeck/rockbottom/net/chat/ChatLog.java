@@ -1,15 +1,15 @@
 package de.ellpeck.rockbottom.net.chat;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
-import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
+import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.gui.GuiChat;
+import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
@@ -26,6 +26,7 @@ public class ChatLog implements IChatLog{
         IChatLog.registerCommand(new CommandSpawnItem());
         IChatLog.registerCommand(new CommandTeleport());
         IChatLog.registerCommand(new CommandMe());
+        IChatLog.registerCommand(new CommandStop());
     }
 
     private final List<String> messages = new ArrayList<>();
@@ -40,7 +41,7 @@ public class ChatLog implements IChatLog{
     }
 
     @Override
-    public void sendPlayerMessage(String message, AbstractEntityPlayer player){
+    public void sendCommandSenderMessage(String message, ICommandSender sender){
         if(RockBottomAPI.getNet().isServer()){
             if(message.startsWith("/")){
                 String cmdFeedback;
@@ -49,9 +50,9 @@ public class ChatLog implements IChatLog{
                 Command command = RockBottomAPI.COMMAND_REGISTRY.get(split[0]);
 
                 if(command != null){
-                    if(player.getCommandLevel() >= command.getLevel()){
+                    if(sender.getCommandLevel() >= command.getLevel()){
                         IGameInstance game = AbstractGame.get();
-                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, player.getName(), game, this);
+                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), sender, sender.getName(), game, this);
                     }
                     else{
                         cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
@@ -61,27 +62,22 @@ public class ChatLog implements IChatLog{
                     cmdFeedback = FormattingCode.RED+"Unknown command, use /help for a list of commands.";
                 }
 
-                Log.info("Player "+player.getName()+" with id "+player.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
-
                 if(cmdFeedback != null){
-                    this.sendMessageToPlayer(player, cmdFeedback);
+                    this.sendMessageTo(sender, cmdFeedback);
                 }
+
+                Log.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
             }
             else{
-                this.broadcastMessage(player.getChatColorFormat()+"["+player.getName()+"] &4"+message);
+                this.broadcastMessage(sender.getChatColorFormat()+"["+sender.getName()+"] &4"+message);
             }
         }
     }
 
     @Override
-    public void sendMessageToPlayer(AbstractEntityPlayer player, String message){
+    public void sendMessageTo(ICommandSender sender, String message){
         if(RockBottomAPI.getNet().isServer()){
-            if(RockBottomAPI.getNet().isThePlayer(player)){
-                this.displayMessage(message);
-            }
-            else{
-                player.sendPacket(new PacketChatMessage(message));
-            }
+            sender.sendMessageTo(this, message);
         }
     }
 

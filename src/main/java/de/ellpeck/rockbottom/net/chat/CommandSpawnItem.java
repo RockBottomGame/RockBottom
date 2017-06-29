@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
+import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 
 import java.util.Arrays;
 
@@ -18,20 +19,25 @@ public class CommandSpawnItem extends Command{
     }
 
     @Override
-    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IChatLog chat){
+    public String execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         try{
-            Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(args[0]));
+            if(sender instanceof AbstractEntityPlayer){
+                Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(args[0]));
 
-            if(item != null){
-                int amount = args.length < 2 ? 1 : Integer.parseInt(args[1]);
-                int meta = args.length < 3 ? 0 : Integer.parseInt(args[2]);
+                if(item != null){
+                    int amount = args.length < 2 ? 1 : Integer.parseInt(args[1]);
+                    int meta = args.length < 3 ? 0 : Integer.parseInt(args[2]);
 
-                ItemInstance instance = new ItemInstance(item, amount, meta);
-                player.getInv().add(instance, false);
-                return FormattingCode.GREEN+"Added "+amount+"x "+instance.getDisplayName()+"!";
+                    ItemInstance instance = new ItemInstance(item, amount, meta);
+                    ((AbstractEntityPlayer)sender).getInv().add(instance, false);
+                    return FormattingCode.GREEN+"Added "+amount+"x "+instance.getDisplayName()+"!";
+                }
+                else{
+                    return FormattingCode.RED+"Item with name "+args[0]+" not found!";
+                }
             }
             else{
-                return FormattingCode.RED+"Item with name "+args[0]+" not found!";
+                return FormattingCode.RED+"Only players can execute this command!";
             }
         }
         catch(Exception e){

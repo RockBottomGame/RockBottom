@@ -3,12 +3,11 @@ package de.ellpeck.rockbottom.net.chat;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
+import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public class CommandAddPermission extends Command{
     }
 
     @Override
-    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IChatLog chat){
+    public String execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         try{
             UUID id = UUID.fromString(args[0]);
             int level = Integer.parseInt(args[1]);
