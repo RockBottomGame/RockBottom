@@ -24,12 +24,14 @@ public class PacketDecoder extends ByteToMessageDecoder{
             }
             catch(Exception e){
                 Log.error("Couldn't read packet "+packetClass+" with id "+id+" from buffer", e);
+                buf.clear();
             }
 
             out.add(packet);
         }
         else{
             Log.error("Found unknown packet with id "+id);
+            buf.clear();
         }
     }
 }
