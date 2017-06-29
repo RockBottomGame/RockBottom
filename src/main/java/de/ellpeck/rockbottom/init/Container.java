@@ -137,20 +137,18 @@ public class Container extends AppGameContainer{
 
         this.doUpdate(delta);
 
-        if(this.hasFocus()){
-            GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
-            GL.glLoadIdentity();
+        GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
+        GL.glLoadIdentity();
 
-            Graphics graphics = this.getGraphics();
-            graphics.setAntiAlias(false);
+        Graphics graphics = this.getGraphics();
+        graphics.setAntiAlias(false);
 
-            this.game.render(this, graphics);
+        this.game.render(this, graphics);
 
-            graphics.resetTransform();
-            graphics.resetLineWidth();
+        graphics.resetTransform();
+        graphics.resetLineWidth();
 
-            GL.flush();
-        }
+        GL.flush();
 
         if(this.targetFPS != -1){
             Display.sync(this.targetFPS);
