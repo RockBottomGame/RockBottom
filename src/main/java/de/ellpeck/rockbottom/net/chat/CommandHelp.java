@@ -15,7 +15,7 @@ public class CommandHelp extends Command{
     }
 
     @Override
-    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IAssetManager manager, IChatLog chat){
+    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IChatLog chat){
         chat.sendMessageToPlayer(player, FormattingCode.GREEN+"List of all commands:");
 
         for(Command command : RockBottomAPI.COMMAND_REGISTRY.values()){

@@ -20,7 +20,7 @@ public class CommandAddPermission extends Command{
     }
 
     @Override
-    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IAssetManager manager, IChatLog chat){
+    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IChatLog chat){
         try{
             UUID id = UUID.fromString(args[0]);
             int level = Integer.parseInt(args[1]);

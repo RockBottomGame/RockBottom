@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.net.chat;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.Item;
@@ -19,7 +18,7 @@ public class CommandSpawnItem extends Command{
     }
 
     @Override
-    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IAssetManager manager, IChatLog chat){
+    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IChatLog chat){
         try{
             Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(args[0]));
 

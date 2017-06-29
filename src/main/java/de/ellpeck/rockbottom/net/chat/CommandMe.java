@@ -14,7 +14,7 @@ public class CommandMe extends Command{
     }
 
     @Override
-    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IAssetManager manager, IChatLog chat){
+    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IChatLog chat){
         if(args.length <= 0){
             return FormattingCode.RED+"Message is missing!";
         }

@@ -51,7 +51,7 @@ public class ChatLog implements IChatLog{
                 if(command != null){
                     if(player.getCommandLevel() >= command.getLevel()){
                         IGameInstance game = AbstractGame.get();
-                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, player.getName(), game, game.getAssetManager(), this);
+                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), player, player.getName(), game, this);
                     }
                     else{
                         cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";

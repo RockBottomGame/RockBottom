@@ -16,7 +16,7 @@ public class CommandTeleport extends Command{
     }
 
     @Override
-    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IAssetManager manager, IChatLog chat){
+    public String execute(String[] args, AbstractEntityPlayer player, String playerName, IGameInstance game, IChatLog chat){
         try{
             int x = Integer.parseInt(args[0]);
             int y = Integer.parseInt(args[1]);
