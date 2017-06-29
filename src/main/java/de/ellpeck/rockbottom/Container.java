@@ -1,15 +1,15 @@
 package de.ellpeck.rockbottom;
 
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.PixelFormat;
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.ImageIOImageData;
 import org.newdawn.slick.opengl.LoadableImageData;
+import org.newdawn.slick.opengl.renderer.SGL;
 import org.newdawn.slick.util.Log;
 
 import java.nio.ByteBuffer;
@@ -18,7 +18,10 @@ import java.security.PrivilegedAction;
 
 public class Container extends AppGameContainer{
 
+    private static final int INTERVAL = 1000/Constants.TARGET_TPS;
+
     protected final RockBottom game;
+    private long lastPollTime;
 
     public Container(RockBottom game) throws SlickException{
         super(game, Main.width, Main.height, Main.fullscreen);
@@ -103,8 +106,28 @@ public class Container extends AppGameContainer{
     }
 
     @Override
-    protected void gameLoop() throws SlickException{
-        super.gameLoop();
+    protected void gameLoop(){
+        this.updateAndRender(this.getDelta());
+
+        long time = this.getTime();
+        if(time-this.lastPollTime >= 1000){
+            this.game.tpsAverage = this.game.tpsAccumulator;
+            this.game.fpsAverage = this.game.fpsAccumulator;
+
+            this.game.tpsAccumulator = 0;
+            this.game.fpsAccumulator = 0;
+
+            this.lastPollTime = time;
+        }
+
+        Display.update();
+
+        if(Display.isCloseRequested()){
+            if(this.game.closeRequested()){
+                this.running = false;
+                return;
+            }
+        }
 
         if(!this.isFullscreen() && Display.wasResized()){
             int width = Display.getWidth();
@@ -119,6 +142,52 @@ public class Container extends AppGameContainer{
 
                 this.game.getGuiManager().setReInit();
             }
+        }
+    }
+
+    @Override
+    protected void updateAndRender(int delta){
+        this.input.poll(this.width, this.height);
+
+        Music.poll(delta);
+
+        this.storedDelta += delta;
+
+        if(this.storedDelta >= INTERVAL){
+            try{
+                long updates = this.storedDelta/INTERVAL;
+                for(int i = 0; i < updates; i++){
+                    this.game.update(this, INTERVAL);
+                    this.storedDelta -= INTERVAL;
+                }
+            }
+            catch(Exception e){
+                throw new RuntimeException("Updating the game failed", e);
+            }
+        }
+
+        if(this.hasFocus()){
+            GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
+            GL.glLoadIdentity();
+
+            Graphics graphics = this.getGraphics();
+            graphics.setAntiAlias(false);
+
+            try{
+                this.game.render(this, graphics);
+            }
+            catch(Exception e){
+                throw new RuntimeException("Rendering the game failed", e);
+            }
+
+            graphics.resetTransform();
+            graphics.resetLineWidth();
+
+            GL.flush();
+        }
+
+        if(this.targetFPS != -1){
+            Display.sync(this.targetFPS);
         }
     }
 }

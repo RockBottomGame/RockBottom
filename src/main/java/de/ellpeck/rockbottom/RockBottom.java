@@ -76,8 +76,10 @@ public class RockBottom extends BasicGame implements IGameInstance{
     private World world;
     private AssetManager assetManager;
     private ParticleManager particleManager;
-    private int tpsAverage;
-    private int fpsAverage;
+    public int tpsAverage;
+    public int fpsAverage;
+    public int tpsAccumulator;
+    public int fpsAccumulator;
     private UUID uniqueId;
     private boolean isDebug;
     private boolean isLightDebug;
@@ -86,9 +88,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
     private boolean isItemInfoDebug;
     private Container container;
     private WorldRenderer worldRenderer;
-    private long lastPollTime;
-    private int tpsAccumulator;
-    private int fpsAccumulator;
     private int lastWidth;
     private int lastHeight;
     private int totalTicks;
@@ -117,14 +116,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
         try{
             Container container = new Container(game);
             container.setForceExit(false);
-            container.setUpdateOnlyWhenVisible(false);
-            container.setAlwaysRender(true);
-            container.setShowFPS(false);
-
-            int interval = 1000/Constants.TARGET_TPS;
-            container.setMinimumLogicUpdateInterval(interval);
-            container.setMaximumLogicUpdateInterval(interval);
-
             container.start();
         }
         catch(SlickException e){
@@ -240,17 +231,6 @@ public class RockBottom extends BasicGame implements IGameInstance{
     public void update(GameContainer container, int delta) throws SlickException{
         this.totalTicks++;
         this.tpsAccumulator++;
-
-        long time = container.getTime();
-        if(time-this.lastPollTime >= 1000){
-            this.tpsAverage = this.tpsAccumulator;
-            this.fpsAverage = this.fpsAccumulator;
-
-            this.tpsAccumulator = 0;
-            this.fpsAccumulator = 0;
-
-            this.lastPollTime = time;
-        }
 
         synchronized(this.scheduledActions){
             for(int i = 0; i < this.scheduledActions.size(); i++){
