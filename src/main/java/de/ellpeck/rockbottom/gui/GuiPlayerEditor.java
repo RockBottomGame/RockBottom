@@ -45,7 +45,6 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(new ColorPicker(this, colorX, y, design.getEyebrowsColor(), design:: setEyebrowsColor));
         y += 14;
         this.components.add(new Slider(this, 2, x, y, design.getMouth(), IPlayerDesign.MOUTH.size()-1, design:: setMouth, assetManager.localize(RockBottom.internalRes("button.player_design.mouth"))));
-        this.components.add(new ColorPicker(this, colorX, y, design.getMouthColor(), design:: setMouthColor));
         y += 14;
         this.components.add(new Slider(this, 3, x, y, design.getHair(), IPlayerDesign.HAIR.size()-1, design:: setHair, assetManager.localize(RockBottom.internalRes("button.player_design.hair"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getHairColor(), design:: setHairColor));

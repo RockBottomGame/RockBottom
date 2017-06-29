@@ -93,7 +93,6 @@ public class PlayerDesign implements IPlayerDesign{
         design.setEyebrowsColor(Util.randomColor(Util.RANDOM));
 
         design.setMouth(Util.RANDOM.nextInt(MOUTH.size()));
-        design.setMouthColor(Util.randomColor(Util.RANDOM));
     }
 
     private static int loadIndex(String s, List<IResourceName> list){
@@ -294,11 +293,6 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getMouthColor(){
-        return this.mouthColor;
-    }
-
-    @Override
     public Color getEyebrowsColor(){
         return this.eyebrowsColor;
     }
@@ -376,11 +370,6 @@ public class PlayerDesign implements IPlayerDesign{
     @Override
     public void setMouth(int mouth){
         this.mouth = mouth;
-    }
-
-    @Override
-    public void setMouthColor(Color mouthColor){
-        this.mouthColor = mouthColor;
     }
 
     @Override

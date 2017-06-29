@@ -31,7 +31,10 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
             manager.getAnimation(eyebrows).drawRow(time, row, x, y, scale, light.multiply(design.getEyebrowsColor()));
         }
 
-        manager.getAnimation(IPlayerDesign.MOUTH.get(design.getMouth())).drawRow(time, row, x, y, scale, light.multiply(design.getMouthColor()));
+        IResourceName mouth = IPlayerDesign.MOUTH.get(design.getMouth());
+        if(mouth != null){
+            manager.getAnimation(mouth).drawRow(time, row, x, y, scale, light);
+        }
 
         IResourceName pants = IPlayerDesign.PANTS.get(design.getPants());
         if(pants != null){
