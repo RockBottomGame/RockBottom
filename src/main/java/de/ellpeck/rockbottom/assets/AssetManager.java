@@ -269,4 +269,9 @@ public class AssetManager implements IAssetManager{
     public InputStream getResourceStream(String s){
         return getResource(s);
     }
+
+    @Override
+    public Texture getMissingTexture(){
+        return this.missingTexture.get();
+    }
 }
