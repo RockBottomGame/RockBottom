@@ -35,7 +35,10 @@ public class ChatLog implements IChatLog{
     @Override
     public void displayMessage(String message){
         this.messages.add(0, message);
-        this.newMessageCounter.add(0, 400);
+
+        if(!RockBottomAPI.getGame().isDedicatedServer()){
+            this.newMessageCounter.add(0, 400);
+        }
 
         Log.info("Chat: "+message);
     }
