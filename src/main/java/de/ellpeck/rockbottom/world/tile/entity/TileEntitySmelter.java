@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntityFueled;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.inventory.TileInventory;
-import io.netty.buffer.ByteBuf;
 
 public class TileEntitySmelter extends TileEntityFueled{
 
@@ -114,36 +113,26 @@ public class TileEntitySmelter extends TileEntityFueled{
     }
 
     @Override
-    public void save(DataSet set){
-        super.save(set);
+    public void save(DataSet set, boolean forSync){
+        super.save(set, forSync);
 
-        this.inventory.save(set);
+        if(!forSync){
+            this.inventory.save(set);
+        }
+
         set.addInt("smelt", this.smeltTime);
         set.addInt("max_smelt", this.maxSmeltTime);
     }
 
     @Override
-    public void load(DataSet set){
-        super.load(set);
+    public void load(DataSet set, boolean forSync){
+        super.load(set, forSync);
 
-        this.inventory.load(set);
+        if(!forSync){
+            this.inventory.load(set);
+        }
+
         this.smeltTime = set.getInt("smelt");
         this.maxSmeltTime = set.getInt("max_smelt");
-    }
-
-    @Override
-    public void toBuf(ByteBuf buf){
-        super.toBuf(buf);
-
-        buf.writeInt(this.smeltTime);
-        buf.writeInt(this.maxSmeltTime);
-    }
-
-    @Override
-    public void fromBuf(ByteBuf buf){
-        super.fromBuf(buf);
-
-        this.smeltTime = buf.readInt();
-        this.maxSmeltTime = buf.readInt();
     }
 }

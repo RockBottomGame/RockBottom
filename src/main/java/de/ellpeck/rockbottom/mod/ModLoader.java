@@ -230,7 +230,7 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
-    public List<IMod> getAllMods(){
+    public List<IMod> getAllTheMods(){
         return Collections.unmodifiableList(this.allMods);
     }
 

@@ -15,12 +15,16 @@ public class TileEntityChest extends TileEntity{
     }
 
     @Override
-    public void save(DataSet set){
-        this.inventory.save(set);
+    public void save(DataSet set, boolean forSync){
+        if(!forSync){
+            this.inventory.save(set);
+        }
     }
 
     @Override
-    public void load(DataSet set){
-        this.inventory.load(set);
+    public void load(DataSet set, boolean forSync){
+        if(!forSync){
+            this.inventory.load(set);
+        }
     }
 }

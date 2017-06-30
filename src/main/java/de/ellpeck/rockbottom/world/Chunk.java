@@ -659,7 +659,7 @@ public class Chunk implements IChunk{
                 DataSet tileSet = new DataSet();
                 tileSet.addInt("x", tile.x);
                 tileSet.addInt("y", tile.y);
-                tile.save(tileSet);
+                tile.save(tileSet, false);
 
                 set.addDataSet("t_"+tileEntityId, tileSet);
 
@@ -750,7 +750,7 @@ public class Chunk implements IChunk{
 
                 TileEntity tile = this.getTileEntity(x, y);
                 if(tile != null){
-                    tile.load(tileSet);
+                    tile.load(tileSet, false);
                 }
                 else{
                     Log.error("Couldn't load data of tile entity at "+x+", "+y+" because it is missing!");

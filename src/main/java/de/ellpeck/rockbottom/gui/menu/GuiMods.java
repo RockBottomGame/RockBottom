@@ -32,7 +32,7 @@ public class GuiMods extends Gui{
         super.initGui(game);
 
         int i = 0;
-        for(IMod mod : RockBottomAPI.getModLoader().getAllMods()){
+        for(IMod mod : RockBottomAPI.getModLoader().getAllTheMods()){
             this.components.add(new ComponentModButton(this, mod, i+1, 10, 10+(i*20)));
             i++;
         }
