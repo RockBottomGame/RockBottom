@@ -68,6 +68,7 @@ anim.player.accessory.sunglasses_2=/player/accessory/sunglasses_2.png,/player/ac
 anim.player.accessory.sunglasses_3=/player/accessory/sunglasses_3.png,/player/accessory/sunglasses_3.anim
 anim.player.accessory.glasses_1=/player/accessory/glasses_1.png,/player/accessory/glasses_1.anim
 anim.player.accessory.glasses_2=/player/accessory/glasses_2.png,/player/accessory/glasses_2.anim
+anim.player.accessory.glasses_3=/player/accessory/glasses_3.png,/player/accessory/glasses_3.anim
 
 anim.player.arm.skin_1.hanging=/player/arm/hanging/skin_1.png,/player/arm/hanging/skin_1.anim
 anim.player.arm.skin_2.hanging=/player/arm/hanging/skin_2.png,/player/arm/hanging/skin_2.anim
@@ -84,15 +85,19 @@ anim.player.base.male_skin_4=/player/base/male_skin_4.png,/player/base/male_skin
 anim.player.base.male_skin_5=/player/base/male_skin_5.png,/player/base/male_skin_5.anim
 anim.player.base.male_skin_s=/player/base/male_skin_s.png,/player/base/male_skin_s.anim
 
-anim.player.footwear.boots=/player/footwear/boots.png,/player/footwear/boots.anim
-anim.player.footwear.flip_flops=/player/footwear/flip_flops.png,/player/footwear/flip_flops.anim
-anim.player.footwear.shoes_1=/player/footwear/shoes_1.png,/player/footwear/shoes_1.anim
-anim.player.footwear.shoes_2=/player/footwear/shoes_2.png,/player/footwear/shoes_2.anim
-anim.player.footwear.slippers=/player/footwear/slippers.png,/player/footwear/slippers.anim
+anim.player.footwear.1=/player/footwear/1.png,/player/footwear/1.anim
+anim.player.footwear.2=/player/footwear/2.png,/player/footwear/2.anim
+anim.player.footwear.3=/player/footwear/3.png,/player/footwear/3.anim
+anim.player.footwear.4=/player/footwear/4.png,/player/footwear/4.anim
+anim.player.footwear.5=/player/footwear/5.png,/player/footwear/5.anim
 
 anim.player.hair.1=/player/hair/1.png,/player/hair/1.anim
 anim.player.hair.2=/player/hair/2.png,/player/hair/2.anim
 anim.player.hair.3=/player/hair/3.png,/player/hair/3.anim
+anim.player.hair.4=/player/hair/4.png,/player/hair/4.anim
+anim.player.hair.5=/player/hair/5.png,/player/hair/5.anim
+anim.player.hair.6=/player/hair/6.png,/player/hair/6.anim
+anim.player.hair.7=/player/hair/7.png,/player/hair/7.anim
 
 anim.player.pants.1=/player/pants/1.png,/player/pants/1.anim
 anim.player.pants.2=/player/pants/2.png,/player/pants/2.anim
@@ -124,6 +129,9 @@ anim.player.mouth.7=/player/mouth/7.png,/player/mouth/7.anim
 anim.player.mouth.8=/player/mouth/8.png,/player/mouth/8.anim
 anim.player.mouth.9=/player/mouth/9.png,/player/mouth/9.anim
 anim.player.mouth.10=/player/mouth/10.png,/player/mouth/10.anim
+
+anim.player.beard.1=/player/beard/1.png,/player/beard/1.anim
+anim.player.beard.2=/player/beard/2.png,/player/beard/2.anim
 
 tex.particle.smoke=/particle/smoke.png
 

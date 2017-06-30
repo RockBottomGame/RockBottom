@@ -35,7 +35,7 @@ public class GuiPlayerEditor extends Gui{
         IPlayerDesign design = game.getPlayerDesign();
         IAssetManager assetManager = game.getAssetManager();
         int x = (int)game.getWidthInGui()/2;
-        int y = 5;
+        int y = 3;
         int colorX = x+82;
 
         this.components.add(new Slider(this, 0, x, y, design.getBase(), IPlayerDesign.BASE.size()-1, design:: setBase, assetManager.localize(AbstractGame.internalRes("button.player_design.base"))));
@@ -62,8 +62,11 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(new ColorPicker(this, colorX, y, design.getFootwearColor(), design:: setFootwearColor));
         y += 14;
         this.components.add(new Slider(this, 8, x, y, design.getAccessory(), IPlayerDesign.ACCESSORIES.size()-1, design:: setAccessory, assetManager.localize(AbstractGame.internalRes("button.player_design.accessory"))));
+        y+=14;
+        this.components.add(new Slider(this, 9, x, y, design.getBeard(), IPlayerDesign.BEARD.size()-1, design::setBeard, assetManager.localize(AbstractGame.internalRes("button.player_design.beard"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getBeardColor(), design::setBeardColor));
 
-        this.nameField = new ComponentInputField(this, x, 131, 80, 16, true, true, false, 24, true){
+        this.nameField = new ComponentInputField(this, x, 143, 80, 12, true, true, false, 24, true){
             @Override
             public String getDisplayText(){
                 return Util.colorToFormattingCode(design.getFavoriteColor())+super.getDisplayText();
@@ -71,14 +74,14 @@ public class GuiPlayerEditor extends Gui{
         };
         this.nameField.setText(design.getName());
         this.components.add(this.nameField);
-        this.components.add(new ComponentColorPicker(this, colorX, 131, 16, 16, design.getFavoriteColor(), new ComponentColorPicker.ICallback(){
+        this.components.add(new ComponentColorPicker(this, colorX, 143, 12, 12, design.getFavoriteColor(), new ComponentColorPicker.ICallback(){
             @Override
             public void onChange(float mouseX, float mouseY, Color color){
                 design.setFavoriteColor(color);
             }
         }));
 
-        this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-98, 131, 80, 16, this.previewType+1, 1, 6, new ComponentSlider.ICallback(){
+        this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-98, 143, 80, 12, this.previewType+1, 1, 6, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 GuiPlayerEditor.this.previewType = number-1;
@@ -94,7 +97,7 @@ public class GuiPlayerEditor extends Gui{
         super.render(game, manager, g);
 
         int x = (int)game.getWidthInGui()/2-88;
-        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 5, 60F, this.previewType, game.getTotalTicks(), ".hanging", Color.white);
+        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 10, 60F, this.previewType, game.getTotalTicks(), ".hanging", Color.white);
     }
 
     @Override

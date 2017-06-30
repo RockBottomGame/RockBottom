@@ -36,6 +36,11 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
             manager.getAnimation(mouth).drawRow(time, row, x, y, scale, light);
         }
 
+        IResourceName beard = IPlayerDesign.BEARD.get(design.getBeard());
+        if(beard != null){
+            manager.getAnimation(beard).drawRow(time, row, x, y, scale, light.multiply(design.getBeardColor()));
+        }
+
         IResourceName pants = IPlayerDesign.PANTS.get(design.getPants());
         if(pants != null){
             manager.getAnimation(pants).drawRow(time, row, x, y, scale, light.multiply(design.getPantsColor()));
@@ -73,7 +78,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color light){
         IPlayerDesign design = entity.getDesign();
         boolean isMoving = Math.abs(entity.motionX) >= 0.01;
-        boolean isJumping = entity.jumping;
+        boolean isJumping = !entity.onGround;
 
         int row = entity.facing == Direction.RIGHT ? (isJumping ? 4 : (isMoving ? 0 : 2)) : (isJumping ? 5 : (isMoving ? 1 : 3));
         if(this.lastRow != row){

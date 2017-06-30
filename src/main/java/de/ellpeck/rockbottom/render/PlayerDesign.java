@@ -56,10 +56,12 @@ public class PlayerDesign implements IPlayerDesign{
     private int accessory;
 
     private int mouth;
-    private Color mouthColor;
 
     private int eyebrows;
     private Color eyebrowsColor;
+
+    private int beard;
+    private Color beardColor;
 
     public static String getRandomName(){
         return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
@@ -93,6 +95,9 @@ public class PlayerDesign implements IPlayerDesign{
         design.setEyebrowsColor(Util.randomColor(Util.RANDOM));
 
         design.setMouth(Util.RANDOM.nextInt(MOUTH.size()));
+
+        design.setBeard(Util.RANDOM.nextInt(BEARD.size()));
+        design.setBeardColor(Util.randomColor(Util.RANDOM));
     }
 
     private static int loadIndex(String s, List<IResourceName> list){
@@ -162,7 +167,9 @@ public class PlayerDesign implements IPlayerDesign{
         set.addInt("eyebrows_color", Util.toIntColor(this.eyebrowsColor));
 
         set.addString("mouth", saveIndex(this.mouth, MOUTH));
-        set.addInt("mouth_color", Util.toIntColor(this.mouthColor));
+
+        set.addString("beard", saveIndex(this.beard, BEARD));
+        set.addInt("beard_color", Util.toIntColor(this.beardColor));
     }
 
     @Override
@@ -188,13 +195,15 @@ public class PlayerDesign implements IPlayerDesign{
         this.hair = loadIndex(set.getString("hair"), HAIR);
         this.hairColor = new Color(set.getInt("hair_color"));
 
+        this.accessory = loadIndex(set.getString("accessory"), ACCESSORIES);
+
         this.eyebrows = loadIndex(set.getString("eyebrows"), EYEBROWS);
         this.eyebrowsColor = new Color(set.getInt("eyebrows_color"));
 
         this.mouth = loadIndex(set.getString("mouth"), MOUTH);
-        this.mouthColor = new Color(set.getInt("mouth_color"));
 
-        this.accessory = loadIndex(set.getString("accessory"), ACCESSORIES);
+        this.beard = loadIndex(set.getString("beard"), BEARD);
+        this.beardColor = new Color(set.getInt("beard_color"));
     }
 
     @Override
@@ -293,6 +302,16 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getBeard(){
+        return this.beard;
+    }
+
+    @Override
+    public Color getBeardColor(){
+        return this.beardColor;
+    }
+
+    @Override
     public Color getEyebrowsColor(){
         return this.eyebrowsColor;
     }
@@ -375,5 +394,15 @@ public class PlayerDesign implements IPlayerDesign{
     @Override
     public void setEyebrowsColor(Color eyebrowsColor){
         this.eyebrowsColor = eyebrowsColor;
+    }
+
+    @Override
+    public void setBeard(int beard){
+        this.beard = beard;
+    }
+
+    @Override
+    public void setBeardColor(Color beardColor){
+        this.beardColor = beardColor;
     }
 }

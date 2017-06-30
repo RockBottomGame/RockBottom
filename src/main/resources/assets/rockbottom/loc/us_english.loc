@@ -91,6 +91,7 @@ rockbottom/button.player_design.accessory=Accessory
 rockbottom/button.player_design.preview=Preview
 rockbottom/button.player_design.eyebrows=Eyebrows
 rockbottom/button.player_design.mouth=Mouth
+rockbottom/button.player_design.beard=Beard
 
 rockbottom/layer.main=Foreground
 rockbottom/layer.background=Background
