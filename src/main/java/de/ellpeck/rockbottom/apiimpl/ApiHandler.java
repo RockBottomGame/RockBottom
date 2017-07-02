@@ -287,7 +287,7 @@ public class ApiHandler implements IApiHandler{
         }
 
         if(RockBottomAPI.getEventHandler().fireEvent(new TooltipEvent(instance, game, manager, g, desc)) != EventResult.CANCELLED){
-            this.drawHoverInfoAtMouse(game, manager, g, true, 0, desc);
+            this.drawHoverInfoAtMouse(game, manager, g, true, 500, desc);
         }
     }
 
