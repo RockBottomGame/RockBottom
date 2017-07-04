@@ -120,7 +120,6 @@ public final class Main{
                 nativeDir.mkdirs();
             }
 
-            Thread.dumpStack();
             File file = new File(nativeDir, libName);
             if(file.exists()){
                 Log.info("Using native library cache file "+file);
