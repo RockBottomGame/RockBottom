@@ -1,7 +1,5 @@
 package de.ellpeck.rockbottom.assets;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
-import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
@@ -19,6 +17,8 @@ import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.init.RockBottom;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.ImageBuffer;
 import org.newdawn.slick.SlickException;
@@ -111,6 +111,21 @@ public class AssetManager implements IAssetManager{
         }
     }
 
+    @Override
+    public <T extends IAsset> Map<IResourceName, T> getAllOfType(Class<T> type){
+        Map<IResourceName, T> assets = new HashMap<>();
+
+        for(Map.Entry<IResourceName, IAsset> entry : this.assets.entrySet()){
+            IAsset asset = entry.getValue();
+
+            if(type.isAssignableFrom(asset.getClass())){
+                assets.put(entry.getKey(), (T)asset);
+            }
+        }
+
+        return assets;
+    }
+
     private void loadAssets() throws Exception{
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             String path = mod.getResourceLocation();
@@ -159,13 +174,10 @@ public class AssetManager implements IAssetManager{
                                     boolean merged = false;
 
                                     Locale loaded = Locale.fromStream(stream, key);
-                                    for(IAsset asset : this.getAllOfType(AssetLocale.class).values()){
-                                        if(asset instanceof AssetLocale){
-                                            AssetLocale locale = (AssetLocale)asset;
-                                            if(locale.get().merge(loaded)){
-                                                merged = true;
-                                                break;
-                                            }
+                                    for(AssetLocale asset : this.getAllOfType(AssetLocale.class).values()){
+                                        if(asset.get().merge(loaded)){
+                                            merged = true;
+                                            break;
                                         }
                                     }
 
@@ -199,21 +211,6 @@ public class AssetManager implements IAssetManager{
                 Log.info("Skipping mod "+mod.getDisplayName()+" that doesn't have a resource location");
             }
         }
-    }
-
-    @Override
-    public Map<IResourceName, IAsset> getAllOfType(Class<? extends IAsset> type){
-        Map<IResourceName, IAsset> assets = new HashMap<>();
-
-        for(Map.Entry<IResourceName, IAsset> entry : this.assets.entrySet()){
-            IAsset asset = entry.getValue();
-
-            if(type.isAssignableFrom(asset.getClass())){
-                assets.put(entry.getKey(), asset);
-            }
-        }
-
-        return assets;
     }
 
     @Override
