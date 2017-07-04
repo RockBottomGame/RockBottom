@@ -42,7 +42,7 @@ public class World implements IWorld{
     protected final WorldInfo info;
     private final NameToIndexInfo tileRegInfo;
     private final NameToIndexInfo biomeRegInfo;
-    public final List<EntityPlayer> players = new ArrayList<>();
+    public final List<AbstractEntityPlayer> players = new ArrayList<>();
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
@@ -487,11 +487,16 @@ public class World implements IWorld{
 
         this.info.save();
 
-        for(EntityPlayer player : this.players){
+        for(AbstractEntityPlayer player : this.players){
             this.savePlayer(player);
         }
 
         Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
+    }
+
+    @Override
+    public List<AbstractEntityPlayer> getAllPlayers(){
+        return this.players;
     }
 
     @Override
@@ -527,8 +532,8 @@ public class World implements IWorld{
     }
 
     @Override
-    public EntityPlayer getPlayer(UUID id){
-        for(EntityPlayer player : this.players){
+    public AbstractEntityPlayer getPlayer(UUID id){
+        for(AbstractEntityPlayer player : this.players){
             if(id.equals(player.getUniqueId())){
                 return player;
             }
@@ -538,7 +543,7 @@ public class World implements IWorld{
 
     @Override
     public AbstractEntityPlayer getPlayer(String name){
-        for(EntityPlayer player : this.players){
+        for(AbstractEntityPlayer player : this.players){
             if(name.equals(player.getName())){
                 return player;
             }

@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ClientWorld extends World{
@@ -78,6 +79,11 @@ public class ClientWorld extends World{
     @Override
     public AbstractEntityPlayer getPlayer(String name){
         throw new UnsupportedOperationException("Cannot get player in client world");
+    }
+
+    @Override
+    public List<AbstractEntityPlayer> getAllPlayers(){
+        throw new UnsupportedOperationException("Cannot get all players in client world");
     }
 
     @Override

@@ -27,6 +27,7 @@ public class ChatLog implements IChatLog{
         IChatLog.registerCommand(new CommandTeleport());
         IChatLog.registerCommand(new CommandMe());
         IChatLog.registerCommand(new CommandStop());
+        IChatLog.registerCommand(new CommandListPlayers());
     }
 
     private final List<String> messages = new ArrayList<>();

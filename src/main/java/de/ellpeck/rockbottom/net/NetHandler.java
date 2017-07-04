@@ -116,7 +116,7 @@ public final class NetHandler implements INetHandler{
     public void sendToAllPlayersExcept(IWorld world, IPacket packet, Entity except){
         if(this.isServer()){
             if(world instanceof World){
-                for(EntityPlayer player : ((World)world).players){
+                for(AbstractEntityPlayer player : ((World)world).players){
                     if(player != except){
                         player.sendPacket(packet);
                     }
