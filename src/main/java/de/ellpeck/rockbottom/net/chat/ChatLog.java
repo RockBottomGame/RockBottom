@@ -98,6 +98,12 @@ public class ChatLog implements IChatLog{
         return this.messages;
     }
 
+    @Override
+    public void clear(){
+        this.messages.clear();
+        this.newMessageCounter.clear();
+    }
+
     public void drawNewMessages(RockBottom game, IAssetManager manager, Graphics g){
         if(!this.newMessageCounter.isEmpty()){
             GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size());

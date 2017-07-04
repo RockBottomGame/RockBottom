@@ -206,6 +206,7 @@ public abstract class AbstractGame implements IGameInstance{
 
         RockBottomAPI.getNet().shutdown();
         this.world = null;
+        this.chatLog.clear();
     }
 
     @Override
