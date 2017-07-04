@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.server;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -39,11 +40,7 @@ public class ConnectedPlayer extends EntityPlayer{
         if(this.ticksExisted%80 == 0){
             if(!RockBottomAPI.getNet().getConnectedClients().contains(this.channel)){
                 game.scheduleAction(() -> {
-                    game.getWorld().savePlayer(this);
-                    game.getWorld().removeEntity(this);
-
-                    Log.info("Saving and removing disconnected player "+this.getName()+" with id "+this.getUniqueId()+" from world");
-
+                    disconnectPlayer(game, this);
                     return true;
                 });
             }
@@ -88,6 +85,15 @@ public class ConnectedPlayer extends EntityPlayer{
                 this.sendPacket(new PacketHealth(this.getHealth()));
             }
         }
+    }
+
+    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player){
+        game.getWorld().savePlayer(player);
+        game.getWorld().removeEntity(player);
+
+        Log.info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
+
+        RockBottomAPI.getNet().sendToAllPlayers(player.world, new PacketPlayerConnection(player.getName(), true));
     }
 
     @Override

@@ -70,6 +70,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(23, PacketChunkUnload.class);
         RockBottomAPI.PACKET_REGISTRY.register(24, PacketManualConstruction.class);
         RockBottomAPI.PACKET_REGISTRY.register(25, PacketDeath.class);
+        RockBottomAPI.PACKET_REGISTRY.register(26, PacketPlayerConnection.class);
     }
 
     private final File gameDirectory;

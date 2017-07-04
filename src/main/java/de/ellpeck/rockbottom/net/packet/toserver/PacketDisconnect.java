@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.packet.toserver;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.newdawn.slick.util.Log;
@@ -37,12 +38,7 @@ public class PacketDisconnect implements IPacket{
     public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             AbstractEntityPlayer player = game.getWorld().getPlayer(this.id);
-
-            game.getWorld().savePlayer(player);
-            game.getWorld().removeEntity(player);
-
-            Log.info("Saving and removing disconnected player with id "+this.id+" from world");
-
+            ConnectedPlayer.disconnectPlayer(game, player);
             return true;
         });
     }
