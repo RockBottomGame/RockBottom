@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -51,7 +52,6 @@ public class GuiGraphics extends Gui{
             @Override
             public void onLetGo(float mouseX, float mouseY, int min, int max, int number){
                 settings.targetFps = number;
-                game.getContainer().setTargetFrameRate(number >= max ? -1 : number);
             }
         }, assetManager.localize(AbstractGame.internalRes("button.target_fps"))){
             @Override
@@ -114,7 +114,7 @@ public class GuiGraphics extends Gui{
         }
         else if(button == 9){
             settings.vsync = !settings.vsync;
-            game.getContainer().setVSync(settings.vsync);
+            Display.setVSyncEnabled(settings.vsync);
             return true;
         }
         else if(button == 10){

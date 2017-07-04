@@ -78,7 +78,7 @@ public class GuiMainMenu extends Gui{
             return true;
         }
         else if(button == 3){
-            game.getContainer().exit();
+            game.exit();
             return true;
         }
         else if(button == 4){

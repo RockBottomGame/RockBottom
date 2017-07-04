@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.Main;
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -23,9 +24,6 @@ import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.world.World;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -33,25 +31,26 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractGame extends BasicGame implements IGameInstance{
+public abstract class AbstractGame implements IGameInstance{
 
-    public static final String VERSION = "0.0.8";
+    private static final int INTERVAL = 1000/Constants.TARGET_TPS;
+
+    public static final String VERSION = "0.0.9";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private final List<IAction> scheduledActions = new ArrayList<>();
-    public int tpsAverage;
-    public int fpsAverage;
-    public int tpsAccumulator;
-    public int fpsAccumulator;
+    private int tpsAverage;
+    private int fpsAverage;
+    private int tpsAccumulator;
+    private int fpsAccumulator;
     protected DataManager dataManager;
     protected ChatLog chatLog;
     protected World world;
-    protected Container container;
     private int totalTicks;
-
-    public AbstractGame(){
-        super(NAME+" "+VERSION);
-    }
+    private int storedDelta;
+    private long lastPollTime;
+    public boolean isRunning = true;
+    private long lastDeltaTime = System.currentTimeMillis();
 
     public static void doInit(AbstractGame game){
         RockBottomAPI.setGameInstance(game);
@@ -61,23 +60,47 @@ public abstract class AbstractGame extends BasicGame implements IGameInstance{
         RockBottomAPI.setNetHandler(new NetHandler());
 
         try{
-            Container container = game.makeContainer();
-            container.setForceExit(false);
-            container.start();
-        }
-        catch(SlickException e){
-            Log.error("Exception initializing game", e);
+            game.init();
+
+            while(game.isRunning){
+                long time = System.currentTimeMillis();
+
+                int delta = (int)(time-game.lastDeltaTime);
+                game.lastDeltaTime = time;
+
+                game.storedDelta += delta;
+                if(game.storedDelta >= INTERVAL){
+                    long updates = game.storedDelta/INTERVAL;
+                    for(int i = 0; i < updates; i++){
+                        game.updateTicked();
+                        game.storedDelta -= INTERVAL;
+                    }
+                }
+
+                game.updateTickless(delta);
+
+                if(time-game.lastPollTime >= 1000){
+                    game.tpsAverage = game.tpsAccumulator;
+                    game.fpsAverage = game.fpsAccumulator;
+
+                    game.tpsAccumulator = 0;
+                    game.fpsAccumulator = 0;
+
+                    game.lastPollTime = time;
+                }
+            }
         }
         finally{
-            RockBottomAPI.getNet().shutdown();
+            game.shutdown();
+            Log.info("Game shutting down");
         }
-
-        Log.info("Game shutting down");
     }
 
-    protected abstract Container makeContainer() throws SlickException;
-
     public abstract int getAutosaveInterval();
+
+    public void shutdown(){
+        RockBottomAPI.getNet().shutdown();
+    }
 
     public static IGameInstance get(){
         return RockBottomAPI.getGame();
@@ -92,8 +115,7 @@ public abstract class AbstractGame extends BasicGame implements IGameInstance{
         return this.totalTicks;
     }
 
-    @Override
-    public void update(GameContainer container, int delta) throws SlickException{
+    private void updateTicked(){
         this.totalTicks++;
         this.tpsAccumulator++;
 
@@ -114,12 +136,10 @@ public abstract class AbstractGame extends BasicGame implements IGameInstance{
             }
         }
 
-        this.doUpdate();
+        this.update();
     }
 
-    @Override
-    public void init(GameContainer container) throws SlickException{
-        this.container = (Container)container;
+    public void init(){
         this.dataManager = new DataManager(this);
 
         IModLoader modLoader = RockBottomAPI.getModLoader();
@@ -136,7 +156,7 @@ public abstract class AbstractGame extends BasicGame implements IGameInstance{
         this.quitWorld();
     }
 
-    protected void doUpdate(){
+    protected void update(){
         if(this.world != null){
             this.world.update(this);
         }
@@ -195,9 +215,8 @@ public abstract class AbstractGame extends BasicGame implements IGameInstance{
         }
     }
 
-    @Override
-    public GameContainer getContainer(){
-        return this.container;
+    protected void updateTickless(int delta){
+        this.fpsAccumulator++;
     }
 
     @Override
@@ -263,5 +282,10 @@ public abstract class AbstractGame extends BasicGame implements IGameInstance{
     @Override
     public boolean isDisableable(){
         return false;
+    }
+
+    @Override
+    public void exit(){
+        this.isRunning = false;
     }
 }

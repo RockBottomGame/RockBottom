@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.init;
 
-import de.ellpeck.rockbottom.ContentRegistry;
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -11,19 +11,13 @@ import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.apiimpl.ApiHandler;
-import de.ellpeck.rockbottom.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.gui.GuiManager;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
-import de.ellpeck.rockbottom.mod.ModLoader;
-import de.ellpeck.rockbottom.net.NetHandler;
-import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.net.client.ClientWorld;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.particle.ParticleManager;
@@ -33,23 +27,32 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.lwjgl.opengl.PixelFormat;
+import org.newdawn.slick.*;
+import org.newdawn.slick.opengl.ImageIOImageData;
+import org.newdawn.slick.opengl.LoadableImageData;
+import org.newdawn.slick.opengl.renderer.Renderer;
+import org.newdawn.slick.opengl.renderer.SGL;
 import org.newdawn.slick.util.Log;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-public class RockBottom extends AbstractGame{
+public class RockBottom extends AbstractGame implements InputListener{
+
+    private static final SGL GL = Renderer.get();
 
     protected Settings settings;
     private EntityPlayer player;
@@ -67,9 +70,98 @@ public class RockBottom extends AbstractGame{
     private WorldRenderer worldRenderer;
     private int lastWidth;
     private int lastHeight;
+    private Graphics graphics;
+    private Input input;
 
-    public static void init(){
+    public static void startGame(){
         doInit(new RockBottom());
+    }
+
+    @Override
+    public void init(){
+        try{
+            Display.setDisplayMode(new DisplayMode(Main.width, Main.height));
+            Display.setFullscreen(Main.fullscreen);
+        }
+        catch(LWJGLException e){
+            Log.error("Couldn't set initial display mode", e);
+        }
+
+        Display.setTitle(AbstractGame.NAME+" "+AbstractGame.VERSION);
+        Display.setResizable(true);
+
+        try{
+            String[] icons = new String[]{"16x16.png", "32x32.png", "128x128.png"};
+            ByteBuffer[] bufs = new ByteBuffer[icons.length];
+
+            LoadableImageData data = new ImageIOImageData();
+            for(int i = 0; i < icons.length; i++){
+                bufs[i] = data.loadImage(AssetManager.getResource("/assets/rockbottom/icon/"+icons[i]), false, null);
+            }
+
+            Display.setIcon(bufs);
+        }
+        catch(Exception e){
+            Log.warn("Couldn't set game icon", e);
+        }
+
+        AccessController.doPrivileged((PrivilegedAction)() -> {
+            try{
+                PixelFormat format = new PixelFormat(8, 8, 0);
+                Display.create(format);
+            }
+            catch(LWJGLException e){
+                Log.error("Couldn't create pixel format", e);
+
+                try{
+                    Display.create();
+                }
+                catch(LWJGLException e2){
+                    throw new RuntimeException("Failed to initialize LWJGL display", e2);
+                }
+            }
+            return null;
+        });
+
+        Log.info("Initializing system");
+
+        this.initGraphics();
+
+        try{
+            Image image = new Image(AssetManager.getResource("/assets/rockbottom/loading.png"), "loading", false);
+            image.setFilter(Image.FILTER_NEAREST);
+
+            image.draw(0, 0, Display.getWidth(), Display.getHeight());
+            Display.update();
+        }
+        catch(SlickException e){
+            Log.warn("Couldn't render loading screen image", e);
+        }
+
+        try{
+            Log.info("Initializing controllers");
+            this.input.initControllers();
+        }
+        catch(SlickException e){
+            Log.warn("Failed to initialize controllers", e);
+        }
+
+        Log.info("Finished initializing system");
+
+        super.init();
+    }
+
+    protected void initGraphics(){
+        int width = Display.getWidth();
+        int height = Display.getHeight();
+
+        this.graphics = new Graphics(width, height);
+        GL.initDisplay(width, height);
+        GL.enterOrtho(width, height);
+
+        this.input = new Input(height);
+        this.input.addListener(this);
+
     }
 
     @Override
@@ -77,9 +169,8 @@ public class RockBottom extends AbstractGame{
         this.settings = new Settings();
         this.dataManager.loadPropSettings(this.settings);
 
-        this.container.setTargetFrameRate(this.settings.targetFps);
         this.setFullscreen(this.settings.fullscreen);
-        this.container.setVSync(this.settings.vsync);
+        Display.setVSyncEnabled(this.settings.vsync);
 
         this.assetManager = new AssetManager();
         this.assetManager.create(this);
@@ -122,19 +213,23 @@ public class RockBottom extends AbstractGame{
     @Override
     public void setFullscreen(boolean fullscreen){
         try{
-            if(this.container.isFullscreen() != fullscreen){
+            if(Display.isFullscreen() != fullscreen){
                 if(fullscreen){
-                    this.lastWidth = this.container.getWidth();
-                    this.lastHeight = this.container.getHeight();
+                    this.lastWidth = Display.getWidth();
+                    this.lastHeight = Display.getHeight();
 
-                    this.container.setDisplayMode(this.container.getScreenWidth(), this.container.getScreenHeight(), true);
+                    Display.setDisplayMode(Display.getDesktopDisplayMode());
+                    Display.setFullscreen(true);
                 }
                 else{
-                    this.container.setDisplayMode(this.lastWidth, this.lastHeight, false);
+                    Display.setDisplayMode(new DisplayMode(this.lastWidth, this.lastHeight));
+                    Display.setFullscreen(false);
+
                     Display.setResizable(false); //Workaround for stupid LWJGL bug
                     Display.setResizable(true);
                 }
 
+                this.initGraphics();
                 if(this.guiManager != null){
                     this.guiManager.setReInit();
                 }
@@ -146,17 +241,12 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    protected Container makeContainer() throws SlickException{
-        return new Container(this);
-    }
-
-    @Override
     public int getAutosaveInterval(){
         return this.settings.autosaveIntervalSeconds;
     }
 
     @Override
-    protected void doUpdate(){
+    protected void update(){
         if(this.world != null && this.player != null){
             Gui gui = this.guiManager.getGui();
             if(gui == null || !gui.doesPauseGame() || RockBottomAPI.getNet().isActive()){
@@ -223,8 +313,41 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
+    public void shutdown(){
+        super.shutdown();
+
+        Display.destroy();
+        AL.destroy();
+    }
+
+    @Override
+    public void mouseWheelMoved(int change){
+
+    }
+
+    @Override
+    public void mouseClicked(int button, int x, int y, int clickCount){
+
+    }
+
+    @Override
     public void mousePressed(int button, int x, int y){
         this.interactionManager.onMouseAction(this, button);
+    }
+
+    @Override
+    public void mouseReleased(int button, int x, int y){
+
+    }
+
+    @Override
+    public void mouseMoved(int oldx, int oldy, int newx, int newy){
+
+    }
+
+    @Override
+    public void mouseDragged(int oldx, int oldy, int newx, int newy){
+
     }
 
     @Override
@@ -273,19 +396,55 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    public void render(GameContainer container, Graphics g) throws SlickException{
-        this.fpsAccumulator++;
+    public void keyReleased(int key, char c){
 
+    }
+
+    @Override
+    protected void updateTickless(int delta){
+        super.updateTickless(delta);
+        this.input.poll(Display.getWidth(), Display.getHeight());
+
+        Music.poll(delta);
+
+        GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
+        GL.glLoadIdentity();
+
+        this.graphics.setAntiAlias(false);
+        this.render();
+        this.graphics.resetTransform();
+        this.graphics.resetLineWidth();
+
+        GL.flush();
+
+        if(this.settings.targetFps != -1){
+            Display.sync(this.settings.targetFps);
+        }
+
+        if(Display.isCloseRequested()){
+            this.exit();
+        }
+        else{
+            Display.update();
+
+            if(!Display.isFullscreen() && Display.wasResized()){
+                this.initGraphics();
+                this.guiManager.setReInit();
+            }
+        }
+    }
+
+    protected void render(){
         if(this.world != null){
-            this.worldRenderer.render(this, this.assetManager, this.particleManager, g, this.world, this.player, this.interactionManager);
+            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.graphics, this.world, this.player, this.interactionManager);
 
             if(this.isDebug){
-                DebugRenderer.render(this, this.assetManager, this.world, this.player, container, g);
+                DebugRenderer.render(this, this.assetManager, this.world, this.player, this.graphics);
             }
         }
 
-        g.setLineWidth(this.getGuiScale());
-        this.guiManager.render(this, this.assetManager, g, this.player);
+        this.graphics.setLineWidth(this.getGuiScale());
+        this.guiManager.render(this, this.assetManager, this.graphics, this.player);
     }
 
     @Override
@@ -309,7 +468,7 @@ public class RockBottom extends AbstractGame{
 
     @Override
     public double getWidthInWorld(){
-        int width = this.container.getWidth();
+        int width = Display.getWidth();
         int scale = this.getWorldScale();
 
         if((scale%2 == 0) != (width%2 == 0)){
@@ -321,7 +480,7 @@ public class RockBottom extends AbstractGame{
 
     @Override
     public double getHeightInWorld(){
-        int height = this.container.getHeight();
+        int height = Display.getHeight();
         int scale = this.getWorldScale();
 
         if((scale%2 == 0) != (height%2 == 0)){
@@ -333,22 +492,22 @@ public class RockBottom extends AbstractGame{
 
     @Override
     public double getWidthInGui(){
-        return (double)this.container.getWidth()/(double)this.getGuiScale();
+        return (double)Display.getWidth()/(double)this.getGuiScale();
     }
 
     @Override
     public double getHeightInGui(){
-        return (double)this.container.getHeight()/(double)this.getGuiScale();
+        return (double)Display.getHeight()/(double)this.getGuiScale();
     }
 
     @Override
     public float getMouseInGuiX(){
-        return (float)this.container.getInput().getMouseX()/(float)this.getGuiScale();
+        return (float)this.input.getMouseX()/(float)this.getGuiScale();
     }
 
     @Override
     public float getMouseInGuiY(){
-        return (float)this.container.getInput().getMouseY()/(float)this.getGuiScale();
+        return (float)this.input.getMouseY()/(float)this.getGuiScale();
     }
 
     @Override
@@ -379,6 +538,11 @@ public class RockBottom extends AbstractGame{
     @Override
     public void setUniqueId(UUID uniqueId){
         this.uniqueId = uniqueId;
+    }
+
+    @Override
+    public Input getInput(){
+        return this.input;
     }
 
     @Override
@@ -416,8 +580,8 @@ public class RockBottom extends AbstractGame{
             Log.info("Taking screenshot");
 
             GL11.glReadBuffer(GL11.GL_FRONT);
-            int width = this.container.getWidth();
-            int height = this.container.getHeight();
+            int width = Display.getWidth();
+            int height = Display.getHeight();
             int colors = 4;
 
             ByteBuffer buf = BufferUtils.createByteBuffer(width*height*colors);
@@ -456,5 +620,75 @@ public class RockBottom extends AbstractGame{
     @Override
     public Settings getSettings(){
         return this.settings;
+    }
+
+    @Override
+    public void controllerLeftPressed(int controller){
+
+    }
+
+    @Override
+    public void controllerLeftReleased(int controller){
+
+    }
+
+    @Override
+    public void controllerRightPressed(int controller){
+
+    }
+
+    @Override
+    public void controllerRightReleased(int controller){
+
+    }
+
+    @Override
+    public void controllerUpPressed(int controller){
+
+    }
+
+    @Override
+    public void controllerUpReleased(int controller){
+
+    }
+
+    @Override
+    public void controllerDownPressed(int controller){
+
+    }
+
+    @Override
+    public void controllerDownReleased(int controller){
+
+    }
+
+    @Override
+    public void controllerButtonPressed(int controller, int button){
+
+    }
+
+    @Override
+    public void controllerButtonReleased(int controller, int button){
+
+    }
+
+    @Override
+    public void setInput(Input input){
+
+    }
+
+    @Override
+    public boolean isAcceptingInput(){
+        return true;
+    }
+
+    @Override
+    public void inputEnded(){
+
+    }
+
+    @Override
+    public void inputStarted(){
+
     }
 }

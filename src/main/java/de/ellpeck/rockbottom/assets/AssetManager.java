@@ -19,13 +19,18 @@ import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
-import org.newdawn.slick.GameContainer;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Cursor;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
+import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.util.Log;
 
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.*;
 
 public class AssetManager implements IAssetManager{
@@ -97,16 +102,25 @@ public class AssetManager implements IAssetManager{
     @Override
     public void reloadCursor(IGameInstance game){
         try{
-            GameContainer container = game.getContainer();
-
             if(!game.getSettings().hardwareCursor){
-                container.setMouseCursor(this.getTexture(AbstractGame.internalRes("gui.cursor")), 0, 0);
+                Texture texture = this.getTexture(AbstractGame.internalRes("gui.cursor"));
+                Texture temp = new Texture(texture.getWidth(), texture.getHeight());
+
+                Graphics g = temp.getGraphics();
+                g.drawImage(texture.getFlippedCopy(false, true), 0, 0);
+                g.flush();
+
+                ByteBuffer buffer = BufferUtils.createByteBuffer(temp.getWidth()*temp.getHeight()*4);
+                g.getArea(0, 0, temp.getWidth(), temp.getHeight(), buffer);
+
+                Cursor cursor = CursorLoader.get().getCursor(buffer, 0, 0, temp.getWidth(), temp.getHeight());
+                Mouse.setNativeCursor(cursor);
             }
             else{
-                container.setDefaultMouseCursor();
+                Mouse.setNativeCursor(null);
             }
         }
-        catch(SlickException e){
+        catch(Exception e){
             Log.error("Could not set mouse cursor!", e);
         }
     }

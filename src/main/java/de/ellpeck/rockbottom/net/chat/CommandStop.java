@@ -17,7 +17,7 @@ public class CommandStop extends Command{
     public String execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         game.scheduleAction(() -> {
             game.getWorld().save();
-            game.getContainer().exit();
+            game.exit();
             return true;
         });
         return FormattingCode.GREEN+"Saving and stopping the server...";

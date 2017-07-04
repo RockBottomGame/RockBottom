@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.Main;
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -8,27 +9,71 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
+import de.ellpeck.rockbottom.api.net.chat.IChatLog;
+import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
+import java.util.Scanner;
 import java.util.UUID;
 
 public class RockBottomServer extends AbstractGame{
 
-    public static void init(){
+    public static void startGame(){
         doInit(new RockBottomServer());
     }
 
     @Override
-    public void init(GameContainer container) throws SlickException{
-        super.init(container);
+    public void init(){
+        super.init();
+
+        ICommandSender consoleCommandSender = new ICommandSender(){
+            @Override
+            public int getCommandLevel(){
+                return Constants.ADMIN_PERMISSION;
+            }
+
+            @Override
+            public String getName(){
+                return "Console";
+            }
+
+            @Override
+            public UUID getUniqueId(){
+                return UUID.randomUUID();
+            }
+
+            @Override
+            public String getChatColorFormat(){
+                return Util.colorToFormattingCode(Color.red);
+            }
+
+            @Override
+            public void sendMessageTo(IChatLog chat, String message){
+                Log.info(message);
+            }
+        };
+
+        Thread consoleThread = new Thread(() -> {
+            while(this.isRunning){
+                Scanner scanner = new Scanner(System.in);
+                String input = scanner.nextLine();
+
+                this.scheduleAction(() -> {
+                    this.chatLog.sendCommandSenderMessage(input, consoleCommandSender);
+                    return true;
+                });
+            }
+        });
+        consoleThread.setDaemon(true);
+        consoleThread.start();
 
         File file = new File(this.dataManager.getWorldsDir(), "world_server");
 
@@ -44,12 +89,8 @@ public class RockBottomServer extends AbstractGame{
         }
         catch(Exception e){
             Log.error("Couldn't start server", e);
+            this.exit();
         }
-    }
-
-    @Override
-    protected Container makeContainer() throws SlickException{
-        return new ContainerServer(this);
     }
 
     @Override
@@ -183,8 +224,8 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public void render(GameContainer container, Graphics g) throws SlickException{
-        throw new UnsupportedOperationException("Cannot render on a dedicated server");
+    public Input getInput(){
+        throw new UnsupportedOperationException("Cannot get input on a dedicated server");
     }
 
     @Override

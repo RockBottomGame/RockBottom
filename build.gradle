@@ -1,5 +1,5 @@
 group 'de.ellpeck.rockbottom'
-version '0.0.8'
+version '0.0.9'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -31,7 +31,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes("Main-Class": "de.ellpeck.rockbottom.Launcher")
+        attributes("Main-Class": "de.ellpeck.rockbottom.Main")
     }
 }
 

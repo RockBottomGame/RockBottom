@@ -1,14 +1,15 @@
 package de.ellpeck.rockbottom.gui;
 
-import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
@@ -16,19 +17,19 @@ import java.util.List;
 
 public final class DebugRenderer{
 
-    public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, GameContainer container, Graphics g){
+    public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, Graphics g){
         g.setColor(Color.black);
-        g.drawOval((float)container.getWidth()/2F-5F, (float)container.getHeight()/2F-5F, 10, 10);
+        g.drawOval((float)Display.getWidth()/2F-5F, (float)Display.getHeight()/2F-5F, 10, 10);
 
         List<String> list = new ArrayList<>();
 
         list.add("Avg FPS: "+game.getFpsAverage());
         list.add("Avg TPS: "+game.getTpsAverage());
-        list.add("Aspect: "+container.getWidth()+", "+container.getHeight());
-        list.add("Screen: "+container.getScreenWidth()+", "+container.getScreenHeight());
+        list.add("Aspect: "+Display.getWidth()+", "+Display.getHeight());
+        DisplayMode original = Display.getDesktopDisplayMode();
+        list.add("Screen: "+original.getWidth()+", "+original.getHeight());
         list.add("World: "+game.getWidthInWorld()+", "+game.getHeightInWorld());
         list.add("Gui: "+game.getWidthInGui()+", "+game.getHeightInGui());
-        list.add("Vsync: "+container.isVSyncRequested()+", Fullscreen: "+container.isFullscreen());
         list.add("");
 
         String chunks = "Loaded Chunks: "+world.loadedChunks.size();
@@ -61,7 +62,7 @@ public final class DebugRenderer{
         int x = game.getInteractionManager().mousedTileX;
         int y = game.getInteractionManager().mousedTileY;
         list.add("Mouse:");
-        list.add("ScreenPos: "+container.getInput().getMouseX()+", "+container.getInput().getMouseY());
+        list.add("ScreenPos: "+game.getInput().getMouseX()+", "+game.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);
         if(world.isPosLoaded(x, y)){
             IChunk chunk = world.getChunk(x, y);

@@ -81,7 +81,7 @@ public class InteractionManager implements IInteractionManager{
             Settings settings = game.getSettings();
 
             if(gui == null && !player.isDead()){
-                Input input = game.getContainer().getInput();
+                Input input = game.getInput();
                 double mouseX = input.getMouseX();
                 double mouseY = input.getMouseY();
 

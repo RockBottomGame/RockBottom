@@ -273,7 +273,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void describeItem(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance instance){
-        boolean advanced = game.getContainer().getInput().isKeyDown(game.getSettings().keyAdvancedInfo.key);
+        boolean advanced = game.getInput().isKeyDown(game.getSettings().keyAdvancedInfo.key);
 
         List<String> desc = new ArrayList<>();
         instance.getItem().describeItem(manager, instance, desc, advanced);
