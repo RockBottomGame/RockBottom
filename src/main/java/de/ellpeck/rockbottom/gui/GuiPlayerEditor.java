@@ -97,7 +97,7 @@ public class GuiPlayerEditor extends Gui{
         super.render(game, manager, g);
 
         int x = (int)game.getWidthInGui()/2-88;
-        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 10, 60F, this.previewType, game.getTotalTicks(), ".hanging", Color.white);
+        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 10, 60F, this.previewType, ".hanging", Color.white);
     }
 
     @Override

@@ -17,60 +17,57 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     private static final IResourceName SPECIAL_BASE = AbstractGame.internalRes("player.base.male_skin_s");
     private static final IResourceName SPECIAL_ARMS = AbstractGame.internalRes("player.arm.skin_s");
 
-    private int animStarted;
-    private int lastRow;
-
-    public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, int time, String arms, Color light){
+    public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, String arms, Color light){
         int base = design.getBase();
 
-        manager.getAnimation(base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).drawRow(time, row, x, y, scale, light);
-        manager.getAnimation(IPlayerDesign.EYES).drawRow(time, row, x, y, scale, light.multiply(design.getEyeColor()));
+        manager.getAnimation(base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).drawRow(row, x, y, scale, light);
+        manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, light.multiply(design.getEyeColor()));
 
         IResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());
         if(eyebrows != null){
-            manager.getAnimation(eyebrows).drawRow(time, row, x, y, scale, light.multiply(design.getEyebrowsColor()));
+            manager.getAnimation(eyebrows).drawRow(row, x, y, scale, light.multiply(design.getEyebrowsColor()));
         }
 
         IResourceName mouth = IPlayerDesign.MOUTH.get(design.getMouth());
         if(mouth != null){
-            manager.getAnimation(mouth).drawRow(time, row, x, y, scale, light);
+            manager.getAnimation(mouth).drawRow(row, x, y, scale, light);
         }
 
         IResourceName beard = IPlayerDesign.BEARD.get(design.getBeard());
         if(beard != null){
-            manager.getAnimation(beard).drawRow(time, row, x, y, scale, light.multiply(design.getBeardColor()));
+            manager.getAnimation(beard).drawRow(row, x, y, scale, light.multiply(design.getBeardColor()));
         }
 
         IResourceName pants = IPlayerDesign.PANTS.get(design.getPants());
         if(pants != null){
-            manager.getAnimation(pants).drawRow(time, row, x, y, scale, light.multiply(design.getPantsColor()));
+            manager.getAnimation(pants).drawRow(row, x, y, scale, light.multiply(design.getPantsColor()));
         }
 
         IResourceName shirt = IPlayerDesign.SHIRT.get(design.getShirt());
         if(shirt != null){
-            manager.getAnimation(shirt).drawRow(time, row, x, y, scale, light.multiply(design.getShirtColor()));
+            manager.getAnimation(shirt).drawRow(row, x, y, scale, light.multiply(design.getShirtColor()));
         }
 
-        manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix(arms)).drawRow(time, row, x, y, scale, light);
+        manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix(arms)).drawRow(row, x, y, scale, light);
 
         IResourceName sleeves = IPlayerDesign.SLEEVES.get(design.getSleeves());
         if(sleeves != null){
-            manager.getAnimation(sleeves.addSuffix(arms)).drawRow(time, row, x, y, scale, light.multiply(design.getSleevesColor()));
+            manager.getAnimation(sleeves.addSuffix(arms)).drawRow(row, x, y, scale, light.multiply(design.getSleevesColor()));
         }
 
         IResourceName footwear = IPlayerDesign.FOOTWEAR.get(design.getFootwear());
         if(footwear != null){
-            manager.getAnimation(footwear).drawRow(time, row, x, y, scale, light.multiply(design.getFootwearColor()));
+            manager.getAnimation(footwear).drawRow(row, x, y, scale, light.multiply(design.getFootwearColor()));
         }
 
         IResourceName hair = IPlayerDesign.HAIR.get(design.getHair());
         if(hair != null){
-            manager.getAnimation(hair).drawRow(time, row, x, y, scale, light.multiply(design.getHairColor()));
+            manager.getAnimation(hair).drawRow(row, x, y, scale, light.multiply(design.getHairColor()));
         }
 
         IResourceName accessory = IPlayerDesign.ACCESSORIES.get(design.getAccessory());
         if(accessory != null){
-            manager.getAnimation(accessory).drawRow(time, row, x, y, scale, light);
+            manager.getAnimation(accessory).drawRow(row, x, y, scale, light);
         }
     }
 
@@ -79,13 +76,8 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         IPlayerDesign design = entity.getDesign();
         boolean isMoving = Math.abs(entity.motionX) >= 0.01;
         boolean isJumping = !entity.onGround;
-
         int row = entity.facing == Direction.RIGHT ? (isJumping ? 4 : (isMoving ? 0 : 2)) : (isJumping ? 5 : (isMoving ? 1 : 3));
-        if(this.lastRow != row){
-            this.lastRow = row;
-            this.animStarted = entity.ticksExisted;
-        }
 
-        renderPlayer(manager, design, x-0.5F, y-1.5F, 1F, row, entity.ticksExisted-this.animStarted, ".hanging", light);
+        renderPlayer(manager, design, x-0.5F, y-1.5F, 1F, row, ".hanging", light);
     }
 }

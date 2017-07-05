@@ -18,13 +18,13 @@
 
 package de.ellpeck.rockbottom.render;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Color;
 
 import java.util.List;
@@ -101,13 +101,17 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     private static int loadIndex(String s, List<IResourceName> list){
+        IResourceName res;
+
         if(s != null && !s.isEmpty()){
-            int index = list.indexOf(RockBottomAPI.createRes(s));
-            return Math.max(0, index);
+            res = RockBottomAPI.createRes(s);
         }
         else{
-            return 0;
+            res = null;
         }
+
+        int index = list.indexOf(res);
+        return Math.max(0, index);
     }
 
     private static String saveIndex(int index, List<IResourceName> list){
