@@ -5,6 +5,10 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.AddBreakProgressEvent;
+import de.ellpeck.rockbottom.api.event.impl.BreakEvent;
+import de.ellpeck.rockbottom.api.event.impl.InteractionEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -34,29 +38,37 @@ public class InteractionManager implements IInteractionManager{
     public int mousedTileY;
 
     public static boolean interact(AbstractEntityPlayer player, TileLayer layer, int x, int y, boolean simulate){
-        Tile tileThere = player.world.getTile(layer, x, y);
+        InteractionEvent event = new InteractionEvent(player, layer, x, y, simulate);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            layer = event.layer;
+            x = event.x;
+            y = event.y;
+            simulate = event.simulate;
 
-        if(layer == TileLayer.MAIN){
-            if(tileThere.onInteractWith(player.world, x, y, player)){
-                return true;
+            Tile tileThere = player.world.getTile(layer, x, y);
+
+            if(layer == TileLayer.MAIN){
+                if(tileThere.onInteractWith(player.world, x, y, player)){
+                    return true;
+                }
             }
-        }
 
-        ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-        if(selected != null){
-            Item item = selected.getItem();
-            if(item instanceof ItemTile){
-                if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
-                    Tile tile = ((ItemTile)item).getTile();
-                    if(tileThere.canReplace(player.world, x, y, layer, tile)){
-                        if(tile.canPlace(player.world, x, y, layer)){
+            ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+            if(selected != null){
+                Item item = selected.getItem();
+                if(item instanceof ItemTile){
+                    if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
+                        Tile tile = ((ItemTile)item).getTile();
+                        if(tileThere.canReplace(player.world, x, y, layer, tile)){
+                            if(tile.canPlace(player.world, x, y, layer)){
 
-                            if(!simulate){
-                                tile.doPlace(player.world, x, y, layer, selected, player);
-                                player.getInv().remove(player.getSelectedSlot(), 1);
+                                if(!simulate){
+                                    tile.doPlace(player.world, x, y, layer, selected, player);
+                                    player.getInv().remove(player.getSelectedSlot(), 1);
+                                }
+
+                                return true;
                             }
-
-                            return true;
                         }
                     }
                 }
@@ -64,6 +76,18 @@ public class InteractionManager implements IInteractionManager{
         }
 
         return false;
+    }
+
+    public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective){
+        BreakEvent event = new BreakEvent(player, layer, x, y, effective);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            layer = event.layer;
+            x = event.x;
+            y = event.y;
+            effective = event.effective;
+
+            tile.doBreak(player.world, x, y, layer, player, effective);
+        }
     }
 
     private static void moveAndSend(EntityPlayer player, int type){
@@ -120,6 +144,11 @@ public class InteractionManager implements IInteractionManager{
                                 progressAmount *= selected.getItem().getMiningSpeed(player.world, this.mousedTileX, this.mousedTileY, layer, tile, effective);
                             }
 
+                            AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, this.mousedTileX, this.mousedTileY, this.breakProgress, progressAmount);
+                            RockBottomAPI.getEventHandler().fireEvent(event);
+                            this.breakProgress = event.totalProgress;
+                            progressAmount = event.progressAdded;
+
                             this.breakProgress += progressAmount;
 
                             if(this.breakProgress >= 1){
@@ -129,7 +158,7 @@ public class InteractionManager implements IInteractionManager{
                                     RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
                                 }
                                 else{
-                                    tile.doBreak(game.getWorld(), this.mousedTileX, this.mousedTileY, layer, player, effective);
+                                    breakTile(tile, player, this.mousedTileX, this.mousedTileY, layer, effective);
                                 }
                             }
                             else{

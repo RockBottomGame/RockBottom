@@ -4,6 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.ChatMessageEvent;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
@@ -47,33 +49,38 @@ public class ChatLog implements IChatLog{
     @Override
     public void sendCommandSenderMessage(String message, ICommandSender sender){
         if(RockBottomAPI.getNet().isServer()){
-            if(message.startsWith("/")){
-                String cmdFeedback;
+            ChatMessageEvent event = new ChatMessageEvent(this, sender, message);
+            if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                message = event.message;
 
-                String[] split = message.substring(1).split(" ");
-                Command command = RockBottomAPI.COMMAND_REGISTRY.get(split[0]);
+                if(message.startsWith("/")){
+                    String cmdFeedback;
 
-                if(command != null){
-                    if(sender.getCommandLevel() >= command.getLevel()){
-                        IGameInstance game = AbstractGame.get();
-                        cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), sender, sender.getName(), game, this);
+                    String[] split = message.substring(1).split(" ");
+                    Command command = RockBottomAPI.COMMAND_REGISTRY.get(split[0]);
+
+                    if(command != null){
+                        if(sender.getCommandLevel() >= command.getLevel()){
+                            IGameInstance game = AbstractGame.get();
+                            cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), sender, sender.getName(), game, this);
+                        }
+                        else{
+                            cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
+                        }
                     }
                     else{
-                        cmdFeedback = FormattingCode.RED+"You are not allowed to execute this command!";
+                        cmdFeedback = FormattingCode.RED+"Unknown command, use /help for a list of commands.";
                     }
+
+                    if(cmdFeedback != null){
+                        this.sendMessageTo(sender, cmdFeedback);
+                    }
+
+                    Log.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
                 }
                 else{
-                    cmdFeedback = FormattingCode.RED+"Unknown command, use /help for a list of commands.";
+                    this.broadcastMessage(sender.getChatColorFormat()+"["+sender.getName()+"] &4"+message);
                 }
-
-                if(cmdFeedback != null){
-                    this.sendMessageTo(sender, cmdFeedback);
-                }
-
-                Log.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
-            }
-            else{
-                this.broadcastMessage(sender.getChatColorFormat()+"["+sender.getName()+"] &4"+message);
             }
         }
     }
