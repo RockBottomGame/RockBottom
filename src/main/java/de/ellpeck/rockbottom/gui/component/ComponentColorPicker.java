@@ -95,6 +95,7 @@ public class ComponentColorPicker extends GuiComponent{
         if(this.isEnlarged){
             if(button == game.getSettings().keyMenu.key){
                 this.unenlarge();
+                return true;
             }
         }
         return false;
