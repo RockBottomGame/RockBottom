@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -9,6 +8,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -70,7 +70,7 @@ public class GuiGraphics extends Gui{
                 game.getDataManager().savePropSettings(settings);
                 game.getGuiManager().setReInit();
             }
-        }));
+        }, false));
         this.components.add(new ComponentButton(this, 6, this.guiLeft+99, this.guiTop+94, 16, 16, "!", assetManager.localize(AbstractGame.internalRes("info.reset"))));
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, assetManager.localize(AbstractGame.internalRes("button.back"))));

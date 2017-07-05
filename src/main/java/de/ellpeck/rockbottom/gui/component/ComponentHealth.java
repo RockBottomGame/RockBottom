@@ -43,7 +43,7 @@ public class ComponentHealth extends GuiComponent{
     @Override
     public void renderOverlay(IGameInstance game, IAssetManager manager, Graphics g){
         if(game.getWorld() != null){
-            if(this.isMouseOver(game)){
+            if(this.isMouseOverPrioritized(game)){
                 RockBottomAPI.getApiHandler().drawHoverInfoAtMouse(game, manager, g, false, 0, manager.localize(LOC_HEALTH)+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());
             }
         }

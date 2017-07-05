@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.gui;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -11,6 +10,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import org.newdawn.slick.Color;
@@ -62,9 +62,9 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(new ColorPicker(this, colorX, y, design.getFootwearColor(), design:: setFootwearColor));
         y += 14;
         this.components.add(new Slider(this, 8, x, y, design.getAccessory(), IPlayerDesign.ACCESSORIES.size()-1, design:: setAccessory, assetManager.localize(AbstractGame.internalRes("button.player_design.accessory"))));
-        y+=14;
-        this.components.add(new Slider(this, 9, x, y, design.getBeard(), IPlayerDesign.BEARD.size()-1, design::setBeard, assetManager.localize(AbstractGame.internalRes("button.player_design.beard"))));
-        this.components.add(new ColorPicker(this, colorX, y, design.getBeardColor(), design::setBeardColor));
+        y += 14;
+        this.components.add(new Slider(this, 9, x, y, design.getBeard(), IPlayerDesign.BEARD.size()-1, design:: setBeard, assetManager.localize(AbstractGame.internalRes("button.player_design.beard"))));
+        this.components.add(new ColorPicker(this, colorX, y, design.getBeardColor(), design:: setBeardColor));
 
         this.nameField = new ComponentInputField(this, x, 143, 80, 12, true, true, false, 24, true){
             @Override
@@ -79,7 +79,7 @@ public class GuiPlayerEditor extends Gui{
             public void onChange(float mouseX, float mouseY, Color color){
                 design.setFavoriteColor(color);
             }
-        }));
+        }, true));
 
         this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-98, 143, 80, 12, this.previewType+1, 1, 6, new ComponentSlider.ICallback(){
             @Override
@@ -192,7 +192,7 @@ public class GuiPlayerEditor extends Gui{
                 public void onChange(float mouseX, float mouseY, Color color){
                     callback.onChange(color);
                 }
-            });
+            }, true);
         }
 
         private interface IChange{
