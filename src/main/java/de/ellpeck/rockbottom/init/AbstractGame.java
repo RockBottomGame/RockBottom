@@ -41,16 +41,11 @@ public abstract class AbstractGame implements IGameInstance{
     private final List<IAction> scheduledActions = new ArrayList<>();
     private int tpsAverage;
     private int fpsAverage;
-    private int tpsAccumulator;
-    private int fpsAccumulator;
     protected DataManager dataManager;
     protected ChatLog chatLog;
     protected World world;
     private int totalTicks;
-    private int storedDelta;
-    private long lastPollTime;
     public boolean isRunning = true;
-    private long lastDeltaTime = System.currentTimeMillis();
 
     public static void doInit(AbstractGame game){
         RockBottomAPI.setGameInstance(game);
@@ -62,31 +57,41 @@ public abstract class AbstractGame implements IGameInstance{
         try{
             game.init();
 
+            long lastPollTime = 0;
+            int tpsAccumulator = 0;
+            int fpsAccumulator = 0;
+
+            long lastDeltaTime = System.currentTimeMillis();
+            int deltaAccumulator = 0;
+
             while(game.isRunning){
                 long time = System.currentTimeMillis();
 
-                int delta = (int)(time-game.lastDeltaTime);
-                game.lastDeltaTime = time;
+                int delta = (int)(time-lastDeltaTime);
+                lastDeltaTime = time;
 
-                game.storedDelta += delta;
-                if(game.storedDelta >= INTERVAL){
-                    long updates = game.storedDelta/INTERVAL;
+                deltaAccumulator += delta;
+                if(deltaAccumulator >= INTERVAL){
+                    long updates = deltaAccumulator/INTERVAL;
                     for(int i = 0; i < updates; i++){
                         game.updateTicked();
-                        game.storedDelta -= INTERVAL;
+                        tpsAccumulator++;
+
+                        deltaAccumulator -= INTERVAL;
                     }
                 }
 
                 game.updateTickless(delta);
+                fpsAccumulator++;
 
-                if(time-game.lastPollTime >= 1000){
-                    game.tpsAverage = game.tpsAccumulator;
-                    game.fpsAverage = game.fpsAccumulator;
+                if(time-lastPollTime >= 1000){
+                    game.tpsAverage = tpsAccumulator;
+                    game.fpsAverage = fpsAccumulator;
 
-                    game.tpsAccumulator = 0;
-                    game.fpsAccumulator = 0;
+                    tpsAccumulator = 0;
+                    fpsAccumulator = 0;
 
-                    game.lastPollTime = time;
+                    lastPollTime = time;
                 }
             }
         }
@@ -117,7 +122,6 @@ public abstract class AbstractGame implements IGameInstance{
 
     private void updateTicked(){
         this.totalTicks++;
-        this.tpsAccumulator++;
 
         synchronized(this.scheduledActions){
             for(int i = 0; i < this.scheduledActions.size(); i++){
@@ -217,7 +221,7 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     protected void updateTickless(int delta){
-        this.fpsAccumulator++;
+
     }
 
     @Override

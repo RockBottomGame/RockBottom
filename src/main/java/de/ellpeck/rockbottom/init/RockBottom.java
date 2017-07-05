@@ -402,7 +402,6 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     protected void updateTickless(int delta){
-        super.updateTickless(delta);
         this.input.poll(Display.getWidth(), Display.getHeight());
 
         Music.poll(delta);
