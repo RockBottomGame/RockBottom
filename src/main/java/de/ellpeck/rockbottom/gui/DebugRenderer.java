@@ -14,6 +14,7 @@ import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class DebugRenderer{
 
@@ -55,8 +56,8 @@ public final class DebugRenderer{
 
         list.add("Player:");
         list.add("Chunk: "+player.chunkX+", "+player.chunkY);
-        list.add("Pos: "+player.x+", "+player.y);
-        list.add("Motion: "+player.motionX+", "+player.motionY);
+        list.add("Pos: "+String.format(Locale.ROOT, "%.3f, %.3f", player.x, player.y));
+        list.add("Motion: "+String.format(Locale.ROOT, "%.3f, %.3f", player.motionX, player.motionY));
         list.add("");
 
         int x = game.getInteractionManager().mousedTileX;
