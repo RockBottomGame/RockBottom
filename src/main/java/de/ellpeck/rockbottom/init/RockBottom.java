@@ -68,10 +68,12 @@ public class RockBottom extends AbstractGame implements InputListener{
     private boolean isBackgroundDebug;
     private boolean isItemInfoDebug;
     private WorldRenderer worldRenderer;
-    private int lastWidth;
-    private int lastHeight;
+    private int windowedWidth;
+    private int windowedHeight;
     private Graphics graphics;
     private Input input;
+    private int lastWidth;
+    private int lastHeight;
 
     public static void startGame(){
         doInit(new RockBottom());
@@ -155,6 +157,9 @@ public class RockBottom extends AbstractGame implements InputListener{
         int width = Display.getWidth();
         int height = Display.getHeight();
 
+        this.lastWidth = width;
+        this.lastHeight = height;
+
         this.graphics = new Graphics(width, height);
         GL.initDisplay(width, height);
         GL.enterOrtho(width, height);
@@ -215,14 +220,14 @@ public class RockBottom extends AbstractGame implements InputListener{
         try{
             if(Display.isFullscreen() != fullscreen){
                 if(fullscreen){
-                    this.lastWidth = Display.getWidth();
-                    this.lastHeight = Display.getHeight();
+                    this.windowedWidth = Display.getWidth();
+                    this.windowedHeight = Display.getHeight();
 
                     Display.setDisplayMode(Display.getDesktopDisplayMode());
                     Display.setFullscreen(true);
                 }
                 else{
-                    Display.setDisplayMode(new DisplayMode(this.lastWidth, this.lastHeight));
+                    Display.setDisplayMode(new DisplayMode(this.windowedWidth, this.windowedHeight));
                     Display.setFullscreen(false);
 
                     Display.setResizable(false); //Workaround for stupid LWJGL bug
@@ -402,33 +407,35 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     protected void updateTickless(int delta){
-        this.input.poll(Display.getWidth(), Display.getHeight());
-
-        Music.poll(delta);
-
-        GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
-        GL.glLoadIdentity();
-
-        this.graphics.setAntiAlias(false);
-        this.render();
-        this.graphics.resetTransform();
-        this.graphics.resetLineWidth();
-
-        GL.flush();
-
-        if(this.settings.targetFps != -1){
-            Display.sync(this.settings.targetFps);
-        }
-
         if(Display.isCloseRequested()){
             this.exit();
         }
         else{
+            this.input.poll(Display.getWidth(), Display.getHeight());
+
+            Music.poll(delta);
+
+            GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
+            GL.glLoadIdentity();
+
+            this.graphics.setAntiAlias(false);
+            this.render();
+            this.graphics.resetTransform();
+            this.graphics.resetLineWidth();
+
+            GL.flush();
+
+            if(this.settings.targetFps != -1){
+                Display.sync(this.settings.targetFps);
+            }
+
             Display.update();
 
             if(!Display.isFullscreen() && Display.wasResized()){
-                this.initGraphics();
-                this.guiManager.setReInit();
+                if(this.lastWidth != Display.getWidth() || this.lastHeight != Display.getHeight()){
+                    this.initGraphics();
+                    this.guiManager.setReInit();
+                }
             }
         }
     }
