@@ -29,7 +29,7 @@ import java.util.List;
 
 public class WorldRenderer{
 
-    public static final Color[] SKY_COLORS = new Color[50];
+    public static final Color[] SKY_COLORS = new Color[256];
     public static final Color[] BACKGROUND_COLORS = new Color[Constants.MAX_LIGHT+1];
     public static final Color[] MAIN_COLORS = new Color[Constants.MAX_LIGHT+1];
 
