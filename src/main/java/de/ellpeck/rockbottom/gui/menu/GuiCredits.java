@@ -25,13 +25,14 @@ public class GuiCredits extends Gui{
         this.credits.add("  Ellpeck");
         this.credits.add("");
         this.credits.add("");
+        this.credits.add("Art");
+        this.credits.add("  wiiv");
+        this.credits.add("");
+        this.credits.add("");
         this.credits.add("Additional Programming");
         this.credits.add("  canitzp");
         this.credits.add("  xdjackiexd");
-        this.credits.add("");
-        this.credits.add("");
-        this.credits.add("Art");
-        this.credits.add("  wiiv");
+        this.credits.add("  superaxander");
         this.credits.add("");
         this.credits.add("");
         this.credits.add("Libraries and Additional Code");
@@ -44,7 +45,8 @@ public class GuiCredits extends Gui{
         this.credits.add("Special Thanks");
         this.credits.add("  TTFTCUTS (A lot of Terrain Gen help)");
         this.credits.add("  witsend66 (Game Name)");
-        this.credits.add("  superaxander (Early Modding testing)");
+        this.credits.add("");
+        this.credits.add("");
     }
 
     @Override
