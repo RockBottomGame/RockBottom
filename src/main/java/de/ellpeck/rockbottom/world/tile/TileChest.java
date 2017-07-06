@@ -58,12 +58,8 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        if(layer == changedLayer){
-            if(!world.getTile(layer, x, y-1).isFullTile()){
-                world.destroyTile(x, y, layer, null, true);
-            }
-        }
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+        return world.getTile(layer, x, y-1).isFullTile();
     }
 
     @Override

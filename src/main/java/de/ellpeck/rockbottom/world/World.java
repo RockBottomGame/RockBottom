@@ -692,12 +692,12 @@ public class World implements IWorld{
         Tile foreground = this.getTile(x, y);
 
         if(!foreground.isAir()){
-            return foreground.getTranslucentModifier(this, x, y, TileLayer.MAIN);
+            return foreground.getTranslucentModifier(this, x, y, TileLayer.MAIN, isSky);
         }
         else{
             Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
             if(!background.isAir()){
-                return background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND);
+                return background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND, isSky);
             }
             else{
                 return isSky ? 1.0F : 0.8F;

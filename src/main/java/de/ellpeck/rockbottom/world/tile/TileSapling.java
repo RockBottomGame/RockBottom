@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 
 public class TileSapling extends TileBasic{
@@ -31,9 +31,16 @@ public class TileSapling extends TileBasic{
     }
 
     @Override
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+        return world.getTile(x, y-1).isFullTile();
+    }
+
+    @Override
     public void updateRandomly(IWorld world, int x, int y){
-        WorldGenTrees trees = new WorldGenTrees();
-        trees.generateAt(world, x, y, Util.RANDOM);
+        if(Util.RANDOM.nextFloat() >= 0.98F){
+            WorldGenTrees trees = new WorldGenTrees();
+            trees.generateAt(world, x, y, Util.RANDOM);
+        }
     }
 
     @Override

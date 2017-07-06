@@ -302,11 +302,6 @@ public class Chunk implements IChunk{
         }
 
         Tile lastTile = this.getTileInner(layer, x, y);
-
-        boolean lastAir = lastTile.isAir();
-        int lastLight = lastTile.getLight(this.world, this.x+x, this.y+y, layer);
-        float lastMofifier = lastTile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer);
-
         lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
         if(layer == TileLayer.MAIN){
@@ -335,9 +330,7 @@ public class Chunk implements IChunk{
         }
 
         if(!this.isGenerating){
-            if(lastAir != tile.isAir() || lastLight != tile.getLight(this.world, this.x+x, this.y+y, layer) || lastMofifier != tile.getTranslucentModifier(this.world, this.x+x, this.y+y, layer)){
-                this.world.causeLightUpdate(this.x+x, this.y+y);
-            }
+            this.world.causeLightUpdate(this.x+x, this.y+y);
 
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
             this.setDirty();

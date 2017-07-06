@@ -168,8 +168,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
                             double y = (this.y+0.5)-entity.y;
                             double length = Util.distance(0, 0, x, y);
 
-                            entity.motionX = 0.2*(x/length);
-                            entity.motionY = 0.2*(y/length);
+                            entity.motionX = 0.3*(x/length);
+                            entity.motionY = 0.3*(y/length);
                         }
                     }
                 }
