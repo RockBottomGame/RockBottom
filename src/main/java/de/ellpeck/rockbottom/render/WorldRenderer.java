@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.render;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
@@ -14,6 +13,8 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -31,6 +32,9 @@ public class WorldRenderer{
     public static final Color[] SKY_COLORS = new Color[50];
     public static final Color[] BACKGROUND_COLORS = new Color[Constants.MAX_LIGHT+1];
     public static final Color[] MAIN_COLORS = new Color[Constants.MAX_LIGHT+1];
+
+    private static final List<Entity> ENTITY_CACHE = new ArrayList<>();
+    private static final List<EntityPlayer> PLAYER_CACHE = new ArrayList<>();
 
     public static void init(){
         float step = 1F/(Constants.MAX_LIGHT+1);
@@ -59,8 +63,6 @@ public class WorldRenderer{
         double height = game.getHeightInWorld();
         float transX = (float)(player.x-width/2);
         float transY = (float)(-player.y-height/2);
-
-        List<Entity> entities = new ArrayList<>();
 
         int topLeftX = Util.toGridPos(transX);
         int topLeftY = Util.toGridPos(-transY+1);
@@ -115,7 +117,15 @@ public class WorldRenderer{
                         }
                     }
 
-                    entities.addAll(chunk.getAllEntities());
+                    for(Entity entity : chunk.getAllEntities()){
+                        ENTITY_CACHE.add(entity);
+
+                        if(RockBottomAPI.getNet().isActive()){
+                            if(entity instanceof EntityPlayer){
+                                PLAYER_CACHE.add((EntityPlayer)entity);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -124,7 +134,7 @@ public class WorldRenderer{
 
         particles.render(game, manager, g, world, transX, transY);
 
-        entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
+        ENTITY_CACHE.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
@@ -136,6 +146,14 @@ public class WorldRenderer{
 
         RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, transX, transY));
 
+        PLAYER_CACHE.forEach(entity -> {
+            if(entity.shouldRender() && !RockBottomAPI.getNet().isThePlayer(entity)){
+                manager.getFont().drawCenteredString((float)entity.x-transX, (float)-entity.y-transY-1.25F, entity.getChatColorFormat()+entity.getName(), 0.015F, false);
+            }
+        });
+
+        ENTITY_CACHE.clear();
+        PLAYER_CACHE.clear();
         g.resetTransform();
     }
 

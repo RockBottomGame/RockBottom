@@ -94,6 +94,9 @@ public class PacketJoin implements IPacket{
                             Log.info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
 
                             RockBottomAPI.getNet().sendToAllPlayers(world, new PacketPlayerConnection(player.getName(), false));
+                            if(!game.isDedicatedServer()){
+                                PacketPlayerConnection.display(game, false, player.getName());
+                            }
                         }
                         else{
                             Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");

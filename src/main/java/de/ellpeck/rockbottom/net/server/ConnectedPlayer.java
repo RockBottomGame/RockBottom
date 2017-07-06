@@ -94,6 +94,9 @@ public class ConnectedPlayer extends EntityPlayer{
         Log.info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
 
         RockBottomAPI.getNet().sendToAllPlayers(player.world, new PacketPlayerConnection(player.getName(), true));
+        if(!game.isDedicatedServer()){
+            PacketPlayerConnection.display(game, true, player.getName());
+        }
     }
 
     @Override

@@ -38,11 +38,14 @@ public class PacketPlayerConnection implements IPacket{
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
-            String key = "info."+(this.disconnect ? "disconnect" : "connect");
-            String message = game.getAssetManager().localize(RockBottom.internalRes(key), this.connectedName);
-            game.getChatLog().displayMessage(FormattingCode.ORANGE+message);
-
+            display(game, this.disconnect, this.connectedName);
             return true;
         });
+    }
+
+    public static void display(IGameInstance game, boolean disconnect, String name){
+        String key = "info."+(disconnect ? "disconnect" : "connect");
+        String message = game.getAssetManager().localize(RockBottom.internalRes(key), name);
+        game.getChatLog().displayMessage(FormattingCode.ORANGE+message);
     }
 }
