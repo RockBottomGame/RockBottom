@@ -33,6 +33,7 @@ public final class Main{
 
     public static void main(String[] args){
         OptionParser parser = new OptionParser();
+        parser.allowsUnrecognizedOptions();
         OptionSpec<LogLevel> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(LogLevel.class).defaultsTo(LogLevel.DEBUG);
         File defaultGameDir = new File(".", "rockbottom");
         OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(defaultGameDir);
@@ -43,12 +44,16 @@ public final class Main{
         OptionSpec<Integer> optionPort = parser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(8000);
         OptionSpec optionFullscreen = parser.accepts("fullscreen");
         OptionSpec optionServer = parser.accepts("server");
+        OptionSpec optionIgnored = parser.nonOptions();
 
         OptionSet options = parser.parse(args);
 
         LogLevel level = options.valueOf(optionLogLevel);
         LogSystem.init(level);
+
         Log.info("Found launch args "+Arrays.toString(args));
+        Log.info("Ignoring unrecognized launch args "+options.valuesOf(optionIgnored));
+
         Log.info("Setting log level to "+level);
 
         gameDir = options.valueOf(optionGameDir);
