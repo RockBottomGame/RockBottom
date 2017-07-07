@@ -46,7 +46,7 @@ public class ParticleManager implements IParticleManager{
 
     @Override
     public void addTileParticles(IWorld world, int x, int y, Tile tile, int meta){
-        for(int i = 0; i < 15; i++){
+        for(int i = 0; i < Util.RANDOM.nextInt(30)+20; i++){
             double motionX = Util.RANDOM.nextGaussian()*0.1F;
             double motionY = Util.RANDOM.nextGaussian()*0.1F;
 
