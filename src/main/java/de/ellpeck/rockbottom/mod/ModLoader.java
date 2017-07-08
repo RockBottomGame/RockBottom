@@ -164,7 +164,10 @@ public class ModLoader implements IModLoader{
     public void sortMods(){
         Log.info("Sorting mods");
 
-        this.allMods.sort(Comparator.comparingInt(IMod:: getSortingPriority).reversed());
+        Comparator comp = Comparator.comparingInt(IMod:: getSortingPriority).reversed();
+        this.allMods.sort(comp);
+        this.activeMods.sort(comp);
+        this.disabledMods.sort(comp);
 
         Log.info("----- Loaded Mods -----");
         for(IMod mod : this.allMods){

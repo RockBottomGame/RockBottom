@@ -33,6 +33,13 @@ public class WorldGenTrees implements IWorldGenerator{
         Tile tile = world.getTile(x, y-1);
         if(tile instanceof TileDirt || tile instanceof TileGrass){
             int height = rand.nextInt(6)+8;
+
+            for(int h = 0; h <= height; h++){
+                if(!world.getTile(x, y+h).isAir()){
+                    return;
+                }
+            }
+
             for(int h = 0; h <= height; h++){
                 world.setTile(x, y+h, GameContent.TILE_LOG);
             }
