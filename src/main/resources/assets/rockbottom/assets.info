@@ -39,6 +39,7 @@ tex.tiles.separator.active.1.1=sub./tiles/separator_active.png,12,12,12,12
 tex.tiles.separator.active.1.2=sub./tiles/separator_active.png,12,0,12,12
 tex.tiles.separator.item=/tiles/separator_item.png
 tex.tiles.wood_boards=/tiles/wood_boards.png
+tex.tiles.ladder=/tiles/wood_ladder.png
 
 tex.items.super_tool=/items/super_tool.png
 tex.items.pick_wood=/items/pick_wood.png
