@@ -475,10 +475,12 @@ public class World implements IWorld{
     @Override
     public void save(){
         long timeStarted = System.currentTimeMillis();
-        Log.info("Saving world...");
+        int amount = 0;
 
         for(IChunk chunk : this.loadedChunks){
-            this.saveChunk(chunk);
+            if(this.saveChunk(chunk)){
+                amount++;
+            }
         }
 
         this.info.save();
@@ -487,7 +489,9 @@ public class World implements IWorld{
             this.savePlayer(player);
         }
 
-        Log.info("Finished saving world, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
+        if(amount > 0){
+            Log.info("Saved "+amount+" chunks, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
+        }
     }
 
     @Override
@@ -547,13 +551,15 @@ public class World implements IWorld{
         return null;
     }
 
-    protected void saveChunk(IChunk chunk){
+    protected boolean saveChunk(IChunk chunk){
         if(chunk.needsSave()){
             DataSet set = new DataSet();
             chunk.save(set);
 
             set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+"_"+chunk.getGridY()+".dat"));
+            return true;
         }
+        return false;
     }
 
     @Override

@@ -67,7 +67,7 @@ public class ClientWorld extends World{
     }
 
     @Override
-    protected void saveChunk(IChunk chunk){
+    protected boolean saveChunk(IChunk chunk){
         throw new UnsupportedOperationException("Cannot save chunk in client world");
     }
 
