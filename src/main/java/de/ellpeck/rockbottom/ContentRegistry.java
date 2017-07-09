@@ -35,6 +35,7 @@ public final class ContentRegistry{
         new TileSmelter().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
         new TileSeparator().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
         new TileSapling().setHardness(0F).setForceDrop().register();
+        new TileLadder().setHardness(2F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();

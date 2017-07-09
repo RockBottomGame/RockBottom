@@ -45,6 +45,7 @@ import java.util.UUID;
 public class EntityPlayer extends AbstractEntityPlayer{
 
     public static final float MOVE_SPEED = 0.2F;
+    public static final float CLIMB_SPEED = 0.15F;
 
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
@@ -170,6 +171,24 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
                             entity.motionX = 0.3*(x/length);
                             entity.motionY = 0.3*(y/length);
+                        }
+                    }
+                }
+            }
+        }
+
+        if(!this.isDead()){
+            this.isClimbing = false;
+
+            BoundBox area = this.getBoundingBox().copy().add(this.x, this.y);
+            outer:
+            for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
+                for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
+                    for(TileLayer layer : TileLayer.LAYERS){
+                        Tile tile = this.world.getTile(layer, x, y);
+                        if(tile.canClimb(this.world, x, y, layer)){
+                            this.isClimbing = true;
+                            break outer;
                         }
                     }
                 }
@@ -437,17 +456,35 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
-    public void move(int type){
+    public boolean move(int type){
         if(type == 0){
             this.motionX -= MOVE_SPEED;
             this.facing = Direction.LEFT;
+            return true;
         }
         else if(type == 1){
             this.motionX += MOVE_SPEED;
             this.facing = Direction.RIGHT;
+            return true;
         }
         else if(type == 2){
             this.jump(0.28);
+            return true;
         }
+        else if(type == 3){
+            if(this.isClimbing){
+                this.motionY += CLIMB_SPEED;
+                this.facing = Direction.UP;
+                return true;
+            }
+        }
+        else if(type == 4){
+            if(this.isClimbing){
+                this.motionY -= CLIMB_SPEED;
+                this.facing = Direction.DOWN;
+                return true;
+            }
+        }
+        return false;
     }
 }

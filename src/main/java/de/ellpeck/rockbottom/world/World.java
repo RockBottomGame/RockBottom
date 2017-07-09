@@ -236,8 +236,8 @@ public class World implements IWorld{
     public List<BoundBox> getCollisions(BoundBox area){
         List<BoundBox> collisions = new ArrayList<>();
 
-        for(int x = Util.floor(area.getMinX()); x <= Util.ceil(area.getMaxX()); x++){
-            for(int y = Util.floor(area.getMinY()); y <= Util.ceil(area.getMaxY()); y++){
+        for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
+            for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
                 if(this.isPosLoaded(x, y)){
                     Tile tile = this.getTile(x, y);
 

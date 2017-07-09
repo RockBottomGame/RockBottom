@@ -122,8 +122,10 @@ public class ApiHandler implements IApiHandler{
 
             entity.move(entity.motionX, entity.motionY);
 
-            if(entity.onGround){
-                entity.motionY = 0;
+            if(entity.onGround || entity.isClimbing){
+                if(entity.onGround){
+                    entity.motionY = 0;
+                }
 
                 if(entity.fallAmount > 0){
                     entity.onGroundHit();

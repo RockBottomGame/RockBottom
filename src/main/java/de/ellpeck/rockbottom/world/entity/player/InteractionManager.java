@@ -91,10 +91,10 @@ public class InteractionManager implements IInteractionManager{
     }
 
     private static void moveAndSend(EntityPlayer player, int type){
-        player.move(type);
-
-        if(RockBottomAPI.getNet().isClient()){
-            RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(player.getUniqueId(), player.x, player.y, player.motionX, player.motionY, player.facing));
+        if(player.move(type)){
+            if(RockBottomAPI.getNet().isClient()){
+                RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(player.getUniqueId(), player.x, player.y, player.motionX, player.motionY, player.facing));
+            }
         }
     }
 
@@ -119,6 +119,13 @@ public class InteractionManager implements IInteractionManager{
                 }
                 else if(input.isKeyDown(settings.keyRight.key)){
                     moveAndSend(player, 1);
+                }
+
+                if(input.isKeyDown(settings.keyUp.key)){
+                    moveAndSend(player, 3);
+                }
+                else if(input.isKeyDown(settings.keyDown.key)){
+                    moveAndSend(player, 4);
                 }
 
                 if(input.isKeyDown(settings.keyJump.key)){

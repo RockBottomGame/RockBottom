@@ -75,7 +75,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color light){
         IPlayerDesign design = entity.getDesign();
         boolean isMoving = Math.abs(entity.motionX) >= 0.01;
-        boolean isJumping = !entity.onGround;
+        boolean isJumping = !entity.onGround && !entity.isClimbing;
         int row = entity.facing == Direction.RIGHT ? (isJumping ? 4 : (isMoving ? 0 : 2)) : (isJumping ? 5 : (isMoving ? 1 : 3));
 
         renderPlayer(manager, design, x-0.5F, y-1.5F, 1F, row, ".hanging", light);

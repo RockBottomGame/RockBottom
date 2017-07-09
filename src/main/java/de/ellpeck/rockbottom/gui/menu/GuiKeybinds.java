@@ -26,7 +26,7 @@ public class GuiKeybinds extends Gui{
             this.components.add(new ComponentKeybind(this, i, this.guiLeft+x, this.guiTop+y, bind));
 
             y += 20;
-            if(i == 4){
+            if(i == 5){
                 x += 154;
                 y = 0;
             }

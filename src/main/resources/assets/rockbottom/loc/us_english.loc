@@ -18,6 +18,7 @@ rockbottom/item.pick_rock=Rock Pickaxe
 rockbottom/item.sapling=Sapling
 rockbottom/item.copper_ore=Copper Ore
 rockbottom/item.super_tool=&rSUPER TOOL
+rockbottom/item.ladder=Ladder
 
 rockbottom/info.layer_placement=Can be placed in %s
 rockbottom/info.health=Health
@@ -107,3 +108,5 @@ rockbottom/key.background=Edit Background
 rockbottom/key.chat=Chat
 rockbottom/key.advanced_info=Advanced Info
 rockbottom/key.screenshot=Screenshot
+rockbottom/key.up=Climb Up
+rockbottom/key.down=Climb Down

@@ -27,6 +27,7 @@ public class ConnectedPlayer extends EntityPlayer{
     private double lastCalcX;
     private double lastCalcY;
     private int fallCalcTicks;
+    private int climbingCalcTicks;
 
     public ConnectedPlayer(World world, UUID uniqueId, IPlayerDesign design, Channel channel){
         super(world, uniqueId, design);
@@ -46,7 +47,10 @@ public class ConnectedPlayer extends EntityPlayer{
             }
 
             double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, this.x, this.y);
-            double maxDist = 1.25*this.fallCalcTicks+MOVE_SPEED*(80-this.fallCalcTicks)+5;
+            double maxDist = 1.25*this.fallCalcTicks
+                    +CLIMB_SPEED*this.climbingCalcTicks
+                    +MOVE_SPEED*(80-this.fallCalcTicks-this.climbingCalcTicks)
+                    +3;
 
             if(distanceSq > maxDist*maxDist){
                 this.x = this.lastCalcX;
@@ -65,9 +69,13 @@ public class ConnectedPlayer extends EntityPlayer{
             }
 
             this.fallCalcTicks = 0;
+            this.climbingCalcTicks = 0;
         }
 
-        if(this.fallAmount >= 40){
+        if(this.isClimbing){
+            this.climbingCalcTicks++;
+        }
+        else if(this.fallAmount >= 40){
             this.fallCalcTicks++;
         }
 
