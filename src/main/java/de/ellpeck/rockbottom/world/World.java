@@ -240,11 +240,7 @@ public class World implements IWorld{
             for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
                 if(this.isPosLoaded(x, y)){
                     Tile tile = this.getTile(x, y);
-
-                    BoundBox box = tile.getBoundBox(this, x, y);
-                    if(box != null && !box.isEmpty()){
-                        collisions.add(box.copy().add(x, y));
-                    }
+                    tile.getBoundBoxes(this, x, y, collisions);
                 }
             }
         }
