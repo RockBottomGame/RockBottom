@@ -19,10 +19,10 @@ import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
+import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
 import org.newdawn.slick.Sound;
@@ -42,6 +42,7 @@ public class AssetManager implements IAssetManager{
     private AssetFont missingFont;
     private AssetAnimation missingAnimation;
     private Locale currentLocale;
+    private Locale defaultLocale;
     private Font currentFont;
 
     private static Texture loadTexture(String key, String path, String value) throws Exception{
@@ -93,8 +94,10 @@ public class AssetManager implements IAssetManager{
         Log.info("Loaded "+this.getAllOfType(AssetAnimation.class).size()+" animations!");
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
 
-        this.currentLocale = this.getLocale(AbstractGame.internalRes("us_english"));
+        this.defaultLocale = this.getLocale(AbstractGame.internalRes("us_english"));
+
         this.currentFont = this.getFont(AbstractGame.internalRes("default"));
+        this.currentLocale = this.getLocale(AbstractGame.internalRes(game.getSettings().currentLocale));
 
         this.reloadCursor(game);
     }
@@ -268,7 +271,7 @@ public class AssetManager implements IAssetManager{
 
     @Override
     public String localize(IResourceName unloc, Object... format){
-        return this.currentLocale.localize(unloc, format);
+        return this.currentLocale.localize(this.defaultLocale, unloc, format);
     }
 
     @Override
