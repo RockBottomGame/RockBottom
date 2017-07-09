@@ -20,6 +20,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -138,6 +139,24 @@ public class ApiHandler implements IApiHandler{
 
             if(entity.collidedHor){
                 entity.motionX = 0;
+            }
+
+            entity.isClimbing = false;
+
+            BoundBox area = entity.getBoundingBox().copy().add(entity.x, entity.y);
+            for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
+                for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
+                    for(TileLayer layer : TileLayer.LAYERS){
+                        Tile tile = entity.world.getTile(layer, x, y);
+
+                        if(tile.canClimb(entity.world, x, y, layer, entity)){
+                            entity.isClimbing = true;
+                        }
+
+                        tile.onCollideWithEntity(entity.world, x, y, layer, entity);
+                        entity.onCollideWithTile(x, y, layer, tile);
+                    }
+                }
             }
         }
         else{

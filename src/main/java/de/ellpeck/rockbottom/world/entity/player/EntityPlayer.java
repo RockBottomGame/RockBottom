@@ -177,24 +177,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
 
-        if(!this.isDead()){
-            this.isClimbing = false;
-
-            BoundBox area = this.getBoundingBox().copy().add(this.x, this.y);
-            outer:
-            for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
-                for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
-                    for(TileLayer layer : TileLayer.LAYERS){
-                        Tile tile = this.world.getTile(layer, x, y);
-                        if(tile.canClimb(this.world, x, y, layer)){
-                            this.isClimbing = true;
-                            break outer;
-                        }
-                    }
-                }
-            }
-        }
-
         if(RockBottomAPI.getNet().isThePlayer(this)){
             int range = 32;
             for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES; i++){
