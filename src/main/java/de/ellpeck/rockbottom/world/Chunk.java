@@ -314,8 +314,6 @@ public class Chunk implements IChunk{
         this.tileGrid[ord][x][y] = tile;
         this.setMetaFast(ord, x, y, meta);
 
-        tile.onAdded(this.world, this.x+x, this.y+y, layer);
-
         if(layer == TileLayer.MAIN){
             if(tile.canProvideTileEntity()){
                 TileEntity tileEntity = tile.provideTileEntity(this.world, this.x+x, this.y+y);
@@ -324,6 +322,8 @@ public class Chunk implements IChunk{
                 }
             }
         }
+
+        tile.onAdded(this.world, this.x+x, this.y+y, layer);
 
         if(RockBottomAPI.getNet().isServer()){
             RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForTile(tile), meta));
