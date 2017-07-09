@@ -52,7 +52,7 @@ public class PacketInteract implements IPacket{
             if(game.getWorld() != null){
                 AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
-                    InteractionManager.interact(player, this.layer, this.x, this.y, false);
+                    InteractionManager.interact(player, this.layer, this.x, this.y);
                 }
             }
             return true;

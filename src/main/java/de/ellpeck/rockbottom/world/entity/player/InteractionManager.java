@@ -37,13 +37,12 @@ public class InteractionManager implements IInteractionManager{
     public int mousedTileX;
     public int mousedTileY;
 
-    public static boolean interact(AbstractEntityPlayer player, TileLayer layer, int x, int y, boolean simulate){
-        InteractionEvent event = new InteractionEvent(player, layer, x, y, simulate);
+    public static boolean interact(AbstractEntityPlayer player, TileLayer layer, int x, int y){
+        InteractionEvent event = new InteractionEvent(player, layer, x, y);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
             layer = event.layer;
             x = event.x;
             y = event.y;
-            simulate = event.simulate;
 
             Tile tileThere = player.world.getTile(layer, x, y);
 
@@ -56,22 +55,7 @@ public class InteractionManager implements IInteractionManager{
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
             if(selected != null){
                 Item item = selected.getItem();
-                if(item instanceof ItemTile){
-                    if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
-                        Tile tile = ((ItemTile)item).getTile();
-                        if(tileThere.canReplace(player.world, x, y, layer, tile)){
-                            if(tile.canPlace(player.world, x, y, layer)){
-
-                                if(!simulate){
-                                    tile.doPlace(player.world, x, y, layer, selected, player);
-                                    player.getInv().remove(player.getSelectedSlot(), 1);
-                                }
-
-                                return true;
-                            }
-                        }
-                    }
-                }
+                return item.onInteractWith(player.world, x, y, layer, player, selected);
             }
         }
 
@@ -184,10 +168,8 @@ public class InteractionManager implements IInteractionManager{
 
                     if(this.placeCooldown <= 0){
                         if(input.isMouseButtonDown(settings.buttonPlace)){
-                            boolean client = RockBottomAPI.getNet().isClient();
-
-                            if(interact(player, layer, this.mousedTileX, this.mousedTileY, client)){
-                                if(client){
+                            if(interact(player, layer, this.mousedTileX, this.mousedTileY)){
+                                if(RockBottomAPI.getNet().isClient()){
                                     RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
                                 }
 

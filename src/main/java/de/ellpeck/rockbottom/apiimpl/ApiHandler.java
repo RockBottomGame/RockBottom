@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.TooltipEvent;
@@ -428,6 +429,24 @@ public class ApiHandler implements IApiHandler{
                     if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())){
                         return true;
                     }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile){
+        if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
+            if(player.world.getTile(layer, x, y).canReplace(player.world, x, y, layer, tile)){
+                if(tile.canPlace(player.world, x, y, layer)){
+
+                    if(!RockBottomAPI.getNet().isClient()){
+                        tile.doPlace(player.world, x, y, layer, selected, player);
+                        player.getInv().remove(player.getSelectedSlot(), 1);
+                    }
+
+                    return true;
                 }
             }
         }
