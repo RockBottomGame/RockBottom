@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
-import de.ellpeck.rockbottom.api.particle.ParticleTile;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -53,6 +52,11 @@ public class ParticleManager implements IParticleManager{
             Particle particle = new ParticleTile(world, x+0.5, y+0.5, motionX, motionY, tile, meta);
             this.addParticle(particle);
         }
+    }
+
+    @Override
+    public void addSmokeParticle(IWorld world, double x, double y, double motionX, double motionY, float scale){
+        this.addParticle(new ParticleSmoke(world, x, y, motionX, motionY, scale));
     }
 
     @Override
