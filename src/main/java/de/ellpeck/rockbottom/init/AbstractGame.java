@@ -35,7 +35,7 @@ public abstract class AbstractGame implements IGameInstance{
 
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
 
-    public static final String VERSION = "0.0.10";
+    public static final String VERSION = "0.0.11";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private final List<IAction> scheduledActions = new ArrayList<>();

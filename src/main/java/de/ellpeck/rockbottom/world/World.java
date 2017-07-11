@@ -589,19 +589,20 @@ public class World implements IWorld{
     @Override
     public void causeLightUpdate(int x, int y){
         MutableInt recurseCount = new MutableInt(0);
-        this.causeLightUpdate(x, y, recurseCount);
 
-        if(recurseCount.get() >= 100){
-            Log.debug("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls!");
+        try{
+            this.causeLightUpdate(x, y, recurseCount);
+
+            if(recurseCount.get() >= 100){
+                Log.debug("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
+            }
+        }
+        catch(StackOverflowError e){
+            Log.error("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls", e);
         }
     }
 
-    protected void causeLightUpdate(int x, int y, MutableInt recurseCount){
-        if(recurseCount.get() > 5000){
-            Log.warn("UPDATING LIGHT AT "+x+", "+y+" TOOK MORE THAN 5000 RECURSIVE CALLS! ABORTING!");
-            return;
-        }
-
+    private void causeLightUpdate(int x, int y, MutableInt recurseCount){
         for(Direction direction : Direction.SURROUNDING_INCLUDING_NONE){
             int dirX = x+direction.x;
             int dirY = y+direction.y;
@@ -646,7 +647,7 @@ public class World implements IWorld{
         }
     }
 
-    protected byte calcLight(int x, int y, boolean isSky){
+    private byte calcLight(int x, int y, boolean isSky){
         byte maxLight = 0;
 
         for(Direction direction : Direction.SURROUNDING){
@@ -671,7 +672,7 @@ public class World implements IWorld{
         return (byte)Math.min(Constants.MAX_LIGHT, maxLight);
     }
 
-    protected byte getTileLight(int x, int y, boolean isSky){
+    private byte getTileLight(int x, int y, boolean isSky){
         Tile foreground = this.getTile(x, y);
         Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
 
@@ -690,7 +691,7 @@ public class World implements IWorld{
         return 0;
     }
 
-    protected float getTileModifier(int x, int y, boolean isSky){
+    private float getTileModifier(int x, int y, boolean isSky){
         float foregroundMod = 1F;
         float backgroundMod = 1F;
 
