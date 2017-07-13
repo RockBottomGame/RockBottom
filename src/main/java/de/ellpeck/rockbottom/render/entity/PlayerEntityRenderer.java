@@ -76,10 +76,22 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color light){
         IPlayerDesign design = entity.getDesign();
-        boolean isMoving = Math.abs(entity.motionX) >= 0.01;
-        boolean isJumping = !entity.onGround && !entity.isClimbing;
-        int row = entity.facing == Direction.RIGHT ? (isJumping ? 4 : (isMoving ? 0 : 2)) : (isJumping ? 5 : (isMoving ? 1 : 3));
+        boolean isRight = entity.facing == Direction.RIGHT;
+        boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;
 
+        int row;
+        if(entity.isClimbing){
+            row = isHorMovement || Math.abs(entity.motionY) >= 0.01 ? 6 : 7;
+        }
+        else if(!entity.onGround){
+            row = isRight ? 4 : 5;
+        }
+        else if(isHorMovement){
+            row = isRight ? 0 : 1;
+        }
+        else{
+            row = isRight ? 2 : 3;
+        }
         renderPlayer(manager, design, x-0.5F, y-1.5F, 1F, row, ".hanging", light);
 
         RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent(game, manager, g, entity, x, y));
