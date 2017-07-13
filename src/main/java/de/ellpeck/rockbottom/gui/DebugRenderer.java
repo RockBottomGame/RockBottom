@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -60,8 +61,8 @@ public final class DebugRenderer{
         list.add("Motion: "+String.format(Locale.ROOT, "%.3f, %.3f", player.motionX, player.motionY));
         list.add("");
 
-        int x = game.getInteractionManager().mousedTileX;
-        int y = game.getInteractionManager().mousedTileY;
+        int x = Util.floor(game.getInteractionManager().mousedTileX);
+        int y = Util.floor(game.getInteractionManager().mousedTileY);
         list.add("Mouse:");
         list.add("ScreenPos: "+game.getInput().getMouseX()+", "+game.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);

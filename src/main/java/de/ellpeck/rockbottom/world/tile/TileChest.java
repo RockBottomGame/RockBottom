@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -13,6 +12,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.gui.GuiChest;
 import de.ellpeck.rockbottom.gui.container.ContainerChest;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.tile.ChestTileRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
@@ -38,7 +38,7 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, AbstractEntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, double mouseX, double mouseY, AbstractEntityPlayer player){
         TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
         if(chest != null){
             player.openGuiContainer(new GuiChest(player), new ContainerChest(player, chest));

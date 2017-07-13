@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -16,7 +15,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.gui.GuiSeparator;
 import de.ellpeck.rockbottom.gui.container.ContainerSeparator;
-import de.ellpeck.rockbottom.particle.ParticleSmoke;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.tile.SeparatorTileRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 
@@ -53,7 +52,7 @@ public class TileSeparator extends MultiTile{
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, AbstractEntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, double mouseX, double mouseY, AbstractEntityPlayer player){
         Pos2 main = this.getMainPos(x, y, world.getMeta(x, y));
         TileEntitySeparator tile = world.getTileEntity(main.getX(), main.getY(), TileEntitySeparator.class);
 

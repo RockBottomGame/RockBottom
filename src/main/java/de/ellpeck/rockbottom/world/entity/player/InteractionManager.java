@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.world.entity.player;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
-import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.api.event.impl.InteractionEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.item.ItemTile;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -25,6 +24,8 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketPlayerMovement;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
+import java.util.List;
+
 public class InteractionManager implements IInteractionManager{
 
     public TileLayer breakingLayer;
@@ -34,20 +35,30 @@ public class InteractionManager implements IInteractionManager{
     public float breakProgress;
     public int placeCooldown;
 
-    public int mousedTileX;
-    public int mousedTileY;
+    public double mousedTileX;
+    public double mousedTileY;
 
-    public static boolean interact(AbstractEntityPlayer player, TileLayer layer, int x, int y){
-        InteractionEvent event = new InteractionEvent(player, layer, x, y);
+    public static boolean interact(AbstractEntityPlayer player, TileLayer layer, double mouseX, double mouseY){
+        List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
+
+        int x = Util.floor(mouseX);
+        int y = Util.floor(mouseY);
+
+        InteractionEvent event = new InteractionEvent(player, entities, layer, x, y, mouseX, mouseY);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
             layer = event.layer;
             x = event.x;
             y = event.y;
 
-            Tile tileThere = player.world.getTile(layer, x, y);
+            for(Entity entity : entities){
+                if(entity.onInteractWith(player, mouseX, mouseY)){
+                    return true;
+                }
+            }
 
             if(layer == TileLayer.MAIN){
-                if(tileThere.onInteractWith(player.world, x, y, player)){
+                Tile tile = player.world.getTile(x, y);
+                if(tile.onInteractWith(player.world, x, y, mouseX, mouseY, player)){
                     return true;
                 }
             }
@@ -55,7 +66,7 @@ public class InteractionManager implements IInteractionManager{
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
             if(selected != null){
                 Item item = selected.getItem();
-                return item.onInteractWith(player.world, x, y, layer, player, selected);
+                return item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected);
             }
         }
 
@@ -95,8 +106,11 @@ public class InteractionManager implements IInteractionManager{
 
                 double worldAtScreenX = player.x-game.getWidthInWorld()/2;
                 double worldAtScreenY = -player.y-game.getHeightInWorld()/2;
-                this.mousedTileX = Util.floor(worldAtScreenX+mouseX/(double)game.getWorldScale());
-                this.mousedTileY = -Util.floor(worldAtScreenY+mouseY/(double)game.getWorldScale());
+                this.mousedTileX = worldAtScreenX+mouseX/(double)game.getWorldScale();
+                this.mousedTileY = -(worldAtScreenY+mouseY/(double)game.getWorldScale())+1;
+
+                int x = Util.floor(this.mousedTileX);
+                int y = Util.floor(this.mousedTileY);
 
                 if(input.isKeyDown(settings.keyLeft.key)){
                     moveAndSend(player, 0);
@@ -116,26 +130,26 @@ public class InteractionManager implements IInteractionManager{
                     moveAndSend(player, 2);
                 }
 
-                if(player.world.isPosLoaded(this.mousedTileX, this.mousedTileY)){
+                if(player.world.isPosLoaded(x, y)){
                     TileLayer layer = input.isKeyDown(settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
 
                     if(input.isMouseButtonDown(settings.buttonDestroy)){
-                        if(this.breakTileX != this.mousedTileX || this.breakTileY != this.mousedTileY){
+                        if(this.breakTileX != x || this.breakTileY != y){
                             this.breakProgress = 0;
                         }
 
-                        Tile tile = player.world.getTile(layer, this.mousedTileX, this.mousedTileY);
-                        if(tile.canBreak(player.world, this.mousedTileX, this.mousedTileY, layer)){
-                            float hardness = tile.getHardness(player.world, this.mousedTileX, this.mousedTileY, layer);
+                        Tile tile = player.world.getTile(layer, x, y);
+                        if(tile.canBreak(player.world, x, y, layer)){
+                            float hardness = tile.getHardness(player.world, x, y, layer);
                             float progressAmount = 0.05F/hardness;
 
                             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-                            boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, this.mousedTileX, this.mousedTileY);
+                            boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, x, y);
                             if(selected != null){
-                                progressAmount *= selected.getItem().getMiningSpeed(player.world, this.mousedTileX, this.mousedTileY, layer, tile, effective);
+                                progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
                             }
 
-                            AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, this.mousedTileX, this.mousedTileY, this.breakProgress, progressAmount);
+                            AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
                             RockBottomAPI.getEventHandler().fireEvent(event);
                             this.breakProgress = event.totalProgress;
                             progressAmount = event.progressAdded;
@@ -146,15 +160,15 @@ public class InteractionManager implements IInteractionManager{
                                 this.breakProgress = 0;
 
                                 if(RockBottomAPI.getNet().isClient()){
-                                    RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                    RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, x, y));
                                 }
                                 else{
-                                    breakTile(tile, player, this.mousedTileX, this.mousedTileY, layer, effective);
+                                    breakTile(tile, player, x, y, layer, effective);
                                 }
                             }
                             else{
-                                this.breakTileX = this.mousedTileX;
-                                this.breakTileY = this.mousedTileY;
+                                this.breakTileX = x;
+                                this.breakTileY = y;
                                 this.breakingLayer = layer;
                             }
                         }
@@ -170,7 +184,7 @@ public class InteractionManager implements IInteractionManager{
                         if(input.isMouseButtonDown(settings.buttonPlace)){
                             if(interact(player, layer, this.mousedTileX, this.mousedTileY)){
                                 if(RockBottomAPI.getNet().isClient()){
-                                    RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                    RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, x, y));
                                 }
 
                                 this.placeCooldown = 5;
@@ -260,12 +274,12 @@ public class InteractionManager implements IInteractionManager{
     }
 
     @Override
-    public int getMousedTileX(){
+    public double getMousedTileX(){
         return this.mousedTileX;
     }
 
     @Override
-    public int getMousedTileY(){
+    public double getMousedTileY(){
         return this.mousedTileY;
     }
 }
