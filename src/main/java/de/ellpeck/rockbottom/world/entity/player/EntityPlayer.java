@@ -454,14 +454,14 @@ public class EntityPlayer extends AbstractEntityPlayer{
             return true;
         }
         else if(type == 3){
-            if(this.isClimbing){
+            if(this.canClimb){
                 this.motionY += CLIMB_SPEED;
                 this.facing = Direction.UP;
                 return true;
             }
         }
         else if(type == 4){
-            if(this.isClimbing){
+            if(this.canClimb){
                 this.motionY -= CLIMB_SPEED;
                 this.facing = Direction.DOWN;
                 return true;

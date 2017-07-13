@@ -142,6 +142,7 @@ public class ApiHandler implements IApiHandler{
                 entity.motionX = 0;
             }
 
+            entity.canClimb = false;
             entity.isClimbing = false;
 
             BoundBox area = entity.getBoundingBox().copy().add(entity.x, entity.y);
@@ -151,7 +152,11 @@ public class ApiHandler implements IApiHandler{
                         Tile tile = entity.world.getTile(layer, x, y);
 
                         if(tile.canClimb(entity.world, x, y, layer, entity)){
-                            entity.isClimbing = true;
+                            entity.canClimb = true;
+
+                            if(!entity.onGround){
+                                entity.isClimbing = true;
+                            }
                         }
 
                         tile.onCollideWithEntity(entity.world, x, y, layer, entity);
