@@ -1,9 +1,9 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.init.AbstractGame;
 
 public class TileDirt extends TileBasic{
 

@@ -15,14 +15,12 @@ public class ComponentColorPicker extends GuiComponent{
 
     private final ICallback callback;
     private final boolean isEnlargable;
-    private boolean wasMouseDown;
-    private boolean isEnlarged;
-
     private final int defX;
     private final int defY;
     private final int defSizeX;
     private final int defSizeY;
-
+    private boolean wasMouseDown;
+    private boolean isEnlarged;
     private Color color;
 
     public ComponentColorPicker(Gui gui, int x, int y, int sizeX, int sizeY, Color defaultColor, ICallback callback, boolean isEnlargable){

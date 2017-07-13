@@ -34,6 +34,18 @@ public class ConnectedPlayer extends EntityPlayer{
         this.channel = channel;
     }
 
+    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player){
+        game.getWorld().savePlayer(player);
+        game.getWorld().removeEntity(player);
+
+        Log.info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
+
+        RockBottomAPI.getNet().sendToAllPlayers(player.world, new PacketPlayerConnection(player.getName(), true));
+        if(!game.isDedicatedServer()){
+            PacketPlayerConnection.display(game, true, player.getName());
+        }
+    }
+
     @Override
     public void update(IGameInstance game){
         super.update(game);
@@ -92,18 +104,6 @@ public class ConnectedPlayer extends EntityPlayer{
             if(RockBottomAPI.getNet().isServer()){
                 this.sendPacket(new PacketHealth(this.getHealth()));
             }
-        }
-    }
-
-    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player){
-        game.getWorld().savePlayer(player);
-        game.getWorld().removeEntity(player);
-
-        Log.info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
-
-        RockBottomAPI.getNet().sendToAllPlayers(player.world, new PacketPlayerConnection(player.getName(), true));
-        if(!game.isDedicatedServer()){
-            PacketPlayerConnection.display(game, true, player.getName());
         }
     }
 

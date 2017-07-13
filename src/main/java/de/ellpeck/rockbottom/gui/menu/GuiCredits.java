@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class GuiCredits extends Gui{
     public void update(IGameInstance game){
         super.update(game);
 
-        this.renderY-=0.65F;
+        this.renderY -= 0.65F;
 
         if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
             this.renderY = (int)game.getHeightInGui();

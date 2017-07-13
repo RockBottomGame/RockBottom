@@ -1,15 +1,11 @@
 package de.ellpeck.rockbottom.world.gen.cave;
 
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.apiimpl.SimplexNoise;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class WorldGenBasicCaves implements IWorldGenerator{

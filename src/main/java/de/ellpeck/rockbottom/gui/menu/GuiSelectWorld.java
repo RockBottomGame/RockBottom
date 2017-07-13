@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.gui.component.ComponentSelectWorldButton;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
+import de.ellpeck.rockbottom.init.AbstractGame;
 
 public class GuiSelectWorld extends Gui{
 

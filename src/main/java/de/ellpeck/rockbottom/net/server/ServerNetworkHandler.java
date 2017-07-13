@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.server;
 
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.newdawn.slick.util.Log;

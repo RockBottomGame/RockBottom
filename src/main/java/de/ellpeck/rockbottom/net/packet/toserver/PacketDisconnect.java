@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 import java.util.UUID;

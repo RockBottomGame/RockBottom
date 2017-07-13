@@ -38,15 +38,15 @@ public class World implements IWorld{
     public final Random generatorRandom = new Random();
 
     public final List<IChunk> loadedChunks = new ArrayList<>();
+    public final List<AbstractEntityPlayer> players = new ArrayList<>();
     protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
     protected final WorldInfo info;
     private final NameToIndexInfo tileRegInfo;
     private final NameToIndexInfo biomeRegInfo;
-    public final List<AbstractEntityPlayer> players = new ArrayList<>();
+    private final List<IWorldGenerator> generators = new ArrayList<>();
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
-    private final List<IWorldGenerator> generators = new ArrayList<>();
 
     public World(WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
         this.info = info;

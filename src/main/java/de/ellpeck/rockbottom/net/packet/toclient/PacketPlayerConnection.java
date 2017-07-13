@@ -23,6 +23,12 @@ public class PacketPlayerConnection implements IPacket{
     public PacketPlayerConnection(){
     }
 
+    public static void display(IGameInstance game, boolean disconnect, String name){
+        String key = "info."+(disconnect ? "disconnect" : "connect");
+        String message = game.getAssetManager().localize(RockBottom.internalRes(key), name);
+        game.getChatLog().displayMessage(FormattingCode.ORANGE+message);
+    }
+
     @Override
     public void toBuffer(ByteBuf buf) throws IOException{
         NetUtil.writeStringToBuffer(this.connectedName, buf);
@@ -41,11 +47,5 @@ public class PacketPlayerConnection implements IPacket{
             display(game, this.disconnect, this.connectedName);
             return true;
         });
-    }
-
-    public static void display(IGameInstance game, boolean disconnect, String name){
-        String key = "info."+(disconnect ? "disconnect" : "connect");
-        String message = game.getAssetManager().localize(RockBottom.internalRes(key), name);
-        game.getChatLog().displayMessage(FormattingCode.ORANGE+message);
     }
 }

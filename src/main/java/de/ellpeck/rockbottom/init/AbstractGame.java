@@ -33,19 +33,18 @@ import java.util.List;
 
 public abstract class AbstractGame implements IGameInstance{
 
-    private static final int INTERVAL = 1000/Constants.TARGET_TPS;
-
     public static final String VERSION = "0.0.11";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
+    private static final int INTERVAL = 1000/Constants.TARGET_TPS;
     private final List<IAction> scheduledActions = new ArrayList<>();
-    private int tpsAverage;
-    private int fpsAverage;
+    public boolean isRunning = true;
     protected DataManager dataManager;
     protected ChatLog chatLog;
     protected World world;
+    private int tpsAverage;
+    private int fpsAverage;
     private int totalTicks;
-    public boolean isRunning = true;
 
     public static void doInit(AbstractGame game){
         RockBottomAPI.setGameInstance(game);
@@ -101,18 +100,18 @@ public abstract class AbstractGame implements IGameInstance{
         }
     }
 
-    public abstract int getAutosaveInterval();
-
-    public void shutdown(){
-        RockBottomAPI.getNet().shutdown();
-    }
-
     public static IGameInstance get(){
         return RockBottomAPI.getGame();
     }
 
     public static IResourceName internalRes(String resource){
         return RockBottomAPI.createRes(get(), resource);
+    }
+
+    public abstract int getAutosaveInterval();
+
+    public void shutdown(){
+        RockBottomAPI.getNet().shutdown();
     }
 
     @Override
