@@ -14,7 +14,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -120,10 +119,8 @@ public class WorldRenderer{
                     for(Entity entity : chunk.getAllEntities()){
                         ENTITY_CACHE.add(entity);
 
-                        if(RockBottomAPI.getNet().isActive()){
-                            if(entity instanceof EntityPlayer){
-                                PLAYER_CACHE.add((EntityPlayer)entity);
-                            }
+                        if(entity instanceof EntityPlayer){
+                            PLAYER_CACHE.add((EntityPlayer)entity);
                         }
                     }
                 }
