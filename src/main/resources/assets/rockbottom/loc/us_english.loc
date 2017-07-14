@@ -19,6 +19,8 @@ rockbottom/item.sapling=Sapling
 rockbottom/item.copper_ore=Copper Ore
 rockbottom/item.super_tool=&rSUPER TOOL
 rockbottom/item.ladder=Ladder
+rockbottom/item.glow_ore=Shining Ore
+rockbottom/item.glow_cluster=Shining Cluster
 
 rockbottom/info.layer_placement=Can be placed in %s
 rockbottom/info.health=Health

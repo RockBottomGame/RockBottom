@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.item.ItemGlowCluster;
 import de.ellpeck.rockbottom.item.ItemTool;
 import de.ellpeck.rockbottom.world.gen.cave.WorldGenBasicCaves;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
@@ -15,6 +16,7 @@ import de.ellpeck.rockbottom.world.gen.landscape.WorldGenBasicUnderground;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenHills;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenGlow;
 import de.ellpeck.rockbottom.world.tile.*;
 import org.newdawn.slick.util.Log;
 
@@ -36,6 +38,7 @@ public final class ContentRegistry{
         new TileSeparator().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
         new TileSapling().setHardness(0F).setForceDrop().register();
         new TileLadder().setHardness(2F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
+        new TileGlowOre().setHardness(15F).addEffectiveTool(ToolType.PICKAXE, 2).register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
@@ -45,6 +48,7 @@ public final class ContentRegistry{
         new ItemBasic(AbstractGame.internalRes("copper_grit")).register();
         new ItemBasic(AbstractGame.internalRes("copper_ingot")).register();
         new ItemBasic(AbstractGame.internalRes("slag")).register();
+        new ItemGlowCluster().register();
 
         new BiomeBasic(AbstractGame.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
         new BiomeBasic(AbstractGame.internalRes("grassland"), 1, -1, 1000).register();
@@ -57,6 +61,7 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenCoal.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenCopper.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicCaves.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenGlow.class);
 
         Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
         Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
