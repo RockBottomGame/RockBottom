@@ -81,7 +81,7 @@ public class InteractionManager implements IInteractionManager{
             y = event.y;
             effective = event.effective;
 
-            tile.doBreak(player.world, x, y, layer, player, effective);
+            tile.doBreak(player.world, x, y, layer, player, effective, true);
         }
     }
 
