@@ -42,6 +42,9 @@ tex.tiles.wood_boards=/tiles/wood_boards.png
 tex.tiles.ladder=/tiles/wood_ladder.png
 tex.tiles.glow_ore.base=/tiles/ore_glow_0.png
 tex.tiles.glow_ore.glow=/tiles/ore_glow_1.png
+tex.tiles.stamper=/tiles/stamper_up.png
+tex.tiles.stamper.down=/tiles/stamper_down.png
+tex.tiles.stone=/tiles/stone_hardened.png
 
 tex.items.super_tool=/items/super_tool.png
 tex.items.pick_wood=/items/wood_pickaxe.png

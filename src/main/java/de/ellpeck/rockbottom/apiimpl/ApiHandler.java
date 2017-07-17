@@ -124,28 +124,10 @@ public class ApiHandler implements IApiHandler{
 
             entity.move(entity.motionX, entity.motionY);
 
-            if(entity.onGround || entity.isClimbing){
-                if(entity.onGround){
-                    entity.motionY = 0;
-                }
-
-                if(entity.fallAmount > 0){
-                    entity.onGroundHit();
-                    entity.fallAmount = 0;
-                }
-            }
-            else if(entity.motionY < 0){
-                entity.fallAmount++;
-            }
-
-            if(entity.collidedHor){
-                entity.motionX = 0;
-            }
-
             entity.canClimb = false;
             entity.isClimbing = false;
 
-            BoundBox area = entity.getBoundingBox().copy().add(entity.x, entity.y);
+            BoundBox area = entity.getBoundingBox().copy().add(entity.x+entity.motionX, entity.y+entity.motionY);
             for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
                 for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
                     for(TileLayer layer : TileLayer.LAYERS){
@@ -163,6 +145,24 @@ public class ApiHandler implements IApiHandler{
                         entity.onCollideWithTile(x, y, layer, tile);
                     }
                 }
+            }
+
+            if(entity.onGround || entity.isClimbing){
+                if(entity.onGround){
+                    entity.motionY = 0;
+                }
+
+                if(entity.fallAmount > 0){
+                    entity.onGroundHit();
+                    entity.fallAmount = 0;
+                }
+            }
+            else if(entity.motionY < 0){
+                entity.fallAmount++;
+            }
+
+            if(entity.collidedHor){
+                entity.motionX = 0;
             }
         }
         else{

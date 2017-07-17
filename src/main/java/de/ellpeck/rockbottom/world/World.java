@@ -319,6 +319,11 @@ public class World implements IWorld{
     }
 
     @Override
+    public boolean isClient(){
+        return RockBottomAPI.getNet().isClient();
+    }
+
+    @Override
     public int getIdForTile(Tile tile){
         IResourceName name = RockBottomAPI.TILE_REGISTRY.getId(tile);
         if(name != null){

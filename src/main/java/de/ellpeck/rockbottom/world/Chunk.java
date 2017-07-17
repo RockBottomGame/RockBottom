@@ -549,6 +549,11 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public boolean isClient(){
+        return this.world.isClient();
+    }
+
+    @Override
     public byte getCombinedLightInner(int x, int y){
         byte artificial = this.getArtificialLightInner(x, y);
         byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
