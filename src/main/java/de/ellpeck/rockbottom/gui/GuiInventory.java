@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.BasicRecipe;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
+import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollBar;
 import de.ellpeck.rockbottom.api.inventory.IInvChangeCallback;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
@@ -22,15 +23,20 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.Graphics;
 
+import java.util.List;
+import java.util.Locale;
+
 public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
     private static final IResourceName LOC_NEED = AbstractGame.internalRes("info.need_items");
     private static boolean isConstructionOpen;
     private static boolean shouldShowAll;
     private static int scrollAmount;
+    private static String searchText;
 
     private final ComponentRecipeButton[] constructionButtons = new ComponentRecipeButton[25];
     private ComponentScrollBar scrollBar;
+    private ComponentInputField searchBar;
 
     public GuiInventory(EntityPlayer player){
         super(player, 158, 83);
@@ -64,7 +70,24 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
             });
             this.components.add(this.scrollBar);
 
+            this.searchBar = new ComponentInputField(this, this.guiLeft-112, this.guiTop-14, 110, 12, true, true, false, 40, true);
+            this.searchBar.setText(searchText);
+            this.components.add(this.searchBar);
+
             this.populateConstructionButtons();
+        }
+    }
+
+    @Override
+    public void update(IGameInstance game){
+        super.update(game);
+
+        if(this.searchBar != null){
+            String text = this.searchBar.getText();
+            if(!text.equals(searchText)){
+                searchText = text;
+                this.populateConstructionButtons();
+            }
         }
     }
 
@@ -77,14 +100,16 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         for(int counter = 0; counter < (shouldShowAll ? 2 : 1); counter++){
             for(int i = 0; i < RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.size(); i++){
                 BasicRecipe recipe = RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.get(i);
-                boolean matches = IRecipe.matchesInv(recipe, this.player.getInv());
+                if(searchText == null || searchText.isEmpty() || matchesSearch(recipe.getOutputs())){
+                    boolean matches = IRecipe.matchesInv(recipe, this.player.getInv());
 
-                if(matches ? counter == 0 : counter == 1){
-                    recipeCounter++;
+                    if(matches ? counter == 0 : counter == 1){
+                        recipeCounter++;
 
-                    if(i >= offset && buttonIndex < this.constructionButtons.length){
-                        this.constructionButtons[buttonIndex].setRecipe(recipe, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.indexOf(recipe), matches);
-                        buttonIndex++;
+                        if(i >= offset && buttonIndex < this.constructionButtons.length){
+                            this.constructionButtons[buttonIndex].setRecipe(recipe, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.indexOf(recipe), matches);
+                            buttonIndex++;
+                        }
                     }
                 }
             }
@@ -99,6 +124,16 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         if(!locked){
             this.scrollBar.setMax(Util.ceil((double)recipeCounter/5)-5);
         }
+    }
+
+    private static boolean matchesSearch(List<ItemInstance> outputs){
+        String lowerSearch = searchText.toLowerCase(Locale.ROOT);
+        for(ItemInstance instance : outputs){
+            if(instance.getDisplayName().toLowerCase(Locale.ROOT).contains(lowerSearch)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
