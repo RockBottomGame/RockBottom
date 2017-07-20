@@ -32,7 +32,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     private static boolean isConstructionOpen;
     private static boolean shouldShowAll;
     private static int scrollAmount;
-    private static String searchText;
+    private static String searchText = "";
 
     private final ComponentRecipeButton[] constructionButtons = new ComponentRecipeButton[25];
     private ComponentScrollBar scrollBar;
@@ -100,7 +100,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         for(int counter = 0; counter < (shouldShowAll ? 2 : 1); counter++){
             for(int i = 0; i < RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.size(); i++){
                 BasicRecipe recipe = RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.get(i);
-                if(searchText == null || searchText.isEmpty() || matchesSearch(recipe.getOutputs())){
+                if(searchText.isEmpty() || matchesSearch(recipe.getOutputs())){
                     boolean matches = IRecipe.matchesInv(recipe, this.player.getInv());
 
                     if(matches ? counter == 0 : counter == 1){
