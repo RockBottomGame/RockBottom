@@ -25,66 +25,74 @@ public class ComponentRecipeButton extends ComponentButton{
     private static final IResourceName LOC_USES = AbstractGame.internalRes("info.uses");
 
     public final AbstractEntityPlayer player;
-    public final IRecipe recipe;
-    public final int recipeId;
-    public final boolean canConstruct;
+    public IRecipe recipe;
+    public int recipeId;
+    public boolean canConstruct;
 
-    public ComponentRecipeButton(GuiContainer gui, int id, int x, int y, int sizeX, int sizeY, IRecipe recipe, int recipeId, boolean canConstruct){
+    public ComponentRecipeButton(GuiContainer gui, int id, int x, int y, int sizeX, int sizeY){
         super(gui, id, x, y, sizeX, sizeY, null);
         this.player = gui.player;
+    }
+
+    public void setRecipe(IRecipe recipe, int id, boolean canConstruct){
         this.recipe = recipe;
-        this.recipeId = recipeId;
+        this.recipeId = id;
         this.canConstruct = canConstruct;
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        super.render(game, manager, g);
+        if(this.recipe != null){
+            super.render(game, manager, g);
 
-        List<ItemInstance> outputs = this.recipe.getOutputs();
-        ItemInstance instance = outputs.get(0);
-        RockBottomAPI.getApiHandler().renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Color.white : TRANSPARENT);
+            List<ItemInstance> outputs = this.recipe.getOutputs();
+            ItemInstance instance = outputs.get(0);
+            RockBottomAPI.getApiHandler().renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Color.white : TRANSPARENT);
+        }
     }
 
     @Override
     protected String[] getHover(){
-        IGameInstance game = AbstractGame.get();
-        IAssetManager manager = game.getAssetManager();
+        if(this.recipe != null){
+            IGameInstance game = AbstractGame.get();
+            IAssetManager manager = game.getAssetManager();
 
-        List<ItemInstance> inputs = this.recipe.getInputs();
-        List<ItemInstance> outputs = this.recipe.getOutputs();
+            List<ItemInstance> inputs = this.recipe.getInputs();
+            List<ItemInstance> outputs = this.recipe.getOutputs();
 
-        List<String> hover = new ArrayList<>();
+            List<String> hover = new ArrayList<>();
 
-        hover.add(manager.localize(LOC_CONSTRUCTS)+":");
-        for(ItemInstance inst : outputs){
-            hover.add(FormattingCode.YELLOW+" "+inst.getDisplayName()+" x"+inst.getAmount());
+            hover.add(manager.localize(LOC_CONSTRUCTS)+":");
+            for(ItemInstance inst : outputs){
+                hover.add(FormattingCode.YELLOW+" "+inst.getDisplayName()+" x"+inst.getAmount());
+            }
+
+            hover.add(manager.localize(LOC_USES)+":");
+            for(ItemInstance inst : inputs){
+                FormattingCode code;
+
+                if(!this.canConstruct && !this.player.getInv().containsItem(inst)){
+                    code = FormattingCode.RED;
+                }
+                else{
+                    code = FormattingCode.GREEN;
+                }
+
+                if(inst.getMeta() == Constants.META_WILDCARD){
+                    int meta = (game.getTotalTicks()/Constants.TARGET_TPS)%(inst.getItem().getHighestPossibleMeta()+1);
+
+                    ItemInstance copy = inst.copy();
+                    copy.setMeta(meta);
+
+                    hover.add(code+" "+copy.getDisplayName()+" x"+copy.getAmount());
+                }
+                else{
+                    hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
+                }
+            }
+
+            return hover.toArray(new String[hover.size()]);
         }
-
-        hover.add(manager.localize(LOC_USES)+":");
-        for(ItemInstance inst : inputs){
-            FormattingCode code;
-
-            if(!this.canConstruct && !this.player.getInv().containsItem(inst)){
-                code = FormattingCode.RED;
-            }
-            else{
-                code = FormattingCode.GREEN;
-            }
-
-            if(inst.getMeta() == Constants.META_WILDCARD){
-                int meta = (game.getTotalTicks()/Constants.TARGET_TPS)%(inst.getItem().getHighestPossibleMeta()+1);
-
-                ItemInstance copy = inst.copy();
-                copy.setMeta(meta);
-
-                hover.add(code+" "+copy.getDisplayName()+" x"+copy.getAmount());
-            }
-            else{
-                hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
-            }
-        }
-
-        return hover.toArray(new String[hover.size()]);
+        else return super.getHover();
     }
 }
