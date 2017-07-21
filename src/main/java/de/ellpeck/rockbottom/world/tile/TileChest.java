@@ -54,12 +54,12 @@ public class TileChest extends TileBasic{
 
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return super.canPlace(world, x, y, layer) && world.getTile(x, y-1).isFullTile();
+        return super.canPlace(world, x, y, layer) && world.getState(x, y-1).getTile().isFullTile();
     }
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getTile(layer, x, y-1).isFullTile();
+        return world.getState(layer, x, y-1).getTile().isFullTile();
     }
 
     @Override

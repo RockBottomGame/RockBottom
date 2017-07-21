@@ -57,7 +57,7 @@ public class InteractionManager implements IInteractionManager{
             }
 
             if(layer == TileLayer.MAIN){
-                Tile tile = player.world.getTile(x, y);
+                Tile tile = player.world.getState(x, y).getTile();
                 if(tile.onInteractWith(player.world, x, y, mouseX, mouseY, player)){
                     return true;
                 }
@@ -138,7 +138,7 @@ public class InteractionManager implements IInteractionManager{
                             this.breakProgress = 0;
                         }
 
-                        Tile tile = player.world.getTile(layer, x, y);
+                        Tile tile = player.world.getState(layer, x, y).getTile();
                         if(tile.canBreak(player.world, x, y, layer)){
                             float hardness = tile.getHardness(player.world, x, y, layer);
                             float progressAmount = 0.05F/hardness;

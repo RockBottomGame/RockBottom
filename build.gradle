@@ -1,5 +1,5 @@
 group 'de.ellpeck.rockbottom'
-version '0.0.12'
+version '0.0.13'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -27,6 +27,7 @@ dependencies {
     compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
     compile group: 'io.netty', name: 'netty-all', version: '4.1.11.Final'
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.9'
+    compile group: 'com.google.guava', name: 'guava', version: '22.0'
 }
 
 jar {

@@ -32,7 +32,7 @@ public class TileSapling extends TileBasic{
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getTile(x, y-1).isFullTile();
+        return world.getState(x, y-1).getTile().isFullTile();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TileSapling extends TileBasic{
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
         if(super.canPlace(world, x, y, layer)){
-            Tile tile = world.getTile(x, y-1);
+            Tile tile = world.getState(x, y-1).getTile();
             if(tile instanceof TileDirt || tile instanceof TileGrass){
                 return true;
             }

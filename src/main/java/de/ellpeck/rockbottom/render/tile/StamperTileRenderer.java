@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.render.tile;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -20,12 +21,12 @@ public class StamperTileRenderer extends DefaultTileRenderer<TileStamper>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileStamper tile, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
-        if(world.getMeta(x, y) == 1){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileStamper tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
+        if(state.getProperty(TileStamper.DOWN_PROP)){
             manager.getTexture(this.texDown).drawWithLight(renderX, renderY, scale, scale, light);
         }
         else{
-            super.render(game, manager, g, world, tile, x, y, layer, renderX, renderY, scale, light);
+            super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
         }
     }
 }

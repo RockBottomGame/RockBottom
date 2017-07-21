@@ -30,18 +30,18 @@ public class WorldGenTrees implements IWorldGenerator{
     }
 
     public void generateAt(IWorld world, int x, int y, Random rand){
-        Tile tile = world.getTile(x, y-1);
+        Tile tile = world.getState(x, y-1).getTile();
         if(tile instanceof TileDirt || tile instanceof TileGrass){
             int height = rand.nextInt(6)+8;
 
             for(int h = 0; h <= height; h++){
-                if(!world.getTile(x, y+h).isAir()){
+                if(!world.getState(x, y+h).getTile().isAir()){
                     return;
                 }
             }
 
             for(int h = 0; h <= height; h++){
-                world.setTile(x, y+h, GameContent.TILE_LOG);
+                world.setState(x, y+h, GameContent.TILE_LOG.getDefState());
             }
 
             int branches = rand.nextInt(2)+1;
@@ -62,16 +62,16 @@ public class WorldGenTrees implements IWorldGenerator{
             int x = left ? startX-l : startX+l;
 
             if(l <= length){
-                if(world.getTile(x, startY+yAdd).isAir()){
-                    world.setTile(x, startY+yAdd, GameContent.TILE_LOG);
+                if(world.getState(x, startY+yAdd).getTile().isAir()){
+                    world.setState(x, startY+yAdd, GameContent.TILE_LOG.getDefState());
                 }
             }
 
             int leafAmountDown = rand.nextInt(3)+1;
             int leafAmountUp = rand.nextInt(3)+1;
             for(int lY = -leafAmountDown; lY <= leafAmountUp; lY++){
-                if(world.getTile(x, startY+yAdd+lY).isAir()){
-                    world.setTile(x, startY+yAdd+lY, GameContent.TILE_LEAVES);
+                if(world.getState(x, startY+yAdd+lY).getTile().isAir()){
+                    world.setState(x, startY+yAdd+lY, GameContent.TILE_LEAVES.getDefState());
                 }
             }
 

@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -33,13 +34,11 @@ public class SeparatorTileRenderer extends MultiTileRenderer<TileSeparator>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSeparator tile, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
-        int meta = world.getMeta(x, y);
-
-        Pos2 innerCoord = tile.getInnerCoord(meta);
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSeparator tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
+        Pos2 innerCoord = tile.getInnerCoord(state);
         IResourceName tex;
 
-        Pos2 mainPos = tile.getMainPos(x, y, meta);
+        Pos2 mainPos = tile.getMainPos(x, y, state);
         TileEntitySeparator tileEntity = world.getTileEntity(mainPos.getX(), mainPos.getY(), TileEntitySeparator.class);
         if(tileEntity != null && tileEntity.isActive()){
             tex = this.texturesActive.get(innerCoord);

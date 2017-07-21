@@ -41,8 +41,8 @@ public class TileLadder extends TileBasic{
     }
 
     private boolean isSuitableLadderPos(IWorld world, int x, int y){
-        Tile tileBelow = world.getTile(x, y-1);
-        Tile tileBackground = world.getTile(TileLayer.BACKGROUND, x, y);
+        Tile tileBelow = world.getState(x, y-1).getTile();
+        Tile tileBackground = world.getState(TileLayer.BACKGROUND, x, y).getTile();
         return tileBelow.isFullTile() || tileBackground.isFullTile() || tileBelow instanceof TileLadder;
     }
 

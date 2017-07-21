@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.world.World;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,8 +28,8 @@ public class PacketParticles implements IPacket{
 
     }
 
-    public static PacketParticles tile(World world, int x, int y, Tile tile, int meta){
-        return new PacketParticles(x, y, 0, world.getIdForTile(tile), meta);
+    public static PacketParticles tile(World world, int x, int y, TileState state){
+        return new PacketParticles(x, y, 0, world.getIdForState(state));
     }
 
     @Override
@@ -60,8 +61,8 @@ public class PacketParticles implements IPacket{
         game.scheduleAction(() -> {
             if(game.getWorld() != null){
                 if(this.type == 0){
-                    Tile tile = game.getWorld().getTileForId(this.args[0]);
-                    game.getParticleManager().addTileParticles(game.getWorld(), this.x, this.y, tile, this.args[1]);
+                    TileState tile = game.getWorld().getStateForId(this.args[0]);
+                    game.getParticleManager().addTileParticles(game.getWorld(), this.x, this.y, tile);
                 }
             }
             return true;

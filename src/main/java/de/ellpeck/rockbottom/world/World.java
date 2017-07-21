@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
@@ -239,13 +240,30 @@ public class World implements IWorld{
         for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
             for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
                 if(this.isPosLoaded(x, y)){
-                    Tile tile = this.getTile(x, y);
+                    Tile tile = this.getState(x, y).getTile();
                     tile.getBoundBoxes(this, x, y, collisions);
                 }
             }
         }
 
         return collisions;
+    }
+
+    @Override
+    public int getIdForState(TileState state){
+        IResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
+        if(name != null){
+            return this.tileRegInfo.getId(name);
+        }
+        else{
+            return -1;
+        }
+    }
+
+    @Override
+    public TileState getStateForId(int id){
+        IResourceName name = this.tileRegInfo.get(id);
+        return RockBottomAPI.TILE_STATE_REGISTRY.get(name);
     }
 
     @Override
@@ -324,23 +342,6 @@ public class World implements IWorld{
     }
 
     @Override
-    public int getIdForTile(Tile tile){
-        IResourceName name = RockBottomAPI.TILE_REGISTRY.getId(tile);
-        if(name != null){
-            return this.tileRegInfo.getId(name);
-        }
-        else{
-            return -1;
-        }
-    }
-
-    @Override
-    public Tile getTileForId(int id){
-        IResourceName name = this.tileRegInfo.get(id);
-        return RockBottomAPI.TILE_REGISTRY.get(name);
-    }
-
-    @Override
     public WorldInfo getWorldInfo(){
         return this.info;
     }
@@ -409,57 +410,25 @@ public class World implements IWorld{
     }
 
     @Override
-    public Tile getTile(int x, int y){
-        return this.getTile(TileLayer.MAIN, x, y);
+    public TileState getState(int x, int y){
+        return this.getState(TileLayer.MAIN, x, y);
     }
 
     @Override
-    public Tile getTile(TileLayer layer, int x, int y){
+    public TileState getState(TileLayer layer, int x, int y){
         IChunk chunk = this.getChunk(x, y);
-        return chunk.getTile(layer, x, y);
+        return chunk.getState(layer, x, y);
     }
 
     @Override
-    public int getMeta(int x, int y){
-        return this.getMeta(TileLayer.MAIN, x, y);
+    public void setState(int x, int y, TileState tile){
+        this.setState(TileLayer.MAIN, x, y, tile);
     }
 
     @Override
-    public int getMeta(TileLayer layer, int x, int y){
+    public void setState(TileLayer layer, int x, int y, TileState tile){
         IChunk chunk = this.getChunk(x, y);
-        return chunk.getMeta(layer, x, y);
-    }
-
-    @Override
-    public void setTile(int x, int y, Tile tile){
-        this.setTile(TileLayer.MAIN, x, y, tile);
-    }
-
-    @Override
-    public void setTile(TileLayer layer, int x, int y, Tile tile){
-        this.setTile(layer, x, y, tile, 0);
-    }
-
-    @Override
-    public void setTile(int x, int y, Tile tile, int meta){
-        this.setTile(TileLayer.MAIN, x, y, tile, meta);
-    }
-
-    @Override
-    public void setTile(TileLayer layer, int x, int y, Tile tile, int meta){
-        IChunk chunk = this.getChunk(x, y);
-        chunk.setTile(layer, x, y, tile, meta);
-    }
-
-    @Override
-    public void setMeta(int x, int y, int meta){
-        this.setMeta(TileLayer.MAIN, x, y, meta);
-    }
-
-    @Override
-    public void setMeta(TileLayer layer, int x, int y, int meta){
-        IChunk chunk = this.getChunk(x, y);
-        chunk.setMeta(layer, x, y, meta);
+        chunk.setState(layer, x, y, tile);
     }
 
     @Override
@@ -469,12 +438,12 @@ public class World implements IWorld{
             int offY = y+direction.y;
 
             if(this.isPosLoaded(offX, offY)){
-                this.getTile(layer, offX, offY).onChangeAround(this, offX, offY, layer, x, y, layer);
+                this.getState(layer, offX, offY).getTile().onChangeAround(this, offX, offY, layer, x, y, layer);
             }
         }
 
         TileLayer opp = layer.getOpposite();
-        this.getTile(opp, x, y).onChangeAround(this, x, y, opp, x, y, layer);
+        this.getState(opp, x, y).getTile().onChangeAround(this, x, y, opp, x, y, layer);
     }
 
     @Override
@@ -569,21 +538,20 @@ public class World implements IWorld{
 
     @Override
     public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean shouldDrop){
-        Tile tile = this.getTile(layer, x, y);
-        int meta = this.getMeta(x, y);
+        TileState state = this.getState(layer, x, y);
 
-        tile.onDestroyed(this, x, y, destroyer, layer, shouldDrop);
+        state.getTile().onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
         if(RockBottomAPI.getNet().isServer()){
-            RockBottomAPI.getNet().sendToAllPlayers(this, PacketParticles.tile(this, x, y, tile, meta));
+            RockBottomAPI.getNet().sendToAllPlayers(this, PacketParticles.tile(this, x, y, state));
         }
 
         IGameInstance game = AbstractGame.get();
         if(!game.isDedicatedServer()){
-            game.getParticleManager().addTileParticles(this, x, y, tile, meta);
+            game.getParticleManager().addTileParticles(this, x, y, state);
         }
 
-        this.setTile(layer, x, y, GameContent.TILE_AIR);
+        this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
     }
 
     @Override
@@ -678,8 +646,8 @@ public class World implements IWorld{
     }
 
     private byte getTileLight(int x, int y, boolean isSky){
-        Tile foreground = this.getTile(x, y);
-        Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
+        Tile foreground = this.getState(x, y).getTile();
+        Tile background = this.getState(TileLayer.BACKGROUND, x, y).getTile();
 
         if(foreground.isAir() && background.isAir()){
             if(isSky){
@@ -700,12 +668,12 @@ public class World implements IWorld{
         float foregroundMod = 1F;
         float backgroundMod = 1F;
 
-        Tile foreground = this.getTile(x, y);
+        Tile foreground = this.getState(x, y).getTile();
         if(!foreground.isAir()){
             foregroundMod = foreground.getTranslucentModifier(this, x, y, TileLayer.MAIN, isSky);
         }
 
-        Tile background = this.getTile(TileLayer.BACKGROUND, x, y);
+        Tile background = this.getState(TileLayer.BACKGROUND, x, y).getTile();
         if(!background.isAir()){
             backgroundMod = background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND, isSky);
         }

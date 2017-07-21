@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.tile.state.BoolProp;
+import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -16,11 +18,11 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.tile.StamperTileRenderer;
-import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityStamper;
 
 public class TileStamper extends TileBasic{
 
+    public static final BoolProp DOWN_PROP = new BoolProp("down", false);
     private final BoundBox downBox = new BoundBox(0, 0, 1, 10D/12D);
 
     public TileStamper(){
@@ -34,7 +36,7 @@ public class TileStamper extends TileBasic{
 
     @Override
     public BoundBox getBoundBox(IWorld world, int x, int y){
-        return world.getMeta(x, y) == 1 ? this.downBox : super.getBoundBox(world, x, y);
+        return world.getState(x, y).getProperty(DOWN_PROP) ? this.downBox : super.getBoundBox(world, x, y);
     }
 
     @Override
@@ -50,8 +52,8 @@ public class TileStamper extends TileBasic{
     @Override
     public void onCollideWithEntity(IWorld world, int x, int y, TileLayer layer, Entity entity){
         if(!world.isClient()){
-            if(Util.floor(entity.x) == x && entity.motionY <= -0.2 && world.getMeta(x, y) == 0){
-                world.setMeta(x, y, 1);
+            if(Util.floor(entity.x) == x && entity.motionY <= -0.2 && !world.getState(x, y).getProperty(DOWN_PROP)){
+                world.setState(x, y, this.getDefStateWithProp(DOWN_PROP, true));
                 world.scheduleUpdate(x, y, layer, 40);
 
                 TileEntityStamper tile = world.getTileEntity(x, y, TileEntityStamper.class);
@@ -111,8 +113,8 @@ public class TileStamper extends TileBasic{
 
     @Override
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
-        if(!world.isClient() && world.getMeta(x, y) == 1){
-            world.setMeta(x, y, 0);
+        if(!world.isClient() && world.getState(x, y).getProperty(DOWN_PROP)){
+            world.setState(x, y, this.getDefStateWithProp(DOWN_PROP, false));
 
             for(Entity entity : world.getEntities(new BoundBox(0, 0, 1, 1).add(x, y))){
                 entity.motionY += 0.2;
@@ -130,5 +132,10 @@ public class TileStamper extends TileBasic{
                 tile.dropInventory(tile.inventory);
             }
         }
+    }
+
+    @Override
+    public TileProp[] getProperties(){
+        return new TileProp[]{DOWN_PROP};
     }
 }

@@ -31,7 +31,7 @@ public class WorldGenBasicUnderground implements IWorldGenerator{
                         tile = GameContent.TILE_ROCK;
                     }
 
-                    chunk.setTileInner(layer, x, y, tile);
+                    chunk.setStateInner(layer, x, y, tile.getDefState());
                 }
             }
         }

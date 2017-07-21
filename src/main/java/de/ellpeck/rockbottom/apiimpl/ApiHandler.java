@@ -131,7 +131,7 @@ public class ApiHandler implements IApiHandler{
             for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
                 for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
                     for(TileLayer layer : TileLayer.LAYERS){
-                        Tile tile = entity.world.getTile(layer, x, y);
+                        Tile tile = entity.world.getState(layer, x, y).getTile();
 
                         if(tile.canClimb(entity.world, x, y, layer, entity)){
                             entity.canClimb = true;
@@ -443,7 +443,7 @@ public class ApiHandler implements IApiHandler{
     @Override
     public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile){
         if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
-            if(player.world.getTile(layer, x, y).canReplace(player.world, x, y, layer, tile)){
+            if(player.world.getState(layer, x, y).getTile().canReplace(player.world, x, y, layer, tile)){
                 if(tile.canPlace(player.world, x, y, layer)){
 
                     if(!RockBottomAPI.getNet().isClient()){

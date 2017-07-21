@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -44,12 +45,12 @@ public class ParticleManager implements IParticleManager{
     }
 
     @Override
-    public void addTileParticles(IWorld world, int x, int y, Tile tile, int meta){
+    public void addTileParticles(IWorld world, int x, int y, TileState state){
         for(int i = 0; i < Util.RANDOM.nextInt(30)+20; i++){
             double motionX = Util.RANDOM.nextGaussian()*0.1F;
             double motionY = Util.RANDOM.nextGaussian()*0.1F;
 
-            Particle particle = new ParticleTile(world, x+0.5, y+0.5, motionX, motionY, tile, meta);
+            Particle particle = new ParticleTile(world, x+0.5, y+0.5, motionX, motionY, state);
             this.addParticle(particle);
         }
     }

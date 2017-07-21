@@ -37,12 +37,12 @@ public class TileSeparator extends MultiTile{
 
     @Override
     public TileEntity provideTileEntity(IWorld world, int x, int y){
-        return this.isMainPos(x, y, world.getMeta(x, y)) ? new TileEntitySeparator(world, x, y) : null;
+        return this.isMainPos(x, y, world.getState(x, y)) ? new TileEntitySeparator(world, x, y) : null;
     }
 
     @Override
     public int getLight(IWorld world, int x, int y, TileLayer layer){
-        if(this.isMainPos(x, y, world.getMeta(x, y))){
+        if(this.isMainPos(x, y, world.getState(x, y))){
             TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
             if(tile != null && tile.isActive()){
                 return 30;
@@ -53,7 +53,7 @@ public class TileSeparator extends MultiTile{
 
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, double mouseX, double mouseY, AbstractEntityPlayer player){
-        Pos2 main = this.getMainPos(x, y, world.getMeta(x, y));
+        Pos2 main = this.getMainPos(x, y, world.getState(x, y));
         TileEntitySeparator tile = world.getTileEntity(main.getX(), main.getY(), TileEntitySeparator.class);
 
         if(tile != null){
@@ -70,7 +70,7 @@ public class TileSeparator extends MultiTile{
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
         if(!RockBottomAPI.getNet().isClient()){
-            Pos2 main = this.getMainPos(x, y, world.getMeta(x, y));
+            Pos2 main = this.getMainPos(x, y, world.getState(x, y));
             TileEntitySeparator tile = world.getTileEntity(main.getX(), main.getY(), TileEntitySeparator.class);
             if(tile != null){
                 tile.dropInventory(tile.inventory);
@@ -119,7 +119,7 @@ public class TileSeparator extends MultiTile{
 
     @Override
     public void updateRandomlyForRendering(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
-        if(this.isMainPos(x, y, world.getMeta(x, y))){
+        if(this.isMainPos(x, y, world.getState(x, y))){
             TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
             if(tile != null && tile.isActive()){
                 IParticleManager manager = AbstractGame.get().getParticleManager();

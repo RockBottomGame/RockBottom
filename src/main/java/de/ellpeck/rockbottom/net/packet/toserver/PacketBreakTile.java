@@ -54,7 +54,7 @@ public class PacketBreakTile implements IPacket{
         game.scheduleAction(() -> {
             IWorld world = game.getWorld();
             if(world != null){
-                Tile tile = world.getTile(this.layer, this.x, this.y);
+                Tile tile = world.getState(this.layer, this.x, this.y).getTile();
                 if(tile.canBreak(world, this.x, this.y, this.layer)){
                     AbstractEntityPlayer player = world.getPlayer(this.playerId);
 

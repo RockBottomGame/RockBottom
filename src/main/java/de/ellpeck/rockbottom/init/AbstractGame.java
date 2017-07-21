@@ -33,7 +33,7 @@ import java.util.List;
 
 public abstract class AbstractGame implements IGameInstance{
 
-    public static final String VERSION = "0.0.12";
+    public static final String VERSION = "0.0.13";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
@@ -181,7 +181,7 @@ public abstract class AbstractGame implements IGameInstance{
         Log.info("Starting world with file "+worldFile);
 
         NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), Short.MAX_VALUE);
-        this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_REGISTRY);
+        this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_STATE_REGISTRY);
 
         NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), Short.MAX_VALUE);
         this.populateIndexInfo(biomeRegInfo, RockBottomAPI.BIOME_REGISTRY);

@@ -185,7 +185,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 int y = Util.floor(this.y)+Util.RANDOM.nextInt(range*2+1)-range;
 
                 if(this.world.isPosLoaded(x, y)){
-                    Tile tile = this.world.getTile(layer, x, y);
+                    Tile tile = this.world.getState(layer, x, y).getTile();
                     tile.updateRandomlyForRendering(this.world, x, y, layer, this);
                 }
             }

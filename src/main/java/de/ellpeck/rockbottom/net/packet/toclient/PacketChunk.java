@@ -15,7 +15,6 @@ public class PacketChunk implements IPacket{
 
     private static final int DATA_SIZE = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*TileLayer.LAYERS.length;
     private final short[] tileData = new short[DATA_SIZE];
-    private final byte[] metaData = new byte[DATA_SIZE];
     private final byte[] lightData = new byte[DATA_SIZE*2];
     private int chunkX;
     private int chunkY;
@@ -30,8 +29,7 @@ public class PacketChunk implements IPacket{
 
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    this.tileData[index] = (short)chunk.getWorld().getIdForTile(chunk.getTileInner(layer, x, y));
-                    this.metaData[index] = chunk.getMetaInner(layer, x, y);
+                    this.tileData[index] = (short)chunk.getWorld().getIdForState(chunk.getStateInner(layer, x, y));
 
                     this.lightData[index] = chunk.getSkylightInner(x, y);
                     this.lightData[DATA_SIZE+index] = chunk.getArtificialLightInner(x, y);
@@ -54,7 +52,6 @@ public class PacketChunk implements IPacket{
         for(short tile : this.tileData){
             buf.writeShort(tile);
         }
-        buf.writeBytes(this.metaData);
         buf.writeBytes(this.lightData);
     }
 
@@ -66,7 +63,6 @@ public class PacketChunk implements IPacket{
         for(int i = 0; i < this.tileData.length; i++){
             this.tileData[i] = buf.readShort();
         }
-        buf.readBytes(this.metaData);
         buf.readBytes(this.lightData);
     }
 
@@ -85,7 +81,7 @@ public class PacketChunk implements IPacket{
 
                     for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                         for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                            chunk.setTileInner(layer, x, y, chunk.getWorld().getTileForId(this.tileData[index]), this.metaData[index]);
+                            chunk.setStateInner(layer, x, y, chunk.getWorld().getStateForId(this.tileData[index]));
 
                             chunk.setSkylightInner(x, y, this.lightData[index]);
                             chunk.setArtificialLightInner(x, y, this.lightData[DATA_SIZE+index]);

@@ -32,12 +32,12 @@ public class WorldGenHills implements IWorldGenerator{
 
             int height = (int)(noise*3);
             for(int y = 0; y <= height; y++){
-                chunk.setTileInner(x, y, y == height ? GameContent.TILE_GRASS : GameContent.TILE_DIRT);
+                chunk.setStateInner(x, y, (y == height ? GameContent.TILE_GRASS : GameContent.TILE_DIRT).getDefState());
             }
 
             int backgroundHeight = (int)(noise*2);
             for(int y = 0; y < backgroundHeight; y++){
-                chunk.setTileInner(TileLayer.BACKGROUND, x, y, GameContent.TILE_DIRT);
+                chunk.setStateInner(TileLayer.BACKGROUND, x, y, GameContent.TILE_DIRT.getDefState());
             }
         }
     }

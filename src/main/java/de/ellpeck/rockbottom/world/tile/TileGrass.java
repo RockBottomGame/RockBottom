@@ -26,8 +26,8 @@ public class TileGrass extends TileBasic{
     @Override
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(layer == changedLayer){
-            if(world.getTile(layer, x, y+1).isFullTile()){
-                world.setTile(layer, x, y, GameContent.TILE_DIRT);
+            if(world.getState(layer, x, y+1).getTile().isFullTile()){
+                world.setState(layer, x, y, GameContent.TILE_DIRT.getDefState());
             }
         }
     }

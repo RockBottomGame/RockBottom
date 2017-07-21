@@ -23,6 +23,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import org.newdawn.slick.Color;
@@ -31,22 +32,20 @@ import org.newdawn.slick.Image;
 
 public class ParticleTile extends Particle{
 
-    private final Tile tile;
-    private final int meta;
+    private final TileState state;
     private Color renderPixel;
 
-    public ParticleTile(IWorld world, double x, double y, double motionX, double motionY, Tile tile, int meta){
+    public ParticleTile(IWorld world, double x, double y, double motionX, double motionY, TileState state){
         super(world, x, y, motionX, motionY, Util.RANDOM.nextInt(30)+10);
-        this.tile = tile;
-        this.meta = meta;
+        this.state = state;
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, Color filter){
         if(this.renderPixel == null){
-            ITileRenderer renderer = this.tile.getRenderer();
+            ITileRenderer renderer = this.state.getTile().getRenderer();
             if(renderer != null){
-                Image texture = renderer.getParticleTexture(game, manager, g, this.tile, this.meta);
+                Image texture = renderer.getParticleTexture(game, manager, g, this.state.getTile(), this.state);
                 if(texture != null){
                     int width = texture.getWidth();
                     int height = texture.getHeight();

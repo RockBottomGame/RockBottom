@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.event.impl.EntityTickEvent;
 import de.ellpeck.rockbottom.api.event.impl.TileEntityTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -19,7 +20,6 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketMetaChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.util.Log;
@@ -40,9 +40,8 @@ public class Chunk implements IChunk{
     public final List<AbstractEntityPlayer> playersOutOfRangeCached = new ArrayList<>();
     public final Map<AbstractEntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final World world;
-    protected final Tile[][][] tileGrid = new Tile[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    protected final byte[][][] metaGrid = new byte[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final TileState[][][] stateGrid = new TileState[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final List<Entity> entities = new ArrayList<>();
     protected final Map<UUID, Entity> entityLookup = new HashMap<>();
@@ -68,7 +67,7 @@ public class Chunk implements IChunk{
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                 for(int i = 0; i < TileLayer.LAYERS.length; i++){
-                    this.tileGrid[i][x][y] = GameContent.TILE_AIR;
+                    this.stateGrid[i][x][y] = GameContent.TILE_AIR.getDefState();
                 }
 
                 this.biomeGrid[x][y] = GameContent.BIOME_SKY;
@@ -168,7 +167,7 @@ public class Chunk implements IChunk{
                 int randX = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
                 int randY = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
 
-                Tile tile = this.getTileInner(randX, randY);
+                Tile tile = this.getStateInner(randX, randY).getTile();
                 tile.updateRandomly(this.world, this.x+randX, this.y+randY);
             }
 
@@ -181,9 +180,9 @@ public class Chunk implements IChunk{
                         this.scheduledUpdates.remove(i);
                         this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.ordinal()));
 
-                        Tile tile = this.getTile(update.layer, update.x, update.y);
+                        TileState tile = this.getState(update.layer, update.x, update.y);
                         if(tile == update.tile){
-                            tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
+                            tile.getTile().onScheduledUpdate(this.world, update.x, update.y, update.layer);
                         }
 
                         i--;
@@ -216,92 +215,47 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public Tile getTile(int x, int y){
-        return this.getTile(TileLayer.MAIN, x, y);
+    public TileState getState(int x, int y){
+        return this.getState(TileLayer.MAIN, x, y);
     }
 
     @Override
-    public Tile getTile(TileLayer layer, int x, int y){
-        return this.getTileInner(layer, x-this.x, y-this.y);
+    public TileState getState(TileLayer layer, int x, int y){
+        return this.getStateInner(layer, x-this.x, y-this.y);
     }
 
     @Override
-    public int getMeta(int x, int y){
-        return this.getMeta(TileLayer.MAIN, x, y);
+    public void setState(int x, int y, TileState tile){
+        this.setState(TileLayer.MAIN, x, y, tile);
     }
 
     @Override
-    public int getMeta(TileLayer layer, int x, int y){
-        return this.getMetaInner(layer, x-this.x, y-this.y);
+    public void setState(TileLayer layer, int x, int y, TileState tile){
+        this.setStateInner(layer, x-this.x, y-this.y, tile);
     }
 
     @Override
-    public void setTile(int x, int y, Tile tile){
-        this.setTile(TileLayer.MAIN, x, y, tile);
+    public TileState getStateInner(TileLayer layer, int x, int y){
+        return this.stateGrid[layer.ordinal()][x][y];
     }
 
     @Override
-    public void setTile(TileLayer layer, int x, int y, Tile tile){
-        this.setTileInner(layer, x-this.x, y-this.y, tile, 0);
+    public TileState getStateInner(int x, int y){
+        return this.getStateInner(TileLayer.MAIN, x, y);
     }
 
     @Override
-    public void setTile(int x, int y, Tile tile, int meta){
-        this.setTileInner(TileLayer.MAIN, x-this.x, y-this.y, tile, meta);
+    public void setStateInner(int x, int y, TileState tile){
+        this.setStateInner(TileLayer.MAIN, x, y, tile);
     }
 
     @Override
-    public void setTile(TileLayer layer, int x, int y, Tile tile, int meta){
-        this.setTileInner(layer, x-this.x, y-this.y, tile, meta);
-    }
-
-    @Override
-    public void setMeta(int x, int y, int meta){
-        this.setMeta(TileLayer.MAIN, x, y, meta);
-    }
-
-    @Override
-    public void setMeta(TileLayer layer, int x, int y, int meta){
-        this.setMetaInner(layer, x-this.x, y-this.y, meta);
-    }
-
-    @Override
-    public Tile getTileInner(TileLayer layer, int x, int y){
-        return this.tileGrid[layer.ordinal()][x][y];
-    }
-
-    @Override
-    public Tile getTileInner(int x, int y){
-        return this.getTileInner(TileLayer.MAIN, x, y);
-    }
-
-    @Override
-    public byte getMetaInner(TileLayer layer, int x, int y){
-        return this.metaGrid[layer.ordinal()][x][y];
-    }
-
-    @Override
-    public void setTileInner(int x, int y, Tile tile, int meta){
-        this.setTileInner(TileLayer.MAIN, x, y, tile, meta);
-    }
-
-    @Override
-    public void setTileInner(int x, int y, Tile tile){
-        this.setTileInner(TileLayer.MAIN, x, y, tile);
-    }
-
-    @Override
-    public void setTileInner(TileLayer layer, int x, int y, Tile tile){
-        this.setTileInner(layer, x, y, tile, 0);
-    }
-
-    @Override
-    public void setTileInner(TileLayer layer, int x, int y, Tile tile, int meta){
+    public void setStateInner(TileLayer layer, int x, int y, TileState tile){
         if(tile == null){
             throw new IllegalArgumentException("Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
         }
 
-        Tile lastTile = this.getTileInner(layer, x, y);
+        Tile lastTile = this.getStateInner(layer, x, y).getTile();
         lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
         if(layer == TileLayer.MAIN){
@@ -311,49 +265,26 @@ public class Chunk implements IChunk{
         }
 
         int ord = layer.ordinal();
-        this.tileGrid[ord][x][y] = tile;
-        this.setMetaFast(ord, x, y, meta);
+        this.stateGrid[ord][x][y] = tile;
 
         if(layer == TileLayer.MAIN){
-            if(tile.canProvideTileEntity()){
-                TileEntity tileEntity = tile.provideTileEntity(this.world, this.x+x, this.y+y);
+            if(tile.getTile().canProvideTileEntity()){
+                TileEntity tileEntity = tile.getTile().provideTileEntity(this.world, this.x+x, this.y+y);
                 if(tileEntity != null){
                     this.addTileEntity(tileEntity);
                 }
             }
         }
 
-        tile.onAdded(this.world, this.x+x, this.y+y, layer);
+        tile.getTile().onAdded(this.world, this.x+x, this.y+y, layer);
 
         if(RockBottomAPI.getNet().isServer()){
-            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForTile(tile), meta));
+            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)));
         }
 
         if(!this.isGenerating){
             this.world.causeLightUpdate(this.x+x, this.y+y);
 
-            this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
-            this.setDirty();
-        }
-    }
-
-    private void setMetaFast(int layer, int x, int y, int meta){
-        if(meta < 0 || meta > Byte.MAX_VALUE){
-            throw new IndexOutOfBoundsException("Tried assigning meta "+meta+" in chunk at "+this.gridX+", "+this.gridY+" which is less than 0 or greater than max "+Byte.MAX_VALUE+"!");
-        }
-
-        this.metaGrid[layer][x][y] = (byte)meta;
-    }
-
-    @Override
-    public void setMetaInner(TileLayer layer, int x, int y, int meta){
-        this.setMetaFast(layer.ordinal(), x, y, meta);
-
-        if(RockBottomAPI.getNet().isServer()){
-            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketMetaChange(this.x+x, this.y+y, layer, meta));
-        }
-
-        if(!this.isGenerating){
             this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
             this.setDirty();
         }
@@ -507,7 +438,7 @@ public class Chunk implements IChunk{
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
         Pos3 posVec = new Pos3(x, y, layer.ordinal());
         if(!this.scheduledUpdateLookup.containsKey(posVec)){
-            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getTile(layer, x, y), time);
+            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getState(layer, x, y), time);
 
             this.scheduledUpdateLookup.put(posVec, update);
             this.scheduledUpdates.add(update);
@@ -529,7 +460,7 @@ public class Chunk implements IChunk{
         int actualY = y-this.y;
 
         for(int yCount = actualY; yCount < Constants.CHUNK_SIZE-yCount; yCount++){
-            Tile tile = this.getTileInner(layer, actualX, yCount);
+            Tile tile = this.getStateInner(layer, actualX, yCount).getTile();
             if(tile.isAir()){
                 return this.y+yCount;
             }
@@ -616,13 +547,11 @@ public class Chunk implements IChunk{
 
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    ids[x][y] = (short)this.world.getIdForTile(this.getTileInner(layer, x, y));
+                    ids[x][y] = (short)this.world.getIdForState(this.getStateInner(layer, x, y));
                 }
             }
 
             set.addShortShortArray("l_"+i, ids);
-
-            set.addByteByteArray("m_"+i, this.metaGrid[i]);
         }
 
         short[][] biomes = new short[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
@@ -674,7 +603,7 @@ public class Chunk implements IChunk{
             updateSet.addInt("y_"+updateId, update.y);
             updateSet.addInt("l_"+updateId, update.layer.ordinal());
             updateSet.addInt("t_"+updateId, update.time);
-            updateSet.addInt("i_"+updateId, this.world.getIdForTile(update.tile));
+            updateSet.addInt("i_"+updateId, this.world.getIdForState(update.tile));
 
             updateId++;
         }
@@ -692,13 +621,12 @@ public class Chunk implements IChunk{
             for(int i = 0; i < TileLayer.LAYERS.length; i++){
                 TileLayer layer = TileLayer.LAYERS[i];
                 short[][] ids = set.getShortShortArray("l_"+i, Constants.CHUNK_SIZE);
-                byte[][] meta = set.getByteByteArray("m_"+i, Constants.CHUNK_SIZE);
 
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        Tile tile = this.world.getTileForId(ids[x][y]);
+                        TileState tile = this.world.getStateForId(ids[x][y]);
                         if(tile != null){
-                            this.setTileInner(layer, x, y, tile, meta[x][y]);
+                            this.setStateInner(layer, x, y, tile);
                         }
                         else{
                             Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
@@ -764,7 +692,7 @@ public class Chunk implements IChunk{
                 int time = updateSet.getInt("t_"+i);
 
                 int id = updateSet.getInt("i_"+i);
-                Tile tile = this.world.getTileForId(id);
+                TileState tile = this.world.getStateForId(id);
 
                 if(tile != null){
                     TileLayer layer = TileLayer.LAYERS[updateSet.getInt("l_"+i)];
@@ -847,11 +775,11 @@ public class Chunk implements IChunk{
         public final int x;
         public final int y;
         public final TileLayer layer;
-        public final Tile tile;
+        public final TileState tile;
 
         public int time;
 
-        public ScheduledUpdate(int x, int y, TileLayer layer, Tile tile, int time){
+        public ScheduledUpdate(int x, int y, TileLayer layer, TileState tile, int time){
             this.x = x;
             this.y = y;
             this.layer = layer;

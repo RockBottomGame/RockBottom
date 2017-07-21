@@ -13,8 +13,8 @@ public class TileDirt extends TileBasic{
 
     @Override
     public void updateRandomly(IWorld world, int x, int y){
-        if(world.isPosLoaded(x, y+1) && !world.getTile(x, y+1).isFullTile()){
-            world.setTile(x, y, GameContent.TILE_GRASS);
+        if(world.isPosLoaded(x, y+1) && !world.getState(x, y+1).getTile().isFullTile()){
+            world.setState(x, y, GameContent.TILE_GRASS.getDefState());
         }
     }
 }

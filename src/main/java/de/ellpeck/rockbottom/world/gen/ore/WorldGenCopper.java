@@ -2,7 +2,9 @@ package de.ellpeck.rockbottom.world.gen.ore;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.world.gen.WorldGenOre;
+import org.newdawn.slick.tests.xml.GameData;
 
 public class WorldGenCopper extends WorldGenOre{
 
@@ -37,12 +39,7 @@ public class WorldGenCopper extends WorldGenOre{
     }
 
     @Override
-    public Tile getOreTile(){
-        return GameContent.TILE_COPPER_ORE;
-    }
-
-    @Override
-    public int getOreMeta(){
-        return 0;
+    public TileState getOreState(){
+        return GameContent.TILE_COPPER_ORE.getDefState();
     }
 }
