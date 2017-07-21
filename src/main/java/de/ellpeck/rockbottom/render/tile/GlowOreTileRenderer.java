@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileGlowOre;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -22,7 +23,7 @@ public class GlowOreTileRenderer implements ITileRenderer<TileGlowOre>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileGlowOre tile, int x, int y, float renderX, float renderY, float scale, Color[] light){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileGlowOre tile, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
         manager.getTexture(this.textureBase).drawWithLight(renderX, renderY, scale, scale, light);
         manager.getTexture(this.textureGlow).draw(renderX, renderY, scale, scale);
     }

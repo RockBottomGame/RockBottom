@@ -93,7 +93,7 @@ public class WorldRenderer{
                                         Tile tileBack = chunk.getTileInner(TileLayer.BACKGROUND, x, y);
                                         ITileRenderer rendererBack = tileBack.getRenderer();
                                         if(rendererBack != null){
-                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.BACKGROUND));
+                                            rendererBack.render(game, manager, g, world, tileBack, tileX, tileY, TileLayer.BACKGROUND, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.BACKGROUND));
 
                                             if(input.breakingLayer == TileLayer.BACKGROUND){
                                                 this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
@@ -105,7 +105,7 @@ public class WorldRenderer{
                                 if(!game.isForegroundDebug()){
                                     ITileRenderer renderer = tile.getRenderer();
                                     if(renderer != null){
-                                        renderer.render(game, manager, g, world, tile, tileX, tileY, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.MAIN));
+                                        renderer.render(game, manager, g, world, tile, tileX, tileY, TileLayer.MAIN, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.MAIN));
 
                                         if(input.breakingLayer == TileLayer.MAIN){
                                             this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);

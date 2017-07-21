@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileSeparator;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 import org.newdawn.slick.Color;
@@ -32,7 +33,7 @@ public class SeparatorTileRenderer extends MultiTileRenderer<TileSeparator>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSeparator tile, int x, int y, float renderX, float renderY, float scale, Color[] light){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSeparator tile, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
         int meta = world.getMeta(x, y);
 
         Pos2 innerCoord = tile.getInnerCoord(meta);

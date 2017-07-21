@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileSmelter;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmelter;
 import org.newdawn.slick.Color;
@@ -21,7 +22,7 @@ public class SmelterTileRenderer extends MultiTileRenderer<TileSmelter>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSmelter tile, int x, int y, float renderX, float renderY, float scale, Color[] light){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSmelter tile, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
         if(tile.isMainPos(x, y, world.getMeta(x, y))){
             TileEntitySmelter tileEntity = world.getTileEntity(x, y, TileEntitySmelter.class);
             if(tileEntity != null && tileEntity.isActive()){
@@ -30,6 +31,6 @@ public class SmelterTileRenderer extends MultiTileRenderer<TileSmelter>{
             }
         }
 
-        super.render(game, manager, g, world, tile, x, y, renderX, renderY, scale, light);
+        super.render(game, manager, g, world, tile, x, y, layer, renderX, renderY, scale, light);
     }
 }
