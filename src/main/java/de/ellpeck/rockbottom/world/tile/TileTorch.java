@@ -44,7 +44,7 @@ public class TileTorch extends TileBasic{
 
     @Override
     public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
-        return this.getDefState().withProperty(PROP_FACING, this.getPossibleTorchMeta(world, x, y));
+        return this.getDefState().prop(PROP_FACING, this.getPossibleTorchMeta(world, x, y));
     }
 
     @Override
@@ -58,8 +58,8 @@ public class TileTorch extends TileBasic{
         if(meta < 0){
             world.destroyTile(x, y, layer, null, true);
         }
-        else if(world.getState(x, y).getProperty(PROP_FACING) != meta){
-            world.setState(x, y, this.getDefState().withProperty(PROP_FACING, meta));
+        else if(world.getState(x, y).get(PROP_FACING) != meta){
+            world.setState(x, y, this.getDefState().prop(PROP_FACING, meta));
         }
     }
 

@@ -36,7 +36,7 @@ public class TileStamper extends TileBasic{
 
     @Override
     public BoundBox getBoundBox(IWorld world, int x, int y){
-        return world.getState(x, y).getProperty(DOWN_PROP) ? this.downBox : super.getBoundBox(world, x, y);
+        return world.getState(x, y).get(DOWN_PROP) ? this.downBox : super.getBoundBox(world, x, y);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TileStamper extends TileBasic{
     @Override
     public void onCollideWithEntity(IWorld world, int x, int y, TileLayer layer, Entity entity){
         if(!world.isClient()){
-            if(Util.floor(entity.x) == x && entity.motionY <= -0.2 && !world.getState(x, y).getProperty(DOWN_PROP)){
+            if(Util.floor(entity.x) == x && entity.motionY <= -0.2 && !world.getState(x, y).get(DOWN_PROP)){
                 world.setState(x, y, this.getDefStateWithProp(DOWN_PROP, true));
                 world.scheduleUpdate(x, y, layer, 40);
 
@@ -113,7 +113,7 @@ public class TileStamper extends TileBasic{
 
     @Override
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
-        if(!world.isClient() && world.getState(x, y).getProperty(DOWN_PROP)){
+        if(!world.isClient() && world.getState(x, y).get(DOWN_PROP)){
             world.setState(x, y, this.getDefStateWithProp(DOWN_PROP, false));
 
             for(Entity entity : world.getEntities(new BoundBox(0, 0, 1, 1).add(x, y))){

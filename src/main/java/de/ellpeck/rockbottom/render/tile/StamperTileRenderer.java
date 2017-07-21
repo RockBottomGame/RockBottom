@@ -22,7 +22,7 @@ public class StamperTileRenderer extends DefaultTileRenderer<TileStamper>{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileStamper tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
-        if(state.getProperty(TileStamper.DOWN_PROP)){
+        if(state.get(TileStamper.DOWN_PROP)){
             manager.getTexture(this.texDown).drawWithLight(renderX, renderY, scale, scale, light);
         }
         else{

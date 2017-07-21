@@ -38,14 +38,14 @@ public class TileLog extends TileBasic{
     public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean forceDrop){
         super.onDestroyed(world, x, y, destroyer, layer, forceDrop);
 
-        if(world.getState(layer, x, y).getProperty(PROP_NATURAL)){
+        if(world.getState(layer, x, y).get(PROP_NATURAL)){
             scheduleDestroyAround(world, x, y);
         }
     }
 
     @Override
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
-        if(world.getState(layer, x, y).getProperty(PROP_NATURAL)){
+        if(world.getState(layer, x, y).get(PROP_NATURAL)){
             world.destroyTile(x, y, layer, null, true);
             scheduleDestroyAround(world, x, y);
         }
@@ -53,18 +53,18 @@ public class TileLog extends TileBasic{
 
     @Override
     public BoundBox getBoundBox(IWorld world, int x, int y){
-        return world.getState(x, y).getProperty(PROP_NATURAL) ? null : super.getBoundBox(world, x, y);
+        return world.getState(x, y).get(PROP_NATURAL) ? null : super.getBoundBox(world, x, y);
     }
 
     @Override
     public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
-        return this.getDefState().withProperty(PROP_NATURAL, false);
+        return this.getDefState().prop(PROP_NATURAL, false);
     }
 
     @Override
     public float getHardness(IWorld world, int x, int y, TileLayer layer){
         float hard = super.getHardness(world, x, y, layer);
-        return world.getState(layer, x, y).getProperty(PROP_NATURAL) ? hard*6F : hard;
+        return world.getState(layer, x, y).get(PROP_NATURAL) ? hard*6F : hard;
     }
 
     @Override
