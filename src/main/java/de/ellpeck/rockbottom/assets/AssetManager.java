@@ -35,6 +35,7 @@ import java.util.*;
 public class AssetManager implements IAssetManager{
 
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
+    private final Map<String, Texture> cachedSubTextureParents = new HashMap<>();
     private AssetSound missingSound;
     private AssetTexture missingTexture;
     private AssetLocale missingLocale;
@@ -44,11 +45,16 @@ public class AssetManager implements IAssetManager{
     private Locale defaultLocale;
     private Font currentFont;
 
-    private static Texture loadTexture(String key, String path, String value) throws Exception{
+    private Texture loadTexture(String key, String path, String value) throws Exception{
         if(value.startsWith("sub.")){
             String[] parts = value.substring(4).split(",");
+            String base = path+parts[0];
 
-            Texture main = new Texture(getResource(path+parts[0]), key, false);
+            Texture main = this.cachedSubTextureParents.get(base);
+            if(main == null){
+                main = new Texture(getResource(base), key, false);
+                this.cachedSubTextureParents.put(base, main);
+            }
 
             int x = Integer.parseInt(parts[1]);
             int y = Integer.parseInt(parts[2]);
@@ -99,6 +105,8 @@ public class AssetManager implements IAssetManager{
         this.currentLocale = this.getLocale(AbstractGame.internalRes(game.getSettings().currentLocale));
 
         this.reloadCursor(game);
+
+        this.cachedSubTextureParents.clear();
     }
 
     @Override
@@ -176,7 +184,7 @@ public class AssetManager implements IAssetManager{
                                 Log.info("Loaded font resource "+name+" with data "+value);
                             }
                             else if(key.startsWith("tex.")){
-                                this.assets.put(name, new AssetTexture(loadTexture(key, path, value)));
+                                this.assets.put(name, new AssetTexture(this.loadTexture(key, path, value)));
                                 Log.info("Loaded png resource "+name+" with data "+value);
                             }
                             else{
