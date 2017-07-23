@@ -255,28 +255,34 @@ public class Chunk implements IChunk{
             throw new IllegalArgumentException("Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
         }
 
+        Tile newTile = tile.getTile();
         Tile lastTile = this.getStateInner(layer, x, y).getTile();
-        lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
-        if(layer == TileLayer.MAIN){
-            if(lastTile.canProvideTileEntity()){
-                this.removeTileEntity(this.x+x, this.y+y);
+        if(newTile != lastTile){
+            lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
+
+            if(layer == TileLayer.MAIN){
+                if(lastTile.canProvideTileEntity()){
+                    this.removeTileEntity(this.x+x, this.y+y);
+                }
             }
         }
 
         int ord = layer.ordinal();
         this.stateGrid[ord][x][y] = tile;
 
-        if(layer == TileLayer.MAIN){
-            if(tile.getTile().canProvideTileEntity()){
-                TileEntity tileEntity = tile.getTile().provideTileEntity(this.world, this.x+x, this.y+y);
-                if(tileEntity != null){
-                    this.addTileEntity(tileEntity);
+        if(newTile != lastTile){
+            if(layer == TileLayer.MAIN){
+                if(newTile.canProvideTileEntity()){
+                    TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y);
+                    if(tileEntity != null){
+                        this.addTileEntity(tileEntity);
+                    }
                 }
             }
-        }
 
-        tile.getTile().onAdded(this.world, this.x+x, this.y+y, layer);
+            newTile.onAdded(this.world, this.x+x, this.y+y, layer);
+        }
 
         if(RockBottomAPI.getNet().isServer()){
             RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)));
