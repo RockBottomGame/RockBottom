@@ -21,6 +21,7 @@ rockbottom/item.super_tool=&rSUPER TOOL
 rockbottom/item.ladder=Ladder
 rockbottom/item.glow_ore=Shining Ore
 rockbottom/item.glow_cluster=Shining Cluster
+rockbottom/item.door=Wood Door
 
 rockbottom/info.layer_placement=Can be placed in %s
 rockbottom/info.health=Health

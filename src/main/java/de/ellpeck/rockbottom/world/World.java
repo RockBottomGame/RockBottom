@@ -667,18 +667,26 @@ public class World implements IWorld{
     private float getTileModifier(int x, int y, boolean isSky){
         float foregroundMod = 1F;
         float backgroundMod = 1F;
+        boolean nonAir = false;
 
         Tile foreground = this.getState(x, y).getTile();
         if(!foreground.isAir()){
             foregroundMod = foreground.getTranslucentModifier(this, x, y, TileLayer.MAIN, isSky);
+            nonAir = true;
         }
 
         Tile background = this.getState(TileLayer.BACKGROUND, x, y).getTile();
         if(!background.isAir()){
             backgroundMod = background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND, isSky);
+            nonAir = true;
         }
 
-        return Math.min(isSky ? 1F : 0.8F, Math.min(foregroundMod, backgroundMod));
+        if(nonAir){
+            return Math.min(foregroundMod, backgroundMod);
+        }
+        else{
+            return isSky ? 1F : 0.8F;
+        }
     }
 
     public float getSkylightModifier(){
