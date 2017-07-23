@@ -182,7 +182,7 @@ public class InteractionManager implements IInteractionManager{
                         if(input.isMouseButtonDown(settings.buttonPlace)){
                             if(interact(player, layer, this.mousedTileX, this.mousedTileY)){
                                 if(RockBottomAPI.getNet().isClient()){
-                                    RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, x, y));
+                                    RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
                                 }
 
                                 this.placeCooldown = 5;

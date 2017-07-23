@@ -15,10 +15,10 @@ public class PacketInteract implements IPacket{
 
     private UUID playerId;
     private TileLayer layer;
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
-    public PacketInteract(UUID playerId, TileLayer layer, int x, int y){
+    public PacketInteract(UUID playerId, TileLayer layer, double x, double y){
         this.playerId = playerId;
         this.layer = layer;
         this.x = x;
@@ -34,16 +34,16 @@ public class PacketInteract implements IPacket{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeInt(this.layer.ordinal());
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
+        buf.writeDouble(this.x);
+        buf.writeDouble(this.y);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.layer = TileLayer.LAYERS[buf.readInt()];
-        this.x = buf.readInt();
-        this.y = buf.readInt();
+        this.x = buf.readDouble();
+        this.y = buf.readDouble();
     }
 
     @Override
