@@ -38,7 +38,7 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, double mouseX, double mouseY, AbstractEntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
         TileEntityChest chest = world.getTileEntity(x, y, TileEntityChest.class);
         if(chest != null){
             player.openGuiContainer(new GuiChest(player), new ContainerChest(player, chest));

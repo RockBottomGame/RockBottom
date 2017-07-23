@@ -56,11 +56,9 @@ public class InteractionManager implements IInteractionManager{
                 }
             }
 
-            if(layer == TileLayer.MAIN){
-                Tile tile = player.world.getState(x, y).getTile();
-                if(tile.onInteractWith(player.world, x, y, mouseX, mouseY, player)){
-                    return true;
-                }
+            Tile tile = player.world.getState(layer, x, y).getTile();
+            if(tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)){
+                return true;
             }
 
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());

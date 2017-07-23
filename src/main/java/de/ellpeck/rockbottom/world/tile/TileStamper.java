@@ -78,7 +78,7 @@ public class TileStamper extends TileBasic{
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, double mouseX, double mouseY, AbstractEntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
         TileEntityStamper tile = world.getTileEntity(x, y, TileEntityStamper.class);
         if(tile != null){
             ItemInstance playerInst = player.getInv().get(player.getSelectedSlot());
