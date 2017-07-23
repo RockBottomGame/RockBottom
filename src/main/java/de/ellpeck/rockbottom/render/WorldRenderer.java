@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.particle.ParticleManager;
+import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
@@ -148,6 +149,20 @@ public class WorldRenderer{
                 manager.getFont().drawCenteredString((float)entity.x-transX, (float)-entity.y-transY-1.25F, entity.getChatColorFormat()+entity.getName(), 0.015F, false);
             }
         });
+
+        if(game.isChunkBorderDebug()){
+            for(int gridX = minX; gridX <= maxX; gridX++){
+                for(int gridY = minY; gridY <= maxY; gridY++){
+                    if(world.isChunkLoaded(gridX, gridY)){
+                        int x = Util.toWorldPos(gridX);
+                        int y = Util.toWorldPos(gridY);
+
+                        g.setColor(Color.green);
+                        g.drawRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE);
+                    }
+                }
+            }
+        }
 
         ENTITY_CACHE.clear();
         PLAYER_CACHE.clear();

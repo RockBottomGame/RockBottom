@@ -204,6 +204,11 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public boolean isChunkBorderDebug(){
+        throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
+    }
+
+    @Override
     public void setFullscreen(boolean fullscreen){
         throw new UnsupportedOperationException("Cannot set fullscreen on a dedicated server");
     }

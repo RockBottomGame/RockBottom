@@ -67,6 +67,7 @@ public class RockBottom extends AbstractGame implements InputListener{
     private boolean isForegroundDebug;
     private boolean isBackgroundDebug;
     private boolean isItemInfoDebug;
+    private boolean isChunkBorderDebug;
     private WorldRenderer worldRenderer;
     private int windowedWidth;
     private int windowedHeight;
@@ -382,6 +383,10 @@ public class RockBottom extends AbstractGame implements InputListener{
                 this.isItemInfoDebug = !this.isItemInfoDebug;
                 return;
             }
+            else if(key == Input.KEY_F6){
+                this.isChunkBorderDebug = !this.isChunkBorderDebug;
+                return;
+            }
             else if(key == this.settings.keyInventory.key){
                 this.player.openGuiContainer(new GuiInventory(this.player), this.player.getInvContainer());
                 return;
@@ -579,6 +584,11 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public boolean isItemInfoDebug(){
         return this.isItemInfoDebug;
+    }
+
+    @Override
+    public boolean isChunkBorderDebug(){
+        return this.isChunkBorderDebug;
     }
 
     private void takeScreenshot(){
