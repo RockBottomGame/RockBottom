@@ -4,7 +4,9 @@ version '0.0.14'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'application'
 
+mainClassName = "de.ellpeck.rockbottom.Main"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -12,9 +14,11 @@ targetCompatibility = 1.8
 buildscript {
     repositories {
         jcenter()
+        flatDir dirs: 'D:/Programs/proguard5.3.3/lib' // Obviously you need to change this for it to work on you machine
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+        classpath ':proguard:'
     }
 }
 
@@ -36,11 +40,35 @@ jar {
     }
 }
 
+installDist {
+    destinationDir = new File('build/temp/libs')
+    exclude 'RockBottom-*'
+}
+task myProguardTask(type: proguard.gradle.ProGuardTask) {
+    configuration 'settings.pro'
+
+    injars 'build/libs'
+    outjars 'build/obf/Obf.jar'
+}
+myProguardTask.dependsOn(installDist)
+
+task deleteFiles(type: Delete) {
+    delete 'build/libs/'
+    delete 'build/classes/'
+}
+deleteFiles.dependsOn myProguardTask
 shadowJar {
+    from file("${buildDir}/obf")
+    from file("${buildDir}/temp/libs/lib")
     dependencies {
         exclude(dependency('org.lwjgl.lwjgl:lwjgl-platform::'))
         exclude(dependency('net.java.jinput:jinput-platform::'))
     }
-}
+}.dependsOn.clear()
+shadowJar.dependsOn(deleteFiles)
 
-build.dependsOn(shadowJar)
+task buildObf {
+    
+}
+buildObf.dependsOn build
+buildObf.dependsOn installDist
