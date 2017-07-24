@@ -180,9 +180,9 @@ public class Chunk implements IChunk{
                         this.scheduledUpdates.remove(i);
                         this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.ordinal()));
 
-                        TileState tile = this.getState(update.layer, update.x, update.y);
-                        if(tile == update.tile){
-                            tile.getTile().onScheduledUpdate(this.world, update.x, update.y, update.layer);
+                        Tile tile = this.getState(update.layer, update.x, update.y).getTile();
+                        if(tile == update.tile.getTile()){
+                            tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
                         }
 
                         i--;
