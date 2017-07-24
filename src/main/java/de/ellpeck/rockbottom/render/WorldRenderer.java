@@ -15,7 +15,6 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.particle.ParticleManager;
-import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
@@ -32,9 +31,6 @@ public class WorldRenderer{
     public static final Color[] SKY_COLORS = new Color[256];
     public static final Color[] BACKGROUND_COLORS = new Color[Constants.MAX_LIGHT+1];
     public static final Color[] MAIN_COLORS = new Color[Constants.MAX_LIGHT+1];
-
-    private static final List<Entity> ENTITY_CACHE = new ArrayList<>();
-    private static final List<EntityPlayer> PLAYER_CACHE = new ArrayList<>();
 
     public static void init(){
         float step = 1F/(Constants.MAX_LIGHT+1);
@@ -73,6 +69,9 @@ public class WorldRenderer{
         int minY = Math.min(topLeftY, bottomRightY);
         int maxX = Math.max(topLeftX, bottomRightX);
         int maxY = Math.max(topLeftY, bottomRightY);
+
+        List<Entity> entities = new ArrayList<>();
+        List<EntityPlayer> players = new ArrayList<>();
 
         for(int gridX = minX; gridX <= maxX; gridX++){
             for(int gridY = minY; gridY <= maxY; gridY++){
@@ -118,10 +117,10 @@ public class WorldRenderer{
                     }
 
                     for(Entity entity : chunk.getAllEntities()){
-                        ENTITY_CACHE.add(entity);
+                        entities.add(entity);
 
                         if(entity instanceof EntityPlayer){
-                            PLAYER_CACHE.add((EntityPlayer)entity);
+                            players.add((EntityPlayer)entity);
                         }
                     }
                 }
@@ -132,7 +131,7 @@ public class WorldRenderer{
 
         particles.render(game, manager, g, world, transX, transY);
 
-        ENTITY_CACHE.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
+        entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
@@ -144,7 +143,7 @@ public class WorldRenderer{
 
         RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, transX, transY));
 
-        PLAYER_CACHE.forEach(entity -> {
+        players.forEach(entity -> {
             if(entity.shouldRender() && !RockBottomAPI.getNet().isThePlayer(entity)){
                 manager.getFont().drawCenteredString((float)entity.x-transX, (float)-entity.y-transY-1.25F, entity.getChatColorFormat()+entity.getName(), 0.015F, false);
             }
@@ -164,8 +163,6 @@ public class WorldRenderer{
             }
         }
 
-        ENTITY_CACHE.clear();
-        PLAYER_CACHE.clear();
         g.resetTransform();
     }
 

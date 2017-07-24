@@ -1,10 +1,8 @@
 package de.ellpeck.rockbottom.world.gen.ore;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.world.gen.WorldGenOre;
-import org.newdawn.slick.tests.xml.GameData;
 
 public class WorldGenCopper extends WorldGenOre{
 

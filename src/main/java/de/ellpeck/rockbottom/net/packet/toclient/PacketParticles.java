@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.world.World;
 import io.netty.buffer.ByteBuf;

@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.construction;
 
-import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
