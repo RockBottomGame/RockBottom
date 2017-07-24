@@ -1,6 +1,6 @@
 -flattenpackagehierarchy de.ellpeck.rockbottom
 -repackageclasses de.ellpeck.rockbottom
--keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
+-keepattributes InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,Synthetic,EnclosingMethod
 -adaptresourcefilenames **.properties
 -adaptresourcefilecontents **.properties,META-INF/MANIFEST.MF
 -libraryjars  <java.home>/lib/rt.jar;build/temp/libs/lib

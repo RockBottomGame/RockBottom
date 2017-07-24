@@ -14,7 +14,7 @@ targetCompatibility = 1.8
 buildscript {
     repositories {
         jcenter()
-        flatDir dirs: 'D:/Programs/proguard5.3.3/lib' // Obviously you need to change this for it to work on you machine
+        flatDir dirs: 'D:/PROGRAMMING/proguard5.3.3/lib'
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
@@ -44,6 +44,7 @@ installDist {
     destinationDir = new File('build/temp/libs')
     exclude 'RockBottom-*'
 }
+
 task myProguardTask(type: proguard.gradle.ProGuardTask) {
     configuration 'settings.pro'
 
@@ -57,6 +58,7 @@ task deleteFiles(type: Delete) {
     delete 'build/classes/'
 }
 deleteFiles.dependsOn myProguardTask
+
 shadowJar {
     from file("${buildDir}/obf")
     from file("${buildDir}/temp/libs/lib")
