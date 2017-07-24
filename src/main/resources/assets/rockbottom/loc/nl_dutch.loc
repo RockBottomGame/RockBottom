@@ -1,7 +1,7 @@
-rockbottom/loc.us_english=US English
+rockbottom/loc.nl_dutch=NL Nederlands
 
-rockbottom/item.rock=Rock
-rockbottom/item.dirt=Dirt
+rockbottom/item.rock=Steen
+rockbottom/item.dirt=Aarde
 rockbottom/item.torch=Torch
 rockbottom/item.chest=Chest
 rockbottom/item.coal=Coal
@@ -49,7 +49,7 @@ rockbottom/info.size=Size: %sx%s tiles
 rockbottom/info.connect=Player %s connected!
 rockbottom/info.disconnect=Player %s disconnected!
 
-rockbottom/button.back=Back
+rockbottom/button.back=Terug
 rockbottom/button.settings=Settings
 rockbottom/button.close=Close
 rockbottom/button.quit=Quit

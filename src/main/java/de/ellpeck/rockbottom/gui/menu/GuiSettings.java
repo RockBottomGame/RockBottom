@@ -23,8 +23,9 @@ public class GuiSettings extends Gui{
 
         this.components.add(new ComponentButton(this, 0, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, assetManager.localize(AbstractGame.internalRes("button.controls"))));
         this.components.add(new ComponentButton(this, 1, this.guiLeft+this.sizeX/2-75, this.guiTop+20, 150, 16, assetManager.localize(AbstractGame.internalRes("button.graphics"))));
+        this.components.add(new ComponentButton(this, 2, this.guiLeft+this.sizeX/2-75, this.guiTop+40, 150, 16, assetManager.localize(AbstractGame.internalRes("button.language"))));
 
-        this.components.add(new ComponentSlider(this, 3, this.guiLeft+this.sizeX/2-75, this.guiTop+55, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
+        this.components.add(new ComponentSlider(this, 3, this.guiLeft+this.sizeX/2-75, this.guiTop+65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 settings.autosaveIntervalSeconds = number;
@@ -49,6 +50,9 @@ public class GuiSettings extends Gui{
         else if(button == 1){
             guiManager.openGui(new GuiGraphics(this));
             return true;
+        }
+        else if(button == 2){
+            guiManager.openGui(new GuiLanguage(this));
         }
         return false;
     }

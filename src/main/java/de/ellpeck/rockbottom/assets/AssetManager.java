@@ -102,7 +102,7 @@ public class AssetManager implements IAssetManager{
         this.defaultLocale = this.getLocale(AbstractGame.internalRes("us_english"));
 
         this.currentFont = this.getFont(AbstractGame.internalRes("default"));
-        this.currentLocale = this.getLocale(AbstractGame.internalRes(game.getSettings().currentLocale));
+        this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
 
         this.reloadCursor(game);
 
@@ -284,6 +284,21 @@ public class AssetManager implements IAssetManager{
     @Override
     public Font getFont(){
         return this.currentFont;
+    }
+
+    @Override
+    public void setFont(Font font){
+        this.currentFont = font;
+    }
+
+    @Override
+    public Locale getLocale(){
+        return this.currentLocale;
+    }
+
+    @Override
+    public void setLocale(Locale locale){
+        this.currentLocale = locale;
     }
 
     @Override
