@@ -49,7 +49,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
-    private final BoundBox boundingBox = new BoundBox(-0.5, -0.5, 0.5, 1.5);
+    private final BoundBox boundingBox = new BoundBox(-5D/12D, -0.5D, 5D/12D, 16D/12D);
     private final IEntityRenderer renderer;
     private final List<IChunk> chunksInRange = new ArrayList<>();
     private final IPlayerDesign design;
