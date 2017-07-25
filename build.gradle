@@ -12,14 +12,12 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    proguardDir = 'D:/PROGRAMMING/proguard5.3.3/lib'
-    proguardEnabled = new File(proguardDir).exists()
+    proguardEnabled = new File(gradle.proguardDir).exists()
 }
 
 buildscript {
     ext {
-        proguardDir = 'D:/PROGRAMMING/proguard5.3.3/lib'
-        proguardEnabled = new File(proguardDir).exists()
+        proguardEnabled = new File(gradle.proguardDir).exists()
     }
 
     repositories {
