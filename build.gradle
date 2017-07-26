@@ -11,14 +11,24 @@ mainClassName = "de.ellpeck.rockbottom.Main"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+ext {
+    proguardEnabled = new File(gradle.proguardDir).exists()
+}
+
 buildscript {
+    ext {
+        proguardEnabled = new File(gradle.proguardDir).exists()
+    }
+
     repositories {
         jcenter()
-        flatDir dirs: 'D:/PROGRAMMING/proguard5.3.3/lib'
+        if (proguardEnabled)
+            flatDir dirs: proguardDir
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
-        classpath ':proguard:'
+        if (proguardEnabled)
+            classpath ':proguard:'
     }
 }
 
@@ -45,32 +55,34 @@ installDist {
     exclude 'RockBottom-*'
 }
 
-task myProguardTask(type: proguard.gradle.ProGuardTask) {
-    configuration 'settings.pro'
+if (proguardEnabled) {
+    task myProguardTask(type: proguard.gradle.ProGuardTask) {
+        configuration 'settings.pro'
 
-    injars 'build/libs'
-    outjars 'build/obf/Obf.jar'
-}
-myProguardTask.dependsOn(installDist)
-
-task deleteFiles(type: Delete) {
-    delete 'build/libs/'
-    delete 'build/classes/'
-}
-deleteFiles.dependsOn myProguardTask
-
-shadowJar {
-    from file("${buildDir}/obf")
-    from file("${buildDir}/temp/libs/lib")
-    dependencies {
-        exclude(dependency('org.lwjgl.lwjgl:lwjgl-platform::'))
-        exclude(dependency('net.java.jinput:jinput-platform::'))
+        injars 'build/libs'
+        outjars 'build/obf/Obf.jar'
     }
-}.dependsOn.clear()
-shadowJar.dependsOn(deleteFiles)
+    myProguardTask.dependsOn(installDist)
 
-task buildObf {
-    
+    task deleteFiles(type: Delete) {
+        delete 'build/libs/'
+        delete 'build/classes/'
+    }
+    deleteFiles.dependsOn myProguardTask
+
+    shadowJar {
+        from file("${buildDir}/obf")
+        from file("${buildDir}/temp/libs/lib")
+        dependencies {
+            exclude(dependency('org.lwjgl.lwjgl:lwjgl-platform::'))
+            exclude(dependency('net.java.jinput:jinput-platform::'))
+        }
+    }.dependsOn.clear()
+    shadowJar.dependsOn(deleteFiles)
+
+    task buildObf {
+
+    }
+    buildObf.dependsOn build
+    buildObf.dependsOn installDist
 }
-buildObf.dependsOn build
-buildObf.dependsOn installDist
