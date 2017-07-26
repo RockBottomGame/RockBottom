@@ -97,9 +97,7 @@ public final class Main{
         catch(NoSuchMethodException | IllegalAccessException | ClassNotFoundException e){
             throw new RuntimeException("Could not initialize game", e);
         }
-        catch(InvocationTargetException ex){
-            Throwable e = ex.getCause();
-
+        catch(InvocationTargetException e){
             File dir = new File(gameDir, "crashes");
             if(!dir.exists()){
                 dir.mkdirs();
