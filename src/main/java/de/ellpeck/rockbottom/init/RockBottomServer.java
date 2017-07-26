@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
@@ -99,7 +100,7 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
+    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo){
         throw new UnsupportedOperationException("Cannot join a world on a dedicated server");
     }
 

@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,14 +17,12 @@ public class PacketInitialServerData implements IPacket{
 
     private final DataSet playerSet = new DataSet();
     private WorldInfo info;
-    private NameToIndexInfo tileRegInfo;
-    private NameToIndexInfo biomeRegInfo;
+    private DynamicRegistryInfo regInfo;
 
-    public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
+    public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, DynamicRegistryInfo regInfo){
         player.save(this.playerSet);
         this.info = info;
-        this.tileRegInfo = tileRegInfo;
-        this.biomeRegInfo = biomeRegInfo;
+        this.regInfo = regInfo;
     }
 
     public PacketInitialServerData(){
@@ -35,8 +33,7 @@ public class PacketInitialServerData implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         NetUtil.writeSetToBuffer(this.playerSet, buf);
         this.info.toBuffer(buf);
-        this.tileRegInfo.toBuffer(buf);
-        this.biomeRegInfo.toBuffer(buf);
+        this.regInfo.toBuffer(buf);
     }
 
     @Override
@@ -46,11 +43,8 @@ public class PacketInitialServerData implements IPacket{
         this.info = new WorldInfo(null);
         this.info.fromBuffer(buf);
 
-        this.tileRegInfo = new NameToIndexInfo("tile_reg_client_world", null, Short.MAX_VALUE);
-        this.tileRegInfo.fromBuffer(buf);
-
-        this.biomeRegInfo = new NameToIndexInfo("biome_reg_client_world", null, Short.MAX_VALUE);
-        this.biomeRegInfo.fromBuffer(buf);
+        this.regInfo = new DynamicRegistryInfo();
+        this.regInfo.fromBuffer(buf);
     }
 
     @Override
@@ -58,7 +52,7 @@ public class PacketInitialServerData implements IPacket{
         game.scheduleAction(() -> {
             if(game.getWorld() == null){
                 Log.info("Received initial server data, joining world");
-                game.joinWorld(this.playerSet, this.info, this.tileRegInfo, this.biomeRegInfo);
+                game.joinWorld(this.playerSet, this.info, this.regInfo);
             }
             else{
                 Log.error("Received initial server data while already being in a world!");

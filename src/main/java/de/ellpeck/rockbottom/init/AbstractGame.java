@@ -23,6 +23,7 @@ import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.world.World;
 import org.newdawn.slick.util.Log;
 
@@ -190,7 +191,7 @@ public abstract class AbstractGame implements IGameInstance{
             info.seed = Util.RANDOM.nextLong();
         }
 
-        this.world = new World(info, tileRegInfo, biomeRegInfo);
+        this.world = new World(info, new DynamicRegistryInfo(tileRegInfo, biomeRegInfo));
         this.world.initFiles(worldFile);
     }
 

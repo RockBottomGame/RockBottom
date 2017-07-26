@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.Gui;
-import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
@@ -23,6 +22,7 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.WorldRenderer;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import joptsimple.internal.Strings;
@@ -278,10 +278,10 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
+    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo){
         Log.info("Joining world");
 
-        this.world = new ClientWorld(info, tileRegInfo, biomeRegInfo);
+        this.world = new ClientWorld(info, regInfo);
 
         this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
         this.player.load(playerSet);

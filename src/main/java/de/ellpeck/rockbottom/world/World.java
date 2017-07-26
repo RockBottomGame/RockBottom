@@ -16,10 +16,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
-import de.ellpeck.rockbottom.api.world.IChunk;
-import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.*;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.init.AbstractGame;
@@ -42,17 +39,15 @@ public class World implements IWorld{
     public final List<AbstractEntityPlayer> players = new ArrayList<>();
     protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
     protected final WorldInfo info;
-    private final NameToIndexInfo tileRegInfo;
-    private final NameToIndexInfo biomeRegInfo;
+    private final DynamicRegistryInfo regInfo;
     private final List<IWorldGenerator> generators = new ArrayList<>();
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
 
-    public World(WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
+    public World(WorldInfo info, DynamicRegistryInfo regInfo){
         this.info = info;
-        this.tileRegInfo = tileRegInfo;
-        this.biomeRegInfo = biomeRegInfo;
+        this.regInfo = regInfo;
         this.generatorRandom.setSeed(this.info.seed);
 
         for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS){
@@ -253,7 +248,7 @@ public class World implements IWorld{
     public int getIdForState(TileState state){
         IResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
         if(name != null){
-            return this.tileRegInfo.getId(name);
+            return this.getTileRegInfo().getId(name);
         }
         else{
             return -1;
@@ -262,7 +257,7 @@ public class World implements IWorld{
 
     @Override
     public TileState getStateForId(int id){
-        IResourceName name = this.tileRegInfo.get(id);
+        IResourceName name = this.getTileRegInfo().get(id);
         return RockBottomAPI.TILE_STATE_REGISTRY.get(name);
     }
 
@@ -348,14 +343,14 @@ public class World implements IWorld{
 
     @Override
     public NameToIndexInfo getTileRegInfo(){
-        return this.tileRegInfo;
+        return this.regInfo.getTiles();
     }
 
     @Override
     public int getIdForBiome(Biome biome){
         IResourceName name = RockBottomAPI.BIOME_REGISTRY.getId(biome);
         if(name != null){
-            return this.biomeRegInfo.getId(name);
+            return this.getBiomeRegInfo().getId(name);
         }
         else{
             return -1;
@@ -364,13 +359,18 @@ public class World implements IWorld{
 
     @Override
     public Biome getBiomeForId(int id){
-        IResourceName name = this.biomeRegInfo.get(id);
+        IResourceName name = this.getBiomeRegInfo().get(id);
         return RockBottomAPI.BIOME_REGISTRY.get(name);
     }
 
     @Override
     public NameToIndexInfo getBiomeRegInfo(){
-        return this.biomeRegInfo;
+        return this.regInfo.getBiomes();
+    }
+
+    @Override
+    public DynamicRegistryInfo getRegInfo(){
+        return this.regInfo;
     }
 
     @Override

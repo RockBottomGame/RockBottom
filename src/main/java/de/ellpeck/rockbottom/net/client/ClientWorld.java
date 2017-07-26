@@ -5,11 +5,11 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Pos2;
-import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.Chunk;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
@@ -19,8 +19,8 @@ import java.util.UUID;
 
 public class ClientWorld extends World{
 
-    public ClientWorld(WorldInfo info, NameToIndexInfo tileRegInfo, NameToIndexInfo biomeRegInfo){
-        super(info, tileRegInfo, biomeRegInfo);
+    public ClientWorld(WorldInfo info, DynamicRegistryInfo regInfo){
+        super(info, regInfo);
     }
 
     @Override
