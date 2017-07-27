@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import com.sun.media.jfxmedia.logging.Logger;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -70,37 +69,40 @@ public class GuiSelectWorld extends Gui{
 
     private void populateButtons(IGameInstance game){
         File worldFolder = game.getDataManager().getWorldsDir();
-        File[] worlds = worldFolder.listFiles();
+        if(worldFolder.exists()){
+            File[] worlds = worldFolder.listFiles();
+            if(worlds != null && worlds.length > 0){
+                List<File> validWorlds = new ArrayList<>();
 
-        List<File> validWorlds = new ArrayList<>();
+                for(File world : worlds){
+                    if(WorldInfo.exists(world)){
+                        validWorlds.add(world);
+                    }
+                }
 
-        for(File world : worlds){
-            if(WorldInfo.exists(world)){
-                validWorlds.add(world);
+                int offset = this.scrollBar.getNumber();
+                for(int i = 0; i < BUTTON_AMOUNT; i++){
+                    ComponentSelectWorldButton button = this.buttons[i];
+                    ComponentButton deleteButton = this.deleteButtons[i];
+
+                    if(validWorlds.size() > offset+i){
+                        button.setWorld(validWorlds.get(offset+i));
+
+                        button.isVisible = true;
+                        deleteButton.isVisible = true;
+                    }
+                    else{
+                        button.isVisible = false;
+                        deleteButton.isVisible = false;
+                    }
+                }
+
+                boolean locked = validWorlds.size() < this.buttons.length;
+                this.scrollBar.setLocked(locked);
+                if(!locked){
+                    this.scrollBar.setMax(validWorlds.size()-5);
+                }
             }
-        }
-
-        int offset = this.scrollBar.getNumber();
-        for(int i = 0; i < BUTTON_AMOUNT; i++){
-            ComponentSelectWorldButton button = this.buttons[i];
-            ComponentButton deleteButton = this.deleteButtons[i];
-
-            if(validWorlds.size() > offset+i){
-                button.setWorld(validWorlds.get(offset+i));
-
-                button.isVisible = true;
-                deleteButton.isVisible = true;
-            }
-            else{
-                button.isVisible = false;
-                deleteButton.isVisible = false;
-            }
-        }
-
-        boolean locked = validWorlds.size() < this.buttons.length;
-        this.scrollBar.setLocked(locked);
-        if(!locked){
-            this.scrollBar.setMax(validWorlds.size()-5);
         }
     }
 
