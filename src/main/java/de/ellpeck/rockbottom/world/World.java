@@ -448,7 +448,7 @@ public class World implements IWorld{
 
     @Override
     public void save(){
-        long timeStarted = System.currentTimeMillis();
+        long timeStarted = Util.getTimeMillis();
         int amount = 0;
 
         for(IChunk chunk : this.loadedChunks){
@@ -464,7 +464,7 @@ public class World implements IWorld{
         }
 
         if(amount > 0){
-            Log.info("Saved "+amount+" chunks, took "+(System.currentTimeMillis()-timeStarted)+"ms.");
+            Log.info("Saved "+amount+" chunks, took "+(Util.getTimeMillis()-timeStarted)+"ms.");
         }
     }
 

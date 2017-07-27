@@ -61,11 +61,11 @@ public abstract class AbstractGame implements IGameInstance{
             int tpsAccumulator = 0;
             int fpsAccumulator = 0;
 
-            long lastDeltaTime = System.currentTimeMillis();
+            long lastDeltaTime = Util.getTimeMillis();
             int deltaAccumulator = 0;
 
             while(game.isRunning){
-                long time = System.currentTimeMillis();
+                long time = Util.getTimeMillis();
 
                 int delta = (int)(time-lastDeltaTime);
                 lastDeltaTime = time;
