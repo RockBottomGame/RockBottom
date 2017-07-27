@@ -64,7 +64,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
 
             this.components.add(new ComponentFancyToggleButton(this, 1, this.guiLeft-14, this.guiTop+14, 12, 12, !shouldShowAll, AbstractGame.internalRes("gui.all_construction"), game.getAssetManager().localize(AbstractGame.internalRes("button.all_construction"))));
 
-            this.scrollBar = new ComponentScrollBar(this, 2, this.guiLeft-112, this.guiTop, 6, 88, scrollAmount, 0, 10, new BoundBox(-112, 0, 0, 88).add(this.guiLeft, this.guiTop), (min, max, number) -> {
+            this.scrollBar = new ComponentScrollBar(this, 2, this.guiLeft-112, this.guiTop, 6, 88, scrollAmount, 0, 0, new BoundBox(-112, 0, 0, 88).add(this.guiLeft, this.guiTop), (min, max, number) -> {
                 scrollAmount = number;
                 this.populateConstructionButtons();
             });

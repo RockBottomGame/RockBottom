@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
+import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.assets.AssetManager;
@@ -173,6 +174,7 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         this.settings = new Settings();
+        RockBottomAPI.getEventHandler().fireEvent(new LoadSettingsEvent(this.settings));
         this.dataManager.loadPropSettings(this.settings);
 
         this.setFullscreen(this.settings.fullscreen);
@@ -359,7 +361,7 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public void keyPressed(int key, char c){
         if(this.guiManager.getGui() == null){
-            if(key == this.settings.keyMenu.key){
+            if(Settings.KEY_MENU.isKey(key)){
                 this.openIngameMenu();
                 return;
             }
@@ -387,17 +389,17 @@ public class RockBottom extends AbstractGame implements InputListener{
                 this.isChunkBorderDebug = !this.isChunkBorderDebug;
                 return;
             }
-            else if(key == this.settings.keyInventory.key){
+            else if(Settings.KEY_INVENTORY.isKey(key)){
                 this.player.openGuiContainer(new GuiInventory(this.player), this.player.getInvContainer());
                 return;
             }
-            else if(key == this.settings.keyChat.key && RockBottomAPI.getNet().isActive()){
+            else if(Settings.KEY_CHAT.isKey(key) && RockBottomAPI.getNet().isActive()){
                 this.guiManager.openGui(new GuiChat());
                 return;
             }
         }
 
-        if(key == this.settings.keyScreenshot.key){
+        if(Settings.KEY_SCREENSHOT.isKey(key)){
             this.takeScreenshot();
             return;
         }

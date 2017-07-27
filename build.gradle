@@ -23,7 +23,7 @@ buildscript {
     repositories {
         jcenter()
         if (proguardEnabled)
-            flatDir dirs: proguardDir
+            flatDir dirs: gradle.proguardDir
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'

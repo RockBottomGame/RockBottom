@@ -75,4 +75,9 @@ public class ResourceName implements IResourceName{
         result = 31*result+this.resourceName.hashCode();
         return result;
     }
+
+    @Override
+    public int compareTo(IResourceName o){
+        return this.toString().compareTo(o.toString());
+    }
 }

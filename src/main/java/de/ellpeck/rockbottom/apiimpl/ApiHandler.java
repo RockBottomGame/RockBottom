@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -300,7 +301,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void describeItem(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance instance){
-        boolean advanced = game.getInput().isKeyDown(game.getSettings().keyAdvancedInfo.key);
+        boolean advanced = Settings.KEY_ADVANCED_INFO.isDown();
 
         List<String> desc = new ArrayList<>();
         instance.getItem().describeItem(manager, instance, desc, advanced);

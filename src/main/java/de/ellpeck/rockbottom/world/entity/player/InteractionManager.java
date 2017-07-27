@@ -110,26 +110,26 @@ public class InteractionManager implements IInteractionManager{
                 int x = Util.floor(this.mousedTileX);
                 int y = Util.floor(this.mousedTileY);
 
-                if(input.isKeyDown(settings.keyLeft.key)){
+                if(Settings.KEY_LEFT.isDown()){
                     moveAndSend(player, 0);
                 }
-                else if(input.isKeyDown(settings.keyRight.key)){
+                else if(Settings.KEY_RIGHT.isDown()){
                     moveAndSend(player, 1);
                 }
 
-                if(input.isKeyDown(settings.keyUp.key)){
+                if(Settings.KEY_UP.isDown()){
                     moveAndSend(player, 3);
                 }
-                else if(input.isKeyDown(settings.keyDown.key)){
+                else if(Settings.KEY_DOWN.isDown()){
                     moveAndSend(player, 4);
                 }
 
-                if(input.isKeyDown(settings.keyJump.key)){
+                if(Settings.KEY_JUMP.isDown()){
                     moveAndSend(player, 2);
                 }
 
                 if(player.world.isPosLoaded(x, y)){
-                    TileLayer layer = input.isKeyDown(settings.keyBackground.key) ? TileLayer.BACKGROUND : TileLayer.MAIN;
+                    TileLayer layer = Settings.KEY_BACKGROUND.isDown() ? TileLayer.BACKGROUND : TileLayer.MAIN;
 
                     if(input.isMouseButtonDown(settings.buttonDestroy)){
                         if(this.breakTileX != x || this.breakTileY != y){
@@ -231,8 +231,8 @@ public class InteractionManager implements IInteractionManager{
     public void onKeyboardAction(RockBottom game, int button, char character){
         if(!game.getGuiManager().onKeyboardAction(game, button, character)){
             if(game.getWorld() != null && game.getGuiManager().getGui() == null){
-                for(int i = 0; i < game.getSettings().keysItemSelection.length; i++){
-                    if(button == game.getSettings().keysItemSelection[i]){
+                for(int i = 0; i < Settings.KEYS_ITEM_SELECTION.length; i++){
+                    if(Settings.KEYS_ITEM_SELECTION[i].isKey(button)){
                         game.getPlayer().setSelectedSlot(i);
 
                         if(RockBottomAPI.getNet().isClient()){
