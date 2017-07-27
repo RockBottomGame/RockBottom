@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentMessageBox;
 
 public class GuiMessageBox extends Gui{
@@ -31,5 +33,10 @@ public class GuiMessageBox extends Gui{
         else{
             return false;
         }
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("message_box");
     }
 }

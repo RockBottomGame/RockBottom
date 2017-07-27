@@ -1,12 +1,14 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
 public class GuiSettings extends Gui{
@@ -55,6 +57,11 @@ public class GuiSettings extends Gui{
             guiManager.openGui(new GuiLanguage(this));
         }
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("settings");
     }
 
     @Override

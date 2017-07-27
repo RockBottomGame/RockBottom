@@ -48,4 +48,9 @@ public class ComponentHealth extends GuiComponent{
             }
         }
     }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("health");
+    }
 }

@@ -1,9 +1,11 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentProgressBar;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 
 public class GuiSeparator extends GuiContainer{
@@ -21,5 +23,10 @@ public class GuiSeparator extends GuiContainer{
 
         this.components.add(new ComponentProgressBar(this, this.guiLeft+70, this.guiTop+15, 40, 8, PROGRESS_COLOR, false, this.tile:: getSmeltPercentage));
         this.components.add(new ComponentProgressBar(this, this.guiLeft+64, this.guiTop+30, 8, 18, FIRE_COLOR, true, this.tile:: getFuelPercentage));
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("separator");
     }
 }

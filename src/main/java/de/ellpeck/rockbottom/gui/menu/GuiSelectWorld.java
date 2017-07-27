@@ -2,11 +2,13 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import com.sun.media.jfxmedia.logging.Logger;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollBar;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.gui.component.ComponentSelectWorldButton;
 import de.ellpeck.rockbottom.init.AbstractGame;
@@ -112,5 +114,10 @@ public class GuiSelectWorld extends Gui{
             game.getGuiManager().openGui(new GuiCreateWorld(this));
         }
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("select_world");
     }
 }

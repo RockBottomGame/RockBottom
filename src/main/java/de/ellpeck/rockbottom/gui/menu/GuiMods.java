@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Graphics;
@@ -127,5 +128,10 @@ public class GuiMods extends Gui{
             }
         }
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("mods");
     }
 }

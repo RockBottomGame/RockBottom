@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
@@ -9,6 +10,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.PlayerDesign;
@@ -160,6 +162,11 @@ public class GuiPlayerEditor extends Gui{
         else{
             return false;
         }
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("player_editor");
     }
 
     private static class Slider extends ComponentSlider{

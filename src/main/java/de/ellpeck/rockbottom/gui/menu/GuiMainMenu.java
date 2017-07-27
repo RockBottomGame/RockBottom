@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.GuiPlayerEditor;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Graphics;
@@ -54,6 +55,11 @@ public class GuiMainMenu extends Gui{
     @Override
     public boolean hasGradient(){
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("main_menu");
     }
 
     @Override

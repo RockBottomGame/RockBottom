@@ -1,8 +1,10 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiMods;
 
 public class ComponentModButton extends ComponentButton{
@@ -30,5 +32,10 @@ public class ComponentModButton extends ComponentButton{
     @Override
     protected String getText(){
         return this.mod.getDisplayName();
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("mod_button");
     }
 }

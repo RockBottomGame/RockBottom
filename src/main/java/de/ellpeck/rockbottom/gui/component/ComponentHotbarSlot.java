@@ -61,4 +61,9 @@ public class ComponentHotbarSlot extends GuiComponent{
         }
         return false;
     }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("hotbar_slot");
+    }
 }

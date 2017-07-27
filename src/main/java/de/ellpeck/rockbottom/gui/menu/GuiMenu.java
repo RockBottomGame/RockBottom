@@ -95,4 +95,9 @@ public class GuiMenu extends Gui{
         return false;
     }
 
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("ingame_menu");
+    }
+
 }

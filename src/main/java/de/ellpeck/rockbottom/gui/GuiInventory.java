@@ -210,6 +210,11 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     }
 
     @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("inventory");
+    }
+
+    @Override
     public void onChange(IInventory inv, int slot, ItemInstance newInstance){
         if(isConstructionOpen){
             this.populateConstructionButtons();

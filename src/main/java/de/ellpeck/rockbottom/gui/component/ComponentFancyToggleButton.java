@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
@@ -24,5 +25,10 @@ public class ComponentFancyToggleButton extends ComponentFancyButton{
     public boolean onPressed(IGameInstance game){
         this.isToggled = !this.isToggled;
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("fancy_toggle_button");
     }
 }

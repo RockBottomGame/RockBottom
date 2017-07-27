@@ -1,10 +1,12 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -98,6 +100,11 @@ public class ComponentColorPicker extends GuiComponent{
             }
         }
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("color_picker");
     }
 
     private void unenlarge(){

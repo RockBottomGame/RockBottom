@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollBar;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
@@ -58,6 +59,11 @@ public class GuiKeybinds extends Gui{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("keybinds");
     }
 
     private void populateButtons(){

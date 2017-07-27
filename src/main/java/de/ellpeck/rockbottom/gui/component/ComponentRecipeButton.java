@@ -95,4 +95,9 @@ public class ComponentRecipeButton extends ComponentButton{
         }
         else return super.getHover();
     }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("recipe_button");
+    }
 }

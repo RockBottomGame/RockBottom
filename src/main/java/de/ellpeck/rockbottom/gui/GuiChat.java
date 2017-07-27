@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -101,5 +102,10 @@ public class GuiChat extends Gui{
     @Override
     public boolean hasGradient(){
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("chat");
     }
 }

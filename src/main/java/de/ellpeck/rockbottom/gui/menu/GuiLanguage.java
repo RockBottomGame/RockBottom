@@ -56,4 +56,9 @@ public class GuiLanguage extends Gui{
         }
         return false;
     }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("language");
+    }
 }

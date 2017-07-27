@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketJoin;
 import org.newdawn.slick.util.Log;
@@ -55,6 +56,11 @@ public class GuiJoinServer extends Gui{
             }
         }
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("join_server");
     }
 
     @Override
