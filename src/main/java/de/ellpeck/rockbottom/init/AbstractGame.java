@@ -187,10 +187,6 @@ public abstract class AbstractGame implements IGameInstance{
         NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), Short.MAX_VALUE);
         this.populateIndexInfo(biomeRegInfo, RockBottomAPI.BIOME_REGISTRY);
 
-        if(info.seed == 0){
-            info.seed = Util.RANDOM.nextLong();
-        }
-
         this.world = new World(info, new DynamicRegistryInfo(tileRegInfo, biomeRegInfo));
         this.world.initFiles(worldFile);
     }

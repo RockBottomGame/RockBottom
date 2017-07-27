@@ -2,87 +2,52 @@ package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.gui.menu.GuiSelectWorld;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 
 public class ComponentSelectWorldButton extends ComponentButton{
 
-    private static final IResourceName LOC_DELETE = AbstractGame.internalRes("info.delete_world");
-    private static final IResourceName LOC_WORLD = AbstractGame.internalRes("info.world");
     private static final IResourceName LOC_SEED = AbstractGame.internalRes("info.seed");
     private static final IResourceName LOC_TIME = AbstractGame.internalRes("info.time");
 
-    private final GuiSelectWorld gui;
-    private final File worldFile;
+    public File worldFile;
     private WorldInfo info;
 
-    private boolean exists;
-
-    public ComponentSelectWorldButton(GuiSelectWorld gui, int id, int x, int y, int sizeX, int sizeY){
+    public ComponentSelectWorldButton(Gui gui, int id, int x, int y, int sizeX, int sizeY){
         super(gui, id, x, y, sizeX, sizeY, null);
-        this.gui = gui;
+    }
 
-        this.worldFile = new File(AbstractGame.get().getDataManager().getWorldsDir(), "world"+(id+1));
-        this.exists = this.worldFile.isDirectory();
+    public void setWorld(File file){
+        this.worldFile = file;
 
         this.info = new WorldInfo(this.worldFile);
-        if(this.exists){
-            this.info.load();
-        }
+        this.info.load();
     }
 
     @Override
     protected String getText(){
-        if(this.exists){
-            IAssetManager manager = AbstractGame.get().getAssetManager();
-            return manager.localize(this.gui.deleteMode ? LOC_DELETE : LOC_WORLD, this.id+1);
-        }
-        else{
-            return "-----";
-        }
+        return this.worldFile.getName();
     }
 
     @Override
     protected String[] getHover(){
-        if(this.exists){
-            IAssetManager manager = AbstractGame.get().getAssetManager();
+        IAssetManager manager = AbstractGame.get().getAssetManager();
 
-            String[] hover = new String[2];
-            hover[0] = manager.localize(LOC_SEED)+": "+this.info.seed;
-            hover[1] = manager.localize(LOC_TIME)+": "+this.info.currentWorldTime;
-            return hover;
-        }
-        return super.getHover();
+        String[] hover = new String[2];
+        hover[0] = manager.localize(LOC_SEED)+": "+this.info.seed;
+        hover[1] = manager.localize(LOC_TIME)+": "+this.info.currentWorldTime;
+        return hover;
     }
 
     @Override
     public boolean onPressed(IGameInstance game){
-        if(this.gui.deleteMode){
-            if(this.exists){
-                try{
-                    Util.deleteFolder(this.worldFile);
-                    this.exists = false;
-                    this.info = new WorldInfo(this.worldFile);
-
-                    Log.info("Successfully deleted world "+(this.id+1)+".");
-                }
-                catch(Exception e){
-                    Log.error("Couldn't delete world "+(this.id+1)+"!", e);
-                }
-                return true;
-            }
-        }
-        else{
-            game.startWorld(this.worldFile, this.info);
-            return true;
-        }
-        return false;
+        game.startWorld(this.worldFile, this.info);
+        return true;
     }
 }

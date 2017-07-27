@@ -42,7 +42,7 @@ public class GuiKeybinds extends Gui{
             }
         }
 
-        BoundBox scrollArea = new BoundBox(this.sizeX/2-102, 0, this.sizeX/2+100, this.sizeX-26);
+        BoundBox scrollArea = new BoundBox(this.sizeX/2-102, 0, this.sizeX/2+100, this.sizeX-26).add(this.guiLeft, this.guiTop);
         this.scrollBar = new ComponentScrollBar(this, 0, this.guiLeft+this.sizeX/2-112, this.guiTop, 6, this.sizeY-26, 0, 0, RockBottomAPI.KEYBIND_REGISTRY.getSize()/2-7, scrollArea, (min, max, number) -> this.populateButtons());
         this.components.add(this.scrollBar);
 
