@@ -123,7 +123,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 Log.debug("Closed Container for player "+this.getName()+" with unique id "+this.getUniqueId());
             }
             else{
-                Log.debug("Opened Container "+this.currentContainer+" for player "+this.getName()+" with unique id "+this.getUniqueId());
+                Log.debug("Opened Container "+this.currentContainer.getName()+" for player "+this.getName()+" with unique id "+this.getUniqueId());
             }
         }
     }

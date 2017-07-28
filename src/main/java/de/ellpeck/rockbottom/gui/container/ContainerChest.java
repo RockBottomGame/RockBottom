@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.gui.container;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
 public class ContainerChest extends ItemContainer{
@@ -24,5 +26,10 @@ public class ContainerChest extends ItemContainer{
     @Override
     public void onClosed(){
         this.tile.openCount--;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("chest");
     }
 }
