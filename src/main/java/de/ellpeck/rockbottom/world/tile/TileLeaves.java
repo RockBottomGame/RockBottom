@@ -23,6 +23,7 @@ public class TileLeaves extends TileBasic{
 
     public TileLeaves(){
         super(AbstractGame.internalRes("leaves"));
+        this.addProps(PROP_NATURAL);
     }
 
     @Override
@@ -56,10 +57,5 @@ public class TileLeaves extends TileBasic{
             world.destroyTile(x, y, layer, null, true);
             TileLog.scheduleDestroyAround(world, x, y);
         }
-    }
-
-    @Override
-    public TileProp[] getProperties(){
-        return new TileProp[]{PROP_NATURAL};
     }
 }

@@ -20,11 +20,7 @@ public class TileTorch extends TileBasic{
 
     public TileTorch(){
         super(AbstractGame.internalRes("torch"));
-    }
-
-    @Override
-    public TileProp[] getProperties(){
-        return new TileProp[]{PROP_FACING};
+        this.addProps(PROP_FACING);
     }
 
     @Override

@@ -20,6 +20,7 @@ public class TileLog extends TileBasic{
 
     public TileLog(){
         super(AbstractGame.internalRes("log"));
+        this.addProps(PROP_NATURAL);
     }
 
     public static void scheduleDestroyAround(IWorld world, int x, int y){
@@ -65,10 +66,5 @@ public class TileLog extends TileBasic{
     public float getHardness(IWorld world, int x, int y, TileLayer layer){
         float hard = super.getHardness(world, x, y, layer);
         return world.getState(layer, x, y).get(PROP_NATURAL) ? hard*6F : hard;
-    }
-
-    @Override
-    public TileProp[] getProperties(){
-        return new TileProp[]{PROP_NATURAL};
     }
 }

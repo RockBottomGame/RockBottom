@@ -26,6 +26,7 @@ public class TileDoor extends MultiTile{
 
     public TileDoor(){
         super(AbstractGame.internalRes("door"));
+        this.addProps(OPEN_PROP, RIGHT_PROP);
     }
 
     @Override
@@ -37,11 +38,6 @@ public class TileDoor extends MultiTile{
         else{
             return null;
         }
-    }
-
-    @Override
-    public TileProp[] getProperties(){
-        return new TileProp[]{this.propSubX, this.propSubY, RIGHT_PROP, OPEN_PROP};
     }
 
     @Override
