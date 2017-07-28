@@ -42,6 +42,7 @@ public final class ContentRegistry{
         new TileStamper().setHardness(18F).addEffectiveTool(ToolType.PICKAXE, 1).register();
         new TileBasic(AbstractGame.internalRes("stone")).setHardness(10F).addEffectiveTool(ToolType.PICKAXE, 2).register();
         new TileDoor().setHardness(2.5F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
+        new TileConstructionTable().setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).setForceDrop().register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();

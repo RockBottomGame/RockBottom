@@ -17,21 +17,21 @@ public final class ConstructionRegistry{
                 new ItemInstance(GameContent.ITEM_COAL, 2, Constants.META_WILDCARD)));
         RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_WOOD_BOARDS, 5),
                 new ItemInstance(GameContent.TILE_LOG)));
-        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_WOOD_PICK),
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_WOOD_PICK),
                 new ItemInstance(GameContent.TILE_WOOD_BOARDS, 16)));
-        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_ROCK_PICK),
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_ROCK_PICK),
                 new ItemInstance(GameContent.TILE_WOOD_BOARDS, 8),
                 new ItemInstance(GameContent.TILE_ROCK, 8)));
-        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_SMELTER),
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_SMELTER),
                 new ItemInstance(GameContent.TILE_WOOD_BOARDS, 20),
                 new ItemInstance(GameContent.TILE_ROCK, 40),
                 new ItemInstance(GameContent.ITEM_COAL, 10, Constants.META_WILDCARD)));
-        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_SEPARATOR),
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_SEPARATOR),
                 new ItemInstance(GameContent.TILE_WOOD_BOARDS, 30),
                 new ItemInstance(GameContent.TILE_ROCK, 60),
                 new ItemInstance(GameContent.ITEM_COAL, 15, Constants.META_WILDCARD),
                 new ItemInstance(GameContent.ITEM_COPPER_CLUSTER, 5)));
-        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_SUPER_TOOL),
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_SUPER_TOOL),
                 new ItemInstance(GameContent.ITEM_COPPER_INGOT, 30),
                 new ItemInstance(GameContent.ITEM_COPPER_GRIT, 20),
                 new ItemInstance(GameContent.ITEM_SLAG, 5)));

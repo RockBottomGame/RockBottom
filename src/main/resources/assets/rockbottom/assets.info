@@ -50,6 +50,9 @@ tex.tiles.door.0.1=sub./tiles/wood_door_closed.png,0,0,12,12
 tex.tiles.door.open.0.0=sub./tiles/wood_door_open.png,0,12,12,12
 tex.tiles.door.open.0.1=sub./tiles/wood_door_open.png,0,0,12,12
 tex.tiles.door.item=/tiles/wood_door_item.png
+tex.tiles.construction_table.0.0=sub./tiles/construction_table.png,0,0,12,12
+tex.tiles.construction_table.1.0=sub./tiles/construction_table.png,12,0,12,12
+tex.tiles.construction_table.item=/tiles/construction_table_item.png
 
 tex.items.super_tool=/items/super_tool.png
 tex.items.pick_wood=/items/wood_pickaxe.png
