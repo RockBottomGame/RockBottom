@@ -69,40 +69,38 @@ public class GuiSelectWorld extends Gui{
 
     private void populateButtons(IGameInstance game){
         File worldFolder = game.getDataManager().getWorldsDir();
-        if(worldFolder.exists()){
-            File[] worlds = worldFolder.listFiles();
-            if(worlds != null && worlds.length > 0){
-                List<File> validWorlds = new ArrayList<>();
+        File[] worlds = worldFolder.listFiles();
+        List<File> validWorlds = new ArrayList<>();
 
-                for(File world : worlds){
-                    if(WorldInfo.exists(world)){
-                        validWorlds.add(world);
-                    }
-                }
-
-                int offset = this.scrollBar.getNumber();
-                for(int i = 0; i < BUTTON_AMOUNT; i++){
-                    ComponentSelectWorldButton button = this.buttons[i];
-                    ComponentButton deleteButton = this.deleteButtons[i];
-
-                    if(validWorlds.size() > offset+i){
-                        button.setWorld(validWorlds.get(offset+i));
-
-                        button.isVisible = true;
-                        deleteButton.isVisible = true;
-                    }
-                    else{
-                        button.isVisible = false;
-                        deleteButton.isVisible = false;
-                    }
-                }
-
-                boolean locked = validWorlds.size() < this.buttons.length;
-                this.scrollBar.setLocked(locked);
-                if(!locked){
-                    this.scrollBar.setMax(validWorlds.size()-5);
+        if(worlds != null && worlds.length > 0){
+            for(File world : worlds){
+                if(WorldInfo.exists(world)){
+                    validWorlds.add(world);
                 }
             }
+        }
+
+        int offset = this.scrollBar.getNumber();
+        for(int i = 0; i < BUTTON_AMOUNT; i++){
+            ComponentSelectWorldButton button = this.buttons[i];
+            ComponentButton deleteButton = this.deleteButtons[i];
+
+            if(validWorlds.size() > offset+i){
+                button.setWorld(validWorlds.get(offset+i));
+
+                button.isVisible = true;
+                deleteButton.isVisible = true;
+            }
+            else{
+                button.isVisible = false;
+                deleteButton.isVisible = false;
+            }
+        }
+
+        boolean locked = validWorlds.size() < this.buttons.length;
+        this.scrollBar.setLocked(locked);
+        if(!locked){
+            this.scrollBar.setMax(validWorlds.size()-5);
         }
     }
 
