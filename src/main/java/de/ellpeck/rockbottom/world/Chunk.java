@@ -20,6 +20,7 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketScheduledUpdate;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.newdawn.slick.util.Log;
@@ -183,6 +184,10 @@ public class Chunk implements IChunk{
                         Tile tile = this.getState(update.layer, update.x, update.y).getTile();
                         if(tile == update.tile.getTile()){
                             tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
+
+                            if(RockBottomAPI.getNet().isServer()){
+                                RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketScheduledUpdate(update.layer, update.x, update.y));
+                            }
                         }
 
                         i--;

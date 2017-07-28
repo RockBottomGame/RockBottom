@@ -49,6 +49,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(2, PacketInitialServerData.class);
         RockBottomAPI.PACKET_REGISTRY.register(3, PacketDisconnect.class);
         RockBottomAPI.PACKET_REGISTRY.register(4, PacketTileChange.class);
+        RockBottomAPI.PACKET_REGISTRY.register(5, PacketScheduledUpdate.class);
         RockBottomAPI.PACKET_REGISTRY.register(6, PacketEntityChange.class);
         RockBottomAPI.PACKET_REGISTRY.register(7, PacketBreakTile.class);
         RockBottomAPI.PACKET_REGISTRY.register(8, PacketParticles.class);

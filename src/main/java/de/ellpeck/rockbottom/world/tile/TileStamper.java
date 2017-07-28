@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.StamperRecipe;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.EntityLiving;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -51,7 +52,7 @@ public class TileStamper extends TileBasic{
 
     @Override
     public void onCollideWithEntity(IWorld world, int x, int y, TileLayer layer, Entity entity){
-        if(!world.isClient()){
+        if(!world.isClient() && entity instanceof EntityLiving){
             if(Util.floor(entity.x) == x && entity.motionY <= -0.2 && !world.getState(x, y).get(DOWN_PROP)){
                 world.setState(x, y, this.getDefStateWithProp(DOWN_PROP, true));
                 world.scheduleUpdate(x, y, layer, 40);
@@ -115,10 +116,10 @@ public class TileStamper extends TileBasic{
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
         if(!world.isClient() && world.getState(x, y).get(DOWN_PROP)){
             world.setState(x, y, this.getDefStateWithProp(DOWN_PROP, false));
+        }
 
-            for(Entity entity : world.getEntities(new BoundBox(0, 0, 1, 1).add(x, y))){
-                entity.motionY += 0.2;
-            }
+        for(Entity entity : world.getEntities(new BoundBox(0, 0, 1, 1).add(x, y))){
+            entity.motionY += 0.2;
         }
     }
 
