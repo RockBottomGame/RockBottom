@@ -29,7 +29,7 @@ public class ComponentHotbarSlot extends GuiComponent{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        RockBottomAPI.getApiHandler().renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F);
+        RockBottomAPI.getApiHandler().renderSlotInGui(game, manager, g, this.inv.get(this.id), this.x, this.y, 0.75F, game.getGuiManager().getGui() == null && this.isMouseOverPrioritized(game));
 
         if(this.player.getSelectedSlot() == this.id){
             manager.getTexture(TEX_ARROW).draw(this.x+0.75F, 1);
