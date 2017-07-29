@@ -70,18 +70,16 @@ public class ConnectedPlayer extends EntityPlayer{
             distanceSq = event.distanceSqMoved;
             maxDist = event.allowedDefaultDistance;
 
-            if(distanceSq > maxDist*maxDist){
-                if(!cancelled){
-                    this.x = this.lastCalcX;
-                    this.y = this.lastCalcY;
+            if(!cancelled && distanceSq > maxDist*maxDist){
+                this.x = this.lastCalcX;
+                this.y = this.lastCalcY;
 
-                    this.motionX = 0;
-                    this.motionY = 0;
-                    this.fallAmount = 0;
+                this.motionX = 0;
+                this.motionY = 0;
+                this.fallAmount = 0;
 
-                    this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
-                    Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
-                }
+                this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
+                Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
             }
             else{
                 this.lastCalcX = this.x;
