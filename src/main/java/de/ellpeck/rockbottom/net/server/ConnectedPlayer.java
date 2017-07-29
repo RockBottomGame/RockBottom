@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.ResetMovedPlayerEvent;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
@@ -37,6 +38,8 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player){
+        RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(player, true));
+
         game.getWorld().savePlayer(player);
         game.getWorld().removeEntity(player);
 
