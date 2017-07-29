@@ -4,6 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.ResetMovedPlayerEvent;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -61,19 +63,25 @@ public class ConnectedPlayer extends EntityPlayer{
             double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, this.x, this.y);
             double maxDist = 1.25*this.fallCalcTicks
                     +CLIMB_SPEED*this.climbingCalcTicks
-                    +MOVE_SPEED*(80-this.fallCalcTicks-this.climbingCalcTicks)
-                    +3;
+                    +MOVE_SPEED*(80-this.fallCalcTicks-this.climbingCalcTicks);
+
+            ResetMovedPlayerEvent event = new ResetMovedPlayerEvent(this, this.lastCalcX, this.lastY, this.fallCalcTicks, this.climbingCalcTicks, distanceSq, maxDist);
+            boolean cancelled = RockBottomAPI.getEventHandler().fireEvent(event) == EventResult.CANCELLED;
+            distanceSq = event.distanceSqMoved;
+            maxDist = event.allowedDefaultDistance;
 
             if(distanceSq > maxDist*maxDist){
-                this.x = this.lastCalcX;
-                this.y = this.lastCalcY;
+                if(!cancelled){
+                    this.x = this.lastCalcX;
+                    this.y = this.lastCalcY;
 
-                this.motionX = 0;
-                this.motionY = 0;
-                this.fallAmount = 0;
+                    this.motionX = 0;
+                    this.motionY = 0;
+                    this.fallAmount = 0;
 
-                this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
-                Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
+                    this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
+                    Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
+                }
             }
             else{
                 this.lastCalcX = this.x;
