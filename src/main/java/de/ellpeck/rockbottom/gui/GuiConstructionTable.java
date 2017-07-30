@@ -34,7 +34,7 @@ public class GuiConstructionTable extends GuiContainer implements IInvChangeCall
         allRecipes.addAll(RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES);
         allRecipes.addAll(RockBottomAPI.CONSTRUCTION_TABLE_RECIPES);
 
-        this.construction = new ComponentConstruction(this, 0, this.guiLeft, this.guiTop, this.sizeX, 50, 8, new MutableBool(true), new MutableString(), new MutableInt(0), allRecipes);
+        this.construction = new ComponentConstruction(this, 0, this.guiLeft, this.guiTop, this.sizeX, 50, 8, 3, new MutableBool(true), new MutableString(), new MutableInt(0), allRecipes);
         this.components.add(this.construction);
     }
 

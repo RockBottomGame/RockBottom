@@ -25,7 +25,7 @@ public class ComponentConstruction extends GuiComponent{
 
     private static final IResourceName LOC_NEED = AbstractGame.internalRes("info.need_items");
 
-    private final ComponentRecipeButton[] constructionButtons = new ComponentRecipeButton[25];
+    private final ComponentRecipeButton[] constructionButtons;
     private final ComponentScrollBar scrollBar;
     private final ComponentInputField searchBar;
     private final MutableBool shouldShowAll;
@@ -35,8 +35,9 @@ public class ComponentConstruction extends GuiComponent{
     private final GuiContainer gui;
     private final int startId;
     private final List<BasicRecipe> recipes;
+    private final int buttonAmountX;
 
-    public ComponentConstruction(GuiContainer gui, int startId, int x, int y, int sizeX, int sizeY, int lineWrap, MutableBool shouldShowAll, MutableString searchText, MutableInt scrollAmount, List<BasicRecipe> recipes){
+    public ComponentConstruction(GuiContainer gui, int startId, int x, int y, int sizeX, int sizeY, int buttonAmountX, int buttonAmonutY, MutableBool shouldShowAll, MutableString searchText, MutableInt scrollAmount, List<BasicRecipe> recipes){
         super(gui, x, y, sizeX, sizeY);
         this.gui = gui;
         this.startId = startId;
@@ -47,12 +48,16 @@ public class ComponentConstruction extends GuiComponent{
 
         int addX = 0;
         int addY = 0;
+
+        this.buttonAmountX = buttonAmountX;
+        this.constructionButtons = new ComponentRecipeButton[buttonAmountX*buttonAmonutY];
+
         for(int i = 0; i < this.constructionButtons.length; i++){
             this.constructionButtons[i] = new ComponentRecipeButton(gui, startId+2+i, x+addX+8, y+addY, 16, 16);
             gui.getComponents().add(this.constructionButtons[i]);
 
             addX += 18;
-            if((i+1)%lineWrap == 0){
+            if((i+1)%buttonAmountX == 0){
                 addY += 18;
                 addX = 0;
             }
@@ -85,7 +90,7 @@ public class ComponentConstruction extends GuiComponent{
     }
 
     public void populateConstructionButtons(){
-        int offset = this.scrollAmount.get()*5;
+        int offset = this.scrollAmount.get()*this.buttonAmountX;
 
         int recipeCounter = 0;
         int buttonIndex = 0;

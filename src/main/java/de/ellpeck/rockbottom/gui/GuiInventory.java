@@ -35,7 +35,7 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
         this.components.add(new ComponentFancyToggleButton(this, 0, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, AbstractGame.internalRes("gui.construction"), game.getAssetManager().localize(AbstractGame.internalRes("button.construction"))));
 
         if(isConstructionOpen){
-            this.construction = new ComponentConstruction(this, 1, this.guiLeft-112, this.guiTop, 110, 88, 5, SHOW_ALL, SEARCH_TEXT, SCROLL_AMOUNT, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES);
+            this.construction = new ComponentConstruction(this, 1, this.guiLeft-112, this.guiTop, 110, 88, 5, 5, SHOW_ALL, SEARCH_TEXT, SCROLL_AMOUNT, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES);
             this.components.add(this.construction);
         }
     }
