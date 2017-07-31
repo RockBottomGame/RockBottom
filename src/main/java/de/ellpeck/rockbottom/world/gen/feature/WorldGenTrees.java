@@ -34,7 +34,7 @@ public class WorldGenTrees implements IWorldGenerator{
         if(tile instanceof TileDirt || tile instanceof TileGrass){
             int height = rand.nextInt(6)+8;
 
-            for(int h = 0; h <= height; h++){
+            for(int h = 1; h <= height; h++){
                 if(!world.getState(x, y+h).getTile().isAir()){
                     return;
                 }

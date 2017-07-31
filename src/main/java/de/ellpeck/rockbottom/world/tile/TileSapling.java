@@ -37,7 +37,7 @@ public class TileSapling extends TileBasic{
 
     @Override
     public void updateRandomly(IWorld world, int x, int y){
-        if(Util.RANDOM.nextInt(30) <= 0){
+        if(Util.RANDOM.nextInt(350) <= 0){
             WorldGenTrees trees = new WorldGenTrees();
             trees.generateAt(world, x, y, Util.RANDOM);
         }
