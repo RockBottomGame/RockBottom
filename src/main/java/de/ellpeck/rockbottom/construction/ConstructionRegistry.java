@@ -24,7 +24,7 @@ public final class ConstructionRegistry{
                 new ResUseInfo(ResourceRegistry.WOOD_LOG, 4),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 20),
                 new ResUseInfo(ResourceRegistry.RAW_STONE, 20)));
-        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_WOOD_PICK),
+        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_WOOD_PICK),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 16)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_ROCK_PICK),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 8),
