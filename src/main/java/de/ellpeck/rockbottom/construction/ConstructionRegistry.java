@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.construction.BasicRecipe;
 import de.ellpeck.rockbottom.api.construction.SeparatorRecipe;
 import de.ellpeck.rockbottom.api.construction.SmelterRecipe;
 import de.ellpeck.rockbottom.api.construction.StamperRecipe;
-import de.ellpeck.rockbottom.api.construction.resource.ResourceInfo;
+import de.ellpeck.rockbottom.api.construction.resource.ResourceUsageInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 
@@ -14,45 +14,45 @@ public final class ConstructionRegistry{
 
     public static void init(){
         RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_TORCH, 8),
-                new ResourceInfo(ResourceRegistry.WOOD_BOARDS),
-                new ResourceInfo(ResourceRegistry.COAL, 2)));
+                new ResourceUsageInfo(ResourceRegistry.WOOD_BOARDS),
+                new ResourceUsageInfo(ResourceRegistry.COAL, 2)));
         RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_WOOD_BOARDS, 5),
-                new ResourceInfo(ResourceRegistry.WOOD_LOG)));
+                new ResourceUsageInfo(ResourceRegistry.WOOD_LOG)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_WOOD_PICK),
-                new ResourceInfo(ResourceRegistry.WOOD_BOARDS, 16)));
+                new ResourceUsageInfo(ResourceRegistry.WOOD_BOARDS, 16)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_ROCK_PICK),
-                new ResourceInfo(ResourceRegistry.WOOD_BOARDS, 8),
-                new ResourceInfo(ResourceRegistry.RAW_STONE, 8)));
+                new ResourceUsageInfo(ResourceRegistry.WOOD_BOARDS, 8),
+                new ResourceUsageInfo(ResourceRegistry.RAW_STONE, 8)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_SMELTER),
-                new ResourceInfo(ResourceRegistry.WOOD_BOARDS, 20),
-                new ResourceInfo(ResourceRegistry.RAW_STONE, 40),
-                new ResourceInfo(ResourceRegistry.COAL, 10)));
+                new ResourceUsageInfo(ResourceRegistry.WOOD_BOARDS, 20),
+                new ResourceUsageInfo(ResourceRegistry.RAW_STONE, 40),
+                new ResourceUsageInfo(ResourceRegistry.COAL, 10)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_SEPARATOR),
-                new ResourceInfo(ResourceRegistry.WOOD_BOARDS, 30),
-                new ResourceInfo(ResourceRegistry.RAW_STONE, 60),
-                new ResourceInfo(ResourceRegistry.COAL, 15),
-                new ResourceInfo(ResourceRegistry.RAW_COPPER, 5)));
+                new ResourceUsageInfo(ResourceRegistry.WOOD_BOARDS, 30),
+                new ResourceUsageInfo(ResourceRegistry.RAW_STONE, 60),
+                new ResourceUsageInfo(ResourceRegistry.COAL, 15),
+                new ResourceUsageInfo(ResourceRegistry.RAW_COPPER, 5)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_SUPER_TOOL),
-                new ResourceInfo(ResourceRegistry.PROCESSED_COPPER, 30),
-                new ResourceInfo(ResourceRegistry.PARTLY_PROCESSED_COPPER, 20),
-                new ResourceInfo(ResourceRegistry.SLAG, 5)));
+                new ResourceUsageInfo(ResourceRegistry.PROCESSED_COPPER, 30),
+                new ResourceUsageInfo(ResourceRegistry.PARTLY_PROCESSED_COPPER, 20),
+                new ResourceUsageInfo(ResourceRegistry.SLAG, 5)));
 
-        RockBottomAPI.STAMPER_RECIPES.add(new StamperRecipe(new ResourceInfo(ResourceRegistry.RAW_STONE, 2), new ItemInstance(GameContent.TILE_HARDENED_STONE)));
+        RockBottomAPI.STAMPER_RECIPES.add(new StamperRecipe(new ResourceUsageInfo(ResourceRegistry.RAW_STONE, 2), new ItemInstance(GameContent.TILE_HARDENED_STONE)));
 
-        RockBottomAPI.FUEL_REGISTRY.put(new ResourceInfo(ResourceRegistry.WOOD_LOG), 600);
-        RockBottomAPI.FUEL_REGISTRY.put(new ResourceInfo(ResourceRegistry.WOOD_BOARDS), 120);
-        RockBottomAPI.FUEL_REGISTRY.put(new ResourceInfo(ResourceRegistry.COAL), 1800);
-        RockBottomAPI.FUEL_REGISTRY.put(new ResourceInfo(ResourceRegistry.SLAG), 200);
+        RockBottomAPI.FUEL_REGISTRY.put(new ResourceUsageInfo(ResourceRegistry.WOOD_LOG), 600);
+        RockBottomAPI.FUEL_REGISTRY.put(new ResourceUsageInfo(ResourceRegistry.WOOD_BOARDS), 120);
+        RockBottomAPI.FUEL_REGISTRY.put(new ResourceUsageInfo(ResourceRegistry.COAL), 1800);
+        RockBottomAPI.FUEL_REGISTRY.put(new ResourceUsageInfo(ResourceRegistry.SLAG), 200);
 
         RockBottomAPI.SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(GameContent.ITEM_COPPER_INGOT),
-                new ResourceInfo(ResourceRegistry.PARTLY_PROCESSED_COPPER),
+                new ResourceUsageInfo(ResourceRegistry.PARTLY_PROCESSED_COPPER),
                 300));
         RockBottomAPI.SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(GameContent.ITEM_COAL, 1, 1),
-                new ResourceInfo(ResourceRegistry.WOOD_LOG),
+                new ResourceUsageInfo(ResourceRegistry.WOOD_LOG),
                 800));
 
         RockBottomAPI.SEPARATOR_RECIPES.add(new SeparatorRecipe(new ItemInstance(GameContent.ITEM_COPPER_GRIT, 2),
-                new ResourceInfo(ResourceRegistry.RAW_COPPER),
+                new ResourceUsageInfo(ResourceRegistry.RAW_COPPER),
                 500,
                 new ItemInstance(GameContent.ITEM_SLAG),
                 0.7F));

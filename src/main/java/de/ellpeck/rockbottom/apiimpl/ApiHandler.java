@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.construction.resource.ResourceInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
@@ -319,7 +320,7 @@ public class ApiHandler implements IApiHandler{
             desc.add(FormattingCode.GRAY+"Meta: "+instance.getMeta());
             desc.add(FormattingCode.GRAY+"Data: "+instance.getAdditionalData());
             desc.add(FormattingCode.GRAY+"Max Amount: "+instance.getMaxAmount());
-            desc.add(FormattingCode.GRAY+"Resources: "+ResourceRegistry.getNames(instance));
+            desc.add(FormattingCode.GRAY+"Resources: "+ResourceRegistry.getNames(new ResourceInfo(instance)));
         }
 
         if(RockBottomAPI.getEventHandler().fireEvent(new TooltipEvent(instance, game, manager, g, desc)) != EventResult.CANCELLED){
