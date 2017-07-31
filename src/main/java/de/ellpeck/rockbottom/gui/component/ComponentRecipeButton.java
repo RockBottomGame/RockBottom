@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.resource.ResourceInfo;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
@@ -57,7 +58,7 @@ public class ComponentRecipeButton extends ComponentButton{
             IGameInstance game = AbstractGame.get();
             IAssetManager manager = game.getAssetManager();
 
-            List<ItemInstance> inputs = this.recipe.getInputs();
+            List<ResourceInfo> inputs = this.recipe.getInputs();
             List<ItemInstance> outputs = this.recipe.getOutputs();
 
             List<String> hover = new ArrayList<>();
@@ -68,32 +69,35 @@ public class ComponentRecipeButton extends ComponentButton{
             }
 
             hover.add(manager.localize(LOC_USES)+":");
-            for(ItemInstance inst : inputs){
+            for(ResourceInfo info : inputs){
                 FormattingCode code;
 
-                if(!this.canConstruct && !this.player.getInv().containsItem(inst)){
+                if(!this.canConstruct && !this.player.getInv().containsResource(info)){
                     code = FormattingCode.RED;
                 }
                 else{
                     code = FormattingCode.GREEN;
                 }
 
-                if(inst.getMeta() == Constants.META_WILDCARD){
-                    int meta = (game.getTotalTicks()/Constants.TARGET_TPS)%(inst.getItem().getHighestPossibleMeta()+1);
+                ItemInstance inst;
 
-                    ItemInstance copy = inst.copy();
-                    copy.setMeta(meta);
-
-                    hover.add(code+" "+copy.getDisplayName()+" x"+copy.getAmount());
+                List<ItemInstance> items = info.getItems();
+                if(items.size() > 1){
+                    int index = (game.getTotalTicks()/Constants.TARGET_TPS)%(items.size());
+                    inst = items.get(index);
                 }
                 else{
-                    hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
+                    inst = items.get(0);
                 }
+
+                hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
             }
 
             return hover.toArray(new String[hover.size()]);
         }
-        else return super.getHover();
+        else{
+            return super.getHover();
+        }
     }
 
     @Override

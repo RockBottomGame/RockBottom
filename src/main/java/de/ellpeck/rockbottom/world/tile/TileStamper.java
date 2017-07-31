@@ -86,7 +86,7 @@ public class TileStamper extends TileBasic{
             ItemInstance playerInst = player.getInv().get(player.getSelectedSlot());
             if(playerInst != null && RockBottomAPI.getStamperRecipe(playerInst) != null){
                 ItemInstance inst = tile.inventory.get(0);
-                if(inst == null || (playerInst.isEffectivelyEqualWithWildcard(inst) && inst.fitsAmount(1))){
+                if(inst == null || (playerInst.isEffectivelyEqual(inst) && inst.fitsAmount(1))){
                     if(!world.isClient()){
                         if(inst != null){
                             inst.addAmount(1);

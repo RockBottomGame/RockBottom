@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemMeta;
@@ -25,13 +26,13 @@ public final class ContentRegistry{
     public static void init(){
         new TileAir().register();
         new TileDirt().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-        new TileBasic(AbstractGame.internalRes("rock")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register();
+        new TileBasic(AbstractGame.internalRes("rock")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register().addResource(ResourceRegistry.RAW_STONE);
         new TileGrass().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
-        new TileBasic(AbstractGame.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+        new TileBasic(AbstractGame.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register().addResource(ResourceRegistry.WOOD_BOARDS);
         new TileTorch().setHardness(0F).setForceDrop().register();
         new TileChest().addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
-        new TileLog().setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
-        new TileLeaves().setHardness(0.25F).setForceDrop().register();
+        new TileLog().setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register().addResource(ResourceRegistry.WOOD_LOG);
+        new TileLeaves().setHardness(0.25F).setForceDrop().register().addResource(ResourceRegistry.LEAVES);
         new TileCoalOre().setHardness(12F).addEffectiveTool(ToolType.PICKAXE, 1).register();
         new TileCopperOre().setHardness(18F).addEffectiveTool(ToolType.PICKAXE, 2).register();
         new TileSmelter().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
@@ -40,18 +41,18 @@ public final class ContentRegistry{
         new TileLadder().setHardness(2F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
         new TileGlowOre().setHardness(15F).addEffectiveTool(ToolType.PICKAXE, 2).register();
         new TileStamper().setHardness(18F).addEffectiveTool(ToolType.PICKAXE, 1).register();
-        new TileBasic(AbstractGame.internalRes("stone")).setHardness(10F).addEffectiveTool(ToolType.PICKAXE, 2).register();
+        new TileBasic(AbstractGame.internalRes("stone")).setHardness(10F).addEffectiveTool(ToolType.PICKAXE, 2).register().addResource(ResourceRegistry.PROCESSED_STONE);
         new TileDoor().setHardness(2.5F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
         new TileConstructionTable().setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).setForceDrop().register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("pick_wood"), 2F).addToolType(ToolType.PICKAXE, 1).register();
         new ItemTool(AbstractGame.internalRes("pick_rock"), 4F).addToolType(ToolType.PICKAXE, 2).register();
-        new ItemMeta(AbstractGame.internalRes("coal")).addSubItem(AbstractGame.internalRes("charcoal")).register();
-        new ItemBasic(AbstractGame.internalRes("copper_cluster")).register();
-        new ItemBasic(AbstractGame.internalRes("copper_grit")).register();
-        new ItemBasic(AbstractGame.internalRes("copper_ingot")).register();
-        new ItemBasic(AbstractGame.internalRes("slag")).register();
+        new ItemMeta(AbstractGame.internalRes("coal")).addSubItem(AbstractGame.internalRes("charcoal")).register().addResource(ResourceRegistry.COAL);
+        new ItemBasic(AbstractGame.internalRes("copper_cluster")).register().addResource(ResourceRegistry.RAW_COPPER);
+        new ItemBasic(AbstractGame.internalRes("copper_grit")).register().addResource(ResourceRegistry.PARTLY_PROCESSED_COPPER);
+        new ItemBasic(AbstractGame.internalRes("copper_ingot")).register().addResource(ResourceRegistry.PROCESSED_COPPER);
+        new ItemBasic(AbstractGame.internalRes("slag")).register().addResource(ResourceRegistry.SLAG);
         new ItemGlowCluster().register();
 
         new BiomeBasic(AbstractGame.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
