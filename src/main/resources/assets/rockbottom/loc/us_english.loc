@@ -25,6 +25,8 @@ rockbottom/item.glow_ore=Shining Ore
 rockbottom/item.glow_cluster=Shining Cluster
 rockbottom/item.door=Wood Door
 rockbottom/item.construction_table=Construction Table
+rockbottom/item.stone=Hardened Stone
+rockbottom/item.stamper=Stamper
 
 rockbottom/info.layer_placement=Can be placed in %s
 rockbottom/info.health=Health
