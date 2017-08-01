@@ -6,8 +6,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
-import de.ellpeck.rockbottom.api.construction.resource.IResUseInfo;
-import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
+import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
@@ -59,7 +58,7 @@ public class ComponentRecipeButton extends ComponentButton{
             IGameInstance game = AbstractGame.get();
             IAssetManager manager = game.getAssetManager();
 
-            List<IResUseInfo> inputs = this.recipe.getInputs();
+            List<IUseInfo> inputs = this.recipe.getInputs();
             List<ItemInstance> outputs = this.recipe.getOutputs();
 
             List<String> hover = new ArrayList<>();
@@ -70,7 +69,7 @@ public class ComponentRecipeButton extends ComponentButton{
             }
 
             hover.add(manager.localize(LOC_USES)+":");
-            for(IResUseInfo info : inputs){
+            for(IUseInfo info : inputs){
                 FormattingCode code;
 
                 if(!this.canConstruct && !this.player.getInv().containsResource(info)){
