@@ -4,13 +4,20 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.SeparatorRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.tile.entity.IInventoryHolder;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntityFueled;
+import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.inventory.TileInventory;
 
-public class TileEntitySeparator extends TileEntityFueled{
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class TileEntitySeparator extends TileEntityFueled implements IInventoryHolder{
 
     public static final int INPUT = 0;
     public static final int OUTPUT = 1;
@@ -154,4 +161,28 @@ public class TileEntitySeparator extends TileEntityFueled{
         this.smeltTime = set.getInt("smelt");
         this.maxSmeltTime = set.getInt("max_smelt");
     }
+
+    @Override
+    public IInventory getInventory(){
+        return this.inventory;
+    }
+
+    @Override
+    public List<Integer> getInputSlots(ItemInstance instance, Direction dir){
+        if(RockBottomAPI.getFuelValue(instance) > 0){
+            return Collections.singletonList(COAL);
+        }
+        else if(RockBottomAPI.getSeparatorRecipe(instance) != null){
+            return Collections.singletonList(INPUT);
+        }
+        else{
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<Integer> getOutputSlots(Direction dir){
+        return Arrays.asList(OUTPUT, BYPRODUCT);
+    }
+
 }
