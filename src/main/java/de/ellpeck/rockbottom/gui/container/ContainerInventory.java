@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui.container;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.resource.IResUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -20,7 +21,7 @@ public class ContainerInventory extends ItemContainer{
     public static void doManualCraft(AbstractEntityPlayer player, IRecipe recipe, int amount){
         for(int a = 0; a < amount; a++){
             if(IRecipe.matchesInv(recipe, player.getInv())){
-                for(ResUseInfo input : recipe.getInputs()){
+                for(IResUseInfo input : recipe.getInputs()){
                     for(int i = 0; i < player.getInv().getSlotAmount(); i++){
                         ItemInstance inv = player.getInv().get(i);
 

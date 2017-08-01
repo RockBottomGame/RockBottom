@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile.entity;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.SeparatorRecipe;
+import de.ellpeck.rockbottom.api.construction.resource.IResUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -47,7 +48,7 @@ public class TileEntitySeparator extends TileEntityFueled{
         if(input != null){
             SeparatorRecipe recipe = RockBottomAPI.getSeparatorRecipe(input);
             if(recipe != null){
-                ResUseInfo recipeIn = recipe.getInput();
+                IResUseInfo recipeIn = recipe.getInput();
 
                 if(input.getAmount() >= recipeIn.getAmount()){
                     ItemInstance recipeOut = recipe.getOutput();
