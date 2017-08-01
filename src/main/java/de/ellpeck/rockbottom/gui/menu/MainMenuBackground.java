@@ -68,7 +68,7 @@ public class MainMenuBackground{
                         tile = GameContent.TILE_COAL_ORE;
                     }
                     else{
-                        tile = GameContent.TILE_ROCK;
+                        tile = GameContent.TILE_STONE;
                     }
 
                     MainMenuBackgroundEvent event = new MainMenuBackgroundEvent(tile);

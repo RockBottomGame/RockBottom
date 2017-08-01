@@ -28,7 +28,7 @@ public class WorldGenBasicUnderground implements IWorldGenerator{
                         tile = GameContent.TILE_DIRT;
                     }
                     else{
-                        tile = GameContent.TILE_ROCK;
+                        tile = GameContent.TILE_STONE;
                     }
 
                     chunk.setStateInner(layer, x, y, tile.getDefState());
