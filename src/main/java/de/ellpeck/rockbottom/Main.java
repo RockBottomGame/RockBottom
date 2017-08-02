@@ -56,11 +56,16 @@ public final class Main{
 
         Log.info("Setting log level to "+level);
 
+        isDedicatedServer = options.has(optionServer);
+        port = options.valueOf(optionPort);
+
         gameDir = options.valueOf(optionGameDir);
         Log.info("Setting game folder to "+gameDir);
 
-        nativeDir = options.valueOf(optionTempDir);
-        Log.info("Setting native library folder to "+nativeDir);
+        if(!isDedicatedServer){
+            nativeDir = options.valueOf(optionTempDir);
+            Log.info("Setting native library folder to "+nativeDir);
+        }
 
         unpackedModsDir = options.valueOf(optionUnpackedDir);
         if(unpackedModsDir != null){
@@ -70,9 +75,6 @@ public final class Main{
         width = options.valueOf(optionWidth);
         height = options.valueOf(optionHeight);
         fullscreen = options.has(optionFullscreen);
-
-        isDedicatedServer = options.has(optionServer);
-        port = options.valueOf(optionPort);
 
         try{
             URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();
