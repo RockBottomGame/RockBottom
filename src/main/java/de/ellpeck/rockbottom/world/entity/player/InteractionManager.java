@@ -131,7 +131,7 @@ public class InteractionManager implements IInteractionManager{
                 if(player.world.isPosLoaded(x, y)){
                     TileLayer layer = Settings.KEY_BACKGROUND.isDown() ? TileLayer.BACKGROUND : TileLayer.MAIN;
 
-                    if(input.isMouseButtonDown(settings.buttonDestroy)){
+                    if(Settings.KEY_DESTROY.isDown()){
                         if(this.breakTileX != x || this.breakTileY != y){
                             this.breakProgress = 0;
                         }
@@ -179,7 +179,7 @@ public class InteractionManager implements IInteractionManager{
                     }
 
                     if(this.placeCooldown <= 0){
-                        if(input.isMouseButtonDown(settings.buttonPlace)){
+                        if(Settings.KEY_PLACE.isDown()){
                             if(interact(player, layer, this.mousedTileX, this.mousedTileY)){
                                 if(RockBottomAPI.getNet().isClient()){
                                     RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));

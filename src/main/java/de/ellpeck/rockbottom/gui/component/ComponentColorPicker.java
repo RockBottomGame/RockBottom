@@ -62,7 +62,7 @@ public class ComponentColorPicker extends GuiComponent{
     @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isMouseOver(game)){
-            if(button == game.getSettings().buttonGuiAction1){
+            if(Settings.KEY_GUI_ACTION_1.isKey(button)){
                 if(this.isEnlargable && !this.isEnlarged){
                     this.sizeX *= 4;
                     this.sizeY *= 4;
@@ -124,7 +124,7 @@ public class ComponentColorPicker extends GuiComponent{
             float mouseX = game.getMouseInGuiX();
             float mouseY = game.getMouseInGuiY();
 
-            if(game.getInput().isMouseButtonDown(game.getSettings().buttonGuiAction1)){
+            if(Settings.KEY_GUI_ACTION_1.isDown()){
                 this.onClickOrMove(game, mouseX, mouseY);
             }
             else{

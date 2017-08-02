@@ -195,7 +195,7 @@ public class ApiHandler implements IApiHandler{
             ItemInstance slotInst = slot.slot.get();
             ItemInstance slotCopy = slotInst == null ? null : slotInst.copy();
 
-            if(button == game.getSettings().buttonGuiAction1){
+            if(Settings.KEY_GUI_ACTION_1.isKey(button)){
                 if(slot.container.holdingInst == null){
                     if(slotCopy != null){
                         if(this.setToInv(null, slot)){
@@ -238,7 +238,7 @@ public class ApiHandler implements IApiHandler{
                     }
                 }
             }
-            else if(button == game.getSettings().buttonGuiAction2){
+            else if(Settings.KEY_GUI_ACTION_2.isKey(button)){
                 if(slot.container.holdingInst == null){
                     if(slotCopy != null){
                         int half = Util.ceil((double)slotCopy.getAmount()/2);

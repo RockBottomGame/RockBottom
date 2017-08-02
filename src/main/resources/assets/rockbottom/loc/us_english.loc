@@ -128,3 +128,7 @@ rockbottom/key.item_selection_4=Hotbar 5
 rockbottom/key.item_selection_5=Hotbar 6
 rockbottom/key.item_selection_6=Hotbar 7
 rockbottom/key.item_selection_7=Hotbar 8
+rockbottom/key.place=Interact
+rockbottom/key.destroy=Destroy
+rockbottom/key.gui_action_1=Gui 1st
+rockbottom/key.gui_action_2=Gui 2nd
