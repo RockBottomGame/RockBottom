@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiKeybinds;
 import de.ellpeck.rockbottom.init.AbstractGame;
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
 public class ComponentKeybind extends ComponentButton{
@@ -27,19 +28,33 @@ public class ComponentKeybind extends ComponentButton{
     @Override
     protected String getText(){
         IAssetManager manager = AbstractGame.get().getAssetManager();
-        return manager.localize(this.bind.getName().addPrefix("key."))+": "+(this.isActive() ? "<?>" : Input.getKeyName(this.bind.getKey()));
+        String name = this.bind.isMouse() ? Mouse.getButtonName(this.bind.getKey()) : Input.getKeyName(this.bind.getKey());
+        return manager.localize(this.bind.getName().addPrefix("key."))+": "+(this.isActive() ? "<?>" : name);
     }
 
     @Override
     public boolean onKeyboardAction(IGameInstance game, int button, char character){
         if(this.isActive()){
-            this.bind.setBind(button);
+            this.bind.setBind(button, false);
             this.gui.activeKeybind = -1;
 
             return true;
         }
         else{
             return super.onKeyboardAction(game, button, character);
+        }
+    }
+
+    @Override
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
+        if(this.isActive()){
+            this.bind.setBind(button, true);
+            this.gui.activeKeybind = -1;
+
+            return true;
+        }
+        else{
+            return super.onMouseAction(game, button, x, y);
         }
     }
 

@@ -173,7 +173,7 @@ public class AssetManager implements IAssetManager{
                                 InputStream info = getResource(path+split[1]);
 
                                 this.assets.put(name, new AssetAnimation(Animation.fromStream(texture, info, key)));
-                                Log.info("Loaded animation resource "+name+" with data "+value);
+                                Log.debug("Loaded animation resource "+name+" with data "+value);
                             }
                             else if(key.startsWith("font.")){
                                 String[] split = value.split(",");
@@ -181,18 +181,18 @@ public class AssetManager implements IAssetManager{
                                 InputStream info = getResource(path+split[1]);
 
                                 this.assets.put(name, new AssetFont(Font.fromStream(texture, info, key)));
-                                Log.info("Loaded font resource "+name+" with data "+value);
+                                Log.debug("Loaded font resource "+name+" with data "+value);
                             }
                             else if(key.startsWith("tex.")){
                                 this.assets.put(name, new AssetTexture(this.loadTexture(key, path, value)));
-                                Log.info("Loaded png resource "+name+" with data "+value);
+                                Log.debug("Loaded png resource "+name+" with data "+value);
                             }
                             else{
                                 InputStream stream = getResource(path+value);
 
                                 if(key.startsWith("sound.")){
                                     this.assets.put(name, new AssetSound(new Sound(stream, key)));
-                                    Log.info("Loaded ogg resource "+name+" with data "+value);
+                                    Log.debug("Loaded ogg resource "+name+" with data "+value);
                                 }
                                 else if(key.startsWith("loc.")){
                                     boolean merged = false;
@@ -207,7 +207,7 @@ public class AssetManager implements IAssetManager{
 
                                     if(!merged){
                                         this.assets.put(name, new AssetLocale(loaded));
-                                        Log.info("Loaded localization resource "+name+" with data "+value);
+                                        Log.debug("Loaded localization resource "+name+" with data "+value);
                                     }
                                 }
                                 else{

@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
@@ -24,6 +25,7 @@ import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
+import de.ellpeck.rockbottom.util.LogSystem;
 import de.ellpeck.rockbottom.world.World;
 import org.newdawn.slick.util.Log;
 
@@ -93,6 +95,13 @@ public abstract class AbstractGame implements IGameInstance{
 
                     lastPollTime = time;
                 }
+
+                try{
+                    Thread.sleep(1);
+                }
+                catch(InterruptedException e){
+                    Log.debug("Failed to sleep in main game loop");
+                }
             }
         }
         finally{
@@ -156,6 +165,11 @@ public abstract class AbstractGame implements IGameInstance{
         modLoader.preInit();
         modLoader.init();
         modLoader.postInit();
+
+        Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
+        Log.info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
+        Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
+        Log.info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
 
         this.quitWorld();
     }

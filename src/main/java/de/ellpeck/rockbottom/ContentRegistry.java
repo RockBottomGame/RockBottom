@@ -29,7 +29,7 @@ public final class ContentRegistry{
         new TileBasic(AbstractGame.internalRes("stone")).setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).register().addResource(ResourceRegistry.RAW_STONE);
         new TileGrass().addEffectiveTool(ToolType.SHOVEL, 1).setForceDrop().register();
         new TileBasic(AbstractGame.internalRes("wood_boards")).setHardness(2F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register().addResource(ResourceRegistry.WOOD_BOARDS);
-        new TileTorch().setHardness(0F).setForceDrop().register();
+        new TileTorch(AbstractGame.internalRes("torch")).setHardness(0F).setForceDrop().register();
         new TileChest().addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
         new TileLog().setHardness(3F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register().addResource(ResourceRegistry.WOOD_LOG);
         new TileLeaves().setHardness(0.25F).setForceDrop().register().addResource(ResourceRegistry.LEAVES);
@@ -44,6 +44,7 @@ public final class ContentRegistry{
         new TileBasic(AbstractGame.internalRes("hardened_stone")).setHardness(10F).addEffectiveTool(ToolType.PICKAXE, 2).register().addResource(ResourceRegistry.PROCESSED_STONE);
         new TileDoor().setHardness(2.5F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
         new TileConstructionTable().setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).setForceDrop().register();
+        new TileLamp(AbstractGame.internalRes("lamp")).setHardness(1.5F).setForceDrop().register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("wood_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
@@ -72,9 +73,5 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenCopper.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicCaves.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGlow.class);
-
-        Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
-        Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
-        Log.info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entity types!");
     }
 }
