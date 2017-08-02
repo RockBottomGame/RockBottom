@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.render.tile;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -30,7 +31,7 @@ public class GlowOreTileRenderer implements ITileRenderer<TileGlowOre>{
     }
 
     @Override
-    public void renderItem(IGameInstance game, IAssetManager manager, Graphics g, TileGlowOre tile, int meta, float x, float y, float scale, Color filter){
+    public void renderItem(IGameInstance game, IAssetManager manager, Graphics g, TileGlowOre tile, ItemInstance instance, float x, float y, float scale, Color filter){
         manager.getTexture(this.textureBase).draw(x, y, scale, scale, filter);
         manager.getTexture(this.textureGlow).draw(x, y, scale, scale);
     }
