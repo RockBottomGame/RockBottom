@@ -24,6 +24,7 @@ import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
+import de.ellpeck.rockbottom.util.LogSystem;
 import de.ellpeck.rockbottom.world.World;
 import org.newdawn.slick.util.Log;
 
@@ -92,6 +93,13 @@ public abstract class AbstractGame implements IGameInstance{
                     fpsAccumulator = 0;
 
                     lastPollTime = time;
+                }
+
+                try{
+                    Thread.sleep(1);
+                }
+                catch(InterruptedException e){
+                    Log.debug("Failed to sleep in main game loop");
                 }
             }
         }

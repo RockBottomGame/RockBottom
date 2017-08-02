@@ -72,7 +72,7 @@ public class RockBottomServer extends AbstractGame{
                     return true;
                 });
             }
-        });
+        }, "ConsoleListener");
         consoleThread.setDaemon(true);
         consoleThread.start();
 
