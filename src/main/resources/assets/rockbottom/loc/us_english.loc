@@ -27,6 +27,7 @@ rockbottom/item.door=Wood Door
 rockbottom/item.construction_table=Construction Table
 rockbottom/item.hardened_stone=Hardened Stone
 rockbottom/item.stamper=Stamper
+rockbottom/item.lamp=Lamp
 
 rockbottom/info.layer_placement=Can be placed in %s
 rockbottom/info.health=Health
