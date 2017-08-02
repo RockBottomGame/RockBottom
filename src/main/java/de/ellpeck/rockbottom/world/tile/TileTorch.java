@@ -63,14 +63,14 @@ public class TileTorch extends TileBasic{
         if(world.getState(x, y-1).getTile().isFullTile()){
             return 0;
         }
-        else if(world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile()){
-            return 3;
-        }
         else if(world.getState(x-1, y).getTile().isFullTile()){
             return 1;
         }
         else if(world.getState(x+1, y).getTile().isFullTile()){
             return 2;
+        }
+        else if(world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile()){
+            return 3;
         }
         else{
             return -1;
