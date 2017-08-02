@@ -68,9 +68,5 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenCopper.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicCaves.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGlow.class);
-
-        Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
-        Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
-        Log.info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entity types!");
     }
 }

@@ -37,7 +37,7 @@ public final class Main{
     public static void main(String[] args){
         OptionParser parser = new OptionParser();
         parser.allowsUnrecognizedOptions();
-        OptionSpec<LogLevel> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(LogLevel.class).defaultsTo(LogLevel.DEBUG);
+        OptionSpec<LogLevel> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(LogLevel.class).defaultsTo(LogLevel.INFO);
         File defaultGameDir = new File(".", "rockbottom");
         OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(defaultGameDir);
         OptionSpec<File> optionTempDir = parser.accepts("nativeDir").withRequiredArg().ofType(File.class).defaultsTo(new File(defaultGameDir, "lib"));

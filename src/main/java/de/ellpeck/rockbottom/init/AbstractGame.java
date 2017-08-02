@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
@@ -164,6 +165,11 @@ public abstract class AbstractGame implements IGameInstance{
         modLoader.preInit();
         modLoader.init();
         modLoader.postInit();
+
+        Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
+        Log.info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
+        Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
+        Log.info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
 
         this.quitWorld();
     }
