@@ -7,7 +7,10 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import org.newdawn.slick.util.Log;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -121,41 +124,49 @@ public final class Main{
 
     }
 
-    private static String loadLib(InputStream in, String libName){
-        try{
-            if(!nativeDir.exists()){
-                nativeDir.mkdirs();
-            }
+    private static String loadLib(String libName){
+        if(nativeDir != null){
+            try{
+                String mapped = System.mapLibraryName(libName);
 
-            File file = new File(nativeDir, libName);
-            if(file.exists()){
-                Log.info("Using native library cache file "+file);
-                return file.getAbsolutePath();
-            }
-            else{
-                Log.info("Creating native library cache file "+file);
-            }
+                if(!nativeDir.exists()){
+                    nativeDir.mkdirs();
+                }
 
-            FileOutputStream out = new FileOutputStream(file);
-            byte[] buffer = new byte[65536];
-
-            while(true){
-                int bufferSize = in.read(buffer, 0, buffer.length);
-
-                if(bufferSize != -1){
-                    out.write(buffer, 0, bufferSize);
+                File file = new File(nativeDir, mapped);
+                if(file.exists()){
+                    Log.info("Using native library cache file "+file);
+                    return file.getAbsolutePath();
                 }
                 else{
-                    break;
+                    Log.info("Creating native library cache file "+file);
+
+                    InputStream in = classLoader.getResourceAsStream("natives/"+mapped);
+                    FileOutputStream out = new FileOutputStream(file);
+                    byte[] buffer = new byte[65536];
+
+                    while(true){
+                        int bufferSize = in.read(buffer, 0, buffer.length);
+
+                        if(bufferSize != -1){
+                            out.write(buffer, 0, bufferSize);
+                        }
+                        else{
+                            break;
+                        }
+                    }
+
+                    out.close();
+
+                    return file.getAbsolutePath();
                 }
             }
-
-            out.close();
-
-            return file.getAbsolutePath();
+            catch(Exception e){
+                throw new RuntimeException("Couldn't load native library with name "+libName, e);
+            }
         }
-        catch(IOException e){
-            throw new RuntimeException("Couldn't load native library with name "+libName, e);
+        else{
+            throw new UnsupportedOperationException("Tried loading native library "+libName+" with the native library folder being null! This is likely due to the dedicated server trying to load a native library which is disallowed!");
         }
     }
 
@@ -172,15 +183,14 @@ public final class Main{
 
         @Override
         protected String findLibrary(String libName){
-            String mapped = System.mapLibraryName(libName);
-            InputStream stream = this.getResourceAsStream("natives/"+mapped);
-            if(stream != null){
-                String lib = loadLib(stream, mapped);
-                if(lib != null && !lib.isEmpty()){
-                    return lib;
-                }
+            String lib = loadLib(libName);
+
+            if(lib != null && !lib.isEmpty()){
+                return lib;
             }
-            return super.findLibrary(libName);
+            else{
+                return super.findLibrary(libName);
+            }
         }
     }
 }
