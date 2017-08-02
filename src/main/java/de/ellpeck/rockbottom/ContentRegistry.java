@@ -48,10 +48,15 @@ public final class ContentRegistry{
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("wood_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
         new ItemTool(AbstractGame.internalRes("stone_pickaxe"), 4F).addToolType(ToolType.PICKAXE, 2).register();
+        new ItemTool(AbstractGame.internalRes("stone_axe"), 4F).addToolType(ToolType.AXE, 2).register();
+        new ItemTool(AbstractGame.internalRes("stone_shovel"), 2F).addToolType(ToolType.SHOVEL, 2).register();
         new ItemMeta(AbstractGame.internalRes("coal")).addSubItem(AbstractGame.internalRes("charcoal")).register().addResource(ResourceRegistry.COAL);
         new ItemBasic(AbstractGame.internalRes("copper_cluster")).register().addResource(ResourceRegistry.RAW_COPPER);
         new ItemBasic(AbstractGame.internalRes("copper_grit")).register().addResource(ResourceRegistry.PARTLY_PROCESSED_COPPER);
         new ItemBasic(AbstractGame.internalRes("copper_ingot")).register().addResource(ResourceRegistry.PROCESSED_COPPER);
+        new ItemTool(AbstractGame.internalRes("copper_pickaxe"), 8F).addToolType(ToolType.PICKAXE, 4).register();
+        new ItemTool(AbstractGame.internalRes("copper_axe"), 8F).addToolType(ToolType.AXE, 4).register();
+        new ItemTool(AbstractGame.internalRes("copper_shovel"), 4F).addToolType(ToolType.SHOVEL, 4).register();
         new ItemBasic(AbstractGame.internalRes("slag")).register().addResource(ResourceRegistry.SLAG);
         new ItemGlowCluster().register();
 
