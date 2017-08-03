@@ -13,7 +13,10 @@ import de.ellpeck.rockbottom.api.util.MutableInt;
 import de.ellpeck.rockbottom.api.util.MutableString;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
+import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketTableConstruction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +37,14 @@ public class GuiConstructionTable extends GuiContainer implements IInvChangeCall
         allRecipes.addAll(RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES);
         allRecipes.addAll(RockBottomAPI.CONSTRUCTION_TABLE_RECIPES);
 
-        this.construction = new ComponentConstruction(this, 0, this.guiLeft, this.guiTop, this.sizeX, 50, 8, 3, new MutableBool(true), new MutableString(), new MutableInt(0), allRecipes);
+        this.construction = new ComponentConstruction(this, 0, this.guiLeft, this.guiTop, this.sizeX, 50, 8, 3, new MutableBool(true), new MutableString(), new MutableInt(0), allRecipes, (recipe, recipeId) -> {
+            if(RockBottomAPI.getNet().isClient()){
+                RockBottomAPI.getNet().sendToServer(new PacketTableConstruction(game.getPlayer().getUniqueId(), recipeId, 1));
+            }
+            else{
+                ContainerInventory.doInvBasedConstruction(game.getPlayer(), recipe, 1);
+            }
+        });
         this.components.add(this.construction);
     }
 

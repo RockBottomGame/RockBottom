@@ -20,6 +20,7 @@ import org.newdawn.slick.Graphics;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiConsumer;
 
 public class ComponentConstruction extends GuiComponent{
 
@@ -36,8 +37,9 @@ public class ComponentConstruction extends GuiComponent{
     private final int startId;
     private final List<BasicRecipe> recipes;
     private final int buttonAmountX;
+    private final BiConsumer<IRecipe, Integer> onClickedConsumer;
 
-    public ComponentConstruction(GuiContainer gui, int startId, int x, int y, int sizeX, int sizeY, int buttonAmountX, int buttonAmonutY, MutableBool shouldShowAll, MutableString searchText, MutableInt scrollAmount, List<BasicRecipe> recipes){
+    public ComponentConstruction(GuiContainer gui, int startId, int x, int y, int sizeX, int sizeY, int buttonAmountX, int buttonAmonutY, MutableBool shouldShowAll, MutableString searchText, MutableInt scrollAmount, List<BasicRecipe> recipes, BiConsumer<IRecipe, Integer> onClickedConsumer){
         super(gui, x, y, sizeX, sizeY);
         this.gui = gui;
         this.startId = startId;
@@ -45,6 +47,7 @@ public class ComponentConstruction extends GuiComponent{
         this.searchText = searchText;
         this.scrollAmount = scrollAmount;
         this.recipes = recipes;
+        this.onClickedConsumer = onClickedConsumer;
 
         int addX = 0;
         int addY = 0;
@@ -165,12 +168,7 @@ public class ComponentConstruction extends GuiComponent{
             for(ComponentRecipeButton but : this.constructionButtons){
                 if(but.recipe != null && but.id == button){
                     if(but.canConstruct){
-                        if(RockBottomAPI.getNet().isClient()){
-                            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), but.recipeId, 1));
-                        }
-                        else{
-                            ContainerInventory.doManualCraft(game.getPlayer(), but.recipe, 1);
-                        }
+                        this.onClickedConsumer.accept(but.recipe, but.recipeId);
                         return true;
                     }
                     else{

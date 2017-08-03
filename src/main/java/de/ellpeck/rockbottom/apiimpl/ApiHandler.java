@@ -134,18 +134,20 @@ public class ApiHandler implements IApiHandler{
             for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
                 for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
                     for(TileLayer layer : TileLayer.LAYERS){
-                        Tile tile = entity.world.getState(layer, x, y).getTile();
+                        if(entity.world.isPosLoaded(x, y)){
+                            Tile tile = entity.world.getState(layer, x, y).getTile();
 
-                        if(tile.canClimb(entity.world, x, y, layer, entity)){
-                            entity.canClimb = true;
+                            if(tile.canClimb(entity.world, x, y, layer, entity)){
+                                entity.canClimb = true;
 
-                            if(!entity.onGround){
-                                entity.isClimbing = true;
+                                if(!entity.onGround){
+                                    entity.isClimbing = true;
+                                }
                             }
-                        }
 
-                        tile.onCollideWithEntity(entity.world, x, y, layer, entity);
-                        entity.onCollideWithTile(x, y, layer, tile);
+                            tile.onCollideWithEntity(entity.world, x, y, layer, entity);
+                            entity.onCollideWithTile(x, y, layer, tile);
+                        }
                     }
                 }
             }

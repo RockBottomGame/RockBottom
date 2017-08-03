@@ -17,7 +17,7 @@ public class ContainerInventory extends ItemContainer{
         this.addPlayerInventory(player, 0, 0);
     }
 
-    public static void doManualCraft(AbstractEntityPlayer player, IRecipe recipe, int amount){
+    public static void doInvBasedConstruction(AbstractEntityPlayer player, IRecipe recipe, int amount){
         for(int a = 0; a < amount; a++){
             if(IRecipe.matchesInv(recipe, player.getInv())){
                 for(IUseInfo input : recipe.getInputs()){
