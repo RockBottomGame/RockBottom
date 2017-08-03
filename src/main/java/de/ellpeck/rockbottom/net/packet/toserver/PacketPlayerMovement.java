@@ -49,7 +49,7 @@ public class PacketPlayerMovement implements IPacket{
         this.y = buf.readDouble();
         this.motionX = buf.readDouble();
         this.motionY = buf.readDouble();
-        this.facing = Direction.SURROUNDING_INCLUDING_NONE[buf.readInt()];
+        this.facing = Direction.DIRECTIONS[buf.readInt()];
     }
 
     @Override

@@ -116,7 +116,7 @@ public class Chunk implements IChunk{
             }
 
             if(entity.shouldBeRemoved()){
-                this.world.removeEntity(entity);
+                this.world.removeEntity(entity, this);
                 i--;
             }
             else{

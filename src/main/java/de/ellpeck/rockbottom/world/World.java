@@ -137,17 +137,7 @@ public class World implements IWorld{
     @Override
     public void removeEntity(Entity entity){
         IChunk chunk = this.getChunk(entity.x, entity.y);
-        chunk.removeEntity(entity);
-
-        if(entity instanceof EntityPlayer){
-            this.players.remove(entity);
-        }
-
-        entity.onRemoveFromWorld();
-
-        if(RockBottomAPI.getNet().isServer()){
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, true), entity);
-        }
+        this.removeEntity(entity, chunk);
     }
 
     @Override
@@ -472,6 +462,21 @@ public class World implements IWorld{
     @Override
     public List<AbstractEntityPlayer> getAllPlayers(){
         return this.players;
+    }
+
+    @Override
+    public void removeEntity(Entity entity, IChunk chunk){
+        chunk.removeEntity(entity);
+
+        if(entity instanceof EntityPlayer){
+            this.players.remove(entity);
+        }
+
+        entity.onRemoveFromWorld();
+
+        if(RockBottomAPI.getNet().isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, true), entity);
+        }
     }
 
     @Override
