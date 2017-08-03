@@ -5,33 +5,49 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileSmelter;
+import de.ellpeck.rockbottom.world.tile.entity.TileEntitySeparator;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmelter;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SmelterTileRenderer extends MultiTileRenderer<TileSmelter>{
 
-    private final IResourceName texActive;
+    protected final Map<Pos2, IResourceName> texturesActive = new HashMap<>();
 
     public SmelterTileRenderer(IResourceName texture, MultiTile tile){
         super(texture, tile);
-        this.texActive = this.texture.addSuffix(".active");
+
+        for(int x = 0; x < tile.getWidth(); x++){
+            for(int y = 0; y < tile.getHeight(); y++){
+                if(tile.isStructurePart(x, y)){
+                    this.texturesActive.put(new Pos2(x, y), this.texture.addSuffix(".active."+x+"."+y));
+                }
+            }
+        }
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSmelter tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, Color[] light){
-        if(tile.isMainPos(x, y, state)){
-            TileEntitySmelter tileEntity = world.getTileEntity(x, y, TileEntitySmelter.class);
-            if(tileEntity != null && tileEntity.isActive()){
-                manager.getTexture(this.texActive).drawWithLight(renderX, renderY, scale, scale, light);
-                return;
-            }
+        Pos2 innerCoord = tile.getInnerCoord(state);
+        IResourceName tex;
+
+        Pos2 mainPos = tile.getMainPos(x, y, state);
+        TileEntitySmelter tileEntity = world.getTileEntity(mainPos.getX(), mainPos.getY(), TileEntitySmelter.class);
+        if(tileEntity != null && tileEntity.isActive()){
+            tex = this.texturesActive.get(innerCoord);
+        }
+        else{
+            tex = this.textures.get(innerCoord);
         }
 
-        super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
+        manager.getTexture(tex).drawWithLight(renderX, renderY, scale, scale, light);
     }
 }

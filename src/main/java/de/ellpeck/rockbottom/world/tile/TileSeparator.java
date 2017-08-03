@@ -91,7 +91,6 @@ public class TileSeparator extends MultiTile{
     @Override
     protected boolean[][] makeStructure(){
         return new boolean[][]{
-                {false, true},
                 {true, true},
                 {true, true},
         };
@@ -104,7 +103,7 @@ public class TileSeparator extends MultiTile{
 
     @Override
     public int getHeight(){
-        return 3;
+        return 2;
     }
 
     @Override
@@ -125,10 +124,10 @@ public class TileSeparator extends MultiTile{
                 IParticleManager manager = AbstractGame.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
-                    manager.addSmokeParticle(world, x+1.11, y+2.75, -Util.RANDOM.nextFloat()*0.05, 0, 0.09F);
+                    manager.addSmokeParticle(world,  x+1.16, y+1.9, -Util.RANDOM.nextFloat()*0.05, 0, 0.09F);
                 }
                 if(Util.RANDOM.nextFloat() >= 0.25F){
-                    manager.addSmokeParticle(world, x+1.75, y+2.69, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F);
+                    manager.addSmokeParticle(world, x+1.75, y+1.65, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F);
                 }
             }
         }

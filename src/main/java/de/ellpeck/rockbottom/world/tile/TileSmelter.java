@@ -124,10 +124,10 @@ public class TileSmelter extends MultiTile{
                 IParticleManager manager = AbstractGame.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
-                    manager.addSmokeParticle(world, x+0.14, y+1.8, -Util.RANDOM.nextFloat()*0.03, 0, 0.08F);
+                    manager.addSmokeParticle(world, x+0.16, y+1.9, -Util.RANDOM.nextFloat()*0.03, 0, 0.08F);
                 }
                 if(Util.RANDOM.nextBoolean()){
-                    manager.addSmokeParticle(world, x+0.7, y+1.55, Util.RANDOM.nextGaussian()*0.01, 0.05, 0.05F);
+                    manager.addSmokeParticle(world, x+0.75, y+1.65, Util.RANDOM.nextGaussian()*0.01, 0.05, 0.05F);
                 }
             }
         }
