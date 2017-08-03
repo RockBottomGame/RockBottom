@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.construction.BasicRecipe;
 import de.ellpeck.rockbottom.api.construction.SeparatorRecipe;
 import de.ellpeck.rockbottom.api.construction.SmelterRecipe;
 import de.ellpeck.rockbottom.api.construction.StamperRecipe;
+import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -26,9 +27,15 @@ public final class ConstructionRegistry{
                 new ResUseInfo(ResourceRegistry.RAW_STONE, 20)));
         RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_WOOD_PICK),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 16)));
-        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_ROCK_PICK),
-                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 8),
-                new ResUseInfo(ResourceRegistry.RAW_STONE, 8)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_STONE_PICKAXE),
+                new ResUseInfo(ResourceRegistry.PROCESSED_STONE, 12),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 6)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_STONE_AXE),
+                new ResUseInfo(ResourceRegistry.PROCESSED_STONE, 10),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 6)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_STONE_SHOVEL),
+                new ResUseInfo(ResourceRegistry.PROCESSED_STONE, 8),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 6)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_STAMPER),
                 new ResUseInfo(ResourceRegistry.RAW_STONE, 10),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 4)));
@@ -45,10 +52,18 @@ public final class ConstructionRegistry{
                 new ResUseInfo(ResourceRegistry.WOOD_LOG, 5),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 30),
                 new ResUseInfo(ResourceRegistry.PROCESSED_COPPER)));
-        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_SUPER_TOOL),
-                new ResUseInfo(ResourceRegistry.PROCESSED_COPPER, 30),
-                new ResUseInfo(ResourceRegistry.PARTLY_PROCESSED_COPPER, 20),
-                new ResUseInfo(ResourceRegistry.SLAG, 5)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_COPPER_PICKAXE),
+                new ResUseInfo(ResourceRegistry.PROCESSED_COPPER, 12),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 6)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_COPPER_AXE),
+                new ResUseInfo(ResourceRegistry.PROCESSED_COPPER, 10),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 6)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_COPPER_SHOVEL),
+                new ResUseInfo(ResourceRegistry.PROCESSED_COPPER, 8),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 6)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_LAMP),
+                new ItemUseInfo(new ItemInstance(GameContent.ITEM_GLOW_CLUSTER)),
+                new ResUseInfo(ResourceRegistry.PROCESSED_STONE, 2)));
 
         RockBottomAPI.STAMPER_RECIPES.add(new StamperRecipe(new ResUseInfo(ResourceRegistry.RAW_STONE, 2),
                 new ItemInstance(GameContent.TILE_HARDENED_STONE)));

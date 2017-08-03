@@ -18,14 +18,14 @@ public class TileTorch extends TileBasic{
 
     public static final IntProp PROP_FACING = new IntProp("facing", 0, 4);
 
-    public TileTorch(){
-        super(AbstractGame.internalRes("torch"));
+    public TileTorch(IResourceName name){
+        super(name);
         this.addProps(PROP_FACING);
     }
 
     @Override
     protected ITileRenderer createRenderer(IResourceName name){
-        return new TorchTileRenderer();
+        return new TorchTileRenderer(name);
     }
 
     @Override
@@ -63,14 +63,14 @@ public class TileTorch extends TileBasic{
         if(world.getState(x, y-1).getTile().isFullTile()){
             return 0;
         }
-        else if(world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile()){
-            return 3;
-        }
         else if(world.getState(x-1, y).getTile().isFullTile()){
             return 1;
         }
         else if(world.getState(x+1, y).getTile().isFullTile()){
             return 2;
+        }
+        else if(world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile()){
+            return 3;
         }
         else{
             return -1;
@@ -79,7 +79,7 @@ public class TileTorch extends TileBasic{
 
     @Override
     public int getLight(IWorld world, int x, int y, TileLayer layer){
-        return 25;
+        return 15;
     }
 
     @Override

@@ -19,8 +19,8 @@ public class TorchTileRenderer extends DefaultTileRenderer{
     private final IResourceName texRight;
     private final IResourceName texBack;
 
-    public TorchTileRenderer(){
-        super(AbstractGame.internalRes("torch"));
+    public TorchTileRenderer(IResourceName name){
+        super(name);
         this.texLeft = this.texture.addSuffix(".left");
         this.texRight = this.texture.addSuffix(".right");
         this.texBack = this.texture.addSuffix(".back");
