@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
 import org.newdawn.slick.Color;
@@ -25,7 +26,7 @@ public class GuiChat extends Gui{
         super(100, 100);
     }
 
-    public static void drawMessages(IGameInstance game, IAssetManager manager, Graphics g, List<String> messages, int maxCount){
+    public static void drawMessages(IGameInstance game, IAssetManager manager, Graphics g, List<ChatComponent> messages, int maxCount){
         Font font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
@@ -35,8 +36,8 @@ public class GuiChat extends Gui{
         boolean alternate = game.getChatLog().getMessages().size()%2 == 0;
         int messageCounter = 0;
 
-        for(String message : messages){
-            List<String> split = font.splitTextToLength(sizeX, scale, true, message);
+        for(ChatComponent message : messages){
+            List<String> split = font.splitTextToLength(sizeX, scale, true, message.getDisplayWithChildren(game, manager));
 
             g.setColor(alternate ? BACKING_ONE : BACKING_TWO);
             g.fillRect(5, y-fontHeight*(split.size()-1), sizeX, fontHeight*split.size()+1);

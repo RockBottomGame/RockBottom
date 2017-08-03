@@ -8,6 +8,8 @@ import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -19,7 +21,7 @@ public class CommandAddPermission extends Command{
     }
 
     @Override
-    public String execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         try{
             UUID id = UUID.fromString(args[0]);
             int level = Integer.parseInt(args[1]);
@@ -29,10 +31,10 @@ public class CommandAddPermission extends Command{
 
             game.getDataManager().savePropSettings(perms);
 
-            return FormattingCode.GREEN+"Added permission level of "+level+" for player with id "+id+"!";
+            return new ChatComponentText(FormattingCode.GREEN+"Added permission level of "+level+" for player with id "+id+"!");
         }
         catch(Exception e){
-            return FormattingCode.RED+"Error formatting unique id or number for command args "+Arrays.toString(args)+"!";
+            return new ChatComponentText(FormattingCode.RED+"Error formatting unique id or number for command args "+Arrays.toString(args)+"!");
         }
     }
 }

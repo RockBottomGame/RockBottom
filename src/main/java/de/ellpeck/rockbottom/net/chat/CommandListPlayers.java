@@ -6,6 +6,8 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 
 import java.util.List;
 
@@ -16,13 +18,13 @@ public class CommandListPlayers extends Command{
     }
 
     @Override
-    public String execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         List<AbstractEntityPlayer> players = game.getWorld().getAllPlayers();
 
-        chat.sendMessageTo(sender, FormattingCode.GREEN.toString()+players.size()+" connected Players:");
+        chat.sendMessageTo(sender, new ChatComponentText(FormattingCode.GREEN.toString()+players.size()+" connected Players:"));
 
         for(AbstractEntityPlayer player : players){
-            chat.sendMessageTo(sender, FormattingCode.ORANGE+player.getName()+FormattingCode.GRAY+" ("+player.getUniqueId()+")");
+            chat.sendMessageTo(sender, new ChatComponentText(FormattingCode.ORANGE+player.getName()+FormattingCode.GRAY+" ("+player.getUniqueId()+")"));
         }
 
         return null;

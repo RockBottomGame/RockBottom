@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -57,8 +58,8 @@ public class RockBottomServer extends AbstractGame{
             }
 
             @Override
-            public void sendMessageTo(IChatLog chat, String message){
-                Log.info(message);
+            public void sendMessageTo(IChatLog chat, ChatComponent message){
+                Log.info(message.getRawWithChildren());
             }
         };
 

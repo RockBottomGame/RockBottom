@@ -6,12 +6,12 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.NetUtil;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketPlayerConnection;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -93,10 +93,7 @@ public class PacketJoin implements IPacket{
                             shouldKick = false;
                             Log.info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
 
-                            RockBottomAPI.getNet().sendToAllPlayers(world, new PacketPlayerConnection(player.getName(), false));
-                            if(!game.isDedicatedServer()){
-                                PacketPlayerConnection.display(game, false, player.getName());
-                            }
+                            RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(AbstractGame.internalRes("info.connect"), player.getName()));
                         }
                         else{
                             Log.error("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");

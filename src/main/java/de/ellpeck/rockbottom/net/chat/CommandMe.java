@@ -5,6 +5,8 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 
 public class CommandMe extends Command{
 
@@ -13,9 +15,9 @@ public class CommandMe extends Command{
     }
 
     @Override
-    public String execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         if(args.length <= 0){
-            return FormattingCode.RED+"Message is missing!";
+            return new ChatComponentText(FormattingCode.RED+"Message is missing!");
         }
         else{
             String sentence = "";
@@ -24,7 +26,7 @@ public class CommandMe extends Command{
                 sentence += " "+s;
             }
 
-            chat.broadcastMessage(sender.getChatColorFormat()+playerName+sentence);
+            chat.broadcastMessage(new ChatComponentText(sender.getChatColorFormat()+playerName+sentence));
 
             return null;
         }

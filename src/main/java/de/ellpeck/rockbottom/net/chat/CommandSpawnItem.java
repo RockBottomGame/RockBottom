@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 
 import java.util.Arrays;
 
@@ -19,7 +21,7 @@ public class CommandSpawnItem extends Command{
     }
 
     @Override
-    public String execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         try{
             if(sender instanceof AbstractEntityPlayer){
                 Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(args[0]));
@@ -30,18 +32,18 @@ public class CommandSpawnItem extends Command{
 
                     ItemInstance instance = new ItemInstance(item, amount, meta);
                     ((AbstractEntityPlayer)sender).getInv().add(instance, false);
-                    return FormattingCode.GREEN+"Added "+amount+"x "+instance.getDisplayName()+"!";
+                    return new ChatComponentText(FormattingCode.GREEN+"Added "+amount+"x "+instance.getDisplayName()+"!");
                 }
                 else{
-                    return FormattingCode.RED+"Item with name "+args[0]+" not found!";
+                    return new ChatComponentText(FormattingCode.RED+"Item with name "+args[0]+" not found!");
                 }
             }
             else{
-                return FormattingCode.RED+"Only players can execute this command!";
+                return new ChatComponentText(FormattingCode.RED+"Only players can execute this command!");
             }
         }
         catch(Exception e){
-            return FormattingCode.RED+"Error formatting number for command args "+Arrays.toString(args)+"!";
+            return new ChatComponentText(FormattingCode.RED+"Error formatting number for command args "+Arrays.toString(args)+"!");
         }
     }
 }

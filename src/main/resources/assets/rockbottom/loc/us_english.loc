@@ -55,8 +55,8 @@ rockbottom/info.reset=Reset
 rockbottom/info.advanced_info=Press %s for more info
 rockbottom/info.requires_restart=Requires game restart
 rockbottom/info.size=Size: %sx%s tiles
-rockbottom/info.connect=Player %s connected!
-rockbottom/info.disconnect=Player %s disconnected!
+rockbottom/info.connect=&6Player %s connected!
+rockbottom/info.disconnect=&6Player %s disconnected!
 
 rockbottom/button.back=Back
 rockbottom/button.settings=Settings

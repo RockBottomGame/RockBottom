@@ -7,12 +7,14 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.ResetMovedPlayerEvent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -45,10 +47,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
         Log.info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
 
-        RockBottomAPI.getNet().sendToAllPlayers(player.world, new PacketPlayerConnection(player.getName(), true));
-        if(!game.isDedicatedServer()){
-            PacketPlayerConnection.display(game, true, player.getName());
-        }
+        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(AbstractGame.internalRes("info.disconnect"), player.getName()));
     }
 
     @Override
