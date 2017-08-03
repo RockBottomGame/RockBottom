@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.entity.player;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
@@ -16,6 +17,8 @@ import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
@@ -352,6 +355,16 @@ public class EntityPlayer extends AbstractEntityPlayer{
         }
         else{
             return 0;
+        }
+    }
+
+    @Override
+    public void setDead(boolean dead){
+        super.setDead(dead);
+
+        if(this.dead){
+            int id = Util.RANDOM.nextInt(25)+1;
+            RockBottomAPI.getGame().getChatLog().displayMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(AbstractGame.internalRes("death.flavor."+id), this.getName())));
         }
     }
 

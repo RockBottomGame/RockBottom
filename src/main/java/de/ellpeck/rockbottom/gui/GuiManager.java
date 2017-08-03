@@ -126,11 +126,13 @@ public class GuiManager implements IGuiManager{
             if(game.getWorld() == null){
                 this.background.render(game, manager, g);
             }
+        }
 
-            if(gui == null || !(gui instanceof GuiChat)){
-                game.getChatLog().drawNewMessages(game, manager, g);
-            }
+        if(gui == null || !(gui instanceof GuiChat)){
+            game.getChatLog().drawNewMessages(game, manager, g);
+        }
 
+        if(player == null || !player.isDead()){
             if(gui != null){
                 if(gui.hasGradient()){
                     g.setColor(Gui.GRADIENT);

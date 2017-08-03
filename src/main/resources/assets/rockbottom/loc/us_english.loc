@@ -137,3 +137,29 @@ rockbottom/key.place=Interact
 rockbottom/key.destroy=Destroy
 rockbottom/key.gui_action_1=Gui 1st
 rockbottom/key.gui_action_2=Gui 2nd
+
+rockbottom/death.flavor.1=%s is now ravioli.
+rockbottom/death.flavor.2=%s should learn how to play.
+rockbottom/death.flavor.3=%s croaked (and not in the frog way)
+rockbottom/death.flavor.4=%s, it's game over. Deal with it.
+rockbottom/death.flavor.5=%s did the flop.
+rockbottom/death.flavor.6=%s became the rip.
+rockbottom/death.flavor.7=%s has expired.
+rockbottom/death.flavor.8=%s corpsed.
+rockbottom/death.flavor.9=%s is now without life.
+rockbottom/death.flavor.10=Long live %s.. or not.
+rockbottom/death.flavor.11=%s died in a totally unique way that deserves to be known by everybody.
+rockbottom/death.flavor.12=%s tried to divide by zero.
+rockbottom/death.flavor.13=%s knew too much.
+rockbottom/death.flavor.14=%s.exe has stopped responding...
+rockbottom/death.flavor.15=Who taught %s how to survive? They're not very good at it.
+rockbottom/death.flavor.16=%s was underleveled.
+rockbottom/death.flavor.17=%s has failed at being a good player.
+rockbottom/death.flavor.18=Error 404. %s not found.
+rockbottom/death.flavor.19=%s was set to {dead=true} by Ellpeck.
+rockbottom/death.flavor.20=It was all %s's fault!
+rockbottom/death.flavor.21=%s hit rock bottom.
+rockbottom/death.flavor.22=%s.dead = true;
+rockbottom/death.flavor.23=%s saw the light at the end of the tunnel.
+rockbottom/death.flavor.24=The %s was a lie.
+rockbottom/death.flavor.25=%s ran out of memory.
