@@ -45,7 +45,7 @@ public class TileSmelter extends MultiTile{
         if(this.isMainPos(x, y, world.getState(x, y))){
             TileEntitySmelter tile = world.getTileEntity(x, y, TileEntitySmelter.class);
             if(tile != null && tile.isActive()){
-                return 20;
+                return 16;
             }
         }
         return 0;

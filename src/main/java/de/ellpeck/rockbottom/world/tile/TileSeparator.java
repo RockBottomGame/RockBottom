@@ -45,7 +45,7 @@ public class TileSeparator extends MultiTile{
         if(this.isMainPos(x, y, world.getState(x, y))){
             TileEntitySeparator tile = world.getTileEntity(x, y, TileEntitySeparator.class);
             if(tile != null && tile.isActive()){
-                return 30;
+                return 20;
             }
         }
         return 0;
