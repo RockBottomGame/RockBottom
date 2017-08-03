@@ -45,7 +45,7 @@ public class ChatLog implements IChatLog{
             this.newMessageCounter.add(0, 400);
         }
 
-        Log.info("Chat: "+message.getRawWithChildren());
+        Log.info("Chat: "+message.getUnformattedWithChildren());
     }
 
     @Override

@@ -15,7 +15,6 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import org.newdawn.slick.Color;
@@ -59,7 +58,7 @@ public class RockBottomServer extends AbstractGame{
 
             @Override
             public void sendMessageTo(IChatLog chat, ChatComponent message){
-                Log.info(message.getRawWithChildren());
+                Log.info(message.getUnformattedWithChildren());
             }
         };
 
