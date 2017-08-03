@@ -2,12 +2,13 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.IntProp;
-import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -85,5 +86,30 @@ public class TileTorch extends TileBasic{
     @Override
     public boolean isFullTile(){
         return false;
+    }
+
+    @Override
+    public void updateRandomlyForRendering(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
+        IParticleManager manager = AbstractGame.get().getParticleManager();
+        if(Util.RANDOM.nextFloat() >= 0.2F){
+            double offX = 0;
+            double offY = 0;
+
+            int facing = world.getState(x, y).get(PROP_FACING);
+            if(facing == 0 || facing == 3){
+                offX = 0.5;
+                offY = 0.8;
+            }
+            else if(facing == 1){
+                offX = 0.2;
+                offY = 0.9;
+            }
+            else if(facing == 2){
+                offX = 0.8;
+                offY = 0.9;
+            }
+
+            manager.addSmokeParticle(world, x+offX, y+offY, Util.RANDOM.nextGaussian()*0.01, 0, Util.RANDOM.nextFloat()*0.05F+0.02F);
+        }
     }
 }
