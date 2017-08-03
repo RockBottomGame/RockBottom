@@ -64,6 +64,9 @@ public final class ConstructionRegistry{
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_LAMP),
                 new ItemUseInfo(new ItemInstance(GameContent.ITEM_GLOW_CLUSTER)),
                 new ResUseInfo(ResourceRegistry.PROCESSED_STONE, 2)));
+        RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_DOOR),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 20),
+                new ResUseInfo(ResourceRegistry.WOOD_LOG, 2)));
 
         RockBottomAPI.STAMPER_RECIPES.add(new StamperRecipe(new ResUseInfo(ResourceRegistry.RAW_STONE, 2),
                 new ItemInstance(GameContent.TILE_HARDENED_STONE)));
