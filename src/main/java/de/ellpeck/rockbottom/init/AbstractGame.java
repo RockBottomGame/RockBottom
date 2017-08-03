@@ -36,7 +36,7 @@ import java.util.List;
 
 public abstract class AbstractGame implements IGameInstance{
 
-    public static final String VERSION = "0.0.20";
+    public static final String VERSION = "0.0.21";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
