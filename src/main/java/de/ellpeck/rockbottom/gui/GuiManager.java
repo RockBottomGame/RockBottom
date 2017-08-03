@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ComponentRenderEvent;
@@ -35,6 +36,7 @@ import java.util.List;
 public class GuiManager implements IGuiManager{
 
     private static final IResourceName LOC_DEAD = AbstractGame.internalRes("info.dead");
+    private static final IResourceName LOC_DEAD_INFO = AbstractGame.internalRes("info.dead.wait");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private boolean shouldReInit;
     private MainMenuBackground background;
@@ -112,8 +114,10 @@ public class GuiManager implements IGuiManager{
         Gui gui = this.getGui();
 
         if(player != null && player.isDead()){
-            String deathInfo = manager.localize(LOC_DEAD);
-            font.drawCenteredString(width/2F, height/2F, deathInfo, 2F, true);
+            font.drawCenteredString(width/2F, height/2F-10, FormattingCode.RED+manager.localize(LOC_DEAD), 2F, true);
+
+            String s = manager.localize(LOC_DEAD_INFO);
+            font.drawFadingString(width/2F-font.getWidth(s, 0.5F)/2, height/2F+10, s, 0.5F, (float)(Util.getTimeMillis()%1000L)/1000F, 0.5F, 0.5F);
         }
         else{
             for(int i = 0; i < this.onScreenComponents.size(); i++){
