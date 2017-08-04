@@ -92,7 +92,7 @@ public class TileStamper extends TileBasic{
                         }
                         tile.sendToClients();
 
-                        player.getInv().remove(0, 1);
+                        player.getInv().remove(player.getSelectedSlot(), 1);
                     }
                     return true;
                 }
