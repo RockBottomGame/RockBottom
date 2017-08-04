@@ -37,6 +37,7 @@ public class ComponentConstruction extends GuiComponent{
     private final int startId;
     private final List<BasicRecipe> recipes;
     private final int buttonAmountX;
+    private final int buttonAmountY;
     private final BiConsumer<IRecipe, Integer> onClickedConsumer;
 
     public ComponentConstruction(GuiContainer gui, int startId, int x, int y, int sizeX, int sizeY, int buttonAmountX, int buttonAmonutY, MutableBool shouldShowAll, MutableString searchText, MutableInt scrollAmount, List<BasicRecipe> recipes, BiConsumer<IRecipe, Integer> onClickedConsumer){
@@ -53,6 +54,7 @@ public class ComponentConstruction extends GuiComponent{
         int addY = 0;
 
         this.buttonAmountX = buttonAmountX;
+        this.buttonAmountY = buttonAmonutY;
         this.constructionButtons = new ComponentRecipeButton[buttonAmountX*buttonAmonutY];
 
         for(int i = 0; i < this.constructionButtons.length; i++){
@@ -123,7 +125,7 @@ public class ComponentConstruction extends GuiComponent{
         boolean locked = recipeCounter <= this.constructionButtons.length;
         this.scrollBar.setLocked(locked);
         if(!locked){
-            this.scrollBar.setMax(Util.ceil((double)recipeCounter/5)-5);
+            this.scrollBar.setMax(Util.ceil((double)recipeCounter/this.buttonAmountX)-this.buttonAmountY);
         }
     }
 
