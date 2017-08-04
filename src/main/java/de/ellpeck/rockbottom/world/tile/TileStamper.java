@@ -11,7 +11,6 @@ import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.BoolProp;
-import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -68,10 +67,7 @@ public class TileStamper extends TileBasic{
                                 EntityItem.spawn(world, output.copy(), x+0.5, y+0.35, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
                             }
 
-                            inst.removeAmount(recipe.getInput().getAmount());
-                            if(inst.getAmount() <= 0){
-                                tile.inventory.set(0, null);
-                            }
+                            tile.inventory.remove(0, recipe.getInput().getAmount());
                         }
                     }
                 }
@@ -96,10 +92,7 @@ public class TileStamper extends TileBasic{
                         }
                         tile.sendToClients();
 
-                        playerInst.removeAmount(1);
-                        if(playerInst.getAmount() <= 0){
-                            player.getInv().set(player.getSelectedSlot(), null);
-                        }
+                        player.getInv().remove(0, 1);
                     }
                     return true;
                 }
