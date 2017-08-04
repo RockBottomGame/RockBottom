@@ -362,9 +362,9 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void setDead(boolean dead){
         super.setDead(dead);
 
-        if(this.dead){
+        if(!this.world.isClient() && this.dead){
             int id = Util.RANDOM.nextInt(25)+1;
-            RockBottomAPI.getGame().getChatLog().displayMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(AbstractGame.internalRes("death.flavor."+id), this.getName())));
+            RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(AbstractGame.internalRes("death.flavor."+id), this.getName())));
         }
     }
 
