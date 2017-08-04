@@ -300,6 +300,16 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
+    public boolean isRequiredOnClient(){
+        return true;
+    }
+
+    @Override
+    public boolean isRequiredOnServer(){
+        return true;
+    }
+
+    @Override
     public void exit(){
         this.isRunning = false;
     }
