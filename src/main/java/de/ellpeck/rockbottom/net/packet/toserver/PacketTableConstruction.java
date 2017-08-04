@@ -53,7 +53,7 @@ public class PacketTableConstruction implements IPacket{
                     IRecipe recipe;
 
                     List<BasicRecipe> manualRecipes = RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES;
-                    if(this.recipeIndex > manualRecipes.size()){
+                    if(this.recipeIndex >= manualRecipes.size()){
                         recipe = RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.get(this.recipeIndex-manualRecipes.size());
                     }
                     else{
