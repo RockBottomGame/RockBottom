@@ -129,6 +129,7 @@ public class GuiCreateWorld extends Gui{
             File file = this.makeWorldFile(game);
             WorldInfo info = new WorldInfo(file);
             info.seed = this.seed;
+            info.save();
             game.startWorld(file, info);
             return true;
         }
