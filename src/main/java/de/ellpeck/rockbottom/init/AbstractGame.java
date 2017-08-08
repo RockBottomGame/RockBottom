@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
+import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
+import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -201,8 +203,12 @@ public abstract class AbstractGame implements IGameInstance{
         NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), Short.MAX_VALUE);
         this.populateIndexInfo(biomeRegInfo, RockBottomAPI.BIOME_REGISTRY);
 
-        this.world = new World(info, new DynamicRegistryInfo(tileRegInfo, biomeRegInfo));
+        DynamicRegistryInfo regInfo = new DynamicRegistryInfo(tileRegInfo, biomeRegInfo);
+
+        this.world = new World(info, regInfo);
         this.world.initFiles(worldFile);
+
+        RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
     }
 
     private void populateIndexInfo(NameToIndexInfo info, NameRegistry reg){
@@ -216,11 +222,18 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public void quitWorld(){
-        Log.info("Quitting current world");
-
         RockBottomAPI.getNet().shutdown();
-        this.world = null;
-        this.chatLog.clear();
+
+        if(this.world != null){
+            Log.info("Quitting current world");
+
+            RockBottomAPI.getEventHandler().fireEvent(new WorldUnloadEvent(this.world));
+            this.world = null;
+        }
+
+        if(this.chatLog != null){
+            this.chatLog.clear();
+        }
     }
 
     @Override
@@ -311,6 +324,7 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public void exit(){
+        this.quitWorld();
         this.isRunning = false;
     }
 }

@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
+import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -286,6 +287,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         Log.info("Joining world");
 
         this.world = new ClientWorld(info, regInfo);
+        RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
 
         this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
         this.player.load(playerSet);
