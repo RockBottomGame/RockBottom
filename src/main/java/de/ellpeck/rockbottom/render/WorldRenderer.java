@@ -35,8 +35,7 @@ public class WorldRenderer{
     public static void init(){
         float step = 1F/(Constants.MAX_LIGHT+1);
         for(int i = 0; i <= Constants.MAX_LIGHT; i++){
-            float modifier = step+i*step;
-
+            float modifier = i*step;
             MAIN_COLORS[i] = new Color(modifier, modifier, modifier, 1F);
             BACKGROUND_COLORS[i] = new Color(modifier*0.5F, modifier*0.5F, modifier*0.5F, 1F);
         }

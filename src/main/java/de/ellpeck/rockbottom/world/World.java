@@ -699,12 +699,7 @@ public class World implements IWorld{
     }
 
     public float getSkylightModifier(){
-        int noon = Constants.TIME_PER_DAY/2;
-        if(this.info.currentWorldTime <= noon){
-            return (float)this.info.currentWorldTime/(float)noon;
-        }
-        else{
-            return 1F-(float)(this.info.currentWorldTime-noon)/(float)noon;
-        }
+        float mod = (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY);
+        return Math.min(1F, Math.max(0.15F, mod)+0.1F);
     }
 }
