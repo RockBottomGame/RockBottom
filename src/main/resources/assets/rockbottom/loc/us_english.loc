@@ -41,8 +41,6 @@ rockbottom/info.dead.wait=Just give it a second...
 rockbottom/info.hardware_cursor=If the in-game cursor should be replaced by the operating system's cursor
 rockbottom/info.autosave_interval=The amount of seconds before the world is automatically saved
 rockbottom/info.saved=Game saved!
-rockbottom/info.seed=Seed
-rockbottom/info.time=Time
 rockbottom/info.delete_world=&7Delete World %s
 rockbottom/info.world=World %s
 rockbottom/info.unlimited=Unlimited
@@ -58,6 +56,8 @@ rockbottom/info.requires_restart=Requires game restart
 rockbottom/info.size=Size: %sx%s tiles
 rockbottom/info.connect=&6Player %s connected!
 rockbottom/info.disconnect=&6Player %s disconnected!
+rockbottom/info.last_modified=Last Played
+rockbottom/info.seed=Seed
 
 rockbottom/button.back=Back
 rockbottom/button.settings=Settings

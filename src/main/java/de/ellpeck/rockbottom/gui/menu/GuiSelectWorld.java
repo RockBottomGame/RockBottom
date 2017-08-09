@@ -15,6 +15,7 @@ import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class GuiSelectWorld extends Gui{
@@ -25,7 +26,7 @@ public class GuiSelectWorld extends Gui{
     private final ComponentButton[] deleteButtons = new ComponentButton[BUTTON_AMOUNT];
 
     public GuiSelectWorld(Gui parent){
-        super(200, 100, parent);
+        super(200, 160, parent);
     }
 
     @Override
@@ -33,11 +34,11 @@ public class GuiSelectWorld extends Gui{
         super.initGui(game);
 
         for(int i = 0; i < BUTTON_AMOUNT; i++){
-            ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, 1+i, this.guiLeft, this.guiTop+(i*18), 182, 16);
+            ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, 1+i, this.guiLeft, this.guiTop+(i*26));
             this.buttons[i] = button;
             this.components.add(button);
 
-            this.deleteButtons[i] = new ComponentButton(this, this.buttons.length+1+i, this.guiLeft+184, this.guiTop+(i*18), 16, 16, "X", "Delete World"){
+            this.deleteButtons[i] = new ComponentButton(this, this.buttons.length+1+i, this.guiLeft+184, this.guiTop+(i*26), 16, 24, "X", "Delete World"){
                 @Override
                 public boolean onPressed(IGameInstance game){
                     try{
@@ -55,8 +56,8 @@ public class GuiSelectWorld extends Gui{
             this.components.add(this.deleteButtons[i]);
         }
 
-        BoundBox box = new BoundBox(0, 0, 200, this.sizeY-12).add(this.guiLeft, this.guiTop);
-        this.scrollBar = new ComponentScrollBar(this, 0, this.guiLeft-8, this.guiTop, 6, this.sizeY-12, 0, 0, 0, box, (min, max, number) -> this.populateButtons(game));
+        BoundBox box = new BoundBox(0, 0, 200, 128).add(this.guiLeft, this.guiTop);
+        this.scrollBar = new ComponentScrollBar(this, 0, this.guiLeft-8, this.guiTop, 6, 128, 0, 0, 0, box, (min, max, number) -> this.populateButtons(game));
         this.components.add(this.scrollBar);
 
         int bottomY = (int)game.getHeightInGui();
@@ -79,6 +80,8 @@ public class GuiSelectWorld extends Gui{
                 }
             }
         }
+
+        validWorlds.sort(Comparator.comparingLong(WorldInfo:: lastModified).reversed());
 
         int offset = this.scrollBar.getNumber();
         for(int i = 0; i < BUTTON_AMOUNT; i++){

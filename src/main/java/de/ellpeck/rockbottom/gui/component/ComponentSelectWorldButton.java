@@ -3,25 +3,31 @@ package de.ellpeck.rockbottom.gui.component;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.gui.menu.GuiSelectWorld;
 import de.ellpeck.rockbottom.init.AbstractGame;
+import org.newdawn.slick.Graphics;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ComponentSelectWorldButton extends ComponentButton{
 
-    private static final IResourceName LOC_SEED = AbstractGame.internalRes("info.seed");
-    private static final IResourceName LOC_TIME = AbstractGame.internalRes("info.time");
+    private static final IResourceName RES_LAST_MODIFIED = AbstractGame.internalRes("info.last_modified");
+    private static final IResourceName RES_SEED = AbstractGame.internalRes("info.seed");
 
     public File worldFile;
     private WorldInfo info;
+    private String lastModified;
 
-    public ComponentSelectWorldButton(Gui gui, int id, int x, int y, int sizeX, int sizeY){
-        super(gui, id, x, y, sizeX, sizeY, null);
+    public ComponentSelectWorldButton(Gui gui, int id, int x, int y){
+        super(gui, id, x, y, 182, 24, null);
     }
 
     public void setWorld(File file){
@@ -29,21 +35,20 @@ public class ComponentSelectWorldButton extends ComponentButton{
 
         this.info = new WorldInfo(this.worldFile);
         this.info.load();
+
+        this.lastModified = new SimpleDateFormat("dd.MM.yy - HH:mm").format(new Date(WorldInfo.lastModified(this.worldFile)));
     }
 
     @Override
-    protected String getText(){
-        return this.worldFile.getName();
-    }
+    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+        super.render(game, manager, g);
 
-    @Override
-    protected String[] getHover(){
-        IAssetManager manager = AbstractGame.get().getAssetManager();
-
-        String[] hover = new String[2];
-        hover[0] = manager.localize(LOC_SEED)+": "+this.info.seed;
-        hover[1] = manager.localize(LOC_TIME)+": "+this.info.currentWorldTime;
-        return hover;
+        if(this.isVisible){
+            Font font = manager.getFont();
+            font.drawCutOffString(this.x+2F, this.y+1F, this.worldFile.getName(), 0.45F, this.sizeX-4, false, false);
+            font.drawString(this.x+2F, this.y+12F, FormattingCode.GRAY+manager.localize(RES_LAST_MODIFIED)+": "+this.lastModified, 0.25F);
+            font.drawString(this.x+2F, this.y+18F, FormattingCode.GRAY+manager.localize(RES_SEED)+": "+this.info.seed, 0.25F);
+        }
     }
 
     @Override

@@ -31,41 +31,23 @@ public class MainMenuBackground{
     private int currentY;
     private int layerCounter;
 
-    private TileState fallingTile;
-    private int fallingX;
-    private double fallingY;
-    private double fallingMotionY;
-
     public MainMenuBackground(){
         List<IMainMenuTheme> themes = RockBottomAPI.MAIN_MENU_THEMES;
         this.theme = themes.get(Util.RANDOM.nextInt(themes.size()));
     }
 
     public void update(RockBottom game){
-        if(this.fallingTile == null){
-            if(this.currentY < IMainMenuTheme.TILE_AMOUNT){
-                if(Util.RANDOM.nextFloat() >= 0.75F){
-                    int placeX;
-                    do{
-                        placeX = Util.RANDOM.nextInt(IMainMenuTheme.TILE_AMOUNT);
-                    } while(this.tiles[placeX][this.currentY] != null);
-
-                    this.fallingTile = this.theme.getState(placeX, this.currentY);
-                    this.fallingX = placeX;
-                    this.fallingY = IMainMenuTheme.TILE_AMOUNT;
-                    this.fallingMotionY = 0;
+        if(this.currentY < IMainMenuTheme.TILE_AMOUNT){
+            if(game.getTotalTicks()%2 == 0 && Util.RANDOM.nextFloat() >= 0.75F){
+                int placeX;
+                do{
+                    placeX = Util.RANDOM.nextInt(IMainMenuTheme.TILE_AMOUNT);
                 }
-            }
-        }
-        else{
-            this.fallingMotionY -= 0.15;
-            this.fallingY += this.fallingMotionY;
+                while(this.tiles[placeX][this.currentY] != null);
 
-            if(this.fallingY < this.currentY){
-                this.tiles[this.fallingX][this.currentY] = this.fallingTile;
-                this.fallingTile = null;
-
+                this.tiles[placeX][this.currentY] = this.theme.getState(placeX, this.currentY);
                 this.layerCounter++;
+
                 if(this.layerCounter >= IMainMenuTheme.TILE_AMOUNT){
                     this.currentY++;
                     this.layerCounter = 0;
@@ -90,14 +72,6 @@ public class MainMenuBackground{
                         renderer.renderInMainMenuBackground(game, manager, g, tile, state, x*tileSize, height-(y+1)*tileSize, tileSize);
                     }
                 }
-            }
-        }
-
-        if(this.fallingTile != null){
-            Tile tile = this.fallingTile.getTile();
-            ITileRenderer renderer = tile.getRenderer();
-            if(renderer != null){
-                renderer.renderInMainMenuBackground(game, manager, g, tile, this.fallingTile, this.fallingX*tileSize, height-((float)this.fallingY+1)*tileSize, tileSize);
             }
         }
 
