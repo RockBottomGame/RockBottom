@@ -21,7 +21,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
-import de.ellpeck.rockbottom.gui.menu.MainMenuBackground;
+import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -55,8 +55,9 @@ public class GuiManager implements IGuiManager{
             this.background = null;
         }
         else{
-            this.background = new MainMenuBackground();
-            this.background.init(game);
+            if(this.background == null){
+                this.background = new MainMenuBackground();
+            }
         }
 
         Log.debug("Successfully re-initialized Gui Manager");
@@ -232,10 +233,6 @@ public class GuiManager implements IGuiManager{
 
     public boolean onKeyboardAction(RockBottom game, int button, char character){
         if(game.getPlayer() == null || !game.getPlayer().isDead()){
-            if(this.background != null){
-                this.background.onKeyInput(button);
-            }
-
             return this.gui != null && this.gui.onKeyboardAction(game, button, character);
         }
         return false;
