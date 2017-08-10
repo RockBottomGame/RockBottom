@@ -203,10 +203,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
-    public void onGroundHit(){
+    public void onGroundHit(double fallDistance){
         if(!RockBottomAPI.getNet().isClient()){
-            if(this.fallAmount >= 20){
-                this.takeDamage((int)(this.fallAmount*1.5));
+            if(fallDistance > 5){
+                this.takeDamage(Util.ceil((fallDistance-5D)*2D));
             }
         }
     }
@@ -436,7 +436,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
         this.dead = false;
         this.motionX = 0;
         this.motionY = 0;
-        this.fallAmount = 0;
+        this.isFalling = false;
+        this.fallStartY = 0;
         this.setHealth(this.getMaxHealth());
 
         if(RockBottomAPI.getNet().isThePlayer(this)){

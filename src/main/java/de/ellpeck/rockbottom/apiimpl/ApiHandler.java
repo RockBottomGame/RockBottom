@@ -157,13 +157,21 @@ public class ApiHandler implements IApiHandler{
                     entity.motionY = 0;
                 }
 
-                if(entity.fallAmount > 0){
-                    entity.onGroundHit();
-                    entity.fallAmount = 0;
+                if(entity.isFalling){
+                    double dist = entity.fallStartY-entity.y;
+                    if(dist > 0){
+                        entity.onGroundHit(dist);
+                    }
+
+                    entity.isFalling = false;
+                    entity.fallStartY = 0;
                 }
             }
             else if(entity.motionY < 0){
-                entity.fallAmount++;
+                if(!entity.isFalling){
+                    entity.isFalling = true;
+                    entity.fallStartY = entity.y;
+                }
             }
 
             if(entity.collidedHor){

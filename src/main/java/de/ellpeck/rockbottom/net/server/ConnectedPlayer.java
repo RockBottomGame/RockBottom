@@ -79,7 +79,8 @@ public class ConnectedPlayer extends EntityPlayer{
 
                 this.motionX = 0;
                 this.motionY = 0;
-                this.fallAmount = 0;
+                this.isFalling = false;
+                this.fallStartY = 0;
 
                 this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
                 Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
@@ -96,7 +97,7 @@ public class ConnectedPlayer extends EntityPlayer{
         if(this.isClimbing){
             this.climbingCalcTicks++;
         }
-        else if(this.fallAmount >= 40){
+        else if(this.isFalling && this.fallStartY-this.y >= 5){
             this.fallCalcTicks++;
         }
 
