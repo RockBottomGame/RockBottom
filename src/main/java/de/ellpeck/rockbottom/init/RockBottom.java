@@ -12,8 +12,12 @@ import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.toast.IToaster;
+import de.ellpeck.rockbottom.api.toast.Toast;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
 import de.ellpeck.rockbottom.gui.GuiChat;
@@ -65,6 +69,7 @@ public class RockBottom extends AbstractGame implements InputListener{
     private InteractionManager interactionManager;
     private AssetManager assetManager;
     private ParticleManager particleManager;
+    private Toaster toaster;
     private UUID uniqueId;
     private boolean isDebug;
     private boolean isLightDebug;
@@ -219,6 +224,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
+        this.toaster = new Toaster();
     }
 
     @Override
@@ -269,6 +275,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         }
 
         this.guiManager.update(this);
+        this.toaster.update();
     }
 
     @Override
@@ -465,6 +472,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.graphics.setLineWidth(this.getGuiScale());
         this.guiManager.render(this, this.assetManager, this.graphics, this.player);
+        this.toaster.render(this, this.assetManager, this.graphics);
     }
 
     @Override
@@ -563,6 +571,11 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public Input getInput(){
         return this.input;
+    }
+
+    @Override
+    public IToaster getToaster(){
+        return this.toaster;
     }
 
     @Override
