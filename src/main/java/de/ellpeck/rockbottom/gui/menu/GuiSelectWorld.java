@@ -83,6 +83,12 @@ public class GuiSelectWorld extends Gui{
 
         validWorlds.sort(Comparator.comparingLong(WorldInfo:: lastModified).reversed());
 
+        boolean locked = validWorlds.size() < this.buttons.length;
+        this.scrollBar.setLocked(locked);
+        if(!locked){
+            this.scrollBar.setMax(validWorlds.size()-5);
+        }
+
         int offset = this.scrollBar.getNumber();
         for(int i = 0; i < BUTTON_AMOUNT; i++){
             ComponentSelectWorldButton button = this.buttons[i];
@@ -98,12 +104,6 @@ public class GuiSelectWorld extends Gui{
                 button.isVisible = false;
                 deleteButton.isVisible = false;
             }
-        }
-
-        boolean locked = validWorlds.size() < this.buttons.length;
-        this.scrollBar.setLocked(locked);
-        if(!locked){
-            this.scrollBar.setMax(validWorlds.size()-5);
         }
     }
 
