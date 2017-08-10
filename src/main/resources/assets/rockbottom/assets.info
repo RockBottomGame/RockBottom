@@ -94,6 +94,7 @@ anim.player.accessory.sunglasses_3=/player/accessory/sunglasses_3.png,/player/ac
 anim.player.accessory.glasses_1=/player/accessory/glasses_1.png,/player/accessory/glasses_1.anim
 anim.player.accessory.glasses_2=/player/accessory/glasses_2.png,/player/accessory/glasses_2.anim
 anim.player.accessory.glasses_3=/player/accessory/glasses_3.png,/player/accessory/glasses_3.anim
+anim.player.accessory.eyeliner=/player/accessory/eyeliner.png,/player/accessory/eyeliner.anim
 
 anim.player.arm.skin_1.hanging=/player/arm/hanging/skin_1.png,/player/arm/hanging/skin_1.anim
 anim.player.arm.skin_2.hanging=/player/arm/hanging/skin_2.png,/player/arm/hanging/skin_2.anim
@@ -103,12 +104,18 @@ anim.player.arm.skin_5.hanging=/player/arm/hanging/skin_5.png,/player/arm/hangin
 anim.player.arm.skin_s.hanging=/player/arm/hanging/skin_s.png,/player/arm/hanging/skin_s.anim
 
 anim.player.base.eyes=/player/base/eyes.png,/player/base/eyes.anim
-anim.player.base.male_skin_1=/player/base/male_skin_1.png,/player/base/male_skin_1.anim
-anim.player.base.male_skin_2=/player/base/male_skin_2.png,/player/base/male_skin_2.anim
-anim.player.base.male_skin_3=/player/base/male_skin_3.png,/player/base/male_skin_3.anim
-anim.player.base.male_skin_4=/player/base/male_skin_4.png,/player/base/male_skin_4.anim
-anim.player.base.male_skin_5=/player/base/male_skin_5.png,/player/base/male_skin_5.anim
-anim.player.base.male_skin_s=/player/base/male_skin_s.png,/player/base/male_skin_s.anim
+anim.player.base.1.male=/player/base/male/1.png,/player/base/male/1.anim
+anim.player.base.2.male=/player/base/male/2.png,/player/base/male/2.anim
+anim.player.base.3.male=/player/base/male/3.png,/player/base/male/3.anim
+anim.player.base.4.male=/player/base/male/4.png,/player/base/male/4.anim
+anim.player.base.5.male=/player/base/male/5.png,/player/base/male/5.anim
+anim.player.base.s.male=/player/base/male/s.png,/player/base/male/s.anim
+anim.player.base.1.female=/player/base/female/1.png,/player/base/female/1.anim
+anim.player.base.2.female=/player/base/female/2.png,/player/base/female/2.anim
+anim.player.base.3.female=/player/base/female/3.png,/player/base/female/3.anim
+anim.player.base.4.female=/player/base/female/4.png,/player/base/female/4.anim
+anim.player.base.5.female=/player/base/female/5.png,/player/base/female/5.anim
+anim.player.base.s.female=/player/base/female/s.png,/player/base/female/s.anim
 
 anim.player.footwear.1=/player/footwear/1.png,/player/footwear/1.anim
 anim.player.footwear.2=/player/footwear/2.png,/player/footwear/2.anim
@@ -123,6 +130,8 @@ anim.player.hair.4=/player/hair/4.png,/player/hair/4.anim
 anim.player.hair.5=/player/hair/5.png,/player/hair/5.anim
 anim.player.hair.6=/player/hair/6.png,/player/hair/6.anim
 anim.player.hair.7=/player/hair/7.png,/player/hair/7.anim
+anim.player.hair.8=/player/hair/8.png,/player/hair/8.anim
+anim.player.hair.9=/player/hair/9.png,/player/hair/9.anim
 
 anim.player.pants.1=/player/pants/1.png,/player/pants/1.anim
 anim.player.pants.2=/player/pants/2.png,/player/pants/2.anim

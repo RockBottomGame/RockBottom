@@ -31,9 +31,10 @@ import java.util.List;
 
 public class PlayerDesign implements IPlayerDesign{
 
-    private static final String[] DEFAULT_NAMES = new String[]{"Bob", "Doley", "Jason", "Huffelpuff", "Megan", "Jennifer", "Bottle", "Bus Stop", "ThePlayer99", "Genelele", "Karina", "Heinz", "Ketchup", "Dan", "David", "Penguin", "Hubert", "Penny", "Vinny", "Xx_TheBestLP_xX", "Bozo", "Patrick", "InigoMontoya", "Pebbles", "Noodles", "Milkshake"};
+    private static final String[] DEFAULT_NAMES = new String[]{"Jake", "Craig", "Mariana", "Louise", "Rosie", "Flo", "Luke", "Abbie", "James", "Chris", "Kieran", "Fatima", "Adam", "Giles", "Megan", "Tim", "Calypso", "Hayley", "Aimee", "Megan", "Eleanor"};
     private String name;
     private Color color;
+    private boolean female;
 
     private int base;
     private Color eyeColor;
@@ -70,6 +71,7 @@ public class PlayerDesign implements IPlayerDesign{
     public static void randomizeDesign(IPlayerDesign design){
         design.setName(getRandomName());
         design.setFavoriteColor(Util.randomColor(Util.RANDOM));
+        design.setFemale(Util.RANDOM.nextBoolean());
 
         design.setBase(Util.RANDOM.nextInt(BASE.size()));
         design.setEyeColor(Util.randomColor(Util.RANDOM));
@@ -146,6 +148,7 @@ public class PlayerDesign implements IPlayerDesign{
     public void save(DataSet set){
         set.addString("name", this.name);
         set.addInt("color", Util.toIntColor(this.color));
+        set.addBoolean("female", this.female);
 
         set.addString("base", saveIndex(this.base, BASE));
         set.addInt("eye_color", Util.toIntColor(this.eyeColor));
@@ -180,6 +183,7 @@ public class PlayerDesign implements IPlayerDesign{
     public void load(DataSet set){
         this.name = set.getString("name");
         this.color = new Color(set.getInt("color"));
+        this.female = set.getBoolean("female");
 
         this.base = loadIndex(set.getString("base"), BASE);
         this.eyeColor = new Color(set.getInt("eye_color"));
@@ -321,6 +325,11 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public boolean isFemale(){
+        return this.female;
+    }
+
+    @Override
     public void setBase(int base){
         this.base = base;
     }
@@ -408,5 +417,10 @@ public class PlayerDesign implements IPlayerDesign{
     @Override
     public void setBeardColor(Color beardColor){
         this.beardColor = beardColor;
+    }
+
+    @Override
+    public void setFemale(boolean female){
+        this.female = female;
     }
 }

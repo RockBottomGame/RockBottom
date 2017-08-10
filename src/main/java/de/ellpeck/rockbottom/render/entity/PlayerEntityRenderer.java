@@ -16,13 +16,13 @@ import org.newdawn.slick.Graphics;
 
 public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
-    private static final IResourceName SPECIAL_BASE = AbstractGame.internalRes("player.base.male_skin_s");
+    private static final IResourceName SPECIAL_BASE = AbstractGame.internalRes("player.base.s");
     private static final IResourceName SPECIAL_ARMS = AbstractGame.internalRes("player.arm.skin_s");
 
     public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, String arms, Color light){
         int base = design.getBase();
 
-        manager.getAnimation(base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).drawRow(row, x, y, scale, light);
+        manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix("."+(design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, light);
         manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, light.multiply(design.getEyeColor()));
 
         IResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());

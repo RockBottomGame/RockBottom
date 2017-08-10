@@ -110,6 +110,8 @@ rockbottom/button.player_design.preview=Preview
 rockbottom/button.player_design.eyebrows=Eyebrows
 rockbottom/button.player_design.mouth=Mouth
 rockbottom/button.player_design.beard=Beard
+rockbottom/button.player_design.sex=Male
+rockbottom/button.player_design.sex_toggled=Female
 rockbottom/button.language=Language
 
 rockbottom/layer.main=Foreground

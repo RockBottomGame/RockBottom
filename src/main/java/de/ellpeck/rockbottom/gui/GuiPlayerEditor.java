@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
+import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
@@ -27,7 +28,7 @@ public class GuiPlayerEditor extends Gui{
     private ComponentInputField nameField;
 
     public GuiPlayerEditor(Gui parent){
-        super(100, 100, parent);
+        super(100, 160, parent);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class GuiPlayerEditor extends Gui{
         IPlayerDesign design = game.getPlayerDesign();
         IAssetManager assetManager = game.getAssetManager();
         int x = (int)game.getWidthInGui()/2;
-        int y = 3;
+        int y = this.guiTop;
         int colorX = x+82;
 
         this.components.add(new Slider(this, 0, x, y, design.getBase(), IPlayerDesign.BASE.size()-1, design:: setBase, assetManager.localize(AbstractGame.internalRes("button.player_design.base"))));
@@ -68,7 +69,7 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(new Slider(this, 9, x, y, design.getBeard(), IPlayerDesign.BEARD.size()-1, design:: setBeard, assetManager.localize(AbstractGame.internalRes("button.player_design.beard"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getBeardColor(), design:: setBeardColor));
 
-        this.nameField = new ComponentInputField(this, x, 143, 80, 12, true, true, false, 24, true){
+        this.nameField = new ComponentInputField(this, x-98, this.guiTop, 80, 12, true, true, false, 24, true){
             @Override
             public String getDisplayText(){
                 return Util.colorToFormattingCode(design.getFavoriteColor())+super.getDisplayText();
@@ -76,14 +77,16 @@ public class GuiPlayerEditor extends Gui{
         };
         this.nameField.setText(design.getName());
         this.components.add(this.nameField);
-        this.components.add(new ComponentColorPicker(this, colorX, 143, 12, 12, design.getFavoriteColor(), new ComponentColorPicker.ICallback(){
+        this.components.add(new ComponentColorPicker(this, colorX-98, this.guiTop, 12, 12, design.getFavoriteColor(), new ComponentColorPicker.ICallback(){
             @Override
             public void onChange(float mouseX, float mouseY, Color color){
                 design.setFavoriteColor(color);
             }
         }, true));
 
-        this.components.add(new ComponentSlider(this, -2, (int)game.getWidthInGui()/2-98, 143, 80, 12, this.previewType+1, 1, 6, new ComponentSlider.ICallback(){
+        this.components.add(new ComponentToggleButton(this, 10, x-98, this.guiTop+14, 80, 12, design.isFemale(), "button.player_design.sex"));
+
+        this.components.add(new ComponentSlider(this, -2, x-98, this.guiTop+126, 80, 12, this.previewType+1, 1, 6, new ComponentSlider.ICallback(){
             @Override
             public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
                 GuiPlayerEditor.this.previewType = number-1;
@@ -98,8 +101,8 @@ public class GuiPlayerEditor extends Gui{
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
         super.render(game, manager, g);
 
-        int x = (int)game.getWidthInGui()/2-88;
-        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, 10, 60F, this.previewType, ".hanging", Color.white);
+        int x = (int)game.getWidthInGui()/2-84;
+        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, this.guiTop+32, 45F, this.previewType, ".hanging", Color.white);
     }
 
     @Override
@@ -157,6 +160,11 @@ public class GuiPlayerEditor extends Gui{
             PlayerDesign.randomizeDesign(design);
 
             this.initGui(game);
+            return true;
+        }
+        else if(button == 10){
+            IPlayerDesign design = game.getPlayerDesign();
+            design.setFemale(!design.isFemale());
             return true;
         }
         else{
