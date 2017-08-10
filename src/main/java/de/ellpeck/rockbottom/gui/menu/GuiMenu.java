@@ -15,8 +15,6 @@ public class GuiMenu extends Gui{
 
     private static final IResourceName LOC_OPEN_SERVER = AbstractGame.internalRes("button.open_server");
     private static final IResourceName LOC_CLOSE_SERVER = AbstractGame.internalRes("button.close_server");
-    private static final IResourceName LOC_SAVED = AbstractGame.internalRes("info.saved");
-    private int savingTimer;
 
     public GuiMenu(){
         super(100, 100);
@@ -38,32 +36,6 @@ public class GuiMenu extends Gui{
 
         this.components.add(new ComponentButton(this, -1, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.main_menu"))));
         this.components.add(new ComponentButton(this, -2, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.close"))));
-    }
-
-    @Override
-    public void update(IGameInstance game){
-        super.update(game);
-
-        if(!RockBottomAPI.getNet().isClient()){
-            if(this.savingTimer >= 0){
-                this.savingTimer++;
-                if(this.savingTimer >= 50){
-                    this.savingTimer = -1;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        super.render(game, manager, g);
-
-        if(!RockBottomAPI.getNet().isClient()){
-            if(this.savingTimer >= 0){
-                String text = manager.localize(LOC_SAVED);
-                manager.getFont().drawFadingString((float)game.getWidthInGui()/2-manager.getFont().getWidth(text, 0.35F)/2, (float)game.getHeightInGui()-15F, text, 0.35F, (float)this.savingTimer/50F, 0.25F, 0.75F);
-            }
-        }
     }
 
     @Override

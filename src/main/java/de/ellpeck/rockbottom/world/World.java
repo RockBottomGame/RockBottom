@@ -10,10 +10,12 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerJoinWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
@@ -455,7 +457,13 @@ public class World implements IWorld{
         }
 
         if(amount > 0){
-            Log.info("Saved "+amount+" chunks, took "+(Util.getTimeMillis()-timeStarted)+"ms.");
+            long time = Util.getTimeMillis()-timeStarted;
+            Log.info("Saved "+amount+" chunks, took "+time+"ms.");
+
+            IGameInstance game = RockBottomAPI.getGame();
+            if(!game.isDedicatedServer()){
+                game.getToaster().displayToast(new Toast(new ChatComponentTranslation(AbstractGame.internalRes("info.saved")), new ChatComponentTranslation(AbstractGame.internalRes("info.saved_chunks"), String.valueOf(amount), String.valueOf((float)time/1000F)), 160));
+            }
         }
     }
 

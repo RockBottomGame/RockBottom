@@ -41,6 +41,7 @@ rockbottom/info.dead.wait=Just give it a second...
 rockbottom/info.hardware_cursor=If the in-game cursor should be replaced by the operating system's cursor
 rockbottom/info.autosave_interval=The amount of seconds before the world is automatically saved
 rockbottom/info.saved=Game saved!
+rockbottom/info.saved_chunks=Saved %s chunks in %s seconds.
 rockbottom/info.delete_world=&7Delete World %s
 rockbottom/info.world=World %s
 rockbottom/info.unlimited=Unlimited
