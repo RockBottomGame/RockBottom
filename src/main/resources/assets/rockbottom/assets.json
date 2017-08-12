@@ -280,9 +280,6 @@
         "default": ["/font/default.info", "/font/default.png"]
     },
     "loc": {
-        "us_english": "/loc/us_english.loc",
-        "de_german": "/loc/de_german.loc",
-        "nl_dutch": "/loc/nl_dutch.loc",
-        "pl_polish": "/loc/pl_polish.loc"
+        "us_english": "/loc/us_english.json"
     }
 }

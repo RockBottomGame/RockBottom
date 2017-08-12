@@ -205,11 +205,20 @@ public class AssetManager implements IAssetManager{
                     }
                     else if("loc".equals(type)){
                         String resPath = path+element.getAsString();
+                        boolean merged = false;
 
-                        AssetLocale locale = new AssetLocale(Locale.fromStream(getResource(resPath), res.toString()));
-                        this.assets.put(res, locale);
+                        Locale locale = Locale.fromStream(getResource(resPath), res.toString());
+                        for(AssetLocale asset : this.getAllOfType(AssetLocale.class).values()){
+                            if(asset.get().merge(locale)){
+                                merged = true;
+                                break;
+                            }
+                        }
 
-                        Log.debug("Loaded locale "+res+" from "+resPath+" for mod "+mod.getDisplayName());
+                        if(!merged){
+                            this.assets.put(res, new AssetLocale(locale));
+                            Log.debug("Loaded locale "+res+" from "+resPath+" for mod "+mod.getDisplayName());
+                        }
                     }
                     else if("font".equals(type)){
                         JsonArray array = element.getAsJsonArray();
@@ -240,9 +249,6 @@ public class AssetManager implements IAssetManager{
                     for(Entry<String, JsonElement> entry : object.entrySet()){
                         this.loadRes(mod, path, type, name, entry.getValue(), entry.getKey());
                     }
-                }
-                else{
-                    System.out.println("Resource wih name "+name+" and element "+element+" with name "+elementName+" is unknown");
                 }
             }
         }
