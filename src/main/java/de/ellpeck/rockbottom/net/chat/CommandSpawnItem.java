@@ -43,7 +43,7 @@ public class CommandSpawnItem extends Command{
             }
         }
         catch(Exception e){
-            return new ChatComponentText(FormattingCode.RED+"Error formatting number for command args "+Arrays.toString(args)+"!");
+            return new ChatComponentText(FormattingCode.RED+"Error formatting command args "+Arrays.toString(args)+"!");
         }
     }
 }

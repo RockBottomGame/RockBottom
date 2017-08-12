@@ -1,0 +1,288 @@
+{
+    "tex": {
+        "logo": "/logo.png",
+        "break": {
+            "1": "/break/1.png",
+            "2": "/break/2.png",
+            "3": "/break/3.png",
+            "4": "/break/4.png",
+            "5": "/break/5.png",
+            "6": "/break/6.png",
+            "7": "/break/7.png",
+            "8": "/break/8.png"
+        },
+        "tiles": {
+            "dirt": "/tiles/dirt.png",
+            "stone": "/tiles/stone.png",
+            "grass": "/tiles/grass.png",
+            "torch": {
+                "*": "/tiles/torch.png",
+                "left": "/tiles/torch_left.png",
+                "right": "/tiles/torch_right.png",
+                "back": "/tiles/torch_back.png"
+            },
+            "lamp": {
+                "*": "/tiles/lamp.png",
+                "left": "/tiles/lamp_left.png",
+                "right": "/tiles/lamp_right.png",
+                "back": "/tiles/lamp_back.png"
+            },
+            "chest": {
+                "*": "/tiles/chest.png",
+                "open": "/tiles/chest_open.png"
+            },
+            "leaves": "/tiles/leaves.png",
+            "log": "/tiles/log.png",
+            "sapling": "/tiles/sapling.png",
+            "coal_ore": "/tiles/ore_coal.png",
+            "copper_ore": "/tiles/ore_copper.png",
+            "smelter": {
+                "*": {
+                    "subtexture": {
+                        "file": "/tiles/smelter.png",
+                        "0.0": [0, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12]
+                    }
+                },
+                "active": {
+                    "subtexture": {
+                        "file": "/tiles/smelter_active.png",
+                        "0.0": [0, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12]
+                    }
+                },
+                "item": "/tiles/smelter_item.png"
+            },
+            "separator": {
+                "*": {
+                    "subtexture": {
+                        "file": "/tiles/separator.png",
+                        "0.0": [0, 12, 12, 12],
+                        "1.0": [12, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12],
+                        "1.1": [12, 0, 12, 12]
+                    }
+                },
+                "active": {
+                    "subtexture": {
+                        "file": "/tiles/separator_active.png",
+                        "0.0": [0, 12, 12, 12],
+                        "1.0": [12, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12],
+                        "1.1": [12, 0, 12, 12]
+                    }
+                },
+                "item": "/tiles/separator_item.png"
+            },
+            "wood_boards": "/tiles/wood_boards.png",
+            "ladder": "/tiles/wood_ladder.png",
+            "glow_ore": {
+                "base": "/tiles/ore_glow_0.png",
+                "glow": "/tiles/ore_glow_1.png"
+            },
+            "stamper": {
+                "*": "/tiles/stamper_up.png",
+                "down": "/tiles/stamper_down.png",
+                "item": "/tiles/stamper_item.png"
+            },
+            "hardened_stone": "/tiles/stone_hardened.png",
+            "door": {
+                "*": {
+                    "subtexture": {
+                        "file": "/tiles/wood_door_closed.png",
+                        "0.0": [0, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12]
+                    }
+                },
+                "open": {
+                    "subtexture": {
+                        "file": "/tiles/wood_door_open.png",
+                        "0.0": [0, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12]
+                    }
+                },
+                "item": "/tiles/wood_door_item.png"
+            },
+            "construction_table": {
+                "*": {
+                    "subtexture": {
+                        "file": "/tiles/construction_table.png",
+                        "0.0": [0, 0, 12, 12],
+                        "1.0": [12, 0, 12, 12]
+                    }
+                },
+                "item": "/tiles/construction_table_item.png"
+            }
+        },
+        "items": {
+            "super_tool": "/items/super_tool.png",
+            "wood_pickaxe": "/items/wood_pickaxe.png",
+            "stone_pickaxe": "/items/stone_pickaxe.png",
+            "stone_axe": "/items/stone_axe.png",
+            "stone_shovel": "/items/stone_shovel.png",
+            "coal": "/items/coal.png",
+            "charcoal": "/items/charcoal.png",
+            "copper_cluster": "/items/cluster_copper.png",
+            "copper_grit": "/items/copper_grit.png",
+            "copper_ingot": "/items/copper_ingot.png",
+            "copper_pickaxe": "/items/copper_pickaxe.png",
+            "copper_axe": "/items/copper_axe.png",
+            "copper_shovel": "/items/copper_shovel.png",
+            "slag": "/items/slag.png",
+            "glow_cluster": {
+                "base": "/items/cluster_glow_0.png",
+                "glow": "/items/cluster_glow_1.png"
+            }
+        },
+        "gui": {
+            "cursor": "/gui/cursor.png",
+            "slot": "/gui/slot.png",
+            "selection_arrow": "/gui/selection_arrow.png",
+            "heart": "/gui/heart.png",
+            "heart_empty": "/gui/heart_empty.png",
+            "construction": "/gui/construction.png",
+            "construction_toggled": "/gui/construction_crossed.png",
+            "colorpick": "/gui/colorpick.png"
+        },
+        "particle": {
+            "smoke": "/particle/smoke.png"
+        }
+    },
+    "anim": {
+        "player": {
+            "accessory": {
+                "monocle_1": ["/player/anim.json", "/player/accessory/monocle_1.png"],
+                "monocle_2": ["/player/anim.json", "/player/accessory/monocle_2.png"],
+                "sunglasses_1": ["/player/anim.json", "/player/accessory/sunglasses_1.png"],
+                "sunglasses_2": ["/player/anim.json", "/player/accessory/sunglasses_2.png"],
+                "sunglasses_3": ["/player/anim.json", "/player/accessory/sunglasses_3.png"],
+                "glasses_1": ["/player/anim.json", "/player/accessory/glasses_1.png"],
+                "glasses_2": ["/player/anim.json", "/player/accessory/glasses_2.png"],
+                "glasses_3": ["/player/anim.json", "/player/accessory/glasses_3.png"],
+                "eyeliner": ["/player/anim.json", "/player/accessory/eyeliner.png"]
+            },
+            "arm": {
+                "skin_1": {
+                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_1.png"]
+                },
+                "skin_2": {
+                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_2.png"]
+                },
+                "skin_3": {
+                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_3.png"]
+                },
+                "skin_4": {
+                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_4.png"]
+                },
+                "skin_5": {
+                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_5.png"]
+                },
+                "skin_s": {
+                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_s.png"]
+                }
+            },
+            "base": {
+                "eyes": ["/player/anim.json", "/player/base/eyes.png"],
+                "1": {
+                    "male": ["/player/anim.json", "/player/base/male/1.png"],
+                    "female": ["/player/anim.json", "/player/base/female/1.png"]
+                },
+                "2": {
+                    "male": ["/player/anim.json", "/player/base/male/2.png"],
+                    "female": ["/player/anim.json", "/player/base/female/2.png"]
+                },
+                "3": {
+                    "male": ["/player/anim.json", "/player/base/male/3.png"],
+                    "female": ["/player/anim.json", "/player/base/female/3.png"]
+                },
+                "4": {
+                    "male": ["/player/anim.json", "/player/base/male/4.png"],
+                    "female": ["/player/anim.json", "/player/base/female/4.png"]
+                },
+                "5": {
+                    "male": ["/player/anim.json", "/player/base/male/5.png"],
+                    "female": ["/player/anim.json", "/player/base/female/5.png"]
+                },
+                "s": {
+                    "male": ["/player/anim.json", "/player/base/male/s.png"],
+                    "female": ["/player/anim.json", "/player/base/female/s.png"]
+                }
+            },
+            "footwear": {
+                "1": ["/player/anim.json", "/player/footwear/1.png"],
+                "2": ["/player/anim.json", "/player/footwear/2.png"],
+                "3": ["/player/anim.json", "/player/footwear/3.png"],
+                "4": ["/player/anim.json", "/player/footwear/4.png"],
+                "5": ["/player/anim.json", "/player/footwear/5.png"]
+            },
+            "hair": {
+                "1": ["/player/anim.json", "/player/hair/1.png"],
+                "2": ["/player/anim.json", "/player/hair/2.png"],
+                "3": ["/player/anim.json", "/player/hair/3.png"],
+                "4": ["/player/anim.json", "/player/hair/4.png"],
+                "5": ["/player/anim.json", "/player/hair/5.png"],
+                "6": ["/player/anim.json", "/player/hair/6.png"],
+                "7": ["/player/anim.json", "/player/hair/7.png"],
+                "8": ["/player/anim.json", "/player/hair/8.png"],
+                "9": ["/player/anim.json", "/player/hair/9.png"]
+            },
+            "pants": {
+                "1": ["/player/anim.json", "/player/pants/1.png"],
+                "2": ["/player/anim.json", "/player/pants/2.png"]
+            },
+            "shirt": {
+                "1": ["/player/anim.json", "/player/shirt/1.png"],
+                "2": ["/player/anim.json", "/player/shirt/2.png"],
+                "3": ["/player/anim.json", "/player/shirt/3.png"],
+                "4": ["/player/anim.json", "/player/shirt/4.png"]
+            },
+            "sleeve": {
+                "1": {
+                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/1.png"]
+                },
+                "2": {
+                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/2.png"]
+                },
+                "3": {
+                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/3.png"]
+                },
+                "4": {
+                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/4.png"]
+                }
+            },
+            "eyebrows": {
+                "1": ["/player/anim.json", "/player/eyebrows/1.png"],
+                "2": ["/player/anim.json", "/player/eyebrows/2.png"],
+                "3": ["/player/anim.json", "/player/eyebrows/3.png"],
+                "4": ["/player/anim.json", "/player/eyebrows/4.png"],
+                "5": ["/player/anim.json", "/player/eyebrows/5.png"],
+                "6": ["/player/anim.json", "/player/eyebrows/6.png"]
+            },
+            "mouth": {
+                "1": ["/player/anim.json", "/player/mouth/1.png"],
+                "2": ["/player/anim.json", "/player/mouth/2.png"],
+                "3": ["/player/anim.json", "/player/mouth/3.png"],
+                "4": ["/player/anim.json", "/player/mouth/4.png"],
+                "5": ["/player/anim.json", "/player/mouth/5.png"],
+                "6": ["/player/anim.json", "/player/mouth/6.png"],
+                "7": ["/player/anim.json", "/player/mouth/7.png"],
+                "8": ["/player/anim.json", "/player/mouth/8.png"],
+                "9": ["/player/anim.json", "/player/mouth/9.png"],
+                "10": ["/player/anim.json", "/player/mouth/10.png"]
+            },
+            "beard": {
+                "1": ["/player/anim.json", "/player/beard/1.png"],
+                "2": ["/player/anim.json", "/player/beard/2.png"]
+            }
+        }
+    },
+    "font": {
+        "default": ["/font/default.info", "/font/default.png"]
+    },
+    "loc": {
+        "us_english": "/loc/us_english.loc",
+        "de_german": "/loc/de_german.loc",
+        "nl_dutch": "/loc/nl_dutch.loc",
+        "pl_polish": "/loc/pl_polish.loc"
+    }
+}

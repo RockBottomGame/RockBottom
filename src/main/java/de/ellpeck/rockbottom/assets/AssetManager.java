@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
+import com.google.gson.*;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
@@ -29,13 +30,14 @@ import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.util.Log;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class AssetManager implements IAssetManager{
 
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
-    private final Map<String, Texture> cachedSubTextureParents = new HashMap<>();
     private AssetSound missingSound;
     private AssetTexture missingTexture;
     private AssetLocale missingLocale;
@@ -44,29 +46,6 @@ public class AssetManager implements IAssetManager{
     private Locale currentLocale;
     private Locale defaultLocale;
     private Font currentFont;
-
-    private Texture loadTexture(String key, String path, String value) throws Exception{
-        if(value.startsWith("sub.")){
-            String[] parts = value.substring(4).split(",");
-            String base = path+parts[0];
-
-            Texture main = this.cachedSubTextureParents.get(base);
-            if(main == null){
-                main = new Texture(getResource(base), key, false);
-                this.cachedSubTextureParents.put(base, main);
-            }
-
-            int x = Integer.parseInt(parts[1]);
-            int y = Integer.parseInt(parts[2]);
-            int width = Integer.parseInt(parts[3]);
-            int height = Integer.parseInt(parts[4]);
-
-            return main.getSubTexture(x, y, width, height);
-        }
-        else{
-            return new Texture(getResource(path+value), key, false);
-        }
-    }
 
     public static InputStream getResource(String s){
         return AssetManager.class.getResourceAsStream(s);
@@ -105,8 +84,6 @@ public class AssetManager implements IAssetManager{
         this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
 
         this.reloadCursor(game);
-
-        this.cachedSubTextureParents.clear();
     }
 
     @Override
@@ -139,7 +116,7 @@ public class AssetManager implements IAssetManager{
     public <T extends IAsset> Map<IResourceName, T> getAllOfType(Class<T> type){
         Map<IResourceName, T> assets = new HashMap<>();
 
-        for(Map.Entry<IResourceName, IAsset> entry : this.assets.entrySet()){
+        for(Entry<IResourceName, IAsset> entry : this.assets.entrySet()){
             IAsset asset = entry.getValue();
 
             if(type.isAssignableFrom(asset.getClass())){
@@ -151,89 +128,126 @@ public class AssetManager implements IAssetManager{
     }
 
     private void loadAssets() throws Exception{
+        JsonParser parser = new JsonParser();
+
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             String path = mod.getResourceLocation();
             if(path != null && !path.isEmpty()){
                 int loadAmount = 0;
 
-                InputStream propStream = getResource(path+"/assets.info");
-                if(propStream != null){
-                    Properties props = new Properties();
-                    props.load(propStream);
+                InputStream stream = getResource(path+"/assets.json");
+                if(stream != null){
+                    try{
+                        InputStreamReader reader = new InputStreamReader(stream);
+                        JsonObject main = parser.parse(reader).getAsJsonObject();
 
-                    for(String key : props.stringPropertyNames()){
-                        String value = props.getProperty(key);
-                        IResourceName name = RockBottomAPI.createRes(mod, key);
+                        for(Entry<String, JsonElement> resType : main.entrySet()){
+                            String type = resType.getKey();
+                            JsonObject resources = resType.getValue().getAsJsonObject();
 
-                        boolean didLoad = true;
-                        try{
-                            if(key.startsWith("anim.")){
-                                String[] split = value.split(",");
-                                InputStream texture = getResource(path+split[0]);
-                                InputStream info = getResource(path+split[1]);
-
-                                this.assets.put(name, new AssetAnimation(Animation.fromStream(texture, info, key)));
-                                Log.debug("Loaded animation resource "+name+" with data "+value);
-                            }
-                            else if(key.startsWith("font.")){
-                                String[] split = value.split(",");
-                                InputStream texture = getResource(path+split[0]);
-                                InputStream info = getResource(path+split[1]);
-
-                                this.assets.put(name, new AssetFont(Font.fromStream(texture, info, key)));
-                                Log.debug("Loaded font resource "+name+" with data "+value);
-                            }
-                            else if(key.startsWith("tex.")){
-                                this.assets.put(name, new AssetTexture(this.loadTexture(key, path, value)));
-                                Log.debug("Loaded png resource "+name+" with data "+value);
-                            }
-                            else{
-                                InputStream stream = getResource(path+value);
-
-                                if(key.startsWith("sound.")){
-                                    this.assets.put(name, new AssetSound(new Sound(stream, key)));
-                                    Log.debug("Loaded ogg resource "+name+" with data "+value);
-                                }
-                                else if(key.startsWith("loc.")){
-                                    boolean merged = false;
-
-                                    Locale loaded = Locale.fromStream(stream, key);
-                                    for(AssetLocale asset : this.getAllOfType(AssetLocale.class).values()){
-                                        if(asset.get().merge(loaded)){
-                                            merged = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if(!merged){
-                                        this.assets.put(name, new AssetLocale(loaded));
-                                        Log.debug("Loaded localization resource "+name+" with data "+value);
-                                    }
-                                }
-                                else{
-                                    Log.warn("Couldn't load resource with key "+key+" and value "+value+" from assets.info for mod "+mod.getDisplayName()+" at path "+path+"!");
-                                    didLoad = false;
-                                }
-                            }
-
-                            if(didLoad){
-                                loadAmount++;
+                            for(Entry<String, JsonElement> resource : resources.entrySet()){
+                                this.loadRes(mod, path, type, type, resource.getValue(), resource.getKey());
                             }
                         }
-                        catch(Exception e){
-                            Log.error("Failed loading resource "+name+" with data "+value+"!", e);
-                        }
+                    }
+                    catch(Exception e){
+                        Log.error("Couldn't read assets.json from mod "+mod.getDisplayName(), e);
                     }
                 }
                 else{
-                    Log.error("Mod "+mod.getDisplayName()+" is missing assets.info file at path "+path);
+                    Log.error("Mod "+mod.getDisplayName()+" is missing assets.json file at path "+path);
                 }
 
-                Log.info("Loaded "+loadAmount+" assets from assets.info file for mod "+mod.getDisplayName()+" at path "+path);
+                Log.info("Loaded "+loadAmount+" assets from assets.json file for mod "+mod.getDisplayName()+" at path "+path);
             }
             else{
                 Log.info("Skipping mod "+mod.getDisplayName()+" that doesn't have a resource location");
             }
+        }
+    }
+
+    private void loadRes(IMod mod, String path, String type, String name, JsonElement element, String elementName){
+        try{
+            if("subtexture".equals(elementName)){
+                JsonObject object = element.getAsJsonObject();
+
+                String file = object.getAsJsonPrimitive("file").getAsString();
+                Texture main = new Texture(getResource(path+file), mod.getId()+"/"+name, false);
+
+                for(Entry<String, JsonElement> entry : object.entrySet()){
+                    String key = entry.getKey();
+                    if(!"file".equals(key)){
+                        JsonArray array = entry.getValue().getAsJsonArray();
+                        IResourceName res = RockBottomAPI.createRes(mod, name+"."+key);
+
+                        Texture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
+                        this.assets.put(res, new AssetTexture(texture));
+
+                        Log.debug("Loaded subtexture "+res+" from texture "+path+file+" for mod "+mod.getDisplayName());
+                    }
+                }
+            }
+            else{
+                if(!"*".equals(elementName)){
+                    name += "."+elementName;
+                }
+
+                if(element.isJsonPrimitive() || element.isJsonArray()){
+                    IResourceName res = RockBottomAPI.createRes(mod, name);
+
+                    if("tex".equals(type)){
+                        String resPath = path+element.getAsString();
+
+                        AssetTexture texture = new AssetTexture(new Texture(getResource(resPath), res.toString(), false));
+                        this.assets.put(res, texture);
+
+                        Log.debug("Loaded texture "+res+" from "+resPath+" for mod "+mod.getDisplayName());
+                    }
+                    else if("loc".equals(type)){
+                        String resPath = path+element.getAsString();
+
+                        AssetLocale locale = new AssetLocale(Locale.fromStream(getResource(resPath), res.toString()));
+                        this.assets.put(res, locale);
+
+                        Log.debug("Loaded locale "+res+" from "+resPath+" for mod "+mod.getDisplayName());
+                    }
+                    else if("font".equals(type)){
+                        JsonArray array = element.getAsJsonArray();
+                        String info = array.get(0).getAsString();
+                        String texture = array.get(1).getAsString();
+
+                        AssetFont font = new AssetFont(Font.fromStream(getResource(path+texture), getResource(path+info), res.toString()));
+                        this.assets.put(res, font);
+
+                        Log.debug("Loaded font "+res+" from "+path+info+" and "+path+texture+" for mod "+mod.getDisplayName());
+                    }
+                    else if("anim".equals(type)){
+                        JsonArray array = element.getAsJsonArray();
+                        String anim = array.get(0).getAsString();
+                        String texture = array.get(1).getAsString();
+
+                        AssetAnimation animation = new AssetAnimation(Animation.fromStream(getResource(path+texture), getResource(path+anim), res.toString()));
+                        this.assets.put(res, animation);
+
+                        Log.debug("Loaded animation "+res+" from "+path+anim+" and "+path+texture+" for mod "+mod.getDisplayName());
+                    }
+                    else{
+                        Log.warn("Found unknown resource type "+type+" from mod "+mod.getDisplayName());
+                    }
+                }
+                else if(element.isJsonObject()){
+                    JsonObject object = element.getAsJsonObject();
+                    for(Entry<String, JsonElement> entry : object.entrySet()){
+                        this.loadRes(mod, path, type, name, entry.getValue(), entry.getKey());
+                    }
+                }
+                else{
+                    System.out.println("Resource wih name "+name+" and element "+element+" with name "+elementName+" is unknown");
+                }
+            }
+        }
+        catch(Exception e){
+            Log.error("Couldn't load resource "+name+" for mod "+mod.getDisplayName(), e);
         }
     }
 
