@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class GuiKeybinds extends Gui{
@@ -70,6 +71,7 @@ public class GuiKeybinds extends Gui{
         int offset = this.scrollBar.getNumber()*2;
 
         List<Keybind> binds = new ArrayList<>(RockBottomAPI.KEYBIND_REGISTRY.getUnmodifiable().values());
+        binds.sort(Comparator.comparing(Keybind:: getName));
 
         for(int i = 0; i < this.keybinds.length; i++){
             ComponentKeybind comp = this.keybinds[i];
