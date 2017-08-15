@@ -142,7 +142,9 @@
             "heart_empty": "/gui/heart_empty.png",
             "construction": "/gui/construction.png",
             "construction_toggled": "/gui/construction_crossed.png",
-            "colorpick": "/gui/colorpick.png"
+            "colorpick": "/gui/colorpick.png",
+            "all_construction": "/gui/all_construction.png",
+            "all_construction_toggled": "/gui/all_construction_crossed.png"
         },
         "particle": {
             "smoke": "/particle/smoke.png"
