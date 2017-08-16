@@ -133,7 +133,7 @@ public class AssetManager implements IAssetManager{
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             String path = mod.getResourceLocation();
             if(path != null && !path.isEmpty()){
-                int loadAmount = 0;
+                int prevAmount = this.assets.size();
 
                 InputStream stream = getResource(path+"/assets.json");
                 if(stream != null){
@@ -158,7 +158,7 @@ public class AssetManager implements IAssetManager{
                     Log.error("Mod "+mod.getDisplayName()+" is missing assets.json file at path "+path);
                 }
 
-                Log.info("Loaded "+loadAmount+" assets from assets.json file for mod "+mod.getDisplayName()+" at path "+path);
+                Log.info("Loaded "+(this.assets.size()-prevAmount)+" assets from assets.json file for mod "+mod.getDisplayName()+" at path "+path);
             }
             else{
                 Log.info("Skipping mod "+mod.getDisplayName()+" that doesn't have a resource location");
@@ -207,7 +207,7 @@ public class AssetManager implements IAssetManager{
                         String resPath = path+element.getAsString();
                         boolean merged = false;
 
-                        Locale locale = Locale.fromStream(getResource(resPath), res.toString());
+                        Locale locale = Locale.fromStream(getResource(resPath), elementName);
                         for(AssetLocale asset : this.getAllOfType(AssetLocale.class).values()){
                             if(asset.get().merge(locale)){
                                 merged = true;
