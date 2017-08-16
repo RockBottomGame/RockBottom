@@ -178,7 +178,7 @@ public class AssetManager implements IAssetManager{
                     String key = entry.getKey();
                     if(!"file".equals(key)){
                         JsonArray array = entry.getValue().getAsJsonArray();
-                        IResourceName res = RockBottomAPI.createRes(mod, name+"."+key);
+                        IResourceName res = RockBottomAPI.createRes(mod, "*".equals(key) ? name : name+"."+key);
 
                         Texture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
                         this.assets.put(res, new AssetTexture(texture));
