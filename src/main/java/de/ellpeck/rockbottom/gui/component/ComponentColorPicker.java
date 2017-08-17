@@ -42,19 +42,6 @@ public class ComponentColorPicker extends GuiComponent{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        if(!this.isEnlarged){
-            this.render(g);
-        }
-    }
-
-    @Override
-    public void renderOverlay(IGameInstance game, IAssetManager manager, Graphics g){
-        if(this.isEnlarged){
-            this.render(g);
-        }
-    }
-
-    private void render(Graphics g){
         this.image.draw(this.x, this.y, this.sizeX, this.sizeY);
 
         g.setColor(this.colorOutline);
