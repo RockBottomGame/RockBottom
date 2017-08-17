@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.util.Util;
 
 public final class ConstructionRegistry{
 
@@ -67,6 +68,10 @@ public final class ConstructionRegistry{
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.TILE_DOOR),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 20),
                 new ResUseInfo(ResourceRegistry.WOOD_LOG, 2)));
+
+        for(int i = 0; i < 100; i++){
+            RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(Util.RANDOM.nextBoolean() ? GameContent.ITEM_GLOW_CLUSTER : GameContent.ITEM_COPPER_INGOT), new ItemUseInfo(new ItemInstance(GameContent.TILE_DIRT))));
+        }
 
         RockBottomAPI.STAMPER_RECIPES.add(new StamperRecipe(new ResUseInfo(ResourceRegistry.RAW_STONE, 2),
                 new ItemInstance(GameContent.TILE_HARDENED_STONE)));

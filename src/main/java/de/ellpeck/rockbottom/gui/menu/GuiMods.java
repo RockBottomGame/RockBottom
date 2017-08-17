@@ -71,7 +71,7 @@ public class GuiMods extends Gui{
             }
             return false;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.mod_info")));
-        this.modGuiButton.isVisible = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
+        this.modGuiButton.isActive = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
         this.components.add(this.modGuiButton);
 
         this.disabledButton = new ComponentButton(this, 100+(width-100)/2+5, height-30, 55, 16, () -> {
@@ -90,7 +90,7 @@ public class GuiMods extends Gui{
     }
 
     private void updateDisableButton(IGameInstance game){
-        this.disabledButton.isVisible = this.selectedMod != null && this.selectedMod.isDisableable();
+        this.disabledButton.isActive = this.selectedMod != null && this.selectedMod.isDisableable();
 
         if(this.selectedMod != null){
             String s = "button."+(RockBottomAPI.getModLoader().getModSettings().isDisabled(this.selectedMod.getId()) ? "enable" : "disable");
@@ -117,7 +117,7 @@ public class GuiMods extends Gui{
 
     public void selectMod(IMod mod){
         this.selectedMod = mod;
-        this.modGuiButton.isVisible = mod.getModGuiClass() != null;
+        this.modGuiButton.isActive = mod.getModGuiClass() != null;
         this.updateDisableButton(RockBottomAPI.getGame());
     }
 

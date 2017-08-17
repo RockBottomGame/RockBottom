@@ -200,7 +200,7 @@ public class GuiManager implements IGuiManager{
                 Log.debug("Closed Gui");
             }
             else{
-                Log.debug("Opened Gui "+this.gui.getName()+" with components "+this.gui.getComponents());
+                Log.debug("Opened Gui "+this.gui.getName()+" with "+this.gui.getComponents().size()+" components");
             }
         }
     }
