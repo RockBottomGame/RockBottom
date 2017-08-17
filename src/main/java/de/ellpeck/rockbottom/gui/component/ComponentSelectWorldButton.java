@@ -21,15 +21,12 @@ public class ComponentSelectWorldButton extends ComponentButton{
     private static final IResourceName RES_LAST_MODIFIED = AbstractGame.internalRes("info.last_modified");
     private static final IResourceName RES_SEED = AbstractGame.internalRes("info.seed");
 
-    public File worldFile;
-    private WorldInfo info;
-    private String lastModified;
+    public final File worldFile;
+    private final WorldInfo info;
+    private final String lastModified;
 
-    public ComponentSelectWorldButton(Gui gui, int x, int y){
+    public ComponentSelectWorldButton(Gui gui, int x, int y, File file){
         super(gui, x, y, 182, 24, null, null);
-    }
-
-    public void setWorld(File file){
         this.worldFile = file;
 
         this.info = new WorldInfo(this.worldFile);

@@ -14,16 +14,13 @@ import org.newdawn.slick.Input;
 public class ComponentKeybind extends ComponentButton{
 
     private final GuiKeybinds gui;
-    private Keybind bind;
+    private final Keybind bind;
     private final int id;
 
-    public ComponentKeybind(GuiKeybinds gui, int id, int x, int y){
+    public ComponentKeybind(GuiKeybinds gui, int id, int x, int y, Keybind bind){
         super(gui, x, y, 100, 16, null, null);
         this.gui = gui;
         this.id = id;
-    }
-
-    public void setKeybind(Keybind bind){
         this.bind = bind;
     }
 
