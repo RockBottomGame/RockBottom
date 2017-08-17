@@ -47,6 +47,7 @@ public class GuiCredits extends Gui{
         this.credits.add("Special Thanks");
         this.credits.add("  TTFTCUTS (A lot of Terrain Gen help)");
         this.credits.add("  witsend66 (Game Name)");
+        this.credits.add("  JakesPlanet (Forcing me to use JSON)");
         this.credits.add("");
         this.credits.add("  Beta Modders");
         this.credits.add("    raphydaphy");
