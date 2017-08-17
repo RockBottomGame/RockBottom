@@ -12,8 +12,8 @@ public class ComponentModButton extends ComponentButton{
     private final GuiMods gui;
     private final IMod mod;
 
-    public ComponentModButton(GuiMods gui, IMod mod, int id, int x, int y){
-        super(gui, id, x, y, 100, 16, null);
+    public ComponentModButton(GuiMods gui, IMod mod, int x, int y){
+        super(gui, x, y, 100, 16, null, null);
         this.mod = mod;
         this.gui = gui;
     }

@@ -28,33 +28,24 @@ public class GuiLanguage extends Gui{
         for(Map.Entry<IResourceName, AssetLocale> entry : manager.getAllOfType(AssetLocale.class).entrySet()){
             IResourceName res = entry.getKey();
             Locale loc = entry.getValue().get();
-            this.components.add(new ComponentButton(this, i, this.guiLeft+this.sizeX/2-75, this.guiTop+(i*20), 150, 16, loc.localize(null, res)){
-                @Override
-                public boolean onPressed(IGameInstance game){
-                    if(manager.getLocale() != loc){
-                        game.getSettings().currentLocale = res.toString();
-                        game.getDataManager().savePropSettings(game.getSettings());
+            this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-75, this.guiTop+(i*20), 150, 16, () -> {
+                if(manager.getLocale() != loc){
+                    game.getSettings().currentLocale = res.toString();
+                    game.getDataManager().savePropSettings(game.getSettings());
 
-                        manager.setLocale(loc);
-                        game.getGuiManager().setReInit();
-                        return true;
-                    }
-                    return false;
+                    manager.setLocale(loc);
+                    game.getGuiManager().setReInit();
+                    return true;
                 }
-            });
+                return false;
+            }, loc.localize(null, res)));
             i++;
         }
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
-        if(button == -1){
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }
-        return false;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
     }
 
     @Override

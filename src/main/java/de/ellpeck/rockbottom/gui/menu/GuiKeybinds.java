@@ -45,21 +45,15 @@ public class GuiKeybinds extends Gui{
         }
 
         BoundBox scrollArea = new BoundBox(this.sizeX/2-102, 0, this.sizeX/2+100, this.sizeX-26).add(this.guiLeft, this.guiTop);
-        this.scrollBar = new ComponentScrollBar(this, 0, this.guiLeft+this.sizeX/2-112, this.guiTop, 6, this.sizeY-26, 0, 0, RockBottomAPI.KEYBIND_REGISTRY.getSize()/2-7, scrollArea, (min, max, number) -> this.populateButtons());
+        this.scrollBar = new ComponentScrollBar(this, this.guiLeft+this.sizeX/2-112, this.guiTop, 6, this.sizeY-26, 0, 0, RockBottomAPI.KEYBIND_REGISTRY.getSize()/2-7, scrollArea, (number) -> this.populateButtons());
         this.components.add(this.scrollBar);
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
-
-        this.populateButtons();
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
-        if(button == -1){
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }
-        return false;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+
+        this.populateButtons();
     }
 
     @Override

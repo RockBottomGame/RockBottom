@@ -34,22 +34,57 @@ public class GuiMods extends Gui{
 
         int i = 0;
         for(IMod mod : RockBottomAPI.getModLoader().getAllTheMods()){
-            this.components.add(new ComponentModButton(this, mod, i+1, 10, 10+(i*20)));
+            this.components.add(new ComponentModButton(this, mod, 10, 10+(i*20)));
             i++;
         }
 
         int width = (int)game.getWidthInGui();
         int height = (int)game.getHeightInGui();
 
-        this.components.add(new ComponentButton(this, -1, width-47, 14, 45, 10, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, width-47, 14, 45, 10, () -> {
+            game.getGuiManager().openGui(this.parent);
+            return true;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
 
-        this.components.add(new ComponentButton(this, -2, width-77, 2, 75, 10, game.getAssetManager().localize(AbstractGame.internalRes("button.mods_folder"))));
+        this.components.add(new ComponentButton(this, width-77, 2, 75, 10, () -> {
+            try{
+                Desktop.getDesktop().open(game.getDataManager().getModsDir());
+                return true;
+            }
+            catch(IOException e){
+                Log.error("Couldn't open mods folder", e);
+                return false;
+            }
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.mods_folder"))));
 
-        this.modGuiButton = new ComponentButton(this, 0, 100+(width-100)/2-60, height-30, 55, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.mod_info")));
+        this.modGuiButton = new ComponentButton(this, 100+(width-100)/2-60, height-30, 55, 16, () -> {
+            Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();
+            if(guiClass != null){
+                try{
+                    Gui gui = guiClass.getConstructor(Gui.class).newInstance(this);
+                    game.getGuiManager().openGui(gui);
+                    return true;
+                }
+                catch(Exception e){
+                    Log.error("Failed initializing mod gui for mod "+this.selectedMod.getDisplayName(), e);
+                }
+            }
+            return false;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.mod_info")));
         this.modGuiButton.isVisible = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
         this.components.add(this.modGuiButton);
 
-        this.disabledButton = new ComponentButton(this, 1, 100+(width-100)/2+5, height-30, 55, 16, "", game.getAssetManager().localize(AbstractGame.internalRes("info.requires_restart")));
+        this.disabledButton = new ComponentButton(this, 100+(width-100)/2+5, height-30, 55, 16, () -> {
+            if(this.selectedMod.isDisableable()){
+                ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
+                settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));
+                game.getDataManager().savePropSettings(settings);
+
+                this.updateDisableButton(game);
+                return true;
+            }
+            return false;
+        }, "", game.getAssetManager().localize(AbstractGame.internalRes("info.requires_restart")));
         this.updateDisableButton(game);
         this.components.add(this.disabledButton);
     }
@@ -88,46 +123,6 @@ public class GuiMods extends Gui{
 
     public IMod getSelectedMod(){
         return this.selectedMod;
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
-        if(button == 0){
-            Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();
-            if(guiClass != null){
-                try{
-                    Gui gui = guiClass.getConstructor(Gui.class).newInstance(this);
-                    game.getGuiManager().openGui(gui);
-                    return true;
-                }
-                catch(Exception e){
-                    Log.error("Failed initializing mod gui for mod "+this.selectedMod.getDisplayName(), e);
-                }
-            }
-        }
-        else if(button == 1){
-            if(this.selectedMod.isDisableable()){
-                ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
-                settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));
-                game.getDataManager().savePropSettings(settings);
-
-                this.updateDisableButton(game);
-                return true;
-            }
-        }
-        else if(button == -1){
-            game.getGuiManager().openGui(this.parent);
-            return true;
-        }
-        else if(button == -2){
-            try{
-                Desktop.getDesktop().open(game.getDataManager().getModsDir());
-            }
-            catch(IOException e){
-                Log.error("Couldn't open mods folder", e);
-            }
-        }
-        return false;
     }
 
     @Override

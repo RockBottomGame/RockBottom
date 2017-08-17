@@ -27,17 +27,7 @@ public class GuiJoinServer extends Gui{
         this.components.add(this.inputField);
         this.inputField.setText(game.getSettings().lastServerIp);
 
-        this.components.add(new ComponentButton(this, 0, this.guiLeft, this.guiTop+20, this.sizeX, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.connect"))));
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
-        if(button == -1){
-            game.getGuiManager().openGui(this.parent);
-            return true;
-        }
-        else if(button == 0){
+        this.components.add(new ComponentButton(this, this.guiLeft, this.guiTop+20, this.sizeX, 16, () -> {
             try{
                 String[] separated = this.inputField.getText().split(":");
                 if(separated.length == 1){
@@ -50,12 +40,17 @@ public class GuiJoinServer extends Gui{
 
                 Log.info("Attempting to join server");
                 RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
+                return true;
             }
             catch(Exception e){
                 Log.error("Couldn't connect to server", e);
             }
-        }
-        return false;
+            return false;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.connect"))));
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, () -> {
+            game.getGuiManager().openGui(this.parent);
+            return true;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
     }
 
     @Override

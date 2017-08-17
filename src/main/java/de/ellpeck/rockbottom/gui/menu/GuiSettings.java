@@ -22,41 +22,27 @@ public class GuiSettings extends Gui{
         super.initGui(game);
         IAssetManager assetManager = game.getAssetManager();
         Settings settings = game.getSettings();
-
-        this.components.add(new ComponentButton(this, 0, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, assetManager.localize(AbstractGame.internalRes("button.controls"))));
-        this.components.add(new ComponentButton(this, 1, this.guiLeft+this.sizeX/2-75, this.guiTop+20, 150, 16, assetManager.localize(AbstractGame.internalRes("button.graphics"))));
-        this.components.add(new ComponentButton(this, 2, this.guiLeft+this.sizeX/2-75, this.guiTop+40, 150, 16, assetManager.localize(AbstractGame.internalRes("button.language"))));
-
-        this.components.add(new ComponentSlider(this, 3, this.guiLeft+this.sizeX/2-75, this.guiTop+65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, new ComponentSlider.ICallback(){
-            @Override
-            public void onNumberChange(float mouseX, float mouseY, int min, int max, int number){
-                settings.autosaveIntervalSeconds = number;
-            }
-        }, assetManager.localize(AbstractGame.internalRes("button.autosave_interval")), assetManager.localize(AbstractGame.internalRes("info.autosave_interval"))));
-
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, assetManager.localize(AbstractGame.internalRes("button.back"))));
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
         IGuiManager guiManager = game.getGuiManager();
 
-        if(button == -1){
-            guiManager.openGui(this.parent);
-            return true;
-        }
-        else if(button == 0){
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, () -> {
             guiManager.openGui(new GuiKeybinds(this));
             return true;
-        }
-        else if(button == 1){
+        }, assetManager.localize(AbstractGame.internalRes("button.controls"))));
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-75, this.guiTop+20, 150, 16, () -> {
             guiManager.openGui(new GuiGraphics(this));
             return true;
-        }
-        else if(button == 2){
+        }, assetManager.localize(AbstractGame.internalRes("button.graphics"))));
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-75, this.guiTop+40, 150, 16, () -> {
             guiManager.openGui(new GuiLanguage(this));
-        }
-        return false;
+            return true;
+        }, assetManager.localize(AbstractGame.internalRes("button.language"))));
+
+        this.components.add(new ComponentSlider(this, this.guiLeft+this.sizeX/2-75, this.guiTop+65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(AbstractGame.internalRes("button.autosave_interval")), assetManager.localize(AbstractGame.internalRes("info.autosave_interval"))));
+
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, () -> {
+            guiManager.openGui(this.parent);
+            return true;
+        }, assetManager.localize(AbstractGame.internalRes("button.back"))));
     }
 
     @Override

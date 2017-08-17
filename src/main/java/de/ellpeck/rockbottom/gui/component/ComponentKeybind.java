@@ -15,10 +15,12 @@ public class ComponentKeybind extends ComponentButton{
 
     private final GuiKeybinds gui;
     private Keybind bind;
+    private final int id;
 
     public ComponentKeybind(GuiKeybinds gui, int id, int x, int y){
-        super(gui, id, x, y, 100, 16, null);
+        super(gui, x, y, 100, 16, null, null);
         this.gui = gui;
+        this.id = id;
     }
 
     public void setKeybind(Keybind bind){

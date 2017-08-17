@@ -8,12 +8,14 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import org.newdawn.slick.Graphics;
 
+import java.util.function.Supplier;
+
 public class ComponentFancyButton extends ComponentButton{
 
     protected final IResourceName texture;
 
-    public ComponentFancyButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, IResourceName texture, String... hover){
-        super(gui, id, x, y, sizeX, sizeY, null, hover);
+    public ComponentFancyButton(Gui gui, int x, int y, int sizeX, int sizeY, Supplier<Boolean> supplier, IResourceName texture, String... hover){
+        super(gui, x, y, sizeX, sizeY, supplier, null, hover);
         this.texture = texture;
     }
 

@@ -61,7 +61,10 @@ public class GuiCredits extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, -1, (int)game.getWidthInGui()-47, 2, 45, 10, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, (int)game.getWidthInGui()-47, 2, 45, 10, () -> {
+            game.getGuiManager().openGui(this.parent);
+            return true;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
 
         this.renderY = (int)game.getHeightInGui();
     }
@@ -86,15 +89,6 @@ public class GuiCredits extends Gui{
         if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
             this.renderY = (int)game.getHeightInGui();
         }
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
-        if(button == -1){
-            game.getGuiManager().openGui(this.parent);
-            return true;
-        }
-        return false;
     }
 
     @Override

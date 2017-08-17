@@ -7,13 +7,15 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
+import java.util.function.Supplier;
+
 public class ComponentToggleButton extends ComponentButton{
 
     private final String locKey;
     private boolean isToggled;
 
-    public ComponentToggleButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, boolean defaultState, String locKey, String... hover){
-        super(gui, id, x, y, sizeX, sizeY, null, hover);
+    public ComponentToggleButton(Gui gui, int x, int y, int sizeX, int sizeY, boolean defaultState, Supplier<Boolean> supplier, String locKey, String... hover){
+        super(gui, x, y, sizeX, sizeY, supplier, null, hover);
         this.isToggled = defaultState;
         this.locKey = locKey;
     }

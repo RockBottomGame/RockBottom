@@ -34,36 +34,39 @@ public class GuiSelectWorld extends Gui{
         super.initGui(game);
 
         for(int i = 0; i < BUTTON_AMOUNT; i++){
-            ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, 1+i, this.guiLeft, this.guiTop+(i*26));
+            ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, this.guiLeft, this.guiTop+(i*26));
             this.buttons[i] = button;
             this.components.add(button);
 
-            this.deleteButtons[i] = new ComponentButton(this, this.buttons.length+1+i, this.guiLeft+184, this.guiTop+(i*26), 16, 24, "X", "Delete World"){
-                @Override
-                public boolean onPressed(IGameInstance game){
-                    try{
-                        Util.deleteFolder(button.worldFile);
-                        Log.info("Successfully deleted world "+button.worldFile);
-                    }
-                    catch(Exception e){
-                        Log.error("Couldn't delete world "+button.worldFile, e);
-                    }
-
-                    GuiSelectWorld.this.populateButtons(game);
-                    return true;
+            this.deleteButtons[i] = new ComponentButton(this, this.guiLeft+184, this.guiTop+(i*26), 16, 24, () -> {
+                try{
+                    Util.deleteFolder(button.worldFile);
+                    Log.info("Successfully deleted world "+button.worldFile);
                 }
-            };
+                catch(Exception e){
+                    Log.error("Couldn't delete world "+button.worldFile, e);
+                }
+
+                GuiSelectWorld.this.populateButtons(game);
+                return true;
+            }, "X", "Delete World");
             this.components.add(this.deleteButtons[i]);
         }
 
         BoundBox box = new BoundBox(0, 0, 200, 128).add(this.guiLeft, this.guiTop);
-        this.scrollBar = new ComponentScrollBar(this, 0, this.guiLeft-8, this.guiTop, 6, 128, 0, 0, 0, box, (min, max, number) -> this.populateButtons(game));
+        this.scrollBar = new ComponentScrollBar(this,this.guiLeft-8, this.guiTop, 6, 128, 0, 0, 0, box, (number) -> this.populateButtons(game));
         this.components.add(this.scrollBar);
 
         int bottomY = (int)game.getHeightInGui();
-        this.components.add(new ComponentButton(this, -2, this.guiLeft+this.sizeX/2-82, bottomY-30, 80, 16, "Create World"));
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-82, bottomY-30, 80, 16, () -> {
+            game.getGuiManager().openGui(new GuiCreateWorld(this));
+            return true;
+        }, "Create World"));
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2+2, bottomY-30, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2+2, bottomY-30, 80, 16, () -> {
+            game.getGuiManager().openGui(this.parent);
+            return true;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
 
         this.populateButtons(game);
     }
@@ -105,18 +108,6 @@ public class GuiSelectWorld extends Gui{
                 deleteButton.isVisible = false;
             }
         }
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
-        if(button == -1){
-            game.getGuiManager().openGui(this.parent);
-            return true;
-        }
-        else if(button == -2){
-            game.getGuiManager().openGui(new GuiCreateWorld(this));
-        }
-        return false;
     }
 
     @Override

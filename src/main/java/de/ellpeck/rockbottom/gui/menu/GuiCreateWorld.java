@@ -44,9 +44,19 @@ public class GuiCreateWorld extends Gui{
         this.components.add(this.seedField);
 
         int bottomY = (int)game.getHeightInGui();
-        this.components.add(new ComponentButton(this, 0, this.guiLeft+this.sizeX/2-82, bottomY-30, 80, 16, "Create"));
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-82, bottomY-30, 80, 16, () -> {
+            File file = this.makeWorldFile(game);
+            WorldInfo info = new WorldInfo(file);
+            info.seed = this.seed;
+            info.save();
+            game.startWorld(file, info);
+            return true;
+        }, "Create"));
 
-        this.components.add(new ComponentButton(this, -1, this.guiLeft+this.sizeX/2+2, bottomY-30, 80, 16, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2+2, bottomY-30, 80, 16, () -> {
+            game.getGuiManager().openGui(this.parent);
+            return true;
+        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
 
         this.updateNameAndSeed(game);
     }
@@ -117,23 +127,6 @@ public class GuiCreateWorld extends Gui{
 
         font.drawCenteredString(middle, this.guiTop+40, "Seed", 0.5F, false);
         font.drawString(middle-75, this.guiTop+70, "Final Seed: "+this.seed, 0.25F);
-    }
-
-    @Override
-    public boolean onButtonActivated(IGameInstance game, int button){
-        if(button == -1){
-            game.getGuiManager().openGui(this.parent);
-            return true;
-        }
-        else if(button == 0){
-            File file = this.makeWorldFile(game);
-            WorldInfo info = new WorldInfo(file);
-            info.seed = this.seed;
-            info.save();
-            game.startWorld(file, info);
-            return true;
-        }
-        return false;
     }
 
     @Override

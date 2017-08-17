@@ -5,13 +5,15 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
+import java.util.function.Supplier;
+
 public class ComponentFancyToggleButton extends ComponentFancyButton{
 
     private final IResourceName texToggled;
     private boolean isToggled;
 
-    public ComponentFancyToggleButton(Gui gui, int id, int x, int y, int sizeX, int sizeY, boolean defaultState, IResourceName texture, String... hover){
-        super(gui, id, x, y, sizeX, sizeY, texture, hover);
+    public ComponentFancyToggleButton(Gui gui, int x, int y, int sizeX, int sizeY, boolean defaultState, Supplier<Boolean> supplier, IResourceName texture, String... hover){
+        super(gui, x, y, sizeX, sizeY, supplier, texture, hover);
         this.isToggled = defaultState;
         this.texToggled = this.texture.addSuffix("_toggled");
     }

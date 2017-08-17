@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.gui.menu.GuiSelectWorld;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Graphics;
 
@@ -26,8 +25,8 @@ public class ComponentSelectWorldButton extends ComponentButton{
     private WorldInfo info;
     private String lastModified;
 
-    public ComponentSelectWorldButton(Gui gui, int id, int x, int y){
-        super(gui, id, x, y, 182, 24, null);
+    public ComponentSelectWorldButton(Gui gui, int x, int y){
+        super(gui, x, y, 182, 24, null, null);
     }
 
     public void setWorld(File file){

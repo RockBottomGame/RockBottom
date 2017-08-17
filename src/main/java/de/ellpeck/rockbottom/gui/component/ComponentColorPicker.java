@@ -12,11 +12,13 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
+import java.util.function.BiConsumer;
+
 public class ComponentColorPicker extends GuiComponent{
 
     private final Image image = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
 
-    private final ICallback callback;
+    private final BiConsumer<Color, Boolean> consumer;
     private final boolean isEnlargable;
     private final int defX;
     private final int defY;
@@ -26,9 +28,9 @@ public class ComponentColorPicker extends GuiComponent{
     private boolean isEnlarged;
     private Color color;
 
-    public ComponentColorPicker(Gui gui, int x, int y, int sizeX, int sizeY, Color defaultColor, ICallback callback, boolean isEnlargable){
+    public ComponentColorPicker(Gui gui, int x, int y, int sizeX, int sizeY, Color defaultColor, BiConsumer<Color, Boolean> consumer, boolean isEnlargable){
         super(gui, x, y, sizeX, sizeY);
-        this.callback = callback;
+        this.consumer = consumer;
         this.color = defaultColor;
         this.isEnlargable = isEnlargable;
 
@@ -75,7 +77,7 @@ public class ComponentColorPicker extends GuiComponent{
                     this.gui.prioritize(this);
                 }
                 else if(!this.wasMouseDown){
-                    this.callback.onFirstClick(game.getMouseInGuiX(), game.getMouseInGuiY(), this.color);
+                    this.consumer.accept(this.color, false);
                     this.wasMouseDown = true;
                 }
 
@@ -128,7 +130,7 @@ public class ComponentColorPicker extends GuiComponent{
                 this.onClickOrMove(game, mouseX, mouseY);
             }
             else{
-                this.callback.onLetGo(mouseX, mouseY, this.color);
+                this.consumer.accept(this.color, true);
                 this.wasMouseDown = false;
             }
         }
@@ -142,24 +144,8 @@ public class ComponentColorPicker extends GuiComponent{
 
             if(!this.color.equals(color)){
                 this.color = color;
-
-                this.callback.onChange(mouseX, mouseY, this.color);
+                this.consumer.accept(this.color, false);
             }
-        }
-    }
-
-    public interface ICallback{
-
-        default void onChange(float mouseX, float mouseY, Color color){
-
-        }
-
-        default void onFirstClick(float mouseX, float mouseY, Color color){
-
-        }
-
-        default void onLetGo(float mouseX, float mouseY, Color color){
-
         }
     }
 }
