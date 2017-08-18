@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -78,9 +79,7 @@ public class GuiPlayerEditor extends Gui{
         };
         this.nameField.setText(design.getName());
         this.components.add(this.nameField);
-        this.components.add(new ComponentColorPicker(this, colorX-98, this.guiTop, 12, 12, design.getFavoriteColor(), ((color, aBoolean) -> {
-            design.setFavoriteColor(color);
-        }), true));
+        this.components.add(new ComponentColorPicker(this, colorX-98, this.guiTop, 12, 12, design.getFavoriteColor(), ((color, aBoolean) -> design.setFavoriteColor(color)), true));
 
         this.components.add(new ComponentToggleButton(this, x-98, this.guiTop+14, 80, 12, design.isFemale(), () -> {
             design.setFemale(!design.isFemale());
@@ -90,9 +89,12 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(new ComponentSlider(this, x-98, this.guiTop+126, 80, 12, this.previewType+1, 1, 6, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(AbstractGame.internalRes("button.player_design.preview"))));
 
         this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2+33, (int)game.getHeightInGui()-20, 16, 16, () -> {
-            PlayerDesign.randomizeDesign(design);
-
-            this.initGui(game);
+            this.components.add(0, new ComponentConfirmationPopup(this, this.guiLeft+this.sizeX/2+41, (int)game.getHeightInGui()-12, aBoolean -> {
+                if(aBoolean){
+                    PlayerDesign.randomizeDesign(design);
+                    this.initGui(game);
+                }
+            }));
             return true;
         }, "?", assetManager.localize(AbstractGame.internalRes("info.randomize"))));
         this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-49, (int)game.getHeightInGui()-20, 80, 16, () -> {

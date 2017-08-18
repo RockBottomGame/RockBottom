@@ -144,7 +144,8 @@
             "construction_toggled": "/gui/construction_crossed.png",
             "colorpick": "/gui/colorpick.png",
             "all_construction": "/gui/all_construction.png",
-            "all_construction_toggled": "/gui/all_construction_crossed.png"
+            "all_construction_toggled": "/gui/all_construction_crossed.png",
+            "popup": "/gui/popup.png"
         },
         "particle": {
             "smoke": "/particle/smoke.png"

@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.GuiPlayerEditor;
 import de.ellpeck.rockbottom.init.AbstractGame;
@@ -58,7 +59,11 @@ public class GuiMainMenu extends Gui{
         }, assetManager.localize(AbstractGame.internalRes("button.mods"))));
 
         this.components.add(new ComponentButton(this, 2, 2, 45, 10, () -> {
-            game.exit();
+            this.components.add(0, new ComponentConfirmationPopup(this, 27, 2+5, aBoolean -> {
+                if(aBoolean){
+                    game.exit();
+                }
+            }));
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.quit"))));
     }

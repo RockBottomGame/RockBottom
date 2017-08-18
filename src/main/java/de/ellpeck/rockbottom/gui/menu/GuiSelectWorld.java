@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -64,18 +65,21 @@ public class GuiSelectWorld extends Gui{
             menu.add(new ComponentButton(this, 0, 0, 16, 24, null, "X", "Delete World"){
                 @Override
                 public boolean onPressed(IGameInstance game){
-                    try{
-                        Util.deleteFolder(button.worldFile);
-                        Log.info("Successfully deleted world "+button.worldFile);
-                    }
-                    catch(Exception e){
-                        Log.error("Couldn't delete world "+button.worldFile, e);
-                    }
+                    this.gui.getComponents().add(0, new ComponentConfirmationPopup(this.gui, this.x+this.sizeX/2, this.y+this.sizeY/2, aBoolean -> {
+                        if(aBoolean){
+                            try{
+                                Util.deleteFolder(button.worldFile);
+                                Log.info("Successfully deleted world "+button.worldFile);
+                            }
+                            catch(Exception e){
+                                Log.error("Couldn't delete world "+button.worldFile, e);
+                            }
 
-                    menu.remove(this);
-                    menu.remove(button);
-                    menu.organize();
-
+                            menu.remove(this);
+                            menu.remove(button);
+                            menu.organize();
+                        }
+                    }));
                     return true;
                 }
             });

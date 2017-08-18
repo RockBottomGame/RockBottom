@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
@@ -74,9 +75,13 @@ public class GuiGraphics extends Gui{
             }
         }, false));
         this.components.add(new ComponentButton(this, this.guiLeft+99, this.guiTop+94, 16, 16, () -> {
-            settings.guiColor = new Color(Settings.DEFAULT_GUI_R, Settings.DEFAULT_GUI_G, Settings.DEFAULT_GUI_B);
-            game.getDataManager().savePropSettings(settings);
-            game.getGuiManager().setReInit();
+            this.components.add(0, new ComponentConfirmationPopup(this, this.guiLeft+99+8, this.guiTop+94+8, aBoolean -> {
+                if(aBoolean){
+                    settings.guiColor = new Color(Settings.DEFAULT_GUI_R, Settings.DEFAULT_GUI_G, Settings.DEFAULT_GUI_B);
+                    game.getDataManager().savePropSettings(settings);
+                    game.getGuiManager().setReInit();
+                }
+            }));
             return true;
         }, "!", assetManager.localize(AbstractGame.internalRes("info.reset"))));
 
@@ -88,9 +93,9 @@ public class GuiGraphics extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        super.render(game, manager, g);
-
         manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+62, manager.localize(AbstractGame.internalRes("info.gui_color")), 0.35F, false);
+
+        super.render(game, manager, g);
     }
 
     @Override
