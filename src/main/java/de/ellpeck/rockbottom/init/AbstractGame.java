@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
-import de.ellpeck.rockbottom.api.util.IAction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
@@ -35,6 +34,7 @@ import java.io.File;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class AbstractGame implements IGameInstance{
 
@@ -42,7 +42,7 @@ public abstract class AbstractGame implements IGameInstance{
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
-    private final List<IAction> scheduledActions = new ArrayList<>();
+    private final List<Supplier<Boolean>> scheduledActions = new ArrayList<>();
     public boolean isRunning = true;
     protected DataManager dataManager;
     protected ChatLog chatLog;
@@ -136,9 +136,9 @@ public abstract class AbstractGame implements IGameInstance{
 
         synchronized(this.scheduledActions){
             for(int i = 0; i < this.scheduledActions.size(); i++){
-                IAction action = this.scheduledActions.get(i);
+                Supplier<Boolean> action = this.scheduledActions.get(i);
 
-                if(action.run()){
+                if(action.get()){
                     this.scheduledActions.remove(i);
                     i--;
                 }
@@ -237,7 +237,7 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
-    public void scheduleAction(IAction action){
+    public void scheduleAction(Supplier<Boolean> action){
         synchronized(this.scheduledActions){
             this.scheduledActions.add(action);
         }
