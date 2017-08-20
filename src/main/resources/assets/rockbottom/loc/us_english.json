@@ -34,7 +34,8 @@
             "construction_table": "Construction Table",
             "hardened_stone": "Hardened Stone",
             "stamper": "Stamper",
-            "lamp": "Lamp"
+            "lamp": "Lamp",
+            "pebbles": "Pebble"
         },
         "info": {
             "layer_placement": "Can be placed in %s",

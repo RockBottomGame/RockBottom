@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.world.gen.cave.WorldGenBasicCaves;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenBasicUnderground;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenHills;
+import de.ellpeck.rockbottom.world.gen.landscape.WorldGenPebbles;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenGlow;
@@ -45,6 +46,7 @@ public final class ContentRegistry{
         new TileDoor().setHardness(2.5F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
         new TileConstructionTable().setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).setForceDrop().register();
         new TileLamp(AbstractGame.internalRes("lamp")).setHardness(1.5F).setForceDrop().register();
+        new TilePebbles().setHardness(0F).setForceDrop().register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("wood_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
@@ -73,5 +75,6 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenCopper.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicCaves.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGlow.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenPebbles.class);
     }
 }

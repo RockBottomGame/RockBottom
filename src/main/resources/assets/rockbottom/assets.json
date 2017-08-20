@@ -112,7 +112,8 @@
                     }
                 },
                 "item": "/tiles/construction_table_item.png"
-            }
+            },
+            "pebbles": "/tiles/pebbles.png"
         },
         "items": {
             "super_tool": "/items/super_tool.png",
@@ -132,7 +133,8 @@
             "glow_cluster": {
                 "base": "/items/cluster_glow_0.png",
                 "glow": "/items/cluster_glow_1.png"
-            }
+            },
+            "pebbles": "/items/pebbles.png"
         },
         "gui": {
             "cursor": "/gui/cursor.png",
