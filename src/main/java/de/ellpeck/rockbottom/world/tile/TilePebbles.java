@@ -43,6 +43,11 @@ public class TilePebbles extends TileBasic{
     }
 
     @Override
+    public boolean canPlaceInLayer(TileLayer layer){
+        return false;
+    }
+
+    @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
         return Collections.singletonList(new ItemInstance(this, Util.RANDOM.nextInt(3)+1));
     }
