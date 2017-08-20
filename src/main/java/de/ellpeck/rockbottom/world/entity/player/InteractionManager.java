@@ -95,7 +95,6 @@ public class InteractionManager implements IInteractionManager{
         if(game.getWorld() != null){
             EntityPlayer player = game.getPlayer();
             Gui gui = game.getGuiManager().getGui();
-            Settings settings = game.getSettings();
 
             if(gui == null && !player.isDead()){
                 Input input = game.getInput();

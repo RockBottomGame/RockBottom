@@ -3,9 +3,7 @@ package de.ellpeck.rockbottom.gui;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
-import de.ellpeck.rockbottom.api.inventory.IInvChangeCallback;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyToggleButton;
@@ -14,9 +12,17 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
-public class GuiInventory extends GuiContainer implements IInvChangeCallback{
+import java.util.function.BiConsumer;
+
+public class GuiInventory extends GuiContainer{
 
     private static boolean isConstructionOpen;
+
+    private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
+        if(this.construction != null){
+            this.construction.organize();
+        }
+    };
 
     private ComponentConstruction construction;
 
@@ -50,13 +56,13 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     @Override
     public void onOpened(IGameInstance game){
         super.onOpened(game);
-        this.player.getInv().addChangeCallback(this);
+        this.player.getInv().addChangeCallback(this.invCallback);
     }
 
     @Override
     public void onClosed(IGameInstance game){
         super.onClosed(game);
-        this.player.getInv().removeChangeCallback(this);
+        this.player.getInv().removeChangeCallback(this.invCallback);
     }
 
     @Override
@@ -71,12 +77,5 @@ public class GuiInventory extends GuiContainer implements IInvChangeCallback{
     @Override
     public IResourceName getName(){
         return RockBottomAPI.createInternalRes("inventory");
-    }
-
-    @Override
-    public void onChange(IInventory inv, int slot, ItemInstance newInstance){
-        if(this.construction != null){
-            this.construction.organize();
-        }
     }
 }

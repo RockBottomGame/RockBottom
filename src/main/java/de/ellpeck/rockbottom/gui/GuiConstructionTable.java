@@ -5,12 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.BasicRecipe;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
-import de.ellpeck.rockbottom.api.inventory.IInvChangeCallback;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.util.MutableBool;
-import de.ellpeck.rockbottom.api.util.MutableInt;
-import de.ellpeck.rockbottom.api.util.MutableString;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
@@ -19,9 +14,11 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketTableConstruction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
-public class GuiConstructionTable extends GuiContainer implements IInvChangeCallback{
+public class GuiConstructionTable extends GuiContainer{
 
+    private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> this.construction.organize();
     private ComponentConstruction construction;
 
     public GuiConstructionTable(AbstractEntityPlayer player){
@@ -50,22 +47,17 @@ public class GuiConstructionTable extends GuiContainer implements IInvChangeCall
     @Override
     public void onOpened(IGameInstance game){
         super.onOpened(game);
-        this.player.getInv().addChangeCallback(this);
+        this.player.getInv().addChangeCallback(this.invCallback);
     }
 
     @Override
     public void onClosed(IGameInstance game){
         super.onClosed(game);
-        this.player.getInv().removeChangeCallback(this);
+        this.player.getInv().removeChangeCallback(this.invCallback);
     }
 
     @Override
     public IResourceName getName(){
         return RockBottom.internalRes("construction_table");
-    }
-
-    @Override
-    public void onChange(IInventory inv, int slot, ItemInstance newInstance){
-        this.construction.organize();
     }
 }

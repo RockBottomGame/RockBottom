@@ -33,7 +33,6 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
-import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
@@ -46,12 +45,26 @@ import org.newdawn.slick.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 public class EntityPlayer extends AbstractEntityPlayer{
 
     public static final float MOVE_SPEED = 0.2F;
     public static final float CLIMB_SPEED = 0.15F;
 
+    public final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
+        if(RockBottomAPI.getNet().isServer()){
+            boolean isInv = inv instanceof InventoryPlayer;
+            ItemContainer container = isInv ? this.inventoryContainer : this.currentContainer;
+
+            if(container != null){
+                int index = container.getIndexForInvSlot(inv, slot);
+                if(index >= 0){
+                    this.sendPacket(new PacketContainerChange(isInv, index, inv.get(slot)));
+                }
+            }
+        }
+    };
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-5D/12D, -0.5D, 5D/12D, 16D/12D);
@@ -90,7 +103,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
             if(this.currentContainer != null){
                 for(IInventory inv : this.currentContainer.containedInventories){
                     if(inv != this.inv){
-                        inv.removeChangeCallback(this);
+                        inv.removeChangeCallback(this.invCallback);
                     }
                 }
 
@@ -114,7 +127,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
                 for(IInventory inv : this.currentContainer.containedInventories){
                     if(inv != this.inv){
-                        inv.addChangeCallback(this);
+                        inv.addChangeCallback(this.invCallback);
                     }
                 }
             }
@@ -256,21 +269,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public void onChunkUnloaded(IChunk chunk){
 
-    }
-
-    @Override
-    public void onChange(IInventory inv, int slot, ItemInstance newInstance){
-        if(RockBottomAPI.getNet().isServer()){
-            boolean isInv = inv instanceof InventoryPlayer;
-            ItemContainer container = isInv ? this.inventoryContainer : this.currentContainer;
-
-            if(container != null){
-                int index = container.getIndexForInvSlot(inv, slot);
-                if(index >= 0){
-                    this.sendPacket(new PacketContainerChange(isInv, index, newInstance));
-                }
-            }
-        }
     }
 
     @Override

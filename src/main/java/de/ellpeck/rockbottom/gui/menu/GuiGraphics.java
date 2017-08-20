@@ -41,9 +41,11 @@ public class GuiGraphics extends Gui{
 
         this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop, 150, 16, settings.renderScale, 1, 128, ((integer, aBoolean) -> settings.renderScale = integer), assetManager.localize(AbstractGame.internalRes("button.render_scale"))));
         this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop+20, 150, 16, settings.guiScale, 1, 8, ((integer, aBoolean) -> {
-            settings.guiScale = integer;
-            game.getDataManager().savePropSettings(settings);
-            game.getGuiManager().setReInit();
+            if(aBoolean){
+                settings.guiScale = integer;
+                game.getDataManager().savePropSettings(settings);
+                game.getGuiManager().setReInit();
+            }
         }), assetManager.localize(AbstractGame.internalRes("button.gui_scale"))));
         this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop+40, 150, 16, settings.targetFps, 30, 256, ((integer, aBoolean) -> settings.targetFps = integer), assetManager.localize(AbstractGame.internalRes("button.target_fps"))){
             @Override

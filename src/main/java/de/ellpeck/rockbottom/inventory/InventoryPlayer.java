@@ -10,7 +10,7 @@ public class InventoryPlayer extends Inventory{
 
     public InventoryPlayer(EntityPlayer player){
         super(32);
-        this.addChangeCallback(player);
+        this.addChangeCallback(player.invCallback);
     }
 
     @Override
