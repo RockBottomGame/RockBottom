@@ -4,12 +4,14 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSignText;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.util.List;
@@ -40,7 +42,7 @@ public class GuiSign extends Gui{
         }, "button.edit"));
 
         if(this.editMode){
-            this.inputField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-75, this.guiTop+this.sizeY-34, 150, 16, true, false, true, 128, true, s -> this.text = this.inputField.getText());
+            this.inputField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-75, this.guiTop+this.sizeY-34, 150, 16, true, false, true, 256, true, s -> this.text = this.inputField.getText());
             if(this.text != null){
                 this.inputField.setText(this.text);
             }
@@ -53,19 +55,22 @@ public class GuiSign extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        if(this.text != null){
-            renderSignText(manager, this.text, this.guiLeft+this.sizeX/2, this.guiTop, 0.5F);
-        }
-
+        renderSignText(manager, g, this.text, this.guiLeft, this.sizeX/2, this.guiTop, 1F);
         super.render(game, manager, g);
     }
 
-    public static void renderSignText(IAssetManager manager, String text, float x, float y, float scale){
-        Font font = manager.getFont();
+    public static void renderSignText(IAssetManager manager, Graphics g, String text, float x, float textOffset, float y, float scale){
+        Texture tex = manager.getTexture(RockBottomAPI.createInternalRes("gui.sign"));
+        tex.draw(x, y, scale);
+        g.setColor(Color.black);
+        g.drawRect(x, y, tex.getWidth()*scale, tex.getHeight()*scale);
 
-        List<String> split = font.splitTextToLength((int)(400F*scale), scale, true, text);
-        for(int i = 0; i < Math.min(split.size(), 6); i++){
-            font.drawCenteredString(x, y+(i*manager.getFont().getHeight(scale)), split.get(i), scale, false);
+        if(text != null && !text.isEmpty()){
+            Font font = manager.getFont();
+            List<String> split = font.splitTextToLength((int)(200F*scale), scale*0.45F, true, text);
+            for(int i = 0; i < Math.min(split.size(), 6); i++){
+                font.drawCenteredString(x+textOffset, y+2+(i*manager.getFont().getHeight(scale*0.45F)), split.get(i), scale*0.45F, false);
+            }
         }
     }
 

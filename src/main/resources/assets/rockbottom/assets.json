@@ -148,7 +148,8 @@
             "colorpick": "/gui/colorpick.png",
             "all_construction": "/gui/all_construction.png",
             "all_construction_toggled": "/gui/all_construction_crossed.png",
-            "popup": "/gui/popup.png"
+            "popup": "/gui/popup.png",
+            "sign": "/gui/sign.png"
         },
         "particle": {
             "smoke": "/particle/smoke.png"

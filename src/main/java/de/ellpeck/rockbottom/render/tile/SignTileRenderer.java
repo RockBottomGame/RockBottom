@@ -21,8 +21,8 @@ public class SignTileRenderer extends DefaultTileRenderer<TileSign>{
     @Override
     public void renderOnMouseOver(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, TileSign tile, TileState state, int x, int y, TileLayer layer, float mouseX, float mouseY){
         TileEntitySign tileEntity = world.getTileEntity(x, y, TileEntitySign.class);
-        if(tileEntity != null && tileEntity.text != null){
-            GuiSign.renderSignText(manager, tileEntity.text, mouseX+51, mouseY, 0.25F);
+        if(tileEntity != null){
+            GuiSign.renderSignText(manager, g, tileEntity.text, mouseX+5, 50, mouseY+5, 0.5F);
         }
     }
 }
