@@ -489,34 +489,35 @@ public class RockBottom extends AbstractGame implements InputListener{
     public double getWidthInWorld(){
         int width = Display.getWidth();
         int scale = this.getWorldScale();
-
-        if((scale%2 == 0) != (width%2 == 0)){
-            width++;
-        }
-
-        return (double)width/(double)scale;
+        return (double)this.screwWithSizes(width, scale)/(double)scale;
     }
 
     @Override
     public double getHeightInWorld(){
         int height = Display.getHeight();
         int scale = this.getWorldScale();
+        return (double)this.screwWithSizes(height, scale)/(double)scale;
+    }
 
-        if((scale%2 == 0) != (height%2 == 0)){
-            height++;
+    private int screwWithSizes(int size, int scale){
+        if((scale%2 == 0) != (size%2 == 0)){
+            return size+1;
         }
-
-        return (double)height/(double)scale;
+        else return size;
     }
 
     @Override
     public double getWidthInGui(){
-        return (double)Display.getWidth()/(double)this.getGuiScale();
+        int width = Display.getWidth();
+        int scale = this.getGuiScale();
+        return (double)this.screwWithSizes(width, scale)/(double)scale;
     }
 
     @Override
     public double getHeightInGui(){
-        return (double)Display.getHeight()/(double)this.getGuiScale();
+        int height = Display.getHeight();
+        int scale = this.getGuiScale();
+        return (double)this.screwWithSizes(height, scale)/(double)scale;
     }
 
     @Override
