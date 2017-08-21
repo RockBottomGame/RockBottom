@@ -114,7 +114,10 @@
                 "item": "/tiles/construction_table_item.png"
             },
             "pebbles": "/tiles/pebbles.png",
-            "sign": "/tiles/wood_sign.png"
+            "sign": "/tiles/wood_sign.png",
+            "grass_tuft": "/tiles/grass_tuft.png",
+            "grass_tall": "/tiles/grass_tall.png",
+            "grass_short": "/tiles/grass_short.png"
         },
         "items": {
             "super_tool": "/items/super_tool.png",

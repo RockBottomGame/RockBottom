@@ -12,15 +12,15 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.item.ItemGlowCluster;
 import de.ellpeck.rockbottom.item.ItemTool;
 import de.ellpeck.rockbottom.world.gen.cave.WorldGenBasicCaves;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenGrassTufts;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenBasicUnderground;
 import de.ellpeck.rockbottom.world.gen.landscape.WorldGenHills;
-import de.ellpeck.rockbottom.world.gen.landscape.WorldGenPebbles;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenPebbles;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenGlow;
 import de.ellpeck.rockbottom.world.tile.*;
-import org.newdawn.slick.util.Log;
 
 public final class ContentRegistry{
 
@@ -48,6 +48,7 @@ public final class ContentRegistry{
         new TileLamp(AbstractGame.internalRes("lamp")).setHardness(1.5F).setForceDrop().register();
         new TilePebbles().setHardness(0F).setForceDrop().register();
         new TileSign().setHardness(1F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
+        new TileGrassTuft().setHardness(0F).register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("wood_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
@@ -77,5 +78,6 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBasicCaves.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGlow.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenPebbles.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenGrassTufts.class);
     }
 }

@@ -36,7 +36,10 @@
             "stamper": "Stamper",
             "lamp": "Lamp",
             "pebbles": "Pebble",
-            "sign": "Sign"
+            "sign": "Sign",
+            "grass_tuft": "Grass Tuft",
+            "grass_tall": "Tall Grass",
+            "grass_short": "Short Grass"
         },
         "info": {
             "layer_placement": "Can be placed in %s",
