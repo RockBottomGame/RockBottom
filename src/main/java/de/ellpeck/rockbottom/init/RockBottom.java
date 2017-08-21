@@ -150,14 +150,6 @@ public class RockBottom extends AbstractGame implements InputListener{
             Log.warn("Couldn't render loading screen image", e);
         }
 
-        try{
-            Log.info("Initializing controllers");
-            this.input.initControllers();
-        }
-        catch(SlickException e){
-            Log.warn("Failed to initialize controllers", e);
-        }
-
         Log.info("Finished initializing system");
 
         super.init();
@@ -176,7 +168,6 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.input = new Input(height);
         this.input.addListener(this);
-
     }
 
     @Override

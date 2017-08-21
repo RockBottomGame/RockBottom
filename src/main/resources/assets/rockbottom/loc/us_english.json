@@ -35,7 +35,8 @@
             "hardened_stone": "Hardened Stone",
             "stamper": "Stamper",
             "lamp": "Lamp",
-            "pebbles": "Pebble"
+            "pebbles": "Pebble",
+            "sign": "Sign"
         },
         "info": {
             "layer_placement": "Can be placed in %s",
@@ -120,7 +121,9 @@
                 "beard": "Beard",
                 "sex": "Male",
                 "sex_toggled": "Female"
-            }
+            },
+            "edit": "Edit",
+            "edit_toggled": "Done"
         },
         "layer": {
             "main": "Foreground",

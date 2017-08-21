@@ -88,16 +88,26 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
-    public void openGuiContainer(Gui gui, ItemContainer container){
-        this.openContainer(container);
-
+    public boolean openGui(Gui gui){
         if(RockBottomAPI.getNet().isThePlayer(this)){
             AbstractGame.get().getGuiManager().openGui(gui);
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
     @Override
-    public void openContainer(ItemContainer container){
+    public boolean openGuiContainer(Gui gui, ItemContainer container){
+        boolean containerOpened = this.openContainer(container);
+        boolean guiOpened = this.openGui(gui);
+
+        return containerOpened || guiOpened;
+    }
+
+    @Override
+    public boolean openContainer(ItemContainer container){
         ContainerOpenEvent event = new ContainerOpenEvent(this, container);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
             if(this.currentContainer != null){
@@ -143,12 +153,14 @@ public class EntityPlayer extends AbstractEntityPlayer{
             else{
                 Log.debug("Opened Container "+this.currentContainer.getName()+" for player "+this.getName()+" with unique id "+this.getUniqueId());
             }
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void closeContainer(){
-        this.openContainer(null);
+    public boolean closeContainer(){
+        return this.openContainer(null);
     }
 
     @Override

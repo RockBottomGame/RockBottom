@@ -5,7 +5,9 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ComponentRenderEvent;
 import de.ellpeck.rockbottom.api.event.impl.ComponentRenderOverlayEvent;
@@ -17,8 +19,12 @@ import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
@@ -162,16 +168,31 @@ public class GuiManager implements IGuiManager{
         if(game.getSettings().cursorInfos){
             if(player != null && !player.isDead() && gui == null && Mouse.isInsideWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
+                    float mouseX = game.getMouseInGuiX();
+                    float mouseY = game.getMouseInGuiY();
+
                     ItemInstance holding = player.getInv().get(player.getSelectedSlot());
                     if(holding != null){
                         Item item = holding.getItem();
 
                         IItemRenderer renderer = item.getRenderer();
                         if(renderer != null){
-                            float mouseX = game.getMouseInGuiX();
-                            float mouseY = game.getMouseInGuiY();
-
                             renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getGuiScale(), mouseY, 36F/game.getGuiScale(), Color.white);
+                        }
+                    }
+
+                    IInteractionManager interaction = game.getInteractionManager();
+
+                    TileLayer layer = Settings.KEY_BACKGROUND.isDown() ? TileLayer.BACKGROUND : TileLayer.MAIN;
+                    int x = Util.floor(interaction.getMousedTileX());
+                    int y = Util.floor(interaction.getMousedTileY());
+
+                    if(player.world.isPosLoaded(x, y)){
+                        TileState state = player.world.getState(layer, x, y);
+                        Tile tile = state.getTile();
+                        ITileRenderer renderer = tile.getRenderer();
+                        if(renderer != null){
+                            renderer.renderOnMouseOver(game, manager, g, player.world, tile, state, x, y, layer, mouseX, mouseY);
                         }
                     }
                 }
