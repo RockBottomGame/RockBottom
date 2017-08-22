@@ -83,6 +83,6 @@ public class WorldGenTrees implements IWorldGenerator{
 
     @Override
     public int getPriority(){
-        return 200;
+        return 300;
     }
 }

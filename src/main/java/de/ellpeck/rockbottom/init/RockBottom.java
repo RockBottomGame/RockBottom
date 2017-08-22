@@ -13,8 +13,6 @@ import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.toast.IToaster;
-import de.ellpeck.rockbottom.api.toast.Toast;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
@@ -503,7 +501,9 @@ public class RockBottom extends AbstractGame implements InputListener{
         if((scale%2 == 0) != (size%2 == 0)){
             return size+1;
         }
-        else return size;
+        else{
+            return size;
+        }
     }
 
     @Override

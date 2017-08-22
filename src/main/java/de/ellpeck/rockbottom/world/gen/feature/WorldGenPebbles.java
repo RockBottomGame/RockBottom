@@ -31,6 +31,6 @@ public class WorldGenPebbles implements IWorldGenerator{
 
     @Override
     public int getPriority(){
-        return 500;
+        return 200;
     }
 }

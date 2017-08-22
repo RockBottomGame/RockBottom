@@ -35,6 +35,6 @@ public class WorldGenGrassTufts implements IWorldGenerator{
 
     @Override
     public int getPriority(){
-        return 500;
+        return 190;
     }
 }
