@@ -138,7 +138,10 @@
                 "base": "/items/cluster_glow_0.png",
                 "glow": "/items/cluster_glow_1.png"
             },
-            "pebbles": "/items/pebbles.png"
+            "pebbles": "/items/pebbles.png",
+            "brittle_pickaxe": "/items/brittle_pickaxe.png",
+            "brittle_axe": "/items/brittle_axe.png",
+            "brittle_shovel": "/items/brittle_shovel.png"
         },
         "gui": {
             "cursor": "/gui/cursor.png",

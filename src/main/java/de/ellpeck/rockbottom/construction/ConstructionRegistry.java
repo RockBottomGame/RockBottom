@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.util.Util;
 
 public final class ConstructionRegistry{
 
@@ -26,8 +25,15 @@ public final class ConstructionRegistry{
                 new ResUseInfo(ResourceRegistry.WOOD_LOG, 4),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 20),
                 new ResUseInfo(ResourceRegistry.RAW_STONE, 20)));
-        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_WOOD_PICK),
-                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 16)));
+        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_BRITTLE_PICKAXE),
+                new ResUseInfo(ResourceRegistry.PEBBLES, 12),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 4)));
+        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_BRITTLE_AXE),
+                new ResUseInfo(ResourceRegistry.PEBBLES, 10),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 4)));
+        RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_BRITTLE_SHOVEL),
+                new ResUseInfo(ResourceRegistry.PEBBLES, 8),
+                new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 4)));
         RockBottomAPI.CONSTRUCTION_TABLE_RECIPES.add(new BasicRecipe(new ItemInstance(GameContent.ITEM_STONE_PICKAXE),
                 new ResUseInfo(ResourceRegistry.PROCESSED_STONE, 12),
                 new ResUseInfo(ResourceRegistry.WOOD_BOARDS, 6)));

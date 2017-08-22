@@ -39,7 +39,10 @@
             "sign": "Sign",
             "grass_tuft": "Grass Tuft",
             "grass_tall": "Tall Grass",
-            "grass_short": "Short Grass"
+            "grass_short": "Short Grass",
+            "brittle_pickaxe": "Brittle Pickaxe",
+            "brittle_axe": "Brittle Axe",
+            "brittle_shovel": "Brittle Shovel"
         },
         "info": {
             "layer_placement": "Can be placed in %s",

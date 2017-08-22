@@ -46,12 +46,14 @@ public final class ContentRegistry{
         new TileDoor().setHardness(2.5F).setForceDrop().addEffectiveTool(ToolType.AXE, 1).register();
         new TileConstructionTable().setHardness(5F).addEffectiveTool(ToolType.PICKAXE, 1).setForceDrop().register();
         new TileLamp(AbstractGame.internalRes("lamp")).setHardness(1.5F).setForceDrop().register();
-        new TilePebbles().setHardness(0F).setForceDrop().register();
+        new TilePebbles().setHardness(0F).setForceDrop().register().addResource(ResourceRegistry.PEBBLES);
         new TileSign().setHardness(1F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
         new TileGrassTuft().setHardness(0F).register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
-        new ItemTool(AbstractGame.internalRes("wood_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
+        new ItemTool(AbstractGame.internalRes("brittle_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
+        new ItemTool(AbstractGame.internalRes("brittle_axe"), 2F).addToolType(ToolType.AXE, 1).register();
+        new ItemTool(AbstractGame.internalRes("brittle_shovel"), 1.5F).addToolType(ToolType.SHOVEL, 1).register();
         new ItemTool(AbstractGame.internalRes("stone_pickaxe"), 4F).addToolType(ToolType.PICKAXE, 2).register();
         new ItemTool(AbstractGame.internalRes("stone_axe"), 4F).addToolType(ToolType.AXE, 2).register();
         new ItemTool(AbstractGame.internalRes("stone_shovel"), 2F).addToolType(ToolType.SHOVEL, 2).register();
