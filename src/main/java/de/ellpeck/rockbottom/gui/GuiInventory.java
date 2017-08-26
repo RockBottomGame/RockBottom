@@ -19,7 +19,7 @@ public class GuiInventory extends GuiContainer{
     private static boolean isConstructionOpen;
 
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
-        if(this.construction != null){
+        if(isConstructionOpen && this.construction != null){
             this.construction.organize();
         }
     };
@@ -50,6 +50,9 @@ public class GuiInventory extends GuiContainer{
                 }
             });
             this.components.add(this.construction);
+        }
+        else{
+            this.construction = null;
         }
     }
 
