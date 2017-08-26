@@ -5,26 +5,23 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 public class ResourceName implements IResourceName{
 
-    private String domain;
-    private String resourceName;
+    private final String domain;
+    private final String resourceName;
 
     public ResourceName(String domain, String resourceName){
-        this.set(domain, resourceName);
+        this.domain = domain;
+        this.resourceName = resourceName;
     }
 
     public ResourceName(String combined){
         if(combined.contains(Constants.RESOURCE_SEPARATOR)){
             String[] split = combined.split(Constants.RESOURCE_SEPARATOR);
-            this.set(split[0], split[1]);
+            this.domain = split[0];
+            this.resourceName = split[1];
         }
         else{
             throw new IllegalArgumentException("Cannot create a resource name from combined string "+combined);
         }
-    }
-
-    private void set(String domain, String resourceName){
-        this.domain = domain;
-        this.resourceName = resourceName;
     }
 
     @Override

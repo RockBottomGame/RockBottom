@@ -103,10 +103,11 @@ public class GuiCreateWorld extends Gui{
         else if(!this.lastSeed.equals(seed)){
             this.lastSeed = seed;
 
-            this.seed = 0;
-            for(char c : seed.toCharArray()){
-                this.seed *= 31;
-                this.seed += c;
+            try{
+                this.seed = Long.parseLong(seed);
+            }
+            catch(NumberFormatException e){
+                this.seed = seed.hashCode();
             }
         }
     }
