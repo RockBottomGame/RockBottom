@@ -314,7 +314,9 @@ public class ApiHandler implements IApiHandler{
             renderer.render(game, manager, g, item, slot, x, y, 12F*scale, color);
         }
 
-        manager.getFont().drawStringFromRight(x+15F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);
+        if(slot.getAmount() > 1){
+            manager.getFont().drawStringFromRight(x+15F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);
+        }
     }
 
     @Override
