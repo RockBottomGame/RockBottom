@@ -296,6 +296,7 @@
     "loc": {
         "us_english": "/loc/us_english.json",
         "fr_french": "/loc/fr_french.json",
-        "za_afrikaans": "/loc/za_afrikaans.json"
+        "za_afrikaans": "/loc/za_afrikaans.json",
+        "de_german": "/loc/de_german.json"
     }
 }
