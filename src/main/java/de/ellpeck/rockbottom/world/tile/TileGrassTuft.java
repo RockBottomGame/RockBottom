@@ -14,6 +14,7 @@ public class TileGrassTuft extends TileMeta{
         super(RockBottomAPI.createInternalRes("grass_tuft"));
         this.addSubTile(RockBottomAPI.createInternalRes("grass_tall"));
         this.addSubTile(RockBottomAPI.createInternalRes("grass_short"));
+        this.addSubTile(RockBottomAPI.createInternalRes("bush"));
     }
 
     @Override
