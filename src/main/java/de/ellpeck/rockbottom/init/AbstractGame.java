@@ -164,9 +164,11 @@ public abstract class AbstractGame implements IGameInstance{
         }
         modLoader.sortMods();
 
+        modLoader.prePreInit();
         modLoader.preInit();
         modLoader.init();
         modLoader.postInit();
+        modLoader.postPostInit();
 
         Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
         Log.info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");

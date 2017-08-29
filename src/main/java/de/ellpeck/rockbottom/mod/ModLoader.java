@@ -181,6 +181,14 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
+    public void prePreInit(){
+        IGameInstance game = RockBottomAPI.getGame();
+        for(IMod mod : this.activeMods){
+            mod.prePreInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
+        }
+    }
+
+    @Override
     public void preInit(){
         IGameInstance game = RockBottomAPI.getGame();
         for(IMod mod : this.activeMods){
@@ -209,6 +217,14 @@ public class ModLoader implements IModLoader{
         IGameInstance game = RockBottomAPI.getGame();
         for(IMod mod : this.activeMods){
             mod.postInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
+        }
+    }
+
+    @Override
+    public void postPostInit(){
+        IGameInstance game = RockBottomAPI.getGame();
+        for(IMod mod : this.activeMods){
+            mod.postPostInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
