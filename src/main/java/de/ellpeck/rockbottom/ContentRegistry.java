@@ -49,6 +49,7 @@ public final class ContentRegistry{
         new TilePebbles().setHardness(0F).setForceDrop().register().addResource(ResourceRegistry.PEBBLES);
         new TileSign().setHardness(1F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
         new TileGrassTuft().setHardness(0F).register();
+        new TileTinOre().setHardness(30F).addEffectiveTool(ToolType.PICKAXE, 3).register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("brittle_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
@@ -66,6 +67,9 @@ public final class ContentRegistry{
         new ItemTool(AbstractGame.internalRes("copper_shovel"), 4F).addToolType(ToolType.SHOVEL, 4).register();
         new ItemBasic(AbstractGame.internalRes("slag")).register().addResource(ResourceRegistry.SLAG);
         new ItemGlowCluster().register();
+        new ItemBasic(AbstractGame.internalRes("tin_cluster")).register().addResource(ResourceRegistry.RAW_TIN);
+        new ItemBasic(AbstractGame.internalRes("tin_grit")).register().addResource(ResourceRegistry.PARTLY_PROCESSED_TIN);
+        new ItemBasic(AbstractGame.internalRes("tin_ingot")).register().addResource(ResourceRegistry.PROCESSED_TIN);
 
         new BiomeBasic(AbstractGame.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
         new BiomeBasic(AbstractGame.internalRes("grassland"), 1, -1, 1000).register();

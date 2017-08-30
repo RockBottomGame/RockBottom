@@ -118,7 +118,8 @@
             "grass_tuft": "/tiles/grass_tuft.png",
             "grass_tall": "/tiles/grass_tall.png",
             "grass_short": "/tiles/grass_short.png",
-            "bush": "/tiles/bush.png"
+            "bush": "/tiles/bush.png",
+            "tin_ore": "/tiles/ore_tin.png"
         },
         "items": {
             "super_tool": "/items/super_tool.png",
@@ -142,7 +143,10 @@
             "pebbles": "/items/pebbles.png",
             "brittle_pickaxe": "/items/brittle_pickaxe.png",
             "brittle_axe": "/items/brittle_axe.png",
-            "brittle_shovel": "/items/brittle_shovel.png"
+            "brittle_shovel": "/items/brittle_shovel.png",
+            "tin_cluster": "/items/cluster_tin.png",
+            "tin_grit": "/items/tin_grit.png",
+            "tin_ingot": "/items/tin_ingot.png"
         },
         "gui": {
             "cursor": "/gui/cursor.png",

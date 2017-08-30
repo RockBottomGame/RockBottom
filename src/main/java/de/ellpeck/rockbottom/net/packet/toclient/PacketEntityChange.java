@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 public class PacketEntityChange implements IPacket{
 
-    private static final String PLAYER_NAME = "rockbottom:player";
+    private static final String PLAYER_NAME = "rockbottom"+Constants.RESOURCE_SEPARATOR+"player";
 
     private final DataSet entitySet = new DataSet();
     private String name;
