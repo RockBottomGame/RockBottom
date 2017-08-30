@@ -554,27 +554,41 @@ public class Chunk implements IChunk{
     public void save(DataSet set){
         for(int i = 0; i < TileLayer.LAYERS.length; i++){
             TileLayer layer = TileLayer.LAYERS[i];
-            short[][] ids = new short[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+            int[] ids = new int[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
 
+            int counter = 0;
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    ids[x][y] = (short)this.world.getIdForState(this.getStateInner(layer, x, y));
+                    ids[counter] = this.world.getIdForState(this.getStateInner(layer, x, y));
+                    counter++;
                 }
             }
 
-            set.addShortShortArray("l_"+i, ids);
+            set.addIntArray("ti_"+i, ids);
         }
 
-        short[][] biomes = new short[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+        short[] biomes = new short[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
+        int biomeCounter = 0;
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                biomes[x][y] = (short)this.world.getIdForBiome(this.getBiomeInner(x, y));
+                biomes[biomeCounter] = (short)this.world.getIdForBiome(this.getBiomeInner(x, y));
+                biomeCounter++;
             }
         }
-        set.addShortShortArray("b", biomes);
+        set.addShortArray("bi", biomes);
+
 
         for(int i = 0; i < this.lightGrid.length; i++){
-            set.addByteByteArray("li_"+i, this.lightGrid[i]);
+            byte[] light = new byte[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
+            int counter = 0;
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    light[counter] = this.lightGrid[i][x][y];
+                    counter++;
+                }
+            }
+
+            set.addByteArray("lg_"+i, light);
         }
 
         int entityId = 0;
@@ -631,36 +645,47 @@ public class Chunk implements IChunk{
         if(set != null && !set.isEmpty()){
             for(int i = 0; i < TileLayer.LAYERS.length; i++){
                 TileLayer layer = TileLayer.LAYERS[i];
-                short[][] ids = set.getShortShortArray("l_"+i, Constants.CHUNK_SIZE);
+                int[] ids = set.getIntArray("ti_"+i, Constants.CHUNK_SIZE*Constants.CHUNK_SIZE);
 
+                int counter = 0;
                 for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        TileState tile = this.world.getStateForId(ids[x][y]);
+                        TileState tile = this.world.getStateForId(ids[counter]);
                         if(tile != null){
                             this.setStateInner(layer, x, y, tile);
                         }
                         else{
-                            Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[x][y]+" is missing!");
+                            Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[counter]+" is missing!");
                         }
+                        counter++;
                     }
                 }
             }
 
-            short[][] biomes = set.getShortShortArray("b", Constants.CHUNK_SIZE);
+            short[] biomes = set.getShortArray("bi", Constants.CHUNK_SIZE*Constants.CHUNK_SIZE);
+            int biomeCounter = 0;
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    Biome biome = this.world.getBiomeForId(biomes[x][y]);
+                    Biome biome = this.world.getBiomeForId(biomes[biomeCounter]);
                     if(biome != null){
                         this.setBiomeInner(x, y, biome);
                     }
                     else{
-                        Log.warn("Could not load biome at "+x+" "+y+" because id "+biomes[x][y]+" is missing!");
+                        Log.warn("Could not load biome at "+x+" "+y+" because id "+biomes[biomeCounter]+" is missing!");
                     }
+                    biomeCounter++;
                 }
             }
 
             for(int i = 0; i < this.lightGrid.length; i++){
-                this.lightGrid[i] = set.getByteByteArray("li_"+i, Constants.CHUNK_SIZE);
+                byte[] light = set.getByteArray("lg_"+i, Constants.CHUNK_SIZE*Constants.CHUNK_SIZE);
+                int counter = 0;
+                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                        this.lightGrid[i][x][y] = light[counter];
+                        counter++;
+                    }
+                }
             }
 
             int entityAmount = set.getInt("e_a");

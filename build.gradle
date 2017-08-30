@@ -1,5 +1,5 @@
 group 'de.ellpeck.rockbottom'
-version '0.0.26'
+version '0.0.27'
 
 apply plugin: 'java'
 apply plugin: 'idea'
