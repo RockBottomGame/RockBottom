@@ -14,7 +14,6 @@ public class SimplexNoise implements INoiseGen{
             new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0), new Grad(-1, -1, 0),
             new Grad(1, 0, 1), new Grad(-1, 0, 1), new Grad(1, 0, -1), new Grad(-1, 0, -1),
             new Grad(0, 1, 1), new Grad(0, -1, 1), new Grad(0, 1, -1), new Grad(0, -1, -1)};
-
     private static final Grad[] GRAD_4 = {
             new Grad(0, 1, 1, 1), new Grad(0, 1, 1, -1), new Grad(0, 1, -1, 1), new Grad(0, 1, -1, -1),
             new Grad(0, -1, 1, 1), new Grad(0, -1, 1, -1), new Grad(0, -1, -1, 1), new Grad(0, -1, -1, -1),
@@ -24,14 +23,17 @@ public class SimplexNoise implements INoiseGen{
             new Grad(-1, 1, 0, 1), new Grad(-1, 1, 0, -1), new Grad(-1, -1, 0, 1), new Grad(-1, -1, 0, -1),
             new Grad(1, 1, 1, 0), new Grad(1, 1, -1, 0), new Grad(1, -1, 1, 0), new Grad(1, -1, -1, 0),
             new Grad(-1, 1, 1, 0), new Grad(-1, 1, -1, 0), new Grad(-1, -1, 1, 0), new Grad(-1, -1, -1, 0)};
+
     private static final double F2 = 0.5*(Math.sqrt(3)-1);
     private static final double G2 = (3-Math.sqrt(3))/6;
     private static final double F3 = 1/3;
     private static final double G3 = 1/6;
     private static final double F4 = (Math.sqrt(5)-1)/4;
     private static final double G4 = (5-Math.sqrt(5))/20;
+
     private final int[] perm = new int[512];
     private final int[] perm12 = new int[512];
+
     public SimplexNoise(Random random){
         List<Integer> permutations = new ArrayList<>();
         for(int i = 0; i < 256; i++){
