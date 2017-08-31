@@ -462,7 +462,7 @@ public class World implements IWorld{
 
             IGameInstance game = RockBottomAPI.getGame();
             if(!game.isDedicatedServer()){
-                game.getToaster().displayToast(new Toast(new ChatComponentTranslation(AbstractGame.internalRes("info.saved")), new ChatComponentTranslation(AbstractGame.internalRes("info.saved_chunks"), String.valueOf(amount), String.valueOf((float)time/1000F)), 160));
+                game.getToaster().displayToast(new Toast(AbstractGame.internalRes("gui.saved"), new ChatComponentTranslation(AbstractGame.internalRes("info.saved")), new ChatComponentTranslation(AbstractGame.internalRes("info.saved_chunks"), String.valueOf(amount), String.valueOf((float)time/1000F)), 160));
             }
         }
     }

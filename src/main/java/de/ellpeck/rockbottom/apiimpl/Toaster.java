@@ -7,7 +7,9 @@ import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.MutableInt;
 import org.newdawn.slick.Graphics;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class Toaster implements IToaster{
@@ -28,7 +30,7 @@ public class Toaster implements IToaster{
     }
 
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        float y = (float)game.getHeightInGui();
+        float y = 2;
         for(Entry<Toast, MutableInt> entry : this.toasts.entrySet()){
             Toast toast = entry.getKey();
             float width = toast.getWidth();
@@ -45,8 +47,8 @@ public class Toaster implements IToaster{
                 x = 2;
             }
 
-            y -= toast.getHeight()+2;
             toast.render(game, manager, g, x, y);
+            y += toast.getHeight()+2;
         }
     }
 
@@ -58,5 +60,12 @@ public class Toaster implements IToaster{
     @Override
     public void cancelToast(Toast toast){
         this.toasts.remove(toast);
+    }
+
+    @Override
+    public void cancelAllToasts(){
+        if(!this.toasts.isEmpty()){
+            this.toasts.clear();
+        }
     }
 }

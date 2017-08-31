@@ -276,6 +276,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.guiManager.reInitSelf(this);
         this.guiManager.closeGui();
+        this.toaster.cancelAllToasts();
     }
 
     @Override
@@ -291,6 +292,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.guiManager.reInitSelf(this);
         this.guiManager.closeGui();
+        this.toaster.cancelAllToasts();
     }
 
     @Override
@@ -311,6 +313,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.guiManager.reInitSelf(this);
         this.guiManager.openGui(new GuiMainMenu());
+        this.toaster.cancelAllToasts();
     }
 
     @Override

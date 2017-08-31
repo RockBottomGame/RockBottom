@@ -253,9 +253,6 @@ public class GuiManager implements IGuiManager{
     }
 
     public boolean onKeyboardAction(RockBottom game, int button, char character){
-        if(game.getPlayer() == null || !game.getPlayer().isDead()){
-            return this.gui != null && this.gui.onKeyboardAction(game, button, character);
-        }
-        return false;
+        return (game.getPlayer() == null || !game.getPlayer().isDead()) && this.gui != null && this.gui.onKeyboardAction(game, button, character);
     }
 }

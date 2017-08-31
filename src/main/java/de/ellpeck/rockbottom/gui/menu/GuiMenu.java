@@ -5,6 +5,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.util.Log;
@@ -30,11 +32,17 @@ public class GuiMenu extends Gui{
             this.components.add(new ComponentButton(this, this.guiLeft, this.guiTop+20, this.sizeX, 16, () -> {
                 if(RockBottomAPI.getNet().isServer()){
                     RockBottomAPI.getNet().shutdown();
+
+                    game.getToaster().displayToast(new Toast(new ChatComponentTranslation(AbstractGame.internalRes("info.server_shutdown.title")), new ChatComponentTranslation(AbstractGame.internalRes("info.server_shutdown")), 160));
+
                     return true;
                 }
                 else{
                     try{
                         RockBottomAPI.getNet().init(null, Main.port, true);
+
+                        game.getToaster().displayToast(new Toast(new ChatComponentTranslation(AbstractGame.internalRes("info.server_started.title")), new ChatComponentTranslation(AbstractGame.internalRes("info.server_started"), String.valueOf(Main.port)), 160));
+
                         return true;
                     }
                     catch(Exception e){
