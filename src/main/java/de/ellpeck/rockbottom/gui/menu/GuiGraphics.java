@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
+import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.lwjgl.opengl.Display;
@@ -76,7 +77,7 @@ public class GuiGraphics extends Gui{
                 game.getGuiManager().setReInit();
             }
         }, false));
-        this.components.add(new ComponentButton(this, this.guiLeft+99, this.guiTop+94, 16, 16, () -> {
+        this.components.add(new ComponentFancyButton(this, this.guiLeft+99, this.guiTop+94, 16, 16, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, this.guiLeft+99+8, this.guiTop+94+8, aBoolean -> {
                 if(aBoolean){
                     settings.guiColor = new Color(Settings.DEFAULT_GUI_R, Settings.DEFAULT_GUI_G, Settings.DEFAULT_GUI_B);
@@ -85,7 +86,7 @@ public class GuiGraphics extends Gui{
                 }
             }));
             return true;
-        }, "!", assetManager.localize(AbstractGame.internalRes("info.reset"))));
+        }, RockBottomAPI.createInternalRes("gui.reset"), assetManager.localize(AbstractGame.internalRes("info.reset"))));
 
         this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);

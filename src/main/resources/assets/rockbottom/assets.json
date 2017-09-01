@@ -160,7 +160,10 @@
             "all_construction": "/gui/all_construction.png",
             "all_construction_toggled": "/gui/all_construction_crossed.png",
             "popup": "/gui/popup.png",
-            "sign": "/gui/sign.png"
+            "sign": "/gui/sign.png",
+            "save_world": "/gui/save_world.png",
+            "reset": "/gui/reset.png",
+            "randomize": "/gui/randomize.png"
         },
         "particle": {
             "smoke": "/particle/smoke.png"

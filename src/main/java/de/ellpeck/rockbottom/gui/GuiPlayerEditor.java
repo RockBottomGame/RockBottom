@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
+import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.PlayerDesign;
@@ -88,7 +89,7 @@ public class GuiPlayerEditor extends Gui{
 
         this.components.add(new ComponentSlider(this, x-98, this.guiTop+126, 80, 12, this.previewType+1, 1, 6, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(AbstractGame.internalRes("button.player_design.preview"))));
 
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2+33, (int)game.getHeightInGui()-20, 16, 16, () -> {
+        this.components.add(new ComponentFancyButton(this, this.guiLeft+this.sizeX/2+33, (int)game.getHeightInGui()-20, 16, 16, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, this.guiLeft+this.sizeX/2+41, (int)game.getHeightInGui()-12, aBoolean -> {
                 if(aBoolean){
                     PlayerDesign.randomizeDesign(design);
@@ -96,7 +97,7 @@ public class GuiPlayerEditor extends Gui{
                 }
             }));
             return true;
-        }, "?", assetManager.localize(AbstractGame.internalRes("info.randomize"))));
+        }, RockBottomAPI.createInternalRes("gui.randomize"), assetManager.localize(AbstractGame.internalRes("info.randomize"))));
         this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-49, (int)game.getHeightInGui()-20, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
