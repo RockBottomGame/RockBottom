@@ -439,7 +439,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public boolean isInRange(double x, double y){
-        return Util.distanceSq(this.x, this.y, x, y) <= RANGE*RANGE;
+        return Util.distanceSq(this.x, this.y+1, x, y) <= RANGE*RANGE;
     }
 
     @Override
