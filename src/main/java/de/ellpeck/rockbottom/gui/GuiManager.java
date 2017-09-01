@@ -168,6 +168,10 @@ public class GuiManager implements IGuiManager{
         if(game.getSettings().cursorInfos){
             if(player != null && !player.isDead() && gui == null && Mouse.isInsideWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
+                    IInteractionManager interaction = game.getInteractionManager();
+                    double tileX = interaction.getMousedTileX();
+                    double tileY = interaction.getMousedTileY();
+
                     float mouseX = game.getMouseInGuiX();
                     float mouseY = game.getMouseInGuiY();
 
@@ -177,15 +181,14 @@ public class GuiManager implements IGuiManager{
 
                         IItemRenderer renderer = item.getRenderer();
                         if(renderer != null){
-                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getGuiScale(), mouseY, 36F/game.getGuiScale(), Color.white);
+                            boolean inRange = player.isInRange(tileX, tileY);
+                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getGuiScale(), mouseY, 36F/game.getGuiScale(), Color.white, inRange);
                         }
                     }
 
-                    IInteractionManager interaction = game.getInteractionManager();
-
                     TileLayer layer = Settings.KEY_BACKGROUND.isDown() ? TileLayer.BACKGROUND : TileLayer.MAIN;
-                    int x = Util.floor(interaction.getMousedTileX());
-                    int y = Util.floor(interaction.getMousedTileY());
+                    int x = Util.floor(tileX);
+                    int y = Util.floor(tileY);
 
                     if(player.world.isPosLoaded(x, y)){
                         TileState state = player.world.getState(layer, x, y);

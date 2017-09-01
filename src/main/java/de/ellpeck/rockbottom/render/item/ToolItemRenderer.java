@@ -16,7 +16,9 @@ public class ToolItemRenderer extends DefaultItemRenderer{
     }
 
     @Override
-    public void renderOnMouseCursor(IGameInstance game, IAssetManager manager, Graphics g, Item item, ItemInstance instance, float x, float y, float scale, Color filter){
-        this.render(game, manager, g, item, instance, x, y, scale, filter);
+    public void renderOnMouseCursor(IGameInstance game, IAssetManager manager, Graphics g, Item item, ItemInstance instance, float x, float y, float scale, Color filter, boolean isInPlayerRange){
+        if(isInPlayerRange){
+            this.render(game, manager, g, item, instance, x, y, scale, filter);
+        }
     }
 }

@@ -51,7 +51,7 @@ public class PacketInteract implements IPacket{
         game.scheduleAction(() -> {
             if(game.getWorld() != null){
                 AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null){
+                if(player != null && player.isInRange(this.x, this.y)){
                     InteractionManager.interact(player, this.layer, this.x, this.y);
                 }
             }

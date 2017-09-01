@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
@@ -18,10 +19,10 @@ public class PacketBreakTile implements IPacket{
 
     private UUID playerId;
     private TileLayer layer;
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
-    public PacketBreakTile(UUID playerId, TileLayer layer, int x, int y){
+    public PacketBreakTile(UUID playerId, TileLayer layer, double x, double y){
         this.playerId = playerId;
         this.layer = layer;
         this.x = x;
@@ -37,16 +38,16 @@ public class PacketBreakTile implements IPacket{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeInt(this.layer.ordinal());
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
+        buf.writeDouble(this.x);
+        buf.writeDouble(this.y);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.layer = TileLayer.LAYERS[buf.readInt()];
-        this.x = buf.readInt();
-        this.y = buf.readInt();
+        this.x = buf.readDouble();
+        this.y = buf.readDouble();
     }
 
     @Override
@@ -54,12 +55,16 @@ public class PacketBreakTile implements IPacket{
         game.scheduleAction(() -> {
             IWorld world = game.getWorld();
             if(world != null){
-                Tile tile = world.getState(this.layer, this.x, this.y).getTile();
-                if(tile.canBreak(world, this.x, this.y, this.layer)){
-                    AbstractEntityPlayer player = world.getPlayer(this.playerId);
+                AbstractEntityPlayer player = world.getPlayer(this.playerId);
+                if(player != null && player.isInRange(this.x, this.y)){
+                    int x = Util.floor(this.x);
+                    int y = Util.floor(this.y);
 
-                    boolean isRightTool = player != null && RockBottomAPI.getApiHandler().isToolEffective(player, player.getInv().get(player.getSelectedSlot()), tile, this.layer, this.x, this.y);
-                    InteractionManager.breakTile(tile, player, this.x, this.y, this.layer, isRightTool);
+                    Tile tile = world.getState(this.layer, x, y).getTile();
+                    if(tile.canBreak(world, x, y, this.layer)){
+                        boolean isRightTool = RockBottomAPI.getApiHandler().isToolEffective(player, player.getInv().get(player.getSelectedSlot()), tile, this.layer, x, y);
+                        InteractionManager.breakTile(tile, player, x, y, this.layer, isRightTool);
+                    }
                 }
             }
             return true;

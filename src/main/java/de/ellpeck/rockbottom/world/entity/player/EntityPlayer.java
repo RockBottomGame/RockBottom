@@ -49,9 +49,6 @@ import java.util.function.BiConsumer;
 
 public class EntityPlayer extends AbstractEntityPlayer{
 
-    public static final float MOVE_SPEED = 0.2F;
-    public static final float CLIMB_SPEED = 0.15F;
-
     public final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
         if(RockBottomAPI.getNet().isServer()){
             boolean isInv = inv instanceof InventoryPlayer;
@@ -438,6 +435,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public IPlayerDesign getDesign(){
         return this.design;
+    }
+
+    @Override
+    public boolean isInRange(double x, double y){
+        return Util.distanceSq(this.x, this.y, x, y) <= RANGE*RANGE;
     }
 
     @Override
