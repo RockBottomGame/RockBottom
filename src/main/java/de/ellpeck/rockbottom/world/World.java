@@ -488,6 +488,17 @@ public class World implements IWorld{
     }
 
     @Override
+    public boolean isDaytime(){
+        float light = this.getSkylightModifier();
+        return light >= 0.7F;
+    }
+
+    @Override
+    public boolean isNightTime(){
+        return !this.isDaytime();
+    }
+
+    @Override
     public void savePlayer(AbstractEntityPlayer player){
         DataSet playerSet = new DataSet();
         player.save(playerSet);
