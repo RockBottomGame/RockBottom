@@ -115,8 +115,8 @@ public class GuiManager implements IGuiManager{
         g.scale(game.getGuiScale(), game.getGuiScale());
 
         Font font = manager.getFont();
-        float width = (float)game.getWidthInGui();
-        float height = (float)game.getHeightInGui();
+        float width = game.getWidthInGui();
+        float height = game.getHeightInGui();
 
         Gui gui = this.getGui();
 

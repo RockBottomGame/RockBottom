@@ -111,32 +111,42 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public int getGuiScale(){
+    public void calcScales(){
+        throw new UnsupportedOperationException("Cannot calc scales on a dedicated server");
+    }
+
+    @Override
+    public float getDisplayRatio(){
+        throw new UnsupportedOperationException("Cannot get display ratio on a dedicated server");
+    }
+
+    @Override
+    public float getGuiScale(){
         throw new UnsupportedOperationException("Cannot get gui scale on a dedicated server");
     }
 
     @Override
-    public int getWorldScale(){
+    public float getWorldScale(){
         throw new UnsupportedOperationException("Cannot get world scale on a dedicated server");
     }
 
     @Override
-    public double getWidthInWorld(){
+    public float getWidthInWorld(){
         throw new UnsupportedOperationException("Cannot get the width in the world on a dedicated server");
     }
 
     @Override
-    public double getHeightInWorld(){
+    public float getHeightInWorld(){
         throw new UnsupportedOperationException("Cannot get the height in the world on a dedicated server");
     }
 
     @Override
-    public double getWidthInGui(){
+    public float getWidthInGui(){
         throw new UnsupportedOperationException("Cannot get the width in the gui on a dedicated server");
     }
 
     @Override
-    public double getHeightInGui(){
+    public float getHeightInGui(){
         throw new UnsupportedOperationException("Cannot get the height in the gui on a dedicated server");
     }
 

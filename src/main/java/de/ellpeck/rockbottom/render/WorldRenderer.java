@@ -49,7 +49,7 @@ public class WorldRenderer{
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
         IApiHandler api = RockBottomAPI.getApiHandler();
-        int scale = game.getWorldScale();
+        float scale = game.getWorldScale();
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
         g.setBackground(SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight]);

@@ -83,6 +83,14 @@ public class RockBottom extends AbstractGame implements InputListener{
     private int lastWidth;
     private int lastHeight;
 
+    private float displayRatio;
+    private float guiScale;
+    private float worldScale;
+    private float guiWidth;
+    private float guiHeight;
+    private float worldWidth;
+    private float worldHeight;
+
     public static void startGame(){
         doInit(new RockBottom());
     }
@@ -183,6 +191,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         RockBottomAPI.getModLoader().initAssets();
 
         this.setPlayerDesign();
+        this.calcScales();
     }
 
     private void setPlayerDesign(){
@@ -236,6 +245,8 @@ public class RockBottom extends AbstractGame implements InputListener{
                 }
 
                 this.initGraphics();
+                this.calcScales();
+
                 if(this.guiManager != null){
                     this.guiManager.setReInit();
                 }
@@ -447,6 +458,8 @@ public class RockBottom extends AbstractGame implements InputListener{
             if(!Display.isFullscreen() && Display.wasResized()){
                 if(this.lastWidth != Display.getWidth() || this.lastHeight != Display.getHeight()){
                     this.initGraphics();
+                    this.calcScales();
+
                     this.guiManager.setReInit();
                 }
             }
@@ -477,60 +490,68 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public int getGuiScale(){
-        return this.settings.guiScale;
+    public void calcScales(){
+        Log.debug("Calculating render scales");
+
+        float width = Display.getWidth();
+        float height = Display.getHeight();
+
+        this.displayRatio = Math.min(width/16F, height/9F);
+
+        this.guiScale = (this.getDisplayRatio()/20F)*this.settings.guiScale;
+        this.guiWidth = width/this.guiScale;
+        this.guiHeight = height/this.guiScale;
+
+        this.worldScale = this.getDisplayRatio()*this.settings.renderScale;
+        this.worldWidth = width/this.worldScale;
+        this.worldHeight = height/this.worldScale;
+
+        Log.debug("Successfully calculated render scales");
     }
 
     @Override
-    public int getWorldScale(){
-        return this.settings.renderScale;
+    public float getDisplayRatio(){
+        return this.displayRatio;
     }
 
     @Override
-    public double getWidthInWorld(){
-        int width = Display.getWidth();
-        int scale = this.getWorldScale();
-        return (double)this.screwWithSizes(width, scale)/(double)scale;
+    public float getGuiScale(){
+        return this.guiScale;
     }
 
     @Override
-    public double getHeightInWorld(){
-        int height = Display.getHeight();
-        int scale = this.getWorldScale();
-        return (double)this.screwWithSizes(height, scale)/(double)scale;
-    }
-
-    private int screwWithSizes(int size, int scale){
-        if((scale%2 == 0) != (size%2 == 0)){
-            return size+1;
-        }
-        else{
-            return size;
-        }
+    public float getWorldScale(){
+        return this.worldScale;
     }
 
     @Override
-    public double getWidthInGui(){
-        int width = Display.getWidth();
-        int scale = this.getGuiScale();
-        return (double)this.screwWithSizes(width, scale)/(double)scale;
+    public float getWidthInWorld(){
+        return this.worldWidth;
     }
 
     @Override
-    public double getHeightInGui(){
-        int height = Display.getHeight();
-        int scale = this.getGuiScale();
-        return (double)this.screwWithSizes(height, scale)/(double)scale;
+    public float getHeightInWorld(){
+        return this.worldHeight;
+    }
+
+    @Override
+    public float getWidthInGui(){
+        return this.guiWidth;
+    }
+
+    @Override
+    public float getHeightInGui(){
+        return this.guiHeight;
     }
 
     @Override
     public float getMouseInGuiX(){
-        return (float)this.input.getMouseX()/(float)this.getGuiScale();
+        return (float)this.input.getMouseX()/this.getGuiScale();
     }
 
     @Override
     public float getMouseInGuiY(){
-        return (float)this.input.getMouseY()/(float)this.getGuiScale();
+        return (float)this.input.getMouseY()/this.getGuiScale();
     }
 
     @Override

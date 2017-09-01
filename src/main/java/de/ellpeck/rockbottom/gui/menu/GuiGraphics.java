@@ -40,12 +40,16 @@ public class GuiGraphics extends Gui{
         }, "button.cursor_infos", assetManager.localize(AbstractGame.internalRes("info.cursor_infos"))));
         this.components.add(new ComponentSlider(this, this.guiLeft, this.guiTop+40, 150, 16, (int)(settings.textSpeed*10F), 1, 100, ((integer, aBoolean) -> settings.textSpeed = (float)integer/10F), assetManager.localize(AbstractGame.internalRes("button.text_speed"))));
 
-        this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop, 150, 16, settings.renderScale, 1, 128, ((integer, aBoolean) -> settings.renderScale = integer), assetManager.localize(AbstractGame.internalRes("button.render_scale"))));
-        this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop+20, 150, 16, settings.guiScale, 1, 8, ((integer, aBoolean) -> {
+        this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop, 150, 16, (int)(settings.renderScale*100F), 50, 150, (integer, aBoolean) -> {
+            settings.renderScale = (float)integer/100F;
+            game.calcScales();
+        }, assetManager.localize(AbstractGame.internalRes("button.render_scale"))));
+        this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop+20, 150, 16, (int)(settings.guiScale*100F), 50, 100, ((integer, aBoolean) -> {
             if(aBoolean){
-                settings.guiScale = integer;
+                settings.guiScale = (float)integer/100F;
                 game.getDataManager().savePropSettings(settings);
                 game.getGuiManager().setReInit();
+                game.calcScales();
             }
         }), assetManager.localize(AbstractGame.internalRes("button.gui_scale"))));
         this.components.add(new ComponentSlider(this, this.guiLeft+154, this.guiTop+40, 150, 16, settings.targetFps, 30, 256, ((integer, aBoolean) -> settings.targetFps = integer), assetManager.localize(AbstractGame.internalRes("button.target_fps"))){
