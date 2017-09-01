@@ -494,7 +494,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public boolean isNightTime(){
+    public boolean isNighttime(){
         return !this.isDaytime();
     }
 
