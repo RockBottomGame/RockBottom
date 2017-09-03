@@ -2,10 +2,7 @@ package de.ellpeck.rockbottom.construction;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.BasicRecipe;
-import de.ellpeck.rockbottom.api.construction.SeparatorRecipe;
-import de.ellpeck.rockbottom.api.construction.SmelterRecipe;
-import de.ellpeck.rockbottom.api.construction.StamperRecipe;
+import de.ellpeck.rockbottom.api.construction.*;
 import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
@@ -88,15 +85,31 @@ public final class ConstructionRegistry{
         RockBottomAPI.SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(GameContent.ITEM_COPPER_INGOT),
                 new ResUseInfo(ResourceRegistry.PARTLY_PROCESSED_COPPER),
                 300));
+        RockBottomAPI.SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(GameContent.ITEM_TIN_INGOT),
+                new ResUseInfo(ResourceRegistry.PARTLY_PROCESSED_TIN),
+                400));
         RockBottomAPI.SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(GameContent.ITEM_COAL, 1, 1),
                 new ResUseInfo(ResourceRegistry.WOOD_LOG),
                 800));
+        RockBottomAPI.SMELTER_RECIPES.add(new SmelterRecipe(new ItemInstance(GameContent.ITEM_BRONZE_INGOT),
+                new ResUseInfo(ResourceRegistry.PARTLY_PROCESSED_BRONZE),
+                500));
 
         RockBottomAPI.SEPARATOR_RECIPES.add(new SeparatorRecipe(new ItemInstance(GameContent.ITEM_COPPER_GRIT, 2),
                 new ResUseInfo(ResourceRegistry.RAW_COPPER),
                 500,
                 new ItemInstance(GameContent.ITEM_SLAG),
                 0.7F));
+        RockBottomAPI.SEPARATOR_RECIPES.add(new SeparatorRecipe(new ItemInstance(GameContent.ITEM_TIN_GRIT, 2),
+                new ResUseInfo(ResourceRegistry.RAW_TIN),
+                600,
+                new ItemInstance(GameContent.ITEM_SLAG),
+                0.8F));
+
+        RockBottomAPI.COMBINER_RECIPES.add(new CombinerRecipe(new ItemInstance(GameContent.ITEM_BRONZE_GRIT, 4),
+                new ResUseInfo(ResourceRegistry.PARTLY_PROCESSED_TIN, 2),
+                new ResUseInfo(ResourceRegistry.PARTLY_PROCESSED_COPPER, 3) ,
+                600));
     }
 
 }

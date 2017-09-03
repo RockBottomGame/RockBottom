@@ -20,6 +20,7 @@ import de.ellpeck.rockbottom.world.gen.feature.WorldGenPebbles;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenGlow;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenTin;
 import de.ellpeck.rockbottom.world.tile.*;
 
 public final class ContentRegistry{
@@ -50,6 +51,7 @@ public final class ContentRegistry{
         new TileSign().setHardness(1F).addEffectiveTool(ToolType.AXE, 1).setForceDrop().register();
         new TileGrassTuft().setHardness(0F).register();
         new TileTinOre().setHardness(30F).addEffectiveTool(ToolType.PICKAXE, 3).register();
+        new TileCombiner().setHardness(20F).addEffectiveTool(ToolType.PICKAXE, 2).register();
 
         new ItemTool(AbstractGame.internalRes("super_tool"), 50F).addToolType(ToolType.AXE, 100).addToolType(ToolType.PICKAXE, 100).addToolType(ToolType.SHOVEL, 100).register();
         new ItemTool(AbstractGame.internalRes("brittle_pickaxe"), 2F).addToolType(ToolType.PICKAXE, 1).register();
@@ -70,6 +72,8 @@ public final class ContentRegistry{
         new ItemBasic(AbstractGame.internalRes("tin_cluster")).register().addResource(ResourceRegistry.RAW_TIN);
         new ItemBasic(AbstractGame.internalRes("tin_grit")).register().addResource(ResourceRegistry.PARTLY_PROCESSED_TIN);
         new ItemBasic(AbstractGame.internalRes("tin_ingot")).register().addResource(ResourceRegistry.PROCESSED_TIN);
+        new ItemBasic(AbstractGame.internalRes("bronze_grit")).register().addResource(ResourceRegistry.PARTLY_PROCESSED_BRONZE);
+        new ItemBasic(AbstractGame.internalRes("bronze_ingot")).register().addResource(ResourceRegistry.PROCESSED_BRONZE);
 
         new BiomeBasic(AbstractGame.internalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
         new BiomeBasic(AbstractGame.internalRes("grassland"), 1, -1, 1000).register();
@@ -85,5 +89,6 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGlow.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenPebbles.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGrassTufts.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenTin.class);
     }
 }

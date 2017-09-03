@@ -119,7 +119,28 @@
             "grass_tall": "/tiles/grass_tall.png",
             "grass_short": "/tiles/grass_short.png",
             "bush": "/tiles/bush.png",
-            "tin_ore": "/tiles/ore_tin.png"
+            "tin_ore": "/tiles/ore_tin.png",
+            "combiner": {
+                "*": {
+                    "subtexture": {
+                        "file": "/tiles/combiner.png",
+                        "0.0": [0, 12, 12, 12],
+                        "1.0": [12, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12],
+                        "1.1": [12, 0, 12, 12]
+                    }
+                },
+                "active": {
+                    "subtexture": {
+                        "file": "/tiles/combiner_active.png",
+                        "0.0": [0, 12, 12, 12],
+                        "1.0": [12, 12, 12, 12],
+                        "0.1": [0, 0, 12, 12],
+                        "1.1": [12, 0, 12, 12]
+                    }
+                },
+                "item": "/tiles/combiner_item.png"
+            }
         },
         "items": {
             "super_tool": "/items/super_tool.png",
@@ -146,7 +167,9 @@
             "brittle_shovel": "/items/brittle_shovel.png",
             "tin_cluster": "/items/cluster_tin.png",
             "tin_grit": "/items/tin_grit.png",
-            "tin_ingot": "/items/tin_ingot.png"
+            "tin_ingot": "/items/tin_ingot.png",
+            "bronze_grit": "/items/bronze_grit.png",
+            "bronze_ingot": "/items/bronze_ingot.png"
         },
         "gui": {
             "cursor": "/gui/cursor.png",
