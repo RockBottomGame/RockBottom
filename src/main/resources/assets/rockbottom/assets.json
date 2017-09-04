@@ -321,7 +321,7 @@
         }
     },
     "font": {
-        "default": ["/font/default.info", "/font/default.png"]
+        "default": ["/font/default.json", "/font/default.png"]
     },
     "loc": {
         "us_english": "/loc/us_english.json",
