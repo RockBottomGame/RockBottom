@@ -124,10 +124,10 @@ public class TileCombiner extends MultiTile{
                 IParticleManager manager = AbstractGame.get().getParticleManager();
 
                 if(Util.RANDOM.nextFloat() >= 0.25F){
-                    manager.addSmokeParticle(world, x+1.16, y+1.9, -Util.RANDOM.nextFloat()*0.05, 0, 0.09F);
+                    manager.addSmokeParticle(world, x+0.5, y+1.9, -Util.RANDOM.nextFloat()*0.05, 0, 0.09F);
                 }
                 if(Util.RANDOM.nextFloat() >= 0.25F){
-                    manager.addSmokeParticle(world, x+1.75, y+1.65, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F);
+                    manager.addSmokeParticle(world, x+1.2, y+1.65, Util.RANDOM.nextGaussian()*0.01, 0, 0.09F);
                 }
             }
         }
