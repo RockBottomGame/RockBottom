@@ -88,7 +88,7 @@ public class WorldRenderer{
                                 int[] light = api.interpolateLight(world, chunk.getX()+x, chunk.getY()+y);
 
                                 if(!game.isBackgroundDebug()){
-                                    if(!tile.getTile().isFullTile() || game.isForegroundDebug()){
+                                    if(!tile.getTile().obscuresBackground() || game.isForegroundDebug()){
                                         TileState tileBack = chunk.getStateInner(TileLayer.BACKGROUND, x, y);
                                         ITileRenderer rendererBack = tileBack.getTile().getRenderer();
                                         if(rendererBack != null){
