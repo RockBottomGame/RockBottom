@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
@@ -146,8 +147,8 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.initGraphics();
 
         try{
-            Image image = new Image(AssetManager.getResource("/assets/rockbottom/loading.png"), "loading", false);
-            image.setFilter(Image.FILTER_NEAREST);
+            Texture image = new Texture(AssetManager.getResource("/assets/rockbottom/loading.png"), "loading", false);
+            image.setFilter(Texture.FILTER_NEAREST);
 
             image.draw(0, 0, Display.getWidth(), Display.getHeight());
             Display.update();

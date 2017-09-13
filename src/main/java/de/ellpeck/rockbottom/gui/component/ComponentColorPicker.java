@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.gui.component;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
@@ -10,13 +11,12 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 import java.util.function.BiConsumer;
 
 public class ComponentColorPicker extends GuiComponent{
 
-    private final Image image = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
+    private final Texture texture = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
 
     private final BiConsumer<Color, Boolean> consumer;
     private final boolean isEnlargable;
@@ -42,7 +42,7 @@ public class ComponentColorPicker extends GuiComponent{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, Graphics g){
-        this.image.draw(this.x, this.y, this.sizeX, this.sizeY);
+        this.texture.draw(this.x, this.y, this.sizeX, this.sizeY);
 
         g.setColor(this.colorOutline);
         g.drawRect(this.x, this.y, this.sizeX, this.sizeY);
@@ -125,9 +125,9 @@ public class ComponentColorPicker extends GuiComponent{
 
     private void onClickOrMove(IGameInstance game, float mouseX, float mouseY){
         if(this.isMouseOver(game)){
-            float x = (mouseX-this.x)/this.sizeX*this.image.getWidth();
-            float y = (mouseY-this.y)/this.sizeY*this.image.getHeight();
-            Color color = this.image.getColor((int)x, (int)y);
+            float x = (mouseX-this.x)/this.sizeX*this.texture.getWidth();
+            float y = (mouseY-this.y)/this.sizeY*this.texture.getHeight();
+            Color color = this.texture.getColor((int)x, (int)y);
 
             if(!this.color.equals(color)){
                 this.color = color;

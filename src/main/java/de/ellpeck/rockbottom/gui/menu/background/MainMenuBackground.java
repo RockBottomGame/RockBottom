@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui.menu.background;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.gui.IMainMenuTheme;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -73,7 +74,7 @@ public class MainMenuBackground{
             }
         }
 
-        Image logo = manager.getTexture(RES_LOGO);
+        Texture logo = manager.getTexture(RES_LOGO);
         logo.draw((int)game.getWidthInGui()/2-logo.getWidth()/2, (int)game.getHeightInGui()/3-logo.getHeight()/2);
     }
 }

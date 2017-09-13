@@ -20,6 +20,7 @@ package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -44,7 +45,7 @@ public class ParticleTile extends Particle{
         if(this.renderPixel == null){
             ITileRenderer renderer = this.state.getTile().getRenderer();
             if(renderer != null){
-                Image texture = renderer.getParticleTexture(game, manager, g, this.state.getTile(), this.state);
+                Texture texture = renderer.getParticleTexture(game, manager, g, this.state.getTile(), this.state);
                 if(texture != null){
                     int width = texture.getWidth();
                     int height = texture.getHeight();

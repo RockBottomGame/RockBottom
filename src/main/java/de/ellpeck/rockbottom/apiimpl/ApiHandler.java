@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.construction.resource.ResInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -292,7 +293,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale, boolean hovered){
-        Image texture = manager.getTexture(SLOT_NAME);
+        Texture texture = manager.getTexture(SLOT_NAME);
 
         Color color = game.getSettings().guiColor;
         if(hovered){
@@ -420,10 +421,10 @@ public class ApiHandler implements IApiHandler{
             }
 
             int[] light = new int[4];
-            light[Image.TOP_LEFT] = (lightAround[0]+lightAround[8]+lightAround[1]+lightAround[2])/4;
-            light[Image.TOP_RIGHT] = (lightAround[0]+lightAround[2]+lightAround[3]+lightAround[4])/4;
-            light[Image.BOTTOM_RIGHT] = (lightAround[0]+lightAround[4]+lightAround[5]+lightAround[6])/4;
-            light[Image.BOTTOM_LEFT] = (lightAround[0]+lightAround[6]+lightAround[7]+lightAround[8])/4;
+            light[Texture.TOP_LEFT] = (lightAround[0]+lightAround[8]+lightAround[1]+lightAround[2])/4;
+            light[Texture.TOP_RIGHT] = (lightAround[0]+lightAround[2]+lightAround[3]+lightAround[4])/4;
+            light[Texture.BOTTOM_RIGHT] = (lightAround[0]+lightAround[4]+lightAround[5]+lightAround[6])/4;
+            light[Texture.BOTTOM_LEFT] = (lightAround[0]+lightAround[6]+lightAround[7]+lightAround[8])/4;
             return light;
         }
     }
