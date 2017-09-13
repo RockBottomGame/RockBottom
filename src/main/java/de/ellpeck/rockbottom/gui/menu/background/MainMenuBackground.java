@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
-import de.ellpeck.rockbottom.render.WorldRenderer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -21,8 +20,7 @@ public class MainMenuBackground{
     private static final IResourceName RES_LOGO = AbstractGame.internalRes("logo");
 
     static{
-        RockBottomAPI.MAIN_MENU_THEMES.add(new OreWallTheme());
-        RockBottomAPI.MAIN_MENU_THEMES.add(new CheckerboardTheme());
+        RockBottomAPI.MAIN_MENU_THEMES.add(new BlankTheme());
     }
 
     private final IMainMenuTheme theme;
@@ -59,8 +57,8 @@ public class MainMenuBackground{
     public void render(RockBottom game, IAssetManager manager, Graphics g){
         g.setBackground(this.theme.getBackgroundColor());
 
-        float height = (float)game.getHeightInGui();
-        float tileSize = (float)Math.max(game.getWidthInGui(), height)/(float)IMainMenuTheme.TILE_AMOUNT;
+        float height = game.getHeightInGui();
+        float tileSize = Math.max(game.getWidthInGui(), height)/(float)IMainMenuTheme.TILE_AMOUNT;
 
         for(int x = 0; x < IMainMenuTheme.TILE_AMOUNT; x++){
             for(int y = 0; y < IMainMenuTheme.TILE_AMOUNT; y++){

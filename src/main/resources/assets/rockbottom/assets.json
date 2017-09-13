@@ -12,164 +12,10 @@
             "8": "/break/8.png"
         },
         "tiles": {
-            "dirt": "/tiles/dirt.png",
-            "stone": "/tiles/stone.png",
-            "grass": "/tiles/grass.png",
-            "torch": {
-                "*": "/tiles/torch.png",
-                "left": "/tiles/torch_left.png",
-                "right": "/tiles/torch_right.png",
-                "back": "/tiles/torch_back.png"
-            },
-            "lamp": {
-                "*": "/tiles/lamp.png",
-                "left": "/tiles/lamp_left.png",
-                "right": "/tiles/lamp_right.png",
-                "back": "/tiles/lamp_back.png"
-            },
-            "chest": {
-                "*": "/tiles/chest.png",
-                "open": "/tiles/chest_open.png"
-            },
-            "leaves": "/tiles/leaves.png",
-            "log": "/tiles/log.png",
-            "sapling": "/tiles/sapling.png",
-            "coal_ore": "/tiles/ore_coal.png",
-            "copper_ore": "/tiles/ore_copper.png",
-            "smelter": {
-                "*": {
-                    "subtexture": {
-                        "file": "/tiles/smelter.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12]
-                    }
-                },
-                "active": {
-                    "subtexture": {
-                        "file": "/tiles/smelter_active.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12]
-                    }
-                },
-                "item": "/tiles/smelter_item.png"
-            },
-            "separator": {
-                "*": {
-                    "subtexture": {
-                        "file": "/tiles/separator.png",
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12]
-                    }
-                },
-                "active": {
-                    "subtexture": {
-                        "file": "/tiles/separator_active.png",
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12]
-                    }
-                },
-                "item": "/tiles/separator_item.png"
-            },
-            "wood_boards": "/tiles/wood_boards.png",
-            "ladder": "/tiles/wood_ladder.png",
-            "glow_ore": {
-                "base": "/tiles/ore_glow_0.png",
-                "glow": "/tiles/ore_glow_1.png"
-            },
-            "stamper": {
-                "*": "/tiles/stamper_up.png",
-                "down": "/tiles/stamper_down.png",
-                "item": "/tiles/stamper_item.png"
-            },
-            "hardened_stone": "/tiles/stone_hardened.png",
-            "door": {
-                "*": {
-                    "subtexture": {
-                        "file": "/tiles/wood_door_closed.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12]
-                    }
-                },
-                "open": {
-                    "subtexture": {
-                        "file": "/tiles/wood_door_open.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12]
-                    }
-                },
-                "item": "/tiles/wood_door_item.png"
-            },
-            "construction_table": {
-                "*": {
-                    "subtexture": {
-                        "file": "/tiles/construction_table.png",
-                        "0.0": [0, 0, 12, 12],
-                        "1.0": [12, 0, 12, 12]
-                    }
-                },
-                "item": "/tiles/construction_table_item.png"
-            },
-            "pebbles": "/tiles/pebbles.png",
-            "sign": "/tiles/wood_sign.png",
-            "grass_tuft": "/tiles/grass_tuft.png",
-            "grass_tall": "/tiles/grass_tall.png",
-            "grass_short": "/tiles/grass_short.png",
-            "bush": "/tiles/bush.png",
-            "tin_ore": "/tiles/ore_tin.png",
-            "combiner": {
-                "*": {
-                    "subtexture": {
-                        "file": "/tiles/combiner.png",
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12]
-                    }
-                },
-                "active": {
-                    "subtexture": {
-                        "file": "/tiles/combiner_active.png",
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12]
-                    }
-                },
-                "item": "/tiles/combiner_item.png"
-            }
+
         },
         "items": {
-            "super_tool": "/items/super_tool.png",
-            "wood_pickaxe": "/items/wood_pickaxe.png",
-            "stone_pickaxe": "/items/stone_pickaxe.png",
-            "stone_axe": "/items/stone_axe.png",
-            "stone_shovel": "/items/stone_shovel.png",
-            "coal": "/items/coal.png",
-            "charcoal": "/items/charcoal.png",
-            "copper_cluster": "/items/cluster_copper.png",
-            "copper_grit": "/items/copper_grit.png",
-            "copper_ingot": "/items/copper_ingot.png",
-            "copper_pickaxe": "/items/copper_pickaxe.png",
-            "copper_axe": "/items/copper_axe.png",
-            "copper_shovel": "/items/copper_shovel.png",
-            "slag": "/items/slag.png",
-            "glow_cluster": {
-                "base": "/items/cluster_glow_0.png",
-                "glow": "/items/cluster_glow_1.png"
-            },
-            "pebbles": "/items/pebbles.png",
-            "brittle_pickaxe": "/items/brittle_pickaxe.png",
-            "brittle_axe": "/items/brittle_axe.png",
-            "brittle_shovel": "/items/brittle_shovel.png",
-            "tin_cluster": "/items/cluster_tin.png",
-            "tin_grit": "/items/tin_grit.png",
-            "tin_ingot": "/items/tin_ingot.png",
-            "bronze_grit": "/items/bronze_grit.png",
-            "bronze_ingot": "/items/bronze_ingot.png"
+
         },
         "gui": {
             "cursor": "/gui/cursor.png",
@@ -183,7 +29,6 @@
             "all_construction": "/gui/all_construction.png",
             "all_construction_toggled": "/gui/all_construction_crossed.png",
             "popup": "/gui/popup.png",
-            "sign": "/gui/sign.png",
             "save_world": "/gui/save_world.png",
             "reset": "/gui/reset.png",
             "randomize": "/gui/randomize.png"
