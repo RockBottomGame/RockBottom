@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.Color;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class ComponentRecipeButton extends ComponentButton{
 
-    private static final Color TRANSPARENT = new Color(1F, 1F, 1F, 0.5F);
+    private static final int TRANSPARENT_COLOR = 0xFFFFFF80;
     private static final IResourceName LOC_CONSTRUCTS = AbstractGame.internalRes("info.constructs");
     private static final IResourceName LOC_USES = AbstractGame.internalRes("info.uses");
 
@@ -47,7 +48,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
             List<ItemInstance> outputs = this.recipe.getOutputs();
             ItemInstance instance = outputs.get(0);
-            RockBottomAPI.getApiHandler().renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Color.white : TRANSPARENT);
+            RockBottomAPI.getApiHandler().renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Colors.WHITE : TRANSPARENT_COLOR);
         }
     }
 

@@ -23,10 +23,7 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
-import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.Direction;
-import de.ellpeck.rockbottom.api.util.MutableInt;
-import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -408,8 +405,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public String getChatColorFormat(){
-        Color color = this.design.getFavoriteColor();
-        return Util.colorToFormattingCode(color);
+        int color = this.design.getFavoriteColor();
+        return Colors.toFormattingCode(color);
     }
 
     @Override
@@ -428,7 +425,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
-    public Color getColor(){
+    public int getColor(){
         return this.design.getFavoriteColor();
     }
 

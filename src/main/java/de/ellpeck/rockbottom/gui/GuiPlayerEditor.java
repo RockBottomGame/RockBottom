@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
@@ -75,7 +76,7 @@ public class GuiPlayerEditor extends Gui{
         this.nameField = new ComponentInputField(this, x-98, this.guiTop, 80, 12, true, true, false, 24, true){
             @Override
             public String getDisplayText(){
-                return Util.colorToFormattingCode(design.getFavoriteColor())+super.getDisplayText();
+                return Colors.toFormattingCode(design.getFavoriteColor())+super.getDisplayText();
             }
         };
         this.nameField.setText(design.getName());
@@ -109,7 +110,7 @@ public class GuiPlayerEditor extends Gui{
         super.render(game, manager, g);
 
         int x = (int)game.getWidthInGui()/2-84;
-        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, this.guiTop+32, 45F, this.previewType, ".hanging", Color.white);
+        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, this.guiTop+32, 45F, this.previewType, ".hanging", Colors.WHITE);
     }
 
     @Override
@@ -173,7 +174,7 @@ public class GuiPlayerEditor extends Gui{
 
     private static class ColorPicker extends ComponentColorPicker{
 
-        public ColorPicker(Gui gui, int x, int y, Color defaultColor, Consumer<Color> consumer){
+        public ColorPicker(Gui gui, int x, int y, int defaultColor, Consumer<Integer> consumer){
             super(gui, x, y, 12, 12, defaultColor, (color, aBoolean) -> consumer.accept(color), true);
         }
     }

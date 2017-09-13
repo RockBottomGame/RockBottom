@@ -41,7 +41,7 @@ public class ParticleTile extends Particle{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, Color filter){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, int filter){
         if(this.renderPixel == null){
             ITileRenderer renderer = this.state.getTile().getRenderer();
             if(renderer != null){
@@ -52,7 +52,7 @@ public class ParticleTile extends Particle{
 
                     int pixelX = Util.RANDOM.nextInt(width);
                     int pixelY = Util.RANDOM.nextInt(height);
-                    this.renderPixel = texture.getColor(pixelX, pixelY).multiply(filter);
+                    this.renderPixel = texture.getColor(pixelX, pixelY).multiply(new Color(filter));
                 }
             }
         }

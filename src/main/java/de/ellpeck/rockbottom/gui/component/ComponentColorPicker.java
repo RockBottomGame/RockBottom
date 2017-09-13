@@ -7,9 +7,9 @@ import de.ellpeck.rockbottom.api.assets.tex.Texture;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.util.function.BiConsumer;
@@ -18,7 +18,7 @@ public class ComponentColorPicker extends GuiComponent{
 
     private final Texture texture = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
 
-    private final BiConsumer<Color, Boolean> consumer;
+    private final BiConsumer<Integer, Boolean> consumer;
     private final boolean isEnlargable;
     private final int defX;
     private final int defY;
@@ -26,9 +26,9 @@ public class ComponentColorPicker extends GuiComponent{
     private final int defSizeY;
     private boolean wasMouseDown;
     private boolean isEnlarged;
-    private Color color;
+    private int color;
 
-    public ComponentColorPicker(Gui gui, int x, int y, int sizeX, int sizeY, Color defaultColor, BiConsumer<Color, Boolean> consumer, boolean isEnlargable){
+    public ComponentColorPicker(Gui gui, int x, int y, int sizeX, int sizeY, int defaultColor, BiConsumer<Integer, Boolean> consumer, boolean isEnlargable){
         super(gui, x, y, sizeX, sizeY);
         this.consumer = consumer;
         this.color = defaultColor;
@@ -127,9 +127,9 @@ public class ComponentColorPicker extends GuiComponent{
         if(this.isMouseOver(game)){
             float x = (mouseX-this.x)/this.sizeX*this.texture.getWidth();
             float y = (mouseY-this.y)/this.sizeY*this.texture.getHeight();
-            Color color = this.texture.getColor((int)x, (int)y);
+            int color = Colors.fromColor(this.texture.getColor((int)x, (int)y));
 
-            if(!this.color.equals(color)){
+            if(this.color != color){
                 this.color = color;
                 this.consumer.accept(this.color, false);
             }

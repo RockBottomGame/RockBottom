@@ -22,6 +22,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
@@ -32,37 +33,38 @@ import java.util.List;
 public class PlayerDesign implements IPlayerDesign{
 
     private static final String[] DEFAULT_NAMES = new String[]{"Jake", "Craig", "Mariana", "Louise", "Rosie", "Flo", "Luke", "Abbie", "James", "Chris", "Kieran", "Fatima", "Adam", "Giles", "Megan", "Tim", "Calypso", "Hayley", "Aimee", "Megan", "Eleanor"};
+
     private String name;
-    private Color color;
+    private int color;
     private boolean female;
 
     private int base;
-    private Color eyeColor;
+    private int eyeColor;
 
     private int shirt;
-    private Color shirtColor;
+    private int shirtColor;
 
     private int sleeves;
-    private Color sleevesColor;
+    private int sleevesColor;
 
     private int pants;
-    private Color pantsColor;
+    private int pantsColor;
 
     private int footwear;
-    private Color footwearColor;
+    private int footwearColor;
 
     private int hair;
-    private Color hairColor;
+    private int hairColor;
 
     private int accessory;
 
     private int mouth;
 
     private int eyebrows;
-    private Color eyebrowsColor;
+    private int eyebrowsColor;
 
     private int beard;
-    private Color beardColor;
+    private int beardColor;
 
     public static String getRandomName(){
         return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
@@ -70,36 +72,36 @@ public class PlayerDesign implements IPlayerDesign{
 
     public static void randomizeDesign(IPlayerDesign design){
         design.setName(getRandomName());
-        design.setFavoriteColor(Util.randomColor(Util.RANDOM));
+        design.setFavoriteColor(Colors.random(Util.RANDOM));
         design.setFemale(Util.RANDOM.nextBoolean());
 
         design.setBase(Util.RANDOM.nextInt(BASE.size()));
-        design.setEyeColor(Util.randomColor(Util.RANDOM));
+        design.setEyeColor(Colors.random(Util.RANDOM));
 
         design.setHair(Util.RANDOM.nextInt(HAIR.size()));
-        design.setHairColor(Util.randomColor(Util.RANDOM));
+        design.setHairColor(Colors.random(Util.RANDOM));
 
         design.setShirt(Util.RANDOM.nextInt(SHIRT.size()));
-        design.setShirtColor(Util.randomColor(Util.RANDOM));
+        design.setShirtColor(Colors.random(Util.RANDOM));
 
         design.setSleeves(Util.RANDOM.nextInt(SLEEVES.size()));
-        design.setSleevesColor(Util.randomColor(Util.RANDOM));
+        design.setSleevesColor(Colors.random(Util.RANDOM));
 
         design.setPants(Util.RANDOM.nextInt(PANTS.size()));
-        design.setPantsColor(Util.randomColor(Util.RANDOM));
+        design.setPantsColor(Colors.random(Util.RANDOM));
 
         design.setFootwear(Util.RANDOM.nextInt(FOOTWEAR.size()));
-        design.setFavoriteColor(Util.randomColor(Util.RANDOM));
+        design.setFavoriteColor(Colors.random(Util.RANDOM));
 
         design.setAccessory(Util.RANDOM.nextInt(ACCESSORIES.size()));
 
         design.setEyebrows(Util.RANDOM.nextInt(EYEBROWS.size()));
-        design.setEyebrowsColor(Util.randomColor(Util.RANDOM));
+        design.setEyebrowsColor(Colors.random(Util.RANDOM));
 
         design.setMouth(Util.RANDOM.nextInt(MOUTH.size()));
 
         design.setBeard(Util.RANDOM.nextInt(BEARD.size()));
-        design.setBeardColor(Util.randomColor(Util.RANDOM));
+        design.setBeardColor(Colors.random(Util.RANDOM));
     }
 
     private static int loadIndex(String s, List<IResourceName> list){
@@ -147,80 +149,80 @@ public class PlayerDesign implements IPlayerDesign{
     @Override
     public void save(DataSet set){
         set.addString("name", this.name);
-        set.addInt("color", Util.toIntColor(this.color));
+        set.addInt("color", this.color);
         set.addBoolean("female", this.female);
 
         set.addString("base", saveIndex(this.base, BASE));
-        set.addInt("eye_color", Util.toIntColor(this.eyeColor));
+        set.addInt("eye_color", this.eyeColor);
 
         set.addString("shirt", saveIndex(this.shirt, SHIRT));
-        set.addInt("shirt_color", Util.toIntColor(this.shirtColor));
+        set.addInt("shirt_color", this.shirtColor);
 
         set.addString("sleeves", saveIndex(this.sleeves, SLEEVES));
-        set.addInt("sleeves_color", Util.toIntColor(this.sleevesColor));
+        set.addInt("sleeves_color", this.sleevesColor);
 
         set.addString("pants", saveIndex(this.pants, PANTS));
-        set.addInt("pants_color", Util.toIntColor(this.pantsColor));
+        set.addInt("pants_color", this.pantsColor);
 
         set.addString("footwear", saveIndex(this.footwear, FOOTWEAR));
-        set.addInt("footwear_color", Util.toIntColor(this.footwearColor));
+        set.addInt("footwear_color", this.footwearColor);
 
         set.addString("hair", saveIndex(this.hair, HAIR));
-        set.addInt("hair_color", Util.toIntColor(this.hairColor));
+        set.addInt("hair_color", this.hairColor);
 
         set.addString("accessory", saveIndex(this.accessory, ACCESSORIES));
 
         set.addString("eyebrows", saveIndex(this.eyebrows, EYEBROWS));
-        set.addInt("eyebrows_color", Util.toIntColor(this.eyebrowsColor));
+        set.addInt("eyebrows_color", this.eyebrowsColor);
 
         set.addString("mouth", saveIndex(this.mouth, MOUTH));
 
         set.addString("beard", saveIndex(this.beard, BEARD));
-        set.addInt("beard_color", Util.toIntColor(this.beardColor));
+        set.addInt("beard_color", this.beardColor);
     }
 
     @Override
     public void load(DataSet set){
         this.name = set.getString("name");
-        this.color = new Color(set.getInt("color"));
+        this.color = set.getInt("color");
         this.female = set.getBoolean("female");
 
         this.base = loadIndex(set.getString("base"), BASE);
-        this.eyeColor = new Color(set.getInt("eye_color"));
+        this.eyeColor = set.getInt("eye_color");
 
         this.shirt = loadIndex(set.getString("shirt"), SHIRT);
-        this.shirtColor = new Color(set.getInt("shirt_color"));
+        this.shirtColor = set.getInt("shirt_color");
 
         this.sleeves = loadIndex(set.getString("sleeves"), SLEEVES);
-        this.sleevesColor = new Color(set.getInt("sleeves_color"));
+        this.sleevesColor = set.getInt("sleeves_color");
 
         this.pants = loadIndex(set.getString("pants"), PANTS);
-        this.pantsColor = new Color(set.getInt("pants_color"));
+        this.pantsColor = set.getInt("pants_color");
 
         this.footwear = loadIndex(set.getString("footwear"), FOOTWEAR);
-        this.footwearColor = new Color(set.getInt("footwear_color"));
+        this.footwearColor = set.getInt("footwear_color");
 
         this.hair = loadIndex(set.getString("hair"), HAIR);
-        this.hairColor = new Color(set.getInt("hair_color"));
+        this.hairColor = set.getInt("hair_color");
 
         this.accessory = loadIndex(set.getString("accessory"), ACCESSORIES);
 
         this.eyebrows = loadIndex(set.getString("eyebrows"), EYEBROWS);
-        this.eyebrowsColor = new Color(set.getInt("eyebrows_color"));
+        this.eyebrowsColor = set.getInt("eyebrows_color");
 
         this.mouth = loadIndex(set.getString("mouth"), MOUTH);
 
         this.beard = loadIndex(set.getString("beard"), BEARD);
-        this.beardColor = new Color(set.getInt("beard_color"));
+        this.beardColor = set.getInt("beard_color");
     }
 
     @Override
-    public Color getFavoriteColor(){
+    public int getFavoriteColor(){
         return this.color;
     }
 
     @Override
-    public void setFavoriteColor(Color color){
+    public void setFavoriteColor(int color){
         this.color = color;
     }
 
@@ -240,7 +242,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getEyeColor(){
+    public int getEyeColor(){
         return this.eyeColor;
     }
 
@@ -250,7 +252,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getShirtColor(){
+    public int getShirtColor(){
         return this.shirtColor;
     }
 
@@ -260,7 +262,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getSleevesColor(){
+    public int getSleevesColor(){
         return this.sleevesColor;
     }
 
@@ -270,7 +272,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getPantsColor(){
+    public int getPantsColor(){
         return this.pantsColor;
     }
 
@@ -280,7 +282,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getFootwearColor(){
+    public int getFootwearColor(){
         return this.footwearColor;
     }
 
@@ -290,7 +292,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getHairColor(){
+    public int getHairColor(){
         return this.hairColor;
     }
 
@@ -315,12 +317,12 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public Color getBeardColor(){
+    public int getBeardColor(){
         return this.beardColor;
     }
 
     @Override
-    public Color getEyebrowsColor(){
+    public int getEyebrowsColor(){
         return this.eyebrowsColor;
     }
 
@@ -335,7 +337,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setEyeColor(Color eyeColor){
+    public void setEyeColor(int eyeColor){
         this.eyeColor = eyeColor;
     }
 
@@ -345,7 +347,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setShirtColor(Color shirtColor){
+    public void setShirtColor(int shirtColor){
         this.shirtColor = shirtColor;
     }
 
@@ -355,7 +357,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setSleevesColor(Color sleevesColor){
+    public void setSleevesColor(int sleevesColor){
         this.sleevesColor = sleevesColor;
     }
 
@@ -365,7 +367,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setPantsColor(Color pantsColor){
+    public void setPantsColor(int pantsColor){
         this.pantsColor = pantsColor;
     }
 
@@ -375,7 +377,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setFootwearColor(Color footwearColor){
+    public void setFootwearColor(int footwearColor){
         this.footwearColor = footwearColor;
     }
 
@@ -385,7 +387,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setHairColor(Color hairColor){
+    public void setHairColor(int hairColor){
         this.hairColor = hairColor;
     }
 
@@ -405,7 +407,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setEyebrowsColor(Color eyebrowsColor){
+    public void setEyebrowsColor(int eyebrowsColor){
         this.eyebrowsColor = eyebrowsColor;
     }
 
@@ -415,7 +417,7 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public void setBeardColor(Color beardColor){
+    public void setBeardColor(int beardColor){
         this.beardColor = beardColor;
     }
 

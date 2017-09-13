@@ -6,12 +6,12 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.event.impl.PlayerRenderEvent;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
@@ -19,15 +19,15 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     private static final IResourceName SPECIAL_BASE = AbstractGame.internalRes("player.base.s");
     private static final IResourceName SPECIAL_ARMS = AbstractGame.internalRes("player.arm.skin_s");
 
-    public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, String arms, Color light){
+    public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, String arms, int light){
         int base = design.getBase();
 
         manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix("."+(design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, light);
-        manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, light.multiply(design.getEyeColor()));
+        manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, Colors.multiply(light, design.getEyeColor()));
 
         IResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());
         if(eyebrows != null){
-            manager.getAnimation(eyebrows).drawRow(row, x, y, scale, light.multiply(design.getEyebrowsColor()));
+            manager.getAnimation(eyebrows).drawRow(row, x, y, scale, Colors.multiply(light, design.getEyebrowsColor()));
         }
 
         IResourceName mouth = IPlayerDesign.MOUTH.get(design.getMouth());
@@ -37,34 +37,34 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
         IResourceName beard = IPlayerDesign.BEARD.get(design.getBeard());
         if(beard != null){
-            manager.getAnimation(beard).drawRow(row, x, y, scale, light.multiply(design.getBeardColor()));
+            manager.getAnimation(beard).drawRow(row, x, y, scale, Colors.multiply(light, design.getBeardColor()));
         }
 
         IResourceName pants = IPlayerDesign.PANTS.get(design.getPants());
         if(pants != null){
-            manager.getAnimation(pants).drawRow(row, x, y, scale, light.multiply(design.getPantsColor()));
+            manager.getAnimation(pants).drawRow(row, x, y, scale, Colors.multiply(light, design.getPantsColor()));
         }
 
         IResourceName shirt = IPlayerDesign.SHIRT.get(design.getShirt());
         if(shirt != null){
-            manager.getAnimation(shirt).drawRow(row, x, y, scale, light.multiply(design.getShirtColor()));
+            manager.getAnimation(shirt).drawRow(row, x, y, scale, Colors.multiply(light, design.getShirtColor()));
         }
 
         manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix(arms)).drawRow(row, x, y, scale, light);
 
         IResourceName sleeves = IPlayerDesign.SLEEVES.get(design.getSleeves());
         if(sleeves != null){
-            manager.getAnimation(sleeves.addSuffix(arms)).drawRow(row, x, y, scale, light.multiply(design.getSleevesColor()));
+            manager.getAnimation(sleeves.addSuffix(arms)).drawRow(row, x, y, scale, Colors.multiply(light, design.getSleevesColor()));
         }
 
         IResourceName footwear = IPlayerDesign.FOOTWEAR.get(design.getFootwear());
         if(footwear != null){
-            manager.getAnimation(footwear).drawRow(row, x, y, scale, light.multiply(design.getFootwearColor()));
+            manager.getAnimation(footwear).drawRow(row, x, y, scale, Colors.multiply(light, design.getFootwearColor()));
         }
 
         IResourceName hair = IPlayerDesign.HAIR.get(design.getHair());
         if(hair != null){
-            manager.getAnimation(hair).drawRow(row, x, y, scale, light.multiply(design.getHairColor()));
+            manager.getAnimation(hair).drawRow(row, x, y, scale, Colors.multiply(light, design.getHairColor()));
         }
 
         IResourceName accessory = IPlayerDesign.ACCESSORIES.get(design.getAccessory());
@@ -74,7 +74,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, Color light){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, int light){
         IPlayerDesign design = entity.getDesign();
         boolean isRight = entity.facing == Direction.RIGHT;
         boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;

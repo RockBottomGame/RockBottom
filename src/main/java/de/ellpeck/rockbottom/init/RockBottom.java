@@ -59,8 +59,6 @@ import java.util.UUID;
 
 public class RockBottom extends AbstractGame implements InputListener{
 
-    private static final SGL GL = Renderer.get();
-
     protected Settings settings;
     private EntityPlayer player;
     private PlayerDesign playerDesign;
@@ -170,8 +168,8 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.lastHeight = height;
 
         this.graphics = new Graphics(width, height);
-        GL.initDisplay(width, height);
-        GL.enterOrtho(width, height);
+        Renderer.get().initDisplay(width, height);
+        Renderer.get().enterOrtho(width, height);
 
         this.input = new Input(height);
         this.input.addListener(this);
@@ -440,15 +438,15 @@ public class RockBottom extends AbstractGame implements InputListener{
 
             Music.poll(delta);
 
-            GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
-            GL.glLoadIdentity();
+            Renderer.get().glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
+            Renderer.get().glLoadIdentity();
 
             this.graphics.setAntiAlias(false);
             this.render();
             this.graphics.resetTransform();
             this.graphics.resetLineWidth();
 
-            GL.flush();
+            Renderer.get().flush();
 
             if(this.settings.targetFps != -1){
                 Display.sync(this.settings.targetFps);

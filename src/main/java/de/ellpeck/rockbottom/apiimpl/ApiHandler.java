@@ -26,6 +26,7 @@ import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -295,20 +296,20 @@ public class ApiHandler implements IApiHandler{
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale, boolean hovered){
         Texture texture = manager.getTexture(SLOT_NAME);
 
-        Color color = game.getSettings().guiColor;
+        int color = game.getSettings().guiColor;
         if(hovered){
-            color = color.brighter(0.4F);
+            color = Colors.multiply(color, 1.4F);
         }
 
         texture.draw(x, y, texture.getWidth()*scale, texture.getHeight()*scale, color);
 
         if(slot != null){
-            this.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Color.white);
+            this.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Colors.WHITE);
         }
     }
 
     @Override
-    public void renderItemInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale, Color color){
+    public void renderItemInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale, int color){
         Item item = slot.getItem();
         IItemRenderer renderer = item.getRenderer();
         if(renderer != null){
@@ -430,8 +431,8 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public Color[] interpolateWorldColor(int[] interpolatedLight, TileLayer layer){
-        Color[] colors = new Color[interpolatedLight.length];
+    public int[] interpolateWorldColor(int[] interpolatedLight, TileLayer layer){
+        int[] colors = new int[interpolatedLight.length];
         for(int i = 0; i < colors.length; i++){
             colors[i] = this.getColorByLight(interpolatedLight[i], layer);
         }
@@ -439,7 +440,7 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public Color getColorByLight(int light, TileLayer layer){
+    public int getColorByLight(int light, TileLayer layer){
         return (layer == TileLayer.BACKGROUND ? WorldRenderer.BACKGROUND_COLORS : WorldRenderer.MAIN_COLORS)[RockBottomAPI.getGame().isLightDebug() ? Constants.MAX_LIGHT : light];
     }
 

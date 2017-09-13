@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -21,7 +22,7 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
+import org.newdawn.slick.opengl.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,22 +30,22 @@ import java.util.List;
 
 public class WorldRenderer{
 
-    public static final Color[] SKY_COLORS = new Color[256];
-    public static final Color[] BACKGROUND_COLORS = new Color[Constants.MAX_LIGHT+1];
-    public static final Color[] MAIN_COLORS = new Color[Constants.MAX_LIGHT+1];
+    public static final int[] SKY_COLORS = new int[256];
+    public static final int[] BACKGROUND_COLORS = new int[Constants.MAX_LIGHT+1];
+    public static final int[] MAIN_COLORS = new int[Constants.MAX_LIGHT+1];
 
     public static void init(){
         float step = 1F/(Constants.MAX_LIGHT+1);
         for(int i = 0; i <= Constants.MAX_LIGHT; i++){
             float modifier = i*step;
-            MAIN_COLORS[i] = new Color(modifier, modifier, modifier, 1F);
-            BACKGROUND_COLORS[i] = new Color(modifier*0.5F, modifier*0.5F, modifier*0.5F, 1F);
+            MAIN_COLORS[i] = Colors.rgb(modifier, modifier, modifier, 1F);
+            BACKGROUND_COLORS[i] = Colors.rgb(modifier*0.5F, modifier*0.5F, modifier*0.5F, 1F);
         }
 
-        Color sky = new Color(0x4C8DFF);
+        int sky = 0x4C8DFF;
         for(int i = 0; i < SKY_COLORS.length; i++){
             float percent = (float)i/(float)SKY_COLORS.length;
-            SKY_COLORS[i] = sky.darker(1F-percent);
+            SKY_COLORS[i] = Colors.multiply(sky, percent);
         }
     }
 
@@ -53,7 +54,8 @@ public class WorldRenderer{
         float scale = game.getWorldScale();
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
-        g.setBackground(SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight]);
+        int color = SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight];
+        Renderer.get().glClearColor(Colors.getR(color), Colors.getG(color), Colors.getB(color), 1F);
 
         double width = game.getWidthInWorld();
         double height = game.getHeightInWorld();

@@ -22,6 +22,7 @@ import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.TileLayer;
@@ -32,7 +33,6 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
 
@@ -182,7 +182,7 @@ public class GuiManager implements IGuiManager{
                         IItemRenderer renderer = item.getRenderer();
                         if(renderer != null){
                             boolean inRange = player.isInRange(tileX, tileY);
-                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getGuiScale(), mouseY, 36F/game.getGuiScale(), Color.white, inRange);
+                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getGuiScale(), mouseY, 36F/game.getGuiScale(), Colors.WHITE, inRange);
                         }
                     }
 
@@ -239,20 +239,19 @@ public class GuiManager implements IGuiManager{
         return this.gui;
     }
 
-    public boolean onMouseAction(RockBottom game, int button, float x, float y){
+    public void onMouseAction(RockBottom game, int button, float x, float y){
         if(game.getPlayer() == null || !game.getPlayer().isDead()){
             if(this.gui != null){
-                return this.gui.onMouseAction(game, button, x, y);
+                this.gui.onMouseAction(game, button, x, y);
             }
             else{
                 for(GuiComponent comp : this.onScreenComponents){
                     if(comp.onMouseAction(game, button, x, y)){
-                        return true;
+                        return;
                     }
                 }
             }
         }
-        return false;
     }
 
     public boolean onKeyboardAction(RockBottom game, int button, char character){

@@ -31,7 +31,7 @@ public class ParticleSmoke extends Particle{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, Color filter){
+    public void render(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, int filter){
         float size = this.scale*(1F-(float)this.life/(float)this.maxLife);
 
         Texture image = manager.getTexture(SMOKE_NAME);

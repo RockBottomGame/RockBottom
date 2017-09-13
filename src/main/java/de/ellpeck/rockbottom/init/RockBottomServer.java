@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -54,7 +55,7 @@ public class RockBottomServer extends AbstractGame{
 
             @Override
             public String getChatColorFormat(){
-                return Util.colorToFormattingCode(Color.red);
+                return Colors.toFormattingCode(Colors.RED);
             }
 
             @Override

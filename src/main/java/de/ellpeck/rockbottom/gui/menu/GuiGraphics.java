@@ -14,7 +14,6 @@ import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class GuiGraphics extends Gui{
@@ -84,7 +83,7 @@ public class GuiGraphics extends Gui{
         this.components.add(new ComponentFancyButton(this, this.guiLeft+99, this.guiTop+94, 16, 16, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, this.guiLeft+99+8, this.guiTop+94+8, aBoolean -> {
                 if(aBoolean){
-                    settings.guiColor = new Color(Settings.DEFAULT_GUI_R, Settings.DEFAULT_GUI_G, Settings.DEFAULT_GUI_B);
+                    settings.guiColor = Settings.DEFAULT_GUI_COLOR;
                     game.getDataManager().savePropSettings(settings);
                     game.getGuiManager().setReInit();
                 }
