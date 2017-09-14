@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui;
 
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -9,9 +10,6 @@ import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +17,7 @@ import java.util.Locale;
 
 public final class DebugRenderer{
 
-    public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, Graphics g){
-        g.setColor(Color.black);
-        g.drawOval((float)Display.getWidth()/2F-5F, (float)Display.getHeight()/2F-5F, 10, 10);
-
+    public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, IGraphics g){
         List<String> list = new ArrayList<>();
 
         list.add("Avg FPS: "+game.getFpsAverage());

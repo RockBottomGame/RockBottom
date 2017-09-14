@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
@@ -33,7 +34,6 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -111,9 +111,7 @@ public class GuiManager implements IGuiManager{
         }
     }
 
-    public void render(RockBottom game, IAssetManager manager, Graphics g, EntityPlayer player){
-        g.scale(game.getGuiScale(), game.getGuiScale());
-
+    public void render(RockBottom game, IAssetManager manager, IGraphics g, EntityPlayer player){
         Font font = manager.getFont();
         float width = game.getWidthInGui();
         float height = game.getHeightInGui();
@@ -146,8 +144,7 @@ public class GuiManager implements IGuiManager{
         if(player == null || !player.isDead()){
             if(gui != null){
                 if(gui.hasGradient()){
-                    g.setColor(Gui.GRADIENT);
-                    g.fillRect(0F, 0F, width, height);
+                    g.fillRect(0F, 0F, width, height, Gui.GRADIENT_COLOR);
                 }
 
                 gui.render(game, manager, g);

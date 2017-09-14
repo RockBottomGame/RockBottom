@@ -1,11 +1,8 @@
 package de.ellpeck.rockbottom.render;
 
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.IApiHandler;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
+import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
@@ -20,8 +17,6 @@ import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.opengl.renderer.Renderer;
 
 import java.util.ArrayList;
@@ -49,13 +44,13 @@ public class WorldRenderer{
         }
     }
 
-    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, Graphics g, World world, EntityPlayer player, InteractionManager input){
+    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IGraphics g, World world, EntityPlayer player, InteractionManager input){
         IApiHandler api = RockBottomAPI.getApiHandler();
         float scale = game.getWorldScale();
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
         int color = SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight];
-        Renderer.get().glClearColor(Colors.getR(color), Colors.getG(color), Colors.getB(color), 1F);
+        g.backgroundColor(color);
 
         double width = game.getWidthInWorld();
         double height = game.getHeightInWorld();
@@ -129,8 +124,6 @@ public class WorldRenderer{
             }
         }
 
-        g.scale(scale, scale);
-
         particles.render(game, manager, g, world, transX, transY);
 
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
@@ -158,20 +151,17 @@ public class WorldRenderer{
                         int x = Util.toWorldPos(gridX);
                         int y = Util.toWorldPos(gridY);
 
-                        g.setColor(Color.green);
-                        g.drawRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE);
+                        g.drawRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Colors.GREEN);
                     }
                 }
             }
         }
-
-        g.resetTransform();
     }
 
     private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY, float scale){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
-                Texture brk = manager.getTexture(AbstractGame.internalRes("break."+Util.ceil(input.breakProgress*8F)));
+                ITexture brk = manager.getTexture(AbstractGame.internalRes("break."+Util.ceil(input.breakProgress*8F)));
                 brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
             }
         }

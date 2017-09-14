@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -98,7 +99,7 @@ public class GuiGraphics extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         manager.getFont().drawCenteredString(this.guiLeft+75, this.guiTop+62, manager.localize(AbstractGame.internalRes("info.gui_color")), 0.35F, false);
 
         super.render(game, manager, g);

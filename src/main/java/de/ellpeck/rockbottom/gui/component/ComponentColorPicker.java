@@ -1,9 +1,10 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
+import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
@@ -16,7 +17,7 @@ import java.util.function.BiConsumer;
 
 public class ComponentColorPicker extends GuiComponent{
 
-    private final Texture texture = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
+    private final ITexture texture = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
 
     private final BiConsumer<Integer, Boolean> consumer;
     private final boolean isEnlargable;
@@ -41,11 +42,9 @@ public class ComponentColorPicker extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         this.texture.draw(this.x, this.y, this.sizeX, this.sizeY);
-
-        g.setColor(this.colorOutline);
-        g.drawRect(this.x, this.y, this.sizeX, this.sizeY);
+        g.drawRect(this.x, this.y, this.sizeX, this.sizeY, this.colorOutline);
     }
 
     @Override
@@ -127,7 +126,7 @@ public class ComponentColorPicker extends GuiComponent{
         if(this.isMouseOver(game)){
             float x = (mouseX-this.x)/this.sizeX*this.texture.getWidth();
             float y = (mouseY-this.y)/this.sizeY*this.texture.getHeight();
-            int color = Colors.fromColor(this.texture.getColor((int)x, (int)y));
+            int color = this.texture.getTextureColor((int)x, (int)y);
 
             if(this.color != color){
                 this.color = color;

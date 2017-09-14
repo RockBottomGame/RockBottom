@@ -1,16 +1,15 @@
 package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
+import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 public class ParticleSmoke extends Particle{
 
@@ -31,10 +30,10 @@ public class ParticleSmoke extends Particle{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, int filter){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, float x, float y, int filter){
         float size = this.scale*(1F-(float)this.life/(float)this.maxLife);
 
-        Texture image = manager.getTexture(SMOKE_NAME);
+        ITexture image = manager.getTexture(SMOKE_NAME);
         image.draw(x-(image.getWidth()*size/2), y-(image.getHeight()*size/2), size);
     }
 }

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -42,13 +43,13 @@ public class ComponentRecipeButton extends ComponentButton{
 
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         if(this.recipe != null){
             super.render(game, manager, g);
 
             List<ItemInstance> outputs = this.recipe.getOutputs();
             ItemInstance instance = outputs.get(0);
-            RockBottomAPI.getApiHandler().renderItemInGui(game, manager, g, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Colors.WHITE : TRANSPARENT_COLOR);
+            g.renderItemInGui(game, manager, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Colors.WHITE : TRANSPARENT_COLOR);
         }
     }
 

@@ -1,6 +1,9 @@
 package de.ellpeck.rockbottom.assets;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
@@ -14,10 +17,11 @@ import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
 import de.ellpeck.rockbottom.api.assets.local.Locale;
 import de.ellpeck.rockbottom.api.assets.tex.AssetTexture;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
+import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.apiimpl.Texture;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
@@ -27,12 +31,16 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.opengl.CursorLoader;
+import org.newdawn.slick.opengl.pbuffer.GraphicsFactory;
 import org.newdawn.slick.util.Log;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class AssetManager implements IAssetManager{
@@ -90,18 +98,19 @@ public class AssetManager implements IAssetManager{
     public void reloadCursor(IGameInstance game){
         try{
             if(!game.getSettings().hardwareCursor){
-                Texture texture = this.getTexture(AbstractGame.internalRes("gui.cursor"));
+                Texture texture = (Texture)this.getTexture(AbstractGame.internalRes("gui.cursor"));
                 Texture temp = new Texture(texture.getWidth(), texture.getHeight());
 
                 Graphics g = temp.getGraphics();
                 g.drawImage(texture.getFlippedCopy(false, true), 0, 0);
-                g.flush();
 
                 ByteBuffer buffer = BufferUtils.createByteBuffer(temp.getWidth()*temp.getHeight()*4);
                 g.getArea(0, 0, temp.getWidth(), temp.getHeight(), buffer);
 
                 Cursor cursor = CursorLoader.get().getCursor(buffer, 0, 0, temp.getWidth(), temp.getHeight());
                 Mouse.setNativeCursor(cursor);
+
+                g.flush();
             }
             else{
                 Mouse.setNativeCursor(null);
@@ -180,7 +189,7 @@ public class AssetManager implements IAssetManager{
                         JsonArray array = entry.getValue().getAsJsonArray();
                         IResourceName res = RockBottomAPI.createRes(mod, "*".equals(key) ? name : name+"."+key);
 
-                        Texture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
+                        ITexture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
                         this.assets.put(res, new AssetTexture(texture));
 
                         Log.debug("Loaded subtexture "+res+" from texture "+path+file+" for mod "+mod.getDisplayName());
@@ -225,7 +234,7 @@ public class AssetManager implements IAssetManager{
                         String info = array.get(0).getAsString();
                         String texture = array.get(1).getAsString();
 
-                        AssetFont font = new AssetFont(Font.fromStream(getResource(path+texture), getResource(path+info), res.toString()));
+                        AssetFont font = new AssetFont(Font.fromStream(new Texture(getResource(path+texture), res.toString(), false), getResource(path+info), res.toString()));
                         this.assets.put(res, font);
 
                         Log.debug("Loaded font "+res+" from "+path+info+" and "+path+texture+" for mod "+mod.getDisplayName());
@@ -235,7 +244,7 @@ public class AssetManager implements IAssetManager{
                         String anim = array.get(0).getAsString();
                         String texture = array.get(1).getAsString();
 
-                        AssetAnimation animation = new AssetAnimation(Animation.fromStream(getResource(path+texture), getResource(path+anim), res.toString()));
+                        AssetAnimation animation = new AssetAnimation(Animation.fromStream(new Texture(getResource(path+texture), res.toString(), false), getResource(path+anim)));
                         this.assets.put(res, animation);
 
                         Log.debug("Loaded animation "+res+" from "+path+anim+" and "+path+texture+" for mod "+mod.getDisplayName());
@@ -272,7 +281,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Texture getTexture(IResourceName path){
+    public ITexture getTexture(IResourceName path){
         return this.getAssetWithFallback(path.addPrefix("tex."), this.missingTexture);
     }
 
@@ -327,7 +336,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Texture getMissingTexture(){
+    public ITexture getMissingTexture(){
         return this.missingTexture.get();
     }
 }

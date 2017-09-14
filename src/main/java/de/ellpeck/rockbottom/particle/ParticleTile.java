@@ -19,21 +19,20 @@
 package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
+import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 public class ParticleTile extends Particle{
 
     private final TileState state;
-    private Color renderPixel;
+    private int renderPixel = -1;
 
     public ParticleTile(IWorld world, double x, double y, double motionX, double motionY, TileState state){
         super(world, x, y, motionX, motionY, Util.RANDOM.nextInt(30)+10);
@@ -41,25 +40,24 @@ public class ParticleTile extends Particle{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, int filter){
-        if(this.renderPixel == null){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, float x, float y, int filter){
+        if(this.renderPixel == -1){
             ITileRenderer renderer = this.state.getTile().getRenderer();
             if(renderer != null){
-                Texture texture = renderer.getParticleTexture(game, manager, g, this.state.getTile(), this.state);
+                ITexture texture = renderer.getParticleTexture(game, manager, g, this.state.getTile(), this.state);
                 if(texture != null){
                     int width = texture.getWidth();
                     int height = texture.getHeight();
 
                     int pixelX = Util.RANDOM.nextInt(width);
                     int pixelY = Util.RANDOM.nextInt(height);
-                    this.renderPixel = texture.getColor(pixelX, pixelY).multiply(new Color(filter));
+                    this.renderPixel = Colors.multiply(texture.getTextureColor(pixelX, pixelY), filter);
                 }
             }
         }
 
-        if(this.renderPixel != null){
-            g.setColor(this.renderPixel);
-            g.fillRect(x, y, 0.12F, 0.12F);
+        if(this.renderPixel != -1){
+            g.fillRect(x, y, 0.12F, 0.12F, this.renderPixel);
         }
     }
 }

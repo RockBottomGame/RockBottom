@@ -3,9 +3,10 @@ package de.ellpeck.rockbottom.init;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
+import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
@@ -16,6 +17,8 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.apiimpl.Graphics;
+import de.ellpeck.rockbottom.apiimpl.Texture;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
@@ -36,11 +39,11 @@ import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
-import org.newdawn.slick.*;
+import org.lwjgl.opengl.*;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.InputListener;
+import org.newdawn.slick.Music;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.ImageIOImageData;
 import org.newdawn.slick.opengl.LoadableImageData;
 import org.newdawn.slick.opengl.renderer.Renderer;
@@ -77,7 +80,7 @@ public class RockBottom extends AbstractGame implements InputListener{
     private WorldRenderer worldRenderer;
     private int windowedWidth;
     private int windowedHeight;
-    private Graphics graphics;
+    private IGraphics graphics;
     private Input input;
     private int lastWidth;
     private int lastHeight;
@@ -145,10 +148,8 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.initGraphics();
 
         try{
-            Texture image = new Texture(AssetManager.getResource("/assets/rockbottom/loading.png"), "loading", false);
-            image.setFilter(Texture.FILTER_NEAREST);
-
-            image.draw(0, 0, Display.getWidth(), Display.getHeight());
+            ITexture tex = new Texture(AssetManager.getResource("/assets/rockbottom/loading.png"), "loading", false);
+            tex.draw(0, 0, Display.getWidth(), Display.getHeight());
             Display.update();
         }
         catch(SlickException e){
@@ -167,7 +168,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.lastWidth = width;
         this.lastHeight = height;
 
-        this.graphics = new Graphics(width, height);
+        this.graphics = new Graphics();
         Renderer.get().initDisplay(width, height);
         Renderer.get().enterOrtho(width, height);
 
@@ -440,11 +441,9 @@ public class RockBottom extends AbstractGame implements InputListener{
 
             Renderer.get().glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
             Renderer.get().glLoadIdentity();
+            Renderer.get().glDisable(SGL.GL_POLYGON_SMOOTH);
 
-            this.graphics.setAntiAlias(false);
             this.render();
-            this.graphics.resetTransform();
-            this.graphics.resetLineWidth();
 
             Renderer.get().flush();
 
@@ -466,6 +465,9 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     protected void render(){
+        this.graphics.pushMatrix();
+        this.graphics.scale(this.worldScale, this.worldScale);
+
         if(this.world != null){
             this.worldRenderer.render(this, this.assetManager, this.particleManager, this.graphics, this.world, this.player, this.interactionManager);
 
@@ -474,9 +476,15 @@ public class RockBottom extends AbstractGame implements InputListener{
             }
         }
 
-        this.graphics.setLineWidth(this.getGuiScale());
+        this.graphics.popMatrix();
+
+        this.graphics.pushMatrix();
+        this.graphics.scale(this.guiScale, this.guiScale);
+
         this.guiManager.render(this, this.assetManager, this.graphics, this.player);
         this.toaster.render(this, this.assetManager, this.graphics);
+
+        this.graphics.popMatrix();
     }
 
     @Override

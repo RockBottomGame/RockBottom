@@ -1,18 +1,20 @@
 package de.ellpeck.rockbottom.gui.menu.background;
 
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
+import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.gui.IMainMenuTheme;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
+import org.newdawn.slick.opengl.renderer.Renderer;
 
 import java.util.List;
 
@@ -55,8 +57,9 @@ public class MainMenuBackground{
         }
     }
 
-    public void render(RockBottom game, IAssetManager manager, Graphics g){
-        g.setBackground(this.theme.getBackgroundColor());
+    public void render(RockBottom game, IAssetManager manager, IGraphics g){
+        int color = this.theme.getBackgroundColor();
+        g.backgroundColor(color);
 
         float height = game.getHeightInGui();
         float tileSize = Math.max(game.getWidthInGui(), height)/(float)IMainMenuTheme.TILE_AMOUNT;
@@ -74,7 +77,7 @@ public class MainMenuBackground{
             }
         }
 
-        Texture logo = manager.getTexture(RES_LOGO);
+        ITexture logo = manager.getTexture(RES_LOGO);
         logo.draw((int)game.getWidthInGui()/2-logo.getWidth()/2, (int)game.getHeightInGui()/3-logo.getHeight()/2);
     }
 }

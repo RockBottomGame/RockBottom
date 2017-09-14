@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.apiimpl;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.toast.Toast;
@@ -29,7 +30,7 @@ public class Toaster implements IToaster{
         }
     }
 
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         float y = 2;
         for(Entry<Toast, MutableInt> entry : this.toasts.entrySet()){
             Toast toast = entry.getKey();

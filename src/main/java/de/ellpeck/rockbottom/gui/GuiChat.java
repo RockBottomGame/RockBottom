@@ -1,12 +1,14 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
 import org.newdawn.slick.Color;
@@ -17,8 +19,8 @@ import java.util.List;
 
 public class GuiChat extends Gui{
 
-    private static final Color BACKING_ONE = new Color(0F, 0F, 0F, 0.65F);
-    private static final Color BACKING_TWO = new Color(0.1F, 0.1F, 0.1F, 0.65F);
+    private static final int BACKING_ONE = Colors.rgb(0F, 0F, 0F, 0.65F);
+    private static final int BACKING_TWO = Colors.rgb(0.1F, 0.1F, 0.1F, 0.65F);
 
     private ComponentInputField inputField;
 
@@ -26,7 +28,7 @@ public class GuiChat extends Gui{
         super(100, 100);
     }
 
-    public static void drawMessages(IGameInstance game, IAssetManager manager, Graphics g, List<ChatComponent> messages, int maxCount){
+    public static void drawMessages(IGameInstance game, IAssetManager manager, IGraphics g, List<ChatComponent> messages, int maxCount){
         Font font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
@@ -39,8 +41,7 @@ public class GuiChat extends Gui{
         for(ChatComponent message : messages){
             List<String> split = font.splitTextToLength(sizeX, scale, true, message.getDisplayWithChildren(game, manager));
 
-            g.setColor(alternate ? BACKING_ONE : BACKING_TWO);
-            g.fillRect(5, y-fontHeight*(split.size()-1), sizeX, fontHeight*split.size()+1);
+            g.fillRect(5, y-fontHeight*(split.size()-1), sizeX, fontHeight*split.size()+1, alternate ? BACKING_ONE : BACKING_TWO);
 
             for(int i = split.size()-1; i >= 0; i--){
                 String s = split.get(i);
@@ -69,7 +70,7 @@ public class GuiChat extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         super.render(game, manager, g);
 
         drawMessages(game, manager, g, game.getChatLog().getMessages(), 20);

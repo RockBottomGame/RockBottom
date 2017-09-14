@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.net.chat;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -112,7 +113,7 @@ public class ChatLog implements IChatLog{
         this.newMessageCounter.clear();
     }
 
-    public void drawNewMessages(RockBottom game, IAssetManager manager, Graphics g){
+    public void drawNewMessages(RockBottom game, IAssetManager manager, IGraphics g){
         if(!this.newMessageCounter.isEmpty()){
             GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size());
         }

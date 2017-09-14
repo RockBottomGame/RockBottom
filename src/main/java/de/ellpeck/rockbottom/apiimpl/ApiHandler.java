@@ -4,32 +4,19 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
-import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.assets.tex.Texture;
-import de.ellpeck.rockbottom.api.construction.resource.ResInfo;
-import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.event.EventResult;
-import de.ellpeck.rockbottom.api.event.impl.TooltipEvent;
-import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
-import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolType;
-import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
@@ -37,17 +24,13 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.render.WorldRenderer;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.util.Log;
 
 import java.io.*;
-import java.util.*;
+import java.util.Map;
+import java.util.Random;
 
 public class ApiHandler implements IApiHandler{
-
-    private static final IResourceName SLOT_NAME = AbstractGame.internalRes("gui.slot");
 
     @Override
     public void writeDataSet(DataSet set, File file){
@@ -290,119 +273,6 @@ public class ApiHandler implements IApiHandler{
             }
         }
         return false;
-    }
-
-    @Override
-    public void renderSlotInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale, boolean hovered){
-        Texture texture = manager.getTexture(SLOT_NAME);
-
-        int color = game.getSettings().guiColor;
-        if(hovered){
-            color = Colors.multiply(color, 1.4F);
-        }
-
-        texture.draw(x, y, texture.getWidth()*scale, texture.getHeight()*scale, color);
-
-        if(slot != null){
-            this.renderItemInGui(game, manager, g, slot, x+3F*scale, y+3F*scale, scale, Colors.WHITE);
-        }
-    }
-
-    @Override
-    public void renderItemInGui(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance slot, float x, float y, float scale, int color){
-        Item item = slot.getItem();
-        IItemRenderer renderer = item.getRenderer();
-        if(renderer != null){
-            renderer.render(game, manager, g, item, slot, x, y, 12F*scale, color);
-        }
-
-        if(slot.getAmount() > 1){
-            manager.getFont().drawStringFromRight(x+15F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.25F*scale);
-        }
-    }
-
-    @Override
-    public void describeItem(IGameInstance game, IAssetManager manager, Graphics g, ItemInstance instance){
-        boolean advanced = Settings.KEY_ADVANCED_INFO.isDown();
-
-        List<String> desc = new ArrayList<>();
-        instance.getItem().describeItem(manager, instance, desc, advanced);
-
-        if(game.isItemInfoDebug()){
-            desc.add("");
-            desc.add(FormattingCode.GRAY+"Name: "+instance.getItem().getName().toString());
-            desc.add(FormattingCode.GRAY+"Meta: "+instance.getMeta());
-            desc.add(FormattingCode.GRAY+"Data: "+instance.getAdditionalData());
-            desc.add(FormattingCode.GRAY+"Max Amount: "+instance.getMaxAmount());
-            desc.add(FormattingCode.GRAY+"Resources: "+ResourceRegistry.getNames(new ResInfo(instance)));
-        }
-
-        if(RockBottomAPI.getEventHandler().fireEvent(new TooltipEvent(instance, game, manager, g, desc)) != EventResult.CANCELLED){
-            this.drawHoverInfoAtMouse(game, manager, g, true, 500, desc);
-        }
-    }
-
-    @Override
-    public void drawHoverInfoAtMouse(IGameInstance game, IAssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, String... text){
-        this.drawHoverInfoAtMouse(game, manager, g, firstLineOffset, maxLength, Arrays.asList(text));
-    }
-
-    @Override
-    public void drawHoverInfoAtMouse(IGameInstance game, IAssetManager manager, Graphics g, boolean firstLineOffset, int maxLength, List<String> text){
-        float mouseX = game.getMouseInGuiX();
-        float mouseY = game.getMouseInGuiY();
-
-        this.drawHoverInfo(game, manager, g, mouseX+18F/game.getGuiScale(), mouseY+18F/game.getGuiScale(), 0.25F, firstLineOffset, false, maxLength, text);
-    }
-
-    @Override
-    public void drawHoverInfo(IGameInstance game, IAssetManager manager, Graphics g, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){
-        Font font = manager.getFont();
-
-        float boxWidth = 0F;
-        float boxHeight = 0F;
-
-        if(maxLength > 0){
-            text = font.splitTextToLength(maxLength, scale, true, text);
-        }
-
-        for(String s : text){
-            float length = font.getWidth(s, scale);
-            if(length > boxWidth){
-                boxWidth = length;
-            }
-
-            if(firstLineOffset && boxHeight == 0F && text.size() > 1){
-                boxHeight += 3F;
-            }
-            boxHeight += font.getHeight(scale);
-        }
-
-        if(boxWidth > 0F && boxHeight > 0F){
-            boxWidth += 4F;
-            boxHeight += 4F;
-
-            if(!canLeaveScreen){
-                x = Math.max(0, Math.min(x, (float)game.getWidthInGui()-boxWidth));
-                y = Math.max(0, Math.min(y, (float)game.getHeightInGui()-boxHeight));
-            }
-
-            g.setColor(Gui.HOVER_INFO_BACKGROUND);
-            g.fillRect(x, y, boxWidth, boxHeight);
-
-            g.setColor(Color.black);
-            g.drawRect(x, y, boxWidth, boxHeight);
-
-            float yOffset = 0F;
-            for(String s : text){
-                font.drawString(x+2F, y+2F+yOffset, s, scale);
-
-                if(firstLineOffset && yOffset == 0F){
-                    yOffset += 3F;
-                }
-                yOffset += font.getHeight(scale);
-            }
-        }
     }
 
     @Override

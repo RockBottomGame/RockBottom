@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.render.entity;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.event.impl.PlayerRenderEvent;
@@ -74,7 +75,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g, IWorld world, EntityPlayer entity, float x, float y, int light){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, EntityPlayer entity, float x, float y, int light){
         IPlayerDesign design = entity.getDesign();
         boolean isRight = entity.facing == Direction.RIGHT;
         boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;

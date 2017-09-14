@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.Font;
@@ -69,13 +70,13 @@ public class GuiMainMenu extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, Graphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         super.render(game, manager, g);
 
-        float height = (float)game.getHeightInGui();
+        float height = game.getHeightInGui();
         Font font = manager.getFont();
 
-        font.drawStringFromRight((float)game.getWidthInGui()-2F, height-7F, "Copyright 2017 Ellpeck", 0.25F);
+        font.drawStringFromRight(game.getWidthInGui()-2F, height-7F, "Copyright 2017 Ellpeck", 0.25F);
         font.drawString(2, height-7F, game.getDisplayName()+" "+game.getVersion()+" - API "+RockBottomAPI.VERSION, 0.25F);
     }
 

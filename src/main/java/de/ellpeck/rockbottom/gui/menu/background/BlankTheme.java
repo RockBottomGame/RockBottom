@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.gui.menu.background;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.gui.IMainMenuTheme;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import org.newdawn.slick.Color;
+import de.ellpeck.rockbottom.api.util.Colors;
 
 public class BlankTheme implements IMainMenuTheme{
 
@@ -13,7 +13,7 @@ public class BlankTheme implements IMainMenuTheme{
     }
 
     @Override
-    public Color getBackgroundColor(){
-        return Color.darkGray;
+    public int getBackgroundColor(){
+        return Colors.DARK_GRAY;
     }
 }
