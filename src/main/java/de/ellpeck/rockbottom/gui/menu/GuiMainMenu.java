@@ -16,22 +16,16 @@ import org.newdawn.slick.Graphics;
 
 public class GuiMainMenu extends Gui{
 
-    public GuiMainMenu(){
-        super(100, 100);
-    }
-
     @Override
     public void initGui(IGameInstance game){
         super.initGui(game);
         IAssetManager assetManager = game.getAssetManager();
         IGuiManager guiManager = game.getGuiManager();
 
-        int width = (int)game.getWidthInGui();
-
-        int parts = width/4;
+        int parts = this.width/4;
         int buttonWidth = 70;
         int start = (parts-buttonWidth)/2;
-        int y = (int)game.getHeightInGui()-30;
+        int y = this.height-30;
 
         this.components.add(new ComponentButton(this, start, y, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiSelectWorld(this));
@@ -50,11 +44,11 @@ public class GuiMainMenu extends Gui{
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.settings"))));
 
-        this.components.add(new ComponentButton(this, width-47, 2, 45, 10, () -> {
+        this.components.add(new ComponentButton(this, this.width-47, 2, 45, 10, () -> {
             guiManager.openGui(new GuiCredits(this));
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.credits"))));
-        this.components.add(new ComponentButton(this, width-47, 14, 45, 10, () -> {
+        this.components.add(new ComponentButton(this, this.width-47, 14, 45, 10, () -> {
             guiManager.openGui(new GuiMods(this));
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.mods"))));

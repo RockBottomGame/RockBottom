@@ -24,10 +24,10 @@ public class ComponentFancyButton extends ComponentButton{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        super.render(game, manager, g);
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+        super.render(game, manager, g, x, y);
 
-        manager.getTexture(this.getTexture()).draw(this.x, this.y, this.sizeX, this.sizeY);
+        manager.getTexture(this.getTexture()).draw(x, y, this.width, this.height);
     }
 
     @Override

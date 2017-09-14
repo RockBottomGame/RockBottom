@@ -34,14 +34,14 @@ public class GuiInventory extends GuiContainer{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentFancyToggleButton(this, this.guiLeft-14, this.guiTop, 12, 12, !isConstructionOpen, () -> {
+        this.components.add(new ComponentFancyToggleButton(this, -14, 0, 12, 12, !isConstructionOpen, () -> {
             isConstructionOpen = !isConstructionOpen;
             this.initGui(game);
             return true;
         }, AbstractGame.internalRes("gui.construction"), game.getAssetManager().localize(AbstractGame.internalRes("button.construction"))));
 
         if(isConstructionOpen){
-            this.construction = new ComponentConstruction(this, this.guiLeft-112, this.guiTop, 110, 88, 5, 5, true, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES, (recipe, recipeId) -> {
+            this.construction = new ComponentConstruction(this, -112,0, 110, 88, 5, 5, true, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES, (recipe, recipeId) -> {
                 if(RockBottomAPI.getNet().isClient()){
                     RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), recipeId, 1));
                 }
@@ -73,7 +73,7 @@ public class GuiInventory extends GuiContainer{
         super.initGuiVars(game);
 
         if(isConstructionOpen){
-            this.guiLeft += 52;
+            this.x += 52;
         }
     }
 

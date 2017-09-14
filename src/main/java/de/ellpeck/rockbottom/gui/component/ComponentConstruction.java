@@ -92,11 +92,11 @@ public class ComponentConstruction extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        super.render(game, manager, g);
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+        super.render(game, manager, g,x,y);
 
         if(this.menu.isEmpty()){
-            manager.getFont().drawSplitString(this.x+8, this.y, FormattingCode.GRAY+manager.localize(LOC_NEED), 0.25F, 88);
+            manager.getFont().drawSplitString(x+8, y, FormattingCode.GRAY+manager.localize(LOC_NEED), 0.25F, 88);
         }
     }
 

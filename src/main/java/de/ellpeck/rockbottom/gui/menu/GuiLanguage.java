@@ -24,8 +24,8 @@ public class GuiLanguage extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        BoundBox area = new BoundBox(0, 0, 150, 106).add(this.guiLeft, this.guiTop);
-        ComponentScrollMenu menu = new ComponentScrollMenu(this, this.guiLeft-8, this.guiTop, 106, 1, 6, area);
+        BoundBox area = new BoundBox(0, 0, 150, 106);
+        ComponentScrollMenu menu = new ComponentScrollMenu(this, -8, 0, 106, 1, 6, area);
         this.components.add(menu);
 
         IAssetManager manager = game.getAssetManager();
@@ -48,7 +48,7 @@ public class GuiLanguage extends Gui{
 
         menu.organize();
 
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));

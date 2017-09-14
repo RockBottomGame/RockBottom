@@ -178,6 +178,11 @@ public class Graphics implements IGraphics{
     }
 
     @Override
+    public void translate(float x, float y){
+        Renderer.get().glTranslatef(x, y, 0F);
+    }
+
+    @Override
     public void drawRect(float x, float y, float width, float height, int color){
         this.drawRect(x, y, width, height, 1F, color);
     }

@@ -29,16 +29,16 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        g.renderSlotInGui(game, manager, this.inv.get(this.id), this.x, this.y, 0.75F, game.getGuiManager().getGui() == null && this.isMouseOverPrioritized(game));
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+        g.renderSlotInGui(game, manager, this.inv.get(this.id), x, y, 0.75F, game.getGuiManager().getGui() == null && this.isMouseOverPrioritized(game));
 
         if(this.player.getSelectedSlot() == this.id){
-            manager.getTexture(TEX_ARROW).draw(this.x+0.75F, 1);
+            manager.getTexture(TEX_ARROW).draw(x+0.75F, 1);
         }
     }
 
     @Override
-    public void renderOverlay(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void renderOverlay(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
         if(this.isMouseOverPrioritized(game)){
             ItemInstance instance = this.inv.get(this.id);
             if(instance != null){

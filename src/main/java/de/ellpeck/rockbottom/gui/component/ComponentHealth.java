@@ -22,7 +22,7 @@ public class ComponentHealth extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
         if(game.getWorld() != null){
             int healthParts = Util.floor(game.getPlayer().getHealth()/20);
             int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
@@ -33,14 +33,14 @@ public class ComponentHealth extends GuiComponent{
             int currX = 0;
             for(int i = 0; i < maxHealthParts; i++){
                 ITexture toUse = healthParts > i ? heart : heartEmpty;
-                toUse.draw(this.x+currX, this.y, toUse.getWidth()*0.75F, toUse.getHeight()*0.75F);
+                toUse.draw(x+currX, y, toUse.getWidth()*0.75F, toUse.getHeight()*0.75F);
                 currX += 13;
             }
         }
     }
 
     @Override
-    public void renderOverlay(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void renderOverlay(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
         if(game.getWorld() != null){
             if(this.isMouseOverPrioritized(game)){
                 g.drawHoverInfoAtMouse(game, manager, false, 0, manager.localize(LOC_HEALTH)+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());

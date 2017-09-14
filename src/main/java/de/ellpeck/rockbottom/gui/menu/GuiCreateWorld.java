@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Graphics;
 
 import java.io.File;
 
@@ -31,21 +30,21 @@ public class GuiCreateWorld extends Gui{
     private long seed;
 
     public GuiCreateWorld(Gui parent){
-        super(100, 100, parent);
+        super(parent);
     }
 
     @Override
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.nameField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-75, this.guiTop+12, 150, 16, true, true, false, 40, true);
+        this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true);
         this.components.add(this.nameField);
 
-        this.seedField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-75, this.guiTop+52, 150, 16, true, true, false, 40, true);
+        this.seedField = new ComponentInputField(this, this.width/2-75, 72, 150, 16, true, true, false, 40, true);
         this.components.add(this.seedField);
 
-        int bottomY = (int)game.getHeightInGui();
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-82, bottomY-30, 80, 16, () -> {
+        int bottomY = this.height;
+        this.components.add(new ComponentButton(this, this.width/2-82, bottomY-30, 80, 16, () -> {
             File file = this.makeWorldFile(game);
             WorldInfo info = new WorldInfo(file);
             info.seed = this.seed;
@@ -54,7 +53,7 @@ public class GuiCreateWorld extends Gui{
             return true;
         }, "Create"));
 
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2+2, bottomY-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2+2, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
@@ -122,13 +121,13 @@ public class GuiCreateWorld extends Gui{
         super.render(game, manager, g);
 
         Font font = manager.getFont();
-        int middle = this.guiLeft+this.sizeX/2;
+        int middle = this.width/2;
 
-        font.drawCenteredString(middle, this.guiTop, "World Name", 0.5F, false);
-        font.drawString(middle-75, this.guiTop+30, "Final Name: "+this.worldName, 0.25F);
+        font.drawCenteredString(this.x+middle, this.y+20, "World Name", 0.5F, false);
+        font.drawString(this.x+middle-75, this.y+50, "Final Name: "+this.worldName, 0.25F);
 
-        font.drawCenteredString(middle, this.guiTop+40, "Seed", 0.5F, false);
-        font.drawString(middle-75, this.guiTop+70, "Final Seed: "+this.seed, 0.25F);
+        font.drawCenteredString(this.x+middle, this.y+60, "Seed", 0.5F, false);
+        font.drawString(this.x+middle-75, this.y+90, "Final Seed: "+this.seed, 0.25F);
     }
 
     @Override

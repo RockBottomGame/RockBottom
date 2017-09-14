@@ -19,7 +19,7 @@ public class GuiCredits extends Gui{
     private float renderY;
 
     public GuiCredits(Gui parent){
-        super(100, 100, parent);
+        super(parent);
 
         this.credits.add(AbstractGame.NAME+" - a Game by Ellpeck");
         this.credits.add("");

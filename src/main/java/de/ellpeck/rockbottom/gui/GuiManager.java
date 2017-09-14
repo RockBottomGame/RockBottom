@@ -128,7 +128,7 @@ public class GuiManager implements IGuiManager{
             for(int i = 0; i < this.onScreenComponents.size(); i++){
                 GuiComponent component = this.onScreenComponents.get(i);
                 if(RockBottomAPI.getEventHandler().fireEvent(new ComponentRenderEvent(null, i, component)) != EventResult.CANCELLED){
-                    component.render(game, manager, g);
+                    component.render(game, manager, g, component.getRenderX(), component.getRenderY());
                 }
             }
 
@@ -154,7 +154,7 @@ public class GuiManager implements IGuiManager{
                 for(int i = 0; i < this.onScreenComponents.size(); i++){
                     GuiComponent component = this.onScreenComponents.get(i);
                     if(RockBottomAPI.getEventHandler().fireEvent(new ComponentRenderOverlayEvent(null, i, component)) != EventResult.CANCELLED){
-                        component.renderOverlay(game, manager, g);
+                        component.renderOverlay(game, manager, g, component.getRenderX(), component.getRenderY());
                     }
                 }
             }

@@ -27,11 +27,11 @@ public class GuiKeybinds extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        BoundBox box = new BoundBox(this.sizeX/2-104, 0, this.sizeX/2+98, this.sizeY-26).add(this.guiLeft, this.guiTop);
-        ComponentScrollMenu menu = new ComponentScrollMenu(this, this.guiLeft+this.sizeX/2-112, this.guiTop, this.sizeY-26, 2, 7, box);
+        BoundBox box = new BoundBox(this.width/2-104, 0, this.width/2+98, this.height-26);
+        ComponentScrollMenu menu = new ComponentScrollMenu(this, this.width/2-112, 0, this.height-26, 2, 7, box);
         this.components.add(menu);
 
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));

@@ -16,18 +16,18 @@ public class GuiJoinServer extends Gui{
     private ComponentInputField inputField;
 
     public GuiJoinServer(Gui parent){
-        super(100, 100, parent);
+        super(parent);
     }
 
     @Override
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.inputField = new ComponentInputField(this, this.guiLeft+this.sizeX/2-80, this.guiTop, 160, 16, true, true, false, 128, false);
+        this.inputField = new ComponentInputField(this, this.width/2-80, this.height/2-40, 160, 16, true, true, false, 128, false);
         this.components.add(this.inputField);
         this.inputField.setText(game.getSettings().lastServerIp);
 
-        this.components.add(new ComponentButton(this, this.guiLeft, this.guiTop+20, this.sizeX, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-50, this.height/2-20, 100, 16, () -> {
             try{
                 String[] separated = this.inputField.getText().split(":");
                 if(separated.length == 1){
@@ -47,7 +47,7 @@ public class GuiJoinServer extends Gui{
             }
             return false;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.connect"))));
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, (int)game.getHeightInGui()-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-40, (int)game.getHeightInGui()-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));

@@ -8,10 +8,8 @@ import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
-import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Graphics;
 
 import java.util.function.BiConsumer;
 
@@ -42,9 +40,9 @@ public class ComponentColorPicker extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        this.texture.draw(this.x, this.y, this.sizeX, this.sizeY);
-        g.drawRect(this.x, this.y, this.sizeX, this.sizeY, this.colorOutline);
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+        this.texture.draw(x, y, this.width, this.height);
+        g.drawRect(x, y, this.width, this.height, this.colorOutline);
     }
 
     @Override
@@ -52,11 +50,11 @@ public class ComponentColorPicker extends GuiComponent{
         if(this.isMouseOver(game)){
             if(Settings.KEY_GUI_ACTION_1.isKey(button)){
                 if(this.isEnlargable && !this.isEnlarged){
-                    this.sizeX *= 4;
-                    this.sizeY *= 4;
+                    this.width *= 4;
+                    this.height *= 4;
 
-                    this.x = Math.max(0, Math.min((int)game.getWidthInGui()-this.sizeX, this.x-(this.sizeX/2-(this.sizeX/8))));
-                    this.y = Math.max(0, Math.min((int)game.getHeightInGui()-this.sizeY, this.y-(this.sizeY/2-(this.sizeY/8))));
+                    this.x = Math.max(0, Math.min((int)game.getWidthInGui()-this.width, this.x-(this.width/2-(this.width/8))));
+                    this.y = Math.max(0, Math.min((int)game.getHeightInGui()-this.height, this.y-(this.height/2-(this.height/8))));
 
                     this.isEnlarged = true;
 
@@ -99,8 +97,8 @@ public class ComponentColorPicker extends GuiComponent{
         if(this.isEnlarged){
             this.x = this.defX;
             this.y = this.defY;
-            this.sizeX = this.defSizeX;
-            this.sizeY = this.defSizeY;
+            this.width = this.defSizeX;
+            this.height = this.defSizeY;
 
             this.isEnlarged = false;
         }
@@ -124,8 +122,8 @@ public class ComponentColorPicker extends GuiComponent{
 
     private void onClickOrMove(IGameInstance game, float mouseX, float mouseY){
         if(this.isMouseOver(game)){
-            float x = (mouseX-this.x)/this.sizeX*this.texture.getWidth();
-            float y = (mouseY-this.y)/this.sizeY*this.texture.getHeight();
+            float x = (mouseX-this.x)/this.width*this.texture.getWidth();
+            float y = (mouseY-this.y)/this.height*this.texture.getHeight();
             int color = this.texture.getTextureColor((int)x, (int)y);
 
             if(this.color != color){

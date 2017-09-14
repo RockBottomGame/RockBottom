@@ -29,17 +29,17 @@ public class GuiSelectWorld extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        BoundBox box = new BoundBox(0, 0, 200, 128).add(this.guiLeft, this.guiTop);
-        ComponentScrollMenu menu = new ComponentScrollMenu(this, this.guiLeft-8, this.guiTop, 128, 2, 5, box);
+        BoundBox box = new BoundBox(0, 0, 200, 128);
+        ComponentScrollMenu menu = new ComponentScrollMenu(this, -8, 0, 128, 2, 5, box);
         this.components.add(menu);
 
         int bottomY = (int)game.getHeightInGui();
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-82, bottomY-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-82, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(new GuiCreateWorld(this));
             return true;
         }, "Create World"));
 
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2+2, bottomY-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2+2, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
@@ -65,7 +65,7 @@ public class GuiSelectWorld extends Gui{
             menu.add(new ComponentButton(this, 0, 0, 16, 24, null, "X", "Delete World"){
                 @Override
                 public boolean onPressed(IGameInstance game){
-                    this.gui.getComponents().add(0, new ComponentConfirmationPopup(this.gui, this.x+this.sizeX/2, this.y+this.sizeY/2, aBoolean -> {
+                    this.gui.getComponents().add(0, new ComponentConfirmationPopup(this.gui, this.x+this.width/2, this.y+this.height/2, aBoolean -> {
                         if(aBoolean){
                             try{
                                 Util.deleteFolder(button.worldFile);

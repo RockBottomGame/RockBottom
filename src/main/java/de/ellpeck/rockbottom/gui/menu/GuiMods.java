@@ -26,7 +26,7 @@ public class GuiMods extends Gui{
     private ComponentButton disabledButton;
 
     public GuiMods(Gui parent){
-        super(100, 100, parent);
+        super(parent);
     }
 
     @Override
@@ -39,15 +39,12 @@ public class GuiMods extends Gui{
             i++;
         }
 
-        int width = (int)game.getWidthInGui();
-        int height = (int)game.getHeightInGui();
-
-        this.components.add(new ComponentButton(this, width-47, 14, 45, 10, () -> {
+        this.components.add(new ComponentButton(this, this.width-47, 14, 45, 10, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
 
-        this.components.add(new ComponentButton(this, width-77, 2, 75, 10, () -> {
+        this.components.add(new ComponentButton(this, this.width-77, 2, 75, 10, () -> {
             try{
                 Desktop.getDesktop().open(game.getDataManager().getModsDir());
                 return true;
@@ -58,7 +55,7 @@ public class GuiMods extends Gui{
             }
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.mods_folder"))));
 
-        this.modGuiButton = new ComponentButton(this, 100+(width-100)/2-60, height-30, 55, 16, () -> {
+        this.modGuiButton = new ComponentButton(this, 100+(this.width-100)/2-60, this.height-30, 55, 16, () -> {
             Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();
             if(guiClass != null){
                 try{
@@ -75,7 +72,7 @@ public class GuiMods extends Gui{
         this.modGuiButton.isActive = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
         this.components.add(this.modGuiButton);
 
-        this.disabledButton = new ComponentButton(this, 100+(width-100)/2+5, height-30, 55, 16, () -> {
+        this.disabledButton = new ComponentButton(this, 100+(this.width-100)/2+5, this.height-30, 55, 16, () -> {
             if(this.selectedMod.isDisableable()){
                 ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
                 settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));

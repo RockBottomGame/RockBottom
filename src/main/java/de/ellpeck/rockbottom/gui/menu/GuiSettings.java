@@ -24,22 +24,22 @@ public class GuiSettings extends Gui{
         Settings settings = game.getSettings();
         IGuiManager guiManager = game.getGuiManager();
 
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-75, this.guiTop, 150, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-75, 0, 150, 16, () -> {
             guiManager.openGui(new GuiKeybinds(this));
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.controls"))));
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-75, this.guiTop+20, 150, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-75, 20, 150, 16, () -> {
             guiManager.openGui(new GuiGraphics(this));
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.graphics"))));
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-75, this.guiTop+40, 150, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-75, 40, 150, 16, () -> {
             guiManager.openGui(new GuiLanguage(this));
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.language"))));
 
-        this.components.add(new ComponentSlider(this, this.guiLeft+this.sizeX/2-75, this.guiTop+65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(AbstractGame.internalRes("button.autosave_interval")), assetManager.localize(AbstractGame.internalRes("info.autosave_interval"))));
+        this.components.add(new ComponentSlider(this, this.width/2-75, 65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(AbstractGame.internalRes("button.autosave_interval")), assetManager.localize(AbstractGame.internalRes("info.autosave_interval"))));
 
-        this.components.add(new ComponentButton(this, this.guiLeft+this.sizeX/2-40, this.guiTop+this.sizeY-16, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             guiManager.openGui(this.parent);
             return true;
         }, assetManager.localize(AbstractGame.internalRes("button.back"))));

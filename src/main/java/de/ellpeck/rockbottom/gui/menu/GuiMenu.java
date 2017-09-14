@@ -24,12 +24,12 @@ public class GuiMenu extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, this.guiLeft, this.guiTop, this.sizeX, 16, () -> {
+        this.components.add(new ComponentButton(this, 0, 0, this.width, 16, () -> {
             game.getGuiManager().openGui(new GuiSettings(this));
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.settings"))));
         if(!RockBottomAPI.getNet().isClient()){
-            this.components.add(new ComponentButton(this, this.guiLeft, this.guiTop+20, this.sizeX, 16, () -> {
+            this.components.add(new ComponentButton(this, 0, 20, this.width, 16, () -> {
                 if(RockBottomAPI.getNet().isServer()){
                     RockBottomAPI.getNet().shutdown();
 
@@ -58,11 +58,11 @@ public class GuiMenu extends Gui{
             });
         }
 
-        this.components.add(new ComponentButton(this, this.guiLeft+10, this.guiTop+this.sizeY-36, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, 10, this.height-36, 80, 16, () -> {
             game.quitWorld();
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.main_menu"))));
-        this.components.add(new ComponentButton(this, this.guiLeft+10, this.guiTop+this.sizeY-16, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, 10, this.height-16, 80, 16, () -> {
             game.getGuiManager().closeGui();
             return true;
         }, game.getAssetManager().localize(AbstractGame.internalRes("button.close"))));

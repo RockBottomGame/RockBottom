@@ -14,8 +14,6 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +41,13 @@ public class ComponentRecipeButton extends ComponentButton{
 
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
         if(this.recipe != null){
-            super.render(game, manager, g);
+            super.render(game, manager, g, x, y);
 
             List<ItemInstance> outputs = this.recipe.getOutputs();
             ItemInstance instance = outputs.get(0);
-            g.renderItemInGui(game, manager, instance, this.x+2F, this.y+2F, 1F, this.canConstruct ? Colors.WHITE : TRANSPARENT_COLOR);
+            g.renderItemInGui(game, manager, instance, x+2F, y+2F, 1F, this.canConstruct ? Colors.WHITE : TRANSPARENT_COLOR);
         }
     }
 
