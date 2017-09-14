@@ -2,10 +2,7 @@ package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.IApiHandler;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
@@ -50,11 +47,14 @@ public abstract class AbstractGame implements IGameInstance{
     private int totalTicks;
 
     public static void doInit(AbstractGame game){
-        RockBottomAPI.setGameInstance(game);
-        RockBottomAPI.setModLoader(new ModLoader());
-        RockBottomAPI.setApiHandler(new ApiHandler());
-        RockBottomAPI.setEventHandler(new EventHandler());
-        RockBottomAPI.setNetHandler(new NetHandler());
+        Internals internals = new Internals();
+        RockBottomAPI.setInternals(internals);
+
+        internals.setGame(game);
+        internals.setMod(new ModLoader());
+        internals.setApi(new ApiHandler());
+        internals.setEvent(new EventHandler());
+        internals.setNet(new NetHandler());
 
         try{
             game.init();
