@@ -130,7 +130,7 @@ public class Chunk implements IChunk{
                     IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
                     chunk.addEntity(entity);
 
-                    if(RockBottomAPI.getNet().isServer()){
+                    if(this.world.isServer()){
                         for(AbstractEntityPlayer player : chunk.getPlayersInRange()){
                             if(!this.playersInRange.contains(player)){
                                 player.sendPacket(new PacketEntityChange(entity, false));
@@ -185,7 +185,7 @@ public class Chunk implements IChunk{
                         if(tile == update.tile.getTile()){
                             tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
 
-                            if(RockBottomAPI.getNet().isServer()){
+                            if(this.world.isServer()){
                                 RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketScheduledUpdate(update.layer, update.x, update.y));
                             }
                         }
@@ -289,7 +289,7 @@ public class Chunk implements IChunk{
             newTile.onAdded(this.world, this.x+x, this.y+y, layer);
         }
 
-        if(RockBottomAPI.getNet().isServer()){
+        if(this.world.isServer()){
             RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)));
         }
 
@@ -493,6 +493,11 @@ public class Chunk implements IChunk{
     @Override
     public boolean isClient(){
         return this.world.isClient();
+    }
+
+    @Override
+    public boolean isServer(){
+        return this.world.isServer();
     }
 
     @Override

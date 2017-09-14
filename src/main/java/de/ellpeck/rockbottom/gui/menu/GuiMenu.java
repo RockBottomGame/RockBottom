@@ -8,13 +8,12 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.util.Log;
 
 public class GuiMenu extends Gui{
 
-    private static final IResourceName LOC_OPEN_SERVER = AbstractGame.internalRes("button.open_server");
-    private static final IResourceName LOC_CLOSE_SERVER = AbstractGame.internalRes("button.close_server");
+    private static final IResourceName LOC_OPEN_SERVER = RockBottomAPI.createInternalRes("button.open_server");
+    private static final IResourceName LOC_CLOSE_SERVER = RockBottomAPI.createInternalRes("button.close_server");
 
     public GuiMenu(){
         super(100, 100);
@@ -27,13 +26,13 @@ public class GuiMenu extends Gui{
         this.components.add(new ComponentButton(this, 0, 0, this.width, 16, () -> {
             game.getGuiManager().openGui(new GuiSettings(this));
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.settings"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.settings"))));
         if(!RockBottomAPI.getNet().isClient()){
             this.components.add(new ComponentButton(this, 0, 20, this.width, 16, () -> {
                 if(RockBottomAPI.getNet().isServer()){
                     RockBottomAPI.getNet().shutdown();
 
-                    game.getToaster().displayToast(new Toast(new ChatComponentTranslation(AbstractGame.internalRes("info.server_shutdown.title")), new ChatComponentTranslation(AbstractGame.internalRes("info.server_shutdown")), 160));
+                    game.getToaster().displayToast(new Toast(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.server_shutdown.title")), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.server_shutdown")), 160));
 
                     return true;
                 }
@@ -41,7 +40,7 @@ public class GuiMenu extends Gui{
                     try{
                         RockBottomAPI.getNet().init(null, Main.port, true);
 
-                        game.getToaster().displayToast(new Toast(new ChatComponentTranslation(AbstractGame.internalRes("info.server_started.title")), new ChatComponentTranslation(AbstractGame.internalRes("info.server_started"), String.valueOf(Main.port)), 160));
+                        game.getToaster().displayToast(new Toast(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.server_started.title")), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.server_started"), String.valueOf(Main.port)), 160));
 
                         return true;
                     }
@@ -61,11 +60,11 @@ public class GuiMenu extends Gui{
         this.components.add(new ComponentButton(this, 10, this.height-36, 80, 16, () -> {
             game.quitWorld();
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.main_menu"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.main_menu"))));
         this.components.add(new ComponentButton(this, 10, this.height-16, 80, 16, () -> {
             game.getGuiManager().closeGui();
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.close"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.close"))));
     }
 
     @Override

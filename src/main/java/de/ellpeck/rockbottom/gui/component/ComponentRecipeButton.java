@@ -13,7 +13,6 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +20,8 @@ import java.util.List;
 public class ComponentRecipeButton extends ComponentButton{
 
     private static final int TRANSPARENT_COLOR = 0xFFFFFF80;
-    private static final IResourceName LOC_CONSTRUCTS = AbstractGame.internalRes("info.constructs");
-    private static final IResourceName LOC_USES = AbstractGame.internalRes("info.uses");
+    private static final IResourceName LOC_CONSTRUCTS = RockBottomAPI.createInternalRes("info.constructs");
+    private static final IResourceName LOC_USES = RockBottomAPI.createInternalRes("info.uses");
 
     public final AbstractEntityPlayer player;
     public final IRecipe recipe;
@@ -54,7 +53,7 @@ public class ComponentRecipeButton extends ComponentButton{
     @Override
     protected String[] getHover(){
         if(this.recipe != null){
-            IGameInstance game = AbstractGame.get();
+            IGameInstance game = RockBottomAPI.getGame();
             IAssetManager manager = game.getAssetManager();
 
             List<IUseInfo> inputs = this.recipe.getInputs();

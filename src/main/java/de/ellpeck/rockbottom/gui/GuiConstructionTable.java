@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
-import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketTableConstruction;
 
 import java.util.ArrayList;
@@ -58,6 +57,6 @@ public class GuiConstructionTable extends GuiContainer{
 
     @Override
     public IResourceName getName(){
-        return RockBottom.internalRes("construction_table");
+        return RockBottomAPI.createInternalRes("construction_table");
     }
 }

@@ -9,13 +9,12 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 public class ComponentHealth extends GuiComponent{
 
-    private static final IResourceName TEX_HEART = AbstractGame.internalRes("gui.heart");
-    private static final IResourceName TEX_HEART_EMPTY = AbstractGame.internalRes("gui.heart_empty");
-    private static final IResourceName LOC_HEALTH = AbstractGame.internalRes("info.health");
+    private static final IResourceName TEX_HEART = RockBottomAPI.createInternalRes("gui.heart");
+    private static final IResourceName TEX_HEART_EMPTY = RockBottomAPI.createInternalRes("gui.heart_empty");
+    private static final IResourceName LOC_HEALTH = RockBottomAPI.createInternalRes("info.health");
 
     public ComponentHealth(Gui gui, int x, int y, int sizeX, int sizeY){
         super(gui, x, y, sizeX, sizeY);

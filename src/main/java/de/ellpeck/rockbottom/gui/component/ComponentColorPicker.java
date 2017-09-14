@@ -9,13 +9,12 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.function.BiConsumer;
 
 public class ComponentColorPicker extends GuiComponent{
 
-    private final ITexture texture = AbstractGame.get().getAssetManager().getTexture(AbstractGame.internalRes("gui.colorpick"));
+    private final ITexture texture = RockBottomAPI.getGame().getAssetManager().getTexture(RockBottomAPI.createInternalRes("gui.colorpick"));
 
     private final BiConsumer<Integer, Boolean> consumer;
     private final boolean isEnlargable;

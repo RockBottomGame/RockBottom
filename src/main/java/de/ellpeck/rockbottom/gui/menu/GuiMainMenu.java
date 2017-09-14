@@ -11,8 +11,6 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.GuiPlayerEditor;
-import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Graphics;
 
 public class GuiMainMenu extends Gui{
 
@@ -30,28 +28,28 @@ public class GuiMainMenu extends Gui{
         this.components.add(new ComponentButton(this, start, y, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiSelectWorld(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.play"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.play"))));
         this.components.add(new ComponentButton(this, start+parts, y, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiJoinServer(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.join"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.join"))));
         this.components.add(new ComponentButton(this, start+parts*2, y, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiPlayerEditor(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.player_editor"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.player_editor"))));
         this.components.add(new ComponentButton(this, start+parts*3, y, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiSettings(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.settings"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.settings"))));
 
         this.components.add(new ComponentButton(this, this.width-47, 2, 45, 10, () -> {
             guiManager.openGui(new GuiCredits(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.credits"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.credits"))));
         this.components.add(new ComponentButton(this, this.width-47, 14, 45, 10, () -> {
             guiManager.openGui(new GuiMods(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.mods"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.mods"))));
 
         this.components.add(new ComponentButton(this, 2, 2, 45, 10, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, 27, 2+5, aBoolean -> {
@@ -60,18 +58,17 @@ public class GuiMainMenu extends Gui{
                 }
             }));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.quit"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.quit"))));
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         super.render(game, manager, g);
 
-        float height = game.getHeightInGui();
         Font font = manager.getFont();
 
-        font.drawStringFromRight(game.getWidthInGui()-2F, height-7F, "Copyright 2017 Ellpeck", 0.25F);
-        font.drawString(2, height-7F, game.getDisplayName()+" "+game.getVersion()+" - API "+RockBottomAPI.VERSION, 0.25F);
+        font.drawStringFromRight(this.width-2F, this.height-7F, "Copyright 2017 Ellpeck", 0.25F);
+        font.drawString(2, this.height-7F, game.getDisplayName()+" "+game.getVersion()+" - API "+RockBottomAPI.VERSION, 0.25F);
     }
 
     @Override

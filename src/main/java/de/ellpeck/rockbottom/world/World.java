@@ -125,7 +125,7 @@ public class World implements IWorld{
             }
         }
 
-        if(RockBottomAPI.getNet().isServer()){
+        if(this.isServer()){
             RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, false), entity);
         }
     }
@@ -330,6 +330,11 @@ public class World implements IWorld{
     }
 
     @Override
+    public boolean isServer(){
+        return RockBottomAPI.getNet().isServer();
+    }
+
+    @Override
     public WorldInfo getWorldInfo(){
         return this.info;
     }
@@ -462,7 +467,7 @@ public class World implements IWorld{
 
             IGameInstance game = RockBottomAPI.getGame();
             if(!game.isDedicatedServer()){
-                game.getToaster().displayToast(new Toast(AbstractGame.internalRes("gui.save_world"), new ChatComponentTranslation(AbstractGame.internalRes("info.saved")), new ChatComponentTranslation(AbstractGame.internalRes("info.saved_chunks"), String.valueOf(amount), String.valueOf((float)time/1000F)), 160));
+                game.getToaster().displayToast(new Toast(RockBottomAPI.createInternalRes("gui.save_world"), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved")), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved_chunks"), String.valueOf(amount), String.valueOf((float)time/1000F)), 160));
             }
         }
     }
@@ -482,7 +487,7 @@ public class World implements IWorld{
 
         entity.onRemoveFromWorld();
 
-        if(RockBottomAPI.getNet().isServer()){
+        if(this.isServer()){
             RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, true), entity);
         }
     }
@@ -524,7 +529,7 @@ public class World implements IWorld{
             Log.info("Loading player "+design.getName()+" with unique id "+id+"!");
         }
         else{
-            player.resetAndSpawn(AbstractGame.get());
+            player.resetAndSpawn(RockBottomAPI.getGame());
             Log.info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
         }
 
@@ -570,11 +575,11 @@ public class World implements IWorld{
 
         state.getTile().onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
-        if(RockBottomAPI.getNet().isServer()){
+        if(this.isServer()){
             RockBottomAPI.getNet().sendToAllPlayers(this, PacketParticles.tile(this, x, y, state));
         }
 
-        IGameInstance game = AbstractGame.get();
+        IGameInstance game = RockBottomAPI.getGame();
         if(!game.isDedicatedServer()){
             game.getParticleManager().addTileParticles(this, x, y, state);
         }

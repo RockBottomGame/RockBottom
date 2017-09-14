@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,7 +33,7 @@ public class GuiKeybinds extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
         List<Keybind> binds = new ArrayList<>(RockBottomAPI.KEYBIND_REGISTRY.getUnmodifiable().values());
         binds.sort(Comparator.comparing(Keybind:: getName));

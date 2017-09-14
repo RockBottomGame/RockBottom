@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.Map;
 
@@ -51,7 +50,7 @@ public class GuiLanguage extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
     }
 
     @Override

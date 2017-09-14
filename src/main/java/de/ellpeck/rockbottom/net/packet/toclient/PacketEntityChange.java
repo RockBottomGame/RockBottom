@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -9,7 +8,6 @@ import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
@@ -20,7 +18,7 @@ import java.util.UUID;
 
 public class PacketEntityChange implements IPacket{
 
-    private static final String PLAYER_NAME = AbstractGame.internalRes("player").toString();
+    private static final String PLAYER_NAME = RockBottomAPI.createInternalRes("player").toString();
 
     private final DataSet entitySet = new DataSet();
     private String name;

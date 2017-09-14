@@ -11,14 +11,12 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import org.newdawn.slick.Graphics;
 
 public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
-    private static final IResourceName SPECIAL_BASE = AbstractGame.internalRes("player.base.s");
-    private static final IResourceName SPECIAL_ARMS = AbstractGame.internalRes("player.arm.skin_s");
+    private static final IResourceName SPECIAL_BASE = RockBottomAPI.createInternalRes("player.base.s");
+    private static final IResourceName SPECIAL_ARMS = RockBottomAPI.createInternalRes("player.arm.skin_s");
 
     public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, String arms, int light){
         int base = design.getBase();

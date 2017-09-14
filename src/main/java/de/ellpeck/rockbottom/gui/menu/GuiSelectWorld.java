@@ -11,7 +11,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.gui.component.ComponentSelectWorldButton;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.util.Log;
 
 import java.io.File;
@@ -33,7 +32,7 @@ public class GuiSelectWorld extends Gui{
         ComponentScrollMenu menu = new ComponentScrollMenu(this, -8, 0, 128, 2, 5, box);
         this.components.add(menu);
 
-        int bottomY = (int)game.getHeightInGui();
+        int bottomY = this.height;
         this.components.add(new ComponentButton(this, this.width/2-82, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(new GuiCreateWorld(this));
             return true;
@@ -42,7 +41,7 @@ public class GuiSelectWorld extends Gui{
         this.components.add(new ComponentButton(this, this.width/2+2, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
         File worldFolder = game.getDataManager().getWorldsDir();
         File[] worlds = worldFolder.listFiles();

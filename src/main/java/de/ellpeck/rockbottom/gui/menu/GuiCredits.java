@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +61,12 @@ public class GuiCredits extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.components.add(new ComponentButton(this, (int)game.getWidthInGui()-47, 2, 45, 10, () -> {
+        this.components.add(new ComponentButton(this, this.width-47, 2, 45, 10, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
-        this.renderY = (int)game.getHeightInGui();
+        this.renderY = this.height;
     }
 
     @Override
@@ -88,7 +87,7 @@ public class GuiCredits extends Gui{
         this.renderY -= 0.65F;
 
         if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
-            this.renderY = (int)game.getHeightInGui();
+            this.renderY = this.height;
         }
     }
 

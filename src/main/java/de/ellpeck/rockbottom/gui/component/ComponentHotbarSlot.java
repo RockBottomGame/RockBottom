@@ -9,13 +9,11 @@ import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
-import org.newdawn.slick.Graphics;
 
 public class ComponentHotbarSlot extends GuiComponent{
 
-    private static final IResourceName TEX_ARROW = AbstractGame.internalRes("gui.selection_arrow");
+    private static final IResourceName TEX_ARROW = RockBottomAPI.createInternalRes("gui.selection_arrow");
 
     private final AbstractEntityPlayer player;
     private final Inventory inv;

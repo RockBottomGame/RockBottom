@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.function.Supplier;
 
@@ -22,7 +21,8 @@ public class ComponentToggleButton extends ComponentButton{
 
     @Override
     protected String getText(){
-        return AbstractGame.get().getAssetManager().localize(AbstractGame.internalRes(this.locKey+(this.isToggled ? "_toggled" : "")));
+        String resource = this.locKey+(this.isToggled ? "_toggled" : "");
+        return RockBottomAPI.getGame().getAssetManager().localize(RockBottomAPI.createInternalRes(resource));
     }
 
     @Override

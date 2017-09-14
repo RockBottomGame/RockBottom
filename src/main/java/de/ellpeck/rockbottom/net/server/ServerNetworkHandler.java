@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.server;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.newdawn.slick.util.Log;
@@ -27,7 +27,7 @@ public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket>{
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) throws Exception{
         try{
-            packet.handle(AbstractGame.get(), ctx);
+            packet.handle(RockBottomAPI.getGame(), ctx);
         }
         catch(Exception e){
             Log.error("Couldn't handle packet on server", e);

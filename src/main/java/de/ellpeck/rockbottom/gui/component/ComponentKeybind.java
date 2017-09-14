@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.data.settings.Keybind;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiKeybinds;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
@@ -26,7 +25,7 @@ public class ComponentKeybind extends ComponentButton{
 
     @Override
     protected String getText(){
-        IAssetManager manager = AbstractGame.get().getAssetManager();
+        IAssetManager manager = RockBottomAPI.getGame().getAssetManager();
         String name = this.bind.isMouse() ? Mouse.getButtonName(this.bind.getKey()) : Input.getKeyName(this.bind.getKey());
         return manager.localize(this.bind.getName().addPrefix("key."))+": "+(this.isActive() ? "<?>" : name);
     }

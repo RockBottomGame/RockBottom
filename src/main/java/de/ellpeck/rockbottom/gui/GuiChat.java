@@ -24,10 +24,6 @@ public class GuiChat extends Gui{
 
     private ComponentInputField inputField;
 
-    public GuiChat(){
-        super(100, 100);
-    }
-
     public static void drawMessages(IGameInstance game, IAssetManager manager, IGraphics g, List<ChatComponent> messages, int maxCount){
         Font font = manager.getFont();
         float scale = 0.25F;
@@ -65,7 +61,7 @@ public class GuiChat extends Gui{
     public void initGui(IGameInstance game){
         super.initGui(game);
 
-        this.inputField = new ComponentInputField(this, 5, (int)game.getHeightInGui()-21, (int)game.getWidthInGui()/2, 16, true, false, true, 512, true);
+        this.inputField = new ComponentInputField(this, 5, this.height-21, this.width/2, 16, true, false, true, 512, true);
         this.components.add(this.inputField);
     }
 

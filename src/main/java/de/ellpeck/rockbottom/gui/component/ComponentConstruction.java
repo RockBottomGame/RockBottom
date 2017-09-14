@@ -14,7 +14,6 @@ import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public class ComponentConstruction extends GuiComponent{
 
-    private static final IResourceName LOC_NEED = AbstractGame.internalRes("info.need_items");
+    private static final IResourceName LOC_NEED = RockBottomAPI.createInternalRes("info.need_items");
 
     private String searchText = "";
     private boolean shouldShowAll;
@@ -53,7 +52,7 @@ public class ComponentConstruction extends GuiComponent{
             this.shouldShowAll = !this.shouldShowAll;
             this.organize();
             return true;
-        }, AbstractGame.internalRes("gui.all_construction"), RockBottomAPI.getGame().getAssetManager().localize(AbstractGame.internalRes("button.all_construction"))));
+        }, RockBottomAPI.createInternalRes("gui.all_construction"), RockBottomAPI.getGame().getAssetManager().localize(RockBottomAPI.createInternalRes("button.all_construction"))));
 
         this.organize();
     }

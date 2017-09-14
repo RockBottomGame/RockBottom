@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 public class GuiSettings extends Gui{
 
@@ -27,22 +26,22 @@ public class GuiSettings extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-75, 0, 150, 16, () -> {
             guiManager.openGui(new GuiKeybinds(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.controls"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.controls"))));
         this.components.add(new ComponentButton(this, this.width/2-75, 20, 150, 16, () -> {
             guiManager.openGui(new GuiGraphics(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.graphics"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.graphics"))));
         this.components.add(new ComponentButton(this, this.width/2-75, 40, 150, 16, () -> {
             guiManager.openGui(new GuiLanguage(this));
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.language"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.language"))));
 
-        this.components.add(new ComponentSlider(this, this.width/2-75, 65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(AbstractGame.internalRes("button.autosave_interval")), assetManager.localize(AbstractGame.internalRes("info.autosave_interval"))));
+        this.components.add(new ComponentSlider(this, this.width/2-75, 65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(RockBottomAPI.createInternalRes("button.autosave_interval")), assetManager.localize(RockBottomAPI.createInternalRes("info.autosave_interval"))));
 
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             guiManager.openGui(this.parent);
             return true;
-        }, assetManager.localize(AbstractGame.internalRes("button.back"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
     }
 
     @Override

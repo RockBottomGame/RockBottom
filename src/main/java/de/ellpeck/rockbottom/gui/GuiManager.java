@@ -30,7 +30,6 @@ import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.input.Mouse;
@@ -41,8 +40,8 @@ import java.util.List;
 
 public class GuiManager implements IGuiManager{
 
-    private static final IResourceName LOC_DEAD = AbstractGame.internalRes("info.dead");
-    private static final IResourceName LOC_DEAD_INFO = AbstractGame.internalRes("info.dead.wait");
+    private static final IResourceName LOC_DEAD = RockBottomAPI.createInternalRes("info.dead");
+    private static final IResourceName LOC_DEAD_INFO = RockBottomAPI.createInternalRes("info.dead.wait");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private boolean shouldReInit;
     private MainMenuBackground background;
@@ -202,7 +201,7 @@ public class GuiManager implements IGuiManager{
 
     @Override
     public void openGui(Gui gui){
-        IGameInstance game = AbstractGame.get();
+        IGameInstance game = RockBottomAPI.getGame();
 
         GuiOpenEvent event = new GuiOpenEvent(gui);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){

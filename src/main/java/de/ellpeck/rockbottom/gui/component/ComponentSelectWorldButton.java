@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -18,8 +17,8 @@ import java.util.Date;
 
 public class ComponentSelectWorldButton extends ComponentButton{
 
-    private static final IResourceName RES_LAST_MODIFIED = AbstractGame.internalRes("info.last_modified");
-    private static final IResourceName RES_SEED = AbstractGame.internalRes("info.seed");
+    private static final IResourceName RES_LAST_MODIFIED = RockBottomAPI.createInternalRes("info.last_modified");
+    private static final IResourceName RES_SEED = RockBottomAPI.createInternalRes("info.seed");
 
     public final File worldFile;
     private final WorldInfo info;

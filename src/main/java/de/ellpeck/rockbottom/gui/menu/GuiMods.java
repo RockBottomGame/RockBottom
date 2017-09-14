@@ -12,8 +12,6 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
-import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
 
 import java.awt.*;
@@ -42,7 +40,7 @@ public class GuiMods extends Gui{
         this.components.add(new ComponentButton(this, this.width-47, 14, 45, 10, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
         this.components.add(new ComponentButton(this, this.width-77, 2, 75, 10, () -> {
             try{
@@ -53,7 +51,7 @@ public class GuiMods extends Gui{
                 Log.error("Couldn't open mods folder", e);
                 return false;
             }
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.mods_folder"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
 
         this.modGuiButton = new ComponentButton(this, 100+(this.width-100)/2-60, this.height-30, 55, 16, () -> {
             Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();
@@ -68,7 +66,7 @@ public class GuiMods extends Gui{
                 }
             }
             return false;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.mod_info")));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mod_info")));
         this.modGuiButton.isActive = this.selectedMod != null && this.selectedMod.getModGuiClass() != null;
         this.components.add(this.modGuiButton);
 
@@ -82,7 +80,7 @@ public class GuiMods extends Gui{
                 return true;
             }
             return false;
-        }, "", game.getAssetManager().localize(AbstractGame.internalRes("info.requires_restart")));
+        }, "", game.getAssetManager().localize(RockBottomAPI.createInternalRes("info.requires_restart")));
         this.updateDisableButton(game);
         this.components.add(this.disabledButton);
     }
@@ -92,7 +90,7 @@ public class GuiMods extends Gui{
 
         if(this.selectedMod != null){
             String s = "button."+(RockBottomAPI.getModLoader().getModSettings().isDisabled(this.selectedMod.getId()) ? "enable" : "disable");
-            this.disabledButton.setText(game.getAssetManager().localize(AbstractGame.internalRes(s)));
+            this.disabledButton.setText(game.getAssetManager().localize(RockBottomAPI.createInternalRes(s)));
         }
     }
 
@@ -103,7 +101,7 @@ public class GuiMods extends Gui{
         if(this.selectedMod != null){
             Font font = manager.getFont();
 
-            int width = (int)game.getWidthInGui()-100;
+            int width = this.width-100;
             float center = 100+(width/2);
             font.drawCenteredString(center, 45, this.selectedMod.getDisplayName(), 0.75F, false);
             font.drawCenteredString(center, 70, "Version: "+FormattingCode.GRAY+this.selectedMod.getVersion(), 0.35F, false);

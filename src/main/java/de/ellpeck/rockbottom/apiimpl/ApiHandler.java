@@ -20,7 +20,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.render.WorldRenderer;
@@ -170,7 +169,7 @@ public class ApiHandler implements IApiHandler{
 
         entity.ticksExisted++;
 
-        if(RockBottomAPI.getNet().isServer()){
+        if(entity.world.isServer()){
             if(entity.doesSync()){
                 if(entity.ticksExisted%entity.getSyncFrequency() == 0){
                     if(entity.lastX != entity.x || entity.lastY != entity.y){
@@ -357,7 +356,7 @@ public class ApiHandler implements IApiHandler{
             slot.slot.set(inst);
 
             if(RockBottomAPI.getNet().isClient()){
-                RockBottomAPI.getNet().sendToServer(new PacketSlotModification(AbstractGame.get().getPlayer().getUniqueId(), slot.componentId, inst));
+                RockBottomAPI.getNet().sendToServer(new PacketSlotModification(RockBottomAPI.getGame().getPlayer().getUniqueId(), slot.componentId, inst));
             }
             return true;
         }

@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketJoin;
 import org.newdawn.slick.util.Log;
 
@@ -46,11 +45,11 @@ public class GuiJoinServer extends Gui{
                 Log.error("Couldn't connect to server", e);
             }
             return false;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.connect"))));
-        this.components.add(new ComponentButton(this, this.width/2-40, (int)game.getHeightInGui()-30, 80, 16, () -> {
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.connect"))));
+        this.components.add(new ComponentButton(this, this.width/2-40, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
     }
 
     @Override

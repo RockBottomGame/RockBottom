@@ -14,7 +14,6 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -47,7 +46,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
         Log.info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
 
-        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(AbstractGame.internalRes("info.disconnect"), player.getName()));
+        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.disconnect"), player.getName()));
     }
 
     @Override
@@ -110,10 +109,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
         if(this.getHealth() != this.lastHealth && this.world.getWorldInfo().totalTimeInWorld%10 == 0){
             this.lastHealth = this.getHealth();
-
-            if(RockBottomAPI.getNet().isServer()){
-                this.sendPacket(new PacketHealth(this.getHealth()));
-            }
+            this.sendPacket(new PacketHealth(this.getHealth()));
         }
     }
 

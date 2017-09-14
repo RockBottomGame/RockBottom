@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
@@ -38,7 +37,7 @@ public class GuiInventory extends GuiContainer{
             isConstructionOpen = !isConstructionOpen;
             this.initGui(game);
             return true;
-        }, AbstractGame.internalRes("gui.construction"), game.getAssetManager().localize(AbstractGame.internalRes("button.construction"))));
+        }, RockBottomAPI.createInternalRes("gui.construction"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.construction"))));
 
         if(isConstructionOpen){
             this.construction = new ComponentConstruction(this, -112,0, 110, 88, 5, 5, true, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES, (recipe, recipeId) -> {

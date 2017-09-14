@@ -12,12 +12,10 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.TileLayer;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
-import org.newdawn.slick.opengl.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -161,7 +159,7 @@ public class WorldRenderer{
     private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY, float scale){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
-                ITexture brk = manager.getTexture(AbstractGame.internalRes("break."+Util.ceil(input.breakProgress*8F)));
+                ITexture brk = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
                 brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
             }
         }

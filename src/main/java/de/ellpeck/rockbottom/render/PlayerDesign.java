@@ -25,8 +25,6 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.Color;
 
 import java.util.List;
 
@@ -130,7 +128,7 @@ public class PlayerDesign implements IPlayerDesign{
 
     @Override
     public void saveToFile(){
-        IDataManager dataManager = AbstractGame.get().getDataManager();
+        IDataManager dataManager = RockBottomAPI.getGame().getDataManager();
 
         DataSet set = new DataSet();
         this.save(set);
@@ -139,7 +137,7 @@ public class PlayerDesign implements IPlayerDesign{
 
     @Override
     public void loadFromFile(){
-        IDataManager dataManager = AbstractGame.get().getDataManager();
+        IDataManager dataManager = RockBottomAPI.getGame().getDataManager();
 
         DataSet set = new DataSet();
         set.read(dataManager.getPlayerDesignFile());

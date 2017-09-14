@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import io.netty.buffer.ByteBuf;
@@ -88,7 +87,7 @@ public class PacketJoin implements IPacket{
                         shouldKick = false;
                         Log.info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
 
-                        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(AbstractGame.internalRes("info.connect"), player.getName()));
+                        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.connect"), player.getName()));
                     }
                     else{
                         Log.warn("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");

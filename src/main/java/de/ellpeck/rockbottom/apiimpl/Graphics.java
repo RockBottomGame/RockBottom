@@ -18,7 +18,6 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import org.newdawn.slick.opengl.TextureImpl;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -29,7 +28,7 @@ import java.util.List;
 
 public class Graphics implements IGraphics{
 
-    private static final IResourceName SLOT_NAME = AbstractGame.internalRes("gui.slot");
+    private static final IResourceName SLOT_NAME = RockBottomAPI.createInternalRes("gui.slot");
 
     @Override
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, boolean hovered){

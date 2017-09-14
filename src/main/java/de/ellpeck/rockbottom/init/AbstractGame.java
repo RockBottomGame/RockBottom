@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
@@ -26,7 +25,6 @@ import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
-import de.ellpeck.rockbottom.util.LogSystem;
 import de.ellpeck.rockbottom.world.World;
 import org.newdawn.slick.util.Log;
 
@@ -110,14 +108,6 @@ public abstract class AbstractGame implements IGameInstance{
             game.shutdown();
             Log.info("Game shutting down");
         }
-    }
-
-    public static IGameInstance get(){
-        return RockBottomAPI.getGame();
-    }
-
-    public static IResourceName internalRes(String resource){
-        return RockBottomAPI.createRes(get(), resource);
     }
 
     public abstract int getAutosaveInterval();

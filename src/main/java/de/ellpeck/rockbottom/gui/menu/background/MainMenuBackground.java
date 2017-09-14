@@ -8,19 +8,15 @@ import de.ellpeck.rockbottom.api.gui.IMainMenuTheme;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.opengl.renderer.Renderer;
 
 import java.util.List;
 
 public class MainMenuBackground{
 
-    private static final IResourceName RES_LOGO = AbstractGame.internalRes("logo");
+    private static final IResourceName RES_LOGO = RockBottomAPI.createInternalRes("logo");
 
     static{
         RockBottomAPI.MAIN_MENU_THEMES.add(new BlankTheme());

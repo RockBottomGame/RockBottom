@@ -28,7 +28,6 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerChange;
@@ -36,7 +35,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketRespawn;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -47,7 +45,7 @@ import java.util.function.BiConsumer;
 public class EntityPlayer extends AbstractEntityPlayer{
 
     public final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
-        if(RockBottomAPI.getNet().isServer()){
+        if(this.world.isServer()){
             boolean isInv = inv instanceof InventoryPlayer;
             ItemContainer container = isInv ? this.inventoryContainer : this.currentContainer;
 
@@ -84,7 +82,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public boolean openGui(Gui gui){
         if(RockBottomAPI.getNet().isThePlayer(this)){
-            AbstractGame.get().getGuiManager().openGui(gui);
+            RockBottomAPI.getGame().getGuiManager().openGui(gui);
             return true;
         }
         else{
@@ -117,13 +115,13 @@ public class EntityPlayer extends AbstractEntityPlayer{
             this.currentContainer = event.container;
 
             if(this.currentContainer != null){
-                if(RockBottomAPI.getNet().isClient()){
+                if(this.world.isClient()){
                     int id = this.currentContainer.getUnboundId();
                     if(id >= 0){
                         RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
                     }
                 }
-                else if(RockBottomAPI.getNet().isServer()){
+                else if(this.world.isServer()){
                     this.sendPacket(new PacketContainerData(this.currentContainer));
                 }
 
@@ -136,7 +134,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
             }
             else{
-                if(RockBottomAPI.getNet().isClient()){
+                if(this.world.isClient()){
                     RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), PacketOpenUnboundContainer.CLOSE_ID));
                 }
             }
@@ -166,7 +164,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void update(IGameInstance game){
         super.update(game);
 
-        if(!RockBottomAPI.getNet().isClient()){
+        if(!this.world.isClient()){
             if(this.isDead()){
                 this.respawnTimer++;
 
@@ -223,7 +221,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public void onGroundHit(double fallDistance){
-        if(!RockBottomAPI.getNet().isClient()){
+        if(!this.world.isClient()){
             if(fallDistance > 5){
                 this.takeDamage(Util.ceil((fallDistance-5D)*2D));
             }
@@ -281,7 +279,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void moveToChunk(IChunk newChunk){
         super.moveToChunk(newChunk);
 
-        if(!RockBottomAPI.getNet().isClient()){
+        if(!this.world.isClient()){
             List<IChunk> nowLoaded = new ArrayList<>();
 
             for(int x = -Constants.CHUNK_LOAD_DISTANCE; x <= Constants.CHUNK_LOAD_DISTANCE; x++){
@@ -342,7 +340,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public int getCommandLevel(){
-        if(RockBottomAPI.getNet().isServer()){
+        if(this.world.isServer()){
             CommandPermissions permissions = RockBottomAPI.getNet().getCommandPermissions();
             int level = permissions.getCommandLevel(this);
 
@@ -350,7 +348,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 level = Constants.ADMIN_PERMISSION;
 
                 permissions.setCommandLevel(this, level);
-                AbstractGame.get().getDataManager().savePropSettings(permissions);
+                RockBottomAPI.getGame().getDataManager().savePropSettings(permissions);
 
                 Log.info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+"!");
             }
@@ -368,13 +366,13 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
         if(!this.world.isClient() && this.dead){
             int id = Util.RANDOM.nextInt(25)+1;
-            RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(AbstractGame.internalRes("death.flavor."+id), this.getName())));
+            RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(RockBottomAPI.createInternalRes("death.flavor."+id), this.getName())));
         }
     }
 
     @Override
     public void onRemoveFromWorld(){
-        if(!RockBottomAPI.getNet().isClient()){
+        if(!this.world.isClient()){
             for(IChunk chunk : this.chunksInRange){
                 chunk.getPlayersInRange().remove(this);
                 chunk.getPlayersLeftRange().remove(this);
@@ -457,7 +455,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
         this.setPos(this.world.getSpawnX()+0.5, this.world.getLowestAirUpwards(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
 
-        if(RockBottomAPI.getNet().isServer()){
+        if(this.world.isServer()){
             RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketRespawn(this.getUniqueId()));
         }
     }

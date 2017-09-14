@@ -11,7 +11,6 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.io.File;
 
@@ -56,7 +55,7 @@ public class GuiCreateWorld extends Gui{
         this.components.add(new ComponentButton(this, this.width/2+2, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(AbstractGame.internalRes("button.back"))));
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
         this.updateNameAndSeed(game);
     }

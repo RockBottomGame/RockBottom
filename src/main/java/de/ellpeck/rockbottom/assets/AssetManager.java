@@ -22,7 +22,6 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.apiimpl.Texture;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
@@ -31,7 +30,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.opengl.CursorLoader;
-import org.newdawn.slick.opengl.pbuffer.GraphicsFactory;
 import org.newdawn.slick.util.Log;
 
 import java.io.InputStream;
@@ -86,9 +84,9 @@ public class AssetManager implements IAssetManager{
         Log.info("Loaded "+this.getAllOfType(AssetAnimation.class).size()+" animations!");
         Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
 
-        this.defaultLocale = this.getLocale(AbstractGame.internalRes("us_english"));
+        this.defaultLocale = this.getLocale(RockBottomAPI.createInternalRes("us_english"));
 
-        this.currentFont = this.getFont(AbstractGame.internalRes("default"));
+        this.currentFont = this.getFont(RockBottomAPI.createInternalRes("default"));
         this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
 
         this.reloadCursor(game);
@@ -98,7 +96,7 @@ public class AssetManager implements IAssetManager{
     public void reloadCursor(IGameInstance game){
         try{
             if(!game.getSettings().hardwareCursor){
-                Texture texture = (Texture)this.getTexture(AbstractGame.internalRes("gui.cursor"));
+                Texture texture = (Texture)this.getTexture(RockBottomAPI.createInternalRes("gui.cursor"));
                 Texture temp = new Texture(texture.getWidth(), texture.getHeight());
 
                 Graphics g = temp.getGraphics();

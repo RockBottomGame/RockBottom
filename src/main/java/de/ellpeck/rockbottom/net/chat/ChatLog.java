@@ -13,10 +13,8 @@ import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.gui.GuiChat;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -64,7 +62,7 @@ public class ChatLog implements IChatLog{
 
                     if(command != null){
                         if(sender.getCommandLevel() >= command.getLevel()){
-                            IGameInstance game = AbstractGame.get();
+                            IGameInstance game = RockBottomAPI.getGame();
                             cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), sender, sender.getName(), game, this);
                         }
                         else{
@@ -98,7 +96,7 @@ public class ChatLog implements IChatLog{
         this.displayMessage(message);
 
         if(RockBottomAPI.getNet().isServer()){
-            RockBottomAPI.getNet().sendToAllPlayers(AbstractGame.get().getWorld(), new PacketChatMessage(message));
+            RockBottomAPI.getNet().sendToAllPlayers(RockBottomAPI.getGame().getWorld(), new PacketChatMessage(message));
         }
     }
 
