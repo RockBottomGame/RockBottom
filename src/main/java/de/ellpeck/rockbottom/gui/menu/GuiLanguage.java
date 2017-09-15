@@ -20,8 +20,8 @@ public class GuiLanguage extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         BoundBox area = new BoundBox(0, 0, 150, 106);
         ComponentScrollMenu menu = new ComponentScrollMenu(this, -8, 0, 106, 1, 6, area);
@@ -38,7 +38,7 @@ public class GuiLanguage extends Gui{
                     game.getDataManager().savePropSettings(game.getSettings());
 
                     manager.setLocale(loc);
-                    game.getGuiManager().setReInit();
+                    game.getGuiManager().updateDimensions();
                     return true;
                 }
                 return false;

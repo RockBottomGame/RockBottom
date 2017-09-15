@@ -28,8 +28,8 @@ public class GuiMods extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         int i = 0;
         for(IMod mod : RockBottomAPI.getModLoader().getAllTheMods()){

@@ -33,8 +33,8 @@ public class GuiCreateWorld extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true);
         this.components.add(this.nameField);

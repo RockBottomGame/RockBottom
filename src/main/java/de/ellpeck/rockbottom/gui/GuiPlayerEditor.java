@@ -33,8 +33,8 @@ public class GuiPlayerEditor extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         IPlayerDesign design = game.getPlayerDesign();
         IAssetManager assetManager = game.getAssetManager();
@@ -91,7 +91,7 @@ public class GuiPlayerEditor extends Gui{
             this.components.add(0, new ComponentConfirmationPopup(this, this.width/2+41, this.height-12, aBoolean -> {
                 if(aBoolean){
                     PlayerDesign.randomizeDesign(design);
-                    this.initGui(game);
+                    this.init(game);
                 }
             }));
             return true;
@@ -122,7 +122,7 @@ public class GuiPlayerEditor extends Gui{
                         desgin.setBase(-1);
 
                         this.wiivIndex = 0;
-                        this.initGui(game);
+                        this.init(game);
                     }
 
                     return true;

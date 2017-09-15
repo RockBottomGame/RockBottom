@@ -30,12 +30,12 @@ public class GuiInventory extends GuiContainer{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         this.components.add(new ComponentFancyToggleButton(this, -14, 0, 12, 12, !isConstructionOpen, () -> {
             isConstructionOpen = !isConstructionOpen;
-            this.initGui(game);
+            this.init(game);
             return true;
         }, RockBottomAPI.createInternalRes("gui.construction"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.construction"))));
 
@@ -68,8 +68,8 @@ public class GuiInventory extends GuiContainer{
     }
 
     @Override
-    protected void initGuiVars(IGameInstance game){
-        super.initGuiVars(game);
+    protected void updateDimensions(IGameInstance game){
+        super.updateDimensions(game);
 
         if(isConstructionOpen){
             this.x += 52;

@@ -23,16 +23,6 @@ import java.util.List;
 
 public class ChatLog implements IChatLog{
 
-    static{
-        IChatLog.registerCommand(new CommandHelp());
-        IChatLog.registerCommand(new CommandAddPermission());
-        IChatLog.registerCommand(new CommandSpawnItem());
-        IChatLog.registerCommand(new CommandTeleport());
-        IChatLog.registerCommand(new CommandMe());
-        IChatLog.registerCommand(new CommandStop());
-        IChatLog.registerCommand(new CommandListPlayers());
-    }
-
     private final List<ChatComponent> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
 

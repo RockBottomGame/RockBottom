@@ -19,8 +19,8 @@ public class GuiJoinServer extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         this.inputField = new ComponentInputField(this, this.width/2-80, this.height/2-40, 160, 16, true, true, false, 128, false);
         this.components.add(this.inputField);

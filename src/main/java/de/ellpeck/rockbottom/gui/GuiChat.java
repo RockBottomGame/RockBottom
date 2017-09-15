@@ -11,8 +11,6 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import java.util.List;
@@ -58,8 +56,8 @@ public class GuiChat extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         this.inputField = new ComponentInputField(this, 5, this.height-21, this.width/2, 16, true, false, true, 512, true);
         this.components.add(this.inputField);

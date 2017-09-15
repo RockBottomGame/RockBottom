@@ -22,8 +22,8 @@ public class GuiGraphics extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
         Settings settings = game.getSettings();
         IAssetManager assetManager = game.getAssetManager();
 
@@ -46,8 +46,8 @@ public class GuiGraphics extends Gui{
             if(aBoolean){
                 settings.guiScale = (float)integer/100F;
                 game.getDataManager().savePropSettings(settings);
-                game.getGuiManager().setReInit();
                 game.calcScales();
+                game.getGuiManager().updateDimensions();
             }
         }), assetManager.localize(RockBottomAPI.createInternalRes("button.gui_scale"))));
         this.components.add(new ComponentSlider(this, 154, 40, 150, 16, settings.targetFps, 30, 256, ((integer, aBoolean) -> settings.targetFps = integer), assetManager.localize(RockBottomAPI.createInternalRes("button.target_fps"))){
@@ -76,7 +76,7 @@ public class GuiGraphics extends Gui{
             if(letGo){
                 settings.guiColor = color;
                 game.getDataManager().savePropSettings(settings);
-                game.getGuiManager().setReInit();
+                game.getGuiManager().updateDimensions();
             }
         }, false));
         this.components.add(new ComponentFancyButton(this, 99, 94, 16, 16, () -> {
@@ -84,7 +84,7 @@ public class GuiGraphics extends Gui{
                 if(aBoolean){
                     settings.guiColor = Settings.DEFAULT_GUI_COLOR;
                     game.getDataManager().savePropSettings(settings);
-                    game.getGuiManager().setReInit();
+                    game.getGuiManager().updateDimensions();
                 }
             }));
             return true;
@@ -98,7 +98,7 @@ public class GuiGraphics extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        manager.getFont().drawCenteredString(75, 62, manager.localize(RockBottomAPI.createInternalRes("info.gui_color")), 0.35F, false);
+        manager.getFont().drawCenteredString(this.x+75, this.y+62, manager.localize(RockBottomAPI.createInternalRes("info.gui_color")), 0.35F, false);
 
         super.render(game, manager, g);
     }

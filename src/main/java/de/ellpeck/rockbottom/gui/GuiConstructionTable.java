@@ -25,8 +25,8 @@ public class GuiConstructionTable extends GuiContainer{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         List<BasicRecipe> allRecipes = new ArrayList<>();
         allRecipes.addAll(RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES);

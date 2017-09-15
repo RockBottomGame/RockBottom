@@ -25,8 +25,8 @@ public class GuiSelectWorld extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         BoundBox box = new BoundBox(0, 0, 200, 128);
         ComponentScrollMenu menu = new ComponentScrollMenu(this, -8, 0, 128, 2, 5, box);

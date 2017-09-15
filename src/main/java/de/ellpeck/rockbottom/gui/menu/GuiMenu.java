@@ -20,8 +20,8 @@ public class GuiMenu extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
 
         this.components.add(new ComponentButton(this, 0, 0, this.width, 16, () -> {
             game.getGuiManager().openGui(new GuiSettings(this));

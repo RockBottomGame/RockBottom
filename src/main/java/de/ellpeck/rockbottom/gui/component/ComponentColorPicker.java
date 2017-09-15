@@ -56,8 +56,7 @@ public class ComponentColorPicker extends GuiComponent{
                     this.y = Math.max(0, Math.min((int)game.getHeightInGui()-this.height, this.y-(this.height/2-(this.height/8))));
 
                     this.isEnlarged = true;
-
-                    this.gui.prioritize(this);
+                    this.gui.sortComponents();
                 }
                 else if(!this.wasMouseDown){
                     this.consumer.accept(this.color, false);
@@ -100,6 +99,7 @@ public class ComponentColorPicker extends GuiComponent{
             this.height = this.defSizeY;
 
             this.isEnlarged = false;
+            this.gui.sortComponents();
         }
     }
 
@@ -130,5 +130,10 @@ public class ComponentColorPicker extends GuiComponent{
                 this.consumer.accept(this.color, false);
             }
         }
+    }
+
+    @Override
+    public int getPriority(){
+        return this.isEnlarged ? 1000 : super.getPriority();
     }
 }

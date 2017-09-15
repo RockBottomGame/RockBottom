@@ -15,8 +15,8 @@ import de.ellpeck.rockbottom.gui.GuiPlayerEditor;
 public class GuiMainMenu extends Gui{
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
         IAssetManager assetManager = game.getAssetManager();
         IGuiManager guiManager = game.getGuiManager();
 

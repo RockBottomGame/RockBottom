@@ -43,20 +43,22 @@ public class GuiManager implements IGuiManager{
     private static final IResourceName LOC_DEAD = RockBottomAPI.createInternalRes("info.dead");
     private static final IResourceName LOC_DEAD_INFO = RockBottomAPI.createInternalRes("info.dead.wait");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
-    private boolean shouldReInit;
     private MainMenuBackground background;
     private Gui gui;
 
     @Override
-    public void reInitSelf(IGameInstance game){
+    public void updateDimensions(){
         Log.debug("Re-initializing Gui Manager");
 
-        if(!this.onScreenComponents.isEmpty()){
-            this.onScreenComponents.clear();
+        IGameInstance game = RockBottomAPI.getGame();
+
+        if(this.gui != null){
+            this.gui.init(game);
+            this.gui.sortComponents();
         }
 
         if(game.getWorld() != null){
-            this.initInWorldComponents(game, game.getPlayer());
+            this.initOnScreenComponents(game, game.getPlayer());
             this.background = null;
         }
         else{
@@ -68,8 +70,11 @@ public class GuiManager implements IGuiManager{
         Log.debug("Successfully re-initialized Gui Manager");
     }
 
-    @Override
-    public void initInWorldComponents(IGameInstance game, AbstractEntityPlayer player){
+    private void initOnScreenComponents(IGameInstance game, AbstractEntityPlayer player){
+        if(!this.onScreenComponents.isEmpty()){
+            this.onScreenComponents.clear();
+        }
+
         double width = game.getWidthInGui();
 
         for(int i = 0; i < 8; i++){
@@ -81,22 +86,7 @@ public class GuiManager implements IGuiManager{
         this.onScreenComponents.add(new ComponentHealth(null, (int)game.getWidthInGui()-3-maxHealthParts*13, (int)game.getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
-    @Override
-    public void setReInit(){
-        this.shouldReInit = true;
-    }
-
     public void update(RockBottom game){
-        if(this.shouldReInit){
-            this.reInitSelf(game);
-
-            if(this.gui != null){
-                this.gui.initGui(game);
-            }
-
-            this.shouldReInit = false;
-        }
-
         game.getChatLog().updateNewMessages();
 
         if(game.getPlayer() == null || !game.getPlayer().isDead()){
@@ -213,7 +203,8 @@ public class GuiManager implements IGuiManager{
 
             if(this.gui != null){
                 this.gui.onOpened(game);
-                this.gui.initGui(game);
+                this.gui.init(game);
+                this.gui.sortComponents();
             }
 
             if(this.gui == null){

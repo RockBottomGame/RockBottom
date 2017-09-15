@@ -17,8 +17,8 @@ public class GuiSettings extends Gui{
     }
 
     @Override
-    public void initGui(IGameInstance game){
-        super.initGui(game);
+    public void init(IGameInstance game){
+        super.init(game);
         IAssetManager assetManager = game.getAssetManager();
         Settings settings = game.getSettings();
         IGuiManager guiManager = game.getGuiManager();
