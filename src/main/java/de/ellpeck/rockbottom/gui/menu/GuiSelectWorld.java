@@ -28,7 +28,7 @@ public class GuiSelectWorld extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        BoundBox box = new BoundBox(0, 0, 200, 128);
+        BoundBox box = new BoundBox(0, 0, 200, 128).add(this.getX(), this.getY());
         ComponentScrollMenu menu = new ComponentScrollMenu(this, -8, 0, 128, 2, 5, box);
         this.components.add(menu);
 

@@ -38,7 +38,7 @@ public class ComponentConstruction extends GuiComponent{
         this.consumer = consumer;
         this.shouldShowAll = shouldShowAll;
 
-        this.menu = new ComponentScrollMenu(gui, x, y, sizeY, buttonAmountX, buttonAmonutY, new BoundBox(0, 0, sizeX, sizeY).add(x, y));
+        this.menu = new ComponentScrollMenu(gui, x, y, sizeY, buttonAmountX, buttonAmonutY, new BoundBox(0, 0, sizeX, sizeY).add(gui.getX()+x, gui.getY()+y));
         this.gui.getComponents().add(this.menu);
 
         this.gui.getComponents().add(new ComponentInputField(gui, x, y-14, sizeX-14, 12, true, true, false, 40, true, (text) -> {

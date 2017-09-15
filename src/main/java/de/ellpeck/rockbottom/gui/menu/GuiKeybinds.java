@@ -26,7 +26,7 @@ public class GuiKeybinds extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        BoundBox box = new BoundBox(this.width/2-104, 0, this.width/2+98, this.height-26);
+        BoundBox box = new BoundBox(this.width/2-104, 0, this.width/2+98, this.height-26).add(this.getX(), this.getY());
         ComponentScrollMenu menu = new ComponentScrollMenu(this, this.width/2-112, 0, this.height-26, 2, 7, box);
         this.components.add(menu);
 
