@@ -122,6 +122,9 @@ public class WorldRenderer{
             }
         }
 
+        g.pushMatrix();
+        g.scale(game.getWorldScale(), game.getWorldScale());
+
         particles.render(game, manager, g, world, transX, transY);
 
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
@@ -154,6 +157,8 @@ public class WorldRenderer{
                 }
             }
         }
+
+        g.popMatrix();
     }
 
     private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY, float scale){

@@ -57,6 +57,10 @@ public class GuiManager implements IGuiManager{
             this.gui.sortComponents();
         }
 
+        if(!this.onScreenComponents.isEmpty()){
+            this.onScreenComponents.clear();
+        }
+
         if(game.getWorld() != null){
             this.initOnScreenComponents(game, game.getPlayer());
             this.background = null;
@@ -71,10 +75,6 @@ public class GuiManager implements IGuiManager{
     }
 
     private void initOnScreenComponents(IGameInstance game, AbstractEntityPlayer player){
-        if(!this.onScreenComponents.isEmpty()){
-            this.onScreenComponents.clear();
-        }
-
         double width = game.getWidthInGui();
 
         for(int i = 0; i < 8; i++){

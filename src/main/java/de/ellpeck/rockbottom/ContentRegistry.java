@@ -2,16 +2,27 @@ package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
-import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
+import de.ellpeck.rockbottom.world.gen.biome.BiomeGrassland;
+import de.ellpeck.rockbottom.world.gen.biome.BiomeSky;
+import de.ellpeck.rockbottom.world.gen.biome.BiomeUnderground;
 import de.ellpeck.rockbottom.world.tile.TileAir;
 
 public final class ContentRegistry{
 
     public static void init(){
         new TileAir().register();
+        new TileBasic(RockBottomAPI.createInternalRes("soil")).register();
+        new TileBasic(RockBottomAPI.createInternalRes("grass")).register();
+        new TileBasic(RockBottomAPI.createInternalRes("stone")).register();
 
-        new BiomeBasic(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 2, 1000).register();
+        new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 1, 1000).register();
+        new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 2, -2, 1000).register();
+        new BiomeUnderground(RockBottomAPI.createInternalRes("underground"), -1, Integer.MIN_VALUE, 1000).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("item"), EntityItem.class);
+
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenBiomes.class);
     }
 }

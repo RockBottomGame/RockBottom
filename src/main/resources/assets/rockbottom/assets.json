@@ -12,7 +12,8 @@
             "8": "/break/8.png"
         },
         "tiles": {
-
+            "soil": "/tiles/soil.png",
+            "stone": "/tiles/stone.png"
         },
         "items": {
 

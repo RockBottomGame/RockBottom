@@ -465,9 +465,6 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     protected void render(){
-        this.graphics.pushMatrix();
-        this.graphics.scale(this.worldScale, this.worldScale);
-
         if(this.world != null){
             this.worldRenderer.render(this, this.assetManager, this.particleManager, this.graphics, this.world, this.player, this.interactionManager);
 
@@ -475,8 +472,6 @@ public class RockBottom extends AbstractGame implements InputListener{
                 DebugRenderer.render(this, this.assetManager, this.world, this.player, this.graphics);
             }
         }
-
-        this.graphics.popMatrix();
 
         this.graphics.pushMatrix();
         this.graphics.scale(this.guiScale, this.guiScale);

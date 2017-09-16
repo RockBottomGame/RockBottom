@@ -147,7 +147,7 @@ public class Texture extends Image implements ITexture{
         x = (this.textureWidth < 0 ? offX-x : offX+x)%this.texture.getTextureWidth();
         y = (this.textureHeight < 0 ? offY-y : offY+y)%this.texture.getTextureHeight();
 
-        int offset = x+(y*this.texture.getTextureWidth())*(this.texture.hasAlpha() ? 4 : 3);
+        int offset = (x+(y*this.texture.getTextureWidth()))*(this.texture.hasAlpha() ? 4 : 3);
 
         if(this.texture.hasAlpha()){
             return Colors.rgb(this.translate(this.pixelData[offset]), this.translate(this.pixelData[offset+1]), this.translate(this.pixelData[offset+2]), this.translate(this.pixelData[offset+3]));

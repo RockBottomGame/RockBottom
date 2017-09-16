@@ -63,7 +63,7 @@ public class World implements IWorld{
                 Log.error("Couldn't initialize world generator with class "+genClass, e);
             }
         }
-        this.generators.sort(Comparator.comparingInt(IWorldGenerator:: getPriority));
+        this.generators.sort(Comparator.comparingInt(IWorldGenerator:: getPriority).reversed());
 
         Log.info("Added a total of "+this.generators.size()+" generators to world");
     }
