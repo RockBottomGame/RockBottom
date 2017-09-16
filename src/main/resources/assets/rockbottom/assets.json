@@ -13,6 +13,7 @@
         },
         "tiles": {
             "soil": "/tiles/soil.png",
+            "grass": "/tiles/grass.png",
             "stone": "/tiles/stone.png"
         },
         "items": {

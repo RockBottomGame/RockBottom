@@ -19,7 +19,16 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, Random rand){
-        //TODO Make this generate hills determined by height
-        return GameContent.TILE_SOIL.getDefState();
+        int height = (int)(noise.make2dNoise((double)(chunk.getX()+x)/50D, 0D)*10D);
+
+        if(chunk.getY()+y == height){
+            return GameContent.TILE_GRASS.getDefState();
+        }
+        else if(chunk.getY()+y < height){
+            return GameContent.TILE_SOIL.getDefState();
+        }
+        else{
+            return GameContent.TILE_AIR.getDefState();
+        }
     }
 }

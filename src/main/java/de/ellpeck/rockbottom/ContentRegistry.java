@@ -18,8 +18,8 @@ public final class ContentRegistry{
         new TileBasic(RockBottomAPI.createInternalRes("stone")).register();
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 1, 1000).register();
-        new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 2, -2, 1000).register();
-        new BiomeUnderground(RockBottomAPI.createInternalRes("underground"), -1, Integer.MIN_VALUE, 1000).register();
+        new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 0, -3, 1000).register();
+        new BiomeUnderground(RockBottomAPI.createInternalRes("underground"), -2, Integer.MIN_VALUE, 1000).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("item"), EntityItem.class);
 

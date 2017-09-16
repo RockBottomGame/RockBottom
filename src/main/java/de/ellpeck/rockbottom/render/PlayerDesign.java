@@ -232,6 +232,10 @@ public class PlayerDesign implements IPlayerDesign{
     @Override
     public void setName(String name){
         this.name = name;
+
+        if("Jake".equals(this.name)){
+            this.name += " <3";
+        }
     }
 
     @Override
