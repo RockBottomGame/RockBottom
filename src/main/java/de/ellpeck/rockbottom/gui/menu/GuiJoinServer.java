@@ -10,6 +10,8 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketJoin;
 import org.newdawn.slick.util.Log;
 
+import java.util.logging.Level;
+
 public class GuiJoinServer extends Gui{
 
     private ComponentInputField inputField;
@@ -37,12 +39,12 @@ public class GuiJoinServer extends Gui{
                     RockBottomAPI.getNet().init(separated[0], port, false);
                 }
 
-                Log.info("Attempting to join server");
+                RockBottomAPI.logger().info("Attempting to join server");
                 RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
                 return true;
             }
             catch(Exception e){
-                Log.error("Couldn't connect to server", e);
+                RockBottomAPI.logger().log(Level.WARNING,"Couldn't connect to server", e);
             }
             return false;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.connect"))));

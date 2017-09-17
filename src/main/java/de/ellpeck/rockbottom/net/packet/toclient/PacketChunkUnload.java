@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -40,7 +41,7 @@ public class PacketChunkUnload implements IPacket{
         game.scheduleAction(() -> {
             IWorld world = game.getWorld();
             if(world != null){
-                Log.debug("Unloading chunk at "+this.gridX+", "+this.gridY);
+                RockBottomAPI.logger().config("Unloading chunk at "+this.gridX+", "+this.gridY);
 
                 if(world.isChunkLoaded(this.gridX, this.gridY)){
                     IChunk chunk = world.getChunkFromGridCoords(this.gridX, this.gridY);

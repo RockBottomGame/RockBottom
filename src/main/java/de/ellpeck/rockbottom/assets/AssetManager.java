@@ -30,7 +30,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.opengl.CursorLoader;
-import org.newdawn.slick.util.Log;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,6 +39,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 public class AssetManager implements IAssetManager{
 
@@ -59,11 +59,11 @@ public class AssetManager implements IAssetManager{
 
     public void create(RockBottom game){
         try{
-            Log.info("Loading resources...");
+            RockBottomAPI.logger().info("Loading resources...");
             this.loadAssets();
         }
         catch(Exception e){
-            Log.error("Exception loading resources! ", e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Exception loading resources! ", e);
         }
 
         ImageBuffer buffer = new ImageBuffer(2, 2);
@@ -79,10 +79,10 @@ public class AssetManager implements IAssetManager{
         this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0)))));
         this.missingAnimation = new AssetAnimation(new Animation(this.missingTexture.get(), 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F})))));
 
-        Log.info("Loaded "+this.getAllOfType(AssetTexture.class).size()+" texture resources!");
-        Log.info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");
-        Log.info("Loaded "+this.getAllOfType(AssetAnimation.class).size()+" animations!");
-        Log.info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
+        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(AssetTexture.class).size()+" texture resources!");
+        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");
+        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(AssetAnimation.class).size()+" animations!");
+        RockBottomAPI.logger().info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
 
         this.defaultLocale = this.getLocale(RockBottomAPI.createInternalRes("us_english"));
 
@@ -115,7 +115,7 @@ public class AssetManager implements IAssetManager{
             }
         }
         catch(Exception e){
-            Log.error("Could not set mouse cursor!", e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Could not set mouse cursor!", e);
         }
     }
 
@@ -158,17 +158,17 @@ public class AssetManager implements IAssetManager{
                         }
                     }
                     catch(Exception e){
-                        Log.error("Couldn't read assets.json from mod "+mod.getDisplayName(), e);
+                        RockBottomAPI.logger().log(Level.SEVERE, "Couldn't read assets.json from mod "+mod.getDisplayName(), e);
                     }
                 }
                 else{
-                    Log.error("Mod "+mod.getDisplayName()+" is missing assets.json file at path "+path);
+                    RockBottomAPI.logger().severe("Mod "+mod.getDisplayName()+" is missing assets.json file at path "+path);
                 }
 
-                Log.info("Loaded "+(this.assets.size()-prevAmount)+" assets from assets.json file for mod "+mod.getDisplayName()+" at path "+path);
+                RockBottomAPI.logger().info("Loaded "+(this.assets.size()-prevAmount)+" assets from assets.json file for mod "+mod.getDisplayName()+" at path "+path);
             }
             else{
-                Log.info("Skipping mod "+mod.getDisplayName()+" that doesn't have a resource location");
+                RockBottomAPI.logger().info("Skipping mod "+mod.getDisplayName()+" that doesn't have a resource location");
             }
         }
     }
@@ -190,7 +190,7 @@ public class AssetManager implements IAssetManager{
                         ITexture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
                         this.assets.put(res, new AssetTexture(texture));
 
-                        Log.debug("Loaded subtexture "+res+" from texture "+path+file+" for mod "+mod.getDisplayName());
+                        RockBottomAPI.logger().config("Loaded subtexture "+res+" from texture "+path+file+" for mod "+mod.getDisplayName());
                     }
                 }
             }
@@ -208,7 +208,7 @@ public class AssetManager implements IAssetManager{
                         AssetTexture texture = new AssetTexture(new Texture(getResource(resPath), res.toString(), false));
                         this.assets.put(res, texture);
 
-                        Log.debug("Loaded texture "+res+" from "+resPath+" for mod "+mod.getDisplayName());
+                        RockBottomAPI.logger().config("Loaded texture "+res+" from "+resPath+" for mod "+mod.getDisplayName());
                     }
                     else if("loc".equals(type)){
                         String resPath = path+element.getAsString();
@@ -224,7 +224,7 @@ public class AssetManager implements IAssetManager{
 
                         if(!merged){
                             this.assets.put(res, new AssetLocale(locale));
-                            Log.debug("Loaded locale "+res+" from "+resPath+" for mod "+mod.getDisplayName());
+                            RockBottomAPI.logger().config("Loaded locale "+res+" from "+resPath+" for mod "+mod.getDisplayName());
                         }
                     }
                     else if("font".equals(type)){
@@ -235,7 +235,7 @@ public class AssetManager implements IAssetManager{
                         AssetFont font = new AssetFont(Font.fromStream(new Texture(getResource(path+texture), res.toString(), false), getResource(path+info), res.toString()));
                         this.assets.put(res, font);
 
-                        Log.debug("Loaded font "+res+" from "+path+info+" and "+path+texture+" for mod "+mod.getDisplayName());
+                        RockBottomAPI.logger().config("Loaded font "+res+" from "+path+info+" and "+path+texture+" for mod "+mod.getDisplayName());
                     }
                     else if("anim".equals(type)){
                         JsonArray array = element.getAsJsonArray();
@@ -245,10 +245,10 @@ public class AssetManager implements IAssetManager{
                         AssetAnimation animation = new AssetAnimation(Animation.fromStream(new Texture(getResource(path+texture), res.toString(), false), getResource(path+anim)));
                         this.assets.put(res, animation);
 
-                        Log.debug("Loaded animation "+res+" from "+path+anim+" and "+path+texture+" for mod "+mod.getDisplayName());
+                        RockBottomAPI.logger().config("Loaded animation "+res+" from "+path+anim+" and "+path+texture+" for mod "+mod.getDisplayName());
                     }
                     else{
-                        Log.warn("Found unknown resource type "+type+" from mod "+mod.getDisplayName());
+                        RockBottomAPI.logger().warning("Found unknown resource type "+type+" from mod "+mod.getDisplayName());
                     }
                 }
                 else if(element.isJsonObject()){
@@ -260,7 +260,7 @@ public class AssetManager implements IAssetManager{
             }
         }
         catch(Exception e){
-            Log.error("Couldn't load resource "+name+" for mod "+mod.getDisplayName(), e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't load resource "+name+" for mod "+mod.getDisplayName(), e);
         }
     }
 
@@ -272,7 +272,7 @@ public class AssetManager implements IAssetManager{
             this.assets.put(path, fallback);
             asset = fallback;
 
-            Log.warn("Resource with name "+path+" is missing!");
+            RockBottomAPI.logger().warning("Resource with name "+path+" is missing!");
         }
 
         return (T)asset.get();

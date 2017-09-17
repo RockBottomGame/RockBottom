@@ -48,7 +48,7 @@ public class GuiManager implements IGuiManager{
 
     @Override
     public void updateDimensions(){
-        Log.debug("Re-initializing Gui Manager");
+        RockBottomAPI.logger().config("Re-initializing Gui Manager");
 
         IGameInstance game = RockBottomAPI.getGame();
 
@@ -71,7 +71,7 @@ public class GuiManager implements IGuiManager{
             }
         }
 
-        Log.debug("Successfully re-initialized Gui Manager");
+        RockBottomAPI.logger().config("Successfully re-initialized Gui Manager");
     }
 
     private void initOnScreenComponents(IGameInstance game, AbstractEntityPlayer player){
@@ -208,10 +208,10 @@ public class GuiManager implements IGuiManager{
             }
 
             if(this.gui == null){
-                Log.debug("Closed Gui");
+                RockBottomAPI.logger().config("Closed Gui");
             }
             else{
-                Log.debug("Opened Gui "+this.gui.getName()+" with "+this.gui.getComponents().size()+" components");
+                RockBottomAPI.logger().config("Opened Gui "+this.gui.getName()+" with "+this.gui.getComponents().size()+" components");
             }
         }
     }

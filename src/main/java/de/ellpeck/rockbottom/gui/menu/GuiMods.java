@@ -12,10 +12,10 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
-import org.newdawn.slick.util.Log;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class GuiMods extends Gui{
 
@@ -48,7 +48,7 @@ public class GuiMods extends Gui{
                 return true;
             }
             catch(IOException e){
-                Log.error("Couldn't open mods folder", e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't open mods folder", e);
                 return false;
             }
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
@@ -62,7 +62,7 @@ public class GuiMods extends Gui{
                     return true;
                 }
                 catch(Exception e){
-                    Log.error("Failed initializing mod gui for mod "+this.selectedMod.getDisplayName(), e);
+                    RockBottomAPI.logger().log(Level.WARNING, "Failed initializing mod gui for mod "+this.selectedMod.getDisplayName(), e);
                 }
             }
             return false;

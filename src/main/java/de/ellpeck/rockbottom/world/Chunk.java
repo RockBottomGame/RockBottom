@@ -75,7 +75,7 @@ public class Chunk implements IChunk{
 
     public void generate(Random rand){
         if(isGeneratingChunk){
-            Log.warn("CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT "+this.gridX+", "+this.gridY+"! THIS SHOULD NOT HAPPEN!");
+            RockBottomAPI.logger().warning("CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT "+this.gridX+", "+this.gridY+"! THIS SHOULD NOT HAPPEN!");
         }
 
         isGeneratingChunk = true;
@@ -132,7 +132,7 @@ public class Chunk implements IChunk{
                             if(!this.playersInRange.contains(player)){
                                 player.sendPacket(new PacketEntityChange(entity, false));
 
-                                Log.debug("Adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk in range of player with id "+player.getUniqueId());
+                                RockBottomAPI.logger().config("Adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk in range of player with id "+player.getUniqueId());
                             }
                         }
                     }
@@ -307,7 +307,7 @@ public class Chunk implements IChunk{
     @Override
     public void addEntity(Entity entity){
         if(this.entityLookup.containsKey(entity.getUniqueId())){
-            Log.error("Tried adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk at "+this.gridX+", "+this.gridY+" that already contained it!");
+            RockBottomAPI.logger().warning("Tried adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk at "+this.gridX+", "+this.gridY+" that already contained it!");
         }
         else{
             this.entities.add(entity);
@@ -671,14 +671,14 @@ public class Chunk implements IChunk{
                                 this.setStateInner(layer, x, y, tile);
                             }
                             else{
-                                Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[counter]+" is missing!");
+                                RockBottomAPI.logger().warning("Could not load tile at "+x+" "+y+" because id "+ids[counter]+" is missing!");
                             }
                             counter++;
                         }
                     }
                 }
                 else{
-                    Log.warn("Could not load tile layer with name "+res+" as it is missing!");
+                    RockBottomAPI.logger().warning("Could not load tile layer with name "+res+" as it is missing!");
                 }
             }
 
@@ -691,7 +691,7 @@ public class Chunk implements IChunk{
                         this.setBiomeInner(x, y, biome);
                     }
                     else{
-                        Log.warn("Could not load biome at "+x+" "+y+" because id "+biomes[biomeCounter]+" is missing!");
+                        RockBottomAPI.logger().warning("Could not load biome at "+x+" "+y+" because id "+biomes[biomeCounter]+" is missing!");
                     }
                     biomeCounter++;
                 }
@@ -720,7 +720,7 @@ public class Chunk implements IChunk{
                     this.addEntity(entity);
                 }
                 else{
-                    Log.error("Couldn't load entity with name "+name+" and data "+entitySet);
+                    RockBottomAPI.logger().warning("Couldn't load entity with name "+name+" and data "+entitySet);
                 }
             }
 
@@ -735,7 +735,7 @@ public class Chunk implements IChunk{
                     tile.load(tileSet, false);
                 }
                 else{
-                    Log.error("Couldn't load data of tile entity at "+x+", "+y+" because it is missing!");
+                    RockBottomAPI.logger().warning("Couldn't load data of tile entity at "+x+", "+y+" because it is missing!");
                 }
             }
 
@@ -757,11 +757,11 @@ public class Chunk implements IChunk{
                         this.scheduleUpdate(x, y, layer, time);
                     }
                     else{
-                        Log.warn("Could not load scheduled update at "+x+" "+y+" with time "+time+" because layer with name "+res+" is missing!");
+                        RockBottomAPI.logger().warning("Could not load scheduled update at "+x+" "+y+" with time "+time+" because layer with name "+res+" is missing!");
                     }
                 }
                 else{
-                    Log.warn("Could not load scheduled update at "+x+" "+y+" with time "+time+" because tile with id "+id+" is missing!");
+                    RockBottomAPI.logger().warning("Could not load scheduled update at "+x+" "+y+" with time "+time+" because tile with id "+id+" is missing!");
                 }
             }
         }

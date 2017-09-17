@@ -14,14 +14,18 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.init.RockBottom;
+import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ChatLog implements IChatLog{
+
+    private static Logger chatLogger = Logging.createLogger("Chat");
 
     private final List<ChatComponent> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
@@ -34,7 +38,7 @@ public class ChatLog implements IChatLog{
             this.newMessageCounter.add(0, 400);
         }
 
-        Log.info("Chat: "+message.getUnformattedWithChildren());
+        chatLogger.info(message.getUnformattedWithChildren());
     }
 
     @Override
@@ -67,7 +71,7 @@ public class ChatLog implements IChatLog{
                         this.sendMessageTo(sender, cmdFeedback);
                     }
 
-                    Log.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
+                    chatLogger.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
                 }
                 else{
                     this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat()+"["+sender.getName()+"] &4"+message));

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -90,7 +91,7 @@ public class PacketChunk implements IPacket{
     public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             if(game.getWorld() != null){
-                Log.debug("Receiving chunk at "+this.chunkX+", "+this.chunkY);
+                RockBottomAPI.logger().config("Receiving chunk at "+this.chunkX+", "+this.chunkY);
 
                 IChunk chunk = game.getWorld().getChunkFromGridCoords(this.chunkX, this.chunkY);
                 chunk.setGenerating(true);

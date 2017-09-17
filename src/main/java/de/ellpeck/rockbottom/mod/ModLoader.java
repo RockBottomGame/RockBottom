@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
 
 public class ModLoader implements IModLoader{
 
@@ -36,12 +37,12 @@ public class ModLoader implements IModLoader{
 
         if(!dir.exists()){
             dir.mkdirs();
-            Log.info("Mods folder not found, creating at "+dir);
+            RockBottomAPI.logger().info("Mods folder not found, creating at "+dir);
         }
         else{
             int amount = 0;
 
-            Log.info("Loading jar mods from mods folder "+dir);
+            RockBottomAPI.logger().info("Loading jar mods from mods folder "+dir);
 
             for(File file : dir.listFiles()){
                 String name = file.getName();
@@ -66,34 +67,34 @@ public class ModLoader implements IModLoader{
                         }
 
                         if(!foundMod){
-                            Log.warn("Jar file "+file+" doesn't contain a valid mod");
+                            RockBottomAPI.logger().warning("Jar file "+file+" doesn't contain a valid mod");
                         }
                     }
                     catch(Exception e){
-                        Log.error("Loading jar mod from file "+file+" failed", e);
+                        RockBottomAPI.logger().log(Level.WARNING,"Loading jar mod from file "+file+" failed", e);
                     }
                 }
                 else{
-                    Log.warn("Found non-jar file "+file+" in mods folder "+dir);
+                    RockBottomAPI.logger().warning("Found non-jar file "+file+" in mods folder "+dir);
                 }
             }
 
-            Log.info("Loaded a total of "+amount+" jar mods");
+            RockBottomAPI.logger().info("Loaded a total of "+amount+" jar mods");
         }
     }
 
     @Override
     public void loadUnpackedMods(File dir){
         if(dir.exists()){
-            Log.info("Loading unpacked mods from folder "+dir);
+            RockBottomAPI.logger().info("Loading unpacked mods from folder "+dir);
 
             MutableInt amount = new MutableInt(0);
             this.recursiveLoad(dir, dir.listFiles(), amount);
 
-            Log.info("Loaded a total of "+amount.get()+" unpacked mods");
+            RockBottomAPI.logger().info("Loaded a total of "+amount.get()+" unpacked mods");
         }
         else{
-            Log.info("Not loading unpacked mods from folder "+dir+" as it doesn't exist");
+            RockBottomAPI.logger().info("Not loading unpacked mods from folder "+dir+" as it doesn't exist");
         }
     }
 
@@ -113,11 +114,11 @@ public class ModLoader implements IModLoader{
                         }
                     }
                     catch(Exception e){
-                        Log.error("Loading unpacked mod from file "+file+" failed", e);
+                        RockBottomAPI.logger().log(Level.WARNING, "Loading unpacked mod from file "+file+" failed", e);
                     }
                 }
                 else{
-                    Log.warn("Found non-class file "+file+" in unpacked mods folder "+original);
+                    RockBottomAPI.logger().warning("Found non-class file "+file+" in unpacked mods folder "+original);
                 }
             }
         }
@@ -137,22 +138,22 @@ public class ModLoader implements IModLoader{
                         if(this.getMod(id) == null){
                             if(this.modSettings.isDisabled(id)){
                                 this.disabledMods.add(instance);
-                                Log.info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
+                                RockBottomAPI.logger().info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
                             }
                             else{
                                 this.activeMods.add(instance);
-                                Log.info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
+                                RockBottomAPI.logger().info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
                             }
 
                             this.allMods.add(instance);
                             return true;
                         }
                         else{
-                            Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
+                            RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
                         }
                     }
                     else{
-                        Log.error("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
+                        RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
                     }
                 }
             }
@@ -162,22 +163,22 @@ public class ModLoader implements IModLoader{
 
     @Override
     public void sortMods(){
-        Log.info("Sorting mods");
+        RockBottomAPI.logger().info("Sorting mods");
 
         Comparator comp = Comparator.comparingInt(IMod:: getSortingPriority).reversed();
         this.allMods.sort(comp);
         this.activeMods.sort(comp);
         this.disabledMods.sort(comp);
 
-        Log.info("----- Loaded Mods -----");
+        RockBottomAPI.logger().info("----- Loaded Mods -----");
         for(IMod mod : this.allMods){
             String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")";
             if(this.modSettings.isDisabled(mod.getId())){
                 s += " [DISABLED]";
             }
-            Log.info(s);
+            RockBottomAPI.logger().info(s);
         }
-        Log.info("-----------------------");
+        RockBottomAPI.logger().info("-----------------------");
     }
 
     @Override

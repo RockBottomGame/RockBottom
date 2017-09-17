@@ -140,10 +140,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
 
             if(this.currentContainer == null){
-                Log.debug("Closed Container for player "+this.getName()+" with unique id "+this.getUniqueId());
+                RockBottomAPI.logger().config("Closed Container for player "+this.getName()+" with unique id "+this.getUniqueId());
             }
             else{
-                Log.debug("Opened Container "+this.currentContainer.getName()+" for player "+this.getName()+" with unique id "+this.getUniqueId());
+                RockBottomAPI.logger().config("Opened Container "+this.currentContainer.getName()+" for player "+this.getName()+" with unique id "+this.getUniqueId());
             }
             return true;
         }
@@ -312,7 +312,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
             }
 
-            Log.debug("Player "+this.getName()+" with id "+this.getUniqueId()+" leaving range of "+unload+" chunks and loading "+newLoad+" new ones");
+            RockBottomAPI.logger().config("Player "+this.getName()+" with id "+this.getUniqueId()+" leaving range of "+unload+" chunks and loading "+newLoad+" new ones");
 
             for(IChunk chunk : nowLoaded){
                 List<AbstractEntityPlayer> inRange = chunk.getPlayersInRange();
@@ -350,7 +350,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 permissions.setCommandLevel(this, level);
                 RockBottomAPI.getGame().getDataManager().savePropSettings(permissions);
 
-                Log.info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+"!");
+                RockBottomAPI.logger().info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+"!");
             }
 
             return level;

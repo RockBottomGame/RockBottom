@@ -20,14 +20,16 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.render.WorldRenderer;
-import org.newdawn.slick.util.Log;
 
 import java.io.*;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ApiHandler implements IApiHandler{
 
@@ -44,7 +46,7 @@ public class ApiHandler implements IApiHandler{
             stream.close();
         }
         catch(Exception e){
-            Log.error("Exception saving a data set to disk!", e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Exception saving a data set to disk!", e);
         }
     }
 
@@ -62,7 +64,7 @@ public class ApiHandler implements IApiHandler{
             }
         }
         catch(Exception e){
-            Log.error("Exception loading a data set from disk!", e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Exception loading a data set from disk!", e);
         }
     }
 
@@ -349,6 +351,16 @@ public class ApiHandler implements IApiHandler{
             }
         }
         return false;
+    }
+
+    @Override
+    public Logger createLogger(String name){
+        return Logging.createLogger(name);
+    }
+
+    @Override
+    public Logger logger(){
+        return Logging.mainLogger;
     }
 
     private boolean setToInv(ItemInstance inst, ComponentSlot slot){

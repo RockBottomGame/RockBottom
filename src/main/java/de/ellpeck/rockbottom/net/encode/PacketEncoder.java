@@ -7,6 +7,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.newdawn.slick.util.Log;
 
+import java.util.logging.Level;
+
 public class PacketEncoder extends MessageToByteEncoder<IPacket>{
 
     @Override
@@ -20,11 +22,11 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket>{
                 packet.toBuffer(buf);
             }
             catch(Exception e){
-                Log.error("Couldn't write packet "+packet.getClass()+" with id "+id+" to buffer", e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't write packet "+packet.getClass()+" with id "+id+" to buffer", e);
             }
         }
         else{
-            Log.error("Found unregistered packet "+packet.getClass());
+            RockBottomAPI.logger().warning("Found unregistered packet "+packet.getClass());
         }
     }
 }

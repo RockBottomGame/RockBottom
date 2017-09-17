@@ -21,13 +21,13 @@ import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDropItem;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class DataManager implements IDataManager{
 
@@ -110,7 +110,7 @@ public class DataManager implements IDataManager{
                 this.gameInfo.addUniqueId("game_id", game.getUniqueId());
                 this.gameInfo.write(this.gameDataFile);
 
-                Log.info("Created new game unique id "+game.getUniqueId()+"!");
+                RockBottomAPI.logger().info("Created new game unique id "+game.getUniqueId()+"!");
             }
         }
     }
@@ -177,18 +177,18 @@ public class DataManager implements IDataManager{
                 loaded = true;
             }
             catch(Exception e){
-                Log.error("Couldn't load "+settings.getName(), e);
+                RockBottomAPI.logger().log(Level.SEVERE, "Couldn't load "+settings.getName(), e);
             }
         }
 
         settings.load(props);
 
         if(!loaded){
-            Log.info("Creating "+settings.getName()+" from default");
+            RockBottomAPI.logger().info("Creating "+settings.getName()+" from default");
             this.savePropSettings(settings);
         }
         else{
-            Log.info("Loaded "+settings.getName());
+            RockBottomAPI.logger().info("Loaded "+settings.getName());
         }
     }
 
@@ -208,7 +208,7 @@ public class DataManager implements IDataManager{
             props.store(new FileOutputStream(file), null);
         }
         catch(Exception e){
-            Log.error("Couldn't save "+settings.getName(), e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't save "+settings.getName(), e);
         }
     }
 }

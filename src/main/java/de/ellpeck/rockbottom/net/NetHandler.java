@@ -22,16 +22,16 @@ public final class NetHandler implements INetHandler{
     @Override
     public void init(String ip, int port, boolean isServer) throws Exception{
         if(this.isActive()){
-            Log.error("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+this.client+", Server: "+this.server);
+            RockBottomAPI.logger().severe("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+this.client+", Server: "+this.server);
         }
         else{
             if(isServer){
                 this.server = new Server(ip, port);
-                Log.info("Started server with ip "+ip+" on port "+port);
+                RockBottomAPI.logger().info("Started server with ip "+ip+" on port "+port);
             }
             else{
                 this.client = new Client(ip, port);
-                Log.info("Started client with ip "+ip+" on port "+port);
+                RockBottomAPI.logger().info("Started client with ip "+ip+" on port "+port);
             }
         }
     }
@@ -42,14 +42,14 @@ public final class NetHandler implements INetHandler{
             this.client.shutdown();
             this.client = null;
 
-            Log.info("Shut down client!");
+            RockBottomAPI.logger().info("Shut down client!");
         }
 
         if(this.isServer()){
             this.server.shutdown();
             this.server = null;
 
-            Log.info("Shut down server!");
+            RockBottomAPI.logger().info("Shut down server!");
         }
     }
 

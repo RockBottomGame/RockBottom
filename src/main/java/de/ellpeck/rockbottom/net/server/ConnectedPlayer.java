@@ -44,7 +44,7 @@ public class ConnectedPlayer extends EntityPlayer{
         game.getWorld().savePlayer(player);
         game.getWorld().removeEntity(player);
 
-        Log.info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
+        RockBottomAPI.logger().info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
 
         RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.disconnect"), player.getName()));
     }
@@ -82,7 +82,7 @@ public class ConnectedPlayer extends EntityPlayer{
                 this.fallStartY = 0;
 
                 this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
-                Log.warn("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
+                RockBottomAPI.logger().warning("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
             }
             else{
                 this.lastCalcX = this.x;
@@ -136,7 +136,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
     @Override
     public void onChunkLoaded(IChunk chunk){
-        Log.debug("Sending chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
+        RockBottomAPI.logger().config("Sending chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunk(chunk));
 
@@ -153,7 +153,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
     @Override
     public void onChunkUnloaded(IChunk chunk){
-        Log.debug("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
+        RockBottomAPI.logger().config("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
     }

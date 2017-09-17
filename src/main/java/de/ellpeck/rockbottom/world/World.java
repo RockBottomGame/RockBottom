@@ -37,6 +37,7 @@ import org.newdawn.slick.util.Log;
 import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 public class World implements IWorld{
 
@@ -64,12 +65,12 @@ public class World implements IWorld{
                 this.generators.add(generator);
             }
             catch(InstantiationException | IllegalAccessException e){
-                Log.error("Couldn't initialize world generator with class "+genClass, e);
+                RockBottomAPI.logger().log(Level.WARNING,"Couldn't initialize world generator with class "+genClass, e);
             }
         }
         this.generators.sort(Comparator.comparingInt(IWorldGenerator:: getPriority).reversed());
 
-        Log.info("Added a total of "+this.generators.size()+" generators to world");
+        RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world");
     }
 
     public void initFiles(File worldDirectory){
@@ -125,7 +126,7 @@ public class World implements IWorld{
                 this.players.add(player);
             }
             else{
-                Log.error("Tried adding player "+player.getName()+" with id "+player.getUniqueId()+" to world that already contained it!");
+                RockBottomAPI.logger().warning("Tried adding player "+player.getName()+" with id "+player.getUniqueId()+" to world that already contained it!");
             }
         }
 
@@ -470,7 +471,7 @@ public class World implements IWorld{
 
         if(amount > 0){
             long time = Util.getTimeMillis()-timeStarted;
-            Log.info("Saved "+amount+" chunks, took "+time+"ms.");
+            RockBottomAPI.logger().info("Saved "+amount+" chunks, took "+time+"ms.");
 
             IGameInstance game = RockBottomAPI.getGame();
             if(!game.isDedicatedServer()){
@@ -533,11 +534,11 @@ public class World implements IWorld{
             set.read(file);
 
             player.load(set);
-            Log.info("Loading player "+design.getName()+" with unique id "+id+"!");
+            RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+"!");
         }
         else{
             player.resetAndSpawn(RockBottomAPI.getGame());
-            Log.info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
+            RockBottomAPI.logger().info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
         }
 
         RockBottomAPI.getEventHandler().fireEvent(new PlayerJoinWorldEvent(player, channel != null));
@@ -607,11 +608,11 @@ public class World implements IWorld{
             this.causeLightUpdate(x, y, recurseCount);
 
             if(recurseCount.get() >= 100){
-                Log.debug("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
+                RockBottomAPI.logger().config("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
             }
         }
         catch(StackOverflowError e){
-            Log.error("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls", e);
+            RockBottomAPI.logger().severe("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls");
         }
     }
 

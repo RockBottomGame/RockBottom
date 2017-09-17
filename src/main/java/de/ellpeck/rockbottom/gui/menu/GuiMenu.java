@@ -8,7 +8,8 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import org.newdawn.slick.util.Log;
+
+import java.util.logging.Level;
 
 public class GuiMenu extends Gui{
 
@@ -45,7 +46,7 @@ public class GuiMenu extends Gui{
                         return true;
                     }
                     catch(Exception e){
-                        Log.error("Couldn't start server", e);
+                        RockBottomAPI.logger().log(Level.WARNING, "Couldn't start server", e);
                     }
                 }
                 return false;

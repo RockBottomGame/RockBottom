@@ -16,16 +16,14 @@ import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class RockBottomServer extends AbstractGame{
 
@@ -60,7 +58,7 @@ public class RockBottomServer extends AbstractGame{
 
             @Override
             public void sendMessageTo(IChatLog chat, ChatComponent message){
-                Log.info(message.getUnformattedWithChildren());
+                RockBottomAPI.logger().info(message.getUnformattedWithChildren());
             }
         };
 
@@ -91,7 +89,7 @@ public class RockBottomServer extends AbstractGame{
             RockBottomAPI.getNet().init(null, Main.port, true);
         }
         catch(Exception e){
-            Log.error("Couldn't start server", e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't start server", e);
             this.exit();
         }
     }

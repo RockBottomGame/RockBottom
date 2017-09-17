@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.event.Event;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
@@ -20,7 +21,7 @@ public class EventHandler implements IEventHandler{
         List<IEventListener> listeners = this.registry.computeIfAbsent(type, k -> new ArrayList<>());
         listeners.add(listener);
 
-        Log.info("Registered event listener "+listener+" for event "+type);
+        RockBottomAPI.logger().info("Registered event listener "+listener+" for event "+type);
     }
 
     @Override
@@ -34,10 +35,10 @@ public class EventHandler implements IEventHandler{
                 this.registry.remove(type);
             }
 
-            Log.info("Unregistered event listener "+listener+" for event "+type);
+            RockBottomAPI.logger().info("Unregistered event listener "+listener+" for event "+type);
         }
         else{
-            Log.warn("Couldn't unregister event listener "+listener+" for event "+type+" as it wasn't registered");
+            RockBottomAPI.logger().warning("Couldn't unregister event listener "+listener+" for event "+type+" as it wasn't registered");
         }
     }
 
@@ -46,10 +47,10 @@ public class EventHandler implements IEventHandler{
         if(this.registry.containsKey(type)){
             this.registry.remove(type);
 
-            Log.info("Unregistered all listeners for event "+type);
+            RockBottomAPI.logger().info("Unregistered all listeners for event "+type);
         }
         else{
-            Log.warn("Couldn't unregister all events for type "+type+" as there were none registered");
+            RockBottomAPI.logger().warning("Couldn't unregister all events for type "+type+" as there were none registered");
         }
     }
 

@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.NetUtil;
@@ -51,11 +52,11 @@ public class PacketInitialServerData implements IPacket{
     public void handle(IGameInstance game, ChannelHandlerContext context){
         game.scheduleAction(() -> {
             if(game.getWorld() == null){
-                Log.info("Received initial server data, joining world");
+                RockBottomAPI.logger().info("Received initial server data, joining world");
                 game.joinWorld(this.playerSet, this.info, this.regInfo);
             }
             else{
-                Log.error("Received initial server data while already being in a world!");
+                RockBottomAPI.logger().warning("Received initial server data while already being in a world!");
                 context.channel().disconnect();
             }
 

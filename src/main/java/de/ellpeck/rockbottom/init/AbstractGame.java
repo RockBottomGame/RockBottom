@@ -100,13 +100,13 @@ public abstract class AbstractGame implements IGameInstance{
                     Thread.sleep(1);
                 }
                 catch(InterruptedException e){
-                    Log.debug("Failed to sleep in main game loop");
+                    RockBottomAPI.logger().fine("Failed to sleep in main game loop");
                 }
             }
         }
         finally{
             game.shutdown();
-            Log.info("Game shutting down");
+            RockBottomAPI.logger().info("Game shutting down");
         }
     }
 
@@ -160,10 +160,10 @@ public abstract class AbstractGame implements IGameInstance{
         modLoader.postInit();
         modLoader.postPostInit();
 
-        Log.info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
-        Log.info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
-        Log.info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
-        Log.info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
 
         this.quitWorld();
     }
@@ -187,7 +187,7 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public void startWorld(File worldFile, WorldInfo info){
-        Log.info("Starting world with file "+worldFile);
+        RockBottomAPI.logger().info("Starting world with file "+worldFile);
 
         NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), Integer.MAX_VALUE);
         this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_STATE_REGISTRY);
@@ -217,7 +217,7 @@ public abstract class AbstractGame implements IGameInstance{
         RockBottomAPI.getNet().shutdown();
 
         if(this.world != null){
-            Log.info("Quitting current world");
+            RockBottomAPI.logger().info("Quitting current world");
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldUnloadEvent(this.world));
             this.world = null;

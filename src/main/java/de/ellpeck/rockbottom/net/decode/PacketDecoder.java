@@ -5,9 +5,9 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import org.newdawn.slick.util.Log;
 
 import java.util.List;
+import java.util.logging.Level;
 
 public class PacketDecoder extends ByteToMessageDecoder{
 
@@ -23,14 +23,14 @@ public class PacketDecoder extends ByteToMessageDecoder{
                 packet.fromBuffer(buf);
             }
             catch(Exception e){
-                Log.error("Couldn't read packet "+packetClass+" with id "+id+" from buffer", e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't read packet "+packetClass+" with id "+id+" from buffer", e);
                 buf.clear();
             }
 
             out.add(packet);
         }
         else{
-            Log.error("Found unknown packet with id "+id);
+            RockBottomAPI.logger().log(Level.WARNING, "Found unknown packet with id "+id);
             buf.clear();
         }
     }

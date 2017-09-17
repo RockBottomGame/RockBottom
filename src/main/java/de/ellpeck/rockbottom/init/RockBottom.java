@@ -39,7 +39,10 @@ import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.PixelFormat;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.InputListener;
 import org.newdawn.slick.Music;
@@ -48,7 +51,6 @@ import org.newdawn.slick.opengl.ImageIOImageData;
 import org.newdawn.slick.opengl.LoadableImageData;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
-import org.newdawn.slick.util.Log;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -59,6 +61,7 @@ import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class RockBottom extends AbstractGame implements InputListener{
 
@@ -104,7 +107,7 @@ public class RockBottom extends AbstractGame implements InputListener{
             Display.setFullscreen(Main.fullscreen);
         }
         catch(LWJGLException e){
-            Log.error("Couldn't set initial display mode", e);
+            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't set initial display mode", e);
         }
 
         Display.setTitle(AbstractGame.NAME+" "+AbstractGame.VERSION);
@@ -122,7 +125,7 @@ public class RockBottom extends AbstractGame implements InputListener{
             Display.setIcon(bufs);
         }
         catch(Exception e){
-            Log.warn("Couldn't set game icon", e);
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't set game icon", e);
         }
 
         AccessController.doPrivileged((PrivilegedAction)() -> {
@@ -131,7 +134,7 @@ public class RockBottom extends AbstractGame implements InputListener{
                 Display.create(format);
             }
             catch(LWJGLException e){
-                Log.error("Couldn't create pixel format", e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't create pixel format", e);
 
                 try{
                     Display.create();
@@ -143,7 +146,7 @@ public class RockBottom extends AbstractGame implements InputListener{
             return null;
         });
 
-        Log.info("Initializing system");
+        RockBottomAPI.logger().info("Initializing system");
 
         this.initGraphics();
 
@@ -153,10 +156,10 @@ public class RockBottom extends AbstractGame implements InputListener{
             Display.update();
         }
         catch(SlickException e){
-            Log.warn("Couldn't render loading screen image", e);
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't render loading screen image", e);
         }
 
-        Log.info("Finished initializing system");
+        RockBottomAPI.logger().info("Finished initializing system");
 
         super.init();
     }
@@ -200,7 +203,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         if(Strings.isNullOrEmpty(this.playerDesign.getName())){
             PlayerDesign.randomizeDesign(this.playerDesign);
-            Log.info("Randomizing player design");
+            RockBottomAPI.logger().info("Randomizing player design");
 
             this.playerDesign.saveToFile();
         }
@@ -253,7 +256,7 @@ public class RockBottom extends AbstractGame implements InputListener{
             }
         }
         catch(Exception e){
-            Log.error("Failed to set fullscreen", e);
+            RockBottomAPI.logger().log(Level.WARNING, "Failed to set fullscreen", e);
         }
     }
 
@@ -292,7 +295,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo){
-        Log.info("Joining world");
+        RockBottomAPI.logger().info("Joining world");
 
         this.world = new ClientWorld(info, regInfo);
         RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
@@ -312,7 +315,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         if(this.player != null){
             if(RockBottomAPI.getNet().isClient()){
-                Log.info("Sending disconnection packet");
+                RockBottomAPI.logger().info("Sending disconnection packet");
                 RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
             }
         }
@@ -493,7 +496,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     public void calcScales(){
-        Log.debug("Calculating render scales");
+        RockBottomAPI.logger().config("Calculating render scales");
 
         float width = Display.getWidth();
         float height = Display.getHeight();
@@ -508,7 +511,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.worldWidth = width/this.worldScale;
         this.worldHeight = height/this.worldScale;
 
-        Log.debug("Successfully calculated render scales");
+        RockBottomAPI.logger().config("Successfully calculated render scales");
     }
 
     @Override
@@ -633,7 +636,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     private void takeScreenshot(){
         try{
-            Log.info("Taking screenshot");
+            RockBottomAPI.logger().info("Taking screenshot");
 
             GL11.glReadBuffer(GL11.GL_FRONT);
             int width = Display.getWidth();
@@ -660,16 +663,16 @@ public class RockBottom extends AbstractGame implements InputListener{
             File dir = this.dataManager.getScreenshotDir();
             if(!dir.exists()){
                 dir.mkdirs();
-                Log.info("Creating screenshot folder at "+dir);
+                RockBottomAPI.logger().info("Creating screenshot folder at "+dir);
             }
 
             File file = new File(dir, new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date())+".png");
             ImageIO.write(image, "png", file);
 
-            Log.info("Saved screenshot to "+file);
+            RockBottomAPI.logger().info("Saved screenshot to "+file);
         }
         catch(Exception e){
-            Log.error("Couldn't take screenshot", e);
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't take screenshot", e);
         }
     }
 
