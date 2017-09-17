@@ -13,7 +13,10 @@ import de.ellpeck.rockbottom.api.event.impl.TileEntityTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.*;
+import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.MutableInt;
+import de.ellpeck.rockbottom.api.util.Pos3;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -24,7 +27,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketScheduledUpdate;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import org.newdawn.slick.util.Log;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -43,12 +45,12 @@ public class Chunk implements IChunk{
     public final Map<AbstractEntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final World world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    protected final Map<TileLayer, TileState[][]> stateGrid = new TreeMap<>(Comparator.comparing(TileLayer::getName));
+    protected final Map<TileLayer, TileState[][]> stateGrid = new TreeMap<>(Comparator.comparingInt(TileLayer:: getPriority));
     protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final List<Entity> entities = new ArrayList<>();
     protected final Map<UUID, Entity> entityLookup = new HashMap<>();
     protected final List<TileEntity> tileEntities = new ArrayList<>();
-    protected final Map<Pos2, TileEntity> tileEntityLookup = new HashMap<>();
+    protected final Map<Pos3, TileEntity> tileEntityLookup = new HashMap<>();
     protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
     protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
     public boolean isGenerating;
@@ -148,7 +150,7 @@ public class Chunk implements IChunk{
             }
 
             if(tile.shouldRemove()){
-                this.removeTileEntity(tile.x, tile.y);
+                this.removeTileEntity(tile.layer, tile.x, tile.y);
                 i--;
             }
         }
@@ -270,22 +272,18 @@ public class Chunk implements IChunk{
         if(newTile != lastTile){
             lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
-            if(layer == TileLayer.MAIN){
-                if(lastTile.canProvideTileEntity()){
-                    this.removeTileEntity(this.x+x, this.y+y);
-                }
+            if(lastTile.canProvideTileEntity()){
+                this.removeTileEntity(layer, this.x+x, this.y+y);
             }
         }
 
         this.getGrid(layer, true)[x][y] = tile;
 
         if(newTile != lastTile){
-            if(layer == TileLayer.MAIN){
-                if(newTile.canProvideTileEntity()){
-                    TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y);
-                    if(tileEntity != null){
-                        this.addTileEntity(tileEntity);
-                    }
+            if(newTile.canProvideTileEntity()){
+                TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y, layer);
+                if(tileEntity != null){
+                    this.addTileEntity(tileEntity);
                 }
             }
 
@@ -323,13 +321,13 @@ public class Chunk implements IChunk{
 
     @Override
     public void addTileEntity(TileEntity tile){
-        Pos2 posVec = new Pos2(tile.x, tile.y);
+        Pos3 posVec = new Pos3(tile.x, tile.y, tile.layer.hashCode());
         if(!this.tileEntityLookup.containsKey(posVec)){
             this.tileEntities.add(tile);
             this.tileEntityLookup.put(posVec, tile);
 
             if(!this.isGenerating){
-                this.world.notifyNeighborsOfChange(tile.x, tile.y, TileLayer.MAIN);
+                this.world.notifyNeighborsOfChange(tile.x, tile.y, tile.layer);
                 this.setDirty();
             }
         }
@@ -346,26 +344,31 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public void removeTileEntity(int x, int y){
+    public void removeTileEntity(TileLayer layer, int x, int y){
         TileEntity tile = this.getTileEntity(x, y);
         if(tile != null){
             this.tileEntities.remove(tile);
-            this.tileEntityLookup.remove(new Pos2(tile.x, tile.y));
+            this.tileEntityLookup.remove(new Pos3(tile.x, tile.y, tile.layer.hashCode()));
 
             if(!this.isGenerating){
-                this.world.notifyNeighborsOfChange(this.x+x, this.y+y, TileLayer.MAIN);
+                this.world.notifyNeighborsOfChange(this.x+x, this.y+y, tile.layer);
                 this.setDirty();
             }
         }
     }
 
     @Override
-    public TileEntity getTileEntity(int x, int y){
-        return this.tileEntityLookup.get(new Pos2(x, y));
+    public TileEntity getTileEntity(TileLayer layer, int x, int y){
+        return this.tileEntityLookup.get(new Pos3(x, y, layer.hashCode()));
     }
 
     @Override
-    public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass){
+    public TileEntity getTileEntity(int x, int y){
+        return this.getTileEntity(TileLayer.MAIN, x, y);
+    }
+
+    @Override
+    public <T extends TileEntity> T getTileEntity(TileLayer layer, int x, int y, Class<T> tileClass){
         TileEntity tile = this.getTileEntity(x, y);
         if(tile != null && tileClass.isAssignableFrom(tile.getClass())){
             return (T)tile;
@@ -373,6 +376,11 @@ public class Chunk implements IChunk{
         else{
             return null;
         }
+    }
+
+    @Override
+    public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass){
+        return this.getTileEntity(TileLayer.MAIN, x, y, tileClass);
     }
 
     @Override
@@ -623,6 +631,7 @@ public class Chunk implements IChunk{
                 DataSet tileSet = new DataSet();
                 tileSet.addInt("x", tile.x);
                 tileSet.addInt("y", tile.y);
+                tileSet.addString("layer", tile.layer.getName().toString());
                 tile.save(tileSet, false);
 
                 set.addDataSet("t_"+tileEntityId, tileSet);
@@ -730,12 +739,19 @@ public class Chunk implements IChunk{
                 int x = tileSet.getInt("x");
                 int y = tileSet.getInt("y");
 
-                TileEntity tile = this.getTileEntity(x, y);
-                if(tile != null){
-                    tile.load(tileSet, false);
+                IResourceName res = RockBottomAPI.createRes(tileSet.getString("layer"));
+                TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
+                if(layer != null){
+                    TileEntity tile = this.getTileEntity(x, y);
+                    if(tile != null){
+                        tile.load(tileSet, false);
+                    }
+                    else{
+                        RockBottomAPI.logger().warning("Couldn't load data of tile entity at "+x+", "+y+" because it is missing!");
+                    }
                 }
                 else{
-                    RockBottomAPI.logger().warning("Couldn't load data of tile entity at "+x+", "+y+" because it is missing!");
+                    RockBottomAPI.logger().warning("Could not tile entity at "+x+" "+y+" because layer with name "+res+" is missing!");
                 }
             }
 

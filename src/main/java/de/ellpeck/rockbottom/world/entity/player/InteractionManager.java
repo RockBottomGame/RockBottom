@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -91,6 +92,15 @@ public class InteractionManager implements IInteractionManager{
         }
     }
 
+    public static TileLayer getInteractionLayer(IGameInstance game, EntityPlayer player){
+        for(TileLayer layer : TileLayer.getAllLayers()){
+            if(layer.canEditLayer(game, player)){
+                return layer;
+            }
+        }
+        return null;
+    }
+
     public void update(RockBottom game){
         if(game.getWorld() != null){
             EntityPlayer player = game.getPlayer();
@@ -129,68 +139,72 @@ public class InteractionManager implements IInteractionManager{
                     int y = Util.floor(this.mousedTileY);
 
                     if(player.world.isPosLoaded(x, y)){
-                        TileLayer layer = Settings.KEY_BACKGROUND.isDown() ? TileLayer.BACKGROUND : TileLayer.MAIN;
-
-                        if(Settings.KEY_DESTROY.isDown()){
-                            if(this.breakTileX != x || this.breakTileY != y){
-                                this.breakProgress = 0;
-                            }
-
-                            Tile tile = player.world.getState(layer, x, y).getTile();
-                            if(tile.canBreak(player.world, x, y, layer)){
-                                float hardness = tile.getHardness(player.world, x, y, layer);
-                                float progressAmount = 0.05F/hardness;
-
-                                ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-                                boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, x, y);
-                                if(selected != null){
-                                    progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
+                        TileLayer layer = getInteractionLayer(game, player);
+                        if(layer != null){
+                            if(Settings.KEY_DESTROY.isDown()){
+                                if(this.breakTileX != x || this.breakTileY != y){
+                                    this.breakProgress = 0;
                                 }
 
-                                AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
-                                RockBottomAPI.getEventHandler().fireEvent(event);
-                                this.breakProgress = event.totalProgress;
-                                progressAmount = event.progressAdded;
+                                Tile tile = player.world.getState(layer, x, y).getTile();
+                                if(tile.canBreak(player.world, x, y, layer)){
+                                    float hardness = tile.getHardness(player.world, x, y, layer);
+                                    float progressAmount = 0.05F/hardness;
 
-                                this.breakProgress += progressAmount;
+                                    ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+                                    boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, x, y);
+                                    if(selected != null){
+                                        progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
+                                    }
 
-                                if(this.breakProgress >= 1){
-                                    this.breakProgress = 0;
+                                    AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
+                                    RockBottomAPI.getEventHandler().fireEvent(event);
+                                    this.breakProgress = event.totalProgress;
+                                    progressAmount = event.progressAdded;
 
-                                    if(RockBottomAPI.getNet().isClient()){
-                                        RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                    this.breakProgress += progressAmount;
+
+                                    if(this.breakProgress >= 1){
+                                        this.breakProgress = 0;
+
+                                        if(RockBottomAPI.getNet().isClient()){
+                                            RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                        }
+                                        else{
+                                            breakTile(tile, player, x, y, layer, effective);
+                                        }
                                     }
                                     else{
-                                        breakTile(tile, player, x, y, layer, effective);
+                                        this.breakTileX = x;
+                                        this.breakTileY = y;
+                                        this.breakingLayer = layer;
                                     }
                                 }
                                 else{
-                                    this.breakTileX = x;
-                                    this.breakTileY = y;
-                                    this.breakingLayer = layer;
+                                    this.breakProgress = 0;
                                 }
                             }
                             else{
                                 this.breakProgress = 0;
                             }
-                        }
-                        else{
-                            this.breakProgress = 0;
-                        }
 
-                        if(this.placeCooldown <= 0){
-                            if(Settings.KEY_PLACE.isDown()){
-                                if(interact(player, layer, this.mousedTileX, this.mousedTileY)){
-                                    if(RockBottomAPI.getNet().isClient()){
-                                        RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                            if(this.placeCooldown <= 0){
+                                if(Settings.KEY_PLACE.isDown()){
+                                    if(interact(player, layer, this.mousedTileX, this.mousedTileY)){
+                                        if(RockBottomAPI.getNet().isClient()){
+                                            RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                        }
+
+                                        this.placeCooldown = 5;
                                     }
-
-                                    this.placeCooldown = 5;
                                 }
+                            }
+                            else{
+                                this.placeCooldown--;
                             }
                         }
                         else{
-                            this.placeCooldown--;
+                            this.breakProgress = 0;
                         }
                     }
                     else{

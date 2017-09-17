@@ -76,8 +76,6 @@ public class RockBottom extends AbstractGame implements InputListener{
     private UUID uniqueId;
     private boolean isDebug;
     private boolean isLightDebug;
-    private boolean isForegroundDebug;
-    private boolean isBackgroundDebug;
     private boolean isItemInfoDebug;
     private boolean isChunkBorderDebug;
     private WorldRenderer worldRenderer;
@@ -393,14 +391,6 @@ public class RockBottom extends AbstractGame implements InputListener{
                 this.isLightDebug = !this.isLightDebug;
                 return;
             }
-            else if(key == Input.KEY_F3){
-                this.isForegroundDebug = !this.isForegroundDebug;
-                return;
-            }
-            else if(key == Input.KEY_F4){
-                this.isBackgroundDebug = !this.isBackgroundDebug;
-                return;
-            }
             else if(key == Input.KEY_F5){
                 this.isItemInfoDebug = !this.isItemInfoDebug;
                 return;
@@ -612,16 +602,6 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public boolean isLightDebug(){
         return this.isLightDebug;
-    }
-
-    @Override
-    public boolean isForegroundDebug(){
-        return this.isForegroundDebug;
-    }
-
-    @Override
-    public boolean isBackgroundDebug(){
-        return this.isBackgroundDebug;
     }
 
     @Override

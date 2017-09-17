@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -24,7 +25,6 @@ import java.util.List;
 public class WorldRenderer{
 
     public static final int[] SKY_COLORS = new int[256];
-    public static final int[] BACKGROUND_COLORS = new int[Constants.MAX_LIGHT+1];
     public static final int[] MAIN_COLORS = new int[Constants.MAX_LIGHT+1];
 
     public static void init(){
@@ -32,7 +32,6 @@ public class WorldRenderer{
         for(int i = 0; i <= Constants.MAX_LIGHT; i++){
             float modifier = i*step;
             MAIN_COLORS[i] = Colors.rgb(modifier, modifier, modifier, 1F);
-            BACKGROUND_COLORS[i] = Colors.rgb(modifier*0.5F, modifier*0.5F, modifier*0.5F, 1F);
         }
 
         int sky = 0x4C8DFF;
@@ -79,32 +78,23 @@ public class WorldRenderer{
                             int tileY = chunk.getY()+y;
 
                             if(tileX >= transX-1 && -tileY >= transY-1 && tileX < transX+width && -tileY < transY+height){
-                                TileState tile = chunk.getStateInner(x, y);
-
                                 int[] light = api.interpolateLight(world, chunk.getX()+x, chunk.getY()+y);
 
-                                if(!game.isBackgroundDebug()){
-                                    if(!tile.getTile().obscuresBackground() || game.isForegroundDebug()){
-                                        TileState tileBack = chunk.getStateInner(TileLayer.BACKGROUND, x, y);
-                                        ITileRenderer rendererBack = tileBack.getTile().getRenderer();
-                                        if(rendererBack != null){
-                                            rendererBack.render(game, manager, g, world, tileBack.getTile(), tileBack, tileX, tileY, TileLayer.BACKGROUND, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.BACKGROUND));
+                                for(TileLayer layer : TileLayer.getAllLayers()){
+                                    TileState state = chunk.getStateInner(layer, x, y);
+                                    Tile tile = state.getTile();
 
-                                            if(input.breakingLayer == TileLayer.BACKGROUND){
-                                                this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if(!game.isForegroundDebug()){
-                                    ITileRenderer renderer = tile.getTile().getRenderer();
+                                    ITileRenderer renderer = tile.getRenderer();
                                     if(renderer != null){
-                                        renderer.render(game, manager, g, world, tile.getTile(), tile, tileX, tileY, TileLayer.MAIN, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, TileLayer.MAIN));
+                                        renderer.render(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
-                                        if(input.breakingLayer == TileLayer.MAIN){
+                                        if(input.breakingLayer == layer){
                                             this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
                                         }
+                                    }
+
+                                    if(tile.obscuresBackground()){
+                                        break;
                                     }
                                 }
                             }

@@ -32,6 +32,7 @@ import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.util.Log;
 
@@ -172,7 +173,7 @@ public class GuiManager implements IGuiManager{
                         }
                     }
 
-                    TileLayer layer = Settings.KEY_BACKGROUND.isDown() ? TileLayer.BACKGROUND : TileLayer.MAIN;
+                    TileLayer layer = InteractionManager.getInteractionLayer(game, player);
                     int x = Util.floor(tileX);
                     int y = Util.floor(tileY);
 

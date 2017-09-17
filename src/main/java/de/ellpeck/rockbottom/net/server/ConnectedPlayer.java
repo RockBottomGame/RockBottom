@@ -147,7 +147,7 @@ public class ConnectedPlayer extends EntityPlayer{
         }
 
         for(TileEntity tile : chunk.getAllTileEntities()){
-            this.sendPacket(new PacketTileEntityData(tile.x, tile.y, tile));
+            this.sendPacket(new PacketTileEntityData(tile.x, tile.y, tile.layer, tile));
         }
     }
 

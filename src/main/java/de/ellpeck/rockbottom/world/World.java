@@ -32,7 +32,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.*;
@@ -65,7 +64,7 @@ public class World implements IWorld{
                 this.generators.add(generator);
             }
             catch(InstantiationException | IllegalAccessException e){
-                RockBottomAPI.logger().log(Level.WARNING,"Couldn't initialize world generator with class "+genClass, e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class "+genClass, e);
             }
         }
         this.generators.sort(Comparator.comparingInt(IWorldGenerator:: getPriority).reversed());
@@ -148,21 +147,31 @@ public class World implements IWorld{
     }
 
     @Override
-    public void removeTileEntity(int x, int y){
+    public void removeTileEntity(TileLayer layer, int x, int y){
         IChunk chunk = this.getChunk(x, y);
-        chunk.removeTileEntity(x, y);
+        chunk.removeTileEntity(layer, x, y);
+    }
+
+    @Override
+    public TileEntity getTileEntity(TileLayer layer, int x, int y){
+        IChunk chunk = this.getChunk(x, y);
+        return chunk.getTileEntity(layer, x, y);
     }
 
     @Override
     public TileEntity getTileEntity(int x, int y){
+        return this.getTileEntity(TileLayer.MAIN, x, y);
+    }
+
+    @Override
+    public <T extends TileEntity> T getTileEntity(TileLayer layer, int x, int y, Class<T> tileClass){
         IChunk chunk = this.getChunk(x, y);
-        return chunk.getTileEntity(x, y);
+        return chunk.getTileEntity(layer, x, y, tileClass);
     }
 
     @Override
     public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass){
-        IChunk chunk = this.getChunk(x, y);
-        return chunk.getTileEntity(x, y, tileClass);
+        return this.getTileEntity(TileLayer.MAIN, x, y, tileClass);
     }
 
     @Override

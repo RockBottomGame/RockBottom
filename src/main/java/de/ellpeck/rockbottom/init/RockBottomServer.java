@@ -200,16 +200,6 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public boolean isForegroundDebug(){
-        throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
-    }
-
-    @Override
-    public boolean isBackgroundDebug(){
-        throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
-    }
-
-    @Override
     public boolean isItemInfoDebug(){
         throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
     }

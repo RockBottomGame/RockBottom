@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -312,7 +313,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public int getColorByLight(int light, TileLayer layer){
-        return (layer == TileLayer.BACKGROUND ? WorldRenderer.BACKGROUND_COLORS : WorldRenderer.MAIN_COLORS)[RockBottomAPI.getGame().isLightDebug() ? Constants.MAX_LIGHT : light];
+        return Colors.multiply(WorldRenderer.MAIN_COLORS[RockBottomAPI.getGame().isLightDebug() ? Constants.MAX_LIGHT : light], layer.getRenderLightModifier());
     }
 
     @Override
