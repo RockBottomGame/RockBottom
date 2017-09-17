@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 import java.util.Set;
@@ -57,7 +56,7 @@ public class PacketChunk implements IPacket{
 
         buf.writeInt(this.layers.length);
         for(TileLayer layer : this.layers){
-            buf.writeInt(layer.sessionIndex());
+            buf.writeInt(layer.index());
         }
 
         for(int tile : this.tileData){

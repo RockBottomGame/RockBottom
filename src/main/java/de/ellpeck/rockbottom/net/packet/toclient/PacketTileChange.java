@@ -31,7 +31,7 @@ public class PacketTileChange implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         buf.writeInt(this.x);
         buf.writeInt(this.y);
-        buf.writeInt(this.layer.sessionIndex());
+        buf.writeInt(this.layer.index());
         buf.writeShort(this.tileId);
     }
 

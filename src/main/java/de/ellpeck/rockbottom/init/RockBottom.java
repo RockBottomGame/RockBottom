@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.apiimpl.Graphics;
 import de.ellpeck.rockbottom.apiimpl.Texture;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
@@ -224,6 +225,8 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
         this.toaster = new Toaster();
+
+        TileLayer.initLayerList();
     }
 
     @Override

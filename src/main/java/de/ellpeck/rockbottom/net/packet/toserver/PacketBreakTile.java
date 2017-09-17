@@ -37,7 +37,7 @@ public class PacketBreakTile implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
-        buf.writeInt(this.layer.sessionIndex());
+        buf.writeInt(this.layer.index());
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
     }

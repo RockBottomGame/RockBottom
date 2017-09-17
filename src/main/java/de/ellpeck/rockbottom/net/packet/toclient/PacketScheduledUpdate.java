@@ -27,7 +27,7 @@ public class PacketScheduledUpdate implements IPacket{
 
     @Override
     public void toBuffer(ByteBuf buf) throws IOException{
-        buf.writeInt(this.layer.sessionIndex());
+        buf.writeInt(this.layer.index());
         buf.writeInt(this.x);
         buf.writeInt(this.y);
     }

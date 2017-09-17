@@ -178,7 +178,7 @@ public class Chunk implements IChunk{
 
                     if(update.time <= 0){
                         this.scheduledUpdates.remove(i);
-                        this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.hashCode()));
+                        this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.index()));
 
                         Tile tile = this.getState(update.layer, update.x, update.y).getTile();
                         if(tile == update.tile.getTile()){
@@ -321,7 +321,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void addTileEntity(TileEntity tile){
-        Pos3 posVec = new Pos3(tile.x, tile.y, tile.layer.hashCode());
+        Pos3 posVec = new Pos3(tile.x, tile.y, tile.layer.index());
         if(!this.tileEntityLookup.containsKey(posVec)){
             this.tileEntities.add(tile);
             this.tileEntityLookup.put(posVec, tile);
@@ -348,7 +348,7 @@ public class Chunk implements IChunk{
         TileEntity tile = this.getTileEntity(x, y);
         if(tile != null){
             this.tileEntities.remove(tile);
-            this.tileEntityLookup.remove(new Pos3(tile.x, tile.y, tile.layer.hashCode()));
+            this.tileEntityLookup.remove(new Pos3(tile.x, tile.y, tile.layer.index()));
 
             if(!this.isGenerating){
                 this.world.notifyNeighborsOfChange(this.x+x, this.y+y, tile.layer);
@@ -359,7 +359,7 @@ public class Chunk implements IChunk{
 
     @Override
     public TileEntity getTileEntity(TileLayer layer, int x, int y){
-        return this.tileEntityLookup.get(new Pos3(x, y, layer.hashCode()));
+        return this.tileEntityLookup.get(new Pos3(x, y, layer.index()));
     }
 
     @Override
@@ -458,7 +458,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-        Pos3 posVec = new Pos3(x, y, layer.hashCode());
+        Pos3 posVec = new Pos3(x, y, layer.index());
         if(!this.scheduledUpdateLookup.containsKey(posVec)){
             ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getState(layer, x, y), time);
 
