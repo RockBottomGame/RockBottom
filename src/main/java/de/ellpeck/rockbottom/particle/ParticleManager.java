@@ -9,9 +9,8 @@ import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.World;
-import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
@@ -54,7 +54,7 @@ public class WorldGenBiomes implements IWorldGenerator{
                     if(weightCounter >= chosenWeight){
                         chunk.setBiomeInner(x, y, biome);
 
-                        for(TileLayer layer : TileLayer.LAYERS){
+                        for(TileLayer layer : TileLayer.getAllLayers()){
                             chunk.setStateInner(layer, x, y, biome.getState(world, chunk, x, y, layer, this.stateNoise, rand));
                         }
 

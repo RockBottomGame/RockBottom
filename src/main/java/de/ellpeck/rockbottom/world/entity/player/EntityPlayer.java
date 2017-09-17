@@ -26,7 +26,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
@@ -202,7 +202,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         if(RockBottomAPI.getNet().isThePlayer(this)){
             int range = 24;
             for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES; i++){
-                TileLayer layer = TileLayer.LAYERS[Util.RANDOM.nextInt(TileLayer.LAYERS.length)];
+                TileLayer layer = TileLayer.getAllLayers().get(Util.RANDOM.nextInt(TileLayer.getAllLayers().size()));
                 int x = Util.floor(this.x)+Util.RANDOM.nextInt(range*2+1)-range;
                 int y = Util.floor(this.y)+Util.RANDOM.nextInt(range*2+1)-range;
 

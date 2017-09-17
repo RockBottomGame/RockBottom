@@ -26,7 +26,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;

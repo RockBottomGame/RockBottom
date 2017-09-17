@@ -18,8 +18,8 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.render.WorldRenderer;
@@ -117,7 +117,7 @@ public class ApiHandler implements IApiHandler{
             BoundBox area = entity.getBoundingBox().copy().add(entity.x+entity.motionX, entity.y+entity.motionY);
             for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
                 for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
-                    for(TileLayer layer : TileLayer.LAYERS){
+                    for(TileLayer layer : TileLayer.getAllLayers()){
                         if(entity.world.isPosLoaded(x, y)){
                             Tile tile = entity.world.getState(layer, x, y).getTile();
 

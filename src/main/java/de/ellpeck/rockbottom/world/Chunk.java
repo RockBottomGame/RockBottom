@@ -14,11 +14,12 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketScheduledUpdate;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
@@ -42,7 +43,7 @@ public class Chunk implements IChunk{
     public final Map<AbstractEntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final World world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    protected final TileState[][][] stateGrid = new TileState[TileLayer.LAYERS.length][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    protected final Map<TileLayer, TileState[][]> stateGrid = new TreeMap<>(Comparator.comparing(TileLayer::getName));
     protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final List<Entity> entities = new ArrayList<>();
     protected final Map<UUID, Entity> entityLookup = new HashMap<>();
@@ -67,10 +68,6 @@ public class Chunk implements IChunk{
 
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                for(int i = 0; i < TileLayer.LAYERS.length; i++){
-                    this.stateGrid[i][x][y] = GameContent.TILE_AIR.getDefState();
-                }
-
                 this.biomeGrid[x][y] = GameContent.BIOME_SKY;
             }
         }
@@ -179,7 +176,7 @@ public class Chunk implements IChunk{
 
                     if(update.time <= 0){
                         this.scheduledUpdates.remove(i);
-                        this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.ordinal()));
+                        this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.hashCode()));
 
                         Tile tile = this.getState(update.layer, update.x, update.y).getTile();
                         if(tile == update.tile.getTile()){
@@ -241,7 +238,14 @@ public class Chunk implements IChunk{
 
     @Override
     public TileState getStateInner(TileLayer layer, int x, int y){
-        return this.stateGrid[layer.ordinal()][x][y];
+        TileState[][] grid = this.getGrid(layer, false);
+
+        if(grid != null){
+            return grid[x][y];
+        }
+        else{
+            return GameContent.TILE_AIR.getDefState();
+        }
     }
 
     @Override
@@ -273,8 +277,7 @@ public class Chunk implements IChunk{
             }
         }
 
-        int ord = layer.ordinal();
-        this.stateGrid[ord][x][y] = tile;
+        this.getGrid(layer, true)[x][y] = tile;
 
         if(newTile != lastTile){
             if(layer == TileLayer.MAIN){
@@ -447,7 +450,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-        Pos3 posVec = new Pos3(x, y, layer.ordinal());
+        Pos3 posVec = new Pos3(x, y, layer.hashCode());
         if(!this.scheduledUpdateLookup.containsKey(posVec)){
             ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getState(layer, x, y), time);
 
@@ -557,8 +560,8 @@ public class Chunk implements IChunk{
 
     @Override
     public void save(DataSet set){
-        for(int i = 0; i < TileLayer.LAYERS.length; i++){
-            TileLayer layer = TileLayer.LAYERS[i];
+        int layerCounter = 0;
+        for(TileLayer layer : this.stateGrid.keySet()){
             int[] ids = new int[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
 
             int counter = 0;
@@ -569,8 +572,12 @@ public class Chunk implements IChunk{
                 }
             }
 
-            set.addIntArray("ti_"+i, ids);
+            set.addIntArray("l_"+layerCounter, ids);
+            set.addString("ln_"+layerCounter, layer.getName().toString());
+
+            layerCounter++;
         }
+        set.addInt("l_a", layerCounter);
 
         short[] biomes = new short[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
         int biomeCounter = 0;
@@ -631,7 +638,7 @@ public class Chunk implements IChunk{
         for(ScheduledUpdate update : this.scheduledUpdates){
             updateSet.addInt("x_"+updateId, update.x);
             updateSet.addInt("y_"+updateId, update.y);
-            updateSet.addInt("l_"+updateId, update.layer.ordinal());
+            updateSet.addString("l_"+updateId, update.layer.getName().toString());
             updateSet.addInt("t_"+updateId, update.time);
             updateSet.addInt("i_"+updateId, this.world.getIdForState(update.tile));
 
@@ -648,22 +655,30 @@ public class Chunk implements IChunk{
         this.isGenerating = true;
 
         if(set != null && !set.isEmpty()){
-            for(int i = 0; i < TileLayer.LAYERS.length; i++){
-                TileLayer layer = TileLayer.LAYERS[i];
-                int[] ids = set.getIntArray("ti_"+i, Constants.CHUNK_SIZE*Constants.CHUNK_SIZE);
+            int layerAmount = set.getInt("l_a");
 
-                int counter = 0;
-                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                        TileState tile = this.world.getStateForId(ids[counter]);
-                        if(tile != null){
-                            this.setStateInner(layer, x, y, tile);
+            for(int i = 0; i < layerAmount; i++){
+                IResourceName res = RockBottomAPI.createRes(set.getString("ln_"+i));
+                TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
+                if(layer != null){
+                    int[] ids = set.getIntArray("l_"+i, Constants.CHUNK_SIZE*Constants.CHUNK_SIZE);
+
+                    int counter = 0;
+                    for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                        for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                            TileState tile = this.world.getStateForId(ids[counter]);
+                            if(tile != null){
+                                this.setStateInner(layer, x, y, tile);
+                            }
+                            else{
+                                Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[counter]+" is missing!");
+                            }
+                            counter++;
                         }
-                        else{
-                            Log.warn("Could not load tile at "+x+" "+y+" because id "+ids[counter]+" is missing!");
-                        }
-                        counter++;
                     }
+                }
+                else{
+                    Log.warn("Could not load tile layer with name "+res+" as it is missing!");
                 }
             }
 
@@ -736,8 +751,14 @@ public class Chunk implements IChunk{
                 TileState tile = this.world.getStateForId(id);
 
                 if(tile != null){
-                    TileLayer layer = TileLayer.LAYERS[updateSet.getInt("l_"+i)];
-                    this.scheduleUpdate(x, y, layer, time);
+                    IResourceName res = RockBottomAPI.createRes(updateSet.getString("l_"+i));
+                    TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
+                    if(layer != null){
+                        this.scheduleUpdate(x, y, layer, time);
+                    }
+                    else{
+                        Log.warn("Could not load scheduled update at "+x+" "+y+" with time "+time+" because layer with name "+res+" is missing!");
+                    }
                 }
                 else{
                     Log.warn("Could not load scheduled update at "+x+" "+y+" with time "+time+" because tile with id "+id+" is missing!");
@@ -769,6 +790,11 @@ public class Chunk implements IChunk{
         }
 
         this.biomeGrid[x][y] = biome;
+    }
+
+    @Override
+    public Set<TileLayer> getLoadedLayers(){
+        return this.stateGrid.keySet();
     }
 
     @Override
@@ -809,6 +835,23 @@ public class Chunk implements IChunk{
     @Override
     public int getY(){
         return this.y;
+    }
+
+    private TileState[][] getGrid(TileLayer layer, boolean create){
+        TileState[][] grid = this.stateGrid.get(layer);
+
+        if(grid == null && create){
+            grid = new TileState[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+            this.stateGrid.put(layer, grid);
+
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    grid[x][y] = GameContent.TILE_AIR.getDefState();
+                }
+            }
+        }
+
+        return grid;
     }
 
     protected static class ScheduledUpdate{

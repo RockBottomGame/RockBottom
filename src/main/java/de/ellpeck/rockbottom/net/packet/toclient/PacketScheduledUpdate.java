@@ -4,7 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -27,14 +27,14 @@ public class PacketScheduledUpdate implements IPacket{
 
     @Override
     public void toBuffer(ByteBuf buf) throws IOException{
-        buf.writeInt(this.layer.ordinal());
+        buf.writeInt(this.layer.sessionIndex());
         buf.writeInt(this.x);
         buf.writeInt(this.y);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
-        this.layer = TileLayer.LAYERS[buf.readInt()];
+        this.layer = TileLayer.getAllLayers().get(buf.readInt());
         this.x = buf.readInt();
         this.y = buf.readInt();
     }

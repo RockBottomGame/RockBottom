@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -37,7 +37,7 @@ public class PacketBreakTile implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
-        buf.writeInt(this.layer.ordinal());
+        buf.writeInt(this.layer.sessionIndex());
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
     }
@@ -45,7 +45,7 @@ public class PacketBreakTile implements IPacket{
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.playerId = new UUID(buf.readLong(), buf.readLong());
-        this.layer = TileLayer.LAYERS[buf.readInt()];
+        this.layer = TileLayer.getAllLayers().get(buf.readInt());
         this.x = buf.readDouble();
         this.y = buf.readDouble();
     }

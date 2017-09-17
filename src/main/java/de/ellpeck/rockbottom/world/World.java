@@ -19,9 +19,13 @@ import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
-import de.ellpeck.rockbottom.api.world.*;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
+import de.ellpeck.rockbottom.api.world.IChunk;
+import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
@@ -440,8 +444,11 @@ public class World implements IWorld{
             }
         }
 
-        TileLayer opp = layer.getOpposite();
-        this.getState(opp, x, y).getTile().onChangeAround(this, x, y, opp, x, y, layer);
+        for(TileLayer other : TileLayer.getAllLayers()){
+            if(other != layer){
+                this.getState(other, x, y).getTile().onChangeAround(this, x, y, other, x, y, layer);
+            }
+        }
     }
 
     @Override

@@ -15,7 +15,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketBreakTile;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;

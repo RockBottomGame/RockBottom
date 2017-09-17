@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
-import de.ellpeck.rockbottom.api.world.TileLayer;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
