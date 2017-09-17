@@ -67,6 +67,9 @@ public class WorldRenderer{
         List<Entity> entities = new ArrayList<>();
         List<EntityPlayer> players = new ArrayList<>();
 
+        List<TileLayer> layers = new ArrayList<>(TileLayer.getAllLayers());
+        layers.sort(Comparator.comparingInt(TileLayer::getRenderPriority).reversed());
+
         for(int gridX = minX; gridX <= maxX; gridX++){
             for(int gridY = minY; gridY <= maxY; gridY++){
                 if(world.isChunkLoaded(gridX, gridY)){
@@ -80,7 +83,7 @@ public class WorldRenderer{
                             if(tileX >= transX-1 && -tileY >= transY-1 && tileX < transX+width && -tileY < transY+height){
                                 int[] light = api.interpolateLight(world, chunk.getX()+x, chunk.getY()+y);
 
-                                for(TileLayer layer : TileLayer.getAllLayers()){
+                                for(TileLayer layer : layers){
                                     TileState state = chunk.getStateInner(layer, x, y);
                                     Tile tile = state.getTile();
 
