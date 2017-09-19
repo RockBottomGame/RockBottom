@@ -35,6 +35,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketRespawn;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
+import de.ellpeck.rockbottom.world.tile.TileAir;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -201,8 +202,9 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
         if(RockBottomAPI.getNet().isThePlayer(this)){
             int range = 24;
-            for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES; i++){
-                TileLayer layer = TileLayer.getAllLayers().get(Util.RANDOM.nextInt(TileLayer.getAllLayers().size()));
+            int layers = TileLayer.getAllLayers().size();
+            for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES*layers; i++){
+                TileLayer layer = TileLayer.getAllLayers().get(Util.RANDOM.nextInt(layers));
                 int x = Util.floor(this.x)+Util.RANDOM.nextInt(range*2+1)-range;
                 int y = Util.floor(this.y)+Util.RANDOM.nextInt(range*2+1)-range;
 

@@ -19,7 +19,8 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, Random rand){
-        int height = (int)(noise.make2dNoise((double)(chunk.getX()+x)/50D, 0D)*10D);
+        double worldX = chunk.getX()+x;
+        int height = (int)(((noise.make2dNoise(worldX/100D, 0D)+noise.make2dNoise(worldX/20D, 0D)*2D)/3D)*10D);
 
         if(chunk.getY()+y == height){
             return GameContent.TILE_GRASS.getDefState();
