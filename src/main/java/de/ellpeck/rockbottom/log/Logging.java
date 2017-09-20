@@ -18,13 +18,15 @@ public final class Logging{
         mainLogger.setUseParentHandlers(false);
 
         LogFormatter formatter = new LogFormatter();
-        ConsoleHandler consoleHandler = new ConsoleHandler(){
-            {
-                this.setOutputStream(System.out);
-            }
-        };
-        consoleHandler.setFormatter(formatter);
-        mainLogger.addHandler(consoleHandler);
+        Filter filter = record -> record.getLevel().intValue() < Level.WARNING.intValue();
+
+        ConsoleHandler infoHandler = new ConsoleHandler(System.out, formatter);
+        infoHandler.setFilter(filter);
+        mainLogger.addHandler(infoHandler);
+
+        ConsoleHandler errorHandler = new ConsoleHandler(System.err, formatter);
+        errorHandler.setFilter(record -> !filter.isLoggable(record));
+        mainLogger.addHandler(errorHandler);
 
         try{
             File file = new File(Main.gameDir, "log");

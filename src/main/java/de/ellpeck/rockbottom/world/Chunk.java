@@ -480,16 +480,23 @@ public class Chunk implements IChunk{
 
     @Override
     public int getLowestAirUpwards(TileLayer layer, int x, int y){
-        int actualX = x-this.x;
-        int actualY = y-this.y;
+        int result = this.getLowestAirUpwardsInner(layer, x-this.x, y-this.y);
+        if(result >= 0){
+            return this.y+result;
+        }
+        else{
+            return -1;
+        }
+    }
 
-        for(int yCount = actualY; yCount < Constants.CHUNK_SIZE-yCount; yCount++){
-            Tile tile = this.getStateInner(layer, actualX, yCount).getTile();
+    @Override
+    public int getLowestAirUpwardsInner(TileLayer layer, int x, int y){
+        for(int yCount = y; yCount < Constants.CHUNK_SIZE-yCount; yCount++){
+            Tile tile = this.getStateInner(layer, x, yCount).getTile();
             if(tile.isAir()){
-                return this.y+yCount;
+                return yCount;
             }
         }
-
         return -1;
     }
 

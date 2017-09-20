@@ -14,7 +14,11 @@
         "tiles": {
             "soil": "/tiles/soil.png",
             "grass": "/tiles/grass.png",
-            "stone": "/tiles/stone.png"
+            "stone": "/tiles/stone.png",
+            "grass_tuft": "/tiles/grass_tuft.png",
+            "grass_short": "/tiles/grass_short.png",
+            "grass_tall": "/tiles/grass_tall.png",
+            "bush": "/tiles/bush.png"
         },
         "items": {
 

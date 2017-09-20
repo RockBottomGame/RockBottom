@@ -32,4 +32,9 @@ public class BiomeGrassland extends BiomeBasic{
             return GameContent.TILE_AIR.getDefState();
         }
     }
+
+    @Override
+    public boolean hasGrasslandDecoration(){
+        return true;
+    }
 }
