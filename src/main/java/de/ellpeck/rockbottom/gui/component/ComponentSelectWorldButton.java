@@ -31,7 +31,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
         this.info = new WorldInfo(this.worldFile);
         this.info.load();
 
-        this.lastModified = new SimpleDateFormat("dd.MM.yy - HH:mm").format(new Date(WorldInfo.lastModified(this.worldFile)));
+        this.lastModified = RockBottomAPI.getGame().getAssetManager().getLocalizedDateFormat().format(new Date(WorldInfo.lastModified(this.worldFile)));
     }
 
     @Override

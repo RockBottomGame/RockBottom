@@ -34,6 +34,7 @@ import org.newdawn.slick.opengl.CursorLoader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -336,5 +337,10 @@ public class AssetManager implements IAssetManager{
     @Override
     public ITexture getMissingTexture(){
         return this.missingTexture.get();
+    }
+
+    @Override
+    public SimpleDateFormat getLocalizedDateFormat(){
+        return new SimpleDateFormat(this.localize(RockBottomAPI.createInternalRes("date_format")));
     }
 }
