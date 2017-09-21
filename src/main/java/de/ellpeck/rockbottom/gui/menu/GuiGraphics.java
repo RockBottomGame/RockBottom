@@ -72,19 +72,11 @@ public class GuiGraphics extends Gui{
             return true;
         }, "button.smooth_lighting"));
 
-        this.components.add(new ComponentColorPicker(this, 55, 70, 40, 40, settings.guiColor, (color, letGo) -> {
-            if(letGo){
-                settings.guiColor = color;
-                game.getDataManager().savePropSettings(settings);
-                game.getGuiManager().updateDimensions();
-            }
-        }, false));
+        this.components.add(new ComponentColorPicker(this, 55, 70, 40, 40, settings.guiColor, (color, letGo) -> settings.guiColor = color, false));
         this.components.add(new ComponentFancyButton(this, 99, 94, 16, 16, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, 99+8, 94+8, aBoolean -> {
                 if(aBoolean){
                     settings.guiColor = Settings.DEFAULT_GUI_COLOR;
-                    game.getDataManager().savePropSettings(settings);
-                    game.getGuiManager().updateDimensions();
                 }
             }));
             return true;

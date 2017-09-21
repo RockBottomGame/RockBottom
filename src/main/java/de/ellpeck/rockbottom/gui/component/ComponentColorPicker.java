@@ -41,7 +41,7 @@ public class ComponentColorPicker extends GuiComponent{
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
         this.texture.draw(x, y, this.width, this.height);
-        g.drawRect(x, y, this.width, this.height, this.colorOutline);
+        g.drawRect(x, y, this.width, this.height, getElementOutlineColor());
     }
 
     @Override
@@ -121,8 +121,8 @@ public class ComponentColorPicker extends GuiComponent{
 
     private void onClickOrMove(IGameInstance game, float mouseX, float mouseY){
         if(this.isMouseOver(game)){
-            float x = (mouseX-this.x)/this.width*this.texture.getWidth();
-            float y = (mouseY-this.y)/this.height*this.texture.getHeight();
+            float x = (mouseX-this.getRenderX())/this.width*this.texture.getWidth();
+            float y = (mouseY-this.getRenderY())/this.height*this.texture.getHeight();
             int color = this.texture.getTextureColor((int)x, (int)y);
 
             if(this.color != color){
