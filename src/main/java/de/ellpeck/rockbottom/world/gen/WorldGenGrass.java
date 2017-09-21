@@ -32,10 +32,10 @@ public class WorldGenGrass implements IWorldGenerator{
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0);
             if(y >= 0 && chunk.getBiomeInner(x, y).hasGrasslandDecoration()){
-                if(this.grassNoise.make2dNoise(x/4D, 0) >= 0.5){
+                if(this.grassNoise.make2dNoise(x/4D, y/4D) >= 0.5){
                     TileMeta tile = (TileMeta)GameContent.TILE_GRASS_TUFT;
                     if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
-                        int type = Util.floor(this.grassNoise.make2dNoise(x, 0)*(double)tile.metaProp.getVariants());
+                        int type = Util.floor(this.grassNoise.make2dNoise(x, y)*(double)tile.metaProp.getVariants());
                         chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
                     }
                 }
