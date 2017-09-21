@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
 
 import java.awt.*;
@@ -37,12 +38,12 @@ public class GuiMods extends Gui{
             i++;
         }
 
-        this.components.add(new ComponentButton(this, this.width-47, 14, 45, 10, () -> {
+        this.components.add(new ComponentButton(this, this.width-47, 2, 45, 10, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
-        this.components.add(new ComponentButton(this, this.width-77, 2, 75, 10, () -> {
+        this.components.add(new ComponentFancyButton(this, this.width-18, 14, 16, 16, () -> {
             try{
                 Desktop.getDesktop().open(game.getDataManager().getModsDir());
                 return true;
@@ -51,7 +52,7 @@ public class GuiMods extends Gui{
                 RockBottomAPI.logger().log(Level.WARNING, "Couldn't open mods folder", e);
                 return false;
             }
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
+        }, RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
 
         this.modGuiButton = new ComponentButton(this, 100+(this.width-100)/2-60, this.height-30, 55, 16, () -> {
             Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();

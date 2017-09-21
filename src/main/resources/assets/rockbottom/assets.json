@@ -37,7 +37,10 @@
             "popup": "/gui/popup.png",
             "save_world": "/gui/save_world.png",
             "reset": "/gui/reset.png",
-            "randomize": "/gui/randomize.png"
+            "randomize": "/gui/randomize.png",
+            "delete": "/gui/delete.png",
+            "worlds_folder": "/gui/folder_worlds.png",
+            "mods_folder": "/gui/folder_mods.png"
         },
         "particle": {
             "smoke": "/particle/smoke.png"

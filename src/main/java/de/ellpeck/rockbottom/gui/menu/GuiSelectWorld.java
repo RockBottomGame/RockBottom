@@ -10,10 +10,13 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentSelectWorldButton;
 import org.newdawn.slick.util.Log;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,10 +42,21 @@ public class GuiSelectWorld extends Gui{
             return true;
         }, "Create World"));
 
-        this.components.add(new ComponentButton(this, this.width/2+2, bottomY-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2, bottomY-30, 62, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+
+        this.components.add(new ComponentFancyButton(this, this.width/2+64, bottomY-30, 16, 16, ()->{
+            try{
+                Desktop.getDesktop().open(game.getDataManager().getWorldsDir());
+                return true;
+            }
+            catch(IOException e){
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't open worlds folder", e);
+                return false;
+            }
+        }, RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
 
         File worldFolder = game.getDataManager().getWorldsDir();
         File[] worlds = worldFolder.listFiles();
@@ -62,7 +76,7 @@ public class GuiSelectWorld extends Gui{
             ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, 0, 0, file);
             menu.add(button);
 
-            menu.add(new ComponentButton(this, 0, 0, 16, 24, null, "X", "Delete World"){
+            menu.add(new ComponentFancyButton(this, 0, 0, 12, 12, null, RockBottomAPI.createInternalRes("gui.delete"), "Delete World"){
                 @Override
                 public boolean onPressed(IGameInstance game){
                     this.gui.getComponents().add(0, new ComponentConfirmationPopup(this.gui, this.x+this.width/2, this.y+this.height/2, aBoolean -> {
