@@ -328,7 +328,8 @@ public class Font implements IFont{
         String accumulated = "";
 
         for(String line : lines){
-            FormattingCode trailingCode = FormattingCode.NONE;
+            FormattingCode trailingColor = FormattingCode.NONE;
+            FormattingCode trailingProp = FormattingCode.NONE;
 
             for(String subLine : line.split("[\\\\&]n")){
                 String[] words = subLine.split(" ");
@@ -338,14 +339,20 @@ public class Font implements IFont{
                         for(int i = 0; i < word.length()-1; i++){
                             FormattingCode format = FormattingCode.getFormat(word, i);
                             if(format != FormattingCode.NONE){
-                                trailingCode = format;
+                                if(format.getColor() != -1){
+                                    trailingColor = format;
+                                }
+
+                                if(format.getProp() != FontProp.NONE){
+                                    trailingProp = format;
+                                }
                             }
                         }
                     }
 
                     if(this.getWidth(accumulated+word, scale) >= length){
                         result.add(accumulated.trim());
-                        accumulated = trailingCode+word+" ";
+                        accumulated = trailingColor.toString()+trailingProp+word+" ";
                     }
                     else{
                         accumulated += word+" ";
@@ -353,7 +360,7 @@ public class Font implements IFont{
                 }
 
                 result.add(accumulated.trim());
-                accumulated = trailingCode.toString();
+                accumulated = trailingColor.toString()+trailingProp;
             }
 
             accumulated = "";
