@@ -3,5 +3,5 @@ project(":API").projectDir = file("../API")
 
 gradle.ext.proguardDir = '../proguard/lib'
 
-include ":Localization"
-project(":Localization").projectDir = file("../Localization")
+include ":Assets"
+project(":Assets").projectDir = file("../Assets")
