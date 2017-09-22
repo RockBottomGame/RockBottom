@@ -1,178 +1,178 @@
 {
     "tex": {
-        "logo": "/logo.png",
+        "logo": "/tex/logo.png",
         "break": {
-            "1": "/break/1.png",
-            "2": "/break/2.png",
-            "3": "/break/3.png",
-            "4": "/break/4.png",
-            "5": "/break/5.png",
-            "6": "/break/6.png",
-            "7": "/break/7.png",
-            "8": "/break/8.png"
+            "1": "/tex/break/1.png",
+            "2": "/tex/break/2.png",
+            "3": "/tex/break/3.png",
+            "4": "/tex/break/4.png",
+            "5": "/tex/break/5.png",
+            "6": "/tex/break/6.png",
+            "7": "/tex/break/7.png",
+            "8": "/tex/break/8.png"
         },
         "tiles": {
-            "soil": "/tiles/soil.png",
-            "grass": "/tiles/grass.png",
-            "stone": "/tiles/stone.png",
-            "grass_tuft": "/tiles/grass_tuft.png",
-            "grass_short": "/tiles/grass_short.png",
-            "grass_tall": "/tiles/grass_tall.png",
-            "bush": "/tiles/bush.png",
-            "log": "/tiles/log.png",
-            "leaves": "/tiles/leaves.png"
+            "soil": "/tex/tiles/soil.png",
+            "grass": "/tex/tiles/grass.png",
+            "stone": "/tex/tiles/stone.png",
+            "grass_tuft": "/tex/tiles/grass_tuft.png",
+            "grass_short": "/tex/tiles/grass_short.png",
+            "grass_tall": "/tex/tiles/grass_tall.png",
+            "bush": "/tex/tiles/bush.png",
+            "log": "/tex/tiles/log.png",
+            "leaves": "/tex/tiles/leaves.png"
         },
         "items": {
 
         },
         "gui": {
-            "cursor": "/gui/cursor.png",
-            "slot": "/gui/slot.png",
-            "selection_arrow": "/gui/selection_arrow.png",
-            "heart": "/gui/heart.png",
-            "heart_empty": "/gui/heart_empty.png",
-            "construction": "/gui/construction.png",
-            "construction_toggled": "/gui/construction_crossed.png",
-            "colorpick": "/gui/colorpick.png",
-            "all_construction": "/gui/all_construction.png",
-            "all_construction_toggled": "/gui/all_construction_crossed.png",
-            "popup": "/gui/popup.png",
-            "save_world": "/gui/save_world.png",
-            "reset": "/gui/reset.png",
-            "randomize": "/gui/randomize.png",
-            "delete": "/gui/delete.png",
-            "worlds_folder": "/gui/folder_worlds.png",
-            "mods_folder": "/gui/folder_mods.png"
+            "cursor": "/tex/gui/cursor.png",
+            "slot": "/tex/gui/slot.png",
+            "selection_arrow": "/tex/gui/selection_arrow.png",
+            "heart": "/tex/gui/heart.png",
+            "heart_empty": "/tex/gui/heart_empty.png",
+            "construction": "/tex/gui/construction.png",
+            "construction_toggled": "/tex/gui/construction_crossed.png",
+            "colorpick": "/tex/gui/colorpick.png",
+            "all_construction": "/tex/gui/all_construction.png",
+            "all_construction_toggled": "/tex/gui/all_construction_crossed.png",
+            "popup": "/tex/gui/popup.png",
+            "save_world": "/tex/gui/save_world.png",
+            "reset": "/tex/gui/reset.png",
+            "randomize": "/tex/gui/randomize.png",
+            "delete": "/tex/gui/delete.png",
+            "worlds_folder": "/tex/gui/folder_worlds.png",
+            "mods_folder": "/tex/gui/folder_mods.png"
         },
         "particle": {
-            "smoke": "/particle/smoke.png"
+            "smoke": "/tex/particle/smoke.png"
         }
     },
     "anim": {
         "player": {
             "accessory": {
-                "monocle_1": ["/player/anim.json", "/player/accessory/monocle_1.png"],
-                "monocle_2": ["/player/anim.json", "/player/accessory/monocle_2.png"],
-                "sunglasses_1": ["/player/anim.json", "/player/accessory/sunglasses_1.png"],
-                "sunglasses_2": ["/player/anim.json", "/player/accessory/sunglasses_2.png"],
-                "sunglasses_3": ["/player/anim.json", "/player/accessory/sunglasses_3.png"],
-                "glasses_1": ["/player/anim.json", "/player/accessory/glasses_1.png"],
-                "glasses_2": ["/player/anim.json", "/player/accessory/glasses_2.png"],
-                "glasses_3": ["/player/anim.json", "/player/accessory/glasses_3.png"],
-                "eyeliner": ["/player/anim.json", "/player/accessory/eyeliner.png"]
+                "monocle_1": ["/anim/player/anim.json", "/anim/player/accessory/monocle_1.png"],
+                "monocle_2": ["/anim/player/anim.json", "/anim/player/accessory/monocle_2.png"],
+                "sunglasses_1": ["/anim/player/anim.json", "/anim/player/accessory/sunglasses_1.png"],
+                "sunglasses_2": ["/anim/player/anim.json", "/anim/player/accessory/sunglasses_2.png"],
+                "sunglasses_3": ["/anim/player/anim.json", "/anim/player/accessory/sunglasses_3.png"],
+                "glasses_1": ["/anim/player/anim.json", "/anim/player/accessory/glasses_1.png"],
+                "glasses_2": ["/anim/player/anim.json", "/anim/player/accessory/glasses_2.png"],
+                "glasses_3": ["/anim/player/anim.json", "/anim/player/accessory/glasses_3.png"],
+                "eyeliner": ["/anim/player/anim.json", "/anim/player/accessory/eyeliner.png"]
             },
             "arm": {
                 "skin_1": {
-                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_1.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_1.png"]
                 },
                 "skin_2": {
-                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_2.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_2.png"]
                 },
                 "skin_3": {
-                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_3.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_3.png"]
                 },
                 "skin_4": {
-                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_4.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_4.png"]
                 },
                 "skin_5": {
-                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_5.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_5.png"]
                 },
                 "skin_s": {
-                    "hanging": ["/player/anim.json", "/player/arm/hanging/skin_s.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_s.png"]
                 }
             },
             "base": {
-                "eyes": ["/player/anim.json", "/player/base/eyes.png"],
+                "eyes": ["/anim/player/anim.json", "/anim/player/base/eyes.png"],
                 "1": {
-                    "male": ["/player/anim.json", "/player/base/male/1.png"],
-                    "female": ["/player/anim.json", "/player/base/female/1.png"]
+                    "male": ["/anim/player/anim.json", "/anim/player/base/male/1.png"],
+                    "female": ["/anim/player/anim.json", "/anim/player/base/female/1.png"]
                 },
                 "2": {
-                    "male": ["/player/anim.json", "/player/base/male/2.png"],
-                    "female": ["/player/anim.json", "/player/base/female/2.png"]
+                    "male": ["/anim/player/anim.json", "/anim/player/base/male/2.png"],
+                    "female": ["/anim/player/anim.json", "/anim/player/base/female/2.png"]
                 },
                 "3": {
-                    "male": ["/player/anim.json", "/player/base/male/3.png"],
-                    "female": ["/player/anim.json", "/player/base/female/3.png"]
+                    "male": ["/anim/player/anim.json", "/anim/player/base/male/3.png"],
+                    "female": ["/anim/player/anim.json", "/anim/player/base/female/3.png"]
                 },
                 "4": {
-                    "male": ["/player/anim.json", "/player/base/male/4.png"],
-                    "female": ["/player/anim.json", "/player/base/female/4.png"]
+                    "male": ["/anim/player/anim.json", "/anim/player/base/male/4.png"],
+                    "female": ["/anim/player/anim.json", "/anim/player/base/female/4.png"]
                 },
                 "5": {
-                    "male": ["/player/anim.json", "/player/base/male/5.png"],
-                    "female": ["/player/anim.json", "/player/base/female/5.png"]
+                    "male": ["/anim/player/anim.json", "/anim/player/base/male/5.png"],
+                    "female": ["/anim/player/anim.json", "/anim/player/base/female/5.png"]
                 },
                 "s": {
-                    "male": ["/player/anim.json", "/player/base/male/s.png"],
-                    "female": ["/player/anim.json", "/player/base/female/s.png"]
+                    "male": ["/anim/player/anim.json", "/anim/player/base/male/s.png"],
+                    "female": ["/anim/player/anim.json", "/anim/player/base/female/s.png"]
                 }
             },
             "footwear": {
-                "1": ["/player/anim.json", "/player/footwear/1.png"],
-                "2": ["/player/anim.json", "/player/footwear/2.png"],
-                "3": ["/player/anim.json", "/player/footwear/3.png"],
-                "4": ["/player/anim.json", "/player/footwear/4.png"],
-                "5": ["/player/anim.json", "/player/footwear/5.png"]
+                "1": ["/anim/player/anim.json", "/anim/player/footwear/1.png"],
+                "2": ["/anim/player/anim.json", "/anim/player/footwear/2.png"],
+                "3": ["/anim/player/anim.json", "/anim/player/footwear/3.png"],
+                "4": ["/anim/player/anim.json", "/anim/player/footwear/4.png"],
+                "5": ["/anim/player/anim.json", "/anim/player/footwear/5.png"]
             },
             "hair": {
-                "1": ["/player/anim.json", "/player/hair/1.png"],
-                "2": ["/player/anim.json", "/player/hair/2.png"],
-                "3": ["/player/anim.json", "/player/hair/3.png"],
-                "4": ["/player/anim.json", "/player/hair/4.png"],
-                "5": ["/player/anim.json", "/player/hair/5.png"],
-                "6": ["/player/anim.json", "/player/hair/6.png"],
-                "7": ["/player/anim.json", "/player/hair/7.png"],
-                "8": ["/player/anim.json", "/player/hair/8.png"],
-                "9": ["/player/anim.json", "/player/hair/9.png"]
+                "1": ["/anim/player/anim.json", "/anim/player/hair/1.png"],
+                "2": ["/anim/player/anim.json", "/anim/player/hair/2.png"],
+                "3": ["/anim/player/anim.json", "/anim/player/hair/3.png"],
+                "4": ["/anim/player/anim.json", "/anim/player/hair/4.png"],
+                "5": ["/anim/player/anim.json", "/anim/player/hair/5.png"],
+                "6": ["/anim/player/anim.json", "/anim/player/hair/6.png"],
+                "7": ["/anim/player/anim.json", "/anim/player/hair/7.png"],
+                "8": ["/anim/player/anim.json", "/anim/player/hair/8.png"],
+                "9": ["/anim/player/anim.json", "/anim/player/hair/9.png"]
             },
             "pants": {
-                "1": ["/player/anim.json", "/player/pants/1.png"],
-                "2": ["/player/anim.json", "/player/pants/2.png"]
+                "1": ["/anim/player/anim.json", "/anim/player/pants/1.png"],
+                "2": ["/anim/player/anim.json", "/anim/player/pants/2.png"]
             },
             "shirt": {
-                "1": ["/player/anim.json", "/player/shirt/1.png"],
-                "2": ["/player/anim.json", "/player/shirt/2.png"],
-                "3": ["/player/anim.json", "/player/shirt/3.png"],
-                "4": ["/player/anim.json", "/player/shirt/4.png"]
+                "1": ["/anim/player/anim.json", "/anim/player/shirt/1.png"],
+                "2": ["/anim/player/anim.json", "/anim/player/shirt/2.png"],
+                "3": ["/anim/player/anim.json", "/anim/player/shirt/3.png"],
+                "4": ["/anim/player/anim.json", "/anim/player/shirt/4.png"]
             },
             "sleeve": {
                 "1": {
-                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/1.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/1.png"]
                 },
                 "2": {
-                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/2.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/2.png"]
                 },
                 "3": {
-                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/3.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/3.png"]
                 },
                 "4": {
-                    "hanging": ["/player/anim.json", "/player/sleeve/hanging/4.png"]
+                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/4.png"]
                 }
             },
             "eyebrows": {
-                "1": ["/player/anim.json", "/player/eyebrows/1.png"],
-                "2": ["/player/anim.json", "/player/eyebrows/2.png"],
-                "3": ["/player/anim.json", "/player/eyebrows/3.png"],
-                "4": ["/player/anim.json", "/player/eyebrows/4.png"],
-                "5": ["/player/anim.json", "/player/eyebrows/5.png"],
-                "6": ["/player/anim.json", "/player/eyebrows/6.png"]
+                "1": ["/anim/player/anim.json", "/anim/player/eyebrows/1.png"],
+                "2": ["/anim/player/anim.json", "/anim/player/eyebrows/2.png"],
+                "3": ["/anim/player/anim.json", "/anim/player/eyebrows/3.png"],
+                "4": ["/anim/player/anim.json", "/anim/player/eyebrows/4.png"],
+                "5": ["/anim/player/anim.json", "/anim/player/eyebrows/5.png"],
+                "6": ["/anim/player/anim.json", "/anim/player/eyebrows/6.png"]
             },
             "mouth": {
-                "1": ["/player/anim.json", "/player/mouth/1.png"],
-                "2": ["/player/anim.json", "/player/mouth/2.png"],
-                "3": ["/player/anim.json", "/player/mouth/3.png"],
-                "4": ["/player/anim.json", "/player/mouth/4.png"],
-                "5": ["/player/anim.json", "/player/mouth/5.png"],
-                "6": ["/player/anim.json", "/player/mouth/6.png"],
-                "7": ["/player/anim.json", "/player/mouth/7.png"],
-                "8": ["/player/anim.json", "/player/mouth/8.png"],
-                "9": ["/player/anim.json", "/player/mouth/9.png"],
-                "10": ["/player/anim.json", "/player/mouth/10.png"]
+                "1": ["/anim/player/anim.json", "/anim/player/mouth/1.png"],
+                "2": ["/anim/player/anim.json", "/anim/player/mouth/2.png"],
+                "3": ["/anim/player/anim.json", "/anim/player/mouth/3.png"],
+                "4": ["/anim/player/anim.json", "/anim/player/mouth/4.png"],
+                "5": ["/anim/player/anim.json", "/anim/player/mouth/5.png"],
+                "6": ["/anim/player/anim.json", "/anim/player/mouth/6.png"],
+                "7": ["/anim/player/anim.json", "/anim/player/mouth/7.png"],
+                "8": ["/anim/player/anim.json", "/anim/player/mouth/8.png"],
+                "9": ["/anim/player/anim.json", "/anim/player/mouth/9.png"],
+                "10": ["/anim/player/anim.json", "/anim/player/mouth/10.png"]
             },
             "beard": {
-                "1": ["/player/anim.json", "/player/beard/1.png"],
-                "2": ["/player/anim.json", "/player/beard/2.png"]
+                "1": ["/anim/player/anim.json", "/anim/player/beard/1.png"],
+                "2": ["/anim/player/anim.json", "/anim/player/beard/2.png"]
             }
         }
     },

@@ -118,7 +118,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
             LoadableImageData data = new ImageIOImageData();
             for(int i = 0; i < icons.length; i++){
-                bufs[i] = data.loadImage(AssetManager.getResource("/assets/rockbottom/icon/"+icons[i]), false, null);
+                bufs[i] = data.loadImage(AssetManager.getResource("/assets/rockbottom/tex/icon/"+icons[i]), false, null);
             }
 
             Display.setIcon(bufs);
@@ -150,7 +150,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.initGraphics();
 
         try{
-            ITexture tex = new Texture(AssetManager.getResource("/assets/rockbottom/loading.png"), "loading", false);
+            ITexture tex = new Texture(AssetManager.getResource("/assets/rockbottom/tex/loading.png"), "loading", false);
             tex.draw(0, 0, Display.getWidth(), Display.getHeight());
             Display.update();
         }

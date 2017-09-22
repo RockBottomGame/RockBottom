@@ -59,7 +59,7 @@ public class WorldGenTrees implements IWorldGenerator{
 
     private boolean alreadyHasTree(Set<Pos2> list, Pos2 pos){
         for(Pos2 already : list){
-            if(Util.distanceSq(already.getX(), 0, pos.getX(), 0) < 9){
+            if(Util.distanceSq(already.getX(), 0, pos.getX(), 0) <= 25){
                 return true;
             }
         }
@@ -85,7 +85,9 @@ public class WorldGenTrees implements IWorldGenerator{
             chunk.setStateInner(x, y+i, GameContent.TILE_LOG.getDefState());
 
             if(isDoubleTree){
-                chunk.setStateInner(x+1, y+i, GameContent.TILE_LOG.getDefState());
+                if(!chunk.getStateInner(x+1, y+i).getTile().isFullTile()){
+                    chunk.setStateInner(x+1, y+i, GameContent.TILE_LOG.getDefState());
+                }
             }
         }
 
