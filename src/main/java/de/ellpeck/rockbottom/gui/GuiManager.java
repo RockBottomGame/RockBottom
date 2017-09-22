@@ -4,9 +4,9 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -34,7 +34,6 @@ import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +101,7 @@ public class GuiManager implements IGuiManager{
     }
 
     public void render(RockBottom game, IAssetManager manager, IGraphics g, EntityPlayer player){
-        Font font = manager.getFont();
+        IFont font = manager.getFont();
         float width = game.getWidthInGui();
         float height = game.getHeightInGui();
 

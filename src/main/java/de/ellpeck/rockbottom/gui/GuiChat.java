@@ -4,7 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
@@ -23,7 +24,7 @@ public class GuiChat extends Gui{
     private ComponentInputField inputField;
 
     public static void drawMessages(IGameInstance game, IAssetManager manager, IGraphics g, List<ChatComponent> messages, int maxCount){
-        Font font = manager.getFont();
+        IFont font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
         int sizeX = (int)game.getWidthInGui()/2;

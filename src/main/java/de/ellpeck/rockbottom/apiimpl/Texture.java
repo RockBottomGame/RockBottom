@@ -157,6 +157,16 @@ public class Texture extends Image implements ITexture{
         }
     }
 
+    @Override
+    public void setRotation(float angle){
+        this.angle = angle;
+    }
+
+    @Override
+    public void setRotationCenter(float x, float y){
+        this.setCenterOfRotation(x, y);
+    }
+
     private int translate(byte b){
         return b < 0 ? 256+b : b;
     }

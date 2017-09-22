@@ -4,7 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -100,7 +101,7 @@ public class GuiMods extends Gui{
         super.render(game, manager, g);
 
         if(this.selectedMod != null){
-            Font font = manager.getFont();
+            IFont font = manager.getFont();
 
             int width = this.width-100;
             float center = 100+(width/2);

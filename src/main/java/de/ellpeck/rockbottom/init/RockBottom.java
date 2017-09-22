@@ -573,6 +573,11 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
+    public IGraphics getGraphics(){
+        return this.graphics;
+    }
+
+    @Override
     public ParticleManager getParticleManager(){
         return this.particleManager;
     }

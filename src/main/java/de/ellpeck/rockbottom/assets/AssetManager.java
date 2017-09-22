@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.assets.anim.Animation;
 import de.ellpeck.rockbottom.api.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.api.assets.anim.AssetAnimation;
 import de.ellpeck.rockbottom.api.assets.font.AssetFont;
-import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
 import de.ellpeck.rockbottom.api.assets.local.Locale;
 import de.ellpeck.rockbottom.api.assets.tex.AssetTexture;
@@ -52,7 +52,7 @@ public class AssetManager implements IAssetManager{
     private AssetAnimation missingAnimation;
     private Locale currentLocale;
     private Locale defaultLocale;
-    private Font currentFont;
+    private IFont currentFont;
 
     public static InputStream getResource(String s){
         return AssetManager.class.getResourceAsStream(s);
@@ -300,7 +300,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Font getFont(IResourceName path){
+    public IFont getFont(IResourceName path){
         return this.getAssetWithFallback(path.addPrefix("font."), this.missingFont);
     }
 
@@ -310,12 +310,12 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Font getFont(){
+    public IFont getFont(){
         return this.currentFont;
     }
 
     @Override
-    public void setFont(Font font){
+    public void setFont(IFont font){
         this.currentFont = font;
     }
 

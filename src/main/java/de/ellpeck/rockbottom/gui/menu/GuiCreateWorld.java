@@ -4,7 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
@@ -119,7 +120,7 @@ public class GuiCreateWorld extends Gui{
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         super.render(game, manager, g);
 
-        Font font = manager.getFont();
+        IFont font = manager.getFont();
         int middle = this.width/2;
 
         font.drawCenteredString(this.x+middle, this.y+20, "World Name", 0.5F, false);

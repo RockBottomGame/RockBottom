@@ -4,15 +4,14 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ComponentSelectWorldButton extends ComponentButton{
@@ -36,8 +35,8 @@ public class ComponentSelectWorldButton extends ComponentButton{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
-        super.render(game, manager, g,x,y);
-        Font font = manager.getFont();
+        super.render(game, manager, g, x, y);
+        IFont font = manager.getFont();
         font.drawCutOffString(x+2F, y+1F, this.worldFile.getName(), 0.45F, this.width-4, false, false);
         font.drawString(x+2F, y+12F, FormattingCode.GRAY+manager.localize(RES_LAST_MODIFIED)+": "+this.lastModified, 0.25F);
         font.drawString(x+2F, y+18F, FormattingCode.GRAY+manager.localize(RES_SEED)+": "+this.info.seed, 0.25F);

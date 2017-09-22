@@ -4,7 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.Font;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.construction.resource.ResInfo;
@@ -96,7 +97,7 @@ public class Graphics implements IGraphics{
 
     @Override
     public void drawHoverInfo(IGameInstance game, IAssetManager manager, float x, float y, float scale, boolean firstLineOffset, boolean canLeaveScreen, int maxLength, List<String> text){
-        Font font = manager.getFont();
+        IFont font = manager.getFont();
 
         float boxWidth = 0F;
         float boxHeight = 0F;
@@ -179,6 +180,11 @@ public class Graphics implements IGraphics{
     @Override
     public void translate(float x, float y){
         Renderer.get().glTranslatef(x, y, 0F);
+    }
+
+    @Override
+    public void rotate(float angle){
+        Renderer.get().glRotatef(angle, 0F, 0F, 1F);
     }
 
     @Override

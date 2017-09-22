@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -177,6 +178,11 @@ public class RockBottomServer extends AbstractGame{
     @Override
     public IAssetManager getAssetManager(){
         throw new UnsupportedOperationException("Cannot get the asset manager on a dedicated server");
+    }
+
+    @Override
+    public IGraphics getGraphics(){
+        throw new UnsupportedOperationException("Cannot get the graphics on a dedicated server");
     }
 
     @Override
