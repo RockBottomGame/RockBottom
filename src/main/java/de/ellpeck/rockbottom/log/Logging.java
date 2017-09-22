@@ -12,9 +12,10 @@ public final class Logging{
 
     public static Logger mainLogger;
 
-    public static void createMain(String level){
+    public static void createMain(String levelName){
+        Level level = getLogLevel(levelName);
         mainLogger = Logger.getLogger(AbstractGame.NAME);
-        mainLogger.setLevel(getLogLevel(level));
+        mainLogger.setLevel(level);
         mainLogger.setUseParentHandlers(false);
 
         LogFormatter formatter = new LogFormatter();
@@ -22,10 +23,12 @@ public final class Logging{
 
         ConsoleHandler infoHandler = new ConsoleHandler(System.out, formatter);
         infoHandler.setFilter(filter);
+        infoHandler.setLevel(level);
         mainLogger.addHandler(infoHandler);
 
         ConsoleHandler errorHandler = new ConsoleHandler(System.err, formatter);
         errorHandler.setFilter(record -> !filter.isLoggable(record));
+        errorHandler.setLevel(level);
         mainLogger.addHandler(errorHandler);
 
         try{
@@ -37,7 +40,9 @@ public final class Logging{
             }
 
             FileHandler fileHandler = new FileHandler(new File(file, "latest.log").getPath());
+            fileHandler.setFilter(null);
             fileHandler.setFormatter(formatter);
+            fileHandler.setLevel(level);
             mainLogger.addHandler(fileHandler);
         }
         catch(Exception e){
