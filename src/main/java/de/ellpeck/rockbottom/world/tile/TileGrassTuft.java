@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.tile;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -27,12 +28,17 @@ public class TileGrassTuft extends TileMeta{
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getState(layer, x, y-1).getTile().isFullTile();
+        return world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
     }
 
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return world.getState(layer, x, y-1).getTile().isFullTile();
+        return world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
+    }
+
+    @Override
+    public boolean canReplace(IWorld world, int x, int y, TileLayer layer, Tile replacementTile){
+        return true;
     }
 
     @Override

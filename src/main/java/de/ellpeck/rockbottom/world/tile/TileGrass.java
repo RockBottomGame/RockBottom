@@ -51,4 +51,9 @@ public class TileGrass extends TileBasic{
     public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
         return world.getState(layer, x, y+1).getTile().isFullTile() ? GameContent.TILE_SOIL.getDefState() : this.getDefState();
     }
+
+    @Override
+    public boolean canKeepPlants(IWorld world, int x, int y, TileLayer layer){
+        return true;
+    }
 }

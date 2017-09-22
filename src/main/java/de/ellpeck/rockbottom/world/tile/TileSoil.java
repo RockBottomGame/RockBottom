@@ -16,4 +16,9 @@ public class TileSoil extends TileBasic{
     public boolean canGrassSpreadTo(IWorld world, int x, int y, TileLayer layer){
         return Util.RANDOM.nextInt(30) <= 0 && !world.getState(layer, x, y+1).getTile().isFullTile();
     }
+
+    @Override
+    public boolean canKeepPlants(IWorld world, int x, int y, TileLayer layer){
+        return true;
+    }
 }

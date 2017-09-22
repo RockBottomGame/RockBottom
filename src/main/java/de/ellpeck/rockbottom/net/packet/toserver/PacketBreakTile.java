@@ -61,7 +61,7 @@ public class PacketBreakTile implements IPacket{
                     int y = Util.floor(this.y);
 
                     Tile tile = world.getState(this.layer, x, y).getTile();
-                    if(tile.canBreak(world, x, y, this.layer)){
+                    if(InteractionManager.defaultTileBreakingCheck(world, x, y, this.layer) && tile.canBreak(world, x, y, this.layer)){
                         boolean isRightTool = RockBottomAPI.getApiHandler().isToolEffective(player, player.getInv().get(player.getSelectedSlot()), tile, this.layer, x, y);
                         InteractionManager.breakTile(tile, player, x, y, this.layer, isRightTool);
                     }

@@ -145,7 +145,7 @@ public class WorldRenderer{
                         int x = Util.toWorldPos(gridX);
                         int y = Util.toWorldPos(gridY);
 
-                        g.drawRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Colors.GREEN);
+                        g.drawRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 1F/scale, Colors.GREEN);
                     }
                 }
             }

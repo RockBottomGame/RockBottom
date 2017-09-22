@@ -1,13 +1,14 @@
 package de.ellpeck.rockbottom.world.gen.biome;
 
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.Random;
 
@@ -36,5 +37,10 @@ public class BiomeGrassland extends BiomeBasic{
     @Override
     public boolean hasGrasslandDecoration(){
         return true;
+    }
+
+    @Override
+    public boolean canTreeGrow(IWorld world, IChunk chunk, int x, int y){
+        return y > 0 && chunk.getStateInner(x, y-1).getTile().canKeepPlants(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN);
     }
 }

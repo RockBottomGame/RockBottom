@@ -18,7 +18,9 @@
             "grass_tuft": "/tiles/grass_tuft.png",
             "grass_short": "/tiles/grass_short.png",
             "grass_tall": "/tiles/grass_tall.png",
-            "bush": "/tiles/bush.png"
+            "bush": "/tiles/bush.png",
+            "log": "/tiles/log.png",
+            "leaves": "/tiles/leaves.png"
         },
         "items": {
 

@@ -15,7 +15,9 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketBreakTile;
@@ -101,6 +103,40 @@ public class InteractionManager implements IInteractionManager{
         return null;
     }
 
+    public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer){
+        if(layer == TileLayer.MAIN){
+            return true;
+        }
+        else{
+            if(!world.getState(x, y).getTile().isFullTile()){
+                for(Direction dir : Direction.ADJACENT){
+                    Tile other = world.getState(layer, x+dir.x, y+dir.y).getTile();
+                    if(!other.isFullTile()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean defaultTilePlacementCheck(IWorld world, int x, int y, TileLayer layer, Tile tile){
+        if(!tile.canPlaceInLayer(layer)){
+            return false;
+        }
+
+        for(TileLayer testLayer : TileLayer.getAllLayers()){
+            for(Direction dir : Direction.ADJACENT_INCLUDING_NONE){
+                Tile other = world.getState(testLayer, x+dir.x, y+dir.y).getTile();
+                if(!other.isAir()){
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
     public void update(RockBottom game){
         if(game.getWorld() != null){
             EntityPlayer player = game.getPlayer();
@@ -147,7 +183,7 @@ public class InteractionManager implements IInteractionManager{
                                 }
 
                                 Tile tile = player.world.getState(layer, x, y).getTile();
-                                if(tile.canBreak(player.world, x, y, layer)){
+                                if(defaultTileBreakingCheck(player.world, x, y, layer) && tile.canBreak(player.world, x, y, layer)){
                                     float hardness = tile.getHardness(player.world, x, y, layer);
                                     float progressAmount = 0.05F/hardness;
 
