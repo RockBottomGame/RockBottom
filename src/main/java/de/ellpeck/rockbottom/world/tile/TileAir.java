@@ -28,7 +28,7 @@ public class TileAir extends Tile{
     }
 
     @Override
-    public boolean canReplace(IWorld world, int x, int y, TileLayer layer, Tile replacementTile){
+    public boolean canReplace(IWorld world, int x, int y, TileLayer layer){
         return true;
     }
 

@@ -36,8 +36,8 @@ public class Graphics implements IGraphics{
         ITexture texture = manager.getTexture(SLOT_NAME);
 
         int color = game.getSettings().guiColor;
-        if(hovered){
-            color = Colors.multiply(color, 1.4F);
+        if(!hovered){
+            color = Colors.multiply(color, 0.75F);
         }
 
         texture.draw(x, y, texture.getWidth()*scale, texture.getHeight()*scale, color);

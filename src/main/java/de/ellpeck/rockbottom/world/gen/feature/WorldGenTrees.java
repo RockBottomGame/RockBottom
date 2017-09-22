@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.world.gen;
+package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
@@ -42,7 +42,7 @@ public class WorldGenTrees implements IWorldGenerator{
             do{
                 double mod = i*2000+tries*500;
                 int x = Util.ceil(this.treeNoise.make2dNoise(chunk.getX()*200+mod, chunk.getY()*200+mod)*(double)(Constants.CHUNK_SIZE-6))+3;
-                int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0);
+                int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0, true);
                 pos = new Pos2(x, y);
 
                 tries++;

@@ -340,7 +340,7 @@ public class ApiHandler implements IApiHandler{
     @Override
     public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile){
         if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
-            if(player.world.getState(layer, x, y).getTile().canReplace(player.world, x, y, layer, tile)){
+            if(player.world.getState(layer, x, y).getTile().canReplace(player.world, x, y, layer)){
                 if(InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer)){
                     if(!RockBottomAPI.getNet().isClient()){
                         tile.doPlace(player.world, x, y, layer, selected, player);

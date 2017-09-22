@@ -20,10 +20,15 @@
             "grass_tall": "/tex/tiles/grass_tall.png",
             "bush": "/tex/tiles/bush.png",
             "log": "/tex/tiles/log.png",
-            "leaves": "/tex/tiles/leaves.png"
+            "leaves": "/tex/tiles/leaves.png",
+            "flower_gray": "/tex/tiles/flower_gray.png",
+            "flower_orange": "/tex/tiles/flower_orange.png",
+            "flower_pink": "/tex/tiles/flower_pink.png",
+            "flower_red": "/tex/tiles/flower_red.png",
+            "flower_white": "/tex/tiles/flower_white.png",
+            "flower_yellow": "/tex/tiles/flower_yellow.png"
         },
         "items": {
-
         },
         "gui": {
             "cursor": "/tex/gui/cursor.png",

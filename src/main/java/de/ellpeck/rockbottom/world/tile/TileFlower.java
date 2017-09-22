@@ -1,29 +1,21 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-import java.util.Collections;
-import java.util.List;
+public class TileFlower extends TileMeta{
 
-public class TileGrassTuft extends TileMeta{
-
-    public TileGrassTuft(){
-        super(RockBottomAPI.createInternalRes("grass_tuft"));
-        this.addSubTile(RockBottomAPI.createInternalRes("grass_short"));
-        this.addSubTile(RockBottomAPI.createInternalRes("grass_tall"));
-        this.addSubTile(RockBottomAPI.createInternalRes("bush"));
-    }
-
-    @Override
-    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
-        return Collections.emptyList();
+    public TileFlower(){
+        super(RockBottomAPI.createInternalRes("flower"), false);
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_gray"));
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_orange"));
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_pink"));
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_red"));
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_white"));
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_yellow"));
     }
 
     @Override

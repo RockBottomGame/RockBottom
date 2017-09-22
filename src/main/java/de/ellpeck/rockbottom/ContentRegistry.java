@@ -4,8 +4,9 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
-import de.ellpeck.rockbottom.world.gen.WorldGenGrass;
-import de.ellpeck.rockbottom.world.gen.WorldGenTrees;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenFlowers;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenGrass;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeGrassland;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeSky;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeUnderground;
@@ -21,6 +22,7 @@ public final class ContentRegistry{
         new TileGrassTuft().register();
         new TileLog().register();
         new TileLeaves().register();
+        new TileFlower().register();
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 1, 1000).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 0, -1, 1000).register();
@@ -31,5 +33,6 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenBiomes.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGrass.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenTrees.class);
+        RockBottomAPI.WORLD_GENERATORS.add(WorldGenFlowers.class);
     }
 }

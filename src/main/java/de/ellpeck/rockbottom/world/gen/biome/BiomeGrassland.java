@@ -40,6 +40,11 @@ public class BiomeGrassland extends BiomeBasic{
     }
 
     @Override
+    public float getFlowerChance(){
+        return 0.3F;
+    }
+
+    @Override
     public boolean canTreeGrow(IWorld world, IChunk chunk, int x, int y){
         return y > 0 && chunk.getStateInner(x, y-1).getTile().canKeepPlants(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN);
     }

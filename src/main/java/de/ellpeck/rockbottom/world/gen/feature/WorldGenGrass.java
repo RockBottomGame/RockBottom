@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.world.gen;
+package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
@@ -30,12 +30,12 @@ public class WorldGenGrass implements IWorldGenerator{
     @Override
     public void generate(IWorld world, IChunk chunk, Random rand){
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0);
+            int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0, true);
             if(y >= 0 && chunk.getBiomeInner(x, y).hasGrasslandDecoration()){
                 if(this.grassNoise.make2dNoise(x/4D, y/4D) >= 0.5){
-                    TileMeta tile = (TileMeta)GameContent.TILE_GRASS_TUFT;
+                    TileMeta tile = GameContent.TILE_GRASS_TUFT;
                     if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
-                        int type = Util.floor(this.grassNoise.make2dNoise(x, y)*(double)tile.metaProp.getVariants());
+                        int type = Util.floor(this.grassNoise.make2dNoise(x*4D, y*4D)*(double)tile.metaProp.getVariants());
                         chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
                     }
                 }
