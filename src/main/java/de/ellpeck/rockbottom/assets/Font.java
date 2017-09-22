@@ -222,7 +222,7 @@ public class Font implements IFont{
         float shadowOffset = 2F*scale;
 
         if(character != ' '){
-            if(prop == FontProp.RANDOM && character != '│'){
+            if(prop == FontProp.RANDOM && character != '|'){
                 String randomChars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
                 double noise = (this.randomNoise.make2dNoise(x, y)*(Util.getTimeMillis()/75))%1D;
