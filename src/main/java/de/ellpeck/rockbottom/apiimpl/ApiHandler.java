@@ -174,35 +174,34 @@ public class ApiHandler implements IApiHandler{
             double motionYBefore = motionY;
 
             BoundBox ownBox = object.getBoundingBox();
-            BoundBox tempBox = ownBox.copy().add(object.x+motionX, object.y+motionY);
+            BoundBox tempBox = ownBox.copy().add(object.x, object.y);
+            BoundBox tempBoxMotion = tempBox.copy().add(motionX, motionY);
 
             List<BoundBox> boxes = new ArrayList<>();
 
-            for(int x = Util.floor(tempBox.getMinX()); x < Util.ceil(tempBox.getMaxX()); x++){
-                for(int y = Util.floor(tempBox.getMinY()); y < Util.ceil(tempBox.getMaxY()); y++){
+            for(int x = Util.floor(tempBoxMotion.getMinX()); x < Util.ceil(tempBoxMotion.getMaxX()); x++){
+                for(int y = Util.floor(tempBoxMotion.getMinY()); y < Util.ceil(tempBoxMotion.getMaxY()); y++){
                     if(object.world.isPosLoaded(x, y)){
                         for(TileLayer layer : TileLayer.getAllLayers()){
                             TileState state = object.world.getState(x, y);
 
                             if(layer == TileLayer.MAIN){
                                 List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y);
-                                object.onTileCollision(object.world, x, y, layer, state, tempBox, tileBoxes);
+                                object.onTileCollision(object.world, x, y, layer, state, tempBox, tempBoxMotion, tileBoxes);
                                 boxes.addAll(tileBoxes);
                             }
                             else{
-                                object.onTileCollision(object.world, x, y, layer, state, tempBox, Collections.emptyList());
+                                object.onTileCollision(object.world, x, y, layer, state, tempBox, tempBoxMotion, Collections.emptyList());
                             }
                         }
                     }
                 }
             }
 
-            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, tempBox, boxes));
+            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, tempBoxMotion, boxes));
 
             if(motionY != 0){
                 if(!boxes.isEmpty()){
-                    tempBox.set(ownBox).add(object.x, object.y);
-
                     for(BoundBox box : boxes){
                         if(motionY != 0){
                             if(!box.isEmpty()){
@@ -221,7 +220,6 @@ public class ApiHandler implements IApiHandler{
             if(motionX != 0){
                 if(!boxes.isEmpty()){
                     tempBox.set(ownBox).add(object.x, object.y);
-
                     for(BoundBox box : boxes){
                         if(motionX != 0){
                             if(!box.isEmpty()){
