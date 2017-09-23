@@ -118,8 +118,6 @@ public class WorldRenderer{
         g.pushMatrix();
         g.scale(game.getWorldScale(), game.getWorldScale());
 
-        particles.render(game, manager, g, world, transX, transY);
-
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
@@ -129,6 +127,8 @@ public class WorldRenderer{
                 }
             }
         });
+
+        particles.render(game, manager, g, world, transX, transY);
 
         RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, transX, transY));
 
