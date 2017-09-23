@@ -236,22 +236,6 @@ public class World implements IWorld{
     }
 
     @Override
-    public List<BoundBox> getCollisions(BoundBox area){
-        List<BoundBox> collisions = new ArrayList<>();
-
-        for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
-            for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
-                if(this.isPosLoaded(x, y)){
-                    Tile tile = this.getState(x, y).getTile();
-                    tile.getBoundBoxes(this, x, y, collisions);
-                }
-            }
-        }
-
-        return collisions;
-    }
-
-    @Override
     public int getIdForState(TileState state){
         IResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
         if(name != null){

@@ -9,11 +9,14 @@ import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -28,8 +31,7 @@ import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
 import java.io.*;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -113,32 +115,10 @@ public class ApiHandler implements IApiHandler{
         if(!entity.isDead()){
             entity.applyMotion();
 
-            entity.move(entity.motionX, entity.motionY);
-
             entity.canClimb = false;
             entity.isClimbing = false;
 
-            BoundBox area = entity.getBoundingBox().copy().add(entity.x+entity.motionX, entity.y+entity.motionY);
-            for(int x = Util.floor(area.getMinX()); x < Util.ceil(area.getMaxX()); x++){
-                for(int y = Util.floor(area.getMinY()); y < Util.ceil(area.getMaxY()); y++){
-                    for(TileLayer layer : TileLayer.getAllLayers()){
-                        if(entity.world.isPosLoaded(x, y)){
-                            Tile tile = entity.world.getState(layer, x, y).getTile();
-
-                            if(tile.canClimb(entity.world, x, y, layer, entity)){
-                                entity.canClimb = true;
-
-                                if(!entity.onGround){
-                                    entity.isClimbing = true;
-                                }
-                            }
-
-                            tile.onCollideWithEntity(entity.world, x, y, layer, entity);
-                            entity.onCollideWithTile(x, y, layer, tile);
-                        }
-                    }
-                }
-            }
+            entity.move(entity.motionX, entity.motionY);
 
             if(entity.onGround || entity.isClimbing){
                 if(entity.onGround){
@@ -184,6 +164,82 @@ public class ApiHandler implements IApiHandler{
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void doWorldObjectMovement(MovableWorldObject object, double motionX, double motionY){
+        if(motionX != 0 || motionY != 0){
+            double motionXBefore = motionX;
+            double motionYBefore = motionY;
+
+            BoundBox ownBox = object.getBoundingBox();
+            BoundBox tempBox = ownBox.copy().add(object.x+motionX, object.y+motionY);
+
+            List<BoundBox> boxes = new ArrayList<>();
+
+            for(int x = Util.floor(tempBox.getMinX()); x < Util.ceil(tempBox.getMaxX()); x++){
+                for(int y = Util.floor(tempBox.getMinY()); y < Util.ceil(tempBox.getMaxY()); y++){
+                    if(object.world.isPosLoaded(x, y)){
+                        for(TileLayer layer : TileLayer.getAllLayers()){
+                            TileState state = object.world.getState(x, y);
+
+                            if(layer == TileLayer.MAIN){
+                                List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y);
+                                object.onTileCollision(object.world, x, y, layer, state, tempBox, tileBoxes);
+                                boxes.addAll(tileBoxes);
+                            }
+                            else{
+                                object.onTileCollision(object.world, x, y, layer, state, tempBox, Collections.emptyList());
+                            }
+                        }
+                    }
+                }
+            }
+
+            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, tempBox, boxes));
+
+            if(motionY != 0){
+                if(!boxes.isEmpty()){
+                    tempBox.set(ownBox).add(object.x, object.y);
+
+                    for(BoundBox box : boxes){
+                        if(motionY != 0){
+                            if(!box.isEmpty()){
+                                motionY = box.getYDistanceWithMax(tempBox, motionY);
+                            }
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                }
+
+                object.y += motionY;
+            }
+
+            if(motionX != 0){
+                if(!boxes.isEmpty()){
+                    tempBox.set(ownBox).add(object.x, object.y);
+
+                    for(BoundBox box : boxes){
+                        if(motionX != 0){
+                            if(!box.isEmpty()){
+                                motionX = box.getXDistanceWithMax(tempBox, motionX);
+                            }
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                }
+
+                object.x += motionX;
+            }
+
+            object.collidedHor = motionX != motionXBefore;
+            object.collidedVert = motionY != motionYBefore;
+            object.onGround = object.collidedVert && motionYBefore < 0;
         }
     }
 
