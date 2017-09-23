@@ -35,7 +35,7 @@ public class WorldGenTrees implements IWorldGenerator{
 
         Set<Pos2> alreadyGeneratedPositions = new HashSet<>();
 
-        for(int i = 1; i <= amount; i++){
+        amount : for(int i = 1; i <= amount; i++){
             Pos2 pos;
 
             int tries = 0;
@@ -46,6 +46,10 @@ public class WorldGenTrees implements IWorldGenerator{
                 pos = new Pos2(x, y);
 
                 tries++;
+
+                if(tries > 20){
+                    continue amount;
+                }
             }
             while(this.alreadyHasTree(alreadyGeneratedPositions, pos));
 
