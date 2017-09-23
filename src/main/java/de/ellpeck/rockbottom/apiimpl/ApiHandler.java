@@ -118,7 +118,7 @@ public class ApiHandler implements IApiHandler{
             entity.canClimb = false;
             entity.isClimbing = false;
 
-            entity.move(entity.motionX, entity.motionY);
+            entity.move();
 
             if(entity.onGround || entity.isClimbing){
                 if(entity.onGround){
@@ -168,14 +168,11 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void doWorldObjectMovement(MovableWorldObject object, double motionX, double motionY){
-        if(motionX != 0 || motionY != 0){
-            double motionXBefore = motionX;
-            double motionYBefore = motionY;
-
+    public void doWorldObjectMovement(MovableWorldObject object){
+        if(object.motionX != 0 || object.motionY != 0){
             BoundBox ownBox = object.getBoundingBox();
             BoundBox tempBox = ownBox.copy().add(object.x, object.y);
-            BoundBox tempBoxMotion = tempBox.copy().add(motionX, motionY);
+            BoundBox tempBoxMotion = tempBox.copy().add(object.motionX, object.motionY);
 
             List<BoundBox> boxes = new ArrayList<>();
 
@@ -200,6 +197,7 @@ public class ApiHandler implements IApiHandler{
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, tempBoxMotion, boxes));
 
+            double motionY = object.motionY;
             if(motionY != 0){
                 if(!boxes.isEmpty()){
                     for(BoundBox box : boxes){
@@ -217,6 +215,7 @@ public class ApiHandler implements IApiHandler{
                 object.y += motionY;
             }
 
+            double motionX = object.motionX;
             if(motionX != 0){
                 if(!boxes.isEmpty()){
                     tempBox.set(ownBox).add(object.x, object.y);
@@ -235,9 +234,9 @@ public class ApiHandler implements IApiHandler{
                 object.x += motionX;
             }
 
-            object.collidedHor = motionX != motionXBefore;
-            object.collidedVert = motionY != motionYBefore;
-            object.onGround = object.collidedVert && motionYBefore < 0;
+            object.collidedHor = motionX != object.motionX;
+            object.collidedVert = motionY != object.motionY;
+            object.onGround = object.collidedVert && object.motionY < 0;
         }
     }
 
