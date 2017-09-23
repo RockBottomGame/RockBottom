@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
 import de.ellpeck.rockbottom.api.assets.IAsset;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.api.assets.anim.AssetAnimation;
 import de.ellpeck.rockbottom.api.assets.anim.IAnimation;
 import de.ellpeck.rockbottom.api.assets.font.AssetFont;

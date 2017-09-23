@@ -25,7 +25,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.ellpeck.rockbottom.api.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.api.assets.anim.IAnimation;
 import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -34,8 +33,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class Animation implements IAnimation{
 
@@ -45,24 +42,11 @@ public class Animation implements IAnimation{
     private final ITexture texture;
     private final List<AnimationRow> rows;
 
-    private BiConsumer<AnimationRow, Integer> frameConsumer;
-    private Consumer<AnimationRow> rowConsumer;
-
     public Animation(ITexture texture, int frameWidth, int frameHeight, List<AnimationRow> rows){
         this.texture = texture;
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
         this.rows = rows;
-    }
-
-    @Override
-    public void setFrameFinishedCallback(BiConsumer<AnimationRow, Integer> consumer){
-        this.frameConsumer = consumer;
-    }
-
-    @Override
-    public void setRowFinishedCallback(Consumer<AnimationRow> consumer){
-        this.rowConsumer = consumer;
     }
 
     public static Animation fromStream(ITexture texture, InputStream infoStream) throws Exception{
@@ -100,12 +84,7 @@ public class Animation implements IAnimation{
 
     @Override
     public void drawFrame(int row, int frame, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
-        if(row < 0 || row >= this.rows.size()){
-            row = 0;
-        }
-        AnimationRow theRow = this.rows.get(row);
-
-        if(frame < 0 || frame >= theRow.getFrameAmount()){
+        if(frame < 0 || frame >= this.getFrameAmount(row)){
             frame = 0;
         }
 
@@ -113,62 +92,69 @@ public class Animation implements IAnimation{
         float srcY = row*this.frameHeight;
 
         this.texture.draw(x1, y1, x2, y2, srcX+srcX1, srcY+srcY1, srcX+srcX2, srcY+srcY2, light, filter);
-
-        if(this.frameConsumer != null){
-            this.frameConsumer.accept(theRow, frame);
-        }
     }
 
     @Override
     public void drawRow(int row, float x, float y, float scale, int filter){
-        this.drawRow(0, row, x, y, scale, null, filter);
+        this.drawRow(-1, row, x, y, scale, null, filter);
     }
 
     @Override
     public void drawRow(int row, float x, float y, float scale, int[] light, int filter){
-        this.drawRow(0, row, x, y, x+scale, y+(this.frameHeight/this.frameWidth)*scale, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+        this.drawRow(-1, row, x, y, x+scale, y+(this.frameHeight/this.frameWidth)*scale, 0, 0, this.frameWidth, this.frameHeight, light, filter);
     }
 
     @Override
     public void drawRow(int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
-        this.drawRow(0, row, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
+        this.drawRow(-1, row, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
     }
 
     @Override
-    public void drawRow(long timeOffsetMillis, int row, float x, float y, float scale, int filter){
-        this.drawRow(timeOffsetMillis, row, x, y, scale, null, filter);
+    public void drawRow(long startTimeMillis, int row, float x, float y, float scale, int filter){
+        this.drawRow(startTimeMillis, row, x, y, scale, null, filter);
     }
 
     @Override
-    public void drawRow(long timeOffsetMillis, int row, float x, float y, float scale, int[] light, int filter){
-        this.drawRow(timeOffsetMillis, row, x, y, x+scale, y+(this.frameHeight/this.frameWidth)*scale, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+    public void drawRow(long startTimeMillis, int row, float x, float y, float scale, int[] light, int filter){
+        this.drawRow(startTimeMillis, row, x, y, x+scale, y+(this.frameHeight/this.frameWidth)*scale, 0, 0, this.frameWidth, this.frameHeight, light, filter);
     }
 
     @Override
-    public void drawRow(long timeOffsetMillis, int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
-        if(row < 0 || row >= this.rows.size()){
-            row = 0;
-        }
-        AnimationRow theRow = this.rows.get(row);
-
-        long time = Util.getTimeMillis()+timeOffsetMillis;
-        long runningTime = time%(long)(theRow.getTotalTime()*1000);
+    public void drawRow(long startTimeMillis, int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
+        long time = startTimeMillis >= 0 ? Util.getTimeMillis()-startTimeMillis : Util.getTimeMillis();
+        long runningTime = time%this.getTotalTime(row);
 
         int accum = 0;
-        for(int i = 0; i < theRow.getFrameAmount(); i++){
-            accum += theRow.getTime(i)*1000;
+        for(int i = 0; i < this.getFrameAmount(row); i++){
+            accum += this.getFrameTime(row, i);
             if(accum >= runningTime){
                 this.drawFrame(row, i, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
-
-                if(this.rowConsumer != null){
-                    if(i >= theRow.getFrameAmount()-1){
-                        this.rowConsumer.accept(theRow);
-                    }
-                }
-
                 break;
             }
         }
+    }
+
+    @Override
+    public int getFrameAmount(int row){
+        return this.getRow(row).getFrameAmount();
+    }
+
+    @Override
+    public long getTotalTime(int row){
+        return (long)(this.getRow(row).getTotalTime()*1000F);
+    }
+
+    @Override
+    public long getFrameTime(int row, int frame){
+        return (long)(this.getRow(row).getTime(frame)*1000F);
+    }
+
+    private AnimationRow getRow(int row){
+        if(row < 0 || row >= this.rows.size()){
+            row = 0;
+        }
+
+        return this.rows.get(row);
     }
 
     @Override
