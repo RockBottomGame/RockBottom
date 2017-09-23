@@ -9,9 +9,9 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.AssetSound;
 import de.ellpeck.rockbottom.api.assets.IAsset;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.anim.Animation;
 import de.ellpeck.rockbottom.api.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.api.assets.anim.AssetAnimation;
+import de.ellpeck.rockbottom.api.assets.anim.IAnimation;
 import de.ellpeck.rockbottom.api.assets.font.AssetFont;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
@@ -21,7 +21,6 @@ import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.apiimpl.Texture;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
@@ -285,7 +284,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Animation getAnimation(IResourceName path){
+    public IAnimation getAnimation(IResourceName path){
         return this.getAssetWithFallback(path.addPrefix("anim."), this.missingAnimation);
     }
 

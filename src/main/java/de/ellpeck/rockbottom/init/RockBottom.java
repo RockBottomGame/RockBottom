@@ -19,7 +19,7 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.apiimpl.Graphics;
-import de.ellpeck.rockbottom.apiimpl.Texture;
+import de.ellpeck.rockbottom.assets.Texture;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;

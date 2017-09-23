@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.apiimpl;
+package de.ellpeck.rockbottom.assets;
 
 import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
