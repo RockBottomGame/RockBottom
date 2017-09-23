@@ -159,12 +159,15 @@ public class Animation implements IAnimation{
             accum += theRow.getTime(i)*1000;
             if(accum >= runningTime){
                 this.drawFrame(row, i, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
+
+                if(this.rowConsumer != null){
+                    if(i >= theRow.getFrameAmount()-1){
+                        this.rowConsumer.accept(theRow);
+                    }
+                }
+
                 break;
             }
-        }
-
-        if(this.rowConsumer != null){
-            this.rowConsumer.accept(theRow);
         }
     }
 }
