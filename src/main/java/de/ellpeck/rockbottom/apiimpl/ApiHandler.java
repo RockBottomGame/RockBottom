@@ -184,7 +184,7 @@ public class ApiHandler implements IApiHandler{
                             TileState state = object.world.getState(x, y);
 
                             if(layer == TileLayer.MAIN){
-                                List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y);
+                                List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, object, tempBox, tempBoxMotion);
                                 object.onTileCollision(object.world, x, y, layer, state, tempBox, tempBoxMotion, tileBoxes);
                                 boxes.addAll(tileBoxes);
                             }
