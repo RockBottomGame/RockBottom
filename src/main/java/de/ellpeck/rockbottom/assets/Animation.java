@@ -170,4 +170,9 @@ public class Animation implements IAnimation{
             }
         }
     }
+
+    @Override
+    public ITexture getTexture(){
+        return this.texture;
+    }
 }
