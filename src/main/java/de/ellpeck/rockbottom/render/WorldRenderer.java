@@ -68,7 +68,7 @@ public class WorldRenderer{
         List<EntityPlayer> players = new ArrayList<>();
 
         List<TileLayer> layers = new ArrayList<>(TileLayer.getAllLayers());
-        layers.sort(Comparator.comparingInt(TileLayer::getRenderPriority).reversed());
+        layers.sort(Comparator.comparingInt(TileLayer:: getRenderPriority).reversed());
 
         for(int gridX = minX; gridX <= maxX; gridX++){
             for(int gridY = minY; gridY <= maxY; gridY++){
@@ -84,20 +84,22 @@ public class WorldRenderer{
                                 int[] light = api.interpolateLight(world, chunk.getX()+x, chunk.getY()+y);
 
                                 for(TileLayer layer : layers){
-                                    TileState state = chunk.getStateInner(layer, x, y);
-                                    Tile tile = state.getTile();
+                                    if(!layer.forceForegroundRender()){
+                                        TileState state = chunk.getStateInner(layer, x, y);
+                                        Tile tile = state.getTile();
 
-                                    ITileRenderer renderer = tile.getRenderer();
-                                    if(renderer != null){
-                                        renderer.render(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+                                        ITileRenderer renderer = tile.getRenderer();
+                                        if(renderer != null){
+                                            renderer.render(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
-                                        if(input.breakingLayer == layer){
-                                            this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
+                                            if(input.breakingLayer == layer){
+                                                this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
+                                            }
                                         }
-                                    }
 
-                                    if(tile.obscuresBackground()){
-                                        break;
+                                        if(tile.obscuresBackground()){
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -152,6 +154,48 @@ public class WorldRenderer{
         }
 
         g.popMatrix();
+
+        for(int gridX = minX; gridX <= maxX; gridX++){
+            for(int gridY = minY; gridY <= maxY; gridY++){
+                if(world.isChunkLoaded(gridX, gridY)){
+                    IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
+
+                    for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                        for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                            int tileX = chunk.getX()+x;
+                            int tileY = chunk.getY()+y;
+
+                            if(tileX >= transX-1 && -tileY >= transY-1 && tileX < transX+width && -tileY < transY+height){
+                                int[] light = api.interpolateLight(world, chunk.getX()+x, chunk.getY()+y);
+
+                                for(TileLayer layer : layers){
+                                    TileState state = chunk.getStateInner(layer, x, y);
+                                    Tile tile = state.getTile();
+
+                                    ITileRenderer renderer = tile.getRenderer();
+                                    if(renderer != null){
+                                        if(layer.forceForegroundRender()){
+                                            renderer.render(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+
+                                            if(input.breakingLayer == layer){
+                                                this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
+                                            }
+                                        }
+
+                                        renderer.renderInForeground(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+                                    }
+
+                                    if(tile.obscuresBackground()){
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY, float scale){
