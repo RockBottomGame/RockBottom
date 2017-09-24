@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -41,7 +42,7 @@ public class Font implements IFont{
 
     public static Font fromStream(ITexture texture, InputStream infoStream, String name) throws Exception{
         JsonParser parser = new JsonParser();
-        JsonObject main = parser.parse(new InputStreamReader(infoStream)).getAsJsonObject();
+        JsonObject main = parser.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
 
         int width = 0;
         Map<Character, Pos2> characters = new HashMap<>();
@@ -59,13 +60,15 @@ public class Font implements IFont{
                 String s = row.get(x).getAsString();
                 if(s != null && !s.isEmpty()){
                     char c = s.charAt(0);
-                    characters.put(c, new Pos2(x, y));
+                    if(c != ' '){
+                        characters.put(c, new Pos2(x, y));
+                    }
                 }
             }
         }
 
         int height = rows.size();
-        RockBottomAPI.logger().config("Loaded font "+name+" with dimensions "+width+"x"+height+" and the following character map: "+characters);
+        RockBottomAPI.logger().config("Loaded font "+name+" with dimensions "+width+"x"+height+" and the following character map consisting of "+characters.size()+" characters: "+characters);
 
         return new Font(name, texture, width, height, characters);
     }

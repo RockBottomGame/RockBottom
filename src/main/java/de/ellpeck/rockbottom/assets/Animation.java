@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,7 +32,7 @@ public class Animation implements IAnimation{
     public static Animation fromStream(ITexture texture, InputStream infoStream) throws Exception{
         List<AnimationRow> rows = new ArrayList<>();
 
-        JsonObject main = new JsonParser().parse(new InputStreamReader(infoStream)).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
         JsonArray dims = main.getAsJsonArray("size");
         int frameWidth = dims.get(0).getAsInt();
         int frameHeight = dims.get(1).getAsInt();

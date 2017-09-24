@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -144,7 +145,7 @@ public class AssetManager implements IAssetManager{
                 InputStream stream = getResource(path+"/assets.json");
                 if(stream != null){
                     try{
-                        InputStreamReader reader = new InputStreamReader(stream);
+                        InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8);
                         JsonObject main = parser.parse(reader).getAsJsonObject();
 
                         for(Entry<String, JsonElement> resType : main.entrySet()){
