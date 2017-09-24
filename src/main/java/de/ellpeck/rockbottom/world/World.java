@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerJoinWorldEvent;
+import de.ellpeck.rockbottom.api.event.impl.WorldSaveEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -454,6 +455,8 @@ public class World implements IWorld{
     public void save(){
         long timeStarted = Util.getTimeMillis();
         int amount = 0;
+
+        RockBottomAPI.getEventHandler().fireEvent(new WorldSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
 
         for(IChunk chunk : this.loadedChunks){
             if(this.saveChunk(chunk)){

@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.ChunkSaveEvent;
 import de.ellpeck.rockbottom.api.event.impl.EntityTickEvent;
 import de.ellpeck.rockbottom.api.event.impl.TileEntityTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -587,6 +588,8 @@ public class Chunk implements IChunk{
 
     @Override
     public void save(DataSet set){
+        RockBottomAPI.getEventHandler().fireEvent(new ChunkSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
+
         int layerCounter = 0;
         for(TileLayer layer : this.stateGrid.keySet()){
             int[] ids = new int[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
