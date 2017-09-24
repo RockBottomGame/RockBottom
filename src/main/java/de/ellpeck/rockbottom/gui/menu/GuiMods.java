@@ -4,19 +4,17 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.IFont;
-import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
 
-import java.awt.*;
-import java.io.IOException;
 import java.util.logging.Level;
 
 public class GuiMods extends Gui{
@@ -44,16 +42,7 @@ public class GuiMods extends Gui{
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
-        this.components.add(new ComponentFancyButton(this, this.width-18, 14, 16, 16, () -> {
-            try{
-                Desktop.getDesktop().open(game.getDataManager().getModsDir());
-                return true;
-            }
-            catch(IOException e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't open mods folder", e);
-                return false;
-            }
-        }, RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width-18, 14, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
 
         this.modGuiButton = new ComponentButton(this, 100+(this.width-100)/2-60, this.height-30, 55, 16, () -> {
             Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();

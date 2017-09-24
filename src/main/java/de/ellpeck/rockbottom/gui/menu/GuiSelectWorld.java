@@ -47,16 +47,7 @@ public class GuiSelectWorld extends Gui{
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
-        this.components.add(new ComponentFancyButton(this, this.width/2+64, bottomY-30, 16, 16, ()->{
-            try{
-                Desktop.getDesktop().open(game.getDataManager().getWorldsDir());
-                return true;
-            }
-            catch(IOException e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't open worlds folder", e);
-                return false;
-            }
-        }, RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width/2+64, bottomY-30, 16, 16, ()-> Util.createAndOpen(game.getDataManager().getWorldsDir()), RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
 
         File worldFolder = game.getDataManager().getWorldsDir();
         File[] worlds = worldFolder.listFiles();
