@@ -202,8 +202,8 @@ public class Graphics implements IGraphics{
 
     @Override
     public void fillRect(float x, float y, float width, float height, int color){
-        this.bindColor(color);
         TextureImpl.bindNone();
+        this.bindColor(color);
 
         SGL gl = Renderer.get();
         gl.glBegin(SGL.GL_QUADS);

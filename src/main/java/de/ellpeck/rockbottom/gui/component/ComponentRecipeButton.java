@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ComponentRecipeButton extends ComponentButton{
 
-    private static final int TRANSPARENT_COLOR = 0xFFFFFF80;
+    private static final int TRANSPARENT_COLOR = Colors.rgb(1F, 1F, 1F, 0.5F);
     private static final IResourceName LOC_CONSTRUCTS = RockBottomAPI.createInternalRes("info.constructs");
     private static final IResourceName LOC_USES = RockBottomAPI.createInternalRes("info.uses");
 
