@@ -27,14 +27,14 @@ public class ComponentKeybind extends ComponentButton{
     protected String getText(){
         IAssetManager manager = RockBottomAPI.getGame().getAssetManager();
         String name = this.bind.isMouse() ? Mouse.getButtonName(this.bind.getKey()) : Input.getKeyName(this.bind.getKey());
-        return manager.localize(this.bind.getName().addPrefix("key."))+": "+(this.isActive() ? "<?>" : name);
+        return manager.localize(this.bind.getName().addPrefix("key."))+": "+(this.isSelected() ? "<?>" : name);
     }
 
     @Override
     public boolean onKeyboardAction(IGameInstance game, int button, char character){
-        if(this.isActive()){
+        if(this.isSelected()){
             this.bind.setBind(button, false);
-            this.gui.activeKeybind = -1;
+            this.gui.selectedKeybind = -1;
 
             return true;
         }
@@ -45,9 +45,9 @@ public class ComponentKeybind extends ComponentButton{
 
     @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
-        if(this.isActive()){
+        if(this.isSelected()){
             this.bind.setBind(button, true);
-            this.gui.activeKeybind = -1;
+            this.gui.selectedKeybind = -1;
 
             return true;
         }
@@ -58,15 +58,15 @@ public class ComponentKeybind extends ComponentButton{
 
     @Override
     public boolean onPressed(IGameInstance game){
-        if(!this.isActive()){
-            this.gui.activeKeybind = this.id;
+        if(!this.isSelected()){
+            this.gui.selectedKeybind = this.id;
             return true;
         }
         return false;
     }
 
-    private boolean isActive(){
-        return this.gui.activeKeybind == this.id;
+    public boolean isSelected(){
+        return this.gui.selectedKeybind == this.id;
     }
 
     @Override

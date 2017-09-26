@@ -25,14 +25,14 @@ public class ComponentRecipeButton extends ComponentButton{
 
     public final AbstractEntityPlayer player;
     public final IRecipe recipe;
-    public final int recipeId;
+    public final IResourceName recipeName;
     public final boolean canConstruct;
     private final ComponentConstruction component;
 
-    public ComponentRecipeButton(ComponentConstruction component, int x, int y, int sizeX, int sizeY, IRecipe recipe, int recipeId, boolean canConstruct){
+    public ComponentRecipeButton(ComponentConstruction component, int x, int y, int sizeX, int sizeY, IRecipe recipe, IResourceName recipeName, boolean canConstruct){
         super(component.gui, x, y, sizeX, sizeY, null, null);
         this.player = component.gui.player;
-        this.recipeId = recipeId;
+        this.recipeName = recipeName;
         this.recipe = recipe;
         this.canConstruct = canConstruct;
         this.component = component;
@@ -41,7 +41,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
-        if(this.recipe != null){
+        if(this.recipe != null && this.recipe.isKnown(this.player)){
             super.render(game, manager, g, x, y);
 
             List<ItemInstance> outputs = this.recipe.getOutputs();
@@ -52,7 +52,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
     @Override
     protected String[] getHover(){
-        if(this.recipe != null){
+        if(this.recipe != null && this.recipe.isKnown(this.player)){
             IGameInstance game = RockBottomAPI.getGame();
             IAssetManager manager = game.getAssetManager();
 
@@ -63,32 +63,42 @@ public class ComponentRecipeButton extends ComponentButton{
 
             hover.add(manager.localize(LOC_CONSTRUCTS)+":");
             for(ItemInstance inst : outputs){
-                hover.add(FormattingCode.YELLOW+" "+inst.getDisplayName()+" x"+inst.getAmount());
+                if(this.recipe.shouldDisplayOutput(this.player, inst)){
+                    hover.add(FormattingCode.YELLOW+" "+inst.getDisplayName()+" x"+inst.getAmount());
+                }
+                else{
+                    hover.add(FormattingCode.ORANGE+"??? x"+inst.getAmount());
+                }
             }
 
             hover.add(manager.localize(LOC_USES)+":");
             for(IUseInfo info : inputs){
-                FormattingCode code;
+                if(this.recipe.shouldDisplayIngredient(this.player, info)){
+                    FormattingCode code;
 
-                if(!this.canConstruct && !this.player.getInv().containsResource(info)){
-                    code = FormattingCode.RED;
+                    if(!this.canConstruct && !this.player.getInv().containsResource(info)){
+                        code = FormattingCode.RED;
+                    }
+                    else{
+                        code = FormattingCode.GREEN;
+                    }
+
+                    ItemInstance inst;
+
+                    List<ItemInstance> items = info.getItems();
+                    if(items.size() > 1){
+                        int index = (game.getTotalTicks()/Constants.TARGET_TPS)%(items.size());
+                        inst = items.get(index);
+                    }
+                    else{
+                        inst = items.get(0);
+                    }
+
+                    hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
                 }
                 else{
-                    code = FormattingCode.GREEN;
+                    hover.add(FormattingCode.ORANGE+"??? "+info.getAmount());
                 }
-
-                ItemInstance inst;
-
-                List<ItemInstance> items = info.getItems();
-                if(items.size() > 1){
-                    int index = (game.getTotalTicks()/Constants.TARGET_TPS)%(items.size());
-                    inst = items.get(index);
-                }
-                else{
-                    inst = items.get(0);
-                }
-
-                hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
             }
 
             return hover.toArray(new String[hover.size()]);
@@ -101,7 +111,7 @@ public class ComponentRecipeButton extends ComponentButton{
     @Override
     public boolean onPressed(IGameInstance game){
         if(this.canConstruct){
-            this.component.consumer.accept(this.recipe, this.recipeId);
+            this.component.consumer.accept(this.recipe, this.recipeName);
             return true;
         }
         return false;
