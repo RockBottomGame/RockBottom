@@ -9,9 +9,9 @@ import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.ApiHandler;
@@ -21,9 +21,7 @@ import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
-import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.world.World;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.net.URLClassLoader;
@@ -113,7 +111,7 @@ public abstract class AbstractGame implements IGameInstance{
     public abstract int getAutosaveInterval();
 
     public void shutdown(){
-        RockBottomAPI.getNet().shutdown();
+        this.quitWorld();
     }
 
     @Override
@@ -164,8 +162,6 @@ public abstract class AbstractGame implements IGameInstance{
         RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
         RockBottomAPI.logger().info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
         RockBottomAPI.logger().info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
-
-        this.quitWorld();
     }
 
     protected void update(){
@@ -316,7 +312,6 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public void exit(){
-        this.quitWorld();
         this.isRunning = false;
     }
 }

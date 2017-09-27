@@ -4,13 +4,13 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 
@@ -53,7 +53,12 @@ public class PacketInitialServerData implements IPacket{
         game.scheduleAction(() -> {
             if(game.getWorld() == null){
                 RockBottomAPI.logger().info("Received initial server data, joining world");
-                game.joinWorld(this.playerSet, this.info, this.regInfo);
+
+                IGuiManager gui = game.getGuiManager();
+                gui.fadeOut(20, () -> {
+                    game.joinWorld(this.playerSet, this.info, this.regInfo);
+                    gui.fadeIn(20, null);
+                });
             }
             else{
                 RockBottomAPI.logger().warning("Received initial server data while already being in a world!");

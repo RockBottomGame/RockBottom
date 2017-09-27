@@ -59,7 +59,10 @@ public class GuiMenu extends Gui{
         }
 
         this.components.add(new ComponentButton(this, 10, this.height-36, 80, 16, () -> {
-            game.quitWorld();
+            game.getGuiManager().fadeOut(20, ()->{
+                game.quitWorld();
+                game.getGuiManager().fadeIn(20, null);
+            });
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.main_menu"))));
         this.components.add(new ComponentButton(this, 10, this.height-16, 80, 16, () -> {

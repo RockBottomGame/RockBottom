@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -44,7 +45,11 @@ public class ComponentSelectWorldButton extends ComponentButton{
 
     @Override
     public boolean onPressed(IGameInstance game){
-        game.startWorld(this.worldFile, this.info);
+        IGuiManager gui = game.getGuiManager();
+        gui.fadeOut(20, () -> {
+            game.startWorld(this.worldFile, this.info);
+            gui.fadeIn(20, null);
+        });
         return true;
     }
 

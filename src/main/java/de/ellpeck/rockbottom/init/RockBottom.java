@@ -19,13 +19,10 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.apiimpl.Graphics;
-import de.ellpeck.rockbottom.assets.Texture;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.gui.DebugRenderer;
-import de.ellpeck.rockbottom.gui.GuiChat;
-import de.ellpeck.rockbottom.gui.GuiInventory;
-import de.ellpeck.rockbottom.gui.GuiManager;
+import de.ellpeck.rockbottom.assets.Texture;
+import de.ellpeck.rockbottom.gui.*;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
 import de.ellpeck.rockbottom.net.client.ClientWorld;
@@ -47,7 +44,6 @@ import org.lwjgl.opengl.PixelFormat;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.InputListener;
 import org.newdawn.slick.Music;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.ImageIOImageData;
 import org.newdawn.slick.opengl.LoadableImageData;
 import org.newdawn.slick.opengl.renderer.Renderer;
@@ -150,7 +146,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.initGraphics();
 
         try{
-            ITexture tex = new Texture(AssetManager.getResource("/assets/rockbottom/tex/loading.png"), "loading", false);
+            ITexture tex = new Texture(AssetManager.getResource("/assets/rockbottom/tex/intro/loading.png"), "loading", false);
             tex.draw(0, 0, Display.getWidth(), Display.getHeight());
             Display.update();
         }
@@ -161,6 +157,10 @@ public class RockBottom extends AbstractGame implements InputListener{
         RockBottomAPI.logger().info("Finished initializing system");
 
         super.init();
+
+        this.guiManager.updateDimensions();
+        this.guiManager.fadeIn(20, null);
+        this.guiManager.openGui(new GuiLogo(this.assetManager.getTexture(RockBottomAPI.createInternalRes("ellpeck")), new GuiLogo(this.assetManager.getTexture(RockBottomAPI.createInternalRes("wiiv")), new GuiMainMenu())));
     }
 
     protected void initGraphics(){

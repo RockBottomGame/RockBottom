@@ -4,9 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.IFont;
-import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -45,6 +44,11 @@ public class GuiManager implements IGuiManager{
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private MainMenuBackground background;
     private Gui gui;
+
+    private boolean isFadeOut;
+    private int fadeTimer;
+    private int fadeTimerStart;
+    private Runnable fadeCallback;
 
     @Override
     public void updateDimensions(){
@@ -98,6 +102,19 @@ public class GuiManager implements IGuiManager{
         if(this.background != null){
             this.background.update(game);
         }
+
+        if(this.fadeTimer > 0){
+            this.fadeTimer--;
+
+            if(this.fadeTimer <= 0){
+                this.fadeTimerStart = 0;
+
+                if(this.fadeCallback != null){
+                    this.fadeCallback.run();
+                    this.fadeCallback = null;
+                }
+            }
+        }
     }
 
     public void render(RockBottom game, IAssetManager manager, IGraphics g, EntityPlayer player){
@@ -150,6 +167,20 @@ public class GuiManager implements IGuiManager{
         }
 
         RockBottomAPI.getEventHandler().fireEvent(new OverlayRenderEvent(game, manager, g, player, this, gui));
+
+        float fadeOpacity = 0F;
+
+        if(this.fadeTimer > 0){
+            float percentage = (float)this.fadeTimer/(float)this.fadeTimerStart;
+            fadeOpacity = this.isFadeOut ? 1F-percentage : percentage;
+        }
+        else if(this.isFadeOut){
+            fadeOpacity = 1F;
+        }
+
+        if(fadeOpacity != 0F){
+            g.fillRect(0, 0, width, height, Colors.multiplyA(Colors.BLACK, fadeOpacity));
+        }
 
         if(game.getSettings().cursorInfos){
             if(player != null && !player.isDead() && gui == null && Mouse.isInsideWindow()){
@@ -224,6 +255,31 @@ public class GuiManager implements IGuiManager{
     @Override
     public Gui getGui(){
         return this.gui;
+    }
+
+    @Override
+    public boolean fadeOut(int ticks, Runnable after){
+        return this.fade(ticks, after, true);
+    }
+
+    @Override
+    public boolean fadeIn(int ticks, Runnable after){
+        return this.fade(ticks, after, false);
+    }
+
+    private boolean fade(int ticks, Runnable after, boolean out){
+        if(this.fadeTimer <= 0){
+            this.fadeTimer = ticks;
+            this.fadeTimerStart = ticks;
+
+            this.isFadeOut = out;
+            this.fadeCallback = after;
+
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public void onMouseAction(RockBottom game, int button, float x, float y){

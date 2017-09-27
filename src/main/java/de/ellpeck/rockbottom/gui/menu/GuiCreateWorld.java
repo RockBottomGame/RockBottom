@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
@@ -49,7 +50,13 @@ public class GuiCreateWorld extends Gui{
             WorldInfo info = new WorldInfo(file);
             info.seed = this.seed;
             info.save();
-            game.startWorld(file, info);
+
+            IGuiManager gui = game.getGuiManager();
+            gui.fadeOut(20, () -> {
+                game.startWorld(file, info);
+                gui.fadeIn(20, null);
+            });
+
             return true;
         }, "Create"));
 
