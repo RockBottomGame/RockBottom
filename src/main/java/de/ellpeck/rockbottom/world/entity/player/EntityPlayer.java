@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -58,10 +59,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
     };
+    private final KnowledgeManager knowledge = new KnowledgeManager(this);
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-0.45, -0.5, 0.45, 1.35);
-    private final IEntityRenderer renderer;
+    private final IEntityRenderer renderer = new PlayerEntityRenderer();
     private final List<IChunk> chunksInRange = new ArrayList<>();
     private final IPlayerDesign design;
     private ItemContainer currentContainer;
@@ -69,7 +71,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design){
         super(world);
-        this.renderer = new PlayerEntityRenderer();
         this.facing = Direction.RIGHT;
         this.uniqueId = uniqueId;
         this.design = design;
@@ -254,12 +255,14 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void save(DataSet set){
         super.save(set);
         this.inv.save(set);
+        this.knowledge.save(set);
     }
 
     @Override
     public void load(DataSet set){
         super.load(set);
         this.inv.load(set);
+        this.knowledge.load(set);
     }
 
     @Override
@@ -437,6 +440,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public boolean isInRange(double x, double y){
         return Util.distanceSq(this.x, this.y+1, x, y) <= RANGE*RANGE;
+    }
+
+    @Override
+    public IKnowledgeManager getKnowledge(){
+        return this.knowledge;
     }
 
     @Override

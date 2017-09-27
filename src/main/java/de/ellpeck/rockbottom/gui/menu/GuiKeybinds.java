@@ -16,7 +16,7 @@ import java.util.List;
 
 public class GuiKeybinds extends Gui{
 
-    public int activeKeybind = -1;
+    public int selectedKeybind = -1;
 
     public GuiKeybinds(Gui parent){
         super(304, 150, parent);
@@ -55,7 +55,7 @@ public class GuiKeybinds extends Gui{
     @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(!super.onMouseAction(game, button, x, y)){
-            this.activeKeybind = -1;
+            this.selectedKeybind = -1;
         }
         return true;
     }

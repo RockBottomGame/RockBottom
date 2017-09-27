@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
 
 import java.util.List;
 import java.util.Locale;
@@ -28,10 +29,10 @@ public class ComponentConstruction extends GuiComponent{
     private final ComponentScrollMenu menu;
 
     public final GuiContainer gui;
-    private final List<BasicRecipe> recipes;
-    public final BiConsumer<IRecipe, Integer> consumer;
+    private final NameRegistry<BasicRecipe> recipes;
+    public final BiConsumer<IRecipe, IResourceName> consumer;
 
-    public ComponentConstruction(GuiContainer gui, int x, int y, int sizeX, int sizeY, int buttonAmountX, int buttonAmonutY, boolean shouldShowAll, List<BasicRecipe> recipes, BiConsumer<IRecipe, Integer> consumer){
+    public ComponentConstruction(GuiContainer gui, int x, int y, int sizeX, int sizeY, int buttonAmountX, int buttonAmonutY, boolean shouldShowAll, NameRegistry<BasicRecipe> recipes, BiConsumer<IRecipe, IResourceName> consumer){
         super(gui, x, y, sizeX, sizeY);
         this.gui = gui;
         this.recipes = recipes;
@@ -61,12 +62,14 @@ public class ComponentConstruction extends GuiComponent{
         this.menu.clear();
 
         for(int counter = 0; counter < (this.shouldShowAll ? 2 : 1); counter++){
-            for(BasicRecipe recipe : this.recipes){
-                if(this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())){
-                    boolean matches = IRecipe.matchesInv(recipe, this.gui.player.getInv());
+            for(BasicRecipe recipe : this.recipes.getUnmodifiable().values()){
+                if(recipe.isKnown(this.gui.player)){
+                    if(this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())){
+                        boolean matches = IRecipe.matchesInv(recipe, this.gui.player.getInv());
 
-                    if(matches ? counter == 0 : counter == 1){
-                        this.menu.add(new ComponentRecipeButton(this, 0, 0, 16, 16, recipe, this.recipes.indexOf(recipe), matches));
+                        if(matches ? counter == 0 : counter == 1){
+                            this.menu.add(new ComponentRecipeButton(this, 0, 0, 16, 16, recipe, recipe.getName(), matches));
+                        }
                     }
                 }
             }

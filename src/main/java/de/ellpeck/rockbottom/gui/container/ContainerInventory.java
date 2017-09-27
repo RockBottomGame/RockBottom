@@ -18,28 +18,30 @@ public class ContainerInventory extends ItemContainer{
     }
 
     public static void doInvBasedConstruction(AbstractEntityPlayer player, IRecipe recipe, int amount){
-        for(int a = 0; a < amount; a++){
-            if(IRecipe.matchesInv(recipe, player.getInv())){
-                for(IUseInfo input : recipe.getInputs()){
-                    for(int i = 0; i < player.getInv().getSlotAmount(); i++){
-                        ItemInstance inv = player.getInv().get(i);
+        if(recipe.isKnown(player)){
+            for(int a = 0; a < amount; a++){
+                if(IRecipe.matchesInv(recipe, player.getInv())){
+                    for(IUseInfo input : recipe.getInputs()){
+                        for(int i = 0; i < player.getInv().getSlotAmount(); i++){
+                            ItemInstance inv = player.getInv().get(i);
 
-                        if(inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()){
-                            player.getInv().remove(i, input.getAmount());
-                            break;
+                            if(inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()){
+                                player.getInv().remove(i, input.getAmount());
+                                break;
+                            }
+                        }
+                    }
+
+                    for(ItemInstance output : recipe.getOutputs()){
+                        ItemInstance left = player.getInv().addExistingFirst(output, false);
+                        if(left != null){
+                            EntityItem.spawn(player.world, left, player.x, player.y, 0F, 0F);
                         }
                     }
                 }
-
-                for(ItemInstance output : recipe.getOutputs()){
-                    ItemInstance left = player.getInv().addExistingFirst(output, false);
-                    if(left != null){
-                        EntityItem.spawn(player.world, left, player.x, player.y, 0F, 0F);
-                    }
+                else{
+                    break;
                 }
-            }
-            else{
-                break;
             }
         }
     }

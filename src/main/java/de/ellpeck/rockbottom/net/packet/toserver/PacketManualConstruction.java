@@ -4,7 +4,9 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,12 +17,12 @@ import java.util.UUID;
 public class PacketManualConstruction implements IPacket{
 
     private UUID playerId;
-    private int recipeIndex;
+    private IResourceName recipeName;
     private int amount;
 
-    public PacketManualConstruction(UUID playerId, int recipeIndex, int amount){
+    public PacketManualConstruction(UUID playerId, IResourceName recipeName, int amount){
         this.playerId = playerId;
-        this.recipeIndex = recipeIndex;
+        this.recipeName = recipeName;
         this.amount = amount;
     }
 
@@ -31,14 +33,14 @@ public class PacketManualConstruction implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
-        buf.writeInt(this.recipeIndex);
+        NetUtil.writeStringToBuffer(this.recipeName.toString(), buf);
         buf.writeInt(this.amount);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.playerId = new UUID(buf.readLong(), buf.readLong());
-        this.recipeIndex = buf.readInt();
+        this.recipeName = RockBottomAPI.createRes(NetUtil.readStringFromBuffer(buf));
         this.amount = buf.readInt();
     }
 
@@ -48,7 +50,7 @@ public class PacketManualConstruction implements IPacket{
             if(game.getWorld() != null){
                 AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
                 if(player != null){
-                    IRecipe recipe = RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.get(this.recipeIndex);
+                    IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(this.recipeName);
                     if(recipe != null){
                         ContainerInventory.doInvBasedConstruction(player, recipe, this.amount);
                     }
