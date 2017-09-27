@@ -29,10 +29,10 @@ public class GuiLogo extends Gui{
         this.timer++;
 
         IGuiManager gui = game.getGuiManager();
-        if(this.timer == 80){
-            gui.fadeOut(20, () -> gui.fadeIn(20, null));
+        if(this.timer == 120){
+            gui.fadeOut(30, () -> gui.fadeIn(30, null));
         }
-        else if(this.timer >= 100){
+        else if(this.timer >= 150){
             gui.openGui(this.followUp);
         }
     }
