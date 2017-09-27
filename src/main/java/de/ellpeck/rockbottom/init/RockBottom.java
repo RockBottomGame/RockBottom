@@ -154,7 +154,7 @@ public class RockBottom extends AbstractGame implements InputListener{
             tex.draw(0, 0, Display.getWidth(), Display.getHeight());
             Display.update();
         }
-        catch(SlickException e){
+        catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't render loading screen image", e);
         }
 
