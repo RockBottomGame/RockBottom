@@ -3,11 +3,12 @@ package de.ellpeck.rockbottom.gui.menu.background;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.tex.ITexture;
+import de.ellpeck.rockbottom.api.assets.anim.IAnimation;
 import de.ellpeck.rockbottom.api.gui.IMainMenuTheme;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -27,6 +28,8 @@ public class MainMenuBackground{
 
     private int currentY;
     private int layerCounter;
+
+    private long hoverStart;
 
     public MainMenuBackground(){
         List<IMainMenuTheme> themes = RockBottomAPI.MAIN_MENU_THEMES;
@@ -57,8 +60,7 @@ public class MainMenuBackground{
         int color = this.theme.getBackgroundColor();
         g.backgroundColor(color);
 
-        float height = game.getHeightInGui();
-        float tileSize = Math.max(game.getWidthInGui(), height)/(float)IMainMenuTheme.TILE_AMOUNT;
+        float tileSize = Math.max(game.getWidthInGui(), game.getHeightInGui())/(float)IMainMenuTheme.TILE_AMOUNT;
 
         for(int x = 0; x < IMainMenuTheme.TILE_AMOUNT; x++){
             for(int y = 0; y < IMainMenuTheme.TILE_AMOUNT; y++){
@@ -67,13 +69,35 @@ public class MainMenuBackground{
                     Tile tile = state.getTile();
                     ITileRenderer renderer = tile.getRenderer();
                     if(renderer != null){
-                        renderer.renderInMainMenuBackground(game, manager, g, tile, state, x*tileSize, height-(y+1)*tileSize, tileSize);
+                        renderer.renderInMainMenuBackground(game, manager, g, tile, state, x*tileSize, game.getHeightInGui()-(y+1)*tileSize, tileSize);
                     }
                 }
             }
         }
 
-        ITexture logo = manager.getTexture(RES_LOGO);
-        logo.draw((int)game.getWidthInGui()/2-logo.getWidth()/2, (int)game.getHeightInGui()/3-logo.getHeight()/2);
+        IAnimation logo = manager.getAnimation(RES_LOGO);
+
+        float scale = 0.75F;
+        float width = logo.getFrameWidth()*scale;
+        float height = logo.getFrameHeight()*scale;
+        float x = game.getWidthInGui()/2F-width/2F;
+
+        float mouseX = game.getMouseInGuiX();
+        float mouseY = game.getMouseInGuiY();
+
+        if(mouseX >= x+72*scale && mouseY >= 28*scale && mouseX <= x+width-72*scale && mouseY <= height-32*scale){
+            if(this.hoverStart == -1){
+                this.hoverStart = Util.getTimeMillis();
+            }
+
+            logo.drawRow(this.hoverStart, 0, x, 0, width, height, Colors.WHITE);
+        }
+        else{
+            logo.drawFrame(0, 0, x, 0, width, height, Colors.WHITE);
+
+            if(this.hoverStart != -1){
+                this.hoverStart = -1;
+            }
+        }
     }
 }

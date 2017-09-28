@@ -53,13 +53,23 @@ public class Animation implements IAnimation{
     }
 
     @Override
+    public void drawFrame(int row, int frame, float x, float y, float width, float height, int filter){
+        this.drawFrame(row, frame, x, y, width, height, null, filter);
+    }
+
+    @Override
+    public void drawFrame(int row, int frame, float x, float y, float width, float height, int[] light, int filter){
+        this.drawFrame(row, frame, x, y, x+width, y+height, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+    }
+
+    @Override
     public void drawFrame(int row, int frame, float x, float y, float scale, int filter){
         this.drawFrame(row, frame, x, y, scale, null, filter);
     }
 
     @Override
     public void drawFrame(int row, int frame, float x, float y, float scale, int[] light, int filter){
-        this.drawFrame(row, frame, x, y, x+scale, y+(this.frameHeight/this.frameWidth)*scale, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+        this.drawFrame(row, frame, x, y, this.frameWidth*scale, this.frameHeight*scale, light, filter);
     }
 
     @Override
@@ -75,18 +85,38 @@ public class Animation implements IAnimation{
     }
 
     @Override
+    public void drawRow(int row, float x, float y, float width, float height, int filter){
+        this.drawRow(-1L, row, x, y, width, height, null, filter);
+    }
+
+    @Override
+    public void drawRow(int row, float x, float y, float width, float height, int[] light, int filter){
+        this.drawRow(-1L, row, x, y, x+width, y+height, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+    }
+
+    @Override
     public void drawRow(int row, float x, float y, float scale, int filter){
-        this.drawRow(-1, row, x, y, scale, null, filter);
+        this.drawRow(-1L, row, x, y, scale, null, filter);
     }
 
     @Override
     public void drawRow(int row, float x, float y, float scale, int[] light, int filter){
-        this.drawRow(-1, row, x, y, x+scale, y+(this.frameHeight/this.frameWidth)*scale, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+        this.drawRow(-1L, row, x, y, this.frameWidth*scale, this.frameHeight*scale, light, filter);
     }
 
     @Override
     public void drawRow(int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
-        this.drawRow(-1, row, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
+
+    }
+
+    @Override
+    public void drawRow(long startTimeMillis, int row, float x, float y, float width, float height, int filter){
+        this.drawRow(startTimeMillis, row, x, y, width, height, null, filter);
+    }
+
+    @Override
+    public void drawRow(long startTimeMillis, int row, float x, float y, float width, float height, int[] light, int filter){
+        this.drawRow(startTimeMillis, row, x, y, x+width, y+height, 0, 0, this.frameWidth, this.frameHeight, light, filter);
     }
 
     @Override
@@ -96,7 +126,7 @@ public class Animation implements IAnimation{
 
     @Override
     public void drawRow(long startTimeMillis, int row, float x, float y, float scale, int[] light, int filter){
-        this.drawRow(startTimeMillis, row, x, y, x+scale, y+(this.frameHeight/this.frameWidth)*scale, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+        this.drawRow(startTimeMillis, row, x, y, this.frameWidth*scale, this.frameHeight*scale, light, filter);
     }
 
     @Override
@@ -140,5 +170,15 @@ public class Animation implements IAnimation{
     @Override
     public ITexture getTexture(){
         return this.texture;
+    }
+
+    @Override
+    public int getFrameWidth(){
+        return this.frameWidth;
+    }
+
+    @Override
+    public int getFrameHeight(){
+        return this.frameHeight;
     }
 }
