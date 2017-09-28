@@ -160,7 +160,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.guiManager.updateDimensions();
         this.guiManager.fadeIn(30, null);
-        this.guiManager.openGui(new GuiLogo(this.assetManager.getTexture(RockBottomAPI.createInternalRes("ellpeck")), new GuiLogo(this.assetManager.getTexture(RockBottomAPI.createInternalRes("wiiv")), new GuiMainMenu())));
+        this.guiManager.openGui(new GuiLogo("intro.ellpeck", new GuiLogo("intro.wiiv", new GuiMainMenu())));
     }
 
     protected void initGraphics(){
