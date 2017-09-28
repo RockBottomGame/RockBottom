@@ -132,16 +132,7 @@ public class Animation implements IAnimation{
     @Override
     public void drawRow(long startTimeMillis, int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
         long time = startTimeMillis > 0 ? Util.getTimeMillis()-startTimeMillis : Util.getTimeMillis();
-        long runningTime = time%this.getTotalTime(row);
-
-        int accum = 0;
-        for(int i = 0; i < this.getFrameAmount(row); i++){
-            accum += this.getFrameTime(row, i);
-            if(accum >= runningTime){
-                this.drawFrame(row, i, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
-                break;
-            }
-        }
+        this.drawFrame(row, this.getFrameByTime(row, time), x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
     }
 
     @Override
@@ -180,5 +171,19 @@ public class Animation implements IAnimation{
     @Override
     public int getFrameHeight(){
         return this.frameHeight;
+    }
+
+    @Override
+    public int getFrameByTime(int row, long millis){
+        long runningTime = millis%this.getTotalTime(row);
+
+        int accum = 0;
+        for(int i = 0; i < this.getFrameAmount(row); i++){
+            accum += this.getFrameTime(row, i);
+            if(accum >= runningTime){
+                return i;
+            }
+        }
+        return 0;
     }
 }
