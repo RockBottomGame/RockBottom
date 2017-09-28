@@ -29,7 +29,8 @@ public class MainMenuBackground{
     private int currentY;
     private int layerCounter;
 
-    private long hoverStart;
+    private long hoverStartTime;
+    private long hoverPauseTime;
 
     public MainMenuBackground(){
         List<IMainMenuTheme> themes = RockBottomAPI.MAIN_MENU_THEMES;
@@ -86,18 +87,20 @@ public class MainMenuBackground{
         float mouseY = game.getMouseInGuiY();
 
         if(mouseX >= x+72*scale && mouseY >= 28*scale && mouseX <= x+width-72*scale && mouseY <= height-32*scale){
-            if(this.hoverStart == -1){
-                this.hoverStart = Util.getTimeMillis();
+            if(this.hoverStartTime <= 0){
+                this.hoverStartTime = Util.getTimeMillis()-this.hoverPauseTime;
+                this.hoverPauseTime = 0;
             }
 
-            logo.drawRow(this.hoverStart, 0, x, 0, width, height, Colors.WHITE);
+            logo.drawRow(this.hoverStartTime, 0, x, 0, width, height, Colors.WHITE);
         }
         else{
-            logo.drawFrame(0, 0, x, 0, width, height, Colors.WHITE);
-
-            if(this.hoverStart != -1){
-                this.hoverStart = -1;
+            if(this.hoverPauseTime <= 0){
+                this.hoverPauseTime = Util.getTimeMillis()-this.hoverStartTime;
+                this.hoverStartTime = 0;
             }
+
+            logo.drawFrame(0, logo.getFrameByTime(0, this.hoverPauseTime), x, 0, width, height, Colors.WHITE);
         }
     }
 }
