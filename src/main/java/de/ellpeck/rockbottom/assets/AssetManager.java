@@ -57,7 +57,11 @@ public class AssetManager implements IAssetManager{
         return AssetManager.class.getResourceAsStream(s);
     }
 
-    public void create(RockBottom game){
+    public void load(RockBottom game){
+        if(!this.assets.isEmpty()){
+            this.assets.clear();
+        }
+
         try{
             RockBottomAPI.logger().info("Loading resources...");
             this.loadAssets();

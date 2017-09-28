@@ -194,7 +194,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         Display.setVSyncEnabled(this.settings.vsync);
 
         this.assetManager = new AssetManager();
-        this.assetManager.create(this);
+        this.assetManager.load(this);
 
         RockBottomAPI.getModLoader().initAssets();
 
@@ -392,22 +392,6 @@ public class RockBottom extends AbstractGame implements InputListener{
                 this.openIngameMenu();
                 return;
             }
-            else if(key == Input.KEY_F1){
-                this.isDebug = !this.isDebug;
-                return;
-            }
-            else if(key == Input.KEY_F2){
-                this.isLightDebug = !this.isLightDebug;
-                return;
-            }
-            else if(key == Input.KEY_F5){
-                this.isItemInfoDebug = !this.isItemInfoDebug;
-                return;
-            }
-            else if(key == Input.KEY_F6){
-                this.isChunkBorderDebug = !this.isChunkBorderDebug;
-                return;
-            }
             else if(Settings.KEY_INVENTORY.isKey(key)){
                 this.player.openGuiContainer(new GuiInventory(this.player), this.player.getInvContainer());
                 return;
@@ -418,7 +402,27 @@ public class RockBottom extends AbstractGame implements InputListener{
             }
         }
 
-        if(Settings.KEY_SCREENSHOT.isKey(key)){
+        if(key == Input.KEY_F1){
+            this.isDebug = !this.isDebug;
+            return;
+        }
+        else if(key == Input.KEY_F2){
+            this.isLightDebug = !this.isLightDebug;
+            return;
+        }
+        else if(key == Input.KEY_F3){
+            this.assetManager.load(this);
+            return;
+        }
+        else if(key == Input.KEY_F5){
+            this.isItemInfoDebug = !this.isItemInfoDebug;
+            return;
+        }
+        else if(key == Input.KEY_F6){
+            this.isChunkBorderDebug = !this.isChunkBorderDebug;
+            return;
+        }
+        else if(Settings.KEY_SCREENSHOT.isKey(key)){
             this.takeScreenshot();
             return;
         }
