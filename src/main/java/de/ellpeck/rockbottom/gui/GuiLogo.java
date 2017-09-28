@@ -18,7 +18,7 @@ public class GuiLogo extends Gui{
     private final Gui followUp;
     private BoundBox faceBox;
 
-    private int timer = 200;
+    private int timer = 120;
     private boolean isAngry;
 
     public GuiLogo(String name, Gui followUp){
@@ -61,7 +61,7 @@ public class GuiLogo extends Gui{
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(!this.isAngry && this.faceBox.contains(x, y)){
             this.isAngry = true;
-            this.timer = 10;
+            this.timer = 5;
             return true;
         }
         else{

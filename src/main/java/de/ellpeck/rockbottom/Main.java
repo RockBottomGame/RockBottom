@@ -26,6 +26,7 @@ public final class Main{
     public static File nativeDir;
     public static File unpackedModsDir;
 
+    public static boolean skipIntro;
     public static int width;
     public static int height;
     public static boolean fullscreen;
@@ -45,6 +46,7 @@ public final class Main{
             OptionSpec<Integer> optionWidth = parser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(1280);
             OptionSpec<Integer> optionHeight = parser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(720);
             OptionSpec<Integer> optionPort = parser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(8000);
+            OptionSpec optionSkipIntro = parser.accepts("skipIntro");
             OptionSpec optionFullscreen = parser.accepts("fullscreen");
             OptionSpec optionServer = parser.accepts("server");
             OptionSpec optionIgnored = parser.nonOptions();
@@ -73,6 +75,7 @@ public final class Main{
                 Logging.mainLogger.info("Setting unpacked mods folder to "+unpackedModsDir);
             }
 
+            skipIntro = options.has(optionSkipIntro);
             width = options.valueOf(optionWidth);
             height = options.valueOf(optionHeight);
             fullscreen = options.has(optionFullscreen);
