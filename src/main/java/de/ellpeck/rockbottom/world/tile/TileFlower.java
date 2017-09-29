@@ -16,6 +16,8 @@ public class TileFlower extends TileMeta{
         this.addSubTile(RockBottomAPI.createInternalRes("flower_red"));
         this.addSubTile(RockBottomAPI.createInternalRes("flower_white"));
         this.addSubTile(RockBottomAPI.createInternalRes("flower_yellow"));
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_blue"));
+        this.addSubTile(RockBottomAPI.createInternalRes("flower_purple"));
     }
 
     @Override
