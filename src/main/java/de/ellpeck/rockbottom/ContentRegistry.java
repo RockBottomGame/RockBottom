@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenFlowers;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenGrass;
@@ -34,5 +35,7 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenGrass.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenTrees.class);
         RockBottomAPI.WORLD_GENERATORS.add(WorldGenFlowers.class);
+
+        RockBottomAPI.INFORMATION_REGISTRY.register(RockBottomAPI.createInternalRes("recipe"), RecipeInformation.class);
     }
 }

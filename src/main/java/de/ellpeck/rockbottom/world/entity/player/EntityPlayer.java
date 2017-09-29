@@ -1,14 +1,17 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.entity.player.IKnowledgeManager;
+import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -36,8 +39,8 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketRespawn;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
-import de.ellpeck.rockbottom.world.tile.TileAir;
-import org.newdawn.slick.util.Log;
+import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
+import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +62,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
     };
-    private final KnowledgeManager knowledge = new KnowledgeManager(this);
+    private final KnowledgeManager knowledge = new KnowledgeManager();
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-0.45, -0.5, 0.45, 1.35);
@@ -165,6 +168,17 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public void update(IGameInstance game){
         super.update(game);
+
+        IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(RockBottomAPI.createInternalRes("test"));
+        if(game.getInput().isKeyPressed(Input.KEY_U)){
+            this.knowledge.teachRecipe(recipe, false);
+        }
+        else if(game.getInput().isKeyPressed(Input.KEY_I)){
+            this.knowledge.teachIngredient(recipe, new ItemUseInfo(GameContent.TILE_LEAVES, 40));
+        }
+        else if(game.getInput().isKeyPressed(Input.KEY_O)){
+            this.knowledge.teachOutput(recipe, new ItemInstance(GameContent.TILE_STONE, 10));
+        }
 
         if(!this.world.isClient()){
             if(this.isDead()){

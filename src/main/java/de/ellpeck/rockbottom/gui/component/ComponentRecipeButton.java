@@ -97,7 +97,7 @@ public class ComponentRecipeButton extends ComponentButton{
                     hover.add(code+" "+inst.getDisplayName()+" x"+inst.getAmount());
                 }
                 else{
-                    hover.add(FormattingCode.ORANGE+"??? "+info.getAmount());
+                    hover.add(FormattingCode.ORANGE+"??? x"+info.getAmount());
                 }
             }
 

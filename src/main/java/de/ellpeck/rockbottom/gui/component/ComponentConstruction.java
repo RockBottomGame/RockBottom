@@ -49,7 +49,7 @@ public class ComponentConstruction extends GuiComponent{
             }
         }));
 
-        this.gui.getComponents().add(new ComponentFancyToggleButton(gui, x+sizeX-12, y-14, 12, 12, this.shouldShowAll, () -> {
+        this.gui.getComponents().add(new ComponentFancyToggleButton(gui, x+sizeX-12, y-14, 12, 12, !this.shouldShowAll, () -> {
             this.shouldShowAll = !this.shouldShowAll;
             this.organize();
             return true;
