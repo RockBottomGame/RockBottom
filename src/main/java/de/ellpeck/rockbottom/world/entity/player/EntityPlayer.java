@@ -169,17 +169,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void update(IGameInstance game){
         super.update(game);
 
-        IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(RockBottomAPI.createInternalRes("test"));
-        if(game.getInput().isKeyPressed(Input.KEY_U)){
-            this.knowledge.teachRecipe(recipe, false);
-        }
-        else if(game.getInput().isKeyPressed(Input.KEY_I)){
-            this.knowledge.teachIngredient(recipe, new ItemUseInfo(GameContent.TILE_LEAVES, 40));
-        }
-        else if(game.getInput().isKeyPressed(Input.KEY_O)){
-            this.knowledge.teachOutput(recipe, new ItemInstance(GameContent.TILE_STONE, 10));
-        }
-
         if(!this.world.isClient()){
             if(this.isDead()){
                 this.respawnTimer++;
