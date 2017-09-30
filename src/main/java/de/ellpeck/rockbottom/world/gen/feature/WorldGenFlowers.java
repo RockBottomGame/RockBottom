@@ -36,7 +36,7 @@ public class WorldGenFlowers implements IWorldGenerator{
                 if(chance > 0F && this.flowerNoise.make2dNoise(x/2D, y/2D) <= chance){
                     TileMeta tile = GameContent.TILE_FLOWER;
                     if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
-                        int type = (int)(this.flowerNoise.make2dNoise(x*16D, y*16D)*(double)tile.metaProp.getVariants());
+                        int type = Util.floor(this.flowerNoise.make2dNoise(x*16D, y*16D)*(double)tile.metaProp.getVariants());
                         chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
                     }
                 }
