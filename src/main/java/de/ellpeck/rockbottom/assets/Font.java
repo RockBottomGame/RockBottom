@@ -162,7 +162,7 @@ public class Font implements IFont{
             FormattingCode code = FormattingCode.getFormat(s, i);
             if(code != FormattingCode.NONE){
                 int formatColor = code.getColor();
-                if(formatColor != -1){
+                if(formatColor != Integer.MAX_VALUE){
                     float formatAlpha = Colors.getA(formatColor);
                     if(initialAlpha != formatAlpha){
                         color = Colors.setA(color, formatAlpha);
@@ -321,7 +321,7 @@ public class Font implements IFont{
                         for(int i = 0; i < word.length()-1; i++){
                             FormattingCode format = FormattingCode.getFormat(word, i);
                             if(format != FormattingCode.NONE){
-                                if(format.getColor() != -1){
+                                if(format.getColor() != Integer.MAX_VALUE){
                                     trailingColor = format;
                                 }
 
