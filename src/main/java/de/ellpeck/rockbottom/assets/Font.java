@@ -153,6 +153,7 @@ public class Font implements IFont{
 
     @Override
     public void drawString(float x, float y, String s, int drawStart, int drawEnd, float scale, int color){
+        int startColor = color;
         float initialAlpha = Colors.getA(color);
         float xOffset = 0F;
         FontProp prop = FontProp.NONE;
@@ -162,13 +163,18 @@ public class Font implements IFont{
             FormattingCode code = FormattingCode.getFormat(s, i);
             if(code != FormattingCode.NONE){
                 int formatColor = code.getColor();
-                if(formatColor != Integer.MAX_VALUE){
-                    float formatAlpha = Colors.getA(formatColor);
-                    if(initialAlpha != formatAlpha){
-                        color = Colors.setA(color, formatAlpha);
+                if(formatColor != FontProp.NO_COLOR){
+                    if(formatColor == FontProp.RESET_COLOR){
+                        color = startColor;
                     }
                     else{
-                        color = formatColor;
+                        float formatAlpha = Colors.getA(formatColor);
+                        if(initialAlpha != formatAlpha){
+                            color = Colors.setA(color, formatAlpha);
+                        }
+                        else{
+                            color = formatColor;
+                        }
                     }
                 }
 
@@ -321,7 +327,7 @@ public class Font implements IFont{
                         for(int i = 0; i < word.length()-1; i++){
                             FormattingCode format = FormattingCode.getFormat(word, i);
                             if(format != FormattingCode.NONE){
-                                if(format.getColor() != Integer.MAX_VALUE){
+                                if(format.getColor() != FontProp.NO_COLOR){
                                     trailingColor = format;
                                 }
 
