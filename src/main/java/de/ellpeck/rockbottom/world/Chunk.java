@@ -84,7 +84,7 @@ public class Chunk implements IChunk{
         isGeneratingChunk = true;
 
         for(IWorldGenerator generator : this.world.getSortedGenerators()){
-            if(this.canGenerate(generator) && generator.shouldGenerate(this.world, this, rand)){
+            if(this.canGenerate(generator, rand) && generator.shouldGenerate(this.world, this, rand)){
                 generator.generate(this.world, this, rand);
             }
         }
@@ -92,10 +92,10 @@ public class Chunk implements IChunk{
         isGeneratingChunk = false;
     }
 
-    private boolean canGenerate(IWorldGenerator generator){
-        if(generator.needsPlayerToAllowGeneration()){
+    private boolean canGenerate(IWorldGenerator generator, Random rand){
+        if(generator.needsPlayerToAllowGeneration(this.world, this, rand)){
             for(AbstractEntityPlayer player : this.world.players){
-                if(generator.doesPlayerAllowGeneration(player)){
+                if(generator.doesPlayerAllowGeneration(this.world, this, rand, player)){
                     return true;
                 }
             }
