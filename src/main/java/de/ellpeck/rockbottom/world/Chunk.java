@@ -57,6 +57,7 @@ public class Chunk implements IChunk{
     public boolean isGenerating;
     protected boolean needsSave;
     private int internalLoadingTimer;
+    private DataSet additionalData;
 
     public Chunk(World world, int gridX, int gridY){
         this.world = world;
@@ -76,16 +77,16 @@ public class Chunk implements IChunk{
         }
     }
 
-    public void generate(Random rand){
+    private void generate(List<? extends IWorldGenerator> gens){
         if(isGeneratingChunk){
             RockBottomAPI.logger().warning("CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT "+this.gridX+", "+this.gridY+"! THIS SHOULD NOT HAPPEN!");
         }
 
         isGeneratingChunk = true;
 
-        for(IWorldGenerator generator : this.world.getSortedGenerators()){
-            if(this.canGenerate(generator, rand) && generator.shouldGenerate(this.world, this, rand)){
-                generator.generate(this.world, this, rand);
+        for(IWorldGenerator generator : gens){
+            if(this.canGenerate(generator, this.world.generatorRandom) && generator.shouldGenerate(this.world, this, this.world.generatorRandom)){
+                generator.generate(this.world, this, this.world.generatorRandom);
             }
         }
 
@@ -546,6 +547,11 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public void callRetroactiveGeneration(){
+        this.generate(this.world.getSortedRetroactiveGenerators());
+    }
+
+    @Override
     public byte getCombinedLightInner(int x, int y){
         byte artificial = this.getArtificialLightInner(x, y);
         byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
@@ -693,6 +699,10 @@ public class Chunk implements IChunk{
 
         set.addDataSet("s_u", updateSet);
 
+        if(this.additionalData != null){
+            set.addDataSet("ad_da", this.additionalData);
+        }
+
         this.needsSave = false;
     }
 
@@ -816,9 +826,15 @@ public class Chunk implements IChunk{
                     RockBottomAPI.logger().warning("Could not load scheduled update at "+x+" "+y+" with time "+time+" because tile with id "+id+" is missing!");
                 }
             }
+
+            if(set.hasKey("ad_da")){
+                this.additionalData = set.getDataSet("ad_da");
+            }
+
+            this.callRetroactiveGeneration();
         }
         else{
-            this.generate(this.world.generatorRandom);
+            this.generate(this.world.getSortedGenerators());
             this.world.calcInitialSkylight(this.x, this.y, this.x+Constants.CHUNK_SIZE-1, this.y+Constants.CHUNK_SIZE-1);
         }
 
@@ -904,6 +920,29 @@ public class Chunk implements IChunk{
         }
 
         return grid;
+    }
+
+    @Override
+    public boolean hasAdditionalData(){
+        return this.additionalData != null;
+    }
+
+    @Override
+    public DataSet getAdditionalData(){
+        return this.additionalData;
+    }
+
+    @Override
+    public void setAdditionalData(DataSet set){
+        this.additionalData = set;
+    }
+
+    @Override
+    public DataSet getOrCreateAdditionalData(){
+        if(this.additionalData == null){
+            this.additionalData = new DataSet();
+        }
+        return this.additionalData;
     }
 
     protected static class ScheduledUpdate{

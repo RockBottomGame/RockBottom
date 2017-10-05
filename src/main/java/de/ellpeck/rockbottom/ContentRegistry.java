@@ -5,12 +5,12 @@ import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
-import de.ellpeck.rockbottom.world.gen.feature.WorldGenFlowers;
-import de.ellpeck.rockbottom.world.gen.feature.WorldGenGrass;
-import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeGrassland;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeSky;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeUnderground;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenFlowers;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenGrass;
+import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 import de.ellpeck.rockbottom.world.tile.*;
 
 public final class ContentRegistry{
@@ -31,10 +31,10 @@ public final class ContentRegistry{
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("item"), EntityItem.class);
 
-        RockBottomAPI.WORLD_GENERATORS.add(WorldGenBiomes.class);
-        RockBottomAPI.WORLD_GENERATORS.add(WorldGenGrass.class);
-        RockBottomAPI.WORLD_GENERATORS.add(WorldGenTrees.class);
-        RockBottomAPI.WORLD_GENERATORS.add(WorldGenFlowers.class);
+        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("biomes"), WorldGenBiomes.class);
+        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("grass"), WorldGenGrass.class);
+        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("trees"), WorldGenTrees.class);
+        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("flowers"), WorldGenFlowers.class);
 
         RockBottomAPI.INFORMATION_REGISTRY.register(RockBottomAPI.createInternalRes("recipe"), RecipeInformation.class);
     }

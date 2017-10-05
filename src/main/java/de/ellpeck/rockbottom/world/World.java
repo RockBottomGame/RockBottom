@@ -24,6 +24,7 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.gen.IRetroactiveGenerator;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -48,7 +49,8 @@ public class World implements IWorld{
     protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
     protected final WorldInfo info;
     private final DynamicRegistryInfo regInfo;
-    private final List<IWorldGenerator> generators = new ArrayList<>();
+    private final List<IWorldGenerator> generators;
+    private final List<IRetroactiveGenerator> retroactiveGenerators;
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
@@ -58,19 +60,32 @@ public class World implements IWorld{
         this.regInfo = regInfo;
         this.generatorRandom.setSeed(this.info.seed);
 
-        for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS){
+        List<IWorldGenerator> generators = new ArrayList<>();
+        List<IRetroactiveGenerator> retroactiveGenerators = new ArrayList<>();
+
+        for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS.getUnmodifiable().values()){
             try{
                 IWorldGenerator generator = genClass.newInstance();
                 generator.initWorld(this, this.generatorRandom);
-                this.generators.add(generator);
+
+                if(generator instanceof IRetroactiveGenerator){
+                    retroactiveGenerators.add((IRetroactiveGenerator)generator);
+                }
+                generators.add(generator);
             }
             catch(InstantiationException | IllegalAccessException e){
                 RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class "+genClass, e);
             }
         }
-        this.generators.sort(Comparator.comparingInt(IWorldGenerator:: getPriority).reversed());
 
-        RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world");
+        Comparator comp = Comparator.comparingInt(IWorldGenerator:: getPriority).reversed();
+        generators.sort(comp);
+        retroactiveGenerators.sort(comp);
+
+        this.generators = Collections.unmodifiableList(generators);
+        this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
+
+        RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world ("+(this.retroactiveGenerators.size()+" of which can generate retroactively)"));
     }
 
     public void initFiles(File worldDirectory){
@@ -339,6 +354,13 @@ public class World implements IWorld{
     }
 
     @Override
+    public void callRetroactiveGeneration(){
+        for(IChunk chunk : this.loadedChunks){
+            chunk.callRetroactiveGeneration();
+        }
+    }
+
+    @Override
     public WorldInfo getWorldInfo(){
         return this.info;
     }
@@ -523,6 +545,11 @@ public class World implements IWorld{
     @Override
     public List<IWorldGenerator> getSortedGenerators(){
         return this.generators;
+    }
+
+    @Override
+    public List<IRetroactiveGenerator> getSortedRetroactiveGenerators(){
+        return this.retroactiveGenerators;
     }
 
     @Override
