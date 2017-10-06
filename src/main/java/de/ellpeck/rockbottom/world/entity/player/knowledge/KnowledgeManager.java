@@ -27,7 +27,6 @@ public class KnowledgeManager implements IKnowledgeManager{
             information.save(sub, this);
 
             set.addDataSet("info_"+counter, sub);
-            System.out.println("Saved information "+information.getName());
 
             counter++;
         }
@@ -46,7 +45,6 @@ public class KnowledgeManager implements IKnowledgeManager{
 
             Information information = loadInformation(regName, name);
             if(information != null){
-                System.out.println("Loaded information "+information.getName());
                 this.information.put(name, information);
                 information.load(sub, this);
             }
