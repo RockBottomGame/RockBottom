@@ -51,6 +51,7 @@ public class World implements IWorld{
     private final DynamicRegistryInfo regInfo;
     private final List<IWorldGenerator> generators;
     private final List<IRetroactiveGenerator> retroactiveGenerators;
+    protected File directory;
     protected File chunksDirectory;
     protected File playerDirectory;
     protected int saveTicksCounter;
@@ -89,6 +90,7 @@ public class World implements IWorld{
     }
 
     public void initFiles(File worldDirectory){
+        this.directory = worldDirectory;
         this.chunksDirectory = new File(worldDirectory, "chunks");
         this.playerDirectory = new File(worldDirectory, "players");
     }
@@ -532,6 +534,26 @@ public class World implements IWorld{
     @Override
     public boolean isNighttime(){
         return !this.isDaytime();
+    }
+
+    @Override
+    public File getFolder(){
+        return this.directory;
+    }
+
+    @Override
+    public File getPlayerFolder(){
+        return this.playerDirectory;
+    }
+
+    @Override
+    public File getChunksFolder(){
+        return this.chunksDirectory;
+    }
+
+    @Override
+    public String getName(){
+        return this.directory.getName();
     }
 
     @Override
