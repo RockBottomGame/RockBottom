@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerJoinWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldSaveEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
+import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -31,6 +32,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketSound;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
@@ -557,6 +559,63 @@ public class World implements IWorld{
     }
 
     @Override
+    public void playSound(AbstractEntityPlayer player, IResourceName name, double x, double y, double z, float pitch, float volume){
+        INetHandler net = RockBottomAPI.getNet();
+        if(net.isThePlayer(player)){
+            RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z);
+        }
+        else{
+            player.sendPacket(new PacketSound(name, x, y, z, pitch, volume));
+        }
+    }
+
+    @Override
+    public void broadcastSound(AbstractEntityPlayer player, IResourceName name, float pitch, float volume){
+        INetHandler net = RockBottomAPI.getNet();
+        if(net.isThePlayer(player)){
+            RockBottomAPI.getGame().getAssetManager().getSound(name).play(pitch, volume);
+        }
+        else{
+            player.sendPacket(new PacketSound(name, pitch, volume));
+        }
+    }
+
+    @Override
+    public void playSound(IResourceName name, double x, double y, double z, float pitch, float volume, AbstractEntityPlayer except){
+        if(this.isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, x, y, z, pitch, volume), except);
+        }
+
+        IGameInstance game = RockBottomAPI.getGame();
+        if(!game.isDedicatedServer()){
+            AbstractEntityPlayer player = game.getPlayer();
+            game.getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z);
+        }
+    }
+
+    @Override
+    public void broadcastSound(IResourceName name, float pitch, float volume, AbstractEntityPlayer except){
+        if(this.isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, pitch, volume), except);
+        }
+
+        IGameInstance game = RockBottomAPI.getGame();
+        if(!game.isDedicatedServer()){
+            game.getAssetManager().getSound(name).play(pitch, volume);
+        }
+    }
+
+    @Override
+    public void playSound(IResourceName name, double x, double y, double z, float pitch, float volume){
+        this.playSound(name, x, y, z, pitch, volume, null);
+    }
+
+    @Override
+    public void broadcastSound(IResourceName name, float pitch, float volume){
+        this.broadcastSound(name, pitch, volume, null);
+    }
+
+    @Override
     public void savePlayer(AbstractEntityPlayer player){
         DataSet playerSet = new DataSet();
         player.save(playerSet);
@@ -640,6 +699,11 @@ public class World implements IWorld{
         IGameInstance game = RockBottomAPI.getGame();
         if(!game.isDedicatedServer()){
             game.getParticleManager().addTileParticles(this, x, y, state);
+        }
+
+        IResourceName sound = state.getTile().getBreakSound(this, x, y, layer, destroyer);
+        if(sound != null){
+            this.playSound(sound, x, y, layer.index()-5, 1F, 1F);
         }
 
         this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());

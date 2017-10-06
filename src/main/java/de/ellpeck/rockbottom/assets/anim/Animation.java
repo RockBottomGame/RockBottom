@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.assets;
+package de.ellpeck.rockbottom.assets.anim;
 
 import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;

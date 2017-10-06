@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.AssetSound;
+import de.ellpeck.rockbottom.api.assets.sound.AssetSound;
 import de.ellpeck.rockbottom.api.assets.IAsset;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.anim.AssetAnimation;
@@ -16,18 +16,22 @@ import de.ellpeck.rockbottom.api.assets.font.AssetFont;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
 import de.ellpeck.rockbottom.api.assets.local.Locale;
+import de.ellpeck.rockbottom.api.assets.sound.ISound;
 import de.ellpeck.rockbottom.api.assets.tex.AssetTexture;
 import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.assets.anim.Animation;
+import de.ellpeck.rockbottom.assets.anim.AnimationRow;
+import de.ellpeck.rockbottom.assets.sound.EmptySound;
+import de.ellpeck.rockbottom.assets.sound.SoundEffect;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.opengl.CursorLoader;
 
 import java.io.InputStream;
@@ -78,7 +82,7 @@ public class AssetManager implements IAssetManager{
             }
         }
         this.missingTexture = new AssetTexture(new Texture(buffer));
-        this.missingSound = new AssetSound(null);
+        this.missingSound = new AssetSound(new EmptySound());
         this.missingLocale = new AssetLocale(new Locale("fallback"));
         this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0)))));
         this.missingAnimation = new AssetAnimation(new Animation(this.missingTexture.get(), 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F})))));
@@ -251,6 +255,14 @@ public class AssetManager implements IAssetManager{
 
                         RockBottomAPI.logger().config("Loaded animation "+res+" from "+path+anim+" and "+path+texture+" for mod "+mod.getDisplayName());
                     }
+                    else if("sound".equals(type)){
+                        String resPath = path+element.getAsString();
+
+                        AssetSound sound = new AssetSound(new SoundEffect(getResource(resPath), resPath));
+                        this.assets.put(res, sound);
+
+                        RockBottomAPI.logger().config("Loaded sound "+res+" from "+resPath+" for mod "+mod.getDisplayName());
+                    }
                     else{
                         RockBottomAPI.logger().warning("Found unknown resource type "+type+" from mod "+mod.getDisplayName());
                     }
@@ -293,7 +305,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public Sound getSound(IResourceName path){
+    public ISound getSound(IResourceName path){
         return this.getAssetWithFallback(path.addPrefix("sound."), this.missingSound);
     }
 

@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.assets;
+package de.ellpeck.rockbottom.assets.anim;
 
 public class AnimationRow{
 
