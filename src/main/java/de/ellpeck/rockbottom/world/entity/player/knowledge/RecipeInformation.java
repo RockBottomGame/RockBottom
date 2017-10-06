@@ -7,6 +7,9 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.util.HashSet;
@@ -32,6 +35,28 @@ public class RecipeInformation extends Information{
 
     public static IResourceName getInfoName(IRecipe recipe){
         return recipe.getName().addPrefix("recipe_");
+    }
+
+    @Override
+    public Toast announceForget(){
+        return new Toast(RockBottomAPI.createInternalRes("gui.construction_toggled"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
+    }
+
+    @Override
+    public Toast announceTeach(){
+        return new Toast(RockBottomAPI.createInternalRes("gui.construction"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
+    }
+
+    private ChatComponent getOutputName(){
+        List<ItemInstance> outputs = this.recipe.getOutputs();
+        ItemInstance output = outputs.get(0);
+
+        if(this.knownOutputs.contains(output)){
+            return new ChatComponentText(output.getDisplayName()+" x"+output.getAmount());
+        }
+        else{
+            return new ChatComponentText("??? x"+output.getAmount());
+        }
     }
 
     @Override

@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
-import de.ellpeck.rockbottom.api.tile.TilePebbles;
+import de.ellpeck.rockbottom.world.tile.TilePebbles;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeGrassland;

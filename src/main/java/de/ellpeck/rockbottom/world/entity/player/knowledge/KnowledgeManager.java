@@ -7,7 +7,10 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
+import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,16 +19,17 @@ import java.util.logging.Level;
 public class KnowledgeManager implements IKnowledgeManager{
 
     private final Map<IResourceName, Information> information = new HashMap<>();
+    private final EntityPlayer player;
+
+    public KnowledgeManager(EntityPlayer player){
+        this.player = player;
+    }
 
     public void save(DataSet set){
         int counter = 0;
         for(Information information : this.information.values()){
             DataSet sub = new DataSet();
-
-            sub.addString("name", information.getName().toString());
-            sub.addString("reg_name", information.getRegistryName().toString());
-            information.save(sub, this);
-
+            saveInformation(sub, this, information);
             set.addDataSet("info_"+counter, sub);
 
             counter++;
@@ -39,18 +43,27 @@ public class KnowledgeManager implements IKnowledgeManager{
         int amount = set.getInt("info_amount");
         for(int i = 0; i < amount; i++){
             DataSet sub = set.getDataSet("info_"+i);
+            loadInformation(sub, this, false);
+        }
+    }
 
-            IResourceName regName = RockBottomAPI.createRes(sub.getString("reg_name"));
-            IResourceName name = RockBottomAPI.createRes(sub.getString("name"));
+    public static void saveInformation(DataSet set, IKnowledgeManager manager, Information information){
+        set.addString("reg_name", information.getRegistryName().toString());
+        set.addString("name", information.getName().toString());
+        information.save(set, manager);
+    }
 
-            Information information = loadInformation(regName, name);
-            if(information != null){
-                this.information.put(name, information);
-                information.load(sub, this);
-            }
-            else{
-                RockBottomAPI.logger().warning("Couldn't load information with registry name "+regName+" and name "+name);
-            }
+    public static void loadInformation(DataSet set, IKnowledgeManager manager, boolean announce){
+        IResourceName regName = RockBottomAPI.createRes(set.getString("reg_name"));
+        IResourceName name = RockBottomAPI.createRes(set.getString("name"));
+
+        Information information = loadInformation(regName, name);
+        if(information != null){
+            manager.teachInformation(information, announce);
+            information.load(set, manager);
+        }
+        else{
+            RockBottomAPI.logger().warning("Couldn't load information with registry name "+regName+" and name "+name);
         }
     }
 
@@ -105,51 +118,90 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     @Override
-    public void teachRecipe(IRecipe recipe, boolean teachAllParts){
-        RecipeInformation information = new RecipeInformation(recipe);
-        if(teachAllParts){
-            information.knownInputs.addAll(recipe.getInputs());
-            information.knownOutputs.addAll(recipe.getOutputs());
+    public void teachRecipe(IRecipe recipe, boolean teachAllParts, boolean announce){
+        if(!this.knowsRecipe(recipe)){
+            RecipeInformation information = new RecipeInformation(recipe);
+            if(teachAllParts){
+                information.knownInputs.addAll(recipe.getInputs());
+                information.knownOutputs.addAll(recipe.getOutputs());
+            }
+            this.teachInformation(information, announce);
         }
-        this.teachInformation(information);
     }
 
     @Override
-    public void teachIngredient(IRecipe recipe, IUseInfo info){
+    public void teachRecipe(IRecipe recipe, boolean teachAllParts){
+        this.teachRecipe(recipe, teachAllParts, true);
+    }
+
+    @Override
+    public void teachIngredient(IRecipe recipe, IUseInfo info, boolean announce){
         RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
 
         if(information == null){
             information = new RecipeInformation(recipe);
-            this.teachInformation(information);
+            this.teachInformation(information, announce);
         }
 
         information.knownInputs.add(info);
     }
 
     @Override
-    public void teachOutput(IRecipe recipe, ItemInstance instance){
+    public void teachIngredient(IRecipe recipe, IUseInfo info){
+        this.teachIngredient(recipe, info, true);
+    }
+
+    @Override
+    public void teachOutput(IRecipe recipe, ItemInstance instance, boolean announce){
         RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
 
         if(information == null){
             information = new RecipeInformation(recipe);
-            this.teachInformation(information);
+            this.teachInformation(information, announce);
         }
 
         information.knownOutputs.add(instance);
     }
 
     @Override
+    public void teachOutput(IRecipe recipe, ItemInstance instance){
+        this.teachOutput(recipe, instance, true);
+    }
+
+    @Override
+    public void teachInformation(Information information, boolean announce){
+        if(!this.information.containsKey(information.getName())){
+            this.information.put(information.getName(), information);
+
+            if(RockBottomAPI.getNet().isThePlayer(this.player)){
+                Toast toast = information.announceTeach();
+                if(toast != null){
+                    RockBottomAPI.getGame().getToaster().displayToast(toast);
+                }
+            }
+            else if(this.player.world.isServer()){
+                this.player.sendPacket(new PacketKnowledge(this.player, information, announce, false));
+            }
+        }
+    }
+
+    @Override
     public void teachInformation(Information information){
-        this.information.put(information.getName(), information);
+        this.teachInformation(information, true);
+    }
+
+    @Override
+    public void forgetRecipe(IRecipe recipe, boolean forgetAllParts, boolean announce){
+        this.forgetInformation(RecipeInformation.getInfoName(recipe), announce);
     }
 
     @Override
     public void forgetRecipe(IRecipe recipe, boolean forgetAllParts){
-        this.forgetInformation(RecipeInformation.getInfoName(recipe));
+        this.forgetRecipe(recipe, forgetAllParts, true);
     }
 
     @Override
-    public void forgetIngredient(IRecipe recipe, IUseInfo info){
+    public void forgetIngredient(IRecipe recipe, IUseInfo info, boolean announce){
         RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
         if(information != null){
             information.knownInputs.remove(info);
@@ -157,7 +209,12 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     @Override
-    public void forgetOutput(IRecipe recipe, ItemInstance instance){
+    public void forgetIngredient(IRecipe recipe, IUseInfo info){
+        this.forgetIngredient(recipe, info, true);
+    }
+
+    @Override
+    public void forgetOutput(IRecipe recipe, ItemInstance instance, boolean announce){
         RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
         if(information != null){
             information.knownOutputs.remove(instance);
@@ -165,7 +222,30 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     @Override
+    public void forgetOutput(IRecipe recipe, ItemInstance instance){
+        this.forgetOutput(recipe, instance, true);
+    }
+
+    @Override
+    public void forgetInformation(IResourceName name, boolean announce){
+        Information info = this.information.get(name);
+        if(info != null){
+            this.information.remove(name);
+
+            if(RockBottomAPI.getNet().isThePlayer(this.player)){
+                Toast toast = info.announceForget();
+                if(toast != null){
+                    RockBottomAPI.getGame().getToaster().displayToast(toast);
+                }
+            }
+            else if(this.player.world.isServer()){
+                this.player.sendPacket(new PacketKnowledge(this.player, info, announce, true));
+            }
+        }
+    }
+
+    @Override
     public void forgetInformation(IResourceName name){
-        this.information.remove(name);
+        this.forgetInformation(name, true);
     }
 }
