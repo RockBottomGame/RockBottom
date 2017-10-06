@@ -407,7 +407,7 @@ public class ApiHandler implements IApiHandler{
                         if(state.getTile() == tile){
                             IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, state);
                             if(sound != null){
-                                player.world.playSound(sound, x, y, layer.index()-5, 1F, 1F);
+                                player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
                             }
                         }
                     }

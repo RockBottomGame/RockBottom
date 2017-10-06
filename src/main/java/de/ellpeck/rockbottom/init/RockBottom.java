@@ -44,6 +44,7 @@ import org.lwjgl.opengl.PixelFormat;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.InputListener;
 import org.newdawn.slick.Music;
+import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.ImageIOImageData;
 import org.newdawn.slick.opengl.LoadableImageData;
 import org.newdawn.slick.opengl.renderer.Renderer;
@@ -191,6 +192,9 @@ public class RockBottom extends AbstractGame implements InputListener{
 
         this.setFullscreen(this.settings.fullscreen);
         Display.setVSyncEnabled(this.settings.vsync);
+
+        SoundStore.get().setSoundVolume(this.settings.soundVolume);
+        SoundStore.get().setMusicVolume(this.settings.musicVolume);
 
         this.assetManager = new AssetManager();
         this.assetManager.load(this);

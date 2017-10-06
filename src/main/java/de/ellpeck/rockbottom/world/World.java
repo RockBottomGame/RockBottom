@@ -562,7 +562,7 @@ public class World implements IWorld{
     public void playSound(AbstractEntityPlayer player, IResourceName name, double x, double y, double z, float pitch, float volume){
         INetHandler net = RockBottomAPI.getNet();
         if(net.isThePlayer(player)){
-            RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z);
+            this.playRelativeSound(name, RockBottomAPI.getGame().getPlayer(), x, y, z, pitch, volume);
         }
         else{
             player.sendPacket(new PacketSound(name, x, y, z, pitch, volume));
@@ -586,11 +586,16 @@ public class World implements IWorld{
             RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, x, y, z, pitch, volume), except);
         }
 
-        IGameInstance game = RockBottomAPI.getGame();
-        if(!game.isDedicatedServer()){
-            AbstractEntityPlayer player = game.getPlayer();
-            game.getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z);
+        if(!RockBottomAPI.getNet().isThePlayer(except)){
+            IGameInstance game = RockBottomAPI.getGame();
+            if(!game.isDedicatedServer()){
+                this.playRelativeSound(name, game.getPlayer(), x, y, z, pitch, volume);
+            }
         }
+    }
+
+    private void playRelativeSound(IResourceName name, AbstractEntityPlayer player, double x, double y, double z, float pitch, float volume){
+        RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z-3);
     }
 
     @Override
@@ -599,9 +604,11 @@ public class World implements IWorld{
             RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, pitch, volume), except);
         }
 
-        IGameInstance game = RockBottomAPI.getGame();
-        if(!game.isDedicatedServer()){
-            game.getAssetManager().getSound(name).play(pitch, volume);
+        if(!RockBottomAPI.getNet().isThePlayer(except)){
+            IGameInstance game = RockBottomAPI.getGame();
+            if(!game.isDedicatedServer()){
+                game.getAssetManager().getSound(name).play(pitch, volume);
+            }
         }
     }
 
@@ -703,7 +710,7 @@ public class World implements IWorld{
 
         IResourceName sound = state.getTile().getBreakSound(this, x, y, layer, destroyer);
         if(sound != null){
-            this.playSound(sound, x, y, layer.index()-5, 1F, 1F);
+            this.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
         }
 
         this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());

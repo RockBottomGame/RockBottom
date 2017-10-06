@@ -35,8 +35,12 @@ public class GuiSettings extends Gui{
             guiManager.openGui(new GuiLanguage(this));
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.language"))));
+        this.components.add(new ComponentButton(this, this.width/2-75, 60, 150, 16, ()->{
+            guiManager.openGui(new GuiSound(this));
+            return true;
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.sound"))));
 
-        this.components.add(new ComponentSlider(this, this.width/2-75, 65, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(RockBottomAPI.createInternalRes("button.autosave_interval")), assetManager.localize(RockBottomAPI.createInternalRes("info.autosave_interval"))));
+        this.components.add(new ComponentSlider(this, this.width/2-75, 85, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(RockBottomAPI.createInternalRes("button.autosave_interval")), assetManager.localize(RockBottomAPI.createInternalRes("info.autosave_interval"))));
 
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             guiManager.openGui(this.parent);
