@@ -43,7 +43,11 @@ public class KnowledgeManager implements IKnowledgeManager{
         int amount = set.getInt("info_amount");
         for(int i = 0; i < amount; i++){
             DataSet sub = set.getDataSet("info_"+i);
-            loadInformation(sub, this, false);
+
+            Information information = loadInformation(sub, this);
+            if(information != null){
+                this.information.put(information.getName(), information);
+            }
         }
     }
 
@@ -53,18 +57,18 @@ public class KnowledgeManager implements IKnowledgeManager{
         information.save(set, manager);
     }
 
-    public static void loadInformation(DataSet set, IKnowledgeManager manager, boolean announce){
+    public static Information loadInformation(DataSet set, IKnowledgeManager manager){
         IResourceName regName = RockBottomAPI.createRes(set.getString("reg_name"));
         IResourceName name = RockBottomAPI.createRes(set.getString("name"));
 
         Information information = loadInformation(regName, name);
         if(information != null){
-            manager.teachInformation(information, announce);
             information.load(set, manager);
         }
         else{
             RockBottomAPI.logger().warning("Couldn't load information with registry name "+regName+" and name "+name);
         }
+        return information;
     }
 
     private static Information loadInformation(IResourceName regName, IResourceName name){

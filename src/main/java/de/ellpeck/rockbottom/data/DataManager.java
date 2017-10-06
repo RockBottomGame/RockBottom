@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortArray;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
@@ -76,6 +77,7 @@ public class DataManager implements IDataManager{
 
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(0, ChatComponentText.class);
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(1, ChatComponentTranslation.class);
+        RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(2, ChatComponentEmpty.class);
     }
 
     private final File gameDirectory;

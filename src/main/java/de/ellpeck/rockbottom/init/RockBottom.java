@@ -230,8 +230,6 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.worldRenderer = new WorldRenderer();
         this.particleManager = new ParticleManager();
         this.toaster = new Toaster();
-
-        TileLayer.initLayerList();
     }
 
     @Override

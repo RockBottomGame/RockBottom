@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -22,7 +23,7 @@ public class RecipeInformation extends Information{
 
     public final Set<IUseInfo> knownInputs = new HashSet<>();
     public final Set<ItemInstance> knownOutputs = new HashSet<>();
-    public IRecipe recipe;
+    private IRecipe recipe;
 
     public RecipeInformation(IRecipe recipe){
         super(getInfoName(recipe));
@@ -48,34 +49,41 @@ public class RecipeInformation extends Information{
     }
 
     private ChatComponent getOutputName(){
-        List<ItemInstance> outputs = this.recipe.getOutputs();
-        ItemInstance output = outputs.get(0);
+        if(this.recipe != null){
+            List<ItemInstance> outputs = this.recipe.getOutputs();
+            ItemInstance output = outputs.get(0);
 
-        if(this.knownOutputs.contains(output)){
-            return new ChatComponentText(output.getDisplayName()+" x"+output.getAmount());
+            if(this.knownOutputs.contains(output)){
+                return new ChatComponentText(output.getDisplayName()+" x"+output.getAmount());
+            }
+            else{
+                return new ChatComponentText("??? x"+output.getAmount());
+            }
         }
         else{
-            return new ChatComponentText("??? x"+output.getAmount());
+            return new ChatComponentEmpty();
         }
     }
 
     @Override
     public void save(DataSet set, IKnowledgeManager manager){
-        set.addString("recipe_name", this.recipe.getName().toString());
+        if(this.recipe != null){
+            set.addString("recipe_name", this.recipe.getName().toString());
 
-        int inputCounter = 0;
-        for(IUseInfo info : this.knownInputs){
-            set.addInt("in_"+inputCounter, this.recipe.getInputs().indexOf(info));
-            inputCounter++;
-        }
-        set.addInt("in_amount", inputCounter);
+            int inputCounter = 0;
+            for(IUseInfo info : this.knownInputs){
+                set.addInt("in_"+inputCounter, this.recipe.getInputs().indexOf(info));
+                inputCounter++;
+            }
+            set.addInt("in_amount", inputCounter);
 
-        int outputCounter = 0;
-        for(ItemInstance instance : this.knownOutputs){
-            set.addInt("out_"+outputCounter, this.recipe.getOutputs().indexOf(instance));
-            outputCounter++;
+            int outputCounter = 0;
+            for(ItemInstance instance : this.knownOutputs){
+                set.addInt("out_"+outputCounter, this.recipe.getOutputs().indexOf(instance));
+                outputCounter++;
+            }
+            set.addInt("out_amount", outputCounter);
         }
-        set.addInt("out_amount", outputCounter);
     }
 
     @Override
@@ -111,9 +119,7 @@ public class RecipeInformation extends Information{
             }
         }
         else{
-            IResourceName name = this.getName();
-            RockBottomAPI.logger().warning("Couldn't load recipe information "+name+" because recipe with name "+recName+" is missing!");
-            manager.forgetInformation(name);
+            RockBottomAPI.logger().warning("Couldn't load recipe information "+this.getName()+" because recipe with name "+recName+" is missing!");
         }
     }
 
