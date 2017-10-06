@@ -319,7 +319,7 @@ public class Font implements IFont{
             FormattingCode trailingColor = FormattingCode.NONE;
             FormattingCode trailingProp = FormattingCode.NONE;
 
-            for(String subLine : line.split("[\\\\&]n")){
+            for(String subLine : line.split("\n")){
                 String[] words = subLine.split(" ");
 
                 for(String word : words){

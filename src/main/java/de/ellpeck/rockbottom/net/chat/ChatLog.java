@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.net.chat;
 
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -15,8 +16,10 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.log.Logging;
+import de.ellpeck.rockbottom.net.chat.command.CommandHelp;
+import de.ellpeck.rockbottom.net.chat.command.CommandSpawnItem;
+import de.ellpeck.rockbottom.net.chat.command.CommandStopServer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
-import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +28,13 @@ import java.util.logging.Logger;
 
 public class ChatLog implements IChatLog{
 
-    private static Logger chatLogger = Logging.createLogger("Chat");
+    private static final Logger CHAT_LOGGER = Logging.createLogger("Chat");
+
+    static{
+        new CommandHelp().register();
+        new CommandStopServer().register();
+        new CommandSpawnItem().register();
+    }
 
     private final List<ChatComponent> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
@@ -38,7 +47,7 @@ public class ChatLog implements IChatLog{
             this.newMessageCounter.add(0, 400);
         }
 
-        chatLogger.info(message.getUnformattedWithChildren());
+        CHAT_LOGGER.info(message.getUnformattedWithChildren());
     }
 
     @Override
@@ -52,7 +61,7 @@ public class ChatLog implements IChatLog{
                     ChatComponent cmdFeedback;
 
                     String[] split = message.substring(1).split(" ");
-                    Command command = RockBottomAPI.COMMAND_REGISTRY.get(split[0]);
+                    Command command = this.getCommand(split[0]);
 
                     if(command != null){
                         if(sender.getCommandLevel() >= command.getLevel()){
@@ -71,12 +80,28 @@ public class ChatLog implements IChatLog{
                         this.sendMessageTo(sender, cmdFeedback);
                     }
 
-                    chatLogger.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback "+cmdFeedback);
+                    CHAT_LOGGER.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback '"+cmdFeedback+"'");
                 }
                 else{
                     this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat()+"["+sender.getName()+"] &4"+message));
                 }
             }
+        }
+    }
+
+    private Command getCommand(String name){
+        if(name.contains(Constants.RESOURCE_SEPARATOR)){
+            return RockBottomAPI.COMMAND_REGISTRY.get(RockBottomAPI.createRes(name));
+        }
+        else{
+            for(Command command : RockBottomAPI.COMMAND_REGISTRY.getUnmodifiable().values()){
+                for(String s : command.getTriggers()){
+                    if(name.equals(s)){
+                        return command;
+                    }
+                }
+            }
+            return null;
         }
     }
 
