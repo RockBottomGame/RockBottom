@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.world.gen.biome;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
@@ -20,18 +19,22 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, Random rand){
-        double worldX = chunk.getX()+x;
-        int height = (int)(((noise.make2dNoise(worldX/100D, 0D)+noise.make2dNoise(worldX/20D, 0D)*2D)/3D)*10D);
+        if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
+            double worldX = chunk.getX()+x;
+            int height = (int)(((noise.make2dNoise(worldX/100D, 0D)+noise.make2dNoise(worldX/20D, 0D)*2D)/3D)*10D);
 
-        if(chunk.getY()+y == height){
-            return GameContent.TILE_GRASS.getDefState();
+            if(layer == TileLayer.BACKGROUND){
+                height -= (int)(noise.make2dNoise(worldX/200D, 0D)*2D);
+            }
+
+            if(chunk.getY()+y == height){
+                return GameContent.TILE_GRASS.getDefState();
+            }
+            else if(chunk.getY()+y < height){
+                return GameContent.TILE_SOIL.getDefState();
+            }
         }
-        else if(chunk.getY()+y < height){
-            return GameContent.TILE_SOIL.getDefState();
-        }
-        else{
-            return GameContent.TILE_AIR.getDefState();
-        }
+        return GameContent.TILE_AIR.getDefState();
     }
 
     @Override
