@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.net.client;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.util.MutableInt;
+import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
@@ -62,7 +62,7 @@ public class ClientChunk extends Chunk{
     }
 
     @Override
-    public Map<AbstractEntityPlayer, MutableInt> getLeftPlayerTimers(){
+    public Map<AbstractEntityPlayer, Counter> getLeftPlayerTimers(){
         throw new UnsupportedOperationException("Cannot get timers for players that left range of a client chunk");
     }
 }

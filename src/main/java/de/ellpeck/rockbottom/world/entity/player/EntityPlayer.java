@@ -1,12 +1,9 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
 import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
-import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
@@ -40,7 +37,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketRespawn;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
-import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -312,7 +308,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                     List<AbstractEntityPlayer> outOfRange = chunk.getPlayersLeftRange();
                     if(!outOfRange.contains(this)){
                         outOfRange.add(this);
-                        chunk.getLeftPlayerTimers().put(this, new MutableInt(Constants.CHUNK_LOAD_TIME));
+                        chunk.getLeftPlayerTimers().put(this, new Counter(Constants.CHUNK_LOAD_TIME));
                     }
                 }
                 else{

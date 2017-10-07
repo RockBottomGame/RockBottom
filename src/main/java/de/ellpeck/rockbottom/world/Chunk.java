@@ -15,7 +15,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.MutableInt;
+import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.Pos3;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -43,7 +43,7 @@ public class Chunk implements IChunk{
     public final int gridY;
     public final List<AbstractEntityPlayer> playersInRange = new ArrayList<>();
     public final List<AbstractEntityPlayer> playersOutOfRangeCached = new ArrayList<>();
-    public final Map<AbstractEntityPlayer, MutableInt> playersOutOfRangeCachedTimers = new HashMap<>();
+    public final Map<AbstractEntityPlayer, Counter> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final World world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final Map<TileLayer, TileState[][]> stateGrid = new TreeMap<>(Comparator.comparing(TileLayer:: getName));
@@ -221,7 +221,7 @@ public class Chunk implements IChunk{
         for(int i = 0; i < this.playersOutOfRangeCached.size(); i++){
             AbstractEntityPlayer player = this.playersOutOfRangeCached.get(i);
 
-            MutableInt time = this.playersOutOfRangeCachedTimers.get(player);
+            Counter time = this.playersOutOfRangeCachedTimers.get(player);
             time.add(-1);
 
             if(time.get() <= 0){
@@ -876,7 +876,7 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public Map<AbstractEntityPlayer, MutableInt> getLeftPlayerTimers(){
+    public Map<AbstractEntityPlayer, Counter> getLeftPlayerTimers(){
         return this.playersOutOfRangeCachedTimers;
     }
 

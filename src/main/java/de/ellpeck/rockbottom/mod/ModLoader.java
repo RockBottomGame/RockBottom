@@ -6,10 +6,9 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
-import de.ellpeck.rockbottom.api.util.MutableInt;
+import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.apiimpl.ResourceName;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.*;
@@ -88,7 +87,7 @@ public class ModLoader implements IModLoader{
         if(dir.exists()){
             RockBottomAPI.logger().info("Loading unpacked mods from folder "+dir);
 
-            MutableInt amount = new MutableInt(0);
+            Counter amount = new Counter(0);
             this.recursiveLoad(dir, dir.listFiles(), amount);
 
             RockBottomAPI.logger().info("Loaded a total of "+amount.get()+" unpacked mods");
@@ -98,7 +97,7 @@ public class ModLoader implements IModLoader{
         }
     }
 
-    private void recursiveLoad(File original, File[] files, MutableInt amount){
+    private void recursiveLoad(File original, File[] files, Counter amount){
         for(File file : files){
             if(file.isDirectory()){
                 this.recursiveLoad(original, file.listFiles(), amount);

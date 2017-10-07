@@ -723,7 +723,7 @@ public class World implements IWorld{
 
     @Override
     public void causeLightUpdate(int x, int y){
-        MutableInt recurseCount = new MutableInt(0);
+        Counter recurseCount = new Counter(0);
 
         try{
             this.causeLightUpdate(x, y, recurseCount);
@@ -737,7 +737,7 @@ public class World implements IWorld{
         }
     }
 
-    private void causeLightUpdate(int x, int y, MutableInt recurseCount){
+    private void causeLightUpdate(int x, int y, Counter recurseCount){
         for(Direction direction : Direction.SURROUNDING_INCLUDING_NONE){
             int dirX = x+direction.x;
             int dirY = y+direction.y;

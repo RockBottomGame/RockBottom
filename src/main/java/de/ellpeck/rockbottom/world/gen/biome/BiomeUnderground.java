@@ -5,9 +5,9 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.Random;
 
@@ -19,6 +19,11 @@ public class BiomeUnderground extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, Random rand){
-        return GameContent.TILE_STONE.getDefState();
+        if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
+            return GameContent.TILE_STONE.getDefState();
+        }
+        else{
+            return GameContent.TILE_AIR.getDefState();
+        }
     }
 }
