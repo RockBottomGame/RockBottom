@@ -68,7 +68,7 @@ public class Chunk implements IChunk{
         this.gridY = gridY;
 
         this.isGenerating = true;
-        this.internalLoadingTimer = 200;
+        this.internalLoadingTimer = Constants.CHUNK_LOAD_TIME;
 
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
