@@ -157,11 +157,18 @@ public class AssetManager implements IAssetManager{
 
                         for(Entry<String, JsonElement> resType : main.entrySet()){
                             String type = resType.getKey();
-                            String name = type.contains(Constants.RESOURCE_SEPARATOR) ? RockBottomAPI.createRes(type).getResourceName() : type;
-                            JsonObject resources = resType.getValue().getAsJsonObject();
+                            for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
+                                IResourceName identifier = loader.getAssetIdentifier();
+                                if(identifier.getResourceName().equals(type) || identifier.toString().equals(type)){
+                                    String name = type.contains(Constants.RESOURCE_SEPARATOR) ? RockBottomAPI.createRes(type).getResourceName() : type;
 
-                            for(Entry<String, JsonElement> resource : resources.entrySet()){
-                                this.loadRes(mod, path, type, name, resource.getValue(), resource.getKey());
+                                    JsonObject resources = resType.getValue().getAsJsonObject();
+                                    for(Entry<String, JsonElement> resource : resources.entrySet()){
+                                        this.loadRes(mod, path, loader, name, resource.getValue(), resource.getKey());
+                                    }
+
+                                    break;
+                                }
                             }
                         }
                     }
@@ -181,7 +188,7 @@ public class AssetManager implements IAssetManager{
         }
     }
 
-    private void loadRes(IMod mod, String path, String type, String name, JsonElement element, String elementName){
+    private void loadRes(IMod mod, String path, IAssetLoader loader, String name, JsonElement element, String elementName){
         try{
             if("subtexture".equals(elementName)){
                 JsonObject object = element.getAsJsonObject();
@@ -208,25 +215,16 @@ public class AssetManager implements IAssetManager{
                 }
 
                 if(element.isJsonPrimitive() || element.isJsonArray()){
-                    for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
-                        IResourceName identifier = loader.getAssetIdentifier();
-                        if(identifier.getResourceName().equals(type) || identifier.toString().equals(type)){
-                            IResourceName resourceName = RockBottomAPI.createRes(mod, name);
-
-                            IAsset asset = loader.loadAsset(this, resourceName, path, element, elementName, mod);
-                            if(asset != null){
-                                this.assets.put(resourceName, asset);
-                                return;
-                            }
-                        }
+                    IResourceName resourceName = RockBottomAPI.createRes(mod, name);
+                    IAsset asset = loader.loadAsset(this, resourceName, path, element, elementName, mod);
+                    if(asset != null){
+                        this.assets.put(resourceName, asset);
                     }
-
-                    RockBottomAPI.logger().warning("Found unknown resource type "+type+" from mod "+mod.getDisplayName());
                 }
                 else if(element.isJsonObject()){
                     JsonObject object = element.getAsJsonObject();
                     for(Entry<String, JsonElement> entry : object.entrySet()){
-                        this.loadRes(mod, path, type, name, entry.getValue(), entry.getKey());
+                        this.loadRes(mod, path, loader, name, entry.getValue(), entry.getKey());
                     }
                 }
             }
