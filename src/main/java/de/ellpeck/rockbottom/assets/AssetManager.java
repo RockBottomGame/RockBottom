@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
+import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
@@ -29,10 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -190,24 +188,9 @@ public class AssetManager implements IAssetManager{
 
     private void loadRes(IMod mod, String path, IAssetLoader loader, String name, JsonElement element, String elementName){
         try{
-            if("subtexture".equals(elementName)){
-                JsonObject object = element.getAsJsonObject();
-
-                String file = object.getAsJsonPrimitive("file").getAsString();
-                Texture main = new Texture(getResource(path+file), mod.getId()+"/"+name, false);
-
-                for(Entry<String, JsonElement> entry : object.entrySet()){
-                    String key = entry.getKey();
-                    if(!"file".equals(key)){
-                        JsonArray array = entry.getValue().getAsJsonArray();
-                        IResourceName res = RockBottomAPI.createRes(mod, "*".equals(key) ? name : name+"."+key);
-
-                        ITexture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
-                        this.assets.put(res, texture);
-
-                        RockBottomAPI.logger().config("Loaded subtexture "+res+" from texture "+path+file+" for mod "+mod.getDisplayName());
-                    }
-                }
+            Map<IResourceName, IAsset> special = loader.dealWithSpecialCases(this, name, path, element, elementName, mod);
+            if(special != null && !special.isEmpty()){
+                this.assets.putAll(special);
             }
             else{
                 if(!"*".equals(elementName)){
