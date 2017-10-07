@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
-import de.ellpeck.rockbottom.api.assets.tex.ITexture;
+import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;

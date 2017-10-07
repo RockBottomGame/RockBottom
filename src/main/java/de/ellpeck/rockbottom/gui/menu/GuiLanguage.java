@@ -3,8 +3,7 @@ package de.ellpeck.rockbottom.gui.menu;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
-import de.ellpeck.rockbottom.api.assets.local.Locale;
+import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
@@ -28,9 +27,9 @@ public class GuiLanguage extends Gui{
         this.components.add(menu);
 
         IAssetManager manager = game.getAssetManager();
-        for(Map.Entry<IResourceName, AssetLocale> entry : manager.getAllOfType(AssetLocale.class).entrySet()){
+        for(Map.Entry<IResourceName, Locale> entry : manager.getAllOfType(Locale.class).entrySet()){
             IResourceName res = entry.getKey();
-            Locale loc = entry.getValue().get();
+            Locale loc = entry.getValue();
 
             menu.add(new ComponentButton(this, 0, 0, 150, 16, () -> {
                 if(manager.getLocale() != loc){

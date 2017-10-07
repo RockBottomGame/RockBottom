@@ -5,27 +5,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.sound.AssetSound;
-import de.ellpeck.rockbottom.api.assets.IAsset;
-import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.anim.AssetAnimation;
-import de.ellpeck.rockbottom.api.assets.anim.IAnimation;
-import de.ellpeck.rockbottom.api.assets.font.AssetFont;
+import de.ellpeck.rockbottom.api.assets.*;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
-import de.ellpeck.rockbottom.api.assets.local.AssetLocale;
-import de.ellpeck.rockbottom.api.assets.local.Locale;
-import de.ellpeck.rockbottom.api.assets.sound.ISound;
-import de.ellpeck.rockbottom.api.assets.tex.AssetTexture;
-import de.ellpeck.rockbottom.api.assets.tex.ITexture;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
+import de.ellpeck.rockbottom.assets.loader.*;
 import de.ellpeck.rockbottom.assets.sound.EmptySound;
-import de.ellpeck.rockbottom.assets.sound.SoundEffect;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
@@ -47,12 +38,20 @@ import java.util.logging.Level;
 
 public class AssetManager implements IAssetManager{
 
+    static{
+        new AnimationLoader().register();
+        new FontLoader().register();
+        new LocaleLoader().register();
+        new SoundLoader().register();
+        new TextureLoader().register();
+    }
+
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
-    private AssetSound missingSound;
-    private AssetTexture missingTexture;
-    private AssetLocale missingLocale;
-    private AssetFont missingFont;
-    private AssetAnimation missingAnimation;
+    private ISound missingSound;
+    private ITexture missingTexture;
+    private Locale missingLocale;
+    private IFont missingFont;
+    private IAnimation missingAnimation;
     private Locale currentLocale;
     private Locale defaultLocale;
     private IFont currentFont;
@@ -81,16 +80,16 @@ public class AssetManager implements IAssetManager{
                 buffer.setRGBA(x, y, areEqual ? 255 : 0, 0, areEqual ? 0 : 255, 255);
             }
         }
-        this.missingTexture = new AssetTexture(new Texture(buffer));
-        this.missingSound = new AssetSound(new EmptySound());
-        this.missingLocale = new AssetLocale(new Locale("fallback"));
-        this.missingFont = new AssetFont(new Font("fallback", this.missingTexture.get(), 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0)))));
-        this.missingAnimation = new AssetAnimation(new Animation(this.missingTexture.get(), 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F})))));
+        this.missingTexture = new Texture(buffer);
+        this.missingSound = new EmptySound();
+        this.missingLocale = new Locale("fallback");
+        this.missingFont = new Font("fallback", this.missingTexture, 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0))));
+        this.missingAnimation = new Animation(this.missingTexture, 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F}))));
 
-        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(AssetTexture.class).size()+" texture resources!");
-        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(AssetSound.class).size()+" sound resources!");
-        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(AssetAnimation.class).size()+" animations!");
-        RockBottomAPI.logger().info("Possible language settings: "+this.getAllOfType(AssetLocale.class).keySet());
+        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ITexture.class).size()+" texture resources!");
+        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ISound.class).size()+" sound resources!");
+        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(IAnimation.class).size()+" animations!");
+        RockBottomAPI.logger().info("Possible language settings: "+this.getAllOfType(Locale.class).keySet());
 
         this.defaultLocale = this.getLocale(RockBottomAPI.createInternalRes("us_english"));
 
@@ -158,10 +157,11 @@ public class AssetManager implements IAssetManager{
 
                         for(Entry<String, JsonElement> resType : main.entrySet()){
                             String type = resType.getKey();
+                            String name = type.contains(Constants.RESOURCE_SEPARATOR) ? RockBottomAPI.createRes(type).getResourceName() : type;
                             JsonObject resources = resType.getValue().getAsJsonObject();
 
                             for(Entry<String, JsonElement> resource : resources.entrySet()){
-                                this.loadRes(mod, path, type, type, resource.getValue(), resource.getKey());
+                                this.loadRes(mod, path, type, name, resource.getValue(), resource.getKey());
                             }
                         }
                     }
@@ -196,7 +196,7 @@ public class AssetManager implements IAssetManager{
                         IResourceName res = RockBottomAPI.createRes(mod, "*".equals(key) ? name : name+"."+key);
 
                         ITexture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
-                        this.assets.put(res, new AssetTexture(texture));
+                        this.assets.put(res, texture);
 
                         RockBottomAPI.logger().config("Loaded subtexture "+res+" from texture "+path+file+" for mod "+mod.getDisplayName());
                     }
@@ -208,64 +208,20 @@ public class AssetManager implements IAssetManager{
                 }
 
                 if(element.isJsonPrimitive() || element.isJsonArray()){
-                    IResourceName res = RockBottomAPI.createRes(mod, name);
+                    for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
+                        IResourceName identifier = loader.getAssetIdentifier();
+                        if(identifier.getResourceName().equals(type) || identifier.toString().equals(type)){
+                            IResourceName resourceName = RockBottomAPI.createRes(mod, name);
 
-                    if("tex".equals(type)){
-                        String resPath = path+element.getAsString();
-
-                        AssetTexture texture = new AssetTexture(new Texture(getResource(resPath), res.toString(), false));
-                        this.assets.put(res, texture);
-
-                        RockBottomAPI.logger().config("Loaded texture "+res+" from "+resPath+" for mod "+mod.getDisplayName());
-                    }
-                    else if("loc".equals(type)){
-                        String resPath = path+element.getAsString();
-                        boolean merged = false;
-
-                        Locale locale = Locale.fromStream(getResource(resPath), elementName);
-                        for(AssetLocale asset : this.getAllOfType(AssetLocale.class).values()){
-                            if(asset.get().merge(locale)){
-                                merged = true;
-                                break;
+                            IAsset asset = loader.loadAsset(this, resourceName, path, element, elementName, mod);
+                            if(asset != null){
+                                this.assets.put(resourceName, asset);
+                                return;
                             }
                         }
-
-                        if(!merged){
-                            this.assets.put(res, new AssetLocale(locale));
-                            RockBottomAPI.logger().config("Loaded locale "+res+" from "+resPath+" for mod "+mod.getDisplayName());
-                        }
                     }
-                    else if("font".equals(type)){
-                        JsonArray array = element.getAsJsonArray();
-                        String info = array.get(0).getAsString();
-                        String texture = array.get(1).getAsString();
 
-                        AssetFont font = new AssetFont(Font.fromStream(new Texture(getResource(path+texture), res.toString(), false), getResource(path+info), res.toString()));
-                        this.assets.put(res, font);
-
-                        RockBottomAPI.logger().config("Loaded font "+res+" from "+path+info+" and "+path+texture+" for mod "+mod.getDisplayName());
-                    }
-                    else if("anim".equals(type)){
-                        JsonArray array = element.getAsJsonArray();
-                        String anim = array.get(0).getAsString();
-                        String texture = array.get(1).getAsString();
-
-                        AssetAnimation animation = new AssetAnimation(Animation.fromStream(new Texture(getResource(path+texture), res.toString(), false), getResource(path+anim)));
-                        this.assets.put(res, animation);
-
-                        RockBottomAPI.logger().config("Loaded animation "+res+" from "+path+anim+" and "+path+texture+" for mod "+mod.getDisplayName());
-                    }
-                    else if("sound".equals(type)){
-                        String resPath = path+element.getAsString();
-
-                        AssetSound sound = new AssetSound(new SoundEffect(getResource(resPath), resPath));
-                        this.assets.put(res, sound);
-
-                        RockBottomAPI.logger().config("Loaded sound "+res+" from "+resPath+" for mod "+mod.getDisplayName());
-                    }
-                    else{
-                        RockBottomAPI.logger().warning("Found unknown resource type "+type+" from mod "+mod.getDisplayName());
-                    }
+                    RockBottomAPI.logger().warning("Found unknown resource type "+type+" from mod "+mod.getDisplayName());
                 }
                 else if(element.isJsonObject()){
                     JsonObject object = element.getAsJsonObject();
@@ -281,7 +237,7 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
-    public <T> T getAssetWithFallback(IResourceName path, IAsset<T> fallback){
+    public <T extends IAsset> T getAssetWithFallback(IResourceName path, T fallback){
         IAsset asset = this.assets.get(path);
 
         if(asset == null){
@@ -291,7 +247,7 @@ public class AssetManager implements IAssetManager{
             RockBottomAPI.logger().warning("Resource with name "+path+" is missing!");
         }
 
-        return (T)asset.get();
+        return (T)asset;
     }
 
     @Override
@@ -351,7 +307,7 @@ public class AssetManager implements IAssetManager{
 
     @Override
     public ITexture getMissingTexture(){
-        return this.missingTexture.get();
+        return this.missingTexture;
     }
 
     @Override

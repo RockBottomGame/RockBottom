@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.assets.sound;
 
-import de.ellpeck.rockbottom.api.assets.sound.ISound;
+import de.ellpeck.rockbottom.api.assets.ISound;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 
