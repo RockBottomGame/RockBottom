@@ -16,7 +16,7 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 public class CommandSpawnItem extends Command{
 
     public CommandSpawnItem(){
-        super(RockBottomAPI.createInternalRes("spawn_item"), "<mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
+        super(RockBottomAPI.createInternalRes("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
     }
 
     @Override

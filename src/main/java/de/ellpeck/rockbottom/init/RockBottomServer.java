@@ -18,6 +18,7 @@ import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import org.newdawn.slick.Input;
@@ -78,14 +79,17 @@ public class RockBottomServer extends AbstractGame{
         consoleThread.setDaemon(true);
         consoleThread.start();
 
-        boolean isNew = true;
-
+        boolean isNew;
         File file = new File(this.dataManager.getWorldsDir(), "world_server");
 
         WorldInfo info = new WorldInfo(file);
         if(WorldInfo.exists(file)){
             info.load();
             isNew = false;
+        }
+        else{
+            info.seed = Util.RANDOM.nextLong();
+            isNew = true;
         }
 
         this.startWorld(file, info, isNew);
