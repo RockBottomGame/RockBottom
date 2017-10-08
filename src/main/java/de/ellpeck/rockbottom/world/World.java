@@ -44,8 +44,6 @@ import java.util.logging.Level;
 
 public class World implements IWorld{
 
-    public final Random generatorRandom = new Random();
-
     public final List<IChunk> loadedChunks = new ArrayList<>();
     public final List<AbstractEntityPlayer> players = new ArrayList<>();
     protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
@@ -61,7 +59,6 @@ public class World implements IWorld{
     public World(WorldInfo info, DynamicRegistryInfo regInfo){
         this.info = info;
         this.regInfo = regInfo;
-        this.generatorRandom.setSeed(this.info.seed);
 
         List<IWorldGenerator> generators = new ArrayList<>();
         List<IRetroactiveGenerator> retroactiveGenerators = new ArrayList<>();
@@ -69,7 +66,7 @@ public class World implements IWorld{
         for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS.getUnmodifiable().values()){
             try{
                 IWorldGenerator generator = genClass.newInstance();
-                generator.initWorld(this, this.generatorRandom);
+                generator.initWorld(this);
 
                 if(generator instanceof IRetroactiveGenerator){
                     retroactiveGenerators.add((IRetroactiveGenerator)generator);
@@ -362,6 +359,11 @@ public class World implements IWorld{
         for(IChunk chunk : this.loadedChunks){
             chunk.callRetroactiveGeneration();
         }
+    }
+
+    @Override
+    public long getSeed(){
+        return this.info.seed;
     }
 
     @Override

@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 public class CommandSpawnItem extends Command{
@@ -41,7 +42,7 @@ public class CommandSpawnItem extends Command{
             int amount = 1;
             if(args.length > 1){
                 try{
-                    amount = Math.max(0, Math.min(item.getMaxAmount(), Integer.parseInt(args[1])));
+                    amount = Util.clamp(Integer.parseInt(args[1]), 0, item.getMaxAmount());
                 }
                 catch(Exception ignored){
                 }
@@ -50,7 +51,7 @@ public class CommandSpawnItem extends Command{
             int meta = 0;
             if(args.length > 2){
                 try{
-                    meta = Math.max(0, Math.min(item.getHighestPossibleMeta(), Integer.parseInt(args[2])));
+                    meta = Util.clamp(Integer.parseInt(args[2]), 0, item.getHighestPossibleMeta());
                 }
                 catch(Exception ignored){
                 }

@@ -2,12 +2,10 @@ package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
@@ -17,31 +15,30 @@ import java.util.Set;
 
 public class WorldGenTrees implements IWorldGenerator{
 
-    private INoiseGen treeNoise;
+    private final Random treeRandom = new Random();
 
     @Override
-    public void initWorld(IWorld world, Random rand){
-        this.treeNoise = RockBottomAPI.getApiHandler().makeSimplexNoise(rand);
-    }
-
-    @Override
-    public boolean shouldGenerate(IWorld world, IChunk chunk, Random rand){
+    public boolean shouldGenerate(IWorld world, IChunk chunk){
         return true;
     }
 
     @Override
-    public void generate(IWorld world, IChunk chunk, Random rand){
-        int amount = Util.ceil(this.treeNoise.make2dNoise(chunk.getX()*200D, chunk.getY()*200D)*4D);
+    public void generate(IWorld world, IChunk chunk){
+        this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX(), chunk.getY(), world.getSeed()));
+        int amount = Util.ceil(this.treeRandom.nextDouble()*4D);
 
         Set<Pos2> alreadyGeneratedPositions = new HashSet<>();
 
-        amount : for(int i = 1; i <= amount; i++){
+        amount:
+        for(int i = 1; i <= amount; i++){
             Pos2 pos;
 
             int tries = 0;
             do{
-                double mod = i*2000+tries*500;
-                int x = Util.ceil(this.treeNoise.make2dNoise(chunk.getX()*200+mod, chunk.getY()*200+mod)*(double)(Constants.CHUNK_SIZE-6))+3;
+                int mod = i*2000+tries*500;
+                this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX()+mod, chunk.getY()+mod, world.getSeed()));
+
+                int x = Util.ceil(this.treeRandom.nextDouble()*(double)(Constants.CHUNK_SIZE-6))+3;
                 int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0, true);
                 pos = new Pos2(x, y);
 
@@ -71,12 +68,13 @@ public class WorldGenTrees implements IWorldGenerator{
     }
 
     private void makeTree(IChunk chunk, int x, int y){
-        int height = 5+(int)(this.treeNoise.make2dNoise(chunk.getX()+x, chunk.getY()+y)*8D);
+        this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX()+x, chunk.getY()+y, chunk.getSeed()));
+        int height = 5+(int)(this.treeRandom.nextDouble()*8D);
         while(y+height >= Constants.CHUNK_SIZE-4){
             height--;
         }
 
-        int treeSize = Util.ceil(this.treeNoise.make2dNoise((chunk.getX()+x)*20, (chunk.getY()+y)*20)*((double)height/3D));
+        int treeSize = Util.ceil(this.treeRandom.nextDouble()*((double)height/3D));
         while(x-treeSize < 0 || x+treeSize >= Constants.CHUNK_SIZE-1){
             treeSize--;
         }

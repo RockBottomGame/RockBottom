@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.util.function.BiConsumer;
@@ -52,8 +53,8 @@ public class ComponentColorPicker extends GuiComponent{
                     this.width *= 4;
                     this.height *= 4;
 
-                    this.x = Math.max(0, Math.min((int)game.getWidthInGui()-this.width, this.x-(this.width/2-(this.width/8))));
-                    this.y = Math.max(0, Math.min((int)game.getHeightInGui()-this.height, this.y-(this.height/2-(this.height/8))));
+                    this.x = Util.clamp(this.x-(this.width/2-(this.width/8)), 0, (int)game.getWidthInGui()-this.width);
+                    this.y = Util.clamp(this.y-(this.height/2-(this.height/8)), 0, (int)game.getHeightInGui()-this.height);
 
                     this.isEnlarged = true;
                     this.gui.sortComponents();

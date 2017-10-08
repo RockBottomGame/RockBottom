@@ -5,9 +5,8 @@ import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
-import de.ellpeck.rockbottom.api.gui.IGuiManager;
-import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -38,10 +37,10 @@ public class GuiCreateWorld extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true, (string)-> this.updateNameAndSeed(game));
+        this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true, string -> this.updateNameAndSeed(game));
         this.components.add(this.nameField);
 
-        this.seedField = new ComponentInputField(this, this.width/2-75, 72, 150, 16, true, true, false, 40, true);
+        this.seedField = new ComponentInputField(this, this.width/2-75, 72, 150, 16, true, true, false, 40, true, string -> this.updateNameAndSeed(game));
         this.components.add(this.seedField);
 
         int bottomY = this.height;

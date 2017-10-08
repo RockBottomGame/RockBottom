@@ -13,7 +13,6 @@ import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,7 +20,7 @@ import java.util.*;
 
 public class Font implements IFont{
 
-    private final INoiseGen randomNoise = RockBottomAPI.getApiHandler().makeSimplexNoise(Util.RANDOM);
+    private final Random fontRandom = new Random();
 
     private final String name;
     private final ITexture texture;
@@ -213,7 +212,8 @@ public class Font implements IFont{
             if(prop == FontProp.RANDOM && character != '|'){
                 String randomChars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-                double noise = (this.randomNoise.make2dNoise(x, y)*(Util.getTimeMillis()/75))%1D;
+                this.fontRandom.setSeed(Util.scrambleSeed((int)x, (int)y));
+                double noise = (this.fontRandom.nextDouble()*(Util.getTimeMillis()/75))%1D;
                 character = randomChars.charAt((int)(noise*(double)randomChars.length()));
             }
 

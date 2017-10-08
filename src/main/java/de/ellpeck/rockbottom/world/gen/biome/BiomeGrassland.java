@@ -10,8 +10,6 @@ import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-import java.util.Random;
-
 public class BiomeGrassland extends BiomeBasic{
 
     public BiomeGrassland(IResourceName name, int highestY, int lowestY, int weight){
@@ -19,7 +17,7 @@ public class BiomeGrassland extends BiomeBasic{
     }
 
     @Override
-    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, Random rand){
+    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
         if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
             double worldX = chunk.getX()+x;
             int height = (int)(((noise.make2dNoise(worldX/100D, 0D)+noise.make2dNoise(worldX/20D, 0D)*2D)/3D)*10D);
@@ -45,12 +43,12 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public float getFlowerChance(){
-        return 0.3F;
+        return 0.35F;
     }
 
     @Override
     public float getPebbleChance(){
-        return 0.25F;
+        return 0.2F;
     }
 
     @Override

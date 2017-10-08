@@ -85,18 +85,18 @@ public class Chunk implements IChunk{
         isGeneratingChunk = true;
 
         for(IWorldGenerator generator : gens){
-            if(this.canGenerate(generator, this.world.generatorRandom) && generator.shouldGenerate(this.world, this, this.world.generatorRandom)){
-                generator.generate(this.world, this, this.world.generatorRandom);
+            if(this.canGenerate(generator) && generator.shouldGenerate(this.world, this)){
+                generator.generate(this.world, this);
             }
         }
 
         isGeneratingChunk = false;
     }
 
-    private boolean canGenerate(IWorldGenerator generator, Random rand){
-        if(generator.needsPlayerToAllowGeneration(this.world, this, rand)){
+    private boolean canGenerate(IWorldGenerator generator){
+        if(generator.needsPlayerToAllowGeneration(this.world, this)){
             for(AbstractEntityPlayer player : this.world.players){
-                if(generator.doesPlayerAllowGeneration(this.world, this, rand, player)){
+                if(generator.doesPlayerAllowGeneration(this.world, this, player)){
                     return true;
                 }
             }
@@ -549,6 +549,11 @@ public class Chunk implements IChunk{
     @Override
     public void callRetroactiveGeneration(){
         this.generate(this.world.getSortedRetroactiveGenerators());
+    }
+
+    @Override
+    public long getSeed(){
+        return this.world.getSeed();
     }
 
     @Override

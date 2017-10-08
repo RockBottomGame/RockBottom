@@ -34,12 +34,12 @@ public class SimplexNoise implements INoiseGen{
     private final int[] perm = new int[512];
     private final int[] perm12 = new int[512];
 
-    public SimplexNoise(Random random){
+    public SimplexNoise(long seed){
         List<Integer> permutations = new ArrayList<>();
         for(int i = 0; i < 256; i++){
             permutations.add(i);
         }
-        Collections.shuffle(permutations, random);
+        Collections.shuffle(permutations, new Random(seed));
 
         for(int i = 0; i < 512; i++){
             this.perm[i] = permutations.get(i & 255);

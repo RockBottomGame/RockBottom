@@ -373,8 +373,8 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public INoiseGen makeSimplexNoise(Random random){
-        return new SimplexNoise(random);
+    public INoiseGen makeSimplexNoise(long seed){
+        return new SimplexNoise(seed);
     }
 
     @Override
