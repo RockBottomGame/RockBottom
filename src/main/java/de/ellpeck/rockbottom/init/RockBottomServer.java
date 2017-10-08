@@ -89,6 +89,7 @@ public class RockBottomServer extends AbstractGame{
         }
         else{
             info.seed = Util.RANDOM.nextLong();
+            info.save();
             isNew = true;
         }
 
