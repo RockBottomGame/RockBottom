@@ -289,8 +289,8 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public void startWorld(File worldFile, WorldInfo info){
-        super.startWorld(worldFile, info);
+    public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated){
+        super.startWorld(worldFile, info, isNewlyCreated);
 
         this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
         this.world.addEntity(this.player);

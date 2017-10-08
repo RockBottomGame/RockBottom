@@ -78,14 +78,17 @@ public class RockBottomServer extends AbstractGame{
         consoleThread.setDaemon(true);
         consoleThread.start();
 
+        boolean isNew = true;
+
         File file = new File(this.dataManager.getWorldsDir(), "world_server");
 
         WorldInfo info = new WorldInfo(file);
-        if(file.isDirectory()){
+        if(WorldInfo.exists(file)){
             info.load();
+            isNew = false;
         }
 
-        this.startWorld(file, info);
+        this.startWorld(file, info, isNew);
 
         try{
             RockBottomAPI.getNet().init(null, Main.port, true);

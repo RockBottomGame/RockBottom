@@ -53,7 +53,7 @@ public class GuiCreateWorld extends Gui{
 
             IGuiManager gui = game.getGuiManager();
             gui.fadeOut(20, () -> {
-                game.startWorld(file, info);
+                game.startWorld(file, info, true);
                 gui.fadeIn(20, null);
             });
 

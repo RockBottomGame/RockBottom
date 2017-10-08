@@ -99,6 +99,7 @@ public class WorldGenTrees implements IWorldGenerator{
             for(int i = y; i > 0; i--){
                 if(!chunk.getStateInner(x+1, i).getTile().isFullTile()){
                     chunk.setStateInner(x+1, i, GameContent.TILE_LOG.getDefState());
+                    break;
                 }
             }
         }

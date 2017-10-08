@@ -47,7 +47,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     public boolean onPressed(IGameInstance game){
         IGuiManager gui = game.getGuiManager();
         gui.fadeOut(20, () -> {
-            game.startWorld(this.worldFile, this.info);
+            game.startWorld(this.worldFile, this.info, false);
             gui.fadeIn(20, null);
         });
         return true;

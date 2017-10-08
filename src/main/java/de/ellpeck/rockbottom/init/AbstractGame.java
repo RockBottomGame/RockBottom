@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
+import de.ellpeck.rockbottom.api.event.impl.WorldCreationEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
@@ -184,7 +185,7 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
-    public void startWorld(File worldFile, WorldInfo info){
+    public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated){
         RockBottomAPI.logger().info("Starting world with file "+worldFile);
 
         NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), Integer.MAX_VALUE);
@@ -197,6 +198,10 @@ public abstract class AbstractGame implements IGameInstance{
 
         this.world = new World(info, regInfo);
         this.world.initFiles(worldFile);
+
+        if(isNewlyCreated){
+            RockBottomAPI.getEventHandler().fireEvent(new WorldCreationEvent(worldFile, this.world, info, regInfo));
+        }
 
         RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
     }
