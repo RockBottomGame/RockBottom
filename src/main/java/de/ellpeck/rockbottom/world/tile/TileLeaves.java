@@ -44,26 +44,30 @@ public class TileLeaves extends TileBasic{
 
     @Override
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-            int range = 3;
+        if(!world.isClient()){
+            if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
+                int range = 3;
 
-            for(int addX = -range; addX <= range; addX++){
-                for(int addY = -range; addY <= range; addY++){
-                    TileState state = world.getState(layer, x+addX, y+addY);
-                    if(state.getTile().doesSustainLeaves(world, x+addX, y+addY, layer)){
-                        return;
+                for(int addX = -range; addX <= range; addX++){
+                    for(int addY = -range; addY <= range; addY++){
+                        TileState state = world.getState(layer, x+addX, y+addY);
+                        if(state.getTile().doesSustainLeaves(world, x+addX, y+addY, layer)){
+                            return;
+                        }
                     }
                 }
-            }
 
-            world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25)+5);
+                world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25)+5);
+            }
         }
     }
 
     @Override
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
-        if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-            world.destroyTile(x, y, layer, null, true);
+        if(!world.isClient()){
+            if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
+                world.destroyTile(x, y, layer, null, true);
+            }
         }
     }
 }

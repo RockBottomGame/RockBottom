@@ -36,11 +36,13 @@ public class TileLog extends TileBasic{
 
     @Override
     public void onRemoved(IWorld world, int x, int y, TileLayer layer){
-        if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-            for(Direction dir : new Direction[]{Direction.LEFT, Direction.RIGHT, Direction.UP}){
-                TileState state = world.getState(layer, x+dir.x, y+dir.y);
-                if(state.getTile() == this){
-                    world.scheduleUpdate(x+dir.x, y+dir.y, layer, 3);
+        if(!world.isClient()){
+            if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
+                for(Direction dir : new Direction[]{Direction.LEFT, Direction.RIGHT, Direction.UP}){
+                    TileState state = world.getState(layer, x+dir.x, y+dir.y);
+                    if(state.getTile() == this){
+                        world.scheduleUpdate(x+dir.x, y+dir.y, layer, 3);
+                    }
                 }
             }
         }
@@ -48,8 +50,10 @@ public class TileLog extends TileBasic{
 
     @Override
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
-        if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-            world.destroyTile(x, y, layer, null, true);
+        if(!world.isClient()){
+            if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
+                world.destroyTile(x, y, layer, null, true);
+            }
         }
     }
 
