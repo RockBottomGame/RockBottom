@@ -295,8 +295,8 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
         this.world.addEntity(this.player);
 
-        this.guiManager.updateDimensions();
         this.guiManager.closeGui();
+        this.guiManager.updateDimensions();
         this.toaster.cancelAllToasts();
     }
 
@@ -311,8 +311,8 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.player.load(playerSet);
         this.world.addEntity(this.player);
 
-        this.guiManager.updateDimensions();
         this.guiManager.closeGui();
+        this.guiManager.updateDimensions();
         this.toaster.cancelAllToasts();
     }
 
@@ -332,6 +332,7 @@ public class RockBottom extends AbstractGame implements InputListener{
             this.player = null;
         }
 
+        this.guiManager.closeGui();
         this.guiManager.updateDimensions();
         this.guiManager.openGui(new GuiMainMenu());
         this.toaster.cancelAllToasts();

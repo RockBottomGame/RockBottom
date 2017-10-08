@@ -38,7 +38,9 @@ public class GuiCreateWorld extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true);
+        this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true, (string)->{
+            this.updateNameAndSeed(game);
+        });
         this.components.add(this.nameField);
 
         this.seedField = new ComponentInputField(this, this.width/2-75, 72, 150, 16, true, true, false, 40, true);
@@ -46,6 +48,8 @@ public class GuiCreateWorld extends Gui{
 
         int bottomY = this.height;
         this.components.add(new ComponentButton(this, this.width/2-82, bottomY-30, 80, 16, () -> {
+            this.updateNameAndSeed(game);
+
             File file = this.makeWorldFile(game);
             WorldInfo info = new WorldInfo(file);
             info.seed = this.seed;
@@ -68,12 +72,6 @@ public class GuiCreateWorld extends Gui{
         this.updateNameAndSeed(game);
     }
 
-    @Override
-    public void update(IGameInstance game){
-        super.update(game);
-        this.updateNameAndSeed(game);
-    }
-
     private void updateNameAndSeed(IGameInstance game){
         String name = this.nameField.getText();
 
@@ -83,6 +81,8 @@ public class GuiCreateWorld extends Gui{
 
         if(!this.worldName.equals(name)){
             this.worldName = name;
+            System.out.println("CHECKING"+System.currentTimeMillis());
+            Thread.dumpStack();
 
             for(String s : DISALLOWED_CHARACTERS){
                 this.worldName = this.worldName.replaceAll(s, "-");
