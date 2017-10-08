@@ -185,7 +185,7 @@ public class Chunk implements IChunk{
                 int randX = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
                 int randY = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
 
-                Tile tile = this.getStateInner(randX, randY).getTile();
+                Tile tile = this.getStateInner(layer, randX, randY).getTile();
                 tile.updateRandomly(this.world, this.x+randX, this.y+randY, layer);
             }
 

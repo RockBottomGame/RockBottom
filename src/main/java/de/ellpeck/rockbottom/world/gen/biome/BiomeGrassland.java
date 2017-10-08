@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.gen.biome;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -24,13 +25,13 @@ public class BiomeGrassland extends BiomeBasic{
             int height = (int)(((noise.make2dNoise(worldX/100D, 0D)+noise.make2dNoise(worldX/20D, 0D)*2D)/3D)*10D);
 
             if(layer == TileLayer.BACKGROUND){
-                height -= (int)(noise.make2dNoise(worldX/200D, 0D)*2D);
+                height -= Util.ceil(noise.make2dNoise(worldX/10D, 0D)*3D);
             }
 
-            if(chunk.getY()+y == height){
+            if(chunk.getY()+y == height && layer == TileLayer.MAIN){
                 return GameContent.TILE_GRASS.getDefState();
             }
-            else if(chunk.getY()+y < height){
+            else if(chunk.getY()+y <= height){
                 return GameContent.TILE_SOIL.getDefState();
             }
         }
