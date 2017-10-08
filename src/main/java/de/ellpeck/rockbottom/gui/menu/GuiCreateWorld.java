@@ -38,9 +38,7 @@ public class GuiCreateWorld extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true, (string)->{
-            this.updateNameAndSeed(game);
-        });
+        this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true, (string)-> this.updateNameAndSeed(game));
         this.components.add(this.nameField);
 
         this.seedField = new ComponentInputField(this, this.width/2-75, 72, 150, 16, true, true, false, 40, true);
@@ -81,8 +79,6 @@ public class GuiCreateWorld extends Gui{
 
         if(!this.worldName.equals(name)){
             this.worldName = name;
-            System.out.println("CHECKING"+System.currentTimeMillis());
-            Thread.dumpStack();
 
             for(String s : DISALLOWED_CHARACTERS){
                 this.worldName = this.worldName.replaceAll(s, "-");
