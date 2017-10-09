@@ -137,34 +137,37 @@ public class WorldRenderer{
     }
 
     private void renderChunk(IGameInstance game, IAssetManager manager, IGraphics g, InteractionManager input, IWorld world, IChunk chunk, float transX, float transY, float scale, List<TileLayer> layers, boolean foreground){
-        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                int tileX = chunk.getX()+x;
-                int tileY = chunk.getY()+y;
+        int chunkX = chunk.getX();
+        int chunkY = chunk.getY();
 
-                if(tileX >= transX-1 && -tileY >= transY-1 && tileX < transX+game.getWidthInWorld() && -tileY < transY+game.getHeightInWorld()){
-                    int[] light = RockBottomAPI.getApiHandler().interpolateLight(world, chunk.getX()+x, chunk.getY()+y);
+        int startX = Util.clamp(Util.floor(transX), chunkX, chunkX+Constants.CHUNK_SIZE);
+        int startY = Util.clamp(Util.floor(-transY-game.getHeightInWorld()+1), chunkY, chunkY+Constants.CHUNK_SIZE);
+        int endX = Util.clamp(Util.ceil(transX+game.getWidthInWorld()), chunkX, chunkX+Constants.CHUNK_SIZE);
+        int endY = Util.clamp(Util.ceil(-transY+1), chunkY, chunkY+Constants.CHUNK_SIZE);
 
-                    int obscuringLayer = -1;
+        for(int x = startX; x < endX; x++){
+            for(int y = startY; y < endY; y++){
+                int[] light = RockBottomAPI.getApiHandler().interpolateLight(world, x, y);
 
-                    for(int i = layers.size()-1; i >= 0; i--){
-                        TileState state = chunk.getStateInner(layers.get(i), x, y);
-                        if(state.getTile().obscuresBackground()){
-                            obscuringLayer = i;
-                        }
+                int obscuringLayer = -1;
+
+                for(int i = layers.size()-1; i >= 0; i--){
+                    TileState state = chunk.getState(layers.get(i), x, y);
+                    if(state.getTile().obscuresBackground()){
+                        obscuringLayer = i;
                     }
+                }
 
-                    for(int i = obscuringLayer >= 0 ? obscuringLayer : layers.size()-1; i >= 0; i--){
-                        this.renderLayer(game, manager, g, input, world, chunk, layers.get(i), tileX, tileY, x, y, transX, transY, scale, light, foreground);
-                    }
+                for(int i = obscuringLayer >= 0 ? obscuringLayer : layers.size()-1; i >= 0; i--){
+                    this.renderLayer(game, manager, g, input, world, chunk, layers.get(i), x, y, transX, transY, scale, light, foreground);
                 }
             }
         }
     }
 
-    private void renderLayer(IGameInstance game, IAssetManager manager, IGraphics g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int tileX, int tileY, int x, int y, float transX, float transY, float scale, int[] light, boolean foreground){
+    private void renderLayer(IGameInstance game, IAssetManager manager, IGraphics g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float transX, float transY, float scale, int[] light, boolean foreground){
         IApiHandler api = RockBottomAPI.getApiHandler();
-        TileState state = chunk.getStateInner(layer, x, y);
+        TileState state = chunk.getState(layer, x, y);
         Tile tile = state.getTile();
         ITileRenderer renderer = tile.getRenderer();
         boolean forcesForeground = layer.forceForegroundRender();
@@ -172,20 +175,20 @@ public class WorldRenderer{
         if(renderer != null){
             if(foreground){
                 if(forcesForeground){
-                    renderer.render(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+                    renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
                     if(input.breakingLayer == layer){
-                        this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
+                        this.doBreakAnimation(input, manager, x, y, transX, transY, scale);
                     }
                 }
 
-                renderer.renderInForeground(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+                renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
             }
             else if(!forcesForeground){
-                renderer.render(game, manager, g, world, tile, state, tileX, tileY, layer, (tileX-transX)*scale, (-tileY-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+                renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
                 if(input.breakingLayer == layer){
-                    this.doBreakAnimation(input, manager, tileX, tileY, transX, transY, scale);
+                    this.doBreakAnimation(input, manager, x, y, transX, transY, scale);
                 }
             }
         }
