@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.world.gen.biome.BiomeDesert;
 import de.ellpeck.rockbottom.world.tile.TilePebbles;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
@@ -29,6 +30,8 @@ public final class ContentRegistry{
         new TileLeaves().register();
         new TileFlower().register();
         new TilePebbles().register();
+        new TileSand().register();
+        new TileBasic(RockBottomAPI.createInternalRes("sandstone")).register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();
@@ -36,6 +39,7 @@ public final class ContentRegistry{
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();
+        new BiomeDesert(RockBottomAPI.createInternalRes("desert"), 60, -5, 300).register();
         new BiomeUnderground(RockBottomAPI.createInternalRes("underground"), -5, Integer.MIN_VALUE, 1000).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("item"), EntityItem.class);

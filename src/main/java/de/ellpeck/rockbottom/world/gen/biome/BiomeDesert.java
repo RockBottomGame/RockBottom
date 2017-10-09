@@ -10,9 +10,9 @@ import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class BiomeGrassland extends BiomeBasic{
+public class BiomeDesert extends BiomeBasic{
 
-    public BiomeGrassland(IResourceName name, int highestY, int lowestY, int weight){
+    public BiomeDesert(IResourceName name, int highestY, int lowestY, int weight){
         super(name, highestY, lowestY, weight);
     }
 
@@ -26,34 +26,21 @@ public class BiomeGrassland extends BiomeBasic{
                 height -= Util.ceil(noise.make2dNoise(worldX/10D, 0D)*3D);
             }
 
-            if(chunk.getY()+y == height && layer == TileLayer.MAIN){
-                return GameContent.TILE_GRASS.getDefState();
-            }
-            else if(chunk.getY()+y <= height){
-                return GameContent.TILE_SOIL.getDefState();
+            if(chunk.getY()+y <= height){
+                if(chunk.getY()+y >= height-Util.ceil(noise.make2dNoise(worldX/5D, 0D)*3D)){
+                    return GameContent.TILE_SAND.getDefState();
+                }
+                else{
+                    return GameContent.TILE_SANDSTONE.getDefState();
+                }
             }
         }
         return GameContent.TILE_AIR.getDefState();
     }
 
     @Override
-    public boolean hasGrasslandDecoration(){
-        return true;
-    }
-
-    @Override
-    public float getFlowerChance(){
-        return 0.35F;
-    }
-
-    @Override
     public float getPebbleChance(){
-        return 0.2F;
-    }
-
-    @Override
-    public boolean canTreeGrow(IWorld world, IChunk chunk, int x, int y){
-        return y > 0 && chunk.getStateInner(x, y-1).getTile().canKeepPlants(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN);
+        return 0.35F;
     }
 
     @Override

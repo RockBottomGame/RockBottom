@@ -43,7 +43,7 @@ public class WorldGenBiomes implements IWorldGenerator{
                 Biome biome = this.getBiome(chunk.getX()+x, chunk.getY()+y, world);
                 chunk.setBiomeInner(x, y, biome);
 
-                INoiseGen noise = this.biomeNoiseGens.computeIfAbsent(biome, b -> RockBottomAPI.getApiHandler().makeSimplexNoise(Util.scrambleSeed(b.getName().hashCode(), world.getSeed())));
+                INoiseGen noise = this.biomeNoiseGens.computeIfAbsent(biome, b -> RockBottomAPI.getApiHandler().makeSimplexNoise(Util.scrambleSeed(b.getNoiseSeedModifier(world), world.getSeed())));
 
                 for(TileLayer layer : TileLayer.getAllLayers()){
                     chunk.setStateInner(layer, x, y, biome.getState(world, chunk, x, y, layer, noise));
