@@ -80,7 +80,6 @@ public class Chunk implements IChunk{
     private void generate(List<? extends IWorldGenerator> gens){
         if(isGeneratingChunk){
             RockBottomAPI.logger().warning("CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT "+this.gridX+", "+this.gridY+"! THIS SHOULD NOT HAPPEN!");
-            Thread.dumpStack();
         }
 
         isGeneratingChunk = true;
