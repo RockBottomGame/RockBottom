@@ -20,7 +20,6 @@ public class WorldGenBiomes implements IWorldGenerator{
     private static final int MAX_SIZE = 64;
     private final long[] layerSeeds = new long[MAX_SIZE];
     private final Random biomeRandom = new Random();
-    private final Map<Pos2, Pos2> offsetCache = new HashMap<>();
 
     private final Map<Biome, INoiseGen> biomeNoiseGens = new HashMap<>();
 
@@ -85,19 +84,10 @@ public class WorldGenBiomes implements IWorldGenerator{
     }
 
     private Pos2 getBlobPos(int x, int y, int size, IWorld world){
-        Pos2 pos = new Pos2(x, y);
-        Pos2 offset = this.offsetCache.get(pos);
-
-        if(offset == null){
-            offset = new Pos2(x, y);
-
-            for(int i = 0; i < size; i++){
-                offset = this.zoomFromPos(offset, this.layerSeeds[i], world);
-            }
-
-            this.offsetCache.put(pos, offset);
+        Pos2 offset = new Pos2(x, y);
+        for(int i = 0; i < size; i++){
+            offset = this.zoomFromPos(offset, this.layerSeeds[i], world);
         }
-
         return offset;
     }
 
