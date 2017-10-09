@@ -33,7 +33,7 @@ public class TileGrassTuft extends TileMeta{
 
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
+        return world.isPosLoaded(x, y-1) && world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
     }
 
     @Override

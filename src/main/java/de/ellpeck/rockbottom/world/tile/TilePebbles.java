@@ -52,7 +52,7 @@ public class TilePebbles extends TileBasic{
 
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return world.getState(layer, x, y-1).getTile().isFullTile();
+        return world.isPosLoaded(x, y-1) && world.getState(layer, x, y-1).getTile().isFullTile();
     }
 
     @Override

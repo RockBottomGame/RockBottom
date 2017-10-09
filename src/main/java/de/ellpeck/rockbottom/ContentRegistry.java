@@ -34,9 +34,9 @@ public final class ContentRegistry{
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_shovel"), 2F, ToolType.SHOVEL, 1).register();
 
-        new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 1, 1000).register();
-        new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 0, -1, 1000).register();
-        new BiomeUnderground(RockBottomAPI.createInternalRes("underground"), -2, Integer.MIN_VALUE, 1000).register();
+        new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
+        new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();
+        new BiomeUnderground(RockBottomAPI.createInternalRes("underground"), -5, Integer.MIN_VALUE, 1000).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("item"), EntityItem.class);
 
