@@ -140,10 +140,10 @@ public class WorldRenderer{
         int chunkX = chunk.getX();
         int chunkY = chunk.getY();
 
-        int startX = Util.clamp(Util.floor(transX), chunkX, chunkX+Constants.CHUNK_SIZE);
-        int startY = Util.clamp(Util.floor(-transY-game.getHeightInWorld()+1), chunkY, chunkY+Constants.CHUNK_SIZE);
-        int endX = Util.clamp(Util.ceil(transX+game.getWidthInWorld()), chunkX, chunkX+Constants.CHUNK_SIZE);
-        int endY = Util.clamp(Util.ceil(-transY+1), chunkY, chunkY+Constants.CHUNK_SIZE);
+        int startX = Math.max(Util.floor(transX), chunkX);
+        int startY = Math.max(Util.floor(-transY-game.getHeightInWorld()+1), chunkY);
+        int endX = Math.min(Util.ceil(transX+game.getWidthInWorld()), chunkX+Constants.CHUNK_SIZE);
+        int endY = Math.min(Util.ceil(-transY+1), chunkY+Constants.CHUNK_SIZE);
 
         for(int x = startX; x < endX; x++){
             for(int y = startY; y < endY; y++){
