@@ -40,13 +40,13 @@ public class GuiGraphics extends Gui{
 
         this.components.add(new ComponentSlider(this, 154, 0, 150, 16, (int)(settings.renderScale*100F), 50, 150, (integer, aBoolean) -> {
             settings.renderScale = (float)integer/100F;
-            game.calcScales();
+            game.getGraphics().calcScales();
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.render_scale"))));
         this.components.add(new ComponentSlider(this, 154, 20, 150, 16, (int)(settings.guiScale*100F), 50, 100, (integer, aBoolean) -> {
             if(aBoolean){
                 settings.guiScale = (float)integer/100F;
                 game.getDataManager().savePropSettings(settings);
-                game.calcScales();
+                game.getGraphics().calcScales();
                 game.getGuiManager().updateDimensions();
             }
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.gui_scale"))));

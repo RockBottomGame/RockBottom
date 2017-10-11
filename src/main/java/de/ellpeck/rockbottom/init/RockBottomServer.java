@@ -17,7 +17,6 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
-import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -120,56 +119,6 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public void calcScales(){
-        throw new UnsupportedOperationException("Cannot calc scales on a dedicated server");
-    }
-
-    @Override
-    public float getDisplayRatio(){
-        throw new UnsupportedOperationException("Cannot get display ratio on a dedicated server");
-    }
-
-    @Override
-    public float getGuiScale(){
-        throw new UnsupportedOperationException("Cannot get gui scale on a dedicated server");
-    }
-
-    @Override
-    public float getWorldScale(){
-        throw new UnsupportedOperationException("Cannot get world scale on a dedicated server");
-    }
-
-    @Override
-    public float getWidthInWorld(){
-        throw new UnsupportedOperationException("Cannot get the width in the world on a dedicated server");
-    }
-
-    @Override
-    public float getHeightInWorld(){
-        throw new UnsupportedOperationException("Cannot get the height in the world on a dedicated server");
-    }
-
-    @Override
-    public float getWidthInGui(){
-        throw new UnsupportedOperationException("Cannot get the width in the gui on a dedicated server");
-    }
-
-    @Override
-    public float getHeightInGui(){
-        throw new UnsupportedOperationException("Cannot get the height in the gui on a dedicated server");
-    }
-
-    @Override
-    public float getMouseInGuiX(){
-        throw new UnsupportedOperationException("Cannot get mouse coordinates on a dedicated server");
-    }
-
-    @Override
-    public float getMouseInGuiY(){
-        throw new UnsupportedOperationException("Cannot get mouse coordinates on a dedicated server");
-    }
-
-    @Override
     public AbstractEntityPlayer getPlayer(){
         throw new UnsupportedOperationException("Cannot get the player on a dedicated server");
     }
@@ -202,26 +151,6 @@ public class RockBottomServer extends AbstractGame{
     @Override
     public UUID getUniqueId(){
         throw new UnsupportedOperationException("Cannot get the unique id on a dedicated server");
-    }
-
-    @Override
-    public boolean isDebug(){
-        throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
-    }
-
-    @Override
-    public boolean isLightDebug(){
-        throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
-    }
-
-    @Override
-    public boolean isItemInfoDebug(){
-        throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
-    }
-
-    @Override
-    public boolean isChunkBorderDebug(){
-        throw new UnsupportedOperationException("Cannot get debug mode on a dedicated server");
     }
 
     @Override

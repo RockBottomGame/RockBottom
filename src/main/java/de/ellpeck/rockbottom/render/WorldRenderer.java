@@ -43,14 +43,14 @@ public class WorldRenderer{
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IGraphics g, World world, EntityPlayer player, InteractionManager input){
-        float scale = game.getWorldScale();
+        float scale = g.getWorldScale();
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
         int color = SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight];
         g.backgroundColor(color);
 
-        double width = game.getWidthInWorld();
-        double height = game.getHeightInWorld();
+        double width = g.getWidthInWorld();
+        double height = g.getHeightInWorld();
         float transX = (float)(player.x-width/2);
         float transY = (float)(-player.y-height/2);
 
@@ -88,7 +88,7 @@ public class WorldRenderer{
         }
 
         g.pushMatrix();
-        g.scale(game.getWorldScale(), game.getWorldScale());
+        g.scale(g.getWorldScale(), g.getWorldScale());
 
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
@@ -110,7 +110,7 @@ public class WorldRenderer{
             }
         });
 
-        if(game.isChunkBorderDebug()){
+        if(g.isChunkBorderDebug()){
             for(int gridX = minX; gridX <= maxX; gridX++){
                 for(int gridY = minY; gridY <= maxY; gridY++){
                     if(world.isChunkLoaded(gridX, gridY)){
@@ -141,8 +141,8 @@ public class WorldRenderer{
         int chunkY = chunk.getY();
 
         int startX = Math.max(Util.floor(transX), chunkX);
-        int startY = Math.max(Util.floor(-transY-game.getHeightInWorld()+1), chunkY);
-        int endX = Math.min(Util.ceil(transX+game.getWidthInWorld()), chunkX+Constants.CHUNK_SIZE);
+        int startY = Math.max(Util.floor(-transY-g.getHeightInWorld()+1), chunkY);
+        int endX = Math.min(Util.ceil(transX+g.getWidthInWorld()), chunkX+Constants.CHUNK_SIZE);
         int endY = Math.min(Util.ceil(-transY+1), chunkY+Constants.CHUNK_SIZE);
 
         for(int x = startX; x < endX; x++){

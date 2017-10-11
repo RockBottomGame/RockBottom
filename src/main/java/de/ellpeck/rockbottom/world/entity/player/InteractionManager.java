@@ -25,7 +25,6 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketInteract;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketPlayerMovement;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Input;
 
 import java.util.List;
 
@@ -37,9 +36,6 @@ public class InteractionManager implements IInteractionManager{
 
     public float breakProgress;
     public int placeCooldown;
-
-    public double mousedTileX;
-    public double mousedTileY;
 
     public static boolean interact(AbstractEntityPlayer player, TileLayer layer, double mouseX, double mouseY){
         List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
@@ -143,15 +139,6 @@ public class InteractionManager implements IInteractionManager{
             Gui gui = game.getGuiManager().getGui();
 
             if(gui == null && !player.isDead()){
-                Input input = game.getInput();
-                double mouseX = input.getMouseX();
-                double mouseY = input.getMouseY();
-
-                double worldAtScreenX = player.x-game.getWidthInWorld()/2;
-                double worldAtScreenY = -player.y-game.getHeightInWorld()/2;
-                this.mousedTileX = worldAtScreenX+mouseX/(double)game.getWorldScale();
-                this.mousedTileY = -(worldAtScreenY+mouseY/(double)game.getWorldScale())+1;
-
                 if(Settings.KEY_LEFT.isDown()){
                     moveAndSend(player, 0);
                 }
@@ -170,9 +157,12 @@ public class InteractionManager implements IInteractionManager{
                     moveAndSend(player, 2);
                 }
 
-                if(player.isInRange(this.mousedTileX, this.mousedTileY)){
-                    int x = Util.floor(this.mousedTileX);
-                    int y = Util.floor(this.mousedTileY);
+                double mousedTileX = game.getGraphics().getMousedTileX();
+                double mousedTileY = game.getGraphics().getMousedTileY();
+
+                if(player.isInRange(mousedTileX, mousedTileY)){
+                    int x = Util.floor(mousedTileX);
+                    int y = Util.floor(mousedTileY);
 
                     if(player.world.isPosLoaded(x, y)){
                         TileLayer layer = getInteractionLayer(game, player);
@@ -204,7 +194,7 @@ public class InteractionManager implements IInteractionManager{
                                         this.breakProgress = 0;
 
                                         if(RockBottomAPI.getNet().isClient()){
-                                            RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                            RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, mousedTileX, mousedTileY));
                                         }
                                         else{
                                             breakTile(tile, player, x, y, layer, effective);
@@ -226,9 +216,9 @@ public class InteractionManager implements IInteractionManager{
 
                             if(this.placeCooldown <= 0){
                                 if(Settings.KEY_PLACE.isDown()){
-                                    if(interact(player, layer, this.mousedTileX, this.mousedTileY)){
+                                    if(interact(player, layer, mousedTileX, mousedTileY)){
                                         if(RockBottomAPI.getNet().isClient()){
-                                            RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, this.mousedTileX, this.mousedTileY));
+                                            RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY));
                                         }
 
                                         this.placeCooldown = 5;
@@ -282,7 +272,7 @@ public class InteractionManager implements IInteractionManager{
     }
 
     public void onMouseAction(RockBottom game, int button){
-        game.getGuiManager().onMouseAction(game, button, game.getMouseInGuiX(), game.getMouseInGuiY());
+        game.getGuiManager().onMouseAction(game, button, game.getGraphics().getMouseInGuiX(), game.getGraphics().getMouseInGuiY());
     }
 
     public void onKeyboardAction(RockBottom game, int button, char character){
@@ -326,15 +316,5 @@ public class InteractionManager implements IInteractionManager{
     @Override
     public int getPlaceCooldown(){
         return this.placeCooldown;
-    }
-
-    @Override
-    public double getMousedTileX(){
-        return this.mousedTileX;
-    }
-
-    @Override
-    public double getMousedTileY(){
-        return this.mousedTileY;
     }
 }

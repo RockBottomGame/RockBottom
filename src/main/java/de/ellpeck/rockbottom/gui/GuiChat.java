@@ -27,8 +27,8 @@ public class GuiChat extends Gui{
         IFont font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
-        int sizeX = (int)game.getWidthInGui()/2;
-        int y = (int)game.getHeightInGui()-26-(int)fontHeight;
+        int sizeX = (int)g.getWidthInGui()/2;
+        int y = (int)g.getHeightInGui()-26-(int)fontHeight;
 
         boolean alternate = game.getChatLog().getMessages().size()%2 == 0;
         int messageCounter = 0;

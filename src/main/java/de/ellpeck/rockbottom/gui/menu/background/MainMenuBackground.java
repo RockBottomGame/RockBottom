@@ -62,7 +62,7 @@ public class MainMenuBackground{
         int color = this.theme.getBackgroundColor();
         g.backgroundColor(color);
 
-        float tileSize = Math.max(game.getWidthInGui(), game.getHeightInGui())/(float)IMainMenuTheme.TILE_AMOUNT;
+        float tileSize = Math.max(g.getWidthInGui(), g.getHeightInGui())/(float)IMainMenuTheme.TILE_AMOUNT;
 
         for(int x = 0; x < IMainMenuTheme.TILE_AMOUNT; x++){
             for(int y = 0; y < IMainMenuTheme.TILE_AMOUNT; y++){
@@ -71,7 +71,7 @@ public class MainMenuBackground{
                     Tile tile = state.getTile();
                     ITileRenderer renderer = tile.getRenderer();
                     if(renderer != null){
-                        renderer.renderInMainMenuBackground(game, manager, g, tile, state, x*tileSize, game.getHeightInGui()-(y+1)*tileSize, tileSize);
+                        renderer.renderInMainMenuBackground(game, manager, g, tile, state, x*tileSize, g.getHeightInGui()-(y+1)*tileSize, tileSize);
                     }
                 }
             }
@@ -82,10 +82,10 @@ public class MainMenuBackground{
         float scale = 0.75F;
         float width = logo.getFrameWidth()*scale;
         float height = logo.getFrameHeight()*scale;
-        float x = game.getWidthInGui()/2F-width/2F;
+        float x = g.getWidthInGui()/2F-width/2F;
 
-        float mouseX = game.getMouseInGuiX();
-        float mouseY = game.getMouseInGuiY();
+        float mouseX = g.getMouseInGuiX();
+        float mouseY = g.getMouseInGuiY();
 
         if(game.getGuiManager().getGui() instanceof GuiMainMenu && mouseX >= x+72*scale && mouseY >= 28*scale && mouseX <= x+width-72*scale && mouseY <= height-32*scale){
             if(this.hoverStartTime <= 0){

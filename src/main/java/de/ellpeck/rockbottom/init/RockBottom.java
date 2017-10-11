@@ -71,25 +71,13 @@ public class RockBottom extends AbstractGame implements InputListener{
     private ParticleManager particleManager;
     private Toaster toaster;
     private UUID uniqueId;
-    private boolean isDebug;
-    private boolean isLightDebug;
-    private boolean isItemInfoDebug;
-    private boolean isChunkBorderDebug;
     private WorldRenderer worldRenderer;
     private int windowedWidth;
     private int windowedHeight;
-    private IGraphics graphics;
+    private Graphics graphics;
     private Input input;
     private int lastWidth;
     private int lastHeight;
-
-    private float displayRatio;
-    private float guiScale;
-    private float worldScale;
-    private float guiWidth;
-    private float guiHeight;
-    private float worldWidth;
-    private float worldHeight;
 
     public static void startGame(){
         doInit(new RockBottom());
@@ -175,7 +163,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.lastWidth = width;
         this.lastHeight = height;
 
-        this.graphics = new Graphics();
+        this.graphics = new Graphics(this);
         Renderer.get().initDisplay(width, height);
         Renderer.get().enterOrtho(width, height);
 
@@ -201,7 +189,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         RockBottomAPI.getModLoader().initAssets();
 
         this.setPlayerDesign();
-        this.calcScales();
+        this.graphics.calcScales();
     }
 
     private void setPlayerDesign(){
@@ -255,7 +243,7 @@ public class RockBottom extends AbstractGame implements InputListener{
                 }
 
                 this.initGraphics();
-                this.calcScales();
+                this.graphics.calcScales();
 
                 if(this.guiManager != null){
                     this.guiManager.updateDimensions();
@@ -404,11 +392,11 @@ public class RockBottom extends AbstractGame implements InputListener{
         }
 
         if(key == Input.KEY_F1){
-            this.isDebug = !this.isDebug;
+            this.graphics.isDebug = !this.graphics.isDebug;
             return;
         }
         else if(key == Input.KEY_F2){
-            this.isLightDebug = !this.isLightDebug;
+            this.graphics.isLightDebug = !this.graphics.isLightDebug;
             return;
         }
         else if(key == Input.KEY_F3){
@@ -416,11 +404,11 @@ public class RockBottom extends AbstractGame implements InputListener{
             return;
         }
         else if(key == Input.KEY_F5){
-            this.isItemInfoDebug = !this.isItemInfoDebug;
+            this.graphics.isItemInfoDebug = !this.graphics.isItemInfoDebug;
             return;
         }
         else if(key == Input.KEY_F6){
-            this.isChunkBorderDebug = !this.isChunkBorderDebug;
+            this.graphics.isChunkBorderDebug = !this.graphics.isChunkBorderDebug;
             return;
         }
         else if(Settings.KEY_SCREENSHOT.isKey(key)){
@@ -463,7 +451,7 @@ public class RockBottom extends AbstractGame implements InputListener{
             if(!Display.isFullscreen() && Display.wasResized()){
                 if(this.lastWidth != Display.getWidth() || this.lastHeight != Display.getHeight()){
                     this.initGraphics();
-                    this.calcScales();
+                    this.graphics.calcScales();
 
                     this.guiManager.updateDimensions();
                 }
@@ -475,13 +463,14 @@ public class RockBottom extends AbstractGame implements InputListener{
         if(this.world != null){
             this.worldRenderer.render(this, this.assetManager, this.particleManager, this.graphics, this.world, this.player, this.interactionManager);
 
-            if(this.isDebug){
+            if(this.graphics.isDebug()){
                 DebugRenderer.render(this, this.assetManager, this.world, this.player, this.graphics);
             }
         }
 
         this.graphics.pushMatrix();
-        this.graphics.scale(this.guiScale, this.guiScale);
+        float scale = this.graphics.getGuiScale();
+        this.graphics.scale(scale, scale);
 
         this.guiManager.render(this, this.assetManager, this.graphics, this.player);
         this.toaster.render(this, this.assetManager, this.graphics);
@@ -496,71 +485,6 @@ public class RockBottom extends AbstractGame implements InputListener{
         if(!RockBottomAPI.getNet().isClient()){
             this.world.save();
         }
-    }
-
-    @Override
-    public void calcScales(){
-        RockBottomAPI.logger().config("Calculating render scales");
-
-        float width = Display.getWidth();
-        float height = Display.getHeight();
-
-        this.displayRatio = Math.min(width/16F, height/9F);
-
-        this.guiScale = (this.getDisplayRatio()/20F)*this.settings.guiScale;
-        this.guiWidth = width/this.guiScale;
-        this.guiHeight = height/this.guiScale;
-
-        this.worldScale = this.getDisplayRatio()*this.settings.renderScale;
-        this.worldWidth = width/this.worldScale;
-        this.worldHeight = height/this.worldScale;
-
-        RockBottomAPI.logger().config("Successfully calculated render scales");
-    }
-
-    @Override
-    public float getDisplayRatio(){
-        return this.displayRatio;
-    }
-
-    @Override
-    public float getGuiScale(){
-        return this.guiScale;
-    }
-
-    @Override
-    public float getWorldScale(){
-        return this.worldScale;
-    }
-
-    @Override
-    public float getWidthInWorld(){
-        return this.worldWidth;
-    }
-
-    @Override
-    public float getHeightInWorld(){
-        return this.worldHeight;
-    }
-
-    @Override
-    public float getWidthInGui(){
-        return this.guiWidth;
-    }
-
-    @Override
-    public float getHeightInGui(){
-        return this.guiHeight;
-    }
-
-    @Override
-    public float getMouseInGuiX(){
-        return (float)this.input.getMouseX()/this.getGuiScale();
-    }
-
-    @Override
-    public float getMouseInGuiY(){
-        return (float)this.input.getMouseY()/this.getGuiScale();
     }
 
     @Override
@@ -611,26 +535,6 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public UUID getUniqueId(){
         return this.uniqueId;
-    }
-
-    @Override
-    public boolean isDebug(){
-        return this.isDebug;
-    }
-
-    @Override
-    public boolean isLightDebug(){
-        return this.isLightDebug;
-    }
-
-    @Override
-    public boolean isItemInfoDebug(){
-        return this.isItemInfoDebug;
-    }
-
-    @Override
-    public boolean isChunkBorderDebug(){
-        return this.isChunkBorderDebug;
     }
 
     private void takeScreenshot(){

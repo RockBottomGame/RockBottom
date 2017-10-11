@@ -4,9 +4,9 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.IFont;
-import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.resource.ResInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResourceRegistry;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -18,6 +18,8 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.init.RockBottom;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.opengl.TextureImpl;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -29,6 +31,24 @@ import java.util.List;
 public class Graphics implements IGraphics{
 
     private static final IResourceName SLOT_NAME = RockBottomAPI.createInternalRes("gui.slot");
+    private final RockBottom game;
+
+    public boolean isDebug;
+    public boolean isLightDebug;
+    public boolean isItemInfoDebug;
+    public boolean isChunkBorderDebug;
+    private float displayRatio;
+    private float guiScale;
+    private float worldScale;
+    private float guiWidth;
+    private float guiHeight;
+    private float worldWidth;
+    private float worldHeight;
+
+
+    public Graphics(RockBottom game){
+        this.game = game;
+    }
 
     @Override
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, boolean hovered){
@@ -67,7 +87,7 @@ public class Graphics implements IGraphics{
         List<String> desc = new ArrayList<>();
         instance.getItem().describeItem(manager, instance, desc, advanced);
 
-        if(game.isItemInfoDebug()){
+        if(this.isItemInfoDebug()){
             desc.add("");
             desc.add(FormattingCode.GRAY+"Name: "+instance.getItem().getName().toString());
             desc.add(FormattingCode.GRAY+"Meta: "+instance.getMeta());
@@ -88,10 +108,10 @@ public class Graphics implements IGraphics{
 
     @Override
     public void drawHoverInfoAtMouse(IGameInstance game, IAssetManager manager, boolean firstLineOffset, int maxLength, List<String> text){
-        float mouseX = game.getMouseInGuiX();
-        float mouseY = game.getMouseInGuiY();
+        float mouseX = this.getMouseInGuiX();
+        float mouseY = this.getMouseInGuiY();
 
-        this.drawHoverInfo(game, manager, mouseX+18F/game.getGuiScale(), mouseY+18F/game.getGuiScale(), 0.25F, firstLineOffset, false, maxLength, text);
+        this.drawHoverInfo(game, manager, mouseX+18F/this.getGuiScale(), mouseY+18F/this.getGuiScale(), 0.25F, firstLineOffset, false, maxLength, text);
     }
 
     @Override
@@ -122,8 +142,8 @@ public class Graphics implements IGraphics{
             boxHeight += 4F;
 
             if(!canLeaveScreen){
-                x = Math.max(0, Math.min(x, game.getWidthInGui()-boxWidth));
-                y = Math.max(0, Math.min(y, game.getHeightInGui()-boxHeight));
+                x = Math.max(0, Math.min(x, this.getWidthInGui()-boxWidth));
+                y = Math.max(0, Math.min(y, this.getHeightInGui()-boxHeight));
             }
 
             this.fillRect(x, y, boxWidth, boxHeight, Gui.HOVER_INFO_BACKGROUND);
@@ -211,5 +231,104 @@ public class Graphics implements IGraphics{
         gl.glVertex2f(x+width, y+height);
         gl.glVertex2f(x, y+height);
         gl.glEnd();
+    }
+
+    @Override
+    public void calcScales(){
+        RockBottomAPI.logger().config("Calculating render scales");
+
+        float width = Display.getWidth();
+        float height = Display.getHeight();
+
+        this.displayRatio = Math.min(width/16F, height/9F);
+
+        this.guiScale = (this.getDisplayRatio()/20F)*this.game.getSettings().guiScale;
+        this.guiWidth = width/this.guiScale;
+        this.guiHeight = height/this.guiScale;
+
+        this.worldScale = this.getDisplayRatio()*this.game.getSettings().renderScale;
+        this.worldWidth = width/this.worldScale;
+        this.worldHeight = height/this.worldScale;
+
+        RockBottomAPI.logger().config("Successfully calculated render scales");
+    }
+
+    @Override
+    public float getDisplayRatio(){
+        return this.displayRatio;
+    }
+
+    @Override
+    public float getGuiScale(){
+        return this.guiScale;
+    }
+
+    @Override
+    public float getWorldScale(){
+        return this.worldScale;
+    }
+
+    @Override
+    public float getWidthInWorld(){
+        return this.worldWidth;
+    }
+
+    @Override
+    public float getHeightInWorld(){
+        return this.worldHeight;
+    }
+
+    @Override
+    public float getWidthInGui(){
+        return this.guiWidth;
+    }
+
+    @Override
+    public float getHeightInGui(){
+        return this.guiHeight;
+    }
+
+    @Override
+    public float getMouseInGuiX(){
+        return (float)this.game.getInput().getMouseX()/this.getGuiScale();
+    }
+
+    @Override
+    public float getMouseInGuiY(){
+        return (float)this.game.getInput().getMouseY()/this.getGuiScale();
+    }
+
+    @Override
+    public boolean isDebug(){
+        return this.isDebug;
+    }
+
+    @Override
+    public boolean isLightDebug(){
+        return this.isLightDebug;
+    }
+
+    @Override
+    public boolean isItemInfoDebug(){
+        return this.isItemInfoDebug;
+    }
+
+    @Override
+    public boolean isChunkBorderDebug(){
+        return this.isChunkBorderDebug;
+    }
+
+    @Override
+    public double getMousedTileX(){
+        double mouseX = this.game.getInput().getMouseX();
+        double worldAtScreenX = this.game.getPlayer().x-this.getWidthInWorld()/2;
+        return worldAtScreenX+mouseX/(double)this.getWorldScale();
+    }
+
+    @Override
+    public double getMousedTileY(){
+        double mouseY = this.game.getInput().getMouseY();
+        double worldAtScreenY = -this.game.getPlayer().y-this.getHeightInWorld()/2;
+        return -(worldAtScreenY+mouseY/(double)this.getWorldScale())+1;
     }
 }

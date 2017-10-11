@@ -79,7 +79,7 @@ public class GuiManager implements IGuiManager{
     }
 
     private void initOnScreenComponents(IGameInstance game, AbstractEntityPlayer player){
-        double width = game.getWidthInGui();
+        double width = game.getGraphics().getWidthInGui();
 
         for(int i = 0; i < 8; i++){
             int x = (int)(width/2-59.25+i*15);
@@ -87,7 +87,7 @@ public class GuiManager implements IGuiManager{
         }
 
         int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
-        this.onScreenComponents.add(new ComponentHealth(null, (int)game.getWidthInGui()-3-maxHealthParts*13, (int)game.getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
+        this.onScreenComponents.add(new ComponentHealth(null, (int)game.getGraphics().getWidthInGui()-3-maxHealthParts*13, (int)game.getGraphics().getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
     public void update(RockBottom game){
@@ -119,8 +119,8 @@ public class GuiManager implements IGuiManager{
 
     public void render(RockBottom game, IAssetManager manager, IGraphics g, EntityPlayer player){
         IFont font = manager.getFont();
-        float width = game.getWidthInGui();
-        float height = game.getHeightInGui();
+        float width = g.getWidthInGui();
+        float height = g.getHeightInGui();
 
         Gui gui = this.getGui();
 
@@ -185,12 +185,11 @@ public class GuiManager implements IGuiManager{
         if(game.getSettings().cursorInfos){
             if(player != null && !player.isDead() && gui == null && Mouse.isInsideWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
-                    IInteractionManager interaction = game.getInteractionManager();
-                    double tileX = interaction.getMousedTileX();
-                    double tileY = interaction.getMousedTileY();
+                    double tileX = g.getMousedTileX();
+                    double tileY = g.getMousedTileY();
 
-                    float mouseX = game.getMouseInGuiX();
-                    float mouseY = game.getMouseInGuiY();
+                    float mouseX = g.getMouseInGuiX();
+                    float mouseY = g.getMouseInGuiY();
 
                     ItemInstance holding = player.getInv().get(player.getSelectedSlot());
                     if(holding != null){
@@ -199,7 +198,7 @@ public class GuiManager implements IGuiManager{
                         IItemRenderer renderer = item.getRenderer();
                         if(renderer != null){
                             boolean inRange = player.isInRange(tileX, tileY);
-                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/game.getGuiScale(), mouseY, 36F/game.getGuiScale(), Colors.WHITE, inRange);
+                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/g.getGuiScale(), mouseY, 36F/g.getGuiScale(), Colors.WHITE, inRange);
                         }
                     }
 

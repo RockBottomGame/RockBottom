@@ -23,9 +23,9 @@ public final class DebugRenderer{
         list.add("Avg FPS: "+game.getFpsAverage());
         list.add("Avg TPS: "+game.getTpsAverage());
         list.add("Aspect: "+Display.getWidth()+", "+Display.getHeight());
-        list.add("Display Ratio: "+game.getDisplayRatio());
-        list.add("Gui Scale: "+game.getGuiScale());
-        list.add("World Scale: "+game.getWorldScale());
+        list.add("Display Ratio: "+g.getDisplayRatio());
+        list.add("Gui Scale: "+g.getGuiScale());
+        list.add("World Scale: "+g.getWorldScale());
         list.add("");
 
         String chunks = "Loaded Chunks: "+world.loadedChunks.size();
@@ -55,8 +55,8 @@ public final class DebugRenderer{
         list.add("Motion: "+String.format(Locale.ROOT, "%.3f, %.3f", player.motionX, player.motionY));
         list.add("");
 
-        int x = Util.floor(game.getInteractionManager().mousedTileX);
-        int y = Util.floor(game.getInteractionManager().mousedTileY);
+        int x = Util.floor(g.getMousedTileX());
+        int y = Util.floor(g.getMousedTileY());
         list.add("Mouse:");
         list.add("ScreenPos: "+game.getInput().getMouseX()+", "+game.getInput().getMouseY());
         list.add("TilePos: "+x+", "+y);

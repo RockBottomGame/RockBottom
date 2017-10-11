@@ -53,8 +53,8 @@ public class ComponentColorPicker extends GuiComponent{
                     this.width *= 4;
                     this.height *= 4;
 
-                    this.x = Util.clamp(this.x-(this.width/2-(this.width/8)), 0, (int)game.getWidthInGui()-this.width);
-                    this.y = Util.clamp(this.y-(this.height/2-(this.height/8)), 0, (int)game.getHeightInGui()-this.height);
+                    this.x = Util.clamp(this.x-(this.width/2-(this.width/8)), 0, (int)game.getGraphics().getWidthInGui()-this.width);
+                    this.y = Util.clamp(this.y-(this.height/2-(this.height/8)), 0, (int)game.getGraphics().getHeightInGui()-this.height);
 
                     this.isEnlarged = true;
                     this.gui.sortComponents();
@@ -107,8 +107,8 @@ public class ComponentColorPicker extends GuiComponent{
     @Override
     public void update(IGameInstance game){
         if(this.wasMouseDown){
-            float mouseX = game.getMouseInGuiX();
-            float mouseY = game.getMouseInGuiY();
+            float mouseX = game.getGraphics().getMouseInGuiX();
+            float mouseY = game.getGraphics().getMouseInGuiY();
 
             if(Settings.KEY_GUI_ACTION_1.isDown()){
                 this.onClickOrMove(game, mouseX, mouseY);
