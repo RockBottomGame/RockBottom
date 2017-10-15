@@ -57,14 +57,11 @@ public class PacketParticles implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                if(this.type == 0){
-                    TileState tile = game.getWorld().getStateForId(this.args[0]);
-                    game.getParticleManager().addTileParticles(game.getWorld(), this.x, this.y, tile);
-                }
+        if(game.getWorld() != null){
+            if(this.type == 0){
+                TileState tile = game.getWorld().getStateForId(this.args[0]);
+                game.getParticleManager().addTileParticles(game.getWorld(), this.x, this.y, tile);
             }
-            return true;
-        });
+        }
     }
 }

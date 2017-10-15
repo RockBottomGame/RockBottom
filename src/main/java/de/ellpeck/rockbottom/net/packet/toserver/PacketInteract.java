@@ -48,14 +48,11 @@ public class PacketInteract implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null && player.isInRange(this.x, this.y)){
-                    InteractionManager.interact(player, this.layer, this.x, this.y);
-                }
+        if(game.getWorld() != null){
+            AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
+            if(player != null && player.isInRange(this.x, this.y)){
+                InteractionManager.interact(player, this.layer, this.x, this.y);
             }
-            return true;
-        });
+        }
     }
 }

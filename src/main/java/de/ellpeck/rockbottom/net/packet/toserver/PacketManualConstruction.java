@@ -46,17 +46,14 @@ public class PacketManualConstruction implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null){
-                    IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(this.recipeName);
-                    if(recipe != null){
-                        ContainerInventory.doInvBasedConstruction(player, recipe, this.amount);
-                    }
+        if(game.getWorld() != null){
+            AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
+            if(player != null){
+                IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(this.recipeName);
+                if(recipe != null){
+                    ContainerInventory.doInvBasedConstruction(player, recipe, this.amount);
                 }
             }
-            return true;
-        });
+        }
     }
 }

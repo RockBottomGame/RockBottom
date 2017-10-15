@@ -88,36 +88,34 @@ public class PacketChunk implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                RockBottomAPI.logger().config("Receiving chunk at "+this.chunkX+", "+this.chunkY);
+        if(game.getWorld() != null){
+            RockBottomAPI.logger().config("Receiving chunk at "+this.chunkX+", "+this.chunkY);
 
-                IChunk chunk = game.getWorld().getChunkFromGridCoords(this.chunkX, this.chunkY);
-                chunk.setGenerating(true);
+            IChunk chunk = game.getWorld().getChunkFromGridCoords(this.chunkX, this.chunkY);
+            chunk.setGenerating(true);
 
-                int amount = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*this.layers.length;
+            int amount = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*this.layers.length;
 
-                int index = 0;
-                for(TileLayer layer : this.layers){
-                    for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                        for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                            chunk.setStateInner(layer, x, y, chunk.getWorld().getStateForId(this.tileData[index]));
+            int index = 0;
+            for(TileLayer layer : this.layers){
+                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                        chunk.setStateInner(layer, x, y, chunk.getWorld().getStateForId(this.tileData[index]));
 
-                            chunk.setSkylightInner(x, y, this.lightData[index]);
-                            chunk.setArtificialLightInner(x, y, this.lightData[amount+index]);
+                        chunk.setSkylightInner(x, y, this.lightData[index]);
+                        chunk.setArtificialLightInner(x, y, this.lightData[amount+index]);
 
-                            index++;
-                        }
+                        index++;
                     }
                 }
-
-                chunk.setGenerating(false);
-
-                return true;
             }
-            else{
-                return false;
-            }
-        });
+
+            chunk.setGenerating(false);
+        }
+    }
+
+    @Override
+    public void enqueueAsAction(IGameInstance game, ChannelHandlerContext context){
+        game.enqueueAction(this :: handle, context, inst -> inst.getWorld() != null);
     }
 }

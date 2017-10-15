@@ -37,14 +37,11 @@ public class PacketHotbar implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null){
-                    player.setSelectedSlot(this.slot);
-                }
+        if(game.getWorld() != null){
+            AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
+            if(player != null){
+                player.setSelectedSlot(this.slot);
             }
-            return true;
-        });
+        }
     }
 }

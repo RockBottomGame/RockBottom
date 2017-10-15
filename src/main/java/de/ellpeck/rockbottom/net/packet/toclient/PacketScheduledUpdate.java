@@ -41,14 +41,10 @@ public class PacketScheduledUpdate implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            IWorld world = game.getWorld();
-            if(world != null){
-                TileState state = world.getState(this.x, this.y);
-                state.getTile().onScheduledUpdate(world, this.x, this.y, this.layer);
-            }
-
-            return true;
-        });
+        IWorld world = game.getWorld();
+        if(world != null){
+            TileState state = world.getState(this.x, this.y);
+            state.getTile().onScheduledUpdate(world, this.x, this.y, this.layer);
+        }
     }
 }

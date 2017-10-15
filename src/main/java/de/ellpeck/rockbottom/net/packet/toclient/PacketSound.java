@@ -68,17 +68,14 @@ public class PacketSound implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            IWorld world = game.getWorld();
-            if(world != null){
-                if(this.isBroadcast){
-                    world.broadcastSound(this.soundName, this.pitch, this.volume);
-                }
-                else{
-                    world.playSound(this.soundName, this.x, this.y, this.z, this.pitch, this.volume);
-                }
+        IWorld world = game.getWorld();
+        if(world != null){
+            if(this.isBroadcast){
+                world.broadcastSound(this.soundName, this.pitch, this.volume);
             }
-            return true;
-        });
+            else{
+                world.playSound(this.soundName, this.x, this.y, this.z, this.pitch, this.volume);
+            }
+        }
     }
 }

@@ -29,7 +29,8 @@ import java.io.File;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 public abstract class AbstractGame implements IGameInstance{
 
@@ -37,7 +38,7 @@ public abstract class AbstractGame implements IGameInstance{
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
-    private final List<Supplier<Boolean>> scheduledActions = new ArrayList<>();
+    private final List<EnqueuedAction> enqueuedActions = new ArrayList<>();
     public boolean isRunning = true;
     protected DataManager dataManager;
     protected ChatLog chatLog;
@@ -124,12 +125,14 @@ public abstract class AbstractGame implements IGameInstance{
     private void updateTicked(){
         this.totalTicks++;
 
-        synchronized(this.scheduledActions){
-            for(int i = 0; i < this.scheduledActions.size(); i++){
-                Supplier<Boolean> action = this.scheduledActions.get(i);
+        synchronized(this.enqueuedActions){
+            for(int i = 0; i < this.enqueuedActions.size(); i++){
+                EnqueuedAction action = this.enqueuedActions.get(i);
 
-                if(action.get()){
-                    this.scheduledActions.remove(i);
+                if(action.condition == null || action.condition.test(this)){
+                    action.action.accept(this, action.object);
+
+                    this.enqueuedActions.remove(i);
                     i--;
                 }
             }
@@ -231,13 +234,6 @@ public abstract class AbstractGame implements IGameInstance{
         }
     }
 
-    @Override
-    public void scheduleAction(Supplier<Boolean> action){
-        synchronized(this.scheduledActions){
-            this.scheduledActions.add(action);
-        }
-    }
-
     protected void updateTickless(int delta){
 
     }
@@ -320,5 +316,30 @@ public abstract class AbstractGame implements IGameInstance{
     @Override
     public void exit(){
         this.isRunning = false;
+    }
+
+    @Override
+    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object){
+        this.enqueueAction(action, object, null);
+    }
+
+    @Override
+    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition){
+        synchronized(this.enqueuedActions){
+            this.enqueuedActions.add(new EnqueuedAction(action, object, condition));
+        }
+    }
+
+    private static class EnqueuedAction<T>{
+
+        public final BiConsumer<IGameInstance, T> action;
+        public final T object;
+        public final Predicate<IGameInstance> condition;
+
+        public EnqueuedAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition){
+            this.action = action;
+            this.object = object;
+            this.condition = condition;
+        }
     }
 }

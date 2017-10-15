@@ -53,15 +53,12 @@ public class PacketContainerChange implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getPlayer() != null){
-                ItemContainer container = this.isInv ? game.getPlayer().getInvContainer() : game.getPlayer().getContainer();
-                if(container != null && container.getSlotAmount() > this.index){
-                    ContainerSlot slot = container.getSlot(this.index);
-                    slot.set(this.instance);
-                }
+        if(game.getPlayer() != null){
+            ItemContainer container = this.isInv ? game.getPlayer().getInvContainer() : game.getPlayer().getContainer();
+            if(container != null && container.getSlotAmount() > this.index){
+                ContainerSlot slot = container.getSlot(this.index);
+                slot.set(this.instance);
             }
-            return true;
-        });
+        }
     }
 }

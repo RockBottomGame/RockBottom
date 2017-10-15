@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 
@@ -38,17 +37,14 @@ public class PacketChunkUnload implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            IWorld world = game.getWorld();
-            if(world != null){
-                RockBottomAPI.logger().config("Unloading chunk at "+this.gridX+", "+this.gridY);
+        IWorld world = game.getWorld();
+        if(world != null){
+            RockBottomAPI.logger().config("Unloading chunk at "+this.gridX+", "+this.gridY);
 
-                if(world.isChunkLoaded(this.gridX, this.gridY)){
-                    IChunk chunk = world.getChunkFromGridCoords(this.gridX, this.gridY);
-                    world.unloadChunk(chunk);
-                }
+            if(world.isChunkLoaded(this.gridX, this.gridY)){
+                IChunk chunk = world.getChunkFromGridCoords(this.gridX, this.gridY);
+                world.unloadChunk(chunk);
             }
-            return true;
-        });
+        }
     }
 }

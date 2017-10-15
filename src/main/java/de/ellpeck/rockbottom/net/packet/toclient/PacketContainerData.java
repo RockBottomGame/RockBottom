@@ -59,16 +59,13 @@ public class PacketContainerData implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getPlayer() != null){
-                ItemContainer container = game.getPlayer().getContainer();
-                if(container != null && container.getSlotAmount() == this.data.length){
-                    for(int i = 0; i < this.data.length; i++){
-                        container.getSlot(i).set(this.data[i]);
-                    }
+        if(game.getPlayer() != null){
+            ItemContainer container = game.getPlayer().getContainer();
+            if(container != null && container.getSlotAmount() == this.data.length){
+                for(int i = 0; i < this.data.length; i++){
+                    container.getSlot(i).set(this.data[i]);
                 }
             }
-            return true;
-        });
+        }
     }
 }

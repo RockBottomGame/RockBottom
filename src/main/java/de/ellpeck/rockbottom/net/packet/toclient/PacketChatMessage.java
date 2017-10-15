@@ -37,9 +37,6 @@ public class PacketChatMessage implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            game.getChatLog().displayMessage(this.message);
-            return true;
-        });
+        game.getChatLog().displayMessage(this.message);
     }
 }

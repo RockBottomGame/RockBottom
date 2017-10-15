@@ -30,11 +30,8 @@ public class PacketHealth implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getPlayer() != null){
-                game.getPlayer().setHealth(this.health);
-            }
-            return true;
-        });
+        if(game.getPlayer() != null){
+            game.getPlayer().setHealth(this.health);
+        }
     }
 }

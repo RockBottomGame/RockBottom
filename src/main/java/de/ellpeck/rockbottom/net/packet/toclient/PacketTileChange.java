@@ -45,14 +45,11 @@ public class PacketTileChange implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                if(game.getWorld().isPosLoaded(this.x, this.y)){
-                    IChunk chunk = game.getWorld().getChunk(this.x, this.y);
-                    chunk.setStateInner(this.layer, this.x-chunk.getX(), this.y-chunk.getY(), game.getWorld().getStateForId(this.tileId));
-                }
+        if(game.getWorld() != null){
+            if(game.getWorld().isPosLoaded(this.x, this.y)){
+                IChunk chunk = game.getWorld().getChunk(this.x, this.y);
+                chunk.setStateInner(this.layer, this.x-chunk.getX(), this.y-chunk.getY(), game.getWorld().getStateForId(this.tileId));
             }
-            return true;
-        });
+        }
     }
 }

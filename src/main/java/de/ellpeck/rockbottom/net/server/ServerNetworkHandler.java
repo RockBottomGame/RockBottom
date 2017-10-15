@@ -5,8 +5,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import java.util.logging.Level;
-
 public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket>{
 
     private final Server server;
@@ -27,11 +25,6 @@ public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket>{
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) throws Exception{
-        try{
-            packet.handle(RockBottomAPI.getGame(), ctx);
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't handle packet on server", e);
-        }
+        packet.enqueueAsAction(RockBottomAPI.getGame(), ctx);
     }
 }

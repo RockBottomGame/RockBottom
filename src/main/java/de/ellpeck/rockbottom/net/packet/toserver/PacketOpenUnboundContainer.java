@@ -39,19 +39,16 @@ public class PacketOpenUnboundContainer implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null){
-                    if(this.id == CLOSE_ID){
-                        player.closeContainer();
-                    }
-                    else if(this.id == 0){
-                        player.openContainer(player.getInvContainer());
-                    }
+        if(game.getWorld() != null){
+            AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
+            if(player != null){
+                if(this.id == CLOSE_ID){
+                    player.closeContainer();
+                }
+                else if(this.id == 0){
+                    player.openContainer(player.getInvContainer());
                 }
             }
-            return true;
-        });
+        }
     }
 }

@@ -54,18 +54,15 @@ public class PacketPlayerMovement implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null){
-                    player.x = this.x;
-                    player.y = this.y;
-                    player.motionX = this.motionX;
-                    player.motionY = this.motionY;
-                    player.facing = this.facing;
-                }
+        if(game.getWorld() != null){
+            AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
+            if(player != null){
+                player.x = this.x;
+                player.y = this.y;
+                player.motionX = this.motionX;
+                player.motionY = this.motionY;
+                player.facing = this.facing;
             }
-            return true;
-        });
+        }
     }
 }

@@ -73,42 +73,41 @@ public class PacketEntityChange implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            IWorld world = game.getWorld();
+        IWorld world = game.getWorld();
 
-            if(world != null){
-                Entity entity = world.getEntity(this.uniqueId);
+        if(world != null){
+            Entity entity = world.getEntity(this.uniqueId);
 
-                if(this.remove){
+            if(this.remove){
+                if(entity != null){
+                    world.removeEntity(entity);
+                }
+            }
+            else{
+                if(entity == null){
+                    if(PLAYER_NAME.equals(this.name)){
+                        PlayerDesign design = new PlayerDesign();
+                        design.load(this.entitySet);
+                        entity = new EntityPlayer(world, this.uniqueId, design);
+                    }
+                    else{
+                        entity = Util.createEntity(RockBottomAPI.createRes(this.name), world);
+                    }
+
                     if(entity != null){
-                        world.removeEntity(entity);
+                        entity.load(this.entitySet);
+                        world.addEntity(entity);
                     }
                 }
                 else{
-                    if(entity == null){
-                        if(PLAYER_NAME.equals(this.name)){
-                            PlayerDesign design = new PlayerDesign();
-                            design.load(this.entitySet);
-                            entity = new EntityPlayer(world, this.uniqueId, design);
-                        }
-                        else{
-                            entity = Util.createEntity(RockBottomAPI.createRes(this.name), world);
-                        }
-
-                        if(entity != null){
-                            entity.load(this.entitySet);
-                            world.addEntity(entity);
-                        }
-                    }
-                    else{
-                        entity.load(this.entitySet);
-                    }
+                    entity.load(this.entitySet);
                 }
-                return true;
             }
-            else{
-                return false;
-            }
-        });
+        }
+    }
+
+    @Override
+    public void enqueueAsAction(IGameInstance game, ChannelHandlerContext context){
+        game.enqueueAction(this :: handle, context, inst -> inst.getWorld() != null);
     }
 }

@@ -14,7 +14,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,35 +72,31 @@ public class PacketJoin implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            IWorld world = game.getWorld();
+        IWorld world = game.getWorld();
 
-            boolean shouldKick = true;
-            if(this.checkMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()))){
-                if(world != null){
-                    if(world.getPlayer(this.id) == null){
-                        AbstractEntityPlayer player = world.createPlayer(this.id, this.design, context.channel());
-                        player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getRegInfo()));
-                        world.addEntity(player);
+        boolean shouldKick = true;
+        if(this.checkMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()))){
+            if(world != null){
+                if(world.getPlayer(this.id) == null){
+                    AbstractEntityPlayer player = world.createPlayer(this.id, this.design, context.channel());
+                    player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getRegInfo()));
+                    world.addEntity(player);
 
-                        shouldKick = false;
-                        RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
+                    shouldKick = false;
+                    RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
 
-                        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.connect"), player.getName()));
-                    }
-                    else{
-                        RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");
-                    }
+                    RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.connect"), player.getName()));
+                }
+                else{
+                    RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");
                 }
             }
+        }
 
-            if(shouldKick){
-                context.channel().disconnect();
-                RockBottomAPI.logger().info("Disconnecting player "+this.design.getName()+" with id "+this.id);
-            }
-
-            return true;
-        });
+        if(shouldKick){
+            context.channel().disconnect();
+            RockBottomAPI.logger().info("Disconnecting player "+this.design.getName()+" with id "+this.id);
+        }
     }
 
     private boolean checkMods(List<IMod> mods){

@@ -34,14 +34,11 @@ public class PacketRespawn implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                Entity entity = game.getWorld().getEntity(this.playerId);
-                if(entity != null && entity instanceof EntityPlayer){
-                    ((EntityPlayer)entity).resetAndSpawn(game);
-                }
+        if(game.getWorld() != null){
+            Entity entity = game.getWorld().getEntity(this.playerId);
+            if(entity != null && entity instanceof EntityPlayer){
+                ((EntityPlayer)entity).resetAndSpawn(game);
             }
-            return true;
-        });
+        }
     }
 }

@@ -18,7 +18,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
-import org.newdawn.slick.util.Log;
 
 import java.util.UUID;
 
@@ -55,10 +54,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
         if(this.ticksExisted%80 == 0){
             if(!RockBottomAPI.getNet().getConnectedClients().contains(this.channel)){
-                game.scheduleAction(() -> {
-                    disconnectPlayer(game, this);
-                    return true;
-                });
+                game.enqueueAction((inst, object) -> disconnectPlayer(inst, this), null);
             }
 
             double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, this.x, this.y);

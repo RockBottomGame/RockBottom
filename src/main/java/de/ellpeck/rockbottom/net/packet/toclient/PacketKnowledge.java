@@ -52,21 +52,18 @@ public class PacketKnowledge implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            AbstractEntityPlayer player = game.getPlayer();
-            if(player != null){
-                IKnowledgeManager manager = player.getKnowledge();
-                if(this.forget){
-                    manager.forgetInformation(RockBottomAPI.createRes(this.infoSet.getString("name")), this.announce);
-                }
-                else{
-                    Information information = KnowledgeManager.loadInformation(this.infoSet, manager);
-                    if(information != null){
-                        manager.teachInformation(information);
-                    }
+        AbstractEntityPlayer player = game.getPlayer();
+        if(player != null){
+            IKnowledgeManager manager = player.getKnowledge();
+            if(this.forget){
+                manager.forgetInformation(RockBottomAPI.createRes(this.infoSet.getString("name")), this.announce);
+            }
+            else{
+                Information information = KnowledgeManager.loadInformation(this.infoSet, manager);
+                if(information != null){
+                    manager.teachInformation(information);
                 }
             }
-            return true;
-        });
+        }
     }
 }

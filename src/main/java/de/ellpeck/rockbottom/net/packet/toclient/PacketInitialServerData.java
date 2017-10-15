@@ -50,22 +50,18 @@ public class PacketInitialServerData implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() == null){
-                RockBottomAPI.logger().info("Received initial server data, joining world");
+        if(game.getWorld() == null){
+            RockBottomAPI.logger().info("Received initial server data, joining world");
 
-                IGuiManager gui = game.getGuiManager();
-                gui.fadeOut(20, () -> {
-                    game.joinWorld(this.playerSet, this.info, this.regInfo);
-                    gui.fadeIn(20, null);
-                });
-            }
-            else{
-                RockBottomAPI.logger().warning("Received initial server data while already being in a world!");
-                context.channel().disconnect();
-            }
-
-            return true;
-        });
+            IGuiManager gui = game.getGuiManager();
+            gui.fadeOut(20, () -> {
+                game.joinWorld(this.playerSet, this.info, this.regInfo);
+                gui.fadeIn(20, null);
+            });
+        }
+        else{
+            RockBottomAPI.logger().warning("Received initial server data while already being in a world!");
+            context.channel().disconnect();
+        }
     }
 }

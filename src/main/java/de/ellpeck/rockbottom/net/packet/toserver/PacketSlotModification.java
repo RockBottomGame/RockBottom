@@ -49,23 +49,20 @@ public class PacketSlotModification implements IPacket{
 
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
-        game.scheduleAction(() -> {
-            if(game.getWorld() != null){
-                AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null){
-                    ItemContainer container = player.getContainer();
-                    if(container != null){
-                        ContainerSlot slot = container.getSlot(this.slot);
+        if(game.getWorld() != null){
+            AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
+            if(player != null){
+                ItemContainer container = player.getContainer();
+                if(container != null){
+                    ContainerSlot slot = container.getSlot(this.slot);
 
-                        ItemInstance inst = null;
-                        if(!this.instSet.isEmpty()){
-                            inst = ItemInstance.load(this.instSet);
-                        }
-                        slot.set(inst);
+                    ItemInstance inst = null;
+                    if(!this.instSet.isEmpty()){
+                        inst = ItemInstance.load(this.instSet);
                     }
+                    slot.set(inst);
                 }
             }
-            return true;
-        });
+        }
     }
 }
