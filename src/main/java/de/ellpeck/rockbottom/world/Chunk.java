@@ -363,7 +363,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void removeTileEntity(TileLayer layer, int x, int y){
-        TileEntity tile = this.getTileEntity(x, y);
+        TileEntity tile = this.getTileEntity(layer, x, y);
         if(tile != null){
             this.tileEntities.remove(tile);
             this.tileEntityLookup.remove(new Pos3(tile.x, tile.y, tile.layer.index()));
@@ -387,7 +387,7 @@ public class Chunk implements IChunk{
 
     @Override
     public <T extends TileEntity> T getTileEntity(TileLayer layer, int x, int y, Class<T> tileClass){
-        TileEntity tile = this.getTileEntity(x, y);
+        TileEntity tile = this.getTileEntity(layer, x, y);
         if(tile != null && tileClass.isAssignableFrom(tile.getClass())){
             return (T)tile;
         }
@@ -793,7 +793,7 @@ public class Chunk implements IChunk{
                 IResourceName res = RockBottomAPI.createRes(tileSet.getString("layer"));
                 TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
                 if(layer != null){
-                    TileEntity tile = this.getTileEntity(x, y);
+                    TileEntity tile = this.getTileEntity(layer, x, y);
                     if(tile != null){
                         tile.load(tileSet, false);
                     }
