@@ -6,10 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
-import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -151,7 +151,7 @@ public class Font implements IFont{
     }
 
     @Override
-    public void drawString(float x, float y, String s, int drawStart, int drawEnd, float scale, int color){
+    public void drawString(float x, float y, String s, int drawStart, int drawEnd, float scale, int color, int shadowColor){
         int startColor = color;
         float initialAlpha = Colors.getA(color);
         float xOffset = 0F;
@@ -162,8 +162,8 @@ public class Font implements IFont{
             FormattingCode code = FormattingCode.getFormat(s, i);
             if(code != FormattingCode.NONE){
                 int formatColor = code.getColor();
-                if(formatColor != FontProp.NO_COLOR){
-                    if(formatColor == FontProp.RESET_COLOR){
+                if(formatColor != Colors.NO_COLOR){
+                    if(formatColor == Colors.RESET_COLOR){
                         color = startColor;
                     }
                     else{
@@ -192,20 +192,29 @@ public class Font implements IFont{
             }
 
             if(i >= drawStart){
-                this.drawCharacter(x+xOffset, y, characters[i], scale, color, prop);
+                this.drawCharacter(x+xOffset, y, characters[i], scale, color, prop, shadowColor);
                 xOffset += (float)this.charWidth*scale;
             }
         }
+
     }
 
     @Override
-    public void drawCharacter(float x, float y, char character, float scale, int color, FontProp prop){
+    public void drawString(float x, float y, String s, int drawStart, int drawEnd, float scale, int color){
+        this.drawString(x, y, s, drawStart, drawEnd, scale, color, Colors.BLACK);
+    }
+
+    @Override
+    public void drawCharacter(float x, float y, char character, float scale, int color, FontProp prop, int shadowColor){
         IGraphics g = RockBottomAPI.getGame().getGraphics();
 
         float scaledWidth = (float)this.charWidth*scale;
         float scaledHeight = (float)this.charHeight*scale;
 
-        int shadowColor = Colors.setA(Colors.BLACK, Colors.getA(color));
+        boolean shadow = shadowColor != Colors.NO_COLOR;
+        if(shadow){
+            shadowColor = Colors.setA(Colors.BLACK, Colors.getA(color));
+        }
         float shadowOffset = 2F*scale;
 
         if(character != ' '){
@@ -258,7 +267,9 @@ public class Font implements IFont{
                     }
                 }
 
-                this.texture.draw(x+shadowOffset, y+shadowOffset, x2+shadowOffset, y2+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, shadowColor);
+                if(shadow){
+                    this.texture.draw(x+shadowOffset, y+shadowOffset, x2+shadowOffset, y2+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, shadowColor);
+                }
                 this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
 
                 if(italics || upsideDown){
@@ -275,9 +286,17 @@ public class Font implements IFont{
         if(underlined || prop == FontProp.STRIKETHROUGH){
             float lineY = y+(underlined ? scaledHeight-4F*scale : scaledHeight/2F-3F*scale);
 
-            g.fillRect(x+shadowOffset, lineY+shadowOffset, scaledWidth, 1, shadowColor);
+            if(shadow){
+                g.fillRect(x+shadowOffset, lineY+shadowOffset, scaledWidth, 1, shadowColor);
+            }
             g.fillRect(x, lineY, scaledWidth, 1, color);
         }
+
+    }
+
+    @Override
+    public void drawCharacter(float x, float y, char character, float scale, int color, FontProp prop){
+        this.drawCharacter(x, y, character, scale, color, prop, Colors.BLACK);
     }
 
     @Override
@@ -327,7 +346,7 @@ public class Font implements IFont{
                         for(int i = 0; i < word.length()-1; i++){
                             FormattingCode format = FormattingCode.getFormat(word, i);
                             if(format != FormattingCode.NONE){
-                                if(format.getColor() != FontProp.NO_COLOR){
+                                if(format.getColor() != Colors.NO_COLOR){
                                     trailingColor = format;
                                 }
 
