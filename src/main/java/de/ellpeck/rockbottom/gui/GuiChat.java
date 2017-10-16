@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFormatSelector;
 import de.ellpeck.rockbottom.assets.Font;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
@@ -60,15 +61,16 @@ public class GuiChat extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        this.inputField = new ComponentInputField(this, 5, this.height-21, this.width/2, 16, true, false, true, 512, true);
+        this.inputField = new ComponentInputField(this, 5, this.height-21, this.width/2-18, 16, true, false, true, 512, true);
         this.components.add(this.inputField);
+
+        this.components.add(new ComponentFormatSelector(this, 5+this.width/2-16, this.height-21, this.inputField));
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        super.render(game, manager, g);
-
         drawMessages(game, manager, g, game.getChatLog().getMessages(), 20);
+        super.render(game, manager, g);
     }
 
     @Override

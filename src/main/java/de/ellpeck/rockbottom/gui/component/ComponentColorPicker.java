@@ -70,6 +70,7 @@ public class ComponentColorPicker extends GuiComponent{
         else{
             if(this.isEnlarged){
                 this.unenlarge();
+                return true;
             }
         }
 
