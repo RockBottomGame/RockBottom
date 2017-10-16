@@ -33,7 +33,10 @@ import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -195,6 +198,15 @@ public class ApiHandler implements IApiHandler{
                         }
                     }
                 }
+            }
+
+            List<Entity> entities = object.world.getEntities(tempBoxMotion, entity -> entity.canCollideWith(object, tempBox, tempBoxMotion));
+            for(Entity entity : entities){
+                BoundBox entityTempBox = entity.getBoundingBox().copy().add(entity.x, entity.y);
+                BoundBox entityTempBoxMotion = entityTempBox.copy().add(entity.motionX, entity.motionY);
+
+                object.onEntityCollision(entity, tempBox, tempBoxMotion, entityTempBox, entityTempBoxMotion);
+                boxes.add(entityTempBox);
             }
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, tempBoxMotion, boxes));
@@ -369,7 +381,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public int getColorByLight(int light, TileLayer layer){
-        return Colors.multiply(WorldRenderer.MAIN_COLORS[RockBottomAPI.getGame().isLightDebug() ? Constants.MAX_LIGHT : light], layer.getRenderLightModifier());
+        return Colors.multiply(WorldRenderer.MAIN_COLORS[RockBottomAPI.getGame().getGraphics().isLightDebug() ? Constants.MAX_LIGHT : light], layer.getRenderLightModifier());
     }
 
     @Override

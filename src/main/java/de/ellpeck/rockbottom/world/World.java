@@ -237,10 +237,10 @@ public class World implements IWorld{
 
     @Override
     public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test){
-        int minChunkX = Util.toGridPos(area.getMinX())-1;
-        int minChunkY = Util.toGridPos(area.getMinY())-1;
-        int maxChunkX = Util.toGridPos(area.getMaxX())+1;
-        int maxChunkY = Util.toGridPos(area.getMaxY())+1;
+        int minChunkX = Util.toGridPos(area.getMinX()-Constants.CHUNK_SIZE/2);
+        int minChunkY = Util.toGridPos(area.getMinY()-Constants.CHUNK_SIZE/2);
+        int maxChunkX = Util.toGridPos(area.getMaxX()+Constants.CHUNK_SIZE/2);
+        int maxChunkY = Util.toGridPos(area.getMaxY()+Constants.CHUNK_SIZE/2);
 
         List<T> entities = new ArrayList<>();
         for(int x = minChunkX; x <= maxChunkX; x++){

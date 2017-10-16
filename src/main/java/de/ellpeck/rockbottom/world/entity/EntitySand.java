@@ -3,9 +3,11 @@ package de.ellpeck.rockbottom.world.entity;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -26,7 +28,7 @@ public class EntitySand extends Entity{
 
     @Override
     public void onGroundHit(double fallDistance){
-        if(!world.isClient()){
+        if(!this.world.isClient()){
             int x = Util.floor(this.x);
             int y = Util.floor(this.y);
             TileState state = this.world.getState(x, y);
@@ -40,5 +42,10 @@ public class EntitySand extends Entity{
 
             this.kill();
         }
+    }
+
+    @Override
+    public boolean canCollideWith(MovableWorldObject object, BoundBox entityBox, BoundBox entityBoxMotion){
+        return true;
     }
 }
