@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
@@ -31,8 +32,22 @@ public class ComponentHealth extends GuiComponent{
 
             int currX = 0;
             for(int i = 0; i < maxHealthParts; i++){
-                ITexture toUse = healthParts > i ? heart : heartEmpty;
-                toUse.draw(x+currX, y, toUse.getWidth()*0.75F, toUse.getHeight()*0.75F);
+                float alpha = 1F;
+
+                ITexture toUse;
+                if(healthParts >= i){
+                    toUse = heart;
+
+                    if(healthParts == i){
+                        alpha = ((float)game.getPlayer().getHealth()%20)/20F;
+                        heartEmpty.draw(x+currX, y, heartEmpty.getWidth()*0.75F, heartEmpty.getHeight()*0.75F);
+                    }
+                }
+                else{
+                    toUse = heartEmpty;
+                }
+
+                toUse.draw(x+currX, y, toUse.getWidth()*0.75F, toUse.getHeight()*0.75F, Colors.setA(Colors.WHITE, alpha));
                 currX += 13;
             }
         }
