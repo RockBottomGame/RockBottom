@@ -19,9 +19,12 @@ import java.util.List;
 
 public class GuiChat extends Gui{
 
+    public static boolean isSelectorOpen;
+
     private static final int BACKING_ONE = Colors.rgb(0F, 0F, 0F, 0.65F);
     private static final int BACKING_TWO = Colors.rgb(0.1F, 0.1F, 0.1F, 0.65F);
 
+    private ComponentFormatSelector selector;
     private ComponentInputField inputField;
 
     public static void drawMessages(IGameInstance game, IAssetManager manager, IGraphics g, List<ChatComponent> messages, int maxCount){
@@ -64,7 +67,18 @@ public class GuiChat extends Gui{
         this.inputField = new ComponentInputField(this, 5, this.height-21, this.width/2-18, 16, true, false, true, 512, true);
         this.components.add(this.inputField);
 
-        this.components.add(new ComponentFormatSelector(this, 5+this.width/2-16, this.height-21, this.inputField));
+        this.selector = new ComponentFormatSelector(this, 5+this.width/2-16, this.height-21, this.inputField);
+        this.components.add(this.selector);
+        if(isSelectorOpen){
+            this.selector.openMenu();
+        }
+    }
+
+    @Override
+    public void onClosed(IGameInstance game){
+        super.onClosed(game);
+
+        isSelectorOpen = this.selector.isMenuOpen();
     }
 
     @Override
