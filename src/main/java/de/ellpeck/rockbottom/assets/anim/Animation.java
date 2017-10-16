@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class Animation implements IAnimation{
 
@@ -30,23 +31,44 @@ public class Animation implements IAnimation{
     }
 
     public static Animation fromStream(ITexture texture, InputStream infoStream) throws Exception{
+        int frameWidth = 0;
+        int frameHeight = 0;
+
         List<AnimationRow> rows = new ArrayList<>();
 
         JsonObject main = new JsonParser().parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
-        JsonArray dims = main.getAsJsonArray("size");
-        int frameWidth = dims.get(0).getAsInt();
-        int frameHeight = dims.get(1).getAsInt();
+        for(Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){
+            String key = entry.getKey();
+            JsonArray data = entry.getValue().getAsJsonArray();
 
-        JsonArray data = main.getAsJsonArray("data");
-        for(JsonElement element : data){
-            JsonArray array = element.getAsJsonArray();
-            float[] times = new float[array.size()];
-
-            for(int i = 0; i < times.length; i++){
-                times[i] = array.get(i).getAsFloat();
+            if("size".equals(key)){
+                frameWidth = data.get(0).getAsInt();
+                frameHeight = data.get(1).getAsInt();
             }
+            else if("data".equals(key)){
+                for(JsonElement element : data){
+                    JsonArray array = element.getAsJsonArray();
+                    float[] times = new float[array.size()];
 
-            rows.add(new AnimationRow(times));
+                    for(int i = 0; i < times.length; i++){
+                        times[i] = array.get(i).getAsFloat();
+                    }
+
+                    rows.add(new AnimationRow(times));
+                }
+            }
+            else{
+                for(int i = 0; i < data.size(); i++){
+                    JsonArray array = data.get(i).getAsJsonArray();
+                    JsonElement[] additionalData = new JsonElement[array.size()];
+
+                    for(int j = 0; j < additionalData.length; j++){
+                        additionalData[j] = array.get(j);
+                    }
+
+                    rows.get(i).addAdditionalFrameData(key, additionalData);
+                }
+            }
         }
 
         return new Animation(texture, frameWidth, frameHeight, rows);
@@ -185,5 +207,15 @@ public class Animation implements IAnimation{
             }
         }
         return 0;
+    }
+
+    @Override
+    public JsonElement[] getAdditionalFrameData(String name, int row){
+        return this.getRow(row).getAdditionalData(name);
+    }
+
+    @Override
+    public JsonElement getAdditionalFrameData(String name, int row, int frame){
+        return this.getRow(row).getAdditionalData(name, frame);
     }
 }
