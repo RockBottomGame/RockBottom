@@ -57,14 +57,19 @@ public class CommandSpawnItem extends Command{
                 }
             }
 
-            ItemInstance instance = new ItemInstance(item, amount, meta);
-            ItemInstance left = player.getInv().addExistingFirst(instance, false);
+            if(item != null){
+                ItemInstance instance = new ItemInstance(item, amount, meta);
+                ItemInstance left = player.getInv().addExistingFirst(instance, false);
 
-            if(left != null && left.isEffectivelyEqual(instance)){
-                return new ChatComponentText(FormattingCode.RED+"Not enough space for "+instance.getDisplayName()+" x"+instance.getAmount());
+                if(left != null && left.isEffectivelyEqual(instance)){
+                    return new ChatComponentText(FormattingCode.RED+"Not enough space for "+instance.getDisplayName()+" x"+instance.getAmount());
+                }
+                else{
+                    return new ChatComponentText(FormattingCode.GREEN+"Spawned "+instance.getDisplayName()+" x"+instance.getAmount());
+                }
             }
             else{
-                return new ChatComponentText(FormattingCode.GREEN+"Spawned "+instance.getDisplayName()+" x"+instance.getAmount());
+                return new ChatComponentText(FormattingCode.RED+"An item with the name '"+args[0]+"' doesn't exist!");
             }
         }
         else{
