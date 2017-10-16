@@ -30,10 +30,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerChange;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketContainerData;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketRespawn;
+import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
@@ -54,6 +51,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 int index = container.getIndexForInvSlot(inv, slot);
                 if(index >= 0){
                     this.sendPacket(new PacketContainerChange(isInv, index, inv.get(slot)));
+                }
+
+                if(isInv && slot == this.getSelectedSlot()){
+                    RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
                 }
             }
         }
@@ -403,6 +404,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public void setSelectedSlot(int slot){
         this.inv.selectedSlot = slot;
+
+        if(this.world.isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
+        }
     }
 
     @Override
