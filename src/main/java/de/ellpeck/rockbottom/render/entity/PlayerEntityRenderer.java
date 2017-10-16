@@ -1,14 +1,21 @@
 package de.ellpeck.rockbottom.render.entity;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.event.impl.PlayerRenderEvent;
+import de.ellpeck.rockbottom.api.item.Item;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
+import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -18,7 +25,9 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     private static final IResourceName SPECIAL_BASE = RockBottomAPI.createInternalRes("player.base.s");
     private static final IResourceName SPECIAL_ARMS = RockBottomAPI.createInternalRes("player.arm.skin_s");
 
-    public static void renderPlayer(IAssetManager manager, IPlayerDesign design, float x, float y, float scale, int row, String arms, int light){
+    public static void renderPlayer(EntityPlayer player, IGameInstance game, IAssetManager manager, IGraphics g, IPlayerDesign design, float x, float y, float scale, int row, int light){
+        ItemInstance holding = player != null ? player.getInv().get(player.getSelectedSlot()) : null;
+        String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
 
         manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix("."+(design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, 2F*scale, light);
@@ -49,11 +58,12 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
             manager.getAnimation(shirt).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getShirtColor()));
         }
 
-        manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix(arms)).drawRow(row, x, y, scale, 2F*scale, light);
+        IAnimation armAnimation = manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix("."+arms));
+        armAnimation.drawRow(row, x, y, scale, 2F*scale, light);
 
         IResourceName sleeves = IPlayerDesign.SLEEVES.get(design.getSleeves());
         if(sleeves != null){
-            manager.getAnimation(sleeves.addSuffix(arms)).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getSleevesColor()));
+            manager.getAnimation(sleeves.addSuffix("."+arms)).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getSleevesColor()));
         }
 
         IResourceName footwear = IPlayerDesign.FOOTWEAR.get(design.getFootwear());
@@ -69,6 +79,30 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         IResourceName accessory = IPlayerDesign.ACCESSORIES.get(design.getAccessory());
         if(accessory != null){
             manager.getAnimation(accessory).drawRow(row, x, y, scale, 2F*scale, light);
+        }
+
+        if(holding != null){
+            Item item = holding.getItem();
+            IItemRenderer renderer = item.getRenderer();
+            if(renderer != null){
+                JsonElement[] holdingOffsets = armAnimation.getAdditionalFrameData("holding_offset", row);
+                JsonElement[] holdingAngles = armAnimation.getAdditionalFrameData("holding_angle", row);
+
+                if(holdingOffsets != null && holdingAngles != null){
+                    try{
+                        int frame = armAnimation.getFrameByTime(row, Util.getTimeMillis());
+                        JsonArray holdingOffset = holdingOffsets[frame].getAsJsonArray();
+                        float holdingAngle = holdingAngles[frame].getAsFloat();
+
+                        float itemX = x+((holdingOffset.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale);
+                        float itemY = y+((holdingOffset.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale);
+
+                        renderer.renderHolding(game, manager, g, item, holding, player, itemX, itemY, holdingAngle, scale, light);
+                    }
+                    catch(Exception ignored){
+                    }
+                }
+            }
         }
     }
 
@@ -91,7 +125,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         else{
             row = isRight ? 2 : 3;
         }
-        renderPlayer(manager, design, x-0.5F, y-1.5F, 1F, row, ".hanging", light);
+        renderPlayer(entity, game, manager, g, design, x-0.5F, y-1.5F, 1F, row, light);
 
         RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent(game, manager, g, entity, x, y));
     }

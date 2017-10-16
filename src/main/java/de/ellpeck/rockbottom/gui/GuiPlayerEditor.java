@@ -87,7 +87,7 @@ public class GuiPlayerEditor extends Gui{
 
         this.components.add(new ComponentSlider(this, x-98, 126, 80, 12, this.previewType+1, 1, 6, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(RockBottomAPI.createInternalRes("button.player_design.preview"))));
 
-        this.components.add(new ComponentFancyButton(this,this.width/2+33, this.height-20, 16, 16, () -> {
+        this.components.add(new ComponentFancyButton(this, this.width/2+33, this.height-20, 16, 16, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, this.width/2+41, this.height-12, aBoolean -> {
                 if(aBoolean){
                     PlayerDesign.randomizeDesign(design);
@@ -96,7 +96,7 @@ public class GuiPlayerEditor extends Gui{
             }));
             return true;
         }, RockBottomAPI.createInternalRes("gui.randomize"), assetManager.localize(RockBottomAPI.createInternalRes("info.randomize"))));
-        this.components.add(new ComponentButton(this,this.width/2-49, this.height-20, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-49, this.height-20, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
@@ -106,8 +106,8 @@ public class GuiPlayerEditor extends Gui{
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         super.render(game, manager, g);
 
-        int x = (int)game.getWidthInGui()/2-84;
-        PlayerEntityRenderer.renderPlayer(manager, game.getPlayerDesign(), x, this.y+32, 45F, this.previewType, ".hanging", Colors.WHITE);
+        int x = (int)g.getWidthInGui()/2-84;
+        PlayerEntityRenderer.renderPlayer(null, game, manager, g, game.getPlayerDesign(), x, this.y+32, 45F, this.previewType, Colors.WHITE);
     }
 
     @Override

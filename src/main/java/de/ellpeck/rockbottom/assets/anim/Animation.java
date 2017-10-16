@@ -59,14 +59,15 @@ public class Animation implements IAnimation{
             }
             else{
                 for(int i = 0; i < data.size(); i++){
-                    JsonArray array = data.get(i).getAsJsonArray();
-                    JsonElement[] additionalData = new JsonElement[array.size()];
+                    AnimationRow row = rows.get(i);
+                    JsonElement[] additionalData = new JsonElement[row.getFrameAmount()];
 
+                    JsonArray array = data.get(i).getAsJsonArray();
                     for(int j = 0; j < additionalData.length; j++){
                         additionalData[j] = array.get(j);
                     }
 
-                    rows.get(i).addAdditionalFrameData(key, additionalData);
+                    row.addAdditionalFrameData(key, additionalData);
                 }
             }
         }
