@@ -89,18 +89,25 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
                 JsonElement[] holdingAngles = armAnimation.getAdditionalFrameData("holding_angle", row);
 
                 if(holdingOffsets != null && holdingAngles != null){
+                    float itemX;
+                    float itemY;
+                    float holdingAngle;
+
                     try{
                         int frame = armAnimation.getFrameByTime(row, Util.getTimeMillis());
                         JsonArray holdingOffset = holdingOffsets[frame].getAsJsonArray();
-                        float holdingAngle = holdingAngles[frame].getAsFloat();
+                        holdingAngle = holdingAngles[frame].getAsFloat();
 
-                        float itemX = x+((holdingOffset.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale);
-                        float itemY = y+((holdingOffset.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale);
+                        itemX = x+((holdingOffset.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale);
+                        itemY = y+((holdingOffset.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale);
+                    }
+                    catch(Exception e){
+                        itemX = x;
+                        itemY = y;
+                        holdingAngle = 0F;
+                    }
 
-                        renderer.renderHolding(game, manager, g, item, holding, player, itemX, itemY, holdingAngle, scale, light);
-                    }
-                    catch(Exception ignored){
-                    }
+                    renderer.renderHolding(game, manager, g, item, holding, player, itemX, itemY, holdingAngle, scale, light);
                 }
             }
         }
