@@ -287,9 +287,9 @@ public class Font implements IFont{
             float lineY = y+(underlined ? scaledHeight-4F*scale : scaledHeight/2F-3F*scale);
 
             if(shadow){
-                g.fillRect(x+shadowOffset, lineY+shadowOffset, scaledWidth, 1, shadowColor);
+                g.fillRect(x+shadowOffset, lineY+shadowOffset, scaledWidth, 2F*scale, shadowColor);
             }
-            g.fillRect(x, lineY, scaledWidth, 1, color);
+            g.fillRect(x, lineY, scaledWidth, 2F*scale, color);
         }
 
     }
