@@ -1,9 +1,11 @@
 package de.ellpeck.rockbottom.world.entity;
 
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -27,25 +29,29 @@ public class EntitySand extends Entity{
     }
 
     @Override
-    public void onGroundHit(double fallDistance){
-        if(!this.world.isClient()){
-            int x = Util.floor(this.x);
-            int y = Util.floor(this.y);
-            TileState state = this.world.getState(x, y);
+    public void update(IGameInstance game){
+        super.update(game);
 
-            if(state.getTile().canReplace(this.world, x, y, TileLayer.MAIN)){
-                this.world.setState(x, y, GameContent.TILE_SAND.getDefState());
-            }
-            else{
-                EntityItem.spawn(this.world, new ItemInstance(GameContent.TILE_SAND), this.x, this.y, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
-            }
+        if(this.onGround){
+            if(!this.world.isClient()){
+                int x = Util.floor(this.x);
+                int y = Util.floor(this.y);
+                TileState state = this.world.getState(x, y);
 
-            this.kill();
+                if(state.getTile().canReplace(this.world, x, y, TileLayer.MAIN)){
+                    this.world.setState(x, y, GameContent.TILE_SAND.getDefState());
+                }
+                else{
+                    EntityItem.spawn(this.world, new ItemInstance(GameContent.TILE_SAND), this.x, this.y, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
+                }
+
+                this.kill();
+            }
         }
     }
 
     @Override
     public boolean canCollideWith(MovableWorldObject object, BoundBox entityBox, BoundBox entityBoxMotion){
-        return true;
+        return object instanceof AbstractEntityPlayer;
     }
 }
