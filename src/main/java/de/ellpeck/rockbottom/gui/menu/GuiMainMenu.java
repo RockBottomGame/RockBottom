@@ -1,14 +1,14 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentClickableText;
 import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.GuiPlayerEditor;
 
@@ -59,16 +59,9 @@ public class GuiMainMenu extends Gui{
             }));
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.quit"))));
-    }
 
-    @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        super.render(game, manager, g);
-
-        IFont font = manager.getFont();
-
-        font.drawStringFromRight(this.width-2F, this.height-7F, "Copyright 2017 Ellpeck", 0.25F);
-        font.drawString(2, this.height-7F, game.getDisplayName()+" "+game.getVersion()+" - API "+RockBottomAPI.VERSION, 0.25F);
+        this.components.add(new ComponentClickableText(this, this.width-2, this.height-7, 0.25F, true, () -> Util.openWebsite("https://ellpeck.de"), "Copyright 2017 Ellpeck"));
+        this.components.add(new ComponentClickableText(this, 2, this.height-7, 0.25F, false, () -> Util.openWebsite("https://rockbottom.ellpeck.de"), game.getDisplayName()+" "+game.getVersion()+" - API "+RockBottomAPI.VERSION));
     }
 
     @Override
