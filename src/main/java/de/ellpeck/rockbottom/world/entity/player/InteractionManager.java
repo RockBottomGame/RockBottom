@@ -242,24 +242,27 @@ public class InteractionManager implements IInteractionManager{
                 }
 
                 boolean slotChange = false;
+                int slot = player.getSelectedSlot();
 
                 int scroll = Mouse.getDWheel();
                 if(scroll < 0){
-                    player.setSelectedSlot(player.getSelectedSlot()+1);
-                    if(player.getSelectedSlot() >= 8){
-                        player.setSelectedSlot(0);
+                    slot++;
+                    if(slot >= 8){
+                        slot = 0;
                     }
                     slotChange = true;
                 }
                 else if(scroll > 0){
-                    player.setSelectedSlot(player.getSelectedSlot()-1);
-                    if(player.getSelectedSlot() < 0){
-                        player.setSelectedSlot(7);
+                    slot--;
+                    if(slot < 0){
+                        slot = 7;
                     }
                     slotChange = true;
                 }
 
                 if(slotChange){
+                    player.setSelectedSlot(slot);
+
                     if(RockBottomAPI.getNet().isClient()){
                         RockBottomAPI.getNet().sendToServer(new PacketHotbar(player.getUniqueId(), player.getSelectedSlot()));
                     }
