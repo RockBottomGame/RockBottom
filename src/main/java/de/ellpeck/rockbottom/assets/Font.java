@@ -243,7 +243,7 @@ public class Font implements IFont{
                 float y2 = y+scaledHeight;
 
                 if(prop == FontProp.BOLD){
-                    float boldness = 4F*scale;
+                    float boldness = 2F*scale;
 
                     x -= boldness;
                     y -= boldness;
