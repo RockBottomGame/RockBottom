@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ComponentRenderEvent;
 import de.ellpeck.rockbottom.api.event.impl.ComponentRenderOverlayEvent;
@@ -188,6 +187,10 @@ public class GuiManager implements IGuiManager{
                     double tileX = g.getMousedTileX();
                     double tileY = g.getMousedTileY();
 
+                    TileLayer layer = InteractionManager.getInteractionLayer(game, player);
+                    int x = Util.floor(tileX);
+                    int y = Util.floor(tileY);
+
                     float mouseX = g.getMouseInGuiX();
                     float mouseY = g.getMouseInGuiY();
 
@@ -197,14 +200,10 @@ public class GuiManager implements IGuiManager{
 
                         IItemRenderer renderer = item.getRenderer();
                         if(renderer != null){
-                            boolean inRange = player.isInRange(tileX, tileY);
+                            boolean inRange = player.isInRange(tileX, tileY, item.getMaxInteractionDistance(player.world, x, y, layer, tileX, tileY, player));
                             renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/g.getGuiScale(), mouseY, 36F/g.getGuiScale(), Colors.WHITE, inRange);
                         }
                     }
-
-                    TileLayer layer = InteractionManager.getInteractionLayer(game, player);
-                    int x = Util.floor(tileX);
-                    int y = Util.floor(tileY);
 
                     if(player.world.isPosLoaded(x, y)){
                         TileState state = player.world.getState(layer, x, y);

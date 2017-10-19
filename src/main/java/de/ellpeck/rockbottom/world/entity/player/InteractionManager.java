@@ -50,20 +50,26 @@ public class InteractionManager implements IInteractionManager{
             y = event.y;
 
             for(Entity entity : entities){
-                if(entity.onInteractWith(player, mouseX, mouseY)){
-                    return true;
+                if(player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player))){
+                    if(entity.onInteractWith(player, mouseX, mouseY)){
+                        return true;
+                    }
                 }
             }
 
             Tile tile = player.world.getState(layer, x, y).getTile();
-            if(tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)){
-                return true;
+            if(player.isInRange(mouseX, mouseY, tile.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
+                if(tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)){
+                    return true;
+                }
             }
 
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
             if(selected != null){
                 Item item = selected.getItem();
-                return item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected);
+                if(player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
+                    return item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected);
+                }
             }
         }
 
@@ -99,16 +105,18 @@ public class InteractionManager implements IInteractionManager{
         return null;
     }
 
-    public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer){
-        if(layer == TileLayer.MAIN){
-            return true;
-        }
-        else{
-            if(!world.getState(x, y).getTile().isFullTile()){
-                for(Direction dir : Direction.ADJACENT){
-                    Tile other = world.getState(layer, x+dir.x, y+dir.y).getTile();
-                    if(!other.isFullTile()){
-                        return true;
+    public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+        if(player.isInRange(mouseX, mouseY, world.getState(layer, x, y).getTile().getMaxInteractionDistance(world, x, y, layer, mouseX, mouseY, player))){
+            if(layer == TileLayer.MAIN){
+                return true;
+            }
+            else{
+                if(!world.getState(x, y).getTile().isFullTile()){
+                    for(Direction dir : Direction.ADJACENT){
+                        Tile other = world.getState(layer, x+dir.x, y+dir.y).getTile();
+                        if(!other.isFullTile()){
+                            return true;
+                        }
                     }
                 }
             }
@@ -160,77 +168,72 @@ public class InteractionManager implements IInteractionManager{
                 double mousedTileX = game.getGraphics().getMousedTileX();
                 double mousedTileY = game.getGraphics().getMousedTileY();
 
-                if(player.isInRange(mousedTileX, mousedTileY)){
-                    int x = Util.floor(mousedTileX);
-                    int y = Util.floor(mousedTileY);
+                int x = Util.floor(mousedTileX);
+                int y = Util.floor(mousedTileY);
 
-                    if(player.world.isPosLoaded(x, y)){
-                        TileLayer layer = getInteractionLayer(game, player);
-                        if(layer != null){
-                            if(Settings.KEY_DESTROY.isDown()){
-                                if(this.breakTileX != x || this.breakTileY != y){
-                                    this.breakProgress = 0;
+                if(player.world.isPosLoaded(x, y)){
+                    TileLayer layer = getInteractionLayer(game, player);
+                    if(layer != null){
+                        if(Settings.KEY_DESTROY.isDown()){
+                            if(this.breakTileX != x || this.breakTileY != y){
+                                this.breakProgress = 0;
+                            }
+
+                            Tile tile = player.world.getState(layer, x, y).getTile();
+                            if(defaultTileBreakingCheck(player.world, x, y, layer, mousedTileX, mousedTileY, player) && tile.canBreak(player.world, x, y, layer)){
+                                float hardness = tile.getHardness(player.world, x, y, layer);
+                                float progressAmount = 0.05F/hardness;
+
+                                ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+                                boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, x, y);
+                                if(selected != null){
+                                    progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
                                 }
 
-                                Tile tile = player.world.getState(layer, x, y).getTile();
-                                if(defaultTileBreakingCheck(player.world, x, y, layer) && tile.canBreak(player.world, x, y, layer)){
-                                    float hardness = tile.getHardness(player.world, x, y, layer);
-                                    float progressAmount = 0.05F/hardness;
+                                AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
+                                RockBottomAPI.getEventHandler().fireEvent(event);
+                                this.breakProgress = event.totalProgress;
+                                progressAmount = event.progressAdded;
 
-                                    ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-                                    boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, x, y);
-                                    if(selected != null){
-                                        progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
-                                    }
+                                this.breakProgress += progressAmount;
 
-                                    AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
-                                    RockBottomAPI.getEventHandler().fireEvent(event);
-                                    this.breakProgress = event.totalProgress;
-                                    progressAmount = event.progressAdded;
+                                if(this.breakProgress >= 1){
+                                    this.breakProgress = 0;
 
-                                    this.breakProgress += progressAmount;
-
-                                    if(this.breakProgress >= 1){
-                                        this.breakProgress = 0;
-
-                                        if(RockBottomAPI.getNet().isClient()){
-                                            RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, mousedTileX, mousedTileY));
-                                        }
-                                        else{
-                                            breakTile(tile, player, x, y, layer, effective);
-                                        }
+                                    if(RockBottomAPI.getNet().isClient()){
+                                        RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, mousedTileX, mousedTileY));
                                     }
                                     else{
-                                        this.breakTileX = x;
-                                        this.breakTileY = y;
-                                        this.breakingLayer = layer;
+                                        breakTile(tile, player, x, y, layer, effective);
                                     }
                                 }
                                 else{
-                                    this.breakProgress = 0;
+                                    this.breakTileX = x;
+                                    this.breakTileY = y;
+                                    this.breakingLayer = layer;
                                 }
                             }
                             else{
                                 this.breakProgress = 0;
                             }
-
-                            if(this.placeCooldown <= 0){
-                                if(Settings.KEY_PLACE.isDown()){
-                                    if(interact(player, layer, mousedTileX, mousedTileY)){
-                                        if(RockBottomAPI.getNet().isClient()){
-                                            RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY));
-                                        }
-
-                                        this.placeCooldown = 5;
-                                    }
-                                }
-                            }
-                            else{
-                                this.placeCooldown--;
-                            }
                         }
                         else{
                             this.breakProgress = 0;
+                        }
+
+                        if(this.placeCooldown <= 0){
+                            if(Settings.KEY_PLACE.isDown()){
+                                if(interact(player, layer, mousedTileX, mousedTileY)){
+                                    if(RockBottomAPI.getNet().isClient()){
+                                        RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY));
+                                    }
+
+                                    this.placeCooldown = 5;
+                                }
+                            }
+                        }
+                        else{
+                            this.placeCooldown--;
                         }
                     }
                     else{
