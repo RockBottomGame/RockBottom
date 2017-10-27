@@ -1,8 +1,10 @@
 package de.ellpeck.rockbottom.assets.loader;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -12,9 +14,8 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.Texture;
 
-import java.util.ArrayList;
+import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TextureLoader implements IAssetLoader<ITexture>{
@@ -26,11 +27,33 @@ public class TextureLoader implements IAssetLoader<ITexture>{
 
     @Override
     public ITexture loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-        String resPath = path+element.getAsString();
+        String resPath;
+        Map<String, JsonElement> additionalData;
 
-        ITexture texture = new Texture(AssetManager.getResource(resPath), resourceName.toString(), false);
+        if(element instanceof JsonArray){
+            JsonArray array = element.getAsJsonArray();
+            resPath = path+array.get(0).getAsString();
+
+            additionalData = new HashMap<>();
+
+            InputStreamReader reader = new InputStreamReader(AssetManager.getResource(path+array.get(1).getAsString()), Charsets.UTF_8);
+            JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
+            for(Map.Entry<String, JsonElement> entry : main.entrySet()){
+                additionalData.put(entry.getKey(), entry.getValue());
+            }
+        }
+        else{
+            resPath = path+element.getAsString();
+            additionalData = null;
+        }
+
+        Texture texture = new Texture(AssetManager.getResource(resPath), resourceName.toString(), false);
+
+        if(additionalData != null){
+            texture.setAdditionalData(additionalData);
+        }
+
         RockBottomAPI.logger().config("Loaded texture "+resourceName+" from "+resPath+" for mod "+loadingMod.getDisplayName());
-
         return texture;
     }
 

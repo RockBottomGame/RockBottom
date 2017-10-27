@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
+import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
 import org.newdawn.slick.Image;
@@ -8,8 +9,12 @@ import org.newdawn.slick.opengl.ImageData;
 import org.newdawn.slick.opengl.renderer.SGL;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Texture extends Image implements ITexture{
+
+    private Map<String, JsonElement> additionalData;
 
     public Texture(){
     }
@@ -49,6 +54,15 @@ public class Texture extends Image implements ITexture{
         sub.centerY = height/2;
 
         return sub;
+    }
+
+    public void setAdditionalData(Map<String, JsonElement> data){
+        this.additionalData = data;
+    }
+
+    @Override
+    public JsonElement getAdditionalData(String name){
+        return this.additionalData != null ? this.additionalData.get(name) : null;
     }
 
     @Override

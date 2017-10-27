@@ -87,27 +87,60 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
             if(renderer != null){
                 JsonElement[] holdingOffsets = armAnimation.getAdditionalFrameData("holding_offset", row);
                 JsonElement[] holdingAngles = armAnimation.getAdditionalFrameData("holding_angle", row);
+                JsonElement[] holdingMirroreds = armAnimation.getAdditionalFrameData("holding_mirrored", row);
 
-                if(holdingOffsets != null && holdingAngles != null){
+                if(holdingOffsets != null && holdingAngles != null && holdingMirroreds != null){
                     float itemX;
                     float itemY;
                     float holdingAngle;
+                    boolean holdingMirrored;
+                    float holdingScale = 1F;
 
                     try{
                         int frame = armAnimation.getFrameByTime(row, Util.getTimeMillis());
-                        JsonArray holdingOffset = holdingOffsets[frame].getAsJsonArray();
-                        holdingAngle = holdingAngles[frame].getAsFloat();
 
+                        holdingAngle = holdingAngles[frame].getAsFloat();
+                        holdingMirrored = holdingMirroreds[frame].getAsBoolean();
+
+                        JsonArray holdingOffset = holdingOffsets[frame].getAsJsonArray();
                         itemX = x+((holdingOffset.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale);
                         itemY = y+((holdingOffset.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale);
+
+                        try{
+                            JsonElement itemOff = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_offset");
+                            JsonElement itemAngle = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_angle");
+                            JsonElement itemMirrored = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_mirrored");
+                            JsonElement itemScale = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_scale");
+
+                            if(itemOff != null){
+                                JsonArray itemOffFrame = itemOff.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsJsonArray();
+                                itemX += (itemOffFrame.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale;
+                                itemY += (itemOffFrame.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale;
+                            }
+
+                            if(itemAngle != null){
+                                holdingAngle += itemAngle.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsFloat();
+                            }
+
+                            if(itemMirrored != null){
+                                holdingMirrored = itemMirrored.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsBoolean();
+                            }
+
+                            if(itemScale != null){
+                                holdingScale = itemScale.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsFloat();
+                            }
+                        }
+                        catch(Exception ignored){
+                        }
                     }
                     catch(Exception e){
                         itemX = x;
                         itemY = y;
                         holdingAngle = 0F;
+                        holdingMirrored = false;
                     }
 
-                    renderer.renderHolding(game, manager, g, item, holding, player, itemX, itemY, holdingAngle, scale, light);
+                    renderer.renderHolding(game, manager, g, item, holding, player, itemX, itemY, holdingAngle, scale*holdingScale, light, holdingMirrored);
                 }
             }
         }

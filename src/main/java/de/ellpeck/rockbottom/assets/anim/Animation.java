@@ -129,7 +129,7 @@ public class Animation implements IAnimation{
 
     @Override
     public void drawRow(int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
-
+        this.drawRow(-1L, row, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
     }
 
     @Override
