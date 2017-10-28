@@ -9,7 +9,6 @@ import org.newdawn.slick.opengl.ImageData;
 import org.newdawn.slick.opengl.renderer.SGL;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Texture extends Image implements ITexture{
@@ -183,5 +182,27 @@ public class Texture extends Image implements ITexture{
 
     private int translate(byte b){
         return b < 0 ? 256+b : b;
+    }
+
+    @Override
+    public Texture copyAndFlip(boolean flipHorizontal, boolean flipVertical){
+        this.init();
+        Texture image = this.getCopy();
+
+        if(flipHorizontal){
+            image.textureOffsetX = this.textureOffsetX+this.textureWidth;
+            image.textureWidth = -this.textureWidth;
+        }
+        if(flipVertical){
+            image.textureOffsetY = this.textureOffsetY+this.textureHeight;
+            image.textureHeight = -this.textureHeight;
+        }
+
+        return image;
+    }
+
+    @Override
+    public Texture getCopy(){
+        return this.getSubTexture(0, 0, this.width, this.height);
     }
 }

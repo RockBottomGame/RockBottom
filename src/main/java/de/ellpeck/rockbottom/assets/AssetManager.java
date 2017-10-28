@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.assets;
 
 import com.google.common.base.Charsets;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,6 +10,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
 import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -99,30 +99,45 @@ public class AssetManager implements IAssetManager{
         this.currentFont = this.getFont(RockBottomAPI.createInternalRes("default"));
         this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
 
-        this.reloadCursor(game);
+        this.setCursor(game, null);
     }
 
     @Override
-    public void reloadCursor(IGameInstance game){
+    public void setCursor(IGameInstance game, ISpecialCursor cursor){
         try{
             if(!game.getSettings().hardwareCursor){
-                Texture texture = (Texture)this.getTexture(RockBottomAPI.createInternalRes("gui.cursor"));
+                ITexture texture;
+                int hotX;
+                int hotY;
+
+                if(cursor == null){
+                    texture = this.getTexture(RockBottomAPI.createInternalRes("gui.cursor"));
+                    hotX = 0;
+                    hotY = 0;
+                }
+                else{
+                    texture = cursor.getTexture();
+                    hotX = cursor.getHotspotX();
+                    hotY = cursor.getHotspotY();
+                }
+
                 Texture temp = new Texture(texture.getWidth(), texture.getHeight());
 
                 Graphics g = temp.getGraphics();
-                g.drawImage(texture.getFlippedCopy(false, true), 0, 0);
+                g.drawImage((Texture)texture.copyAndFlip(false, true), 0, 0);
 
                 ByteBuffer buffer = BufferUtils.createByteBuffer(temp.getWidth()*temp.getHeight()*4);
                 g.getArea(0, 0, temp.getWidth(), temp.getHeight(), buffer);
 
-                Cursor cursor = CursorLoader.get().getCursor(buffer, 0, 0, temp.getWidth(), temp.getHeight());
-                Mouse.setNativeCursor(cursor);
+                Mouse.setNativeCursor(CursorLoader.get().getCursor(buffer, hotX, hotY, temp.getWidth(), temp.getHeight()));
 
                 g.flush();
             }
             else{
                 Mouse.setNativeCursor(null);
             }
+
+            RockBottomAPI.logger().config("Setting cursor to "+cursor);
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Could not set mouse cursor!", e);

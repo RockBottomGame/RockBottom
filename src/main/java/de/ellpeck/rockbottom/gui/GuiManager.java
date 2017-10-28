@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.event.impl.GuiOpenEvent;
 import de.ellpeck.rockbottom.api.event.impl.OverlayRenderEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
+import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -34,6 +35,7 @@ import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class GuiManager implements IGuiManager{
@@ -43,6 +45,7 @@ public class GuiManager implements IGuiManager{
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private MainMenuBackground background;
     private Gui gui;
+    private ISpecialCursor currentCursor;
 
     private boolean isFadeOut;
     private int fadeTimer;
@@ -74,6 +77,8 @@ public class GuiManager implements IGuiManager{
             }
         }
 
+        RockBottomAPI.SPECIAL_CURSORS.sort(Comparator.comparingInt(ISpecialCursor:: getPriority).reversed());
+
         RockBottomAPI.logger().config("Successfully re-initialized Gui Manager");
     }
 
@@ -89,7 +94,26 @@ public class GuiManager implements IGuiManager{
         this.onScreenComponents.add(new ComponentHealth(null, (int)game.getGraphics().getWidthInGui()-3-maxHealthParts*13, (int)game.getGraphics().getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
+    private ISpecialCursor pickCursor(IGameInstance game){
+        for(ISpecialCursor cursor : RockBottomAPI.SPECIAL_CURSORS){
+            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), this, game.getInteractionManager())){
+                return cursor;
+            }
+        }
+        return null;
+    }
+
     public void update(RockBottom game){
+        if(!game.getSettings().hardwareCursor){
+            if(this.currentCursor == null || !this.currentCursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), this, game.getInteractionManager())){
+                ISpecialCursor cursor = this.pickCursor(game);
+                if(cursor != this.currentCursor){
+                    game.getAssetManager().setCursor(game, cursor);
+                    this.currentCursor = cursor;
+                }
+            }
+        }
+
         game.getChatLog().updateNewMessages();
 
         if(game.getPlayer() == null || !game.getPlayer().isDead()){
@@ -263,6 +287,11 @@ public class GuiManager implements IGuiManager{
     @Override
     public boolean fadeIn(int ticks, Runnable after){
         return this.fade(ticks, after, false);
+    }
+
+    @Override
+    public ISpecialCursor getCursor(){
+        return this.currentCursor;
     }
 
     private boolean fade(int ticks, Runnable after, boolean out){
