@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
-import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
@@ -20,7 +19,6 @@ import de.ellpeck.rockbottom.assets.loader.*;
 import de.ellpeck.rockbottom.assets.sound.EmptySound;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
@@ -30,7 +28,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -105,22 +106,24 @@ public class AssetManager implements IAssetManager{
     @Override
     public void setCursor(IGameInstance game, ISpecialCursor cursor){
         try{
+            IResourceName tex;
+
             if(!game.getSettings().hardwareCursor){
-                ITexture texture;
                 int hotX;
                 int hotY;
 
                 if(cursor == null){
-                    texture = this.getTexture(RockBottomAPI.createInternalRes("gui.cursor"));
+                    tex = RockBottomAPI.createInternalRes("gui.cursor");
                     hotX = 0;
                     hotY = 0;
                 }
                 else{
-                    texture = cursor.getTexture();
+                    tex = cursor.getTexture();
                     hotX = cursor.getHotspotX();
                     hotY = cursor.getHotspotY();
                 }
 
+                ITexture texture = this.getTexture(tex);
                 Texture temp = new Texture(texture.getWidth(), texture.getHeight());
 
                 Graphics g = temp.getGraphics();
@@ -135,9 +138,10 @@ public class AssetManager implements IAssetManager{
             }
             else{
                 Mouse.setNativeCursor(null);
+                tex = null;
             }
 
-            RockBottomAPI.logger().config("Setting cursor to "+cursor);
+            RockBottomAPI.logger().config("Setting cursor to "+tex);
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Could not set mouse cursor!", e);
