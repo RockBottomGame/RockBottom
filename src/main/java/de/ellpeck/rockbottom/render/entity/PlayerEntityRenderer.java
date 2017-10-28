@@ -98,13 +98,14 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
                     try{
                         int frame = armAnimation.getFrameByTime(row, Util.getTimeMillis());
+                        float animScale = Math.min(armAnimation.getFrameWidth(), armAnimation.getFrameHeight());
 
                         holdingAngle = holdingAngles[frame].getAsFloat();
                         holdingMirrored = holdingMirroreds[frame].getAsBoolean();
 
                         JsonArray holdingOffset = holdingOffsets[frame].getAsJsonArray();
-                        itemX = x+((holdingOffset.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale);
-                        itemY = y+((holdingOffset.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale);
+                        itemX = x+((holdingOffset.get(0).getAsFloat()/animScale)*scale);
+                        itemY = y+((holdingOffset.get(1).getAsFloat()/animScale)*scale);
 
                         JsonElement itemOff = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_offset");
                         JsonElement itemAngle = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_angle");
@@ -113,8 +114,8 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
                         if(itemOff != null){
                             JsonArray itemOffFrame = itemOff.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsJsonArray();
-                            itemX += (itemOffFrame.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale;
-                            itemY += (itemOffFrame.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale;
+                            itemX += (itemOffFrame.get(0).getAsFloat()/animScale)*scale;
+                            itemY += (itemOffFrame.get(1).getAsFloat()/animScale)*scale;
                         }
 
                         if(itemAngle != null){
