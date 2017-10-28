@@ -65,7 +65,12 @@ public class AssetManager implements IAssetManager{
 
         try{
             RockBottomAPI.logger().info("Loading resources...");
+
             this.loadAssets();
+
+            for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
+                loader.finalize(this);
+            }
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Exception loading resources! ", e);

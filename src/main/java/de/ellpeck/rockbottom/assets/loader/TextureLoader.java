@@ -20,6 +20,8 @@ import java.util.Map;
 
 public class TextureLoader implements IAssetLoader<ITexture>{
 
+    private final Map<String, Map<String, JsonElement>> additionalDataCache = new HashMap<>();
+
     @Override
     public IResourceName getAssetIdentifier(){
         return RockBottomAPI.createInternalRes("tex");
@@ -33,13 +35,19 @@ public class TextureLoader implements IAssetLoader<ITexture>{
         if(element instanceof JsonArray){
             JsonArray array = element.getAsJsonArray();
             resPath = path+array.get(0).getAsString();
+            String dataPath = path+array.get(1).getAsString();
 
-            additionalData = new HashMap<>();
+            additionalData = this.additionalDataCache.get(dataPath);
+            if(additionalData == null){
+                additionalData = new HashMap<>();
 
-            InputStreamReader reader = new InputStreamReader(AssetManager.getResource(path+array.get(1).getAsString()), Charsets.UTF_8);
-            JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
-            for(Map.Entry<String, JsonElement> entry : main.entrySet()){
-                additionalData.put(entry.getKey(), entry.getValue());
+                InputStreamReader reader = new InputStreamReader(AssetManager.getResource(dataPath), Charsets.UTF_8);
+                JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
+                for(Map.Entry<String, JsonElement> entry : main.entrySet()){
+                    additionalData.put(entry.getKey(), entry.getValue());
+                }
+
+                this.additionalDataCache.put(dataPath, additionalData);
             }
         }
         else{
@@ -85,5 +93,10 @@ public class TextureLoader implements IAssetLoader<ITexture>{
         else{
             return null;
         }
+    }
+
+    @Override
+    public void finalize(IAssetManager manager){
+        this.additionalDataCache.clear();
     }
 }

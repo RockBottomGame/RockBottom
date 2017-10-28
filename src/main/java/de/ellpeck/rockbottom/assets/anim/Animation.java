@@ -30,51 +30,6 @@ public class Animation implements IAnimation{
         this.rows = rows;
     }
 
-    public static Animation fromStream(ITexture texture, InputStream infoStream) throws Exception{
-        int frameWidth = 0;
-        int frameHeight = 0;
-
-        List<AnimationRow> rows = new ArrayList<>();
-
-        JsonObject main = new JsonParser().parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
-        for(Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){
-            String key = entry.getKey();
-            JsonArray data = entry.getValue().getAsJsonArray();
-
-            if("size".equals(key)){
-                frameWidth = data.get(0).getAsInt();
-                frameHeight = data.get(1).getAsInt();
-            }
-            else if("data".equals(key)){
-                for(JsonElement element : data){
-                    JsonArray array = element.getAsJsonArray();
-                    float[] times = new float[array.size()];
-
-                    for(int i = 0; i < times.length; i++){
-                        times[i] = array.get(i).getAsFloat();
-                    }
-
-                    rows.add(new AnimationRow(times));
-                }
-            }
-            else{
-                for(int i = 0; i < data.size(); i++){
-                    AnimationRow row = rows.get(i);
-                    JsonElement[] additionalData = new JsonElement[row.getFrameAmount()];
-
-                    JsonArray array = data.get(i).getAsJsonArray();
-                    for(int j = 0; j < additionalData.length; j++){
-                        additionalData[j] = array.get(j);
-                    }
-
-                    row.addAdditionalFrameData(key, additionalData);
-                }
-            }
-        }
-
-        return new Animation(texture, frameWidth, frameHeight, rows);
-    }
-
     @Override
     public void drawFrame(int row, int frame, float x, float y, float width, float height, int filter){
         this.drawFrame(row, frame, x, y, width, height, null, filter);
