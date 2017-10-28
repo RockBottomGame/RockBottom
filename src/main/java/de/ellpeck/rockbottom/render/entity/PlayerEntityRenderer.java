@@ -106,31 +106,27 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
                         itemX = x+((holdingOffset.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale);
                         itemY = y+((holdingOffset.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale);
 
-                        try{
-                            JsonElement itemOff = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_offset");
-                            JsonElement itemAngle = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_angle");
-                            JsonElement itemMirrored = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_mirrored");
-                            JsonElement itemScale = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_scale");
+                        JsonElement itemOff = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_offset");
+                        JsonElement itemAngle = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_angle");
+                        JsonElement itemMirrored = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_mirrored");
+                        JsonElement itemScale = renderer.getAdditionalTextureData(game, manager, g, item, holding, player, "holding_scale");
 
-                            if(itemOff != null){
-                                JsonArray itemOffFrame = itemOff.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsJsonArray();
-                                itemX += (itemOffFrame.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale;
-                                itemY += (itemOffFrame.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale;
-                            }
-
-                            if(itemAngle != null){
-                                holdingAngle += itemAngle.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsFloat();
-                            }
-
-                            if(itemMirrored != null){
-                                holdingMirrored = itemMirrored.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsBoolean();
-                            }
-
-                            if(itemScale != null){
-                                holdingScale = itemScale.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsFloat();
-                            }
+                        if(itemOff != null){
+                            JsonArray itemOffFrame = itemOff.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsJsonArray();
+                            itemX += (itemOffFrame.get(0).getAsFloat()/(float)armAnimation.getFrameWidth())*scale;
+                            itemY += (itemOffFrame.get(1).getAsFloat()/(float)armAnimation.getFrameHeight())*scale;
                         }
-                        catch(Exception ignored){
+
+                        if(itemAngle != null){
+                            holdingAngle += itemAngle.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsFloat();
+                        }
+
+                        if(itemMirrored != null){
+                            holdingMirrored = itemMirrored.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsBoolean();
+                        }
+
+                        if(itemScale != null){
+                            holdingScale = itemScale.getAsJsonArray().get(row).getAsJsonArray().get(frame).getAsFloat();
                         }
                     }
                     catch(Exception e){
