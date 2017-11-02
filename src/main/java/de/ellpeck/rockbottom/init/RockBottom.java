@@ -187,6 +187,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         this.assetManager.load(this);
 
         RockBottomAPI.getModLoader().initAssets();
+        this.assetManager.loadCursors();
 
         this.setPlayerDesign();
         this.graphics.calcScales();
@@ -320,10 +321,15 @@ public class RockBottom extends AbstractGame implements InputListener{
             this.player = null;
         }
 
-        this.guiManager.closeGui();
-        this.guiManager.updateDimensions();
-        this.guiManager.openGui(new GuiMainMenu());
-        this.toaster.cancelAllToasts();
+        if(this.guiManager != null){
+            this.guiManager.closeGui();
+            this.guiManager.updateDimensions();
+            this.guiManager.openGui(new GuiMainMenu());
+        }
+
+        if(this.toaster != null){
+            this.toaster.cancelAllToasts();
+        }
     }
 
     @Override
@@ -401,6 +407,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         }
         else if(key == Input.KEY_F3){
             this.assetManager.load(this);
+            this.assetManager.loadCursors();
             return;
         }
         else if(key == Input.KEY_F5){

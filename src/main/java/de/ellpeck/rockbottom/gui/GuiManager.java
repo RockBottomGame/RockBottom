@@ -35,7 +35,6 @@ import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class GuiManager implements IGuiManager{
@@ -77,8 +76,6 @@ public class GuiManager implements IGuiManager{
             }
         }
 
-        RockBottomAPI.SPECIAL_CURSORS.sort(Comparator.comparingInt(ISpecialCursor:: getPriority).reversed());
-
         RockBottomAPI.logger().config("Successfully re-initialized Gui Manager");
     }
 
@@ -105,12 +102,10 @@ public class GuiManager implements IGuiManager{
 
     public void update(RockBottom game){
         if(!game.getSettings().hardwareCursor){
-            if(this.currentCursor == null || !this.currentCursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), this, game.getInteractionManager())){
-                ISpecialCursor cursor = this.pickCursor(game);
-                if(cursor != this.currentCursor){
-                    game.getAssetManager().setCursor(game, cursor);
-                    this.currentCursor = cursor;
-                }
+            ISpecialCursor cursor = this.pickCursor(game);
+            if(cursor != this.currentCursor){
+                game.getAssetManager().setCursor(game, cursor);
+                this.currentCursor = cursor;
             }
         }
 

@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
+import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
@@ -17,8 +18,13 @@ import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
 import de.ellpeck.rockbottom.assets.sound.EmptySound;
+import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
+import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
+import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
+import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
@@ -28,10 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -43,9 +46,15 @@ public class AssetManager implements IAssetManager{
         new LocaleLoader().register();
         new SoundLoader().register();
         new TextureLoader().register();
+
+        RockBottomAPI.SPECIAL_CURSORS.add(new CursorPointer());
+        RockBottomAPI.SPECIAL_CURSORS.add(new CursorFinger());
+        RockBottomAPI.SPECIAL_CURSORS.add(new CursorClosedHand());
+        RockBottomAPI.SPECIAL_CURSORS.add(new CursorOpenHand());
     }
 
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
+    private final Map<ISpecialCursor, Cursor> cursors = new HashMap<>();
     private ISound missingSound;
     private ITexture missingTexture;
     private Locale missingLocale;
@@ -103,27 +112,16 @@ public class AssetManager implements IAssetManager{
         this.setCursor(game, null);
     }
 
-    @Override
-    public void setCursor(IGameInstance game, ISpecialCursor cursor){
-        try{
-            IResourceName tex;
+    public void loadCursors(){
+        if(!this.cursors.isEmpty()){
+            this.cursors.clear();
+        }
 
-            if(!game.getSettings().hardwareCursor){
-                int hotX;
-                int hotY;
+        RockBottomAPI.SPECIAL_CURSORS.sort(Comparator.comparingInt(ISpecialCursor:: getPriority).reversed());
 
-                if(cursor == null){
-                    tex = RockBottomAPI.createInternalRes("gui.cursor");
-                    hotX = 0;
-                    hotY = 0;
-                }
-                else{
-                    tex = cursor.getTexture();
-                    hotX = cursor.getHotspotX();
-                    hotY = cursor.getHotspotY();
-                }
-
-                ITexture texture = this.getTexture(tex);
+        for(ISpecialCursor cursor : RockBottomAPI.SPECIAL_CURSORS){
+            try{
+                ITexture texture = this.getTexture(cursor.getTexture());
                 Texture temp = new Texture(texture.getWidth(), texture.getHeight());
 
                 Graphics g = temp.getGraphics();
@@ -132,16 +130,27 @@ public class AssetManager implements IAssetManager{
                 ByteBuffer buffer = BufferUtils.createByteBuffer(temp.getWidth()*temp.getHeight()*4);
                 g.getArea(0, 0, temp.getWidth(), temp.getHeight(), buffer);
 
-                Mouse.setNativeCursor(CursorLoader.get().getCursor(buffer, hotX, hotY, temp.getWidth(), temp.getHeight()));
+                this.cursors.put(cursor, CursorLoader.get().getCursor(buffer, cursor.getHotspotX(), cursor.getHotspotY(), temp.getWidth(), temp.getHeight()));
 
                 g.flush();
             }
+            catch(Exception e){
+                RockBottomAPI.logger().log(Level.WARNING, "Could not load mouse cursor "+cursor, e);
+            }
+        }
+    }
+
+    @Override
+    public void setCursor(IGameInstance game, ISpecialCursor cursor){
+        try{
+            if(!game.getSettings().hardwareCursor){
+                Mouse.setNativeCursor(this.cursors.get(cursor));
+            }
             else{
                 Mouse.setNativeCursor(null);
-                tex = null;
             }
 
-            RockBottomAPI.logger().config("Setting cursor to "+tex);
+            RockBottomAPI.logger().config("Setting cursor to "+cursor);
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Could not set mouse cursor!", e);
@@ -163,7 +172,7 @@ public class AssetManager implements IAssetManager{
         return assets;
     }
 
-    private void loadAssets() throws Exception{
+    private void loadAssets(){
         JsonParser parser = new JsonParser();
 
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
