@@ -101,7 +101,7 @@ public class GuiManager implements IGuiManager{
     }
 
     public void update(RockBottom game){
-        if(!game.getSettings().hardwareCursor){
+        if(!game.getSettings().hardwareCursor && Mouse.isInsideWindow()){
             ISpecialCursor cursor = this.pickCursor(game);
             if(cursor != this.currentCursor){
                 game.getAssetManager().setCursor(game, cursor);
