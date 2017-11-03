@@ -32,6 +32,17 @@ public class TilePebbles extends TileBasic{
             protected IItemRenderer createRenderer(IResourceName name){
                 return new DefaultItemRenderer(name);
             }
+
+            @Override
+            public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance){
+                if(instance.getAmount() >= 3){
+                    if(super.onInteractWith(world, x, y, layer, mouseX, mouseY, player, instance)){
+                        player.getInv().remove(player.getSelectedSlot(), 2);
+                        return true;
+                    }
+                }
+                return false;
+            }
         };
     }
 

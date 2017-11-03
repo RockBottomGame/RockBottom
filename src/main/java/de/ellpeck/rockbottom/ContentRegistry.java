@@ -16,6 +16,7 @@ import de.ellpeck.rockbottom.world.gen.feature.WorldGenFlowers;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenGrass;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenPebbles;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.tile.*;
 
 public final class ContentRegistry{
@@ -32,6 +33,7 @@ public final class ContentRegistry{
         new TilePebbles().register();
         new TileSand().register();
         new TileBasic(RockBottomAPI.createInternalRes("sandstone")).register();
+        new TileOreMaterial(RockBottomAPI.createInternalRes("coal")).register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();
@@ -50,6 +52,7 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("trees"), WorldGenTrees.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("flowers"), WorldGenFlowers.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("pebbles"), WorldGenPebbles.class);
+        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("coal"), WorldGenCoal.class);
 
         RockBottomAPI.INFORMATION_REGISTRY.register(RockBottomAPI.createInternalRes("recipe"), RecipeInformation.class);
     }
