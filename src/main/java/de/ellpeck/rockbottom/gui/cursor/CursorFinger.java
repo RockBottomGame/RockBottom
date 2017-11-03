@@ -10,11 +10,21 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+
 public class CursorFinger implements ISpecialCursor{
 
     @Override
     public IResourceName getTexture(){
-        return RockBottomAPI.createInternalRes("gui.cursor.finger");
+        LocalDateTime now = LocalDateTime.now();
+
+        if(now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1){
+            return RockBottomAPI.createInternalRes("gui.cursor.finger_104");
+        }
+        else{
+            return RockBottomAPI.createInternalRes("gui.cursor.finger");
+        }
     }
 
     @Override
