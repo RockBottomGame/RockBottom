@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.data.settings.Keybind;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
+import de.ellpeck.rockbottom.api.gui.component.ComponentText;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
@@ -40,6 +41,7 @@ public class GuiKeybinds extends Gui{
 
         int id = 0;
         for(Keybind bind : binds){
+            menu.add(new ComponentText(this, 0, 0, 100, 16, 0.35F, true, game.getAssetManager().localize(bind.getName().addPrefix("key."))+": "));
             menu.add(new ComponentKeybind(this, id, 0, 0, bind));
             id++;
         }
