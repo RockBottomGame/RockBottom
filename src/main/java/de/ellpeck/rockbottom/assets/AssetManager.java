@@ -19,16 +19,14 @@ import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
 import de.ellpeck.rockbottom.assets.sound.EmptySound;
 import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
-import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
 import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
 import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
+import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ImageBuffer;
-import org.newdawn.slick.opengl.CursorLoader;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -122,17 +120,25 @@ public class AssetManager implements IAssetManager{
         for(ISpecialCursor cursor : RockBottomAPI.SPECIAL_CURSORS){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
-                Texture temp = new Texture(texture.getWidth(), texture.getHeight());
+                int width = texture.getWidth();
+                int height = texture.getHeight();
 
-                Graphics g = temp.getGraphics();
-                g.drawImage((Texture)texture.copyAndFlip(false, true), 0, 0);
+                ByteBuffer buf = BufferUtils.createByteBuffer(width*height*4);
 
-                ByteBuffer buffer = BufferUtils.createByteBuffer(temp.getWidth()*temp.getHeight()*4);
-                g.getArea(0, 0, temp.getWidth(), temp.getHeight(), buffer);
+                for(int y = height-1; y >= 0; y--){
+                    for(int x = 0; x < width; x++){
+                        int color = texture.getTextureColor(x, y);
 
-                this.cursors.put(cursor, CursorLoader.get().getCursor(buffer, cursor.getHotspotX(), cursor.getHotspotY(), temp.getWidth(), temp.getHeight()));
+                        buf.put((byte)(color & 0xFF));
+                        buf.put((byte)((color >> 8) & 0xFF));
+                        buf.put((byte)((color >> 16) & 0xFF));
+                        buf.put((byte)((color >> 24) & 0xFF));
+                    }
+                }
 
-                g.flush();
+                buf.flip();
+
+                this.cursors.put(cursor, new Cursor(width, height, cursor.getHotspotX(), height-1-cursor.getHotspotY(), 1, buf.asIntBuffer(), null));
             }
             catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "Could not load mouse cursor "+cursor, e);
