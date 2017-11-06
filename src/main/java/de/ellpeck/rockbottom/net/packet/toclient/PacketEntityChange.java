@@ -35,7 +35,7 @@ public class PacketEntityChange implements IPacket{
                 this.name = PLAYER_NAME;
 
                 EntityPlayer player = (EntityPlayer)entity;
-                player.getDesign().save(this.entitySet);
+                this.entitySet.addString("design", Util.GSON.toJson(player.getDesign()));
             }
             else{
                 this.name = RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString();
@@ -86,8 +86,7 @@ public class PacketEntityChange implements IPacket{
             else{
                 if(entity == null){
                     if(PLAYER_NAME.equals(this.name)){
-                        PlayerDesign design = new PlayerDesign();
-                        design.load(this.entitySet);
+                        PlayerDesign design = Util.GSON.fromJson(this.entitySet.getString("design"), PlayerDesign.class);
                         entity = new EntityPlayer(world, this.uniqueId, design);
                     }
                     else{

@@ -160,6 +160,11 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public void setPlayerDesign(String jsonString){
+        throw new UnsupportedOperationException("Cannot set player design on a dedicated server");
+    }
+
+    @Override
     public boolean isDedicatedServer(){
         return true;
     }

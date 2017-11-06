@@ -18,15 +18,10 @@
 
 package de.ellpeck.rockbottom.render;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.data.IDataManager;
-import de.ellpeck.rockbottom.api.data.set.DataSet;
+import com.google.gson.Gson;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-
-import java.util.List;
 
 public class PlayerDesign implements IPlayerDesign{
 
@@ -100,118 +95,6 @@ public class PlayerDesign implements IPlayerDesign{
 
         design.setBeard(Util.RANDOM.nextInt(BEARD.size()));
         design.setBeardColor(Colors.random(Util.RANDOM));
-    }
-
-    private static int loadIndex(String s, List<IResourceName> list){
-        IResourceName res;
-
-        if(s != null && !s.isEmpty()){
-            res = RockBottomAPI.createRes(s);
-        }
-        else{
-            res = null;
-        }
-
-        int index = list.indexOf(res);
-        return Math.max(0, index);
-    }
-
-    private static String saveIndex(int index, List<IResourceName> list){
-        if(index >= 0 && index < list.size()){
-            IResourceName name = list.get(index);
-            if(name != null){
-                return name.toString();
-            }
-        }
-        return "";
-    }
-
-    @Override
-    public void saveToFile(){
-        IDataManager dataManager = RockBottomAPI.getGame().getDataManager();
-
-        DataSet set = new DataSet();
-        this.save(set);
-        set.write(dataManager.getPlayerDesignFile());
-    }
-
-    @Override
-    public void loadFromFile(){
-        IDataManager dataManager = RockBottomAPI.getGame().getDataManager();
-
-        DataSet set = new DataSet();
-        set.read(dataManager.getPlayerDesignFile());
-        this.load(set);
-    }
-
-    @Override
-    public void save(DataSet set){
-        set.addString("name", this.name);
-        set.addInt("color", this.color);
-        set.addBoolean("female", this.female);
-
-        set.addString("base", saveIndex(this.base, BASE));
-        set.addInt("eye_color", this.eyeColor);
-
-        set.addString("shirt", saveIndex(this.shirt, SHIRT));
-        set.addInt("shirt_color", this.shirtColor);
-
-        set.addString("sleeves", saveIndex(this.sleeves, SLEEVES));
-        set.addInt("sleeves_color", this.sleevesColor);
-
-        set.addString("pants", saveIndex(this.pants, PANTS));
-        set.addInt("pants_color", this.pantsColor);
-
-        set.addString("footwear", saveIndex(this.footwear, FOOTWEAR));
-        set.addInt("footwear_color", this.footwearColor);
-
-        set.addString("hair", saveIndex(this.hair, HAIR));
-        set.addInt("hair_color", this.hairColor);
-
-        set.addString("accessory", saveIndex(this.accessory, ACCESSORIES));
-
-        set.addString("eyebrows", saveIndex(this.eyebrows, EYEBROWS));
-        set.addInt("eyebrows_color", this.eyebrowsColor);
-
-        set.addString("mouth", saveIndex(this.mouth, MOUTH));
-
-        set.addString("beard", saveIndex(this.beard, BEARD));
-        set.addInt("beard_color", this.beardColor);
-    }
-
-    @Override
-    public void load(DataSet set){
-        this.name = set.getString("name");
-        this.color = set.getInt("color");
-        this.female = set.getBoolean("female");
-
-        this.base = loadIndex(set.getString("base"), BASE);
-        this.eyeColor = set.getInt("eye_color");
-
-        this.shirt = loadIndex(set.getString("shirt"), SHIRT);
-        this.shirtColor = set.getInt("shirt_color");
-
-        this.sleeves = loadIndex(set.getString("sleeves"), SLEEVES);
-        this.sleevesColor = set.getInt("sleeves_color");
-
-        this.pants = loadIndex(set.getString("pants"), PANTS);
-        this.pantsColor = set.getInt("pants_color");
-
-        this.footwear = loadIndex(set.getString("footwear"), FOOTWEAR);
-        this.footwearColor = set.getInt("footwear_color");
-
-        this.hair = loadIndex(set.getString("hair"), HAIR);
-        this.hairColor = set.getInt("hair_color");
-
-        this.accessory = loadIndex(set.getString("accessory"), ACCESSORIES);
-
-        this.eyebrows = loadIndex(set.getString("eyebrows"), EYEBROWS);
-        this.eyebrowsColor = set.getInt("eyebrows_color");
-
-        this.mouth = loadIndex(set.getString("mouth"), MOUTH);
-
-        this.beard = loadIndex(set.getString("beard"), BEARD);
-        this.beardColor = set.getInt("beard_color");
     }
 
     @Override

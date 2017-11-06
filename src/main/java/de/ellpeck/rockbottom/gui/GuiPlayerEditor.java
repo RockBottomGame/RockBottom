@@ -11,14 +11,22 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentColorPicker;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentToggleButton;
+import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class GuiPlayerEditor extends Gui{
 
@@ -29,7 +37,7 @@ public class GuiPlayerEditor extends Gui{
     private ComponentInputField nameField;
 
     public GuiPlayerEditor(Gui parent){
-        super(100, 160, parent);
+        super(196, 178, parent);
     }
 
     @Override
@@ -87,8 +95,8 @@ public class GuiPlayerEditor extends Gui{
 
         this.components.add(new ComponentSlider(this, x-98, 126, 80, 12, this.previewType+1, 1, 6, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(RockBottomAPI.createInternalRes("button.player_design.preview"))));
 
-        this.components.add(new ComponentFancyButton(this, this.width/2+33, this.height-20, 16, 16, () -> {
-            this.components.add(0, new ComponentConfirmationPopup(this, this.width/2+41, this.height-12, aBoolean -> {
+        this.components.add(new ComponentFancyButton(this, this.width/2-16, this.height-38, 14, 14, () -> {
+            this.components.add(0, new ComponentConfirmationPopup(this, this.width/2-16+7, this.height-38+7, aBoolean -> {
                 if(aBoolean){
                     PlayerDesign.randomizeDesign(design);
                     this.init(game);
@@ -96,7 +104,30 @@ public class GuiPlayerEditor extends Gui{
             }));
             return true;
         }, RockBottomAPI.createInternalRes("gui.randomize"), assetManager.localize(RockBottomAPI.createInternalRes("info.randomize"))));
-        this.components.add(new ComponentButton(this, this.width/2-49, this.height-20, 80, 16, () -> {
+
+        this.components.add(new ComponentButton(this, x-98, this.height-38, 80, 14, () -> {
+            String data = Util.GSON.toJson(design);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(data), null);
+            return true;
+        }, "Copy Design", "Copies the design to your clipboard so you can send it to friends or save it"));
+
+        this.components.add(new ComponentButton(this, x, this.height-38, 80, 14, () -> {
+            this.components.add(0, new ComponentConfirmationPopup(this, x+40, this.height-38+7, aBoolean -> {
+                if(aBoolean){
+                    try{
+                        String data = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+                        game.setPlayerDesign(data);
+                        game.getGuiManager().updateDimensions();
+                    }
+                    catch(Exception e){
+                        RockBottomAPI.logger().log(Level.WARNING, "Couldn't paste player design from clipboard", e);
+                    }
+                }
+            }));
+            return true;
+        }, "Paste Design", "Paste a design from your clipboard"));
+
+        this.components.add(new ComponentButton(this, this.width/2-40, this.height-20, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
@@ -149,7 +180,7 @@ public class GuiPlayerEditor extends Gui{
             design.setName(text);
         }
 
-        design.saveToFile();
+        RockBottom.savePlayerDesign(game, design);
     }
 
     @Override

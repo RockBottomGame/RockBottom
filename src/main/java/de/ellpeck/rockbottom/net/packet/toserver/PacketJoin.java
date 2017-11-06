@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import de.ellpeck.rockbottom.render.PlayerDesign;
@@ -44,10 +45,7 @@ public class PacketJoin implements IPacket{
     public void toBuffer(ByteBuf buf) throws IOException{
         buf.writeLong(this.id.getMostSignificantBits());
         buf.writeLong(this.id.getLeastSignificantBits());
-
-        DataSet set = new DataSet();
-        this.design.save(set);
-        NetUtil.writeSetToBuffer(set, buf);
+        NetUtil.writeStringToBuffer(Util.GSON.toJson(this.design), buf);
 
         buf.writeInt(this.modInfos.size());
         for(ModInfo info : this.modInfos){
@@ -58,11 +56,7 @@ public class PacketJoin implements IPacket{
     @Override
     public void fromBuffer(ByteBuf buf) throws IOException{
         this.id = new UUID(buf.readLong(), buf.readLong());
-
-        DataSet set = new DataSet();
-        NetUtil.readSetFromBuffer(set, buf);
-        this.design = new PlayerDesign();
-        this.design.load(set);
+        this.design = Util.GSON.fromJson(NetUtil.readStringFromBuffer(buf), PlayerDesign.class);
 
         int amount = buf.readInt();
         for(int i = 0; i < amount; i++){

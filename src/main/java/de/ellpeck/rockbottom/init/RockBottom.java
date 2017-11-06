@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.init;
 
+import com.google.gson.stream.JsonWriter;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
@@ -7,6 +8,7 @@ import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
@@ -14,7 +16,9 @@ import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.Graphics;
@@ -51,7 +55,7 @@ import org.newdawn.slick.opengl.renderer.SGL;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -194,14 +198,31 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     private void setPlayerDesign(){
-        this.playerDesign = new PlayerDesign();
-        this.playerDesign.loadFromFile();
+        try{
+            FileReader reader = new FileReader(this.dataManager.getPlayerDesignFile());
+            this.playerDesign = Util.GSON.fromJson(reader, PlayerDesign.class);
+        }
+        catch(Exception e){
+            this.playerDesign = new PlayerDesign();
+        }
 
         if(Strings.isNullOrEmpty(this.playerDesign.getName())){
             PlayerDesign.randomizeDesign(this.playerDesign);
             RockBottomAPI.logger().info("Randomizing player design");
 
-            this.playerDesign.saveToFile();
+            savePlayerDesign(this, this.playerDesign);
+        }
+    }
+
+    public static void savePlayerDesign(IGameInstance game, IPlayerDesign design){
+        try{
+            IDataManager data = game.getDataManager();
+            FileWriter writer = new FileWriter(data.getPlayerDesignFile());
+            Util.GSON.toJson(design, writer);
+            writer.close();
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't save player design to file", e);
         }
     }
 
@@ -335,6 +356,11 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public PlayerDesign getPlayerDesign(){
         return this.playerDesign;
+    }
+
+    @Override
+    public void setPlayerDesign(String jsonString){
+        this.playerDesign = Util.GSON.fromJson(jsonString, PlayerDesign.class);
     }
 
     @Override
