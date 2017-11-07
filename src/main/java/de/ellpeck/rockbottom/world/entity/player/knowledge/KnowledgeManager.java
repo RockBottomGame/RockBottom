@@ -30,9 +30,11 @@ public class KnowledgeManager implements IKnowledgeManager{
         for(Information information : this.information.values()){
             DataSet sub = new DataSet();
             saveInformation(sub, this, information);
-            set.addDataSet("info_"+counter, sub);
 
-            counter++;
+            if(!sub.isEmpty()){
+                set.addDataSet("info_"+counter, sub);
+                counter++;
+            }
         }
         set.addInt("info_amount", counter);
     }
@@ -52,9 +54,12 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     public static void saveInformation(DataSet set, IKnowledgeManager manager, Information information){
-        set.addString("reg_name", information.getRegistryName().toString());
-        set.addString("name", information.getName().toString());
         information.save(set, manager);
+
+        if(!set.isEmpty()){
+            set.addString("reg_name", information.getRegistryName().toString());
+            set.addString("name", information.getName().toString());
+        }
     }
 
     public static Information loadInformation(DataSet set, IKnowledgeManager manager){
