@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
@@ -129,10 +130,10 @@ public class AssetManager implements IAssetManager{
                     for(int x = 0; x < width; x++){
                         int color = texture.getTextureColor(x, y);
 
-                        buf.put((byte)(color & 0xFF));
-                        buf.put((byte)((color >> 8) & 0xFF));
-                        buf.put((byte)((color >> 16) & 0xFF));
-                        buf.put((byte)((color >> 24) & 0xFF));
+                        buf.put((byte)Colors.getBInt(color));
+                        buf.put((byte)Colors.getGInt(color));
+                        buf.put((byte)Colors.getRInt(color));
+                        buf.put((byte)Colors.getAInt(color));
                     }
                 }
 
