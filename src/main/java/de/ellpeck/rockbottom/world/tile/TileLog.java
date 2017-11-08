@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
@@ -35,15 +36,28 @@ public class TileLog extends TileBasic{
     }
 
     @Override
-    public void onRemoved(IWorld world, int x, int y, TileLayer layer){
-        if(!world.isClient()){
+    public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop){
+        super.onDestroyed(world, x, y, destroyer, layer, shouldDrop);
+
+        if(destroyer != null && !world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-                for(Direction dir : new Direction[]{Direction.LEFT, Direction.RIGHT, Direction.UP}){
-                    TileState state = world.getState(layer, x+dir.x, y+dir.y);
-                    if(state.getTile() == this){
-                        world.scheduleUpdate(x+dir.x, y+dir.y, layer, 3);
+                int yOffset = 0;
+                boolean foundOne;
+
+                do{
+                    foundOne = false;
+
+                    for(Direction dir : new Direction[]{Direction.NONE, Direction.LEFT, Direction.RIGHT}){
+                        TileState up = world.getState(layer, x+dir.x, y+yOffset);
+                        if(up.getTile() == this && up.get(StaticTileProps.NATURAL)){
+                            world.scheduleUpdate(x+dir.x, y+yOffset, layer, yOffset*3);
+                            foundOne = true;
+                        }
                     }
+
+                    yOffset++;
                 }
+                while(foundOne);
             }
         }
     }
