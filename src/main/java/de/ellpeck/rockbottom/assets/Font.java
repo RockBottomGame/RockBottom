@@ -343,7 +343,7 @@ public class Font implements IFont{
 
                 for(String word : words){
                     if(wrapFormatting){
-                        for(int i = word.length()-2; i >= 0; i--){
+                        for(int i = 0; i < word.length()-1; i++){
                             FormattingCode format = FormattingCode.getFormat(word, i);
                             if(format != FormattingCode.NONE){
                                 if(format.getColor() != Colors.NO_COLOR){
@@ -353,8 +353,6 @@ public class Font implements IFont{
                                 if(format.getProp() != FontProp.NONE){
                                     trailingProp = format;
                                 }
-
-                                break;
                             }
                         }
                     }
