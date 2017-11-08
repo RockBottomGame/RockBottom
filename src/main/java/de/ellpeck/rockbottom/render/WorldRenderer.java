@@ -46,7 +46,7 @@ public class WorldRenderer{
         float scale = g.getWorldScale();
 
         int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
-        int color = SKY_COLORS[game.isLightDebug() ? SKY_COLORS.length-1 : skyLight];
+        int color = SKY_COLORS[game.getGraphics().isLightDebug() ? SKY_COLORS.length-1 : skyLight];
         g.backgroundColor(color);
 
         double width = g.getWidthInWorld();

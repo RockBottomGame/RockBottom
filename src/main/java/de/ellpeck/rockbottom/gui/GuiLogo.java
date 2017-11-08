@@ -77,4 +77,9 @@ public class GuiLogo extends Gui{
     public boolean hasGradient(){
         return false;
     }
+
+    @Override
+    protected boolean tryEscape(IGameInstance game){
+        return false;
+    }
 }
