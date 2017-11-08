@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 
 public class TileLog extends TileBasic{
 
@@ -58,6 +59,10 @@ public class TileLog extends TileBasic{
                     yOffset++;
                 }
                 while(foundOne);
+            }
+
+            if(destroyer instanceof AbstractEntityPlayer){
+                ((AbstractEntityPlayer)destroyer).getKnowledge().teachRecipe(ConstructionRegistry.torch, true);
             }
         }
     }
