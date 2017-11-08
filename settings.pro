@@ -5,6 +5,10 @@
 -adaptresourcefilecontents **.properties,META-INF/MANIFEST.MF
 -libraryjars  <java.home>/lib/rt.jar;build/temp/libs/lib
 
+-keep class !de.ellpeck.rockbottom.** {
+    *;
+}
+
 -keep class de.ellpeck.rockbottom.init.RockBottom {
     *** startGame(...);
 }
@@ -17,9 +21,8 @@
     public static void main(java.lang.String[]);
 }
 
--keep public class de.ellpeck.rockbottom.api.** {
-    public protected <fields>;
-    public protected <methods>;
+-keep class de.ellpeck.rockbottom.api.** {
+    *;
 }
 
 -keepclassmembers enum  * {
@@ -36,7 +39,7 @@
     java.lang.Object readResolve();
 }
 
--keepclassmembers class * {
+-keepclassmembers class de.ellpeck.rockbottom.** {
     public <init>(...);
 }
 
