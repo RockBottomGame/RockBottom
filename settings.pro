@@ -1,5 +1,6 @@
 -flattenpackagehierarchy de.ellpeck.rockbottom
 -repackageclasses de.ellpeck.rockbottom
+-allowaccessmodification
 -keepattributes Deprecated,*Annotation*,Synthetic
 -adaptresourcefilenames **.properties
 -adaptresourcefilecontents **.properties,META-INF/MANIFEST.MF
