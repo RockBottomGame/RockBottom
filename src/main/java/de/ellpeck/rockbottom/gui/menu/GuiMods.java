@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
+import com.google.common.collect.Iterators;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -15,6 +16,7 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 
 public class GuiMods extends Gui{
@@ -94,11 +96,25 @@ public class GuiMods extends Gui{
 
             int width = this.width-100;
             float center = 100+(width/2);
-            font.drawCenteredString(center, 45, this.selectedMod.getDisplayName(), 0.75F, false);
-            font.drawCenteredString(center, 70, "Version: "+FormattingCode.GRAY+this.selectedMod.getVersion(), 0.35F, false);
-            font.drawCenteredString(center, 80, "Mod ID: "+FormattingCode.GRAY+this.selectedMod.getId(), 0.35F, false);
+            font.drawCenteredString(center, 45, FormattingCode.BOLD+this.selectedMod.getDisplayName(), 0.75F, false);
 
-            font.drawSplitString(120, 100, this.selectedMod.getDescription(), 0.4F, width-30);
+            String[] authors = this.selectedMod.getAuthors();
+            if(authors != null && authors.length > 0){
+                String authorString = "";
+                Iterator<String> it = Iterators.forArray(authors);
+                while(it.hasNext()){
+                    authorString += it.next();
+                    if(it.hasNext()){
+                        authorString += ", ";
+                    }
+                }
+                font.drawCenteredString(center, 65, "By: "+FormattingCode.BOLD+authorString, 0.4F, false);
+            }
+
+            font.drawCenteredString(center, 85, "Version: "+FormattingCode.LIGHT_GRAY+FormattingCode.BOLD+this.selectedMod.getVersion(), 0.35F, false);
+            font.drawCenteredString(center, 95, "Mod ID: "+FormattingCode.LIGHT_GRAY+FormattingCode.BOLD+this.selectedMod.getId(), 0.35F, false);
+
+            font.drawSplitString(120, 120, this.selectedMod.getDescription(), 0.4F, width-30);
         }
     }
 
