@@ -37,7 +37,7 @@ public class GuiPlayerEditor extends Gui{
     private ComponentInputField nameField;
 
     public GuiPlayerEditor(Gui parent){
-        super(196, 178, parent);
+        super(196, 174, parent);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class GuiPlayerEditor extends Gui{
 
         this.components.add(new ComponentSlider(this, x-98, 126, 80, 12, this.previewType+1, 1, 6, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(RockBottomAPI.createInternalRes("button.player_design.preview"))));
 
-        this.components.add(new ComponentFancyButton(this, this.width/2-16, this.height-38, 14, 14, () -> {
+        this.components.add(new ComponentFancyButton(this, this.width/2-16, this.height-34, 14, 14, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, this.width/2-16+7, this.height-38+7, aBoolean -> {
                 if(aBoolean){
                     PlayerDesign.randomizeDesign(design);
@@ -105,13 +105,13 @@ public class GuiPlayerEditor extends Gui{
             return true;
         }, RockBottomAPI.createInternalRes("gui.randomize"), assetManager.localize(RockBottomAPI.createInternalRes("info.randomize"))));
 
-        this.components.add(new ComponentButton(this, x-98, this.height-38, 80, 14, () -> {
+        this.components.add(new ComponentButton(this, x-98, this.height-34, 80, 14, () -> {
             String data = Util.GSON.toJson(design);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(data), null);
             return true;
         }, "Copy Design", "Copies the design to your clipboard so you can send it to friends or save it"));
 
-        this.components.add(new ComponentButton(this, x, this.height-38, 80, 14, () -> {
+        this.components.add(new ComponentButton(this, x, this.height-34, 80, 14, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, x+40, this.height-38+7, aBoolean -> {
                 if(aBoolean){
                     try{
@@ -127,7 +127,7 @@ public class GuiPlayerEditor extends Gui{
             return true;
         }, "Paste Design", "Paste a design from your clipboard"));
 
-        this.components.add(new ComponentButton(this, this.width/2-40, this.height-20, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
