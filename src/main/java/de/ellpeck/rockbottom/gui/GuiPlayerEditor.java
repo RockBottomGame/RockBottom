@@ -23,8 +23,6 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 

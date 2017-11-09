@@ -18,7 +18,6 @@
 
 package de.ellpeck.rockbottom.render;
 
-import com.google.gson.Gson;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;

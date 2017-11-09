@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.init;
 
-import com.google.gson.stream.JsonWriter;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
@@ -18,6 +17,7 @@ import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -55,7 +55,9 @@ import org.newdawn.slick.opengl.renderer.SGL;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -592,7 +594,7 @@ public class RockBottom extends AbstractGame implements InputListener{
                     int g = buf.get(i+1) & 0xFF;
                     int b = buf.get(i+2) & 0xFF;
 
-                    image.setRGB(x, height-(y+1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+                    image.setRGB(x, height-(y+1), Colors.rgb(r, g, b));
                 }
             }
 

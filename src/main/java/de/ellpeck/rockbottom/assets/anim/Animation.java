@@ -1,19 +1,11 @@
 package de.ellpeck.rockbottom.assets.anim;
 
-import com.google.common.base.Charsets;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Util;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class Animation implements IAnimation{
 

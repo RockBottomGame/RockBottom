@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.event.Event;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.IEventListener;
-import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
