@@ -297,6 +297,10 @@ public class Chunk implements IChunk{
 
         this.getGrid(layer, true)[x][y] = tile;
 
+        if(this.world.isServer()){
+            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)));
+        }
+
         if(newTile != lastTile){
             if(newTile.canProvideTileEntity()){
                 TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y, layer);
@@ -306,10 +310,6 @@ public class Chunk implements IChunk{
             }
 
             newTile.onAdded(this.world, this.x+x, this.y+y, layer);
-        }
-
-        if(this.world.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)));
         }
 
         if(!this.isGenerating){
