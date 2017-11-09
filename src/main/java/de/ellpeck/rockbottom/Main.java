@@ -152,7 +152,7 @@ public final class Main{
                 else{
                     Logging.mainLogger.info("Creating native library cache file "+file);
 
-                    InputStream in = classLoader.getResourceAsStream("natives/"+mapped);
+                    InputStream in = classLoader.getResourceAsStream(mapped);
                     FileOutputStream out = new FileOutputStream(file);
                     byte[] buffer = new byte[65536];
 
