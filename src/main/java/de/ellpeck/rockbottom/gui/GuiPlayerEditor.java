@@ -23,8 +23,6 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
@@ -34,7 +32,6 @@ public class GuiPlayerEditor extends Gui{
     private int wiivIndex;
 
     private int previewType;
-    private ComponentInputField nameField;
 
     public GuiPlayerEditor(Gui parent){
         super(196, 174, parent);
@@ -78,14 +75,14 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(new Slider(this, x, y, design.getBeard(), IPlayerDesign.BEARD.size()-1, design:: setBeard, assetManager.localize(RockBottomAPI.createInternalRes("button.player_design.beard"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getBeardColor(), design:: setBeardColor));
 
-        this.nameField = new ComponentInputField(this, x-98, 0, 80, 12, true, true, false, 24, true){
+        ComponentInputField nameField = new ComponentInputField(this, x-98, 0, 80, 12, true, true, false, 24, true, design:: setName){
             @Override
             public String getDisplayText(){
                 return Colors.toFormattingCode(design.getFavoriteColor())+super.getDisplayText();
             }
         };
-        this.nameField.setText(design.getName());
-        this.components.add(this.nameField);
+        nameField.setText(design.getName());
+        this.components.add(nameField);
         this.components.add(new ComponentColorPicker(this, colorX-98, 0, 12, 12, design.getFavoriteColor(), ((color, aBoolean) -> design.setFavoriteColor(color)), true));
 
         this.components.add(new ComponentToggleButton(this, x-98, 14, 80, 12, design.isFemale(), () -> {
@@ -174,12 +171,6 @@ public class GuiPlayerEditor extends Gui{
         super.onClosed(game);
 
         IPlayerDesign design = game.getPlayerDesign();
-
-        String text = this.nameField.getText().trim();
-        if(!text.isEmpty()){
-            design.setName(text);
-        }
-
         RockBottom.savePlayerDesign(game, design);
     }
 
