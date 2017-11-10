@@ -299,6 +299,11 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
+    public String[] getAuthors(){
+        return new String[]{"Ellpeck", "wiiv"};
+    }
+
+    @Override
     public boolean isDisableable(){
         return false;
     }

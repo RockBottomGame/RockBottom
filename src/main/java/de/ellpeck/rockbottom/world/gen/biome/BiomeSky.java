@@ -9,8 +9,6 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 
-import java.util.Random;
-
 public class BiomeSky extends BiomeBasic{
 
     public BiomeSky(IResourceName name, int highestY, int lowestY, int weight){

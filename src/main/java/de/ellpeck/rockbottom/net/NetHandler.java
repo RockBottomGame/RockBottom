@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.net.client.Client;
 import de.ellpeck.rockbottom.net.server.Server;
 import de.ellpeck.rockbottom.world.World;
 import io.netty.channel.group.ChannelGroup;
-import org.newdawn.slick.util.Log;
 
 public final class NetHandler implements INetHandler{
 

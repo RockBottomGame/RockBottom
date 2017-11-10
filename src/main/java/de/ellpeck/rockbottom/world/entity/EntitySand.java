@@ -52,6 +52,6 @@ public class EntitySand extends Entity{
 
     @Override
     public boolean canCollideWith(MovableWorldObject object, BoundBox entityBox, BoundBox entityBoxMotion){
-        return object instanceof AbstractEntityPlayer;
+        return object instanceof EntitySand || object instanceof AbstractEntityPlayer;
     }
 }
