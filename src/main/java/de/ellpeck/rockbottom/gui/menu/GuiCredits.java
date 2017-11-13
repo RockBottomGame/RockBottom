@@ -52,6 +52,7 @@ public class GuiCredits extends Gui{
         this.credits.add("    raphydaphy");
         this.credits.add("    Quarris");
         this.credits.add("    Kinomora");
+        this.credits.add("    AKTheKnight");
         this.credits.add("");
         this.credits.add("");
     }
