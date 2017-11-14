@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
-import de.ellpeck.rockbottom.gui.component.ComponentFancyToggleButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;

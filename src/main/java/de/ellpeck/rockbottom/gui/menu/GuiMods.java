@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
 
 import java.util.Iterator;

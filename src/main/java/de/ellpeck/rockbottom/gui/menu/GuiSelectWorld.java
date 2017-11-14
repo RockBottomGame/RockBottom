@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.gui.component.ComponentFancyButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentSelectWorldButton;
 
 import java.io.File;
