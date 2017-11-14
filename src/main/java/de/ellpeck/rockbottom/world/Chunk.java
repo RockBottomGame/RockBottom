@@ -700,6 +700,7 @@ public class Chunk implements IChunk{
             updateSet.addInt("x_"+updateId, update.x);
             updateSet.addInt("y_"+updateId, update.y);
             updateSet.addString("l_"+updateId, update.layer.getName().toString());
+            updateSet.addInt("m_"+updateId, update.scheduledMeta);
             updateSet.addInt("t_"+updateId, update.time);
             updateSet.addInt("i_"+updateId, this.world.getIdForState(update.tile));
 
@@ -817,6 +818,7 @@ public class Chunk implements IChunk{
             for(int i = 0; i < updateAmount; i++){
                 int x = updateSet.getInt("x_"+i);
                 int y = updateSet.getInt("y_"+i);
+                int meta = updateSet.getInt("m_"+i);
                 int time = updateSet.getInt("t_"+i);
 
                 int id = updateSet.getInt("i_"+i);
@@ -826,7 +828,7 @@ public class Chunk implements IChunk{
                     IResourceName res = RockBottomAPI.createRes(updateSet.getString("l_"+i));
                     TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
                     if(layer != null){
-                        this.scheduleUpdate(x, y, layer, time);
+                        this.scheduleUpdate(x, y, layer, meta, time);
                     }
                     else{
                         RockBottomAPI.logger().warning("Could not load scheduled update at "+x+" "+y+" with time "+time+" because layer with name "+res+" is missing!");
