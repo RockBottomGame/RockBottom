@@ -300,6 +300,12 @@ public class World implements IWorld{
     }
 
     @Override
+    public void scheduleUpdate(int x, int y, TileLayer layer, int scheduledMeta, int time){
+        IChunk chunk = this.getChunk(x, y);
+        chunk.scheduleUpdate(x, y, layer, scheduledMeta, time);
+    }
+
+    @Override
     public boolean isChunkLoaded(int x, int y){
         return this.chunkLookup.containsKey(new Pos2(x, y));
     }
@@ -311,8 +317,7 @@ public class World implements IWorld{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-        IChunk chunk = this.getChunk(x, y);
-        chunk.scheduleUpdate(x, y, layer, time);
+        this.scheduleUpdate(x, y, layer, 0, time);
     }
 
     @Override

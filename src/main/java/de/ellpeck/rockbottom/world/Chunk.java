@@ -200,10 +200,10 @@ public class Chunk implements IChunk{
 
                         Tile tile = this.getState(update.layer, update.x, update.y).getTile();
                         if(tile == update.tile.getTile()){
-                            tile.onScheduledUpdate(this.world, update.x, update.y, update.layer);
+                            tile.onScheduledUpdate(this.world, update.x, update.y, update.layer, update.scheduledMeta);
 
                             if(this.world.isServer()){
-                                RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketScheduledUpdate(update.layer, update.x, update.y));
+                                RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketScheduledUpdate(update.layer, update.x, update.y, update.scheduledMeta));
                             }
                         }
 
@@ -475,10 +475,10 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public void scheduleUpdate(int x, int y, TileLayer layer, int time){
+    public void scheduleUpdate(int x, int y, TileLayer layer, int scheduledMeta, int time){
         Pos3 posVec = new Pos3(x, y, layer.index());
         if(!this.scheduledUpdateLookup.containsKey(posVec)){
-            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getState(layer, x, y), time);
+            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getState(layer, x, y), scheduledMeta, time);
 
             this.scheduledUpdateLookup.put(posVec, update);
             this.scheduledUpdates.add(update);
@@ -487,6 +487,11 @@ public class Chunk implements IChunk{
                 this.setDirty();
             }
         }
+    }
+
+    @Override
+    public void scheduleUpdate(int x, int y, TileLayer layer, int time){
+       this.scheduleUpdate(x, y, layer, 0, time);
     }
 
     @Override
@@ -956,14 +961,16 @@ public class Chunk implements IChunk{
         public final int y;
         public final TileLayer layer;
         public final TileState tile;
+        public final int scheduledMeta;
 
         public int time;
 
-        public ScheduledUpdate(int x, int y, TileLayer layer, TileState tile, int time){
+        public ScheduledUpdate(int x, int y, TileLayer layer, TileState tile, int scheduledMeta, int time){
             this.x = x;
             this.y = y;
             this.layer = layer;
             this.tile = tile;
+            this.scheduledMeta = scheduledMeta;
 
             this.time = time;
         }

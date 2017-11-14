@@ -37,7 +37,7 @@ public class ClientChunk extends Chunk{
     }
 
     @Override
-    public void scheduleUpdate(int x, int y, TileLayer layer, int time){
+    public void scheduleUpdate(int x, int y, TileLayer layer, int scheduledMeta, int time){
         throw new UnsupportedOperationException("Cannot schedule updates in a client chunk");
     }
 

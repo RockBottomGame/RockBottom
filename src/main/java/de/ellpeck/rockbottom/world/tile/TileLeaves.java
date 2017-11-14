@@ -63,7 +63,7 @@ public class TileLeaves extends TileBasic{
     }
 
     @Override
-    public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer){
+    public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer, int scheduledMeta){
         if(!world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
                 world.destroyTile(x, y, layer, null, true);
