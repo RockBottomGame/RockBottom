@@ -24,10 +24,12 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
@@ -197,6 +199,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
                             entity.motionY = 0.3*(y/length);
                         }
                     }
+                }
+
+                if(this.y <= 0){
+                    this.getKnowledge().teachRecipe(ConstructionRegistry.ladder, true);
                 }
             }
         }
@@ -505,5 +511,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean shouldStartClimbing(int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes){
+        return true;
     }
 }
