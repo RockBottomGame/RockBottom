@@ -36,6 +36,7 @@ public final class ContentRegistry{
         new TileOreMaterial(RockBottomAPI.createInternalRes("coal")).register();
         new TileTorch().register();
         new TileLadder().register();
+        new TileChest().register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();

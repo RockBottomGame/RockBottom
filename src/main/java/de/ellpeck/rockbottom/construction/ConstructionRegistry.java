@@ -14,6 +14,7 @@ public final class ConstructionRegistry{
     public static final List<IRecipe> BRITTLE_TOOLS = new ArrayList<>();
     public static IRecipe torch;
     public static IRecipe ladder;
+    public static IRecipe chest;
 
     public static void init(){
         BRITTLE_TOOLS.add(new KnowledgeBasedRecipe(new ItemInstance(GameContent.ITEM_BRITTLE_PICKAXE), new ItemUseInfo(GameContent.TILE_PEBBLES, 12), new ItemUseInfo(GameContent.TILE_LOG, 2)).registerManual());
@@ -23,6 +24,8 @@ public final class ConstructionRegistry{
         torch = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_TORCH, 3), new ItemUseInfo(GameContent.TILE_COAL, 1), new ItemUseInfo(GameContent.TILE_LOG, 1)).registerManual();
 
         ladder = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_LADDER, 5), new ItemUseInfo(GameContent.TILE_LOG, 4)).registerManual();
+
+        chest = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_CHEST), new ItemUseInfo(GameContent.TILE_LOG, 25)).registerManual();
     }
 
 }

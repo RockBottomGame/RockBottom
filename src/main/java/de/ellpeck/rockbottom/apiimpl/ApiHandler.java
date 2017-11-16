@@ -162,7 +162,7 @@ public class ApiHandler implements IApiHandler{
             if(entity.doesSync()){
                 if(entity.ticksExisted%entity.getSyncFrequency() == 0){
                     if(entity.lastX != entity.x || entity.lastY != entity.y){
-                        RockBottomAPI.getNet().sendToAllPlayers(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.x, entity.y, entity.motionX, entity.motionY, entity.facing));
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.x, entity.y, entity.motionX, entity.motionY, entity.facing), entity.x, entity.y, entity);
 
                         entity.lastX = entity.x;
                         entity.lastY = entity.y;

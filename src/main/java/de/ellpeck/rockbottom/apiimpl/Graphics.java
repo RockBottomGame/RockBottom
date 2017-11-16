@@ -37,6 +37,7 @@ public class Graphics implements IGraphics{
     public boolean isLightDebug;
     public boolean isItemInfoDebug;
     public boolean isChunkBorderDebug;
+    public boolean isGuiDebug;
     private float displayRatio;
     private float guiScale;
     private float worldScale;
@@ -316,6 +317,11 @@ public class Graphics implements IGraphics{
     @Override
     public boolean isChunkBorderDebug(){
         return this.isChunkBorderDebug;
+    }
+
+    @Override
+    public boolean isGuiDebug(){
+        return this.isGuiDebug;
     }
 
     @Override

@@ -147,7 +147,7 @@ public class World implements IWorld{
         }
 
         if(this.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, false), entity);
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), entity.x, entity.y, entity);
         }
     }
 
@@ -530,7 +530,7 @@ public class World implements IWorld{
         entity.onRemoveFromWorld();
 
         if(this.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketEntityChange(entity, true), entity);
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, true), chunk.getX(), chunk.getY(), entity);
         }
     }
 
@@ -590,7 +590,7 @@ public class World implements IWorld{
     @Override
     public void playSound(IResourceName name, double x, double y, double z, float pitch, float volume, AbstractEntityPlayer except){
         if(this.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, x, y, z, pitch, volume), except);
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketSound(name, x, y, z, pitch, volume), x, y, except);
         }
 
         if(!RockBottomAPI.getNet().isThePlayer(except)){
@@ -707,7 +707,7 @@ public class World implements IWorld{
         state.getTile().onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
         if(this.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayers(this, PacketParticles.tile(this, x, y, state));
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this, PacketParticles.tile(this, x, y, state), x, y);
         }
 
         IGameInstance game = RockBottomAPI.getGame();

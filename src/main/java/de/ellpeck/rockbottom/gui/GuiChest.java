@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 public class GuiChest extends GuiContainer{
 
     public GuiChest(AbstractEntityPlayer player){
-        super(player, 198, 150);
+        super(player, 198, 138);
     }
 
     @Override

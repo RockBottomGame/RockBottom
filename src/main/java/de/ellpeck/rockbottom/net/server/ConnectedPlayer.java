@@ -97,7 +97,7 @@ public class ConnectedPlayer extends EntityPlayer{
         }
 
         if(this.lastX != this.x || this.lastY != this.y){
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing), this);
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing), this.x, this.y, this);
 
             this.lastX = this.x;
             this.lastY = this.y;

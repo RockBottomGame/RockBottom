@@ -7,13 +7,14 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.client.Client;
 import de.ellpeck.rockbottom.net.server.Server;
-import de.ellpeck.rockbottom.world.World;
 import io.netty.channel.group.ChannelGroup;
 
-public final class NetHandler implements INetHandler{
+public class NetHandler implements INetHandler{
 
     private Client client;
     private Server server;
@@ -113,11 +114,42 @@ public final class NetHandler implements INetHandler{
     @Override
     public void sendToAllPlayersExcept(IWorld world, IPacket packet, Entity except){
         if(this.isServer()){
-            if(world instanceof World){
-                for(AbstractEntityPlayer player : ((World)world).players){
-                    if(player != except){
-                        player.sendPacket(packet);
-                    }
+            for(AbstractEntityPlayer player : world.getAllPlayers()){
+                if(player != except){
+                    player.sendPacket(packet);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void sendToAllPlayersAround(IWorld world, IPacket packet, double x, double y, double radius){
+        this.sendToAllPlayersAroundExcept(world, packet, x, y, radius, null);
+    }
+
+    @Override
+    public void sendToAllPlayersAroundExcept(IWorld world, IPacket packet, double x, double y, double radius, Entity except){
+        if(this.isServer()){
+            for(AbstractEntityPlayer player : world.getAllPlayers()){
+                if(player != except && Util.distanceSq(x, y, player.x, player.y) <= radius*radius){
+                    player.sendPacket(packet);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void sendToAllPlayersWithLoadedPos(IWorld world, IPacket packet, double x, double y){
+        this.sendToAllPlayersWithLoadedPosExcept(world, packet, x, y, null);
+    }
+
+    @Override
+    public void sendToAllPlayersWithLoadedPosExcept(IWorld world, IPacket packet, double x, double y, Entity except){
+        if(this.isServer()){
+            IChunk chunk = world.getChunk(x, y);
+            for(AbstractEntityPlayer player : world.getAllPlayers()){
+                if(player != except && (chunk.getPlayersInRange().contains(player) || chunk.getPlayersLeftRange().contains(player))){
+                    player.sendPacket(packet);
                 }
             }
         }

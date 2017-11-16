@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.inventory;
 
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
+import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 public class InventoryPlayer extends Inventory{
@@ -11,6 +12,18 @@ public class InventoryPlayer extends Inventory{
     public InventoryPlayer(EntityPlayer player){
         super(32);
         this.addChangeCallback(player.invCallback);
+        this.addChangeCallback((inv, slot) -> {
+            int fullness = 0;
+            for(int i = 0; i < inv.getSlotAmount(); i++){
+                if(inv.get(i) != null){
+                    fullness++;
+
+                    if(fullness >= inv.getSlotAmount()/2){
+                        player.getKnowledge().teachRecipe(ConstructionRegistry.chest, true);
+                    }
+                }
+            }
+        });
     }
 
     @Override

@@ -56,7 +56,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
 
                 if(isInv && slot == this.getSelectedSlot()){
-                    RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
+                    RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this.x, this.y, this);
                 }
             }
         }

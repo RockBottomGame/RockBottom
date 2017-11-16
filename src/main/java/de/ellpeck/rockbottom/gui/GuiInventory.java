@@ -26,7 +26,7 @@ public class GuiInventory extends GuiContainer{
     private ComponentConstruction construction;
 
     public GuiInventory(EntityPlayer player){
-        super(player, 158, 87);
+        super(player, 158, 83);
     }
 
     @Override

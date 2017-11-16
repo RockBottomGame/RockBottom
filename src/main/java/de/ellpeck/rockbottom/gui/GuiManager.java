@@ -36,6 +36,7 @@ import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GuiManager implements IGuiManager{
 
@@ -45,6 +46,7 @@ public class GuiManager implements IGuiManager{
     private MainMenuBackground background;
     private Gui gui;
     private ISpecialCursor currentCursor;
+    private final Random debugRandom = new Random();
 
     private boolean isFadeOut;
     private int fadeTimer;
@@ -141,6 +143,8 @@ public class GuiManager implements IGuiManager{
         float height = g.getHeightInGui();
 
         Gui gui = this.getGui();
+        float mouseX = g.getMouseInGuiX();
+        float mouseY = g.getMouseInGuiY();
 
         if(player != null && player.isDead()){
             font.drawCenteredString(width/2F, height/2F-10, FormattingCode.RED+manager.localize(LOC_DEAD), 2F, true);
@@ -173,6 +177,31 @@ public class GuiManager implements IGuiManager{
 
                 gui.render(game, manager, g);
                 gui.renderOverlay(game, manager, g);
+
+                if(g.isGuiDebug()){
+                    g.drawRect(gui.getX(), gui.getY(), gui.getWidth(), gui.getHeight(), Colors.RED);
+
+                    int addY = 0;
+                    List<GuiComponent> components = gui.getComponents();
+                    for(int i = 0; i < components.size(); i++){
+                        GuiComponent component = components.get(i);
+                        if(component.isActive()){
+                            int x = component.getRenderX();
+                            int y = component.getRenderY();
+                            int w = component.getWidth();
+                            int h = component.getHeight();
+
+                            this.debugRandom.setSeed(Util.scrambleSeed(i));
+                            int color = Colors.random(this.debugRandom);
+                            g.drawRect(x, y, w, h, 0.5F, color);
+
+                            if(mouseX >= x && mouseY >= y && mouseX < x+w && mouseY < y+h){
+                                font.drawString(3, 3+addY, "name: "+component.getName()+"; render_xy: "+x+", "+y+"; xy: "+component.getX()+", "+component.getY()+"; wh: "+w+", "+h, 0.2F, color);
+                                addY += 5;
+                            }
+                        }
+                    }
+                }
             }
             else{
                 for(int i = 0; i < this.onScreenComponents.size(); i++){
@@ -209,9 +238,6 @@ public class GuiManager implements IGuiManager{
                     TileLayer layer = InteractionManager.getInteractionLayer(game, player);
                     int x = Util.floor(tileX);
                     int y = Util.floor(tileY);
-
-                    float mouseX = g.getMouseInGuiX();
-                    float mouseY = g.getMouseInGuiY();
 
                     ItemInstance holding = player.getInv().get(player.getSelectedSlot());
                     if(holding != null){
