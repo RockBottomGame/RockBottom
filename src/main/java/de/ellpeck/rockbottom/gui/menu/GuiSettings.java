@@ -17,6 +17,12 @@ public class GuiSettings extends Gui{
     }
 
     @Override
+    public void onClosed(IGameInstance game){
+        super.onClosed(game);
+        game.getDataManager().savePropSettings(game.getSettings());
+    }
+
+    @Override
     public void init(IGameInstance game){
         super.init(game);
         IAssetManager assetManager = game.getAssetManager();
@@ -35,7 +41,7 @@ public class GuiSettings extends Gui{
             guiManager.openGui(new GuiLanguage(this));
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.language"))));
-        this.components.add(new ComponentButton(this, this.width/2-75, 60, 150, 16, ()->{
+        this.components.add(new ComponentButton(this, this.width/2-75, 60, 150, 16, () -> {
             guiManager.openGui(new GuiSound(this));
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.sound"))));
@@ -51,11 +57,5 @@ public class GuiSettings extends Gui{
     @Override
     public IResourceName getName(){
         return RockBottomAPI.createInternalRes("settings");
-    }
-
-    @Override
-    public void onClosed(IGameInstance game){
-        super.onClosed(game);
-        game.getDataManager().savePropSettings(game.getSettings());
     }
 }

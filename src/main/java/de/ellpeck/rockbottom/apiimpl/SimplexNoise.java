@@ -47,18 +47,6 @@ public class SimplexNoise implements INoiseGen{
         }
     }
 
-    private static double dot(Grad g, double x, double y){
-        return g.x*x+g.y*y;
-    }
-
-    private static double dot(Grad g, double x, double y, double z){
-        return g.x*x+g.y*y+g.z*z;
-    }
-
-    private static double dot(Grad g, double x, double y, double z, double w){
-        return g.x*x+g.y*y+g.z*z+g.w*w;
-    }
-
     @Override
     public double make2dNoise(double x, double y){
         double n0, n1, n2;
@@ -118,6 +106,10 @@ public class SimplexNoise implements INoiseGen{
         }
 
         return (70*(n0+n1+n2)+1)/2;
+    }
+
+    private static double dot(Grad g, double x, double y){
+        return g.x*x+g.y*y;
     }
 
     @Override
@@ -241,6 +233,10 @@ public class SimplexNoise implements INoiseGen{
         }
 
         return (32*(n0+n1+n2+n3)+1)/2;
+    }
+
+    private static double dot(Grad g, double x, double y, double z){
+        return g.x*x+g.y*y+g.z*z;
     }
 
     @Override
@@ -386,6 +382,10 @@ public class SimplexNoise implements INoiseGen{
             n4 = t4*t4*dot(GRAD_4[gi4], x4, y4, z4, w4);
         }
         return (27*(n0+n1+n2+n3+n4)+1)/2;
+    }
+
+    private static double dot(Grad g, double x, double y, double z, double w){
+        return g.x*x+g.y*y+g.z*z+g.w*w;
     }
 
     private static class Grad{

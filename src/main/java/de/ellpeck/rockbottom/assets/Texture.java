@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.assets;
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -36,42 +35,12 @@ public class Texture extends Image implements ITexture{
         super(in, ref, flipped, FILTER_NEAREST);
     }
 
-    public Texture getSubTexture(int x, int y, int width, int height){
-        this.init();
-
-        float texOffsetX = ((x/(float)this.width)*this.textureWidth)+this.textureOffsetX;
-        float texOffsetY = ((y/(float)this.height)*this.textureHeight)+this.textureOffsetY;
-        float texWidth = ((width/(float)this.width)*this.textureWidth);
-        float texHeight = ((height/(float)this.height)*this.textureHeight);
-
-        Texture sub = new Texture();
-        sub.inited = true;
-        sub.texture = this.texture;
-        sub.textureOffsetX = texOffsetX;
-        sub.textureOffsetY = texOffsetY;
-        sub.textureWidth = texWidth;
-        sub.textureHeight = texHeight;
-
-        sub.width = width;
-        sub.height = height;
-        sub.ref = this.ref;
-        sub.centerX = width/2;
-        sub.centerY = height/2;
-
-        return sub;
-    }
-
     public void setAdditionalData(Map<String, JsonElement> data){
         this.additionalData = data;
     }
 
     public void setVariations(List<ITexture> variations){
         this.variations = variations;
-    }
-
-    @Override
-    public JsonElement getAdditionalData(String name){
-        return this.additionalData != null ? this.additionalData.get(name) : null;
     }
 
     @Override
@@ -122,40 +91,6 @@ public class Texture extends Image implements ITexture{
         GL.glTranslatef(-x, -y, 0F);
     }
 
-    private void drawEmbedded(float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
-        this.init();
-
-        float width = x2-x;
-        float height = y2-y;
-
-        float texOffX = srcX/this.width*this.textureWidth+this.textureOffsetX;
-        float texOffY = srcY/this.height*this.textureHeight+this.textureOffsetY;
-        float texWidth = (srcX2-srcX)/this.width*this.textureWidth;
-        float texHeight = (srcY2-srcY)/this.height*this.textureHeight;
-
-        this.bindLight(light, TOP_LEFT, filter);
-        GL.glTexCoord2f(texOffX, texOffY);
-        GL.glVertex3f(0F, 0F, 0F);
-        this.bindLight(light, BOTTOM_LEFT, filter);
-        GL.glTexCoord2f(texOffX, texOffY+texHeight);
-        GL.glVertex3f(0F, height, 0F);
-        this.bindLight(light, BOTTOM_RIGHT, filter);
-        GL.glTexCoord2f(texOffX+texWidth, texOffY+texHeight);
-        GL.glVertex3f(width, height, 0F);
-        this.bindLight(light, TOP_RIGHT, filter);
-        GL.glTexCoord2f(texOffX+texWidth, texOffY);
-        GL.glVertex3f(width, 0F, 0F);
-    }
-
-    private void bindLight(int[] light, int index, int filter){
-        if(light != null){
-            Colors.bind(Colors.multiply(light[index], filter));
-        }
-        else{
-            Colors.bind(filter);
-        }
-    }
-
     @Override
     public int getTextureColor(int x, int y){
         this.init();
@@ -181,17 +116,13 @@ public class Texture extends Image implements ITexture{
     }
 
     @Override
-    public void setRotation(float angle){
-        this.angle = angle;
-    }
-
-    @Override
     public void setRotationCenter(float x, float y){
         this.setCenterOfRotation(x, y);
     }
 
-    private int translate(byte b){
-        return b < 0 ? 256+b : b;
+    @Override
+    public JsonElement getAdditionalData(String name){
+        return this.additionalData != null ? this.additionalData.get(name) : null;
     }
 
     @Override
@@ -209,6 +140,31 @@ public class Texture extends Image implements ITexture{
         }
 
         return image;
+    }
+
+    public Texture getSubTexture(int x, int y, int width, int height){
+        this.init();
+
+        float texOffsetX = ((x/(float)this.width)*this.textureWidth)+this.textureOffsetX;
+        float texOffsetY = ((y/(float)this.height)*this.textureHeight)+this.textureOffsetY;
+        float texWidth = ((width/(float)this.width)*this.textureWidth);
+        float texHeight = ((height/(float)this.height)*this.textureHeight);
+
+        Texture sub = new Texture();
+        sub.inited = true;
+        sub.texture = this.texture;
+        sub.textureOffsetX = texOffsetX;
+        sub.textureOffsetY = texOffsetY;
+        sub.textureWidth = texWidth;
+        sub.textureHeight = texHeight;
+
+        sub.width = width;
+        sub.height = height;
+        sub.ref = this.ref;
+        sub.centerX = width/2;
+        sub.centerY = height/2;
+
+        return sub;
     }
 
     @Override
@@ -246,5 +202,48 @@ public class Texture extends Image implements ITexture{
             this.rand.setSeed(Util.scrambleSeed(x, y));
             return this.getVariation(this.rand);
         }
+    }
+
+    private int translate(byte b){
+        return b < 0 ? 256+b : b;
+    }
+
+    private void drawEmbedded(float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
+        this.init();
+
+        float width = x2-x;
+        float height = y2-y;
+
+        float texOffX = srcX/this.width*this.textureWidth+this.textureOffsetX;
+        float texOffY = srcY/this.height*this.textureHeight+this.textureOffsetY;
+        float texWidth = (srcX2-srcX)/this.width*this.textureWidth;
+        float texHeight = (srcY2-srcY)/this.height*this.textureHeight;
+
+        this.bindLight(light, TOP_LEFT, filter);
+        GL.glTexCoord2f(texOffX, texOffY);
+        GL.glVertex3f(0F, 0F, 0F);
+        this.bindLight(light, BOTTOM_LEFT, filter);
+        GL.glTexCoord2f(texOffX, texOffY+texHeight);
+        GL.glVertex3f(0F, height, 0F);
+        this.bindLight(light, BOTTOM_RIGHT, filter);
+        GL.glTexCoord2f(texOffX+texWidth, texOffY+texHeight);
+        GL.glVertex3f(width, height, 0F);
+        this.bindLight(light, TOP_RIGHT, filter);
+        GL.glTexCoord2f(texOffX+texWidth, texOffY);
+        GL.glVertex3f(width, 0F, 0F);
+    }
+
+    private void bindLight(int[] light, int index, int filter){
+        if(light != null){
+            Colors.bind(Colors.multiply(light[index], filter));
+        }
+        else{
+            Colors.bind(filter);
+        }
+    }
+
+    @Override
+    public void setRotation(float angle){
+        this.angle = angle;
     }
 }

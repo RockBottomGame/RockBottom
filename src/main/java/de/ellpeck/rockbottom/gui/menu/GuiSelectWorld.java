@@ -5,12 +5,12 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentSelectWorldButton;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public class GuiSelectWorld extends Gui{
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
-        this.components.add(new ComponentFancyButton(this, this.width/2+64, bottomY-30, 16, 16, ()-> Util.createAndOpen(game.getDataManager().getWorldsDir()), RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width/2+64, bottomY-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getWorldsDir()), RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
 
         File worldFolder = game.getDataManager().getWorldsDir();
         File[] worlds = worldFolder.listFiles();

@@ -63,10 +63,6 @@ public class AssetManager implements IAssetManager{
     private Locale defaultLocale;
     private IFont currentFont;
 
-    public static InputStream getResource(String s){
-        return AssetManager.class.getResourceAsStream(s);
-    }
-
     public void load(RockBottom game){
         if(!this.assets.isEmpty()){
             this.assets.clear();
@@ -179,6 +175,89 @@ public class AssetManager implements IAssetManager{
         return assets;
     }
 
+    @Override
+    public <T extends IAsset> T getAssetWithFallback(IResourceName path, T fallback){
+        IAsset asset = this.assets.get(path);
+
+        if(asset == null){
+            this.assets.put(path, fallback);
+            asset = fallback;
+
+            RockBottomAPI.logger().warning("Resource with name "+path+" is missing!");
+        }
+
+        return (T)asset;
+    }
+
+    @Override
+    public ITexture getTexture(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("tex."), this.missingTexture);
+    }
+
+    @Override
+    public IAnimation getAnimation(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("anim."), this.missingAnimation);
+    }
+
+    @Override
+    public ISound getSound(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("sound."), this.missingSound);
+    }
+
+    @Override
+    public Locale getLocale(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("loc."), this.missingLocale);
+    }
+
+    @Override
+    public IFont getFont(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("font."), this.missingFont);
+    }
+
+    @Override
+    public String localize(IResourceName unloc, Object... format){
+        return this.currentLocale.localize(this.defaultLocale, unloc, format);
+    }
+
+    @Override
+    public IFont getFont(){
+        return this.currentFont;
+    }
+
+    @Override
+    public void setFont(IFont font){
+        this.currentFont = font;
+    }
+
+    @Override
+    public Locale getLocale(){
+        return this.currentLocale;
+    }
+
+    @Override
+    public void setLocale(Locale locale){
+        this.currentLocale = locale;
+    }
+
+    @Override
+    public InputStream getResourceStream(String s){
+        return getResource(s);
+    }
+
+    public static InputStream getResource(String s){
+        return AssetManager.class.getResourceAsStream(s);
+    }
+
+    @Override
+    public ITexture getMissingTexture(){
+        return this.missingTexture;
+    }
+
+    @Override
+    public SimpleDateFormat getLocalizedDateFormat(){
+        return new SimpleDateFormat(this.localize(RockBottomAPI.createInternalRes("date_format")));
+    }
+
     private void loadAssets(){
         JsonParser parser = new JsonParser();
 
@@ -255,84 +334,5 @@ public class AssetManager implements IAssetManager{
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Couldn't load resource "+name+" for mod "+mod.getDisplayName(), e);
         }
-    }
-
-    @Override
-    public <T extends IAsset> T getAssetWithFallback(IResourceName path, T fallback){
-        IAsset asset = this.assets.get(path);
-
-        if(asset == null){
-            this.assets.put(path, fallback);
-            asset = fallback;
-
-            RockBottomAPI.logger().warning("Resource with name "+path+" is missing!");
-        }
-
-        return (T)asset;
-    }
-
-    @Override
-    public ITexture getTexture(IResourceName path){
-        return this.getAssetWithFallback(path.addPrefix("tex."), this.missingTexture);
-    }
-
-    @Override
-    public IAnimation getAnimation(IResourceName path){
-        return this.getAssetWithFallback(path.addPrefix("anim."), this.missingAnimation);
-    }
-
-    @Override
-    public ISound getSound(IResourceName path){
-        return this.getAssetWithFallback(path.addPrefix("sound."), this.missingSound);
-    }
-
-    @Override
-    public Locale getLocale(IResourceName path){
-        return this.getAssetWithFallback(path.addPrefix("loc."), this.missingLocale);
-    }
-
-    @Override
-    public IFont getFont(IResourceName path){
-        return this.getAssetWithFallback(path.addPrefix("font."), this.missingFont);
-    }
-
-    @Override
-    public String localize(IResourceName unloc, Object... format){
-        return this.currentLocale.localize(this.defaultLocale, unloc, format);
-    }
-
-    @Override
-    public IFont getFont(){
-        return this.currentFont;
-    }
-
-    @Override
-    public void setFont(IFont font){
-        this.currentFont = font;
-    }
-
-    @Override
-    public Locale getLocale(){
-        return this.currentLocale;
-    }
-
-    @Override
-    public void setLocale(Locale locale){
-        this.currentLocale = locale;
-    }
-
-    @Override
-    public InputStream getResourceStream(String s){
-        return getResource(s);
-    }
-
-    @Override
-    public ITexture getMissingTexture(){
-        return this.missingTexture;
-    }
-
-    @Override
-    public SimpleDateFormat getLocalizedDateFormat(){
-        return new SimpleDateFormat(this.localize(RockBottomAPI.createInternalRes("date_format")));
     }
 }

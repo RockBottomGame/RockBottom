@@ -24,14 +24,12 @@ import java.util.function.BiConsumer;
 public class ComponentConstruction extends GuiComponent{
 
     private static final IResourceName LOC_NEED = RockBottomAPI.createInternalRes("info.need_items");
-
+    public final GuiContainer gui;
+    public final BiConsumer<IRecipe, IResourceName> consumer;
+    private final ComponentScrollMenu menu;
+    private final NameRegistry<BasicRecipe> recipes;
     private String searchText = "";
     private boolean shouldShowAll;
-    private final ComponentScrollMenu menu;
-
-    public final GuiContainer gui;
-    private final NameRegistry<BasicRecipe> recipes;
-    public final BiConsumer<IRecipe, IResourceName> consumer;
 
     public ComponentConstruction(GuiContainer gui, int x, int y, int sizeX, int sizeY, int buttonAmountX, int buttonAmonutY, boolean shouldShowAll, NameRegistry<BasicRecipe> recipes, BiConsumer<IRecipe, IResourceName> consumer){
         super(gui, x, y, sizeX, sizeY);
@@ -90,17 +88,17 @@ public class ComponentConstruction extends GuiComponent{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("construction");
-    }
-
-    @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
-        super.render(game, manager, g,x,y);
+        super.render(game, manager, g, x, y);
 
         if(this.menu.isEmpty()){
             manager.getFont().drawSplitString(x+8, y, FormattingCode.GRAY+manager.localize(LOC_NEED), 0.25F, 88);
         }
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("construction");
     }
 
     @Override

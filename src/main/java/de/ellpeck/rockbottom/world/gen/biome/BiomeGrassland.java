@@ -37,6 +37,11 @@ public class BiomeGrassland extends BiomeBasic{
     }
 
     @Override
+    public int getNoiseSeedModifier(IWorld world){
+        return 23872;
+    }
+
+    @Override
     public boolean hasGrasslandDecoration(){
         return true;
     }
@@ -54,10 +59,5 @@ public class BiomeGrassland extends BiomeBasic{
     @Override
     public boolean canTreeGrow(IWorld world, IChunk chunk, int x, int y){
         return y > 0 && chunk.getStateInner(x, y-1).getTile().canKeepPlants(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN);
-    }
-
-    @Override
-    public int getNoiseSeedModifier(IWorld world){
-        return 23872;
     }
 }

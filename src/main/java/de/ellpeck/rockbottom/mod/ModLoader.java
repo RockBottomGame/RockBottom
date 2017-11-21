@@ -70,7 +70,7 @@ public class ModLoader implements IModLoader{
                         }
                     }
                     catch(Exception e){
-                        RockBottomAPI.logger().log(Level.WARNING,"Loading jar mod from file "+file+" failed", e);
+                        RockBottomAPI.logger().log(Level.WARNING, "Loading jar mod from file "+file+" failed", e);
                     }
                 }
                 else{
@@ -95,69 +95,6 @@ public class ModLoader implements IModLoader{
         else{
             RockBottomAPI.logger().info("Not loading unpacked mods from folder "+dir+" as it doesn't exist");
         }
-    }
-
-    private void recursiveLoad(File original, File[] files, Counter amount){
-        for(File file : files){
-            if(file.isDirectory()){
-                this.recursiveLoad(original, file.listFiles(), amount);
-            }
-            else{
-                String name = file.getAbsolutePath();
-                if(name != null && name.endsWith(".class")){
-                    try{
-                        Main.classLoader.addURL(file.toURI().toURL());
-
-                        if(this.findMod(name.replace(original.getAbsolutePath(), "").replace(File.separator, ".").replaceFirst(".", ""))){
-                            amount.add(1);
-                        }
-                    }
-                    catch(Exception e){
-                        RockBottomAPI.logger().log(Level.WARNING, "Loading unpacked mod from file "+file+" failed", e);
-                    }
-                }
-                else{
-                    RockBottomAPI.logger().warning("Found non-class file "+file+" in unpacked mods folder "+original);
-                }
-            }
-        }
-    }
-
-    private boolean findMod(String className) throws Exception{
-        if(className != null && className.endsWith(".class") && !className.contains("$")){
-            String actualClassName = className.substring(0, className.length()-6).replace("/", ".");
-            Class aClass = Class.forName(actualClassName, false, Main.classLoader);
-
-            if(aClass != null && !aClass.isInterface()){
-                if(IMod.class.isAssignableFrom(aClass)){
-                    IMod instance = (IMod)aClass.newInstance();
-                    String id = instance.getId();
-
-                    if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
-                        if(this.getMod(id) == null){
-                            if(this.modSettings.isDisabled(id)){
-                                this.disabledMods.add(instance);
-                                RockBottomAPI.logger().info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
-                            }
-                            else{
-                                this.activeMods.add(instance);
-                                RockBottomAPI.logger().info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
-                            }
-
-                            this.allMods.add(instance);
-                            return true;
-                        }
-                        else{
-                            RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
-                        }
-                    }
-                    else{
-                        RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     @Override
@@ -266,5 +203,68 @@ public class ModLoader implements IModLoader{
     @Override
     public ModSettings getModSettings(){
         return this.modSettings;
+    }
+
+    private boolean findMod(String className) throws Exception{
+        if(className != null && className.endsWith(".class") && !className.contains("$")){
+            String actualClassName = className.substring(0, className.length()-6).replace("/", ".");
+            Class aClass = Class.forName(actualClassName, false, Main.classLoader);
+
+            if(aClass != null && !aClass.isInterface()){
+                if(IMod.class.isAssignableFrom(aClass)){
+                    IMod instance = (IMod)aClass.newInstance();
+                    String id = instance.getId();
+
+                    if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
+                        if(this.getMod(id) == null){
+                            if(this.modSettings.isDisabled(id)){
+                                this.disabledMods.add(instance);
+                                RockBottomAPI.logger().info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
+                            }
+                            else{
+                                this.activeMods.add(instance);
+                                RockBottomAPI.logger().info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
+                            }
+
+                            this.allMods.add(instance);
+                            return true;
+                        }
+                        else{
+                            RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
+                        }
+                    }
+                    else{
+                        RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void recursiveLoad(File original, File[] files, Counter amount){
+        for(File file : files){
+            if(file.isDirectory()){
+                this.recursiveLoad(original, file.listFiles(), amount);
+            }
+            else{
+                String name = file.getAbsolutePath();
+                if(name != null && name.endsWith(".class")){
+                    try{
+                        Main.classLoader.addURL(file.toURI().toURL());
+
+                        if(this.findMod(name.replace(original.getAbsolutePath(), "").replace(File.separator, ".").replaceFirst(".", ""))){
+                            amount.add(1);
+                        }
+                    }
+                    catch(Exception e){
+                        RockBottomAPI.logger().log(Level.WARNING, "Loading unpacked mod from file "+file+" failed", e);
+                    }
+                }
+                else{
+                    RockBottomAPI.logger().warning("Found non-class file "+file+" in unpacked mods folder "+original);
+                }
+            }
+        }
     }
 }

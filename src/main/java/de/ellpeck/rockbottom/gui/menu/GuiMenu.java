@@ -59,7 +59,7 @@ public class GuiMenu extends Gui{
         }
 
         this.components.add(new ComponentButton(this, 10, this.height-36, 80, 16, () -> {
-            game.getGuiManager().fadeOut(20, ()->{
+            game.getGuiManager().fadeOut(20, () -> {
                 game.quitWorld();
                 game.getGuiManager().fadeIn(20, null);
             });

@@ -8,11 +8,11 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.Chunk;
-import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
@@ -24,22 +24,6 @@ public class ClientWorld extends World{
 
     public ClientWorld(WorldInfo info, DynamicRegistryInfo regInfo){
         super(info, regInfo);
-    }
-
-    @Override
-    protected Chunk loadChunk(int gridX, int gridY){
-        Chunk chunk = new ClientChunk(this, gridX, gridY);
-
-        this.loadedChunks.add(chunk);
-        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
-
-        return chunk;
-    }
-
-    @Override
-    public void unloadChunk(IChunk chunk){
-        this.loadedChunks.remove(chunk);
-        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
     }
 
     @Override
@@ -67,36 +51,8 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public void save(){
-        throw new UnsupportedOperationException("Cannot save client world");
-    }
-
-    @Override
     protected boolean saveChunk(IChunk chunk){
         throw new UnsupportedOperationException("Cannot save chunk in client world");
-    }
-
-    @Override
-    public EntityPlayer getPlayer(UUID id){
-        throw new UnsupportedOperationException("Cannot get player in client world");
-    }
-
-    @Override
-    public AbstractEntityPlayer getPlayer(String name){
-        throw new UnsupportedOperationException("Cannot get player in client world");
-    }
-
-    @Override
-    public List<AbstractEntityPlayer> getAllPlayers(){
-        throw new UnsupportedOperationException("Cannot get all players in client world");
-    }
-
-    @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel){
-        if(channel != null){
-            throw new UnsupportedOperationException("Cannot create a connected player in a client world");
-        }
-        return new EntityPlayer(this, id, design);
     }
 
     @Override
@@ -111,5 +67,49 @@ public class ClientWorld extends World{
         chunk.removeEntity(entity);
 
         entity.onRemoveFromWorld();
+    }
+
+    @Override
+    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel){
+        if(channel != null){
+            throw new UnsupportedOperationException("Cannot create a connected player in a client world");
+        }
+        return new EntityPlayer(this, id, design);
+    }
+
+    @Override
+    public EntityPlayer getPlayer(UUID id){
+        throw new UnsupportedOperationException("Cannot get player in client world");
+    }
+
+    @Override
+    public AbstractEntityPlayer getPlayer(String name){
+        throw new UnsupportedOperationException("Cannot get player in client world");
+    }
+
+    @Override
+    public void unloadChunk(IChunk chunk){
+        this.loadedChunks.remove(chunk);
+        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
+    }
+
+    @Override
+    public void save(){
+        throw new UnsupportedOperationException("Cannot save client world");
+    }
+
+    @Override
+    public List<AbstractEntityPlayer> getAllPlayers(){
+        throw new UnsupportedOperationException("Cannot get all players in client world");
+    }
+
+    @Override
+    protected Chunk loadChunk(int gridX, int gridY){
+        Chunk chunk = new ClientChunk(this, gridX, gridY);
+
+        this.loadedChunks.add(chunk);
+        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
+
+        return chunk;
     }
 }

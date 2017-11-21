@@ -41,7 +41,11 @@ public class ChatLog implements IChatLog{
     private final List<ChatComponent> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
 
-    @Override
+    public void drawNewMessages(RockBottom game, IAssetManager manager, IGraphics g){
+        if(!this.newMessageCounter.isEmpty()){
+            GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size());
+        }
+    }    @Override
     public void displayMessage(ChatComponent message){
         this.messages.add(0, message);
 
@@ -52,7 +56,21 @@ public class ChatLog implements IChatLog{
         CHAT_LOGGER.info(message.getUnformattedWithChildren());
     }
 
-    @Override
+    public void updateNewMessages(){
+        if(!this.newMessageCounter.isEmpty()){
+            for(int i = 0; i < this.newMessageCounter.size(); i++){
+                int newAmount = this.newMessageCounter.get(i)-1;
+
+                if(newAmount > 0){
+                    this.newMessageCounter.set(i, newAmount);
+                }
+                else{
+                    this.newMessageCounter.remove(i);
+                    i--;
+                }
+            }
+        }
+    }    @Override
     public void sendCommandSenderMessage(String message, ICommandSender sender){
         if(RockBottomAPI.getNet().isServer()){
             ChatMessageEvent event = new ChatMessageEvent(this, sender, message);
@@ -132,25 +150,7 @@ public class ChatLog implements IChatLog{
         this.newMessageCounter.clear();
     }
 
-    public void drawNewMessages(RockBottom game, IAssetManager manager, IGraphics g){
-        if(!this.newMessageCounter.isEmpty()){
-            GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size());
-        }
-    }
 
-    public void updateNewMessages(){
-        if(!this.newMessageCounter.isEmpty()){
-            for(int i = 0; i < this.newMessageCounter.size(); i++){
-                int newAmount = this.newMessageCounter.get(i)-1;
 
-                if(newAmount > 0){
-                    this.newMessageCounter.set(i, newAmount);
-                }
-                else{
-                    this.newMessageCounter.remove(i);
-                    i--;
-                }
-            }
-        }
-    }
+
 }

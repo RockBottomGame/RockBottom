@@ -50,15 +50,15 @@ public class GuiKeybinds extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("keybinds");
-    }
-
-    @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(!super.onMouseAction(game, button, x, y)){
             this.selectedKeybind = -1;
         }
         return true;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("keybinds");
     }
 }

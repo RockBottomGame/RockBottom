@@ -19,9 +19,9 @@ import java.util.List;
 
 public class TileEntityChest extends TileEntity implements IInventoryHolder{
 
-    private int openCount;
     private final Inventory inventory = new TileInventory(this, 20);
     private final List<Integer> inputOutputSlots = Collections.unmodifiableList(Util.makeIntList(0, this.inventory.getSlotAmount()));
+    private int openCount;
 
     public TileEntityChest(IWorld world, int x, int y, TileLayer layer){
         super(world, x, y, layer);
@@ -56,15 +56,15 @@ public class TileEntityChest extends TileEntity implements IInventoryHolder{
         }
     }
 
+    public int getOpenCount(){
+        return this.openCount;
+    }
+
     public void setOpenCount(int count){
         this.openCount = count;
 
         if(this.world.isServer()){
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketChestOpen(this.x, this.y, this.openCount > 0), this.x, this.y);
         }
-    }
-
-    public int getOpenCount(){
-        return this.openCount;
     }
 }

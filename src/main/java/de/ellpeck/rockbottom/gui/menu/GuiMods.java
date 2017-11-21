@@ -10,10 +10,10 @@ import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.gui.component.ComponentModButton;
 
 import java.util.Iterator;
@@ -118,6 +118,11 @@ public class GuiMods extends Gui{
         }
     }
 
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("mods");
+    }
+
     public void selectMod(IMod mod){
         this.selectedMod = mod;
         this.modGuiButton.setActive(mod.getModGuiClass() != null);
@@ -126,10 +131,5 @@ public class GuiMods extends Gui{
 
     public IMod getSelectedMod(){
         return this.selectedMod;
-    }
-
-    @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("mods");
     }
 }

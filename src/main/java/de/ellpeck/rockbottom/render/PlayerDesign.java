@@ -58,10 +58,6 @@ public class PlayerDesign implements IPlayerDesign{
     private int beard;
     private int beardColor;
 
-    public static String getRandomName(){
-        return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
-    }
-
     public static void randomizeDesign(IPlayerDesign design){
         design.setName(getRandomName());
         design.setFavoriteColor(Colors.random(Util.RANDOM));
@@ -96,6 +92,10 @@ public class PlayerDesign implements IPlayerDesign{
         design.setBeardColor(Colors.random(Util.RANDOM));
     }
 
+    public static String getRandomName(){
+        return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
+    }
+
     @Override
     public int getFavoriteColor(){
         return this.color;
@@ -122,98 +122,13 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public int getEyeColor(){
-        return this.eyeColor;
-    }
-
-    @Override
-    public int getShirt(){
-        return this.shirt;
-    }
-
-    @Override
-    public int getShirtColor(){
-        return this.shirtColor;
-    }
-
-    @Override
-    public int getSleeves(){
-        return this.sleeves;
-    }
-
-    @Override
-    public int getSleevesColor(){
-        return this.sleevesColor;
-    }
-
-    @Override
-    public int getPants(){
-        return this.pants;
-    }
-
-    @Override
-    public int getPantsColor(){
-        return this.pantsColor;
-    }
-
-    @Override
-    public int getFootwear(){
-        return this.footwear;
-    }
-
-    @Override
-    public int getFootwearColor(){
-        return this.footwearColor;
-    }
-
-    @Override
-    public int getHair(){
-        return this.hair;
-    }
-
-    @Override
-    public int getHairColor(){
-        return this.hairColor;
-    }
-
-    @Override
-    public int getAccessory(){
-        return this.accessory;
-    }
-
-    @Override
-    public int getEyebrows(){
-        return this.eyebrows;
-    }
-
-    @Override
-    public int getMouth(){
-        return this.mouth;
-    }
-
-    @Override
-    public int getBeard(){
-        return this.beard;
-    }
-
-    @Override
-    public int getBeardColor(){
-        return this.beardColor;
-    }
-
-    @Override
-    public int getEyebrowsColor(){
-        return this.eyebrowsColor;
-    }
-
-    @Override
-    public boolean isFemale(){
-        return this.female;
-    }
-
-    @Override
     public void setBase(int base){
         this.base = base;
+    }
+
+    @Override
+    public int getEyeColor(){
+        return this.eyeColor;
     }
 
     @Override
@@ -222,8 +137,18 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getShirt(){
+        return this.shirt;
+    }
+
+    @Override
     public void setShirt(int shirt){
         this.shirt = shirt;
+    }
+
+    @Override
+    public int getShirtColor(){
+        return this.shirtColor;
     }
 
     @Override
@@ -232,8 +157,18 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getSleeves(){
+        return this.sleeves;
+    }
+
+    @Override
     public void setSleeves(int sleeves){
         this.sleeves = sleeves;
+    }
+
+    @Override
+    public int getSleevesColor(){
+        return this.sleevesColor;
     }
 
     @Override
@@ -242,8 +177,18 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getPants(){
+        return this.pants;
+    }
+
+    @Override
     public void setPants(int pants){
         this.pants = pants;
+    }
+
+    @Override
+    public int getPantsColor(){
+        return this.pantsColor;
     }
 
     @Override
@@ -252,8 +197,18 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getFootwear(){
+        return this.footwear;
+    }
+
+    @Override
     public void setFootwear(int footwear){
         this.footwear = footwear;
+    }
+
+    @Override
+    public int getFootwearColor(){
+        return this.footwearColor;
     }
 
     @Override
@@ -262,8 +217,18 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getHair(){
+        return this.hair;
+    }
+
+    @Override
     public void setHair(int hair){
         this.hair = hair;
+    }
+
+    @Override
+    public int getHairColor(){
+        return this.hairColor;
     }
 
     @Override
@@ -272,8 +237,18 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getAccessory(){
+        return this.accessory;
+    }
+
+    @Override
     public void setAccessory(int accessory){
         this.accessory = accessory;
+    }
+
+    @Override
+    public int getEyebrows(){
+        return this.eyebrows;
     }
 
     @Override
@@ -282,13 +257,18 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getMouth(){
+        return this.mouth;
+    }
+
+    @Override
     public void setMouth(int mouth){
         this.mouth = mouth;
     }
 
     @Override
-    public void setEyebrowsColor(int eyebrowsColor){
-        this.eyebrowsColor = eyebrowsColor;
+    public int getBeard(){
+        return this.beard;
     }
 
     @Override
@@ -297,8 +277,28 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
+    public int getBeardColor(){
+        return this.beardColor;
+    }
+
+    @Override
     public void setBeardColor(int beardColor){
         this.beardColor = beardColor;
+    }
+
+    @Override
+    public int getEyebrowsColor(){
+        return this.eyebrowsColor;
+    }
+
+    @Override
+    public void setEyebrowsColor(int eyebrowsColor){
+        this.eyebrowsColor = eyebrowsColor;
+    }
+
+    @Override
+    public boolean isFemale(){
+        return this.female;
     }
 
     @Override

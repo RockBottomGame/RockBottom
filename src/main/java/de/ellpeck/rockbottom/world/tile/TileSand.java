@@ -15,12 +15,12 @@ public class TileSand extends TileBasic{
     }
 
     @Override
-    public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+    public void onAdded(IWorld world, int x, int y, TileLayer layer){
         tryFall(world, x, y, layer);
     }
 
     @Override
-    public void onAdded(IWorld world, int x, int y, TileLayer layer){
+    public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         tryFall(world, x, y, layer);
     }
 

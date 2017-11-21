@@ -107,135 +107,6 @@ public class Chunk implements IChunk{
         }
     }
 
-    protected void checkListSync(){
-        if(this.entities.size() != this.entityLookup.size()){
-            throw new IllegalStateException("Entities and EntityLookup are out of sync!");
-        }
-        if(this.tileEntities.size() != this.tileEntityLookup.size()){
-            throw new IllegalStateException("TileEntities and TileEntityLookup are out of sync!");
-        }
-        if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
-            throw new IllegalStateException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
-        }
-        if(this.playersOutOfRangeCached.size() != this.playersOutOfRangeCachedTimers.size()){
-            throw new IllegalStateException("PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
-        }
-    }
-
-    protected void updateEntities(IGameInstance game){
-        for(int i = 0; i < this.entities.size(); i++){
-            Entity entity = this.entities.get(i);
-
-            if(RockBottomAPI.getEventHandler().fireEvent(new EntityTickEvent(entity)) != EventResult.CANCELLED){
-                entity.update(game);
-            }
-
-            if(entity.shouldBeRemoved()){
-                this.world.removeEntity(entity, this);
-                i--;
-            }
-            else{
-                int newChunkX = Util.toGridPos(entity.x);
-                int newChunkY = Util.toGridPos(entity.y);
-
-                if(newChunkX != this.gridX || newChunkY != this.gridY){
-                    this.removeEntity(entity);
-                    i--;
-
-                    IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
-                    chunk.addEntity(entity);
-
-                    if(this.world.isServer()){
-                        for(AbstractEntityPlayer player : chunk.getPlayersInRange()){
-                            if(!this.playersInRange.contains(player)){
-                                player.sendPacket(new PacketEntityChange(entity, false));
-
-                                RockBottomAPI.logger().config("Adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk in range of player with id "+player.getUniqueId());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for(int i = 0; i < this.tileEntities.size(); i++){
-            TileEntity tile = this.tileEntities.get(i);
-
-            if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
-                tile.update(game);
-            }
-
-            if(tile.shouldRemove()){
-                this.removeTileEntity(tile.layer, tile.x, tile.y);
-                i--;
-            }
-        }
-    }
-
-    @Override
-    public void update(IGameInstance game){
-        this.checkListSync();
-
-        if(!this.isGenerating){
-            this.updateEntities(game);
-
-            int layers = TileLayer.getAllLayers().size();
-            for(int i = 0; i < Constants.RANDOM_TILE_UPDATES*layers; i++){
-                TileLayer layer = TileLayer.getAllLayers().get(Util.RANDOM.nextInt(layers));
-                int randX = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
-                int randY = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
-
-                Tile tile = this.getStateInner(layer, randX, randY).getTile();
-                tile.updateRandomly(this.world, this.x+randX, this.y+randY, layer);
-            }
-
-            if(!this.scheduledUpdates.isEmpty()){
-                for(int i = 0; i < this.scheduledUpdates.size(); i++){
-                    ScheduledUpdate update = this.scheduledUpdates.get(i);
-                    update.time--;
-
-                    if(update.time <= 0){
-                        this.scheduledUpdates.remove(i);
-                        this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.index()));
-
-                        Tile tile = this.getState(update.layer, update.x, update.y).getTile();
-                        if(tile == update.tile.getTile()){
-                            tile.onScheduledUpdate(this.world, update.x, update.y, update.layer, update.scheduledMeta);
-
-                            if(this.world.isServer()){
-                                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketScheduledUpdate(update.layer, update.x, update.y, update.scheduledMeta), update.x, update.y);
-                            }
-                        }
-
-                        i--;
-                        this.setDirty();
-                    }
-                }
-            }
-        }
-
-        if(this.internalLoadingTimer > 0){
-            this.internalLoadingTimer--;
-        }
-
-        for(int i = 0; i < this.playersOutOfRangeCached.size(); i++){
-            AbstractEntityPlayer player = this.playersOutOfRangeCached.get(i);
-
-            Counter time = this.playersOutOfRangeCachedTimers.get(player);
-            time.add(-1);
-
-            if(time.get() <= 0){
-                player.getChunksInRange().remove(this);
-                player.onChunkUnloaded(this);
-
-                this.playersOutOfRangeCached.remove(i);
-                this.playersOutOfRangeCachedTimers.remove(player);
-
-                i--;
-            }
-        }
-    }
-
     @Override
     public TileState getState(int x, int y){
         return this.getState(TileLayer.MAIN, x, y);
@@ -254,70 +125,6 @@ public class Chunk implements IChunk{
     @Override
     public void setState(TileLayer layer, int x, int y, TileState tile){
         this.setStateInner(layer, x-this.x, y-this.y, tile);
-    }
-
-    @Override
-    public TileState getStateInner(TileLayer layer, int x, int y){
-        TileState[][] grid = this.getGrid(layer, false);
-
-        if(grid != null){
-            return grid[x][y];
-        }
-        else{
-            return GameContent.TILE_AIR.getDefState();
-        }
-    }
-
-    @Override
-    public TileState getStateInner(int x, int y){
-        return this.getStateInner(TileLayer.MAIN, x, y);
-    }
-
-    @Override
-    public void setStateInner(int x, int y, TileState tile){
-        this.setStateInner(TileLayer.MAIN, x, y, tile);
-    }
-
-    @Override
-    public void setStateInner(TileLayer layer, int x, int y, TileState tile){
-        if(tile == null){
-            throw new IllegalArgumentException("Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
-        }
-
-        Tile newTile = tile.getTile();
-        Tile lastTile = this.getStateInner(layer, x, y).getTile();
-
-        if(newTile != lastTile){
-            lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
-
-            if(lastTile.canProvideTileEntity()){
-                this.removeTileEntity(layer, this.x+x, this.y+y);
-            }
-        }
-
-        this.getGrid(layer, true)[x][y] = tile;
-
-        if(this.world.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)), this.x+x, this.y+y);
-        }
-
-        if(newTile != lastTile){
-            if(newTile.canProvideTileEntity()){
-                TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y, layer);
-                if(tileEntity != null){
-                    this.addTileEntity(tileEntity);
-                }
-            }
-
-            newTile.onAdded(this.world, this.x+x, this.y+y, layer);
-        }
-
-        if(!this.isGenerating){
-            this.world.causeLightUpdate(this.x+x, this.y+y);
-
-            this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
-            this.setDirty();
-        }
     }
 
     @Override
@@ -491,7 +298,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-       this.scheduleUpdate(x, y, layer, 0, time);
+        this.scheduleUpdate(x, y, layer, 0, time);
     }
 
     @Override
@@ -513,22 +320,6 @@ public class Chunk implements IChunk{
         else{
             return -1;
         }
-    }
-
-    @Override
-    public int getLowestAirUpwardsInner(TileLayer layer, int x, int y){
-        return this.getLowestAirUpwardsInner(layer, x, y, false);
-    }
-
-    @Override
-    public int getLowestAirUpwardsInner(TileLayer layer, int x, int y, boolean ignoreReplaceableTiles){
-        for(int yCount = y; yCount < Constants.CHUNK_SIZE-yCount; yCount++){
-            Tile tile = this.getStateInner(layer, x, yCount).getTile();
-            if(tile.isAir() || (ignoreReplaceableTiles && tile.canReplace(this.world, this.x+x, this.y+y, layer))){
-                return yCount;
-            }
-        }
-        return -1;
     }
 
     @Override
@@ -559,162 +350,6 @@ public class Chunk implements IChunk{
     @Override
     public long getSeed(){
         return this.world.getSeed();
-    }
-
-    @Override
-    public byte getCombinedLightInner(int x, int y){
-        byte artificial = this.getArtificialLightInner(x, y);
-        byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
-
-        return (byte)Math.min(Constants.MAX_LIGHT, artificial+sky);
-    }
-
-    @Override
-    public byte getSkylightInner(int x, int y){
-        return this.lightGrid[0][x][y];
-    }
-
-    @Override
-    public void setSkylightInner(int x, int y, byte light){
-        this.lightGrid[0][x][y] = light;
-
-        if(!this.isGenerating){
-            this.setDirty();
-        }
-    }
-
-    @Override
-    public byte getArtificialLightInner(int x, int y){
-        return this.lightGrid[1][x][y];
-    }
-
-    @Override
-    public void setArtificialLightInner(int x, int y, byte light){
-        this.lightGrid[1][x][y] = light;
-
-        if(!this.isGenerating){
-            this.setDirty();
-        }
-    }
-
-    @Override
-    public void setGenerating(boolean generating){
-        this.isGenerating = generating;
-    }
-
-    @Override
-    public boolean needsSave(){
-        return this.needsSave;
-    }
-
-    @Override
-    public boolean shouldUnload(){
-        return this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
-    }
-
-    public void setDirty(){
-        this.needsSave = true;
-    }
-
-    @Override
-    public void save(DataSet set){
-        RockBottomAPI.getEventHandler().fireEvent(new ChunkSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
-
-        int layerCounter = 0;
-        for(TileLayer layer : this.stateGrid.keySet()){
-            int[] ids = new int[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
-
-            int counter = 0;
-            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    ids[counter] = this.world.getIdForState(this.getStateInner(layer, x, y));
-                    counter++;
-                }
-            }
-
-            set.addIntArray("l_"+layerCounter, ids);
-            set.addString("ln_"+layerCounter, layer.getName().toString());
-
-            layerCounter++;
-        }
-        set.addInt("l_a", layerCounter);
-
-        short[] biomes = new short[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
-        int biomeCounter = 0;
-        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                biomes[biomeCounter] = (short)this.world.getIdForBiome(this.getBiomeInner(x, y));
-                biomeCounter++;
-            }
-        }
-        set.addShortArray("bi", biomes);
-
-
-        for(int i = 0; i < this.lightGrid.length; i++){
-            byte[] light = new byte[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
-            int counter = 0;
-            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    light[counter] = this.lightGrid[i][x][y];
-                    counter++;
-                }
-            }
-
-            set.addByteArray("lg_"+i, light);
-        }
-
-        int entityId = 0;
-        for(Entity entity : this.entities){
-            if(entity.doesSave() && !(entity instanceof EntityPlayer)){
-                DataSet entitySet = new DataSet();
-                entitySet.addString("name", RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString());
-                entity.save(entitySet);
-
-                set.addDataSet("e_"+entityId, entitySet);
-
-                entityId++;
-            }
-        }
-        set.addInt("e_a", entityId);
-
-        int tileEntityId = 0;
-        for(TileEntity tile : this.tileEntities){
-            if(tile.doesSave()){
-                DataSet tileSet = new DataSet();
-                tileSet.addInt("x", tile.x);
-                tileSet.addInt("y", tile.y);
-                tileSet.addString("layer", tile.layer.getName().toString());
-                tile.save(tileSet, false);
-
-                set.addDataSet("t_"+tileEntityId, tileSet);
-
-                tileEntityId++;
-            }
-        }
-        set.addInt("t_a", tileEntityId);
-
-        DataSet updateSet = new DataSet();
-
-        int updateId = 0;
-        for(ScheduledUpdate update : this.scheduledUpdates){
-            updateSet.addInt("x_"+updateId, update.x);
-            updateSet.addInt("y_"+updateId, update.y);
-            updateSet.addString("l_"+updateId, update.layer.getName().toString());
-            updateSet.addInt("m_"+updateId, update.scheduledMeta);
-            updateSet.addInt("t_"+updateId, update.time);
-            updateSet.addInt("i_"+updateId, this.world.getIdForState(update.tile));
-
-            updateId++;
-        }
-        updateSet.addInt("a", updateId);
-
-        set.addDataSet("s_u", updateSet);
-
-        if(this.additionalData != null){
-            set.addDataSet("ad_da", this.additionalData);
-        }
-
-        this.needsSave = false;
     }
 
     public void loadOrCreate(DataSet set){
@@ -854,30 +489,6 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public int getScheduledUpdateAmount(){
-        return this.scheduledUpdates.size();
-    }
-
-    @Override
-    public Biome getBiomeInner(int x, int y){
-        return this.biomeGrid[x][y];
-    }
-
-    @Override
-    public void setBiomeInner(int x, int y, Biome biome){
-        if(biome == null){
-            throw new IllegalArgumentException("Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+"!");
-        }
-
-        this.biomeGrid[x][y] = biome;
-    }
-
-    @Override
-    public Set<TileLayer> getLoadedLayers(){
-        return this.stateGrid.keySet();
-    }
-
-    @Override
     public List<AbstractEntityPlayer> getPlayersInRange(){
         return this.playersInRange;
     }
@@ -917,6 +528,363 @@ public class Chunk implements IChunk{
         return this.y;
     }
 
+    @Override
+    public int getLowestAirUpwardsInner(TileLayer layer, int x, int y){
+        return this.getLowestAirUpwardsInner(layer, x, y, false);
+    }
+
+    @Override
+    public int getLowestAirUpwardsInner(TileLayer layer, int x, int y, boolean ignoreReplaceableTiles){
+        for(int yCount = y; yCount < Constants.CHUNK_SIZE-yCount; yCount++){
+            Tile tile = this.getStateInner(layer, x, yCount).getTile();
+            if(tile.isAir() || (ignoreReplaceableTiles && tile.canReplace(this.world, this.x+x, this.y+y, layer))){
+                return yCount;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public TileState getStateInner(TileLayer layer, int x, int y){
+        TileState[][] grid = this.getGrid(layer, false);
+
+        if(grid != null){
+            return grid[x][y];
+        }
+        else{
+            return GameContent.TILE_AIR.getDefState();
+        }
+    }
+
+    @Override
+    public TileState getStateInner(int x, int y){
+        return this.getStateInner(TileLayer.MAIN, x, y);
+    }
+
+    @Override
+    public void setStateInner(int x, int y, TileState tile){
+        this.setStateInner(TileLayer.MAIN, x, y, tile);
+    }
+
+    @Override
+    public void setStateInner(TileLayer layer, int x, int y, TileState tile){
+        if(tile == null){
+            throw new IllegalArgumentException("Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
+        }
+
+        Tile newTile = tile.getTile();
+        Tile lastTile = this.getStateInner(layer, x, y).getTile();
+
+        if(newTile != lastTile){
+            lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
+
+            if(lastTile.canProvideTileEntity()){
+                this.removeTileEntity(layer, this.x+x, this.y+y);
+            }
+        }
+
+        this.getGrid(layer, true)[x][y] = tile;
+
+        if(this.world.isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)), this.x+x, this.y+y);
+        }
+
+        if(newTile != lastTile){
+            if(newTile.canProvideTileEntity()){
+                TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y, layer);
+                if(tileEntity != null){
+                    this.addTileEntity(tileEntity);
+                }
+            }
+
+            newTile.onAdded(this.world, this.x+x, this.y+y, layer);
+        }
+
+        if(!this.isGenerating){
+            this.world.causeLightUpdate(this.x+x, this.y+y);
+
+            this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
+            this.setDirty();
+        }
+    }
+
+    @Override
+    public byte getSkylightInner(int x, int y){
+        return this.lightGrid[0][x][y];
+    }
+
+    @Override
+    public void setSkylightInner(int x, int y, byte light){
+        this.lightGrid[0][x][y] = light;
+
+        if(!this.isGenerating){
+            this.setDirty();
+        }
+    }
+
+    @Override
+    public byte getArtificialLightInner(int x, int y){
+        return this.lightGrid[1][x][y];
+    }
+
+    @Override
+    public void setArtificialLightInner(int x, int y, byte light){
+        this.lightGrid[1][x][y] = light;
+
+        if(!this.isGenerating){
+            this.setDirty();
+        }
+    }
+
+    @Override
+    public void setGenerating(boolean generating){
+        this.isGenerating = generating;
+    }
+
+    @Override
+    public boolean needsSave(){
+        return this.needsSave;
+    }
+
+    @Override
+    public boolean shouldUnload(){
+        return this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
+    }
+
+    @Override
+    public void save(DataSet set){
+        RockBottomAPI.getEventHandler().fireEvent(new ChunkSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
+
+        int layerCounter = 0;
+        for(TileLayer layer : this.stateGrid.keySet()){
+            int[] ids = new int[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
+
+            int counter = 0;
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    ids[counter] = this.world.getIdForState(this.getStateInner(layer, x, y));
+                    counter++;
+                }
+            }
+
+            set.addIntArray("l_"+layerCounter, ids);
+            set.addString("ln_"+layerCounter, layer.getName().toString());
+
+            layerCounter++;
+        }
+        set.addInt("l_a", layerCounter);
+
+        short[] biomes = new short[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
+        int biomeCounter = 0;
+        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                biomes[biomeCounter] = (short)this.world.getIdForBiome(this.getBiomeInner(x, y));
+                biomeCounter++;
+            }
+        }
+        set.addShortArray("bi", biomes);
+
+
+        for(int i = 0; i < this.lightGrid.length; i++){
+            byte[] light = new byte[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
+            int counter = 0;
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    light[counter] = this.lightGrid[i][x][y];
+                    counter++;
+                }
+            }
+
+            set.addByteArray("lg_"+i, light);
+        }
+
+        int entityId = 0;
+        for(Entity entity : this.entities){
+            if(entity.doesSave() && !(entity instanceof EntityPlayer)){
+                DataSet entitySet = new DataSet();
+                entitySet.addString("name", RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString());
+                entity.save(entitySet);
+
+                set.addDataSet("e_"+entityId, entitySet);
+
+                entityId++;
+            }
+        }
+        set.addInt("e_a", entityId);
+
+        int tileEntityId = 0;
+        for(TileEntity tile : this.tileEntities){
+            if(tile.doesSave()){
+                DataSet tileSet = new DataSet();
+                tileSet.addInt("x", tile.x);
+                tileSet.addInt("y", tile.y);
+                tileSet.addString("layer", tile.layer.getName().toString());
+                tile.save(tileSet, false);
+
+                set.addDataSet("t_"+tileEntityId, tileSet);
+
+                tileEntityId++;
+            }
+        }
+        set.addInt("t_a", tileEntityId);
+
+        DataSet updateSet = new DataSet();
+
+        int updateId = 0;
+        for(ScheduledUpdate update : this.scheduledUpdates){
+            updateSet.addInt("x_"+updateId, update.x);
+            updateSet.addInt("y_"+updateId, update.y);
+            updateSet.addString("l_"+updateId, update.layer.getName().toString());
+            updateSet.addInt("m_"+updateId, update.scheduledMeta);
+            updateSet.addInt("t_"+updateId, update.time);
+            updateSet.addInt("i_"+updateId, this.world.getIdForState(update.tile));
+
+            updateId++;
+        }
+        updateSet.addInt("a", updateId);
+
+        set.addDataSet("s_u", updateSet);
+
+        if(this.additionalData != null){
+            set.addDataSet("ad_da", this.additionalData);
+        }
+
+        this.needsSave = false;
+    }
+
+    @Override
+    public void update(IGameInstance game){
+        this.checkListSync();
+
+        if(!this.isGenerating){
+            this.updateEntities(game);
+
+            int layers = TileLayer.getAllLayers().size();
+            for(int i = 0; i < Constants.RANDOM_TILE_UPDATES*layers; i++){
+                TileLayer layer = TileLayer.getAllLayers().get(Util.RANDOM.nextInt(layers));
+                int randX = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
+                int randY = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
+
+                Tile tile = this.getStateInner(layer, randX, randY).getTile();
+                tile.updateRandomly(this.world, this.x+randX, this.y+randY, layer);
+            }
+
+            if(!this.scheduledUpdates.isEmpty()){
+                for(int i = 0; i < this.scheduledUpdates.size(); i++){
+                    ScheduledUpdate update = this.scheduledUpdates.get(i);
+                    update.time--;
+
+                    if(update.time <= 0){
+                        this.scheduledUpdates.remove(i);
+                        this.scheduledUpdateLookup.remove(new Pos3(update.x, update.y, update.layer.index()));
+
+                        Tile tile = this.getState(update.layer, update.x, update.y).getTile();
+                        if(tile == update.tile.getTile()){
+                            tile.onScheduledUpdate(this.world, update.x, update.y, update.layer, update.scheduledMeta);
+
+                            if(this.world.isServer()){
+                                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketScheduledUpdate(update.layer, update.x, update.y, update.scheduledMeta), update.x, update.y);
+                            }
+                        }
+
+                        i--;
+                        this.setDirty();
+                    }
+                }
+            }
+        }
+
+        if(this.internalLoadingTimer > 0){
+            this.internalLoadingTimer--;
+        }
+
+        for(int i = 0; i < this.playersOutOfRangeCached.size(); i++){
+            AbstractEntityPlayer player = this.playersOutOfRangeCached.get(i);
+
+            Counter time = this.playersOutOfRangeCachedTimers.get(player);
+            time.add(-1);
+
+            if(time.get() <= 0){
+                player.getChunksInRange().remove(this);
+                player.onChunkUnloaded(this);
+
+                this.playersOutOfRangeCached.remove(i);
+                this.playersOutOfRangeCachedTimers.remove(player);
+
+                i--;
+            }
+        }
+    }
+
+    protected void checkListSync(){
+        if(this.entities.size() != this.entityLookup.size()){
+            throw new IllegalStateException("Entities and EntityLookup are out of sync!");
+        }
+        if(this.tileEntities.size() != this.tileEntityLookup.size()){
+            throw new IllegalStateException("TileEntities and TileEntityLookup are out of sync!");
+        }
+        if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
+            throw new IllegalStateException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
+        }
+        if(this.playersOutOfRangeCached.size() != this.playersOutOfRangeCachedTimers.size()){
+            throw new IllegalStateException("PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
+        }
+    }
+
+    protected void updateEntities(IGameInstance game){
+        for(int i = 0; i < this.entities.size(); i++){
+            Entity entity = this.entities.get(i);
+
+            if(RockBottomAPI.getEventHandler().fireEvent(new EntityTickEvent(entity)) != EventResult.CANCELLED){
+                entity.update(game);
+            }
+
+            if(entity.shouldBeRemoved()){
+                this.world.removeEntity(entity, this);
+                i--;
+            }
+            else{
+                int newChunkX = Util.toGridPos(entity.x);
+                int newChunkY = Util.toGridPos(entity.y);
+
+                if(newChunkX != this.gridX || newChunkY != this.gridY){
+                    this.removeEntity(entity);
+                    i--;
+
+                    IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
+                    chunk.addEntity(entity);
+
+                    if(this.world.isServer()){
+                        for(AbstractEntityPlayer player : chunk.getPlayersInRange()){
+                            if(!this.playersInRange.contains(player)){
+                                player.sendPacket(new PacketEntityChange(entity, false));
+
+                                RockBottomAPI.logger().config("Adding entity "+entity+" with id "+entity.getUniqueId()+" to chunk in range of player with id "+player.getUniqueId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int i = 0; i < this.tileEntities.size(); i++){
+            TileEntity tile = this.tileEntities.get(i);
+
+            if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
+                tile.update(game);
+            }
+
+            if(tile.shouldRemove()){
+                this.removeTileEntity(tile.layer, tile.x, tile.y);
+                i--;
+            }
+        }
+    }
+
+    public void setDirty(){
+        this.needsSave = true;
+    }
+
     private TileState[][] getGrid(TileLayer layer, boolean create){
         TileState[][] grid = this.stateGrid.get(layer);
 
@@ -932,6 +900,38 @@ public class Chunk implements IChunk{
         }
 
         return grid;
+    }
+
+    @Override
+    public byte getCombinedLightInner(int x, int y){
+        byte artificial = this.getArtificialLightInner(x, y);
+        byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
+
+        return (byte)Math.min(Constants.MAX_LIGHT, artificial+sky);
+    }
+
+    @Override
+    public int getScheduledUpdateAmount(){
+        return this.scheduledUpdates.size();
+    }
+
+    @Override
+    public Biome getBiomeInner(int x, int y){
+        return this.biomeGrid[x][y];
+    }
+
+    @Override
+    public void setBiomeInner(int x, int y, Biome biome){
+        if(biome == null){
+            throw new IllegalArgumentException("Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+"!");
+        }
+
+        this.biomeGrid[x][y] = biome;
+    }
+
+    @Override
+    public Set<TileLayer> getLoadedLayers(){
+        return this.stateGrid.keySet();
     }
 
     @Override

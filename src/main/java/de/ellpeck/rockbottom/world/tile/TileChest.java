@@ -21,34 +21,8 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public boolean isFullTile(){
-        return false;
-    }
-
-    @Override
     public BoundBox getBoundBox(IWorld world, int x, int y){
         return null;
-    }
-
-    @Override
-    public boolean canProvideTileEntity(){
-        return true;
-    }
-
-    @Override
-    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer){
-        return new TileEntityChest(world, x, y, layer);
-    }
-
-    @Override
-    public boolean canPlaceInLayer(TileLayer layer){
-        return layer == TileLayer.MAIN;
-    }
-
-    @Override
-    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
-        TileEntityChest tile = world.getTileEntity(x, y, TileEntityChest.class);
-        return tile != null && player.openGuiContainer(new GuiChest(player), new ContainerChest(player, tile));
     }
 
     @Override
@@ -59,6 +33,32 @@ public class TileChest extends TileBasic{
                 tile.dropInventory(tile.getInventory());
             }
         }
+    }
+
+    @Override
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+        TileEntityChest tile = world.getTileEntity(x, y, TileEntityChest.class);
+        return tile != null && player.openGuiContainer(new GuiChest(player), new ContainerChest(player, tile));
+    }
+
+    @Override
+    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer){
+        return new TileEntityChest(world, x, y, layer);
+    }
+
+    @Override
+    public boolean canProvideTileEntity(){
+        return true;
+    }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
+    }
+
+    @Override
+    public boolean canPlaceInLayer(TileLayer layer){
+        return layer == TileLayer.MAIN;
     }
 
     @Override

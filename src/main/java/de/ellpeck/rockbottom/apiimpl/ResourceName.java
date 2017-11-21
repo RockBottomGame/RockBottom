@@ -25,11 +25,27 @@ public class ResourceName implements IResourceName{
     }
 
     @Override
+    public int hashCode(){
+        int result = this.domain.hashCode();
+        result = 31*result+this.resourceName.hashCode();
+        return result;
+    }    @Override
     public String getDomain(){
         return this.domain;
     }
 
     @Override
+    public boolean equals(Object o){
+        if(this == o){
+            return true;
+        }
+        if(o == null || this.getClass() != o.getClass()){
+            return false;
+        }
+
+        ResourceName name = (ResourceName)o;
+        return this.domain.equals(name.domain) && this.resourceName.equals(name.resourceName);
+    }    @Override
     public String getResourceName(){
         return this.resourceName;
     }
@@ -39,6 +55,9 @@ public class ResourceName implements IResourceName{
     }
 
     @Override
+    public int compareTo(IResourceName o){
+        return this.toString().compareTo(o.toString());
+    }    @Override
     public boolean isEmpty(){
         return this.toString().isEmpty();
     }
@@ -53,28 +72,9 @@ public class ResourceName implements IResourceName{
         return new ResourceName(this.domain, this.resourceName+suffix);
     }
 
-    @Override
-    public boolean equals(Object o){
-        if(this == o){
-            return true;
-        }
-        if(o == null || this.getClass() != o.getClass()){
-            return false;
-        }
 
-        ResourceName name = (ResourceName)o;
-        return this.domain.equals(name.domain) && this.resourceName.equals(name.resourceName);
-    }
 
-    @Override
-    public int hashCode(){
-        int result = this.domain.hashCode();
-        result = 31*result+this.resourceName.hashCode();
-        return result;
-    }
 
-    @Override
-    public int compareTo(IResourceName o){
-        return this.toString().compareTo(o.toString());
-    }
+
+
 }

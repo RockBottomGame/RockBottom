@@ -37,17 +37,6 @@ public class ConnectedPlayer extends EntityPlayer{
         this.channel = channel;
     }
 
-    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player){
-        RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(player, true));
-
-        game.getWorld().savePlayer(player);
-        game.getWorld().removeEntity(player);
-
-        RockBottomAPI.logger().info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
-
-        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.disconnect"), player.getName()));
-    }
-
     @Override
     public void update(IGameInstance game){
         super.update(game);
@@ -109,20 +98,15 @@ public class ConnectedPlayer extends EntityPlayer{
         }
     }
 
-    @Override
-    public void setPos(double x, double y){
-        super.setPos(x, y);
+    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player){
+        RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(player, true));
 
-        this.lastCalcX = x;
-        this.lastCalcY = y;
-        this.fallCalcTicks = 0;
+        game.getWorld().savePlayer(player);
+        game.getWorld().removeEntity(player);
 
-        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
-    }
+        RockBottomAPI.logger().info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
 
-    @Override
-    public boolean doesSync(){
-        return false;
+        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.disconnect"), player.getName()));
     }
 
     @Override
@@ -154,5 +138,21 @@ public class ConnectedPlayer extends EntityPlayer{
         RockBottomAPI.logger().config("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
+    }
+
+    @Override
+    public void setPos(double x, double y){
+        super.setPos(x, y);
+
+        this.lastCalcX = x;
+        this.lastCalcY = y;
+        this.fallCalcTicks = 0;
+
+        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
+    }
+
+    @Override
+    public boolean doesSync(){
+        return false;
     }
 }

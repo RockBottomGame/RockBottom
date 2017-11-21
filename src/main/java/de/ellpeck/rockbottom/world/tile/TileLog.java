@@ -26,14 +26,8 @@ public class TileLog extends TileBasic{
     }
 
     @Override
-    public float getHardness(IWorld world, int x, int y, TileLayer layer){
-        float hardness = super.getHardness(world, x, y, layer);
-        return world.getState(layer, x, y).get(StaticTileProps.NATURAL) ? 3F*hardness : hardness;
-    }
-
-    @Override
-    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
-        return super.getPlacementState(world, x, y, layer, instance, placer).prop(StaticTileProps.NATURAL, false);
+    public boolean doesSustainLeaves(IWorld world, int x, int y, TileLayer layer){
+        return world.getState(layer, x, y).get(StaticTileProps.NATURAL);
     }
 
     @Override
@@ -68,16 +62,22 @@ public class TileLog extends TileBasic{
     }
 
     @Override
+    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
+        return super.getPlacementState(world, x, y, layer, instance, placer).prop(StaticTileProps.NATURAL, false);
+    }
+
+    @Override
+    public float getHardness(IWorld world, int x, int y, TileLayer layer){
+        float hardness = super.getHardness(world, x, y, layer);
+        return world.getState(layer, x, y).get(StaticTileProps.NATURAL) ? 3F*hardness : hardness;
+    }
+
+    @Override
     public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer, int scheduledMeta){
         if(!world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
                 world.destroyTile(x, y, layer, null, true);
             }
         }
-    }
-
-    @Override
-    public boolean doesSustainLeaves(IWorld world, int x, int y, TileLayer layer){
-        return world.getState(layer, x, y).get(StaticTileProps.NATURAL);
     }
 }

@@ -44,6 +44,11 @@ public class ComponentSelectWorldButton extends ComponentButton{
     }
 
     @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("select_world_button");
+    }
+
+    @Override
     public boolean onPressed(IGameInstance game){
         IGuiManager gui = game.getGuiManager();
         gui.fadeOut(20, () -> {
@@ -51,10 +56,5 @@ public class ComponentSelectWorldButton extends ComponentButton{
             gui.fadeIn(20, null);
         });
         return true;
-    }
-
-    @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("select_world_button");
     }
 }

@@ -92,6 +92,70 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
+    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        this.settings = new Settings();
+        RockBottomAPI.getEventHandler().fireEvent(new LoadSettingsEvent(this.settings));
+        this.dataManager.loadPropSettings(this.settings);
+
+        this.setFullscreen(this.settings.fullscreen);
+        Display.setVSyncEnabled(this.settings.vsync);
+
+        SoundStore.get().setSoundVolume(this.settings.soundVolume);
+        SoundStore.get().setMusicVolume(this.settings.musicVolume);
+
+        this.assetManager = new AssetManager();
+        this.assetManager.load(this);
+
+        RockBottomAPI.getModLoader().initAssets();
+        this.assetManager.loadCursors();
+
+        this.setPlayerDesign();
+        this.graphics.calcScales();
+    }
+
+    private void setPlayerDesign(){
+        try{
+            FileReader reader = new FileReader(this.dataManager.getPlayerDesignFile());
+            this.playerDesign = Util.GSON.fromJson(reader, PlayerDesign.class);
+        }
+        catch(Exception e){
+            this.playerDesign = new PlayerDesign();
+        }
+
+        if(Strings.isNullOrEmpty(this.playerDesign.getName())){
+            PlayerDesign.randomizeDesign(this.playerDesign);
+            RockBottomAPI.logger().info("Randomizing player design");
+
+            savePlayerDesign(this, this.playerDesign);
+        }
+    }
+
+    public static void savePlayerDesign(IGameInstance game, IPlayerDesign design){
+        try{
+            IDataManager data = game.getDataManager();
+            FileWriter writer = new FileWriter(data.getPlayerDesignFile());
+            Util.GSON.toJson(design, writer);
+            writer.close();
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't save player design to file", e);
+        }
+    }
+
+    @Override
+    public int getAutosaveInterval(){
+        return this.settings.autosaveIntervalSeconds;
+    }
+
+    @Override
+    public void shutdown(){
+        super.shutdown();
+
+        Display.destroy();
+        AL.destroy();
+    }
+
+    @Override
     public void init(){
         try{
             Display.setDisplayMode(new DisplayMode(Main.width, Main.height));
@@ -180,54 +244,19 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
-        this.settings = new Settings();
-        RockBottomAPI.getEventHandler().fireEvent(new LoadSettingsEvent(this.settings));
-        this.dataManager.loadPropSettings(this.settings);
+    protected void update(){
+        if(this.world != null && this.player != null){
+            Gui gui = this.guiManager.getGui();
+            if(gui == null || !gui.doesPauseGame() || RockBottomAPI.getNet().isActive()){
+                this.world.update(this);
+                this.interactionManager.update(this);
 
-        this.setFullscreen(this.settings.fullscreen);
-        Display.setVSyncEnabled(this.settings.vsync);
-
-        SoundStore.get().setSoundVolume(this.settings.soundVolume);
-        SoundStore.get().setMusicVolume(this.settings.musicVolume);
-
-        this.assetManager = new AssetManager();
-        this.assetManager.load(this);
-
-        RockBottomAPI.getModLoader().initAssets();
-        this.assetManager.loadCursors();
-
-        this.setPlayerDesign();
-        this.graphics.calcScales();
-    }
-
-    private void setPlayerDesign(){
-        try{
-            FileReader reader = new FileReader(this.dataManager.getPlayerDesignFile());
-            this.playerDesign = Util.GSON.fromJson(reader, PlayerDesign.class);
-        }
-        catch(Exception e){
-            this.playerDesign = new PlayerDesign();
+                this.particleManager.update(this);
+            }
         }
 
-        if(Strings.isNullOrEmpty(this.playerDesign.getName())){
-            PlayerDesign.randomizeDesign(this.playerDesign);
-            RockBottomAPI.logger().info("Randomizing player design");
-
-            savePlayerDesign(this, this.playerDesign);
-        }
-    }
-
-    public static void savePlayerDesign(IGameInstance game, IPlayerDesign design){
-        try{
-            IDataManager data = game.getDataManager();
-            FileWriter writer = new FileWriter(data.getPlayerDesignFile());
-            Util.GSON.toJson(design, writer);
-            writer.close();
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't save player design to file", e);
-        }
+        this.guiManager.update(this);
+        this.toaster.update();
     }
 
     @Override
@@ -250,79 +279,10 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public void setFullscreen(boolean fullscreen){
-        try{
-            if(Display.isFullscreen() != fullscreen){
-                if(fullscreen){
-                    this.windowedWidth = Display.getWidth();
-                    this.windowedHeight = Display.getHeight();
-
-                    Display.setDisplayMode(Display.getDesktopDisplayMode());
-                    Display.setFullscreen(true);
-                }
-                else{
-                    Display.setDisplayMode(new DisplayMode(this.windowedWidth, this.windowedHeight));
-                    Display.setFullscreen(false);
-
-                    Display.setResizable(false); //Workaround for stupid LWJGL bug
-                    Display.setResizable(true);
-                }
-
-                this.initGraphics();
-                this.graphics.calcScales();
-
-                if(this.guiManager != null){
-                    this.guiManager.updateDimensions();
-                }
-            }
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Failed to set fullscreen", e);
-        }
-    }
-
-    @Override
-    public int getAutosaveInterval(){
-        return this.settings.autosaveIntervalSeconds;
-    }
-
-    @Override
-    protected void update(){
-        if(this.world != null && this.player != null){
-            Gui gui = this.guiManager.getGui();
-            if(gui == null || !gui.doesPauseGame() || RockBottomAPI.getNet().isActive()){
-                this.world.update(this);
-                this.interactionManager.update(this);
-
-                this.particleManager.update(this);
-            }
-        }
-
-        this.guiManager.update(this);
-        this.toaster.update();
-    }
-
-    @Override
     public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated){
         super.startWorld(worldFile, info, isNewlyCreated);
 
         this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
-        this.world.addEntity(this.player);
-
-        this.guiManager.closeGui();
-        this.guiManager.updateDimensions();
-        this.toaster.cancelAllToasts();
-    }
-
-    @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo){
-        RockBottomAPI.logger().info("Joining world");
-
-        this.world = new ClientWorld(info, regInfo);
-        RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
-
-        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
-        this.player.load(playerSet);
         this.world.addEntity(this.player);
 
         this.guiManager.closeGui();
@@ -358,6 +318,157 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
+    protected void updateTickless(int delta){
+        if(Display.isCloseRequested()){
+            this.exit();
+        }
+        else{
+            this.input.poll(Display.getWidth(), Display.getHeight());
+
+            Music.poll(delta);
+
+            Renderer.get().glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
+            Renderer.get().glLoadIdentity();
+            Renderer.get().glDisable(SGL.GL_POLYGON_SMOOTH);
+
+            this.render();
+
+            Renderer.get().flush();
+
+            if(this.settings.targetFps != -1){
+                Display.sync(this.settings.targetFps);
+            }
+
+            Display.update();
+
+            if(!Display.isFullscreen() && Display.wasResized()){
+                if(this.lastWidth != Display.getWidth() || this.lastHeight != Display.getHeight()){
+                    this.initGraphics();
+                    this.graphics.calcScales();
+
+                    this.guiManager.updateDimensions();
+                }
+            }
+        }
+    }
+
+    protected void render(){
+        if(this.world != null){
+            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.graphics, this.world, this.player, this.interactionManager);
+
+            if(this.graphics.isDebug()){
+                DebugRenderer.render(this, this.assetManager, this.world, this.player, this.graphics);
+            }
+        }
+
+        this.graphics.pushMatrix();
+        float scale = this.graphics.getGuiScale();
+        this.graphics.scale(scale, scale);
+
+        this.guiManager.render(this, this.assetManager, this.graphics, this.player);
+        this.toaster.render(this, this.assetManager, this.graphics);
+
+        this.graphics.popMatrix();
+    }
+
+    @Override
+    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo){
+        RockBottomAPI.logger().info("Joining world");
+
+        this.world = new ClientWorld(info, regInfo);
+        RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
+
+        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
+        this.player.load(playerSet);
+        this.world.addEntity(this.player);
+
+        this.guiManager.closeGui();
+        this.guiManager.updateDimensions();
+        this.toaster.cancelAllToasts();
+    }
+
+    @Override
+    public void openIngameMenu(){
+        this.guiManager.openGui(new GuiMenu());
+
+        if(!RockBottomAPI.getNet().isClient()){
+            this.world.save();
+        }
+    }
+
+    @Override
+    public Settings getSettings(){
+        return this.settings;
+    }
+
+    @Override
+    public EntityPlayer getPlayer(){
+        return this.player;
+    }
+
+    @Override
+    public GuiManager getGuiManager(){
+        return this.guiManager;
+    }
+
+    @Override
+    public InteractionManager getInteractionManager(){
+        return this.interactionManager;
+    }
+
+    @Override
+    public IAssetManager getAssetManager(){
+        return this.assetManager;
+    }
+
+    @Override
+    public ParticleManager getParticleManager(){
+        return this.particleManager;
+    }
+
+    @Override
+    public UUID getUniqueId(){
+        return this.uniqueId;
+    }
+
+    @Override
+    public void setUniqueId(UUID uniqueId){
+        this.uniqueId = uniqueId;
+    }
+
+    @Override
+    public void setFullscreen(boolean fullscreen){
+        try{
+            if(Display.isFullscreen() != fullscreen){
+                if(fullscreen){
+                    this.windowedWidth = Display.getWidth();
+                    this.windowedHeight = Display.getHeight();
+
+                    Display.setDisplayMode(Display.getDesktopDisplayMode());
+                    Display.setFullscreen(true);
+                }
+                else{
+                    Display.setDisplayMode(new DisplayMode(this.windowedWidth, this.windowedHeight));
+                    Display.setFullscreen(false);
+
+                    Display.setResizable(false); //Workaround for stupid LWJGL bug
+                    Display.setResizable(true);
+                }
+
+                this.initGraphics();
+                this.graphics.calcScales();
+
+                if(this.guiManager != null){
+                    this.guiManager.updateDimensions();
+                }
+            }
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "Failed to set fullscreen", e);
+        }
+    }
+
+    @Override
     public PlayerDesign getPlayerDesign(){
         return this.playerDesign;
     }
@@ -373,11 +484,38 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public void shutdown(){
-        super.shutdown();
+    public Input getInput(){
+        return this.input;
+    }
 
-        Display.destroy();
-        AL.destroy();
+    @Override
+    public IToaster getToaster(){
+        return this.toaster;
+    }
+
+    @Override
+    public IGraphics getGraphics(){
+        return this.graphics;
+    }
+
+    @Override
+    public void setInput(Input input){
+
+    }
+
+    @Override
+    public boolean isAcceptingInput(){
+        return true;
+    }
+
+    @Override
+    public void inputEnded(){
+
+    }
+
+    @Override
+    public void inputStarted(){
+
     }
 
     @Override
@@ -464,119 +602,6 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     }
 
-    @Override
-    protected void updateTickless(int delta){
-        if(Display.isCloseRequested()){
-            this.exit();
-        }
-        else{
-            this.input.poll(Display.getWidth(), Display.getHeight());
-
-            Music.poll(delta);
-
-            Renderer.get().glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
-            Renderer.get().glLoadIdentity();
-            Renderer.get().glDisable(SGL.GL_POLYGON_SMOOTH);
-
-            this.render();
-
-            Renderer.get().flush();
-
-            if(this.settings.targetFps != -1){
-                Display.sync(this.settings.targetFps);
-            }
-
-            Display.update();
-
-            if(!Display.isFullscreen() && Display.wasResized()){
-                if(this.lastWidth != Display.getWidth() || this.lastHeight != Display.getHeight()){
-                    this.initGraphics();
-                    this.graphics.calcScales();
-
-                    this.guiManager.updateDimensions();
-                }
-            }
-        }
-    }
-
-    protected void render(){
-        if(this.world != null){
-            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.graphics, this.world, this.player, this.interactionManager);
-
-            if(this.graphics.isDebug()){
-                DebugRenderer.render(this, this.assetManager, this.world, this.player, this.graphics);
-            }
-        }
-
-        this.graphics.pushMatrix();
-        float scale = this.graphics.getGuiScale();
-        this.graphics.scale(scale, scale);
-
-        this.guiManager.render(this, this.assetManager, this.graphics, this.player);
-        this.toaster.render(this, this.assetManager, this.graphics);
-
-        this.graphics.popMatrix();
-    }
-
-    @Override
-    public void openIngameMenu(){
-        this.guiManager.openGui(new GuiMenu());
-
-        if(!RockBottomAPI.getNet().isClient()){
-            this.world.save();
-        }
-    }
-
-    @Override
-    public EntityPlayer getPlayer(){
-        return this.player;
-    }
-
-    @Override
-    public GuiManager getGuiManager(){
-        return this.guiManager;
-    }
-
-    @Override
-    public InteractionManager getInteractionManager(){
-        return this.interactionManager;
-    }
-
-    @Override
-    public IAssetManager getAssetManager(){
-        return this.assetManager;
-    }
-
-    @Override
-    public IGraphics getGraphics(){
-        return this.graphics;
-    }
-
-    @Override
-    public ParticleManager getParticleManager(){
-        return this.particleManager;
-    }
-
-    @Override
-    public void setUniqueId(UUID uniqueId){
-        this.uniqueId = uniqueId;
-    }
-
-    @Override
-    public Input getInput(){
-        return this.input;
-    }
-
-    @Override
-    public IToaster getToaster(){
-        return this.toaster;
-    }
-
-    @Override
-    public UUID getUniqueId(){
-        return this.uniqueId;
-    }
-
     private void takeScreenshot(){
         try{
             RockBottomAPI.logger().info("Taking screenshot");
@@ -618,11 +643,6 @@ public class RockBottom extends AbstractGame implements InputListener{
         catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't take screenshot", e);
         }
-    }
-
-    @Override
-    public Settings getSettings(){
-        return this.settings;
     }
 
     @Override
@@ -672,26 +692,6 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     public void controllerButtonReleased(int controller, int button){
-
-    }
-
-    @Override
-    public void setInput(Input input){
-
-    }
-
-    @Override
-    public boolean isAcceptingInput(){
-        return true;
-    }
-
-    @Override
-    public void inputEnded(){
-
-    }
-
-    @Override
-    public void inputStarted(){
 
     }
 }
