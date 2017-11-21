@@ -18,7 +18,7 @@ import java.util.List;
 public class GuiSign extends Gui{
 
     private boolean isEditing;
-    private List<ComponentInputField> inputFields = new ArrayList<>();
+    private final List<ComponentInputField> inputFields = new ArrayList<>();
 
     private final TileEntitySign tile;
 

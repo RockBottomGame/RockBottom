@@ -24,7 +24,7 @@ public class TileChestRenderer extends DefaultTileRenderer<TileChest>{
     public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, TileChest tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
         TileEntityChest tileEntity = world.getTileEntity(layer, x, y, TileEntityChest.class);
         if(tileEntity != null && tileEntity.getOpenCount() > 0){
-            manager.getTexture(this.texOpen).draw(renderX, renderY, scale, scale, light);
+            manager.getTexture(this.texOpen).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
         }
         else{
             super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);

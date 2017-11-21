@@ -3,17 +3,23 @@ package de.ellpeck.rockbottom.assets;
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.Util;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.ImageData;
 import org.newdawn.slick.opengl.renderer.SGL;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Texture extends Image implements ITexture{
 
+    private Random rand;
     private Map<String, JsonElement> additionalData;
+    private List<ITexture> variations;
 
     public Texture(){
     }
@@ -57,6 +63,10 @@ public class Texture extends Image implements ITexture{
 
     public void setAdditionalData(Map<String, JsonElement> data){
         this.additionalData = data;
+    }
+
+    public void setVariations(List<ITexture> variations){
+        this.variations = variations;
     }
 
     @Override
@@ -204,5 +214,37 @@ public class Texture extends Image implements ITexture{
     @Override
     public Texture getCopy(){
         return this.getSubTexture(0, 0, this.width, this.height);
+    }
+
+    @Override
+    public ITexture getVariation(Random random){
+        if(this.variations == null){
+            return this;
+        }
+        else{
+            int index = random.nextInt(this.variations.size()+1);
+
+            if(index == 0){
+                return this;
+            }
+            else{
+                return this.variations.get(index-1);
+            }
+        }
+    }
+
+    @Override
+    public ITexture getPositionalVariation(int x, int y){
+        if(this.variations == null){
+            return this;
+        }
+        else{
+            if(this.rand == null){
+                this.rand = new Random();
+            }
+
+            this.rand.setSeed(Util.scrambleSeed(x, y));
+            return this.getVariation(this.rand);
+        }
     }
 }

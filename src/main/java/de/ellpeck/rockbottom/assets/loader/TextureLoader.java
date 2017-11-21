@@ -1,10 +1,7 @@
 package de.ellpeck.rockbottom.assets.loader;
 
 import com.google.common.base.Charsets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -15,7 +12,9 @@ import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.Texture;
 
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TextureLoader implements IAssetLoader<ITexture>{
@@ -29,36 +28,63 @@ public class TextureLoader implements IAssetLoader<ITexture>{
 
     @Override
     public ITexture loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-        String resPath;
-        Map<String, JsonElement> additionalData;
+        String resPath = null;
+        Map<String, JsonElement> additionalData = null;
+        List<ITexture> variations = null;
+        int subCount = 0;
 
         if(element instanceof JsonArray){
             JsonArray array = element.getAsJsonArray();
-            resPath = path+array.get(0).getAsString();
-            String dataPath = path+array.get(1).getAsString();
+            for(JsonElement sub : array){
+                String dataPath = path+sub.getAsString();
 
-            additionalData = this.additionalDataCache.get(dataPath);
-            if(additionalData == null){
-                additionalData = new HashMap<>();
+                try{
+                    if(additionalData == null){
+                        additionalData = this.additionalDataCache.get(dataPath);
+                        if(additionalData == null){
+                            InputStreamReader reader = new InputStreamReader(AssetManager.getResource(dataPath), Charsets.UTF_8);
+                            JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
+                            if(main != null){
+                                additionalData = new HashMap<>();
 
-                InputStreamReader reader = new InputStreamReader(AssetManager.getResource(dataPath), Charsets.UTF_8);
-                JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
-                for(Map.Entry<String, JsonElement> entry : main.entrySet()){
-                    additionalData.put(entry.getKey(), entry.getValue());
+                                for(Map.Entry<String, JsonElement> entry : main.entrySet()){
+                                    additionalData.put(entry.getKey(), entry.getValue());
+                                }
+
+                                this.additionalDataCache.put(dataPath, additionalData);
+                            }
+                        }
+                    }
                 }
+                catch(JsonParseException e){
+                    if(resPath == null){
+                        resPath = dataPath;
+                    }
+                    else{
+                        if(variations == null){
+                            variations = new ArrayList<>();
+                        }
 
-                this.additionalDataCache.put(dataPath, additionalData);
+                        Texture texture = new Texture(AssetManager.getResource(dataPath), resourceName.toString()+"_sub_"+subCount, false);
+                        subCount++;
+
+                        variations.add(texture);
+                    }
+                }
             }
         }
         else{
             resPath = path+element.getAsString();
-            additionalData = null;
         }
 
         Texture texture = new Texture(AssetManager.getResource(resPath), resourceName.toString(), false);
 
         if(additionalData != null){
             texture.setAdditionalData(additionalData);
+        }
+
+        if(variations != null){
+            texture.setVariations(variations);
         }
 
         RockBottomAPI.logger().config("Loaded texture "+resourceName+" from "+resPath+" for mod "+loadingMod.getDisplayName());

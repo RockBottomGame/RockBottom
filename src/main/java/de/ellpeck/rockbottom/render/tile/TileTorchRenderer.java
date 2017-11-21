@@ -43,7 +43,7 @@ public class TileTorchRenderer extends DefaultTileRenderer<TileTorch>{
                 tex = this.texBack;
             }
 
-            manager.getTexture(tex).draw(renderX, renderY, scale, scale, light);
+            manager.getTexture(tex).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
         }
     }
 }
