@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.construction;
 
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.construction.BasicRecipe;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.construction.KnowledgeBasedRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
@@ -26,6 +27,8 @@ public final class ConstructionRegistry{
         ladder = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_LADDER, 5), new ItemUseInfo(GameContent.TILE_LOG, 4)).registerManual();
 
         chest = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_CHEST), new ItemUseInfo(GameContent.TILE_LOG, 25)).registerManual();
+
+        new BasicRecipe(new ItemInstance(GameContent.TILE_SIGN), new ItemUseInfo(GameContent.TILE_LOG, 4)).registerManual();
     }
 
 }
