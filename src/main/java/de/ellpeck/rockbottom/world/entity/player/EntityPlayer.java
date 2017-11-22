@@ -76,6 +76,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         this.facing = Direction.RIGHT;
         this.uniqueId = uniqueId;
         this.design = design;
+        this.inv.addChangeCallback(this.invCallback);
     }
 
     @Override

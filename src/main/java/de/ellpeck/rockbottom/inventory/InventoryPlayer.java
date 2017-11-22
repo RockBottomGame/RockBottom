@@ -11,7 +11,6 @@ public class InventoryPlayer extends Inventory{
 
     public InventoryPlayer(EntityPlayer player){
         super(32);
-        this.addChangeCallback(player.invCallback);
         this.addChangeCallback((inv, slot) -> {
             int fullness = 0;
             for(int i = 0; i < inv.getSlotAmount(); i++){
