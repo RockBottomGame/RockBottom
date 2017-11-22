@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
     compile project(":API")
-	compile project(":Assets")
+    compile project(":Assets")
 
     compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
     compile group: 'io.netty', name: 'netty-all', version: '4.1.11.Final'

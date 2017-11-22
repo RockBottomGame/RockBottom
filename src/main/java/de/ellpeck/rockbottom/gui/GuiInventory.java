@@ -3,10 +3,10 @@ package de.ellpeck.rockbottom.gui;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
-import de.ellpeck.rockbottom.api.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -16,14 +16,12 @@ import java.util.function.BiConsumer;
 public class GuiInventory extends GuiContainer{
 
     private static boolean isConstructionOpen;
-
+    private ComponentConstruction construction;
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
         if(isConstructionOpen && this.construction != null){
             this.construction.organize();
         }
     };
-
-    private ComponentConstruction construction;
 
     public GuiInventory(EntityPlayer player){
         super(player, 158, 83);
@@ -40,7 +38,7 @@ public class GuiInventory extends GuiContainer{
         }, RockBottomAPI.createInternalRes("gui.construction"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.construction"))));
 
         if(isConstructionOpen){
-            this.construction = new ComponentConstruction(this, -112,0, 110, 88, 5, 5, true, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES, (recipe, recipeId) -> {
+            this.construction = new ComponentConstruction(this, -112, 0, 110, 88, 5, 5, true, RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES, (recipe, recipeId) -> {
                 if(RockBottomAPI.getNet().isClient()){
                     RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), recipeId, 1));
                 }

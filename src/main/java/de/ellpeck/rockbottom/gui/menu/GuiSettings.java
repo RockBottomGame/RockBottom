@@ -35,7 +35,7 @@ public class GuiSettings extends Gui{
             guiManager.openGui(new GuiLanguage(this));
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.language"))));
-        this.components.add(new ComponentButton(this, this.width/2-75, 60, 150, 16, ()->{
+        this.components.add(new ComponentButton(this, this.width/2-75, 60, 150, 16, () -> {
             guiManager.openGui(new GuiSound(this));
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.sound"))));

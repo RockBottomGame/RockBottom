@@ -44,6 +44,14 @@ import java.util.function.BiConsumer;
 
 public class EntityPlayer extends AbstractEntityPlayer{
 
+    private final KnowledgeManager knowledge = new KnowledgeManager(this);
+    private final InventoryPlayer inv = new InventoryPlayer(this);
+    private final ItemContainer inventoryContainer = new ContainerInventory(this);
+    private final BoundBox boundingBox = new BoundBox(-0.45, -0.5, 0.45, 1.35);
+    private final IEntityRenderer renderer = new PlayerEntityRenderer();
+    private final List<IChunk> chunksInRange = new ArrayList<>();
+    private final IPlayerDesign design;
+    private ItemContainer currentContainer;
     public final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
         if(this.world.isServer()){
             boolean isInv = inv instanceof InventoryPlayer;
@@ -61,14 +69,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
     };
-    private final KnowledgeManager knowledge = new KnowledgeManager(this);
-    private final InventoryPlayer inv = new InventoryPlayer(this);
-    private final ItemContainer inventoryContainer = new ContainerInventory(this);
-    private final BoundBox boundingBox = new BoundBox(-0.45, -0.5, 0.45, 1.35);
-    private final IEntityRenderer renderer = new PlayerEntityRenderer();
-    private final List<IChunk> chunksInRange = new ArrayList<>();
-    private final IPlayerDesign design;
-    private ItemContainer currentContainer;
     private int respawnTimer;
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design){

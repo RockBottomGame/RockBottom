@@ -6,13 +6,8 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
-import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
-import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
+import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.api.gui.component.ComponentColorPicker;
-import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
-import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import org.lwjgl.opengl.Display;
 
 public class GuiGraphics extends Gui{

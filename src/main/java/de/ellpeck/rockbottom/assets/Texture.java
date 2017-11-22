@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.assets;
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;

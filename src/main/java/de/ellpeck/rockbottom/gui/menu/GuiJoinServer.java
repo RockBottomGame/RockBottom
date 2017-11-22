@@ -43,7 +43,7 @@ public class GuiJoinServer extends Gui{
                 return true;
             }
             catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING,"Couldn't connect to server", e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
             }
             return false;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.connect"))));

@@ -491,7 +491,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int time){
-       this.scheduleUpdate(x, y, layer, 0, time);
+        this.scheduleUpdate(x, y, layer, 0, time);
     }
 
     @Override

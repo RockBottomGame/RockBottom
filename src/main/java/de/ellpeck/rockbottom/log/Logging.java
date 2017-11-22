@@ -6,7 +6,10 @@ import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.Locale;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Filter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class Logging{
 

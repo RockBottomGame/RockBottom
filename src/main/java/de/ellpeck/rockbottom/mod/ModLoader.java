@@ -70,7 +70,7 @@ public class ModLoader implements IModLoader{
                         }
                     }
                     catch(Exception e){
-                        RockBottomAPI.logger().log(Level.WARNING,"Loading jar mod from file "+file+" failed", e);
+                        RockBottomAPI.logger().log(Level.WARNING, "Loading jar mod from file "+file+" failed", e);
                     }
                 }
                 else{
