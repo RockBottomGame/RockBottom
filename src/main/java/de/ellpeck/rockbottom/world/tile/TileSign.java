@@ -25,24 +25,13 @@ public class TileSign extends TileBasic{
     }
 
     @Override
+    public boolean isFullTile(){
+        return false;
+    }
+
+    @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
         return world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile();
-    }
-
-    @Override
-    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
-        TileEntitySign tile = world.getTileEntity(layer, x, y, TileEntitySign.class);
-        return tile != null && player.openGui(new GuiSign(tile));
-    }
-
-    @Override
-    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer){
-        return new TileEntitySign(world, x, y, layer);
-    }
-
-    @Override
-    public boolean canProvideTileEntity(){
-        return true;
     }
 
     @Override
@@ -51,18 +40,29 @@ public class TileSign extends TileBasic{
     }
 
     @Override
-    public boolean isFullTile(){
-        return false;
-    }
-
-    @Override
     public boolean canPlaceInLayer(TileLayer layer){
         return layer == TileLayer.MAIN;
     }
 
     @Override
+    public boolean canProvideTileEntity(){
+        return true;
+    }
+
+    @Override
+    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer){
+        return new TileEntitySign(world, x, y, layer);
+    }
+
+    @Override
     public boolean shouldShowBreakAnimation(IWorld world, int x, int y, TileLayer layer){
         return false;
+    }
+
+    @Override
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+        TileEntitySign tile = world.getTileEntity(layer, x, y, TileEntitySign.class);
+        return tile != null && player.openGui(new GuiSign(tile));
     }
 
     @Override

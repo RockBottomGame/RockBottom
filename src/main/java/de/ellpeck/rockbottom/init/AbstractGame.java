@@ -111,26 +111,15 @@ public abstract class AbstractGame implements IGameInstance{
         }
     }
 
-    public void init(){
-        this.dataManager = new DataManager(this);
+    public abstract int getAutosaveInterval();
 
-        IModLoader modLoader = RockBottomAPI.getModLoader();
-        modLoader.loadJarMods(this.dataManager.getModsDir());
-        if(Main.unpackedModsDir != null){
-            modLoader.loadUnpackedMods(Main.unpackedModsDir);
-        }
-        modLoader.sortMods();
+    public void shutdown(){
+        this.quitWorld();
+    }
 
-        modLoader.prePreInit();
-        modLoader.preInit();
-        modLoader.init();
-        modLoader.postInit();
-        modLoader.postPostInit();
-
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
+    @Override
+    public int getTotalTicks(){
+        return this.totalTicks;
     }
 
     private void updateTicked(){
@@ -158,12 +147,26 @@ public abstract class AbstractGame implements IGameInstance{
         this.update();
     }
 
-    protected void updateTickless(int delta){
+    public void init(){
+        this.dataManager = new DataManager(this);
 
-    }
+        IModLoader modLoader = RockBottomAPI.getModLoader();
+        modLoader.loadJarMods(this.dataManager.getModsDir());
+        if(Main.unpackedModsDir != null){
+            modLoader.loadUnpackedMods(Main.unpackedModsDir);
+        }
+        modLoader.sortMods();
 
-    public void shutdown(){
-        this.quitWorld();
+        modLoader.prePreInit();
+        modLoader.preInit();
+        modLoader.init();
+        modLoader.postInit();
+        modLoader.postPostInit();
+
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
+        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
     }
 
     protected void update(){
@@ -172,7 +175,17 @@ public abstract class AbstractGame implements IGameInstance{
         }
     }
 
-    public abstract int getAutosaveInterval();
+    @Override
+    public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        ContentRegistry.init();
+        ConstructionRegistry.init();
+    }
+
+    @Override
+    public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        this.chatLog = new ChatLog();
+        TileLayer.initLayerList();
+    }
 
     @Override
     public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated){
@@ -221,11 +234,8 @@ public abstract class AbstractGame implements IGameInstance{
         }
     }
 
-    @Override
-    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition){
-        synchronized(this.enqueuedActions){
-            this.enqueuedActions.add(new EnqueuedAction(action, object, condition));
-        }
+    protected void updateTickless(int delta){
+
     }
 
     @Override
@@ -259,21 +269,6 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
-    public int getTotalTicks(){
-        return this.totalTicks;
-    }
-
-    @Override
-    public void exit(){
-        this.isRunning = false;
-    }
-
-    @Override
-    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object){
-        this.enqueueAction(action, object, null);
-    }
-
-    @Override
     public String getDisplayName(){
         return NAME;
     }
@@ -284,8 +279,18 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
+    public String getVersion(){
+        return VERSION;
+    }
+
+    @Override
     public String getResourceLocation(){
         return "/assets/rockbottom";
+    }
+
+    @Override
+    public int getSortingPriority(){
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -296,11 +301,6 @@ public abstract class AbstractGame implements IGameInstance{
     @Override
     public String[] getAuthors(){
         return new String[]{"Ellpeck", "wiiv"};
-    }
-
-    @Override
-    public int getSortingPriority(){
-        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -319,20 +319,20 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
-    public String getVersion(){
-        return VERSION;
+    public void exit(){
+        this.isRunning = false;
     }
 
     @Override
-    public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
-        ContentRegistry.init();
-        ConstructionRegistry.init();
+    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object){
+        this.enqueueAction(action, object, null);
     }
 
     @Override
-    public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
-        this.chatLog = new ChatLog();
-        TileLayer.initLayerList();
+    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition){
+        synchronized(this.enqueuedActions){
+            this.enqueuedActions.add(new EnqueuedAction(action, object, condition));
+        }
     }
 
     private static class EnqueuedAction<T>{

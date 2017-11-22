@@ -39,12 +39,12 @@ public class BiomeDesert extends BiomeBasic{
     }
 
     @Override
-    public int getNoiseSeedModifier(IWorld world){
-        return 23872;
+    public float getPebbleChance(){
+        return 0.35F;
     }
 
     @Override
-    public float getPebbleChance(){
-        return 0.35F;
+    public int getNoiseSeedModifier(IWorld world){
+        return 23872;
     }
 }

@@ -43,10 +43,11 @@ public class GuiManager implements IGuiManager{
     private static final IResourceName LOC_DEAD = RockBottomAPI.createInternalRes("info.dead");
     private static final IResourceName LOC_DEAD_INFO = RockBottomAPI.createInternalRes("info.dead.wait");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
-    private final Random debugRandom = new Random();
     private MainMenuBackground background;
     private Gui gui;
     private ISpecialCursor currentCursor;
+    private final Random debugRandom = new Random();
+
     private boolean isFadeOut;
     private int fadeTimer;
     private int fadeTimerStart;
@@ -92,71 +93,13 @@ public class GuiManager implements IGuiManager{
         this.onScreenComponents.add(new ComponentHealth(null, (int)game.getGraphics().getWidthInGui()-3-maxHealthParts*13, (int)game.getGraphics().getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
-    @Override
-    public void openGui(Gui gui){
-        IGameInstance game = RockBottomAPI.getGame();
-
-        GuiOpenEvent event = new GuiOpenEvent(gui);
-        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
-            if(this.gui != null){
-                this.gui.onClosed(game);
-            }
-
-            this.gui = event.gui;
-
-            if(this.gui != null){
-                this.gui.onOpened(game);
-                this.gui.init(game);
-                this.gui.sortComponents();
-            }
-
-            if(this.gui == null){
-                RockBottomAPI.logger().config("Closed Gui");
-            }
-            else{
-                RockBottomAPI.logger().config("Opened Gui "+this.gui.getName()+" with "+this.gui.getComponents().size()+" components");
+    private ISpecialCursor pickCursor(IGameInstance game){
+        for(ISpecialCursor cursor : RockBottomAPI.SPECIAL_CURSORS){
+            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), this, game.getInteractionManager())){
+                return cursor;
             }
         }
-    }
-
-    @Override
-    public void closeGui(){
-        this.openGui(null);
-    }
-
-    @Override
-    public Gui getGui(){
-        return this.gui;
-    }
-
-    @Override
-    public boolean fadeOut(int ticks, Runnable after){
-        return this.fade(ticks, after, true);
-    }
-
-    @Override
-    public boolean fadeIn(int ticks, Runnable after){
-        return this.fade(ticks, after, false);
-    }
-
-    @Override
-    public ISpecialCursor getCursor(){
-        return this.currentCursor;
-    }
-
-    private boolean fade(int ticks, Runnable after, boolean out){
-        if(this.fadeTimer <= 0){
-            this.fadeTimer = ticks;
-            this.fadeTimerStart = ticks;
-
-            this.isFadeOut = out;
-            this.fadeCallback = after;
-
-            return true;
-        }
-        else{
-            return false;
-        }
+        return null;
     }
 
     public void update(RockBottom game){
@@ -192,15 +135,6 @@ public class GuiManager implements IGuiManager{
                 }
             }
         }
-    }
-
-    private ISpecialCursor pickCursor(IGameInstance game){
-        for(ISpecialCursor cursor : RockBottomAPI.SPECIAL_CURSORS){
-            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), this, game.getInteractionManager())){
-                return cursor;
-            }
-        }
-        return null;
     }
 
     public void render(RockBottom game, IAssetManager manager, IGraphics g, EntityPlayer player){
@@ -326,6 +260,73 @@ public class GuiManager implements IGuiManager{
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void openGui(Gui gui){
+        IGameInstance game = RockBottomAPI.getGame();
+
+        GuiOpenEvent event = new GuiOpenEvent(gui);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            if(this.gui != null){
+                this.gui.onClosed(game);
+            }
+
+            this.gui = event.gui;
+
+            if(this.gui != null){
+                this.gui.onOpened(game);
+                this.gui.init(game);
+                this.gui.sortComponents();
+            }
+
+            if(this.gui == null){
+                RockBottomAPI.logger().config("Closed Gui");
+            }
+            else{
+                RockBottomAPI.logger().config("Opened Gui "+this.gui.getName()+" with "+this.gui.getComponents().size()+" components");
+            }
+        }
+    }
+
+    @Override
+    public void closeGui(){
+        this.openGui(null);
+    }
+
+    @Override
+    public Gui getGui(){
+        return this.gui;
+    }
+
+    @Override
+    public boolean fadeOut(int ticks, Runnable after){
+        return this.fade(ticks, after, true);
+    }
+
+    @Override
+    public boolean fadeIn(int ticks, Runnable after){
+        return this.fade(ticks, after, false);
+    }
+
+    @Override
+    public ISpecialCursor getCursor(){
+        return this.currentCursor;
+    }
+
+    private boolean fade(int ticks, Runnable after, boolean out){
+        if(this.fadeTimer <= 0){
+            this.fadeTimer = ticks;
+            this.fadeTimerStart = ticks;
+
+            this.isFadeOut = out;
+            this.fadeCallback = after;
+
+            return true;
+        }
+        else{
+            return false;
         }
     }
 

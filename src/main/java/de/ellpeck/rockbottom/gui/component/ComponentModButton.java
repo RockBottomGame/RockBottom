@@ -19,16 +19,6 @@ public class ComponentModButton extends ComponentButton{
     }
 
     @Override
-    protected String getText(){
-        return this.mod.getDisplayName();
-    }
-
-    @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("mod_button");
-    }
-
-    @Override
     public boolean onPressed(IGameInstance game){
         if(this.gui.getSelectedMod() != this.mod){
             this.gui.selectMod(this.mod);
@@ -37,5 +27,15 @@ public class ComponentModButton extends ComponentButton{
         else{
             return false;
         }
+    }
+
+    @Override
+    protected String getText(){
+        return this.mod.getDisplayName();
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("mod_button");
     }
 }

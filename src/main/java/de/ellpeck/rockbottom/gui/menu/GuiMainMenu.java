@@ -65,11 +65,6 @@ public class GuiMainMenu extends Gui{
     }
 
     @Override
-    protected boolean tryEscape(IGameInstance game){
-        return false;
-    }
-
-    @Override
     public boolean hasGradient(){
         return false;
     }
@@ -77,5 +72,10 @@ public class GuiMainMenu extends Gui{
     @Override
     public IResourceName getName(){
         return RockBottomAPI.createInternalRes("main_menu");
+    }
+
+    @Override
+    protected boolean tryEscape(IGameInstance game){
+        return false;
     }
 }

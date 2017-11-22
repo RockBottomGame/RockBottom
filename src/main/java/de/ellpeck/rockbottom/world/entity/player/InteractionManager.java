@@ -37,6 +37,93 @@ public class InteractionManager implements IInteractionManager{
     public float breakProgress;
     public int placeCooldown;
 
+    public static boolean interact(AbstractEntityPlayer player, TileLayer layer, double mouseX, double mouseY){
+        List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
+
+        int x = Util.floor(mouseX);
+        int y = Util.floor(mouseY);
+
+        InteractionEvent event = new InteractionEvent(player, entities, layer, x, y, mouseX, mouseY);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            layer = event.layer;
+            x = event.x;
+            y = event.y;
+
+            for(Entity entity : entities){
+                if(player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player))){
+                    if(entity.onInteractWith(player, mouseX, mouseY)){
+                        return true;
+                    }
+                }
+            }
+
+            Tile tile = player.world.getState(layer, x, y).getTile();
+            if(player.isInRange(mouseX, mouseY, tile.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
+                if(tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)){
+                    return true;
+                }
+            }
+
+            ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+            if(selected != null){
+                Item item = selected.getItem();
+                if(player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
+                    return item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective){
+        BreakEvent event = new BreakEvent(player, layer, x, y, effective);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            layer = event.layer;
+            x = event.x;
+            y = event.y;
+            effective = event.effective;
+
+            tile.doBreak(player.world, x, y, layer, player, effective, true);
+        }
+    }
+
+    private static void moveAndSend(EntityPlayer player, int type){
+        if(player.move(type)){
+            if(RockBottomAPI.getNet().isClient()){
+                RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(player.getUniqueId(), player.x, player.y, player.motionX, player.motionY, player.facing));
+            }
+        }
+    }
+
+    public static TileLayer getInteractionLayer(IGameInstance game, EntityPlayer player){
+        for(TileLayer layer : TileLayer.getAllLayers()){
+            if(layer.canEditLayer(game, player)){
+                return layer;
+            }
+        }
+        return null;
+    }
+
+    public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+        if(player.isInRange(mouseX, mouseY, world.getState(layer, x, y).getTile().getMaxInteractionDistance(world, x, y, layer, mouseX, mouseY, player))){
+            if(layer == TileLayer.MAIN){
+                return true;
+            }
+            else{
+                if(!world.getState(x, y).getTile().isFullTile()){
+                    for(Direction dir : Direction.ADJACENT){
+                        Tile other = world.getState(layer, x+dir.x, y+dir.y).getTile();
+                        if(!other.isFullTile()){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public static boolean defaultTilePlacementCheck(IWorld world, int x, int y, TileLayer layer, Tile tile){
         if(!tile.canPlaceInLayer(layer)){
             return false;
@@ -188,93 +275,6 @@ public class InteractionManager implements IInteractionManager{
                 this.breakProgress = 0;
             }
         }
-    }
-
-    private static void moveAndSend(EntityPlayer player, int type){
-        if(player.move(type)){
-            if(RockBottomAPI.getNet().isClient()){
-                RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(player.getUniqueId(), player.x, player.y, player.motionX, player.motionY, player.facing));
-            }
-        }
-    }
-
-    public static TileLayer getInteractionLayer(IGameInstance game, EntityPlayer player){
-        for(TileLayer layer : TileLayer.getAllLayers()){
-            if(layer.canEditLayer(game, player)){
-                return layer;
-            }
-        }
-        return null;
-    }
-
-    public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
-        if(player.isInRange(mouseX, mouseY, world.getState(layer, x, y).getTile().getMaxInteractionDistance(world, x, y, layer, mouseX, mouseY, player))){
-            if(layer == TileLayer.MAIN){
-                return true;
-            }
-            else{
-                if(!world.getState(x, y).getTile().isFullTile()){
-                    for(Direction dir : Direction.ADJACENT){
-                        Tile other = world.getState(layer, x+dir.x, y+dir.y).getTile();
-                        if(!other.isFullTile()){
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective){
-        BreakEvent event = new BreakEvent(player, layer, x, y, effective);
-        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
-            layer = event.layer;
-            x = event.x;
-            y = event.y;
-            effective = event.effective;
-
-            tile.doBreak(player.world, x, y, layer, player, effective, true);
-        }
-    }
-
-    public static boolean interact(AbstractEntityPlayer player, TileLayer layer, double mouseX, double mouseY){
-        List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
-
-        int x = Util.floor(mouseX);
-        int y = Util.floor(mouseY);
-
-        InteractionEvent event = new InteractionEvent(player, entities, layer, x, y, mouseX, mouseY);
-        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
-            layer = event.layer;
-            x = event.x;
-            y = event.y;
-
-            for(Entity entity : entities){
-                if(player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player))){
-                    if(entity.onInteractWith(player, mouseX, mouseY)){
-                        return true;
-                    }
-                }
-            }
-
-            Tile tile = player.world.getState(layer, x, y).getTile();
-            if(player.isInRange(mouseX, mouseY, tile.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
-                if(tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)){
-                    return true;
-                }
-            }
-
-            ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-            if(selected != null){
-                Item item = selected.getItem();
-                if(player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
-                    return item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected);
-                }
-            }
-        }
-
-        return false;
     }
 
     public void onMouseAction(RockBottom game, int button){

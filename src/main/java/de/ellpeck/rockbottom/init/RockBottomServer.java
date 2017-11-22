@@ -115,11 +115,6 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public Settings getSettings(){
-        throw new UnsupportedOperationException("Cannot get settings on a dedicated server");
-    }
-
-    @Override
     public AbstractEntityPlayer getPlayer(){
         throw new UnsupportedOperationException("Cannot get the player on a dedicated server");
     }
@@ -140,6 +135,11 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public IGraphics getGraphics(){
+        throw new UnsupportedOperationException("Cannot get the graphics on a dedicated server");
+    }
+
+    @Override
     public IParticleManager getParticleManager(){
         throw new UnsupportedOperationException("Cannot get the particle manager on a dedicated server");
     }
@@ -147,11 +147,6 @@ public class RockBottomServer extends AbstractGame{
     @Override
     public UUID getUniqueId(){
         throw new UnsupportedOperationException("Cannot get the unique id on a dedicated server");
-    }
-
-    @Override
-    public void setUniqueId(UUID id){
-        throw new UnsupportedOperationException("Cannot set unique id on a dedicated server");
     }
 
     @Override
@@ -175,6 +170,11 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public void setUniqueId(UUID id){
+        throw new UnsupportedOperationException("Cannot set unique id on a dedicated server");
+    }
+
+    @Override
     public Input getInput(){
         throw new UnsupportedOperationException("Cannot get input on a dedicated server");
     }
@@ -185,7 +185,7 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public IGraphics getGraphics(){
-        throw new UnsupportedOperationException("Cannot get the graphics on a dedicated server");
+    public Settings getSettings(){
+        throw new UnsupportedOperationException("Cannot get settings on a dedicated server");
     }
 }

@@ -21,13 +21,28 @@ public class TileTorch extends TileBasic{
     }
 
     @Override
+    public int getLight(IWorld world, int x, int y, TileLayer layer){
+        return 25;
+    }
+
+    @Override
     public BoundBox getBoundBox(IWorld world, int x, int y){
         return null;
     }
 
     @Override
+    public boolean canPlaceInLayer(TileLayer layer){
+        return layer == TileLayer.MAIN;
+    }
+
+    @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
         return this.getTorchState(world, x, y) != null;
+    }
+
+    @Override
+    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
+        return this.getTorchState(world, x, y);
     }
 
     @Override
@@ -47,26 +62,6 @@ public class TileTorch extends TileBasic{
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         return this.getTorchState(world, x, y) != null;
-    }
-
-    @Override
-    public boolean isFullTile(){
-        return false;
-    }
-
-    @Override
-    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
-        return this.getTorchState(world, x, y);
-    }
-
-    @Override
-    public int getLight(IWorld world, int x, int y, TileLayer layer){
-        return 25;
-    }
-
-    @Override
-    public boolean canPlaceInLayer(TileLayer layer){
-        return layer == TileLayer.MAIN;
     }
 
     private TileState getTorchState(IWorld world, int x, int y){
@@ -89,6 +84,11 @@ public class TileTorch extends TileBasic{
         }
 
         return this.getDefState().prop(StaticTileProps.TORCH_FACING, meta);
+    }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
     }
 
     @Override

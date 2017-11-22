@@ -70,17 +70,6 @@ public class GuiCredits extends Gui{
     }
 
     @Override
-    public void update(IGameInstance game){
-        super.update(game);
-
-        this.renderY -= 0.65F;
-
-        if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
-            this.renderY = this.height;
-        }
-    }
-
-    @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         float y = this.renderY;
         for(String s : this.credits){
@@ -89,6 +78,17 @@ public class GuiCredits extends Gui{
         }
 
         super.render(game, manager, g);
+    }
+
+    @Override
+    public void update(IGameInstance game){
+        super.update(game);
+
+        this.renderY -= 0.65F;
+
+        if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
+            this.renderY = this.height;
+        }
     }
 
     @Override

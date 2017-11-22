@@ -49,6 +49,14 @@ public class GuiLogo extends Gui{
     }
 
     @Override
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+        g.fillRect(0, 0, this.width, this.height, 0xFF519FFF);
+
+        ITexture tex = manager.getTexture(this.isAngry ? this.texAngry : this.texture);
+        tex.draw(this.width/2-tex.getWidth()/2, this.height/2-tex.getHeight()/2);
+    }
+
+    @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(!this.isAngry && this.faceBox.contains(x, y)){
             this.isAngry = true;
@@ -61,16 +69,8 @@ public class GuiLogo extends Gui{
     }
 
     @Override
-    protected boolean tryEscape(IGameInstance game){
-        return false;
-    }
-
-    @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        g.fillRect(0, 0, this.width, this.height, 0xFF519FFF);
-
-        ITexture tex = manager.getTexture(this.isAngry ? this.texAngry : this.texture);
-        tex.draw(this.width/2-tex.getWidth()/2, this.height/2-tex.getHeight()/2);
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("logo");
     }
 
     @Override
@@ -79,7 +79,7 @@ public class GuiLogo extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("logo");
+    protected boolean tryEscape(IGameInstance game){
+        return false;
     }
 }

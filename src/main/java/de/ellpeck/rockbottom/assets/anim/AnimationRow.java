@@ -28,13 +28,13 @@ public class AnimationRow{
         this.additionalFrameData.put(name, data);
     }
 
+    public JsonElement[] getAdditionalData(String name){
+        return this.additionalFrameData != null ? this.additionalFrameData.get(name) : null;
+    }
+
     public JsonElement getAdditionalData(String name, int frame){
         JsonElement[] data = this.getAdditionalData(name);
         return data != null ? data[frame] : null;
-    }
-
-    public JsonElement[] getAdditionalData(String name){
-        return this.additionalFrameData != null ? this.additionalFrameData.get(name) : null;
     }
 
     public int getFrameAmount(){

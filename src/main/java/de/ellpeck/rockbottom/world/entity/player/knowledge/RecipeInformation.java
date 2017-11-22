@@ -30,12 +30,39 @@ public class RecipeInformation extends Information{
         this.recipe = recipe;
     }
 
+    public RecipeInformation(IResourceName name){
+        super(name);
+    }
+
     public static IResourceName getInfoName(IRecipe recipe){
         return recipe.getName().addPrefix("recipe_");
     }
 
-    public RecipeInformation(IResourceName name){
-        super(name);
+    @Override
+    public Toast announceForget(){
+        return new Toast(RockBottomAPI.createInternalRes("gui.construction_toggled"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
+    }
+
+    @Override
+    public Toast announceTeach(){
+        return new Toast(RockBottomAPI.createInternalRes("gui.construction"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
+    }
+
+    private ChatComponent getOutputName(){
+        if(this.recipe != null){
+            List<ItemInstance> outputs = this.recipe.getOutputs();
+            ItemInstance output = outputs.get(0);
+
+            if(this.knownOutputs.contains(output)){
+                return new ChatComponentText(output.getDisplayName()+" x"+output.getAmount());
+            }
+            else{
+                return new ChatComponentText("??? x"+output.getAmount());
+            }
+        }
+        else{
+            return new ChatComponentEmpty();
+        }
     }
 
     @Override
@@ -93,33 +120,6 @@ public class RecipeInformation extends Information{
         }
         else{
             RockBottomAPI.logger().warning("Couldn't load recipe information "+this.getName()+" because recipe with name "+recName+" is missing!");
-        }
-    }
-
-    @Override
-    public Toast announceTeach(){
-        return new Toast(RockBottomAPI.createInternalRes("gui.construction"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
-    }
-
-    @Override
-    public Toast announceForget(){
-        return new Toast(RockBottomAPI.createInternalRes("gui.construction_toggled"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
-    }
-
-    private ChatComponent getOutputName(){
-        if(this.recipe != null){
-            List<ItemInstance> outputs = this.recipe.getOutputs();
-            ItemInstance output = outputs.get(0);
-
-            if(this.knownOutputs.contains(output)){
-                return new ChatComponentText(output.getDisplayName()+" x"+output.getAmount());
-            }
-            else{
-                return new ChatComponentText("??? x"+output.getAmount());
-            }
-        }
-        else{
-            return new ChatComponentEmpty();
         }
     }
 

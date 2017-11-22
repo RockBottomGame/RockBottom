@@ -20,18 +20,6 @@ public class GuiJoinServer extends Gui{
     }
 
     @Override
-    public void onClosed(IGameInstance game){
-        super.onClosed(game);
-
-        Settings settings = game.getSettings();
-        String text = this.inputField.getText();
-        if(!settings.lastServerIp.equals(text)){
-            settings.lastServerIp = text;
-            game.getDataManager().savePropSettings(settings);
-        }
-    }
-
-    @Override
     public void init(IGameInstance game){
         super.init(game);
 
@@ -55,7 +43,7 @@ public class GuiJoinServer extends Gui{
                 return true;
             }
             catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
+                RockBottomAPI.logger().log(Level.WARNING,"Couldn't connect to server", e);
             }
             return false;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.connect"))));
@@ -68,5 +56,17 @@ public class GuiJoinServer extends Gui{
     @Override
     public IResourceName getName(){
         return RockBottomAPI.createInternalRes("join_server");
+    }
+
+    @Override
+    public void onClosed(IGameInstance game){
+        super.onClosed(game);
+
+        Settings settings = game.getSettings();
+        String text = this.inputField.getText();
+        if(!settings.lastServerIp.equals(text)){
+            settings.lastServerIp = text;
+            game.getDataManager().savePropSettings(settings);
+        }
     }
 }

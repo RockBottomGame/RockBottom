@@ -17,13 +17,19 @@ import java.util.List;
 
 public class GuiSign extends Gui{
 
-    private final List<ComponentInputField> inputFields = new ArrayList<>();
-    private final TileEntitySign tile;
     private boolean isEditing;
+    private final List<ComponentInputField> inputFields = new ArrayList<>();
+
+    private final TileEntitySign tile;
 
     public GuiSign(TileEntitySign tile){
         super(210, 100);
         this.tile = tile;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("sign");
     }
 
     @Override
@@ -91,20 +97,16 @@ public class GuiSign extends Gui{
         }
     }
 
-    @Override
-    public boolean canCloseWithInvKey(){
-        return true;
+    private void updateInputFields(){
+        for(ComponentInputField field : this.inputFields){
+            field.setActive(this.isEditing);
+        }
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         drawSign(manager, this.tile.text, !this.isEditing, this.x, this.y);
         super.render(game, manager, g);
-    }
-
-    @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("sign");
     }
 
     public static void drawSign(IAssetManager manager, String[] text, boolean drawText, float x, float y){
@@ -118,9 +120,8 @@ public class GuiSign extends Gui{
         }
     }
 
-    private void updateInputFields(){
-        for(ComponentInputField field : this.inputFields){
-            field.setActive(this.isEditing);
-        }
+    @Override
+    public boolean canCloseWithInvKey(){
+        return true;
     }
 }

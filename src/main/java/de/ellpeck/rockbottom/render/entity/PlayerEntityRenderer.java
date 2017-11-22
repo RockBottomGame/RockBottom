@@ -25,30 +25,6 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     private static final IResourceName SPECIAL_BASE = RockBottomAPI.createInternalRes("player.base.s");
     private static final IResourceName SPECIAL_ARMS = RockBottomAPI.createInternalRes("player.arm.skin_s");
 
-    @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, EntityPlayer entity, float x, float y, int light){
-        IPlayerDesign design = entity.getDesign();
-        boolean isRight = entity.facing == Direction.RIGHT;
-        boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;
-
-        int row;
-        if(entity.isClimbing){
-            row = isHorMovement || Math.abs(entity.motionY) >= 0.01 ? 6 : 7;
-        }
-        else if(!entity.onGround){
-            row = isRight ? 4 : 5;
-        }
-        else if(isHorMovement){
-            row = isRight ? 0 : 1;
-        }
-        else{
-            row = isRight ? 2 : 3;
-        }
-        renderPlayer(entity, game, manager, g, design, x-0.5F, y-1.5F, 1F, row, light);
-
-        RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent(game, manager, g, entity, x, y));
-    }
-
     public static void renderPlayer(EntityPlayer player, IGameInstance game, IAssetManager manager, IGraphics g, IPlayerDesign design, float x, float y, float scale, int row, int light){
         ItemInstance holding = player != null ? player.getInv().get(player.getSelectedSlot()) : null;
         String arms = holding == null ? "hanging" : "holding";
@@ -165,5 +141,29 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
                 }
             }
         }
+    }
+
+    @Override
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, EntityPlayer entity, float x, float y, int light){
+        IPlayerDesign design = entity.getDesign();
+        boolean isRight = entity.facing == Direction.RIGHT;
+        boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;
+
+        int row;
+        if(entity.isClimbing){
+            row = isHorMovement || Math.abs(entity.motionY) >= 0.01 ? 6 : 7;
+        }
+        else if(!entity.onGround){
+            row = isRight ? 4 : 5;
+        }
+        else if(isHorMovement){
+            row = isRight ? 0 : 1;
+        }
+        else{
+            row = isRight ? 2 : 3;
+        }
+        renderPlayer(entity, game, manager, g, design, x-0.5F, y-1.5F, 1F, row, light);
+
+        RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent(game, manager, g, entity, x, y));
     }
 }

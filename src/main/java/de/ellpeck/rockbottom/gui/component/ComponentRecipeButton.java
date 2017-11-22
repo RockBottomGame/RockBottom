@@ -109,16 +109,16 @@ public class ComponentRecipeButton extends ComponentButton{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("recipe_button");
-    }
-
-    @Override
     public boolean onPressed(IGameInstance game){
         if(this.canConstruct){
             this.component.consumer.accept(this.recipe, this.recipeName);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("recipe_button");
     }
 }

@@ -28,8 +28,18 @@ public class TileLeaves extends TileBasic{
     }
 
     @Override
+    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
+        return super.getPlacementState(world, x, y, layer, instance, placer).prop(StaticTileProps.NATURAL, false);
+    }
+
+    @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
     }
 
     @Override
@@ -50,16 +60,6 @@ public class TileLeaves extends TileBasic{
                 world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25)+5);
             }
         }
-    }
-
-    @Override
-    public boolean isFullTile(){
-        return false;
-    }
-
-    @Override
-    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
-        return super.getPlacementState(world, x, y, layer, instance, placer).prop(StaticTileProps.NATURAL, false);
     }
 
     @Override

@@ -19,8 +19,23 @@ public class TileLadder extends TileBasic{
     }
 
     @Override
+    public boolean canClimb(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity){
+        return Util.floor(entity.y) == y;
+    }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
+    }
+
+    @Override
     public BoundBox getBoundBox(IWorld world, int x, int y){
         return null;
+    }
+
+    @Override
+    public boolean canPlaceInLayer(TileLayer layer){
+        return layer == TileLayer.MAIN;
     }
 
     @Override
@@ -31,21 +46,6 @@ public class TileLadder extends TileBasic{
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         return this.isLadderPos(world, x, y);
-    }
-
-    @Override
-    public boolean isFullTile(){
-        return false;
-    }
-
-    @Override
-    public boolean canClimb(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity){
-        return Util.floor(entity.y) == y;
-    }
-
-    @Override
-    public boolean canPlaceInLayer(TileLayer layer){
-        return layer == TileLayer.MAIN;
     }
 
     private boolean isLadderPos(IWorld world, int x, int y){

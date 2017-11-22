@@ -94,6 +94,12 @@ public class World implements IWorld{
         this.playerDirectory = new File(worldDirectory, "players");
     }
 
+    protected void checkListSync(){
+        if(this.loadedChunks.size() != this.chunkLookup.size()){
+            throw new IllegalStateException("LoadedChunks and ChunkLookup are out of sync!");
+        }
+    }
+
     public void update(AbstractGame game){
         this.checkListSync();
 
@@ -122,45 +128,6 @@ public class World implements IWorld{
                 this.save();
             }
         }
-    }
-
-    protected void checkListSync(){
-        if(this.loadedChunks.size() != this.chunkLookup.size()){
-            throw new IllegalStateException("LoadedChunks and ChunkLookup are out of sync!");
-        }
-    }
-
-    protected boolean saveChunk(IChunk chunk){
-        if(chunk.needsSave()){
-            DataSet set = new DataSet();
-            chunk.save(set);
-
-            set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+"_"+chunk.getGridY()+".dat"));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public TileState getState(int x, int y){
-        return this.getState(TileLayer.MAIN, x, y);
-    }
-
-    @Override
-    public TileState getState(TileLayer layer, int x, int y){
-        IChunk chunk = this.getChunk(x, y);
-        return chunk.getState(layer, x, y);
-    }
-
-    @Override
-    public void setState(int x, int y, TileState tile){
-        this.setState(TileLayer.MAIN, x, y, tile);
-    }
-
-    @Override
-    public void setState(TileLayer layer, int x, int y, TileState tile){
-        IChunk chunk = this.getChunk(x, y);
-        chunk.setState(layer, x, y, tile);
     }
 
     @Override
@@ -286,6 +253,23 @@ public class World implements IWorld{
     }
 
     @Override
+    public int getIdForState(TileState state){
+        IResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
+        if(name != null){
+            return this.getTileRegInfo().getId(name);
+        }
+        else{
+            return -1;
+        }
+    }
+
+    @Override
+    public TileState getStateForId(int id){
+        IResourceName name = this.getTileRegInfo().get(id);
+        return RockBottomAPI.TILE_STATE_REGISTRY.get(name);
+    }
+
+    @Override
     public byte getCombinedLight(int x, int y){
         IChunk chunk = this.getChunk(x, y);
         return chunk.getCombinedLight(x, y);
@@ -319,6 +303,16 @@ public class World implements IWorld{
     public void scheduleUpdate(int x, int y, TileLayer layer, int scheduledMeta, int time){
         IChunk chunk = this.getChunk(x, y);
         chunk.scheduleUpdate(x, y, layer, scheduledMeta, time);
+    }
+
+    @Override
+    public boolean isChunkLoaded(int x, int y){
+        return this.chunkLookup.containsKey(new Pos2(x, y));
+    }
+
+    @Override
+    public boolean isPosLoaded(int x, int y){
+        return this.isChunkLoaded(Util.toGridPos(x), Util.toGridPos(y));
     }
 
     @Override
@@ -378,46 +372,8 @@ public class World implements IWorld{
     }
 
     @Override
-    public IChunk getChunkFromGridCoords(int gridX, int gridY){
-        IChunk chunk = this.chunkLookup.get(new Pos2(gridX, gridY));
-
-        if(chunk == null){
-            chunk = this.loadChunk(gridX, gridY);
-        }
-
-        return chunk;
-    }
-
-    @Override
-    public IChunk getChunk(double x, double y){
-        return this.getChunkFromGridCoords(Util.toGridPos(x), Util.toGridPos(y));
-    }
-
-    @Override
-    public boolean isPosLoaded(int x, int y){
-        return this.isChunkLoaded(Util.toGridPos(x), Util.toGridPos(y));
-    }
-
-    @Override
-    public boolean isChunkLoaded(int x, int y){
-        return this.chunkLookup.containsKey(new Pos2(x, y));
-    }
-
-    @Override
-    public int getIdForState(TileState state){
-        IResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
-        if(name != null){
-            return this.getTileRegInfo().getId(name);
-        }
-        else{
-            return -1;
-        }
-    }
-
-    @Override
-    public TileState getStateForId(int id){
-        IResourceName name = this.getTileRegInfo().get(id);
-        return RockBottomAPI.TILE_STATE_REGISTRY.get(name);
+    public WorldInfo getWorldInfo(){
+        return this.info;
     }
 
     @Override
@@ -453,8 +409,61 @@ public class World implements IWorld{
     }
 
     @Override
-    public WorldInfo getWorldInfo(){
-        return this.info;
+    public IChunk getChunk(double x, double y){
+        return this.getChunkFromGridCoords(Util.toGridPos(x), Util.toGridPos(y));
+    }
+
+    @Override
+    public IChunk getChunkFromGridCoords(int gridX, int gridY){
+        IChunk chunk = this.chunkLookup.get(new Pos2(gridX, gridY));
+
+        if(chunk == null){
+            chunk = this.loadChunk(gridX, gridY);
+        }
+
+        return chunk;
+    }
+
+    protected Chunk loadChunk(int gridX, int gridY){
+        Chunk chunk = new Chunk(this, gridX, gridY);
+        this.loadedChunks.add(chunk);
+        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
+
+        DataSet set = new DataSet();
+        set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
+        chunk.loadOrCreate(set);
+
+        return chunk;
+    }
+
+    @Override
+    public void unloadChunk(IChunk chunk){
+        this.saveChunk(chunk);
+
+        this.loadedChunks.remove(chunk);
+        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
+    }
+
+    @Override
+    public TileState getState(int x, int y){
+        return this.getState(TileLayer.MAIN, x, y);
+    }
+
+    @Override
+    public TileState getState(TileLayer layer, int x, int y){
+        IChunk chunk = this.getChunk(x, y);
+        return chunk.getState(layer, x, y);
+    }
+
+    @Override
+    public void setState(int x, int y, TileState tile){
+        this.setState(TileLayer.MAIN, x, y, tile);
+    }
+
+    @Override
+    public void setState(TileLayer layer, int x, int y, TileState tile){
+        IChunk chunk = this.getChunk(x, y);
+        chunk.setState(layer, x, y, tile);
     }
 
     @Override
@@ -473,118 +482,6 @@ public class World implements IWorld{
                 this.getState(other, x, y).getTile().onChangeAround(this, x, y, other, x, y, layer);
             }
         }
-    }
-
-    @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel){
-        EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, design, channel) : new EntityPlayer(this, id, design);
-
-        File file = new File(this.playerDirectory, id+".dat");
-        if(file.exists()){
-            DataSet set = new DataSet();
-            set.read(file);
-
-            player.load(set);
-            RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+"!");
-        }
-        else{
-            player.resetAndSpawn(RockBottomAPI.getGame());
-            RockBottomAPI.logger().info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
-        }
-
-        RockBottomAPI.getEventHandler().fireEvent(new PlayerJoinWorldEvent(player, channel != null));
-
-        return player;
-    }
-
-    @Override
-    public AbstractEntityPlayer getPlayer(UUID id){
-        for(AbstractEntityPlayer player : this.players){
-            if(id.equals(player.getUniqueId())){
-                return player;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public AbstractEntityPlayer getPlayer(String name){
-        for(AbstractEntityPlayer player : this.players){
-            if(name.equals(player.getName())){
-                return player;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean shouldDrop){
-        TileState state = this.getState(layer, x, y);
-
-        state.getTile().onDestroyed(this, x, y, destroyer, layer, shouldDrop);
-
-        if(this.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this, PacketParticles.tile(this, x, y, state), x, y);
-        }
-
-        IGameInstance game = RockBottomAPI.getGame();
-        if(!game.isDedicatedServer()){
-            game.getParticleManager().addTileParticles(this, x, y, state);
-        }
-
-        IResourceName sound = state.getTile().getBreakSound(this, x, y, layer, destroyer);
-        if(sound != null){
-            this.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
-        }
-
-        this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
-    }
-
-    @Override
-    public int getSpawnX(){
-        return 0;
-    }
-
-    @Override
-    public void causeLightUpdate(int x, int y){
-        Counter recurseCount = new Counter(0);
-
-        try{
-            this.causeLightUpdate(x, y, recurseCount);
-
-            if(recurseCount.get() >= 100){
-                RockBottomAPI.logger().config("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
-            }
-        }
-        catch(StackOverflowError e){
-            RockBottomAPI.logger().severe("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls");
-        }
-    }
-
-    @Override
-    public void unloadChunk(IChunk chunk){
-        this.saveChunk(chunk);
-
-        this.loadedChunks.remove(chunk);
-        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
-    }
-
-    @Override
-    public void savePlayer(AbstractEntityPlayer player){
-        DataSet playerSet = new DataSet();
-        player.save(playerSet);
-
-        playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
-    }
-
-    @Override
-    public List<IWorldGenerator> getSortedGenerators(){
-        return this.generators;
-    }
-
-    @Override
-    public List<IRetroactiveGenerator> getSortedRetroactiveGenerators(){
-        return this.retroactiveGenerators;
     }
 
     @Override
@@ -704,6 +601,10 @@ public class World implements IWorld{
         }
     }
 
+    private void playRelativeSound(IResourceName name, AbstractEntityPlayer player, double x, double y, double z, float pitch, float volume){
+        RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z-3);
+    }
+
     @Override
     public void broadcastSound(IResourceName name, float pitch, float volume, AbstractEntityPlayer except){
         if(this.isServer()){
@@ -728,25 +629,119 @@ public class World implements IWorld{
         this.broadcastSound(name, pitch, volume, null);
     }
 
-    private void playRelativeSound(IResourceName name, AbstractEntityPlayer player, double x, double y, double z, float pitch, float volume){
-        RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z-3);
+    @Override
+    public void savePlayer(AbstractEntityPlayer player){
+        DataSet playerSet = new DataSet();
+        player.save(playerSet);
+
+        playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
     }
 
-    public float getSkylightModifier(){
-        float mod = (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY);
-        return Math.min(1F, Math.max(0.15F, mod)+0.1F);
+    @Override
+    public List<IWorldGenerator> getSortedGenerators(){
+        return this.generators;
     }
 
-    protected Chunk loadChunk(int gridX, int gridY){
-        Chunk chunk = new Chunk(this, gridX, gridY);
-        this.loadedChunks.add(chunk);
-        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
+    @Override
+    public List<IRetroactiveGenerator> getSortedRetroactiveGenerators(){
+        return this.retroactiveGenerators;
+    }
 
-        DataSet set = new DataSet();
-        set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
-        chunk.loadOrCreate(set);
+    @Override
+    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel){
+        EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, design, channel) : new EntityPlayer(this, id, design);
 
-        return chunk;
+        File file = new File(this.playerDirectory, id+".dat");
+        if(file.exists()){
+            DataSet set = new DataSet();
+            set.read(file);
+
+            player.load(set);
+            RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+"!");
+        }
+        else{
+            player.resetAndSpawn(RockBottomAPI.getGame());
+            RockBottomAPI.logger().info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
+        }
+
+        RockBottomAPI.getEventHandler().fireEvent(new PlayerJoinWorldEvent(player, channel != null));
+
+        return player;
+    }
+
+    @Override
+    public AbstractEntityPlayer getPlayer(UUID id){
+        for(AbstractEntityPlayer player : this.players){
+            if(id.equals(player.getUniqueId())){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public AbstractEntityPlayer getPlayer(String name){
+        for(AbstractEntityPlayer player : this.players){
+            if(name.equals(player.getName())){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    protected boolean saveChunk(IChunk chunk){
+        if(chunk.needsSave()){
+            DataSet set = new DataSet();
+            chunk.save(set);
+
+            set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+"_"+chunk.getGridY()+".dat"));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean shouldDrop){
+        TileState state = this.getState(layer, x, y);
+
+        state.getTile().onDestroyed(this, x, y, destroyer, layer, shouldDrop);
+
+        if(this.isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this, PacketParticles.tile(this, x, y, state), x, y);
+        }
+
+        IGameInstance game = RockBottomAPI.getGame();
+        if(!game.isDedicatedServer()){
+            game.getParticleManager().addTileParticles(this, x, y, state);
+        }
+
+        IResourceName sound = state.getTile().getBreakSound(this, x, y, layer, destroyer);
+        if(sound != null){
+            this.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+        }
+
+        this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+    }
+
+    @Override
+    public int getSpawnX(){
+        return 0;
+    }
+
+    @Override
+    public void causeLightUpdate(int x, int y){
+        Counter recurseCount = new Counter(0);
+
+        try{
+            this.causeLightUpdate(x, y, recurseCount);
+
+            if(recurseCount.get() >= 100){
+                RockBottomAPI.logger().config("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
+            }
+        }
+        catch(StackOverflowError e){
+            RockBottomAPI.logger().severe("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls");
+        }
     }
 
     private void causeLightUpdate(int x, int y, Counter recurseCount){
@@ -861,5 +856,10 @@ public class World implements IWorld{
         else{
             return isSky ? 1F : 0.8F;
         }
+    }
+
+    public float getSkylightModifier(){
+        float mod = (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY);
+        return Math.min(1F, Math.max(0.15F, mod)+0.1F);
     }
 }

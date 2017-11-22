@@ -20,6 +20,40 @@ public class NetHandler implements INetHandler{
     private Server server;
 
     @Override
+    public void init(String ip, int port, boolean isServer) throws Exception{
+        if(this.isActive()){
+            RockBottomAPI.logger().severe("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+this.client+", Server: "+this.server);
+        }
+        else{
+            if(isServer){
+                this.server = new Server(ip, port);
+                RockBottomAPI.logger().info("Started server with ip "+ip+" on port "+port);
+            }
+            else{
+                this.client = new Client(ip, port);
+                RockBottomAPI.logger().info("Started client with ip "+ip+" on port "+port);
+            }
+        }
+    }
+
+    @Override
+    public void shutdown(){
+        if(this.isClient()){
+            this.client.shutdown();
+            this.client = null;
+
+            RockBottomAPI.logger().info("Shut down client!");
+        }
+
+        if(this.isServer()){
+            this.server.shutdown();
+            this.server = null;
+
+            RockBottomAPI.logger().info("Shut down server!");
+        }
+    }
+
+    @Override
     public boolean isThePlayer(AbstractEntityPlayer player){
         IGameInstance game = RockBottomAPI.getGame();
         return !game.isDedicatedServer() && game.getPlayer() == player;
@@ -118,40 +152,6 @@ public class NetHandler implements INetHandler{
                     player.sendPacket(packet);
                 }
             }
-        }
-    }
-
-    @Override
-    public void init(String ip, int port, boolean isServer) throws Exception{
-        if(this.isActive()){
-            RockBottomAPI.logger().severe("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+this.client+", Server: "+this.server);
-        }
-        else{
-            if(isServer){
-                this.server = new Server(ip, port);
-                RockBottomAPI.logger().info("Started server with ip "+ip+" on port "+port);
-            }
-            else{
-                this.client = new Client(ip, port);
-                RockBottomAPI.logger().info("Started client with ip "+ip+" on port "+port);
-            }
-        }
-    }
-
-    @Override
-    public void shutdown(){
-        if(this.isClient()){
-            this.client.shutdown();
-            this.client = null;
-
-            RockBottomAPI.logger().info("Shut down client!");
-        }
-
-        if(this.isServer()){
-            this.server.shutdown();
-            this.server = null;
-
-            RockBottomAPI.logger().info("Shut down server!");
         }
     }
 }

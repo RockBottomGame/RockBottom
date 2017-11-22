@@ -29,6 +29,19 @@ public class ComponentKeybind extends ComponentButton{
     }
 
     @Override
+    public boolean onKeyboardAction(IGameInstance game, int button, char character){
+        if(this.isSelected()){
+            this.bind.setBind(button, false);
+            this.gui.selectedKeybind = -1;
+
+            return true;
+        }
+        else{
+            return super.onKeyboardAction(game, button, character);
+        }
+    }
+
+    @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isSelected()){
             this.bind.setBind(button, true);
@@ -39,11 +52,6 @@ public class ComponentKeybind extends ComponentButton{
         else{
             return super.onMouseAction(game, button, x, y);
         }
-    }
-
-    @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("keybind");
     }
 
     @Override
@@ -60,15 +68,7 @@ public class ComponentKeybind extends ComponentButton{
     }
 
     @Override
-    public boolean onKeyboardAction(IGameInstance game, int button, char character){
-        if(this.isSelected()){
-            this.bind.setBind(button, false);
-            this.gui.selectedKeybind = -1;
-
-            return true;
-        }
-        else{
-            return super.onKeyboardAction(game, button, character);
-        }
+    public IResourceName getName(){
+        return RockBottomAPI.createInternalRes("keybind");
     }
 }

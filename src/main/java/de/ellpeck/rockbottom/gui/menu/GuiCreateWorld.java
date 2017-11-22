@@ -19,11 +19,14 @@ public class GuiCreateWorld extends Gui{
 
     private static final String[] DISALLOWED_CHARACTERS = new String[]{"/", "<", ">", ":", "\\|", "\\?", "\"", "\\\\", "\\*", "~"};
     private static final String[] DISALLOWED_FILENAMES = new String[]{"CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"};
-    private final long defaultSeed = Util.RANDOM.nextLong();
+
     private ComponentInputField nameField;
     private ComponentInputField seedField;
+
     private String worldName = "";
+
     private String lastSeed = "";
+    private final long defaultSeed = Util.RANDOM.nextLong();
     private long seed;
 
     public GuiCreateWorld(Gui parent){

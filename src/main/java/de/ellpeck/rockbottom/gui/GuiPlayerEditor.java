@@ -5,11 +5,17 @@ import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
-import de.ellpeck.rockbottom.api.gui.component.*;
+import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
+import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
+import de.ellpeck.rockbottom.api.gui.component.ComponentSlider;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.gui.component.ComponentColorPicker;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
@@ -29,14 +35,6 @@ public class GuiPlayerEditor extends Gui{
 
     public GuiPlayerEditor(Gui parent){
         super(196, 174, parent);
-    }
-
-    @Override
-    public void onClosed(IGameInstance game){
-        super.onClosed(game);
-
-        IPlayerDesign design = game.getPlayerDesign();
-        RockBottom.savePlayerDesign(game, design);
     }
 
     @Override
@@ -133,6 +131,14 @@ public class GuiPlayerEditor extends Gui{
     }
 
     @Override
+    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+        super.render(game, manager, g);
+
+        int x = (int)g.getWidthInGui()/2-84;
+        PlayerEntityRenderer.renderPlayer(null, game, manager, g, game.getPlayerDesign(), x, this.y+32, 45F, this.previewType, Colors.WHITE);
+    }
+
+    @Override
     public boolean onKeyboardAction(IGameInstance game, int button, char character){
         if(!super.onKeyboardAction(game, button, character)){
             if(this.wiivIndex < WIIV_IS_COOL.length()){
@@ -161,11 +167,11 @@ public class GuiPlayerEditor extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
-        super.render(game, manager, g);
+    public void onClosed(IGameInstance game){
+        super.onClosed(game);
 
-        int x = (int)g.getWidthInGui()/2-84;
-        PlayerEntityRenderer.renderPlayer(null, game, manager, g, game.getPlayerDesign(), x, this.y+32, 45F, this.previewType, Colors.WHITE);
+        IPlayerDesign design = game.getPlayerDesign();
+        RockBottom.savePlayerDesign(game, design);
     }
 
     @Override

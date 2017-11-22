@@ -15,11 +15,6 @@ public class TileOreMaterial extends TileBasic{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return false;
-    }
-
-    @Override
     protected ItemTile createItemTile(){
         return new ItemTile(this.getName()){
             @Override
@@ -31,6 +26,11 @@ public class TileOreMaterial extends TileBasic{
 
     @Override
     public boolean canPlaceInLayer(TileLayer layer){
+        return false;
+    }
+
+    @Override
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
         return false;
     }
 }

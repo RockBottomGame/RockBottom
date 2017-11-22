@@ -120,6 +120,14 @@ public class Animation implements IAnimation{
         return (long)(this.getRow(row).getTime(frame)*1000F);
     }
 
+    private AnimationRow getRow(int row){
+        if(row < 0 || row >= this.rows.size()){
+            row = 0;
+        }
+
+        return this.rows.get(row);
+    }
+
     @Override
     public ITexture getTexture(){
         return this.texture;
@@ -157,13 +165,5 @@ public class Animation implements IAnimation{
     @Override
     public JsonElement getAdditionalFrameData(String name, int row, int frame){
         return this.getRow(row).getAdditionalData(name, frame);
-    }
-
-    private AnimationRow getRow(int row){
-        if(row < 0 || row >= this.rows.size()){
-            row = 0;
-        }
-
-        return this.rows.get(row);
     }
 }

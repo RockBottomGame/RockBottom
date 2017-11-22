@@ -26,16 +26,6 @@ public class TilePebbles extends TileBasic{
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y){
-        return null;
-    }
-
-    @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return world.isPosLoaded(x, y-1) && world.getState(layer, x, y-1).getTile().isFullTile();
-    }
-
-    @Override
     protected ItemTile createItemTile(){
         return new ItemTile(this.getName()){
             @Override
@@ -57,6 +47,26 @@ public class TilePebbles extends TileBasic{
     }
 
     @Override
+    public BoundBox getBoundBox(IWorld world, int x, int y){
+        return null;
+    }
+
+    @Override
+    public boolean isFullTile(){
+        return false;
+    }
+
+    @Override
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+        return world.getState(layer, x, y-1).getTile().isFullTile();
+    }
+
+    @Override
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+        return world.isPosLoaded(x, y-1) && world.getState(layer, x, y-1).getTile().isFullTile();
+    }
+
+    @Override
     public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop){
         super.onDestroyed(world, x, y, destroyer, layer, shouldDrop);
 
@@ -71,15 +81,5 @@ public class TilePebbles extends TileBasic{
     @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
         return Collections.singletonList(new ItemInstance(this, Util.RANDOM.nextInt(3)+1));
-    }
-
-    @Override
-    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getState(layer, x, y-1).getTile().isFullTile();
-    }
-
-    @Override
-    public boolean isFullTile(){
-        return false;
     }
 }

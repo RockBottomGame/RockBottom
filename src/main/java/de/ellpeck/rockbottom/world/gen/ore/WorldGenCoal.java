@@ -11,13 +11,8 @@ import java.util.Set;
 public class WorldGenCoal extends WorldGenOre{
 
     @Override
-    public int getPriority(){
+    protected int getHighestGridPos(){
         return 0;
-    }
-
-    @Override
-    protected Set<Biome> getAllowedBiomes(){
-        return Collections.singleton(GameContent.BIOME_UNDERGROUND);
     }
 
     @Override
@@ -41,7 +36,12 @@ public class WorldGenCoal extends WorldGenOre{
     }
 
     @Override
-    protected int getHighestGridPos(){
+    public int getPriority(){
         return 0;
+    }
+
+    @Override
+    protected Set<Biome> getAllowedBiomes(){
+        return Collections.singleton(GameContent.BIOME_UNDERGROUND);
     }
 }

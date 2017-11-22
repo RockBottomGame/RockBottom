@@ -26,8 +26,8 @@ public class TileGrassTuft extends TileMeta{
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y){
-        return null;
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+        return world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
     }
 
     @Override
@@ -41,12 +41,12 @@ public class TileGrassTuft extends TileMeta{
     }
 
     @Override
-    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
+    public boolean isFullTile(){
+        return false;
     }
 
     @Override
-    public boolean isFullTile(){
-        return false;
+    public BoundBox getBoundBox(IWorld world, int x, int y){
+        return null;
     }
 }
