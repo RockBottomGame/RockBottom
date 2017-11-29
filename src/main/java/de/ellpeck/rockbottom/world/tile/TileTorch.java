@@ -67,7 +67,7 @@ public class TileTorch extends TileBasic{
     private TileState getTorchState(IWorld world, int x, int y){
         int meta;
 
-        if(world.getState(x, y-1).getTile().isFullTile()){
+        if(world.getState(x, y-1).getTile().hasSolidSurface(world, x, y-1, TileLayer.MAIN)){
             meta = 0;
         }
         else if(world.getState(x+1, y).getTile().isFullTile()){

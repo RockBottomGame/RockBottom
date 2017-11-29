@@ -58,12 +58,12 @@ public class TilePebbles extends TileBasic{
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getState(layer, x, y-1).getTile().isFullTile();
+        return world.getState(layer, x, y-1).getTile().hasSolidSurface(world, x, y-1, layer);
     }
 
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return world.isPosLoaded(x, y-1) && world.getState(layer, x, y-1).getTile().isFullTile();
+        return world.isPosLoaded(x, y-1) && world.getState(layer, x, y-1).getTile().hasSolidSurface(world, x, y-1, layer);
     }
 
     @Override

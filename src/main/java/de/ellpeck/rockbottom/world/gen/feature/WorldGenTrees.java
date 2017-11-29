@@ -1,13 +1,14 @@
 package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.world.gen.feature.trees.TreeDesigns;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -38,8 +39,8 @@ public class WorldGenTrees implements IWorldGenerator{
                 int mod = i*2000+tries*500;
                 this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX()+mod, chunk.getY()+mod, world.getSeed()));
 
-                int x = Util.ceil(this.treeRandom.nextDouble()*(double)(Constants.CHUNK_SIZE-6))+3;
-                int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0, true);
+                int x = Util.ceil(this.treeRandom.nextDouble()*(double)(Constants.CHUNK_SIZE-8))+4;
+                int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 1, true);
                 pos = new Pos2(x, y);
 
                 tries++;
@@ -53,7 +54,7 @@ public class WorldGenTrees implements IWorldGenerator{
             if(pos.getY() >= 0 && chunk.getBiomeInner(pos.getX(), pos.getY()).canTreeGrow(world, chunk, pos.getX(), pos.getY())){
                 alreadyGeneratedPositions.add(pos);
 
-                this.makeTree(chunk, pos.getX(), pos.getY());
+                this.makeTree(chunk, world, pos.getX(), pos.getY());
             }
         }
     }
@@ -67,49 +68,28 @@ public class WorldGenTrees implements IWorldGenerator{
         return false;
     }
 
-    private void makeTree(IChunk chunk, int x, int y){
+    private void makeTree(IChunk chunk, IWorld world, int x, int y){
         this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX()+x, chunk.getY()+y, chunk.getSeed()));
-        int height = 5+(int)(this.treeRandom.nextDouble()*8D);
-        while(y+height >= Constants.CHUNK_SIZE-4){
-            height--;
-        }
 
-        int treeSize = Util.ceil(this.treeRandom.nextDouble()*((double)height/3D));
-        while(x-treeSize < 0 || x+treeSize >= Constants.CHUNK_SIZE-1){
-            treeSize--;
-        }
+        String[] variant = TreeDesigns.DESIGNS[this.treeRandom.nextInt(TreeDesigns.DESIGNS.length)];
+        for(int subY = 0; subY < variant.length; subY++){
+            String line = variant[subY];
+            int length = line.length();
 
-        boolean isDoubleTree = treeSize >= 3;
-        int treeSizeMinus = -treeSize;
-        int treeSizePlus = isDoubleTree ? treeSize+1 : treeSize;
+            for(int subX = 0; subX < length; subX++){
+                char c = line.charAt(subX);
+                if(c != ' '){
+                    TileState state = TreeDesigns.STATE_MAP.get(c);
+                    if(state != null){
+                        int theX = x+subX-length/2;
+                        int innerY = (variant.length-1-subY);
+                        int theY = y+innerY;
 
-        for(int i = 0; i < height; i++){
-            chunk.setStateInner(x, y+i, GameContent.TILE_LOG.getDefState());
-
-            if(isDoubleTree){
-                if(!chunk.getStateInner(x+1, y+i).getTile().isFullTile()){
-                    chunk.setStateInner(x+1, y+i, GameContent.TILE_LOG.getDefState());
-                }
-            }
-        }
-
-        if(isDoubleTree){
-            for(int i = y; i > 0; i--){
-                if(!chunk.getStateInner(x+1, i).getTile().isFullTile()){
-                    chunk.setStateInner(x+1, i, GameContent.TILE_LOG.getDefState());
-                    break;
-                }
-            }
-        }
-
-        for(int subX = treeSizeMinus; subX <= treeSizePlus; subX++){
-            for(int subY = treeSizeMinus-1; subY <= treeSizePlus+1; subY++){
-                if((subX > treeSizeMinus && subX < treeSizePlus) || (subY > treeSizeMinus-1 && subY < treeSizePlus+1)){
-                    int theX = x+subX;
-                    int theY = y+subY+height-treeSize;
-
-                    if(!chunk.getStateInner(theX, theY).getTile().isFullTile()){
-                        chunk.setStateInner(theX, theY, GameContent.TILE_LEAVES.getDefState());
+                        if(chunk.getStateInner(theX, theY).getTile().canReplace(world, theX, theY, TileLayer.MAIN)){
+                            if(innerY > 0 || !chunk.getStateInner(theX, theY-1).getTile().canReplace(world, theX, theY-1, TileLayer.MAIN)){
+                                chunk.setStateInner(theX, theY, state);
+                            }
+                        }
                     }
                 }
             }
