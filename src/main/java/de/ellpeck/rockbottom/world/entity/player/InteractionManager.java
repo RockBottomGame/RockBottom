@@ -97,12 +97,15 @@ public class InteractionManager implements IInteractionManager{
     }
 
     public static TileLayer getInteractionLayer(IGameInstance game, EntityPlayer player){
+        TileLayer highest = null;
         for(TileLayer layer : TileLayer.getAllLayers()){
             if(layer.canEditLayer(game, player)){
-                return layer;
+                if(highest == null || highest.getRenderPriority() < layer.getRenderPriority()){
+                    highest = layer;
+                }
             }
         }
-        return null;
+        return highest;
     }
 
     public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){

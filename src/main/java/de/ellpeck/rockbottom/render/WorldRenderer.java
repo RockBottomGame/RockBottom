@@ -166,29 +166,31 @@ public class WorldRenderer{
     }
 
     private void renderLayer(IGameInstance game, IAssetManager manager, IGraphics g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float transX, float transY, float scale, int[] light, boolean foreground){
-        IApiHandler api = RockBottomAPI.getApiHandler();
-        TileState state = chunk.getState(layer, x, y);
-        Tile tile = state.getTile();
-        ITileRenderer renderer = tile.getRenderer();
-        boolean forcesForeground = layer.forceForegroundRender();
+        if(layer.isVisible(game, game.getPlayer(), chunk, x, y, foreground)){
+            IApiHandler api = RockBottomAPI.getApiHandler();
+            TileState state = chunk.getState(layer, x, y);
+            Tile tile = state.getTile();
+            ITileRenderer renderer = tile.getRenderer();
+            boolean forcesForeground = layer.forceForegroundRender();
 
-        if(renderer != null){
-            if(foreground){
-                if(forcesForeground){
+            if(renderer != null){
+                if(foreground){
+                    if(forcesForeground){
+                        renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+
+                        if(input.breakingLayer == layer){
+                            this.doBreakAnimation(input, manager, world, x, y, state, layer, transX, transY, scale);
+                        }
+                    }
+
+                    renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+                }
+                else if(!forcesForeground){
                     renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
                     if(input.breakingLayer == layer){
                         this.doBreakAnimation(input, manager, world, x, y, state, layer, transX, transY, scale);
                     }
-                }
-
-                renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
-            }
-            else if(!forcesForeground){
-                renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
-
-                if(input.breakingLayer == layer){
-                    this.doBreakAnimation(input, manager, world, x, y, state, layer, transX, transY, scale);
                 }
             }
         }
