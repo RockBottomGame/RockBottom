@@ -15,7 +15,7 @@ public final class TreeDesigns{
                     " LLL ",
                     "LLLLL",
                     " LLL ",
-                    " `^´ ",
+                    " q^p ",
                     "  T  ",
                     " <v> "
             },
@@ -34,7 +34,7 @@ public final class TreeDesigns{
                     " LLLLL ",
                     "LLLLLLL",
                     " LLLLL ",
-                    "  `^´  ",
+                    "  q^p  ",
                     "   T   ",
                     "  <v>  "
             }
@@ -44,8 +44,8 @@ public final class TreeDesigns{
     static{
         STATE_MAP.put('L', GameContent.TILE_LEAVES.getDefState());
 
-        STATE_MAP.put('`', GameContent.TILE_LOG.getDefState().prop(StaticTileProps.LOG_VARIANT, LogType.BRANCH_LEFT));
-        STATE_MAP.put('´', GameContent.TILE_LOG.getDefState().prop(StaticTileProps.LOG_VARIANT, LogType.BRANCH_RIGHT));
+        STATE_MAP.put('q', GameContent.TILE_LOG.getDefState().prop(StaticTileProps.LOG_VARIANT, LogType.BRANCH_LEFT));
+        STATE_MAP.put('p', GameContent.TILE_LOG.getDefState().prop(StaticTileProps.LOG_VARIANT, LogType.BRANCH_RIGHT));
         STATE_MAP.put('^', GameContent.TILE_LOG.getDefState().prop(StaticTileProps.LOG_VARIANT, LogType.TRUNK_TOP));
         STATE_MAP.put('T', GameContent.TILE_LOG.getDefState().prop(StaticTileProps.LOG_VARIANT, LogType.TRUNK_MIDDLE));
         STATE_MAP.put('v', GameContent.TILE_LOG.getDefState().prop(StaticTileProps.LOG_VARIANT, LogType.TRUNK_BOTTOM));
