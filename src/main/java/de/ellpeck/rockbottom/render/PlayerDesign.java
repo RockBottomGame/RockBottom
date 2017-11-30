@@ -18,6 +18,7 @@
 
 package de.ellpeck.rockbottom.render;
 
+import com.google.gson.annotations.SerializedName;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -26,36 +27,57 @@ public class PlayerDesign implements IPlayerDesign{
 
     private static final String[] DEFAULT_NAMES = new String[]{"Jake", "Craig", "Mariana", "Louise", "Rosie", "Flo", "Luke", "Abbie", "James", "Chris", "Kieran", "Fatima", "Adam", "Giles", "Megan", "Tim", "Calypso", "Hayley", "Aimee", "Megan", "Eleanor"};
 
+    @SerializedName("name")
     private String name;
+    @SerializedName("color")
     private int color;
+    @SerializedName("female")
     private boolean female;
 
+    @SerializedName("base")
     private int base;
+    @SerializedName("eye_color")
     private int eyeColor;
 
+    @SerializedName("shirt")
     private int shirt;
+    @SerializedName("shirt_color")
     private int shirtColor;
 
+    @SerializedName("sleeves")
     private int sleeves;
+    @SerializedName("sleeves_color")
     private int sleevesColor;
 
+    @SerializedName("pants")
     private int pants;
+    @SerializedName("pants_color")
     private int pantsColor;
 
+    @SerializedName("footwear")
     private int footwear;
+    @SerializedName("footwear_color")
     private int footwearColor;
 
+    @SerializedName("hair")
     private int hair;
+    @SerializedName("hair_color")
     private int hairColor;
 
+    @SerializedName("accessory")
     private int accessory;
 
+    @SerializedName("mouth")
     private int mouth;
 
+    @SerializedName("eyebrows")
     private int eyebrows;
+    @SerializedName("eyebrows_color")
     private int eyebrowsColor;
 
+    @SerializedName("beard")
     private int beard;
+    @SerializedName("beard_color")
     private int beardColor;
 
     public static String getRandomName(){
