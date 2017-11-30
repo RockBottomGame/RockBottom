@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 public class GuiJoinServer extends Gui{
 
+    private Thread joinThread;
     private ComponentInputField inputField;
 
     public GuiJoinServer(Gui parent){
@@ -28,24 +29,33 @@ public class GuiJoinServer extends Gui{
         this.inputField.setText(game.getSettings().lastServerIp);
 
         this.components.add(new ComponentButton(this, this.width/2-50, this.height/2-20, 100, 16, () -> {
-            try{
-                String[] separated = this.inputField.getText().split(":");
-                if(separated.length == 1){
-                    RockBottomAPI.getNet().init(separated[0], 8000, false);
-                }
-                else{
-                    int port = Integer.parseInt(separated[1]);
-                    RockBottomAPI.getNet().init(separated[0], port, false);
-                }
+            if(this.joinThread == null){
+                this.joinThread = new Thread(() -> {
+                    try{
+                        String[] separated = this.inputField.getText().split(":");
+                        if(separated.length == 1){
+                            RockBottomAPI.getNet().init(separated[0], 8000, false);
+                        }
+                        else{
+                            int port = Integer.parseInt(separated[1]);
+                            RockBottomAPI.getNet().init(separated[0], port, false);
+                        }
 
-                RockBottomAPI.logger().info("Attempting to join server");
-                RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
+                        RockBottomAPI.logger().info("Attempting to join server");
+                        RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
+                    }
+                    catch(Exception e){
+                        RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
+                    }
+                    this.joinThread = null;
+                }, "ServerJoin");
+                this.joinThread.start();
+
                 return true;
             }
-            catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
+            else{
+                return false;
             }
-            return false;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.connect"))));
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
@@ -61,6 +71,11 @@ public class GuiJoinServer extends Gui{
     @Override
     public void onClosed(IGameInstance game){
         super.onClosed(game);
+
+        if(this.joinThread != null){
+            this.joinThread.interrupt();
+            this.joinThread = null;
+        }
 
         Settings settings = game.getSettings();
         String text = this.inputField.getText();
