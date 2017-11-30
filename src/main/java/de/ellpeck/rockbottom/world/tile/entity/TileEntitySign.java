@@ -7,7 +7,8 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class TileEntitySign extends TileEntity{
 
-    public final String[] text = new String[5];
+    public static final int TEXT_AMOUNT = 5;
+    public final String[] text = new String[TEXT_AMOUNT];
 
     public TileEntitySign(IWorld world, int x, int y, TileLayer layer){
         super(world, x, y, layer);

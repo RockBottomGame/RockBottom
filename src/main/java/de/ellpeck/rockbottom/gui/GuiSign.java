@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketSignText;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
 import org.newdawn.slick.Input;
 
@@ -39,10 +40,7 @@ public class GuiSign extends Gui{
         for(int i = 0; i < this.tile.text.length; i++){
             int finalI = i;
 
-            ComponentInputField field = new ComponentInputField(this, this.width/2-100, 5+i*14, 200, 12, true, true, i == 0, 35, true, strg -> {
-                this.tile.text[finalI] = strg;
-                this.tile.world.setDirty(this.tile.x, this.tile.y);
-            });
+            ComponentInputField field = new ComponentInputField(this, this.width/2-100, 5+i*14, 200, 12, true, true, i == 0, 35, true, strg -> this.tile.text[finalI] = strg);
             field.setText(this.tile.text[i]);
             this.inputFields.add(field);
         }
@@ -123,5 +121,19 @@ public class GuiSign extends Gui{
     @Override
     public boolean canCloseWithInvKey(){
         return true;
+    }
+
+    @Override
+    public void onClosed(IGameInstance game){
+        super.onClosed(game);
+
+        this.tile.world.setDirty(this.tile.x, this.tile.y);
+
+        if(this.tile.world.isServer()){
+            this.tile.sendToClients();
+        }
+        else if(this.tile.world.isClient()){
+            RockBottomAPI.getNet().sendToServer(new PacketSignText(this.tile.x, this.tile.y, this.tile.text));
+        }
     }
 }
