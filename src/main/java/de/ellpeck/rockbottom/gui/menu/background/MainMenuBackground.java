@@ -79,7 +79,7 @@ public class MainMenuBackground{
 
         IAnimation logo = manager.getAnimation(RES_LOGO);
 
-        float scale = 0.75F;
+        float scale = 0.7F;
         float width = logo.getFrameWidth()*scale;
         float height = logo.getFrameHeight()*scale;
         float x = g.getWidthInGui()/2F-width/2F;
@@ -93,7 +93,7 @@ public class MainMenuBackground{
                 this.hoverPauseTime = 0;
             }
 
-            logo.drawRow(this.hoverStartTime, 0, x, 0, width, height, Colors.WHITE);
+            logo.drawRow(this.hoverStartTime, 0, x, 10, width, height, Colors.WHITE);
         }
         else{
             if(this.hoverPauseTime <= 0){
@@ -101,7 +101,7 @@ public class MainMenuBackground{
                 this.hoverStartTime = 0;
             }
 
-            logo.drawFrame(0, logo.getFrameByTime(0, this.hoverPauseTime), x, 0, width, height, Colors.WHITE);
+            logo.drawFrame(0, logo.getFrameByTime(0, this.hoverPauseTime), x, 10, width, height, Colors.WHITE);
         }
     }
 }
