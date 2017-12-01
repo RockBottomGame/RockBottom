@@ -332,6 +332,7 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     public void quitWorld(){
+        boolean hadWorld = this.world != null;
         super.quitWorld();
 
         if(this.player != null){
@@ -339,21 +340,21 @@ public class RockBottom extends AbstractGame implements InputListener{
                 RockBottomAPI.logger().info("Sending disconnection packet");
                 RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
             }
-        }
 
-        if(this.player != null){
             RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(this.player, this.player instanceof ConnectedPlayer));
             this.player = null;
         }
 
-        if(this.guiManager != null){
-            this.guiManager.closeGui();
-            this.guiManager.updateDimensions();
-            this.guiManager.openGui(new GuiMainMenu());
-        }
+        if(hadWorld){
+            if(this.guiManager != null){
+                this.guiManager.closeGui();
+                this.guiManager.updateDimensions();
+                this.guiManager.openGui(new GuiMainMenu());
+            }
 
-        if(this.toaster != null){
-            this.toaster.cancelAllToasts();
+            if(this.toaster != null){
+                this.toaster.cancelAllToasts();
+            }
         }
     }
 
