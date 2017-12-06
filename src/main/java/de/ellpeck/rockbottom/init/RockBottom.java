@@ -298,6 +298,13 @@ public class RockBottom extends AbstractGame implements InputListener{
             }
         }
 
+        if(RockBottomAPI.getNet().isClient()){
+            if(!RockBottomAPI.getNet().isConnectedToServer()){
+                this.quitWorld();
+                this.guiManager.openGui(new GuiInformation(this.guiManager.getGui(), 0.5F, this.assetManager.localize(RockBottomAPI.createInternalRes("info.reject.server_down"))));
+            }
+        }
+
         this.guiManager.update(this);
         this.toaster.update();
     }
@@ -332,7 +339,6 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     public void quitWorld(){
-        boolean hadWorld = this.world != null;
         super.quitWorld();
 
         if(this.player != null){
@@ -345,16 +351,14 @@ public class RockBottom extends AbstractGame implements InputListener{
             this.player = null;
         }
 
-        if(hadWorld){
-            if(this.guiManager != null){
-                this.guiManager.closeGui();
-                this.guiManager.updateDimensions();
-                this.guiManager.openGui(new GuiMainMenu());
-            }
+        if(this.guiManager != null){
+            this.guiManager.closeGui();
+            this.guiManager.updateDimensions();
+            this.guiManager.openGui(new GuiMainMenu());
+        }
 
-            if(this.toaster != null){
-                this.toaster.cancelAllToasts();
-            }
+        if(this.toaster != null){
+            this.toaster.cancelAllToasts();
         }
     }
 

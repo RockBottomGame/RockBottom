@@ -93,6 +93,8 @@ public class DataManager implements IDataManager{
     private final File gameDataFile;
     private final File settingsFile;
     private final File commandPermissionFile;
+    private final File whitelistFile;
+    private final File blacklistFile;
     private final File modSettingsFile;
     private final File playerDesignFile;
     private final DataSet gameInfo = new DataSet();
@@ -108,6 +110,8 @@ public class DataManager implements IDataManager{
         this.playerDesignFile = new File(this.gameDirectory, "player_design.dat");
         this.settingsFile = new File(this.gameDirectory, "settings.properties");
         this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.properties");
+        this.whitelistFile =new File(this.gameDirectory, "whitelist.properties");
+        this.blacklistFile = new File(this.gameDirectory, "blacklist.properties");
         this.modSettingsFile = new File(this.gameDirectory, "mod_settings.properties");
 
         if(!game.isDedicatedServer()){
@@ -158,6 +162,16 @@ public class DataManager implements IDataManager{
     @Override
     public File getCommandPermsFile(){
         return this.commandPermissionFile;
+    }
+
+    @Override
+    public File getWhitelistFile(){
+        return this.whitelistFile;
+    }
+
+    @Override
+    public File getBlacklistFile(){
+        return this.blacklistFile;
     }
 
     @Override

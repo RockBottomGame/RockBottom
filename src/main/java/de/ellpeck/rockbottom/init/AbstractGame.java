@@ -138,12 +138,6 @@ public abstract class AbstractGame implements IGameInstance{
             }
         }
 
-        if(RockBottomAPI.getNet().isClient()){
-            if(!RockBottomAPI.getNet().isConnectedToServer()){
-                this.quitWorld();
-            }
-        }
-
         this.update();
     }
 
@@ -227,10 +221,10 @@ public abstract class AbstractGame implements IGameInstance{
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldUnloadEvent(this.world));
             this.world = null;
+        }
 
-            if(this.chatLog != null){
-                this.chatLog.clear();
-            }
+        if(this.chatLog != null){
+            this.chatLog.clear();
         }
     }
 

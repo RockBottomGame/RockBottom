@@ -42,6 +42,7 @@ public class PacketReject implements IPacket{
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
         context.disconnect();
+        game.quitWorld();
 
         IGuiManager manager = game.getGuiManager();
         manager.openGui(new GuiInformation(manager.getGui(), 0.5F, this.text.getDisplayWithChildren(game, game.getAssetManager())));

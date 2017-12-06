@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.ResetMovedPlayerEvent;
+import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
@@ -51,9 +52,10 @@ public class ConnectedPlayer extends EntityPlayer{
     @Override
     public void update(IGameInstance game){
         super.update(game);
+        INetHandler net = RockBottomAPI.getNet();
 
         if(this.ticksExisted%80 == 0){
-            if(!RockBottomAPI.getNet().getConnectedClients().contains(this.channel)){
+            if(!net.getConnectedClients().contains(this.channel)){
                 game.enqueueAction((inst, object) -> disconnectPlayer(inst, this), null);
             }
 
@@ -89,6 +91,13 @@ public class ConnectedPlayer extends EntityPlayer{
             this.climbingCalcTicks = 0;
         }
 
+        if(net.isWhitelistEnabled() && !net.isWhitelisted(this.getUniqueId())){
+            this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"))));
+        }
+        else if(net.isBlacklisted(this.getUniqueId())){
+            this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"))));
+        }
+
         if(this.isClimbing){
             this.climbingCalcTicks++;
         }
@@ -97,7 +106,7 @@ public class ConnectedPlayer extends EntityPlayer{
         }
 
         if(this.lastX != this.x || this.lastY != this.y){
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing), this.x, this.y, this);
+            net.sendToAllPlayersWithLoadedPosExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing), this.x, this.y, this);
 
             this.lastX = this.x;
             this.lastY = this.y;

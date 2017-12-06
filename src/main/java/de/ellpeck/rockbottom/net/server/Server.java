@@ -1,9 +1,12 @@
 package de.ellpeck.rockbottom.net.server;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
+import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.net.decode.PacketDecoder;
 import de.ellpeck.rockbottom.net.encode.PacketEncoder;
+import de.ellpeck.rockbottom.net.server.settings.Blacklist;
+import de.ellpeck.rockbottom.net.server.settings.CommandPermissions;
+import de.ellpeck.rockbottom.net.server.settings.Whitelist;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -28,10 +31,16 @@ public class Server{
     public final Channel channel;
     public final ChannelGroup connectedChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private final EventLoopGroup group;
-    public CommandPermissions commandPermissions = new CommandPermissions();
+
+    public final CommandPermissions commandPermissions = new CommandPermissions();
+    public final Whitelist whitelist = new Whitelist();
+    public final Blacklist blacklist = new Blacklist();
 
     public Server(String ip, int port) throws Exception{
-        RockBottomAPI.getGame().getDataManager().loadPropSettings(this.commandPermissions);
+        IDataManager data = RockBottomAPI.getGame().getDataManager();
+        data.loadPropSettings(this.commandPermissions);
+        data.loadPropSettings(this.whitelist);
+        data.loadPropSettings(this.blacklist);
 
         this.group = Epoll.isAvailable() ?
                 new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollServer", true)) :

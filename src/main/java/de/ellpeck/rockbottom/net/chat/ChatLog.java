@@ -16,10 +16,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.log.Logging;
-import de.ellpeck.rockbottom.net.chat.command.CommandHelp;
-import de.ellpeck.rockbottom.net.chat.command.CommandSpawnItem;
-import de.ellpeck.rockbottom.net.chat.command.CommandStopServer;
-import de.ellpeck.rockbottom.net.chat.command.CommandTeleport;
+import de.ellpeck.rockbottom.net.chat.command.*;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 
 import java.util.ArrayList;
@@ -36,6 +33,8 @@ public class ChatLog implements IChatLog{
         new CommandStopServer().register();
         new CommandSpawnItem().register();
         new CommandTeleport().register();
+        new CommandWhitelist().register();
+        new CommandBlacklist().register();
     }
 
     private final List<ChatComponent> messages = new ArrayList<>();

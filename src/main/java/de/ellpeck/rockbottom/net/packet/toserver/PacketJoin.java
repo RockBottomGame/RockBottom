@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
@@ -67,32 +68,42 @@ public class PacketJoin implements IPacket{
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context){
         IWorld world = game.getWorld();
-        ChatComponentTranslation reject;
+        ChatComponentTranslation reject = null;
 
-        ChatComponentTranslation mods = this.checkMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()));
-        if(mods == null){
-            if(world != null){
-                if(world.getPlayer(this.id) == null){
-                    AbstractEntityPlayer player = world.createPlayer(this.id, this.design, context.channel());
-                    player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getRegInfo()));
-                    world.addEntity(player);
+        INetHandler net = RockBottomAPI.getNet();
+        if(net.isWhitelistEnabled() && !net.isWhitelisted(this.id)){
+            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"));
+        }
+        else if(net.isBlacklisted(this.id)){
+            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"));
+        }
 
-                    reject = null;
-                    RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
+        if(reject == null){
+            ChatComponentTranslation mods = this.checkMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()));
+            if(mods == null){
+                if(world != null){
+                    if(world.getPlayer(this.id) == null){
+                        AbstractEntityPlayer player = world.createPlayer(this.id, this.design, context.channel());
+                        player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getRegInfo()));
+                        world.addEntity(player);
 
-                    RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.connect"), player.getName()));
+                        reject = null;
+                        RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
+
+                        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.connect"), player.getName()));
+                    }
+                    else{
+                        RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");
+                        reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.connected_already"));
+                    }
                 }
                 else{
-                    RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");
-                    reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.connected_already"));
+                    reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.starting_up"));
                 }
             }
             else{
-                reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.starting_up"));
+                reject = mods;
             }
-        }
-        else{
-            reject = mods;
         }
 
         if(reject != null){

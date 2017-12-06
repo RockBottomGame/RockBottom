@@ -5,7 +5,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
+import de.ellpeck.rockbottom.api.net.INetHandler;
+import de.ellpeck.rockbottom.net.server.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
@@ -353,14 +354,14 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public int getCommandLevel(){
         if(this.world.isServer()){
-            CommandPermissions permissions = RockBottomAPI.getNet().getCommandPermissions();
-            int level = permissions.getCommandLevel(this);
+            INetHandler net = RockBottomAPI.getNet();
+            int level = net.getCommandLevel(this);
 
             if(level < Constants.ADMIN_PERMISSION && RockBottomAPI.getNet().isThePlayer(this)){
                 level = Constants.ADMIN_PERMISSION;
 
-                permissions.setCommandLevel(this, level);
-                RockBottomAPI.getGame().getDataManager().savePropSettings(permissions);
+                net.setCommandLevel(this, level);
+                net.saveServerSettings();
 
                 RockBottomAPI.logger().info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+"!");
             }

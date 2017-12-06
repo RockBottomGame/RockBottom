@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.net;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.data.settings.CommandPermissions;
+import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.INetHandler;
@@ -13,6 +13,8 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.client.Client;
 import de.ellpeck.rockbottom.net.server.Server;
 import io.netty.channel.group.ChannelGroup;
+
+import java.util.UUID;
 
 public class NetHandler implements INetHandler{
 
@@ -90,16 +92,6 @@ public class NetHandler implements INetHandler{
     }
 
     @Override
-    public CommandPermissions getCommandPermissions(){
-        if(this.isServer()){
-            return this.server.commandPermissions;
-        }
-        else{
-            return null;
-        }
-    }
-
-    @Override
     public void sendToServer(IPacket packet){
         if(this.isClient()){
             this.client.channel.writeAndFlush(packet);
@@ -152,6 +144,88 @@ public class NetHandler implements INetHandler{
                     player.sendPacket(packet);
                 }
             }
+        }
+    }
+
+    @Override
+    public int getCommandLevel(AbstractEntityPlayer player){
+        if(this.isServer()){
+            return this.server.commandPermissions.getCommandLevel(player);
+        }
+        else{
+            return 0;
+        }
+    }
+
+    @Override
+    public void setCommandLevel(AbstractEntityPlayer player, int level){
+        this.setCommandLevel(player.getUniqueId(), level);
+    }
+
+    @Override
+    public void setCommandLevel(UUID id, int level){
+        if(this.isServer()){
+            this.server.commandPermissions.setCommandLevel(id, level);
+        }
+    }
+
+    @Override
+    public void whitelist(UUID id){
+        if(this.isServer()){
+            this.server.whitelist.add(id);
+        }
+    }
+
+    @Override
+    public void removeWhitelist(UUID id){
+        if(this.isServer()){
+            this.server.whitelist.remove(id);
+        }
+    }
+
+    @Override
+    public boolean isWhitelisted(UUID id){
+        return !this.isServer() || this.server.whitelist.isWhitelisted(id);
+    }
+
+    @Override
+    public boolean isWhitelistEnabled(){
+        return this.isServer() && this.server.whitelist.isEnabled();
+    }
+
+    @Override
+    public void enableWhitelist(boolean enabled){
+        if(this.isServer()){
+            this.server.whitelist.setEnabled(enabled);
+        }
+    }
+
+    @Override
+    public void blacklist(UUID id){
+        if(this.isServer()){
+            this.server.blacklist.add(id);
+        }
+    }
+
+    @Override
+    public void removeBlacklist(UUID id){
+        if(this.isServer()){
+            this.server.blacklist.remove(id);
+        }
+    }
+
+    @Override
+    public boolean isBlacklisted(UUID id){
+        return !this.isServer() || this.server.blacklist.isBlacklisted(id);
+    }
+
+    @Override
+    public void saveServerSettings(){
+        if(this.isServer()){
+            IDataManager data = RockBottomAPI.getGame().getDataManager();
+            data.savePropSettings(this.server.commandPermissions);
+            data.savePropSettings(this.server.whitelist);
+            data.savePropSettings(this.server.blacklist);
         }
     }
 }
