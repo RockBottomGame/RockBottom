@@ -47,7 +47,7 @@ public class TilePebbles extends TileBasic{
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
         return null;
     }
 

@@ -24,8 +24,8 @@ public class TileLog extends TileBasic{
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y){
-        return world.getState(x, y).get(StaticTileProps.LOG_VARIANT).isNatural() ? null : super.getBoundBox(world, x, y);
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+        return world.getState(x, y).get(StaticTileProps.LOG_VARIANT).isNatural() ? null : super.getBoundBox(world, x, y, layer);
     }
 
     @Override

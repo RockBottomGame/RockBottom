@@ -23,8 +23,8 @@ public class TileLeaves extends TileBasic{
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y){
-        return world.getState(x, y).get(StaticTileProps.NATURAL) ? null : super.getBoundBox(world, x, y);
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+        return world.getState(x, y).get(StaticTileProps.NATURAL) ? null : super.getBoundBox(world, x, y, layer);
     }
 
     @Override
