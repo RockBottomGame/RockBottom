@@ -29,7 +29,7 @@ public class TileGrass extends TileBasic{
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         super.onChangeAround(world, x, y, layer, changedX, changedY, changedLayer);
 
-        if(world.getState(layer, x, y+1).getTile().isFullTile()){
+        if(world.getState(layer, x, y+1).getTile().hasSolidSurface(world, x, y+1, layer)){
             world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
         }
     }
