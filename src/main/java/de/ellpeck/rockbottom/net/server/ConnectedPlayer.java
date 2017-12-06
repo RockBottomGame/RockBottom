@@ -93,11 +93,11 @@ public class ConnectedPlayer extends EntityPlayer{
 
         if(net.isWhitelistEnabled() && !net.isWhitelisted(this.getUniqueId())){
             this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"))));
-            this.channel.disconnect();
+            disconnectPlayer(game, this);
         }
         else if(net.isBlacklisted(this.getUniqueId())){
             this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
-            this.channel.disconnect();
+            disconnectPlayer(game, this);
         }
 
         if(this.isClimbing){
