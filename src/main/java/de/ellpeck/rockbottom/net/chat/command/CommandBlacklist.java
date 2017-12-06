@@ -15,7 +15,7 @@ import java.util.UUID;
 public class CommandBlacklist extends Command{
 
     public CommandBlacklist(){
-        super(RockBottomAPI.createInternalRes("blacklist"), "Modifies blacklisted players. Params: <'add'/'remove'> <uuid>", 8);
+        super(RockBottomAPI.createInternalRes("blacklist"), "Modifies blacklisted players. Params: <'add'/'remove'> <uuid> [reason]", 8);
     }
 
     @Override
@@ -27,7 +27,15 @@ public class CommandBlacklist extends Command{
                 if(args.length > 1){
                     try{
                         UUID id = UUID.fromString(args[1]);
-                        net.blacklist(id);
+
+                        String reason = "";
+                        if(args.length > 2){
+                            for(int i = 2; i < args.length; i++){
+                                reason += args[i]+" ";
+                            }
+                        }
+
+                        net.blacklist(id, reason);
                         net.saveServerSettings();
                         return new ChatComponentText(FormattingCode.GREEN+"Added player "+id+" to the blacklist!");
                     }

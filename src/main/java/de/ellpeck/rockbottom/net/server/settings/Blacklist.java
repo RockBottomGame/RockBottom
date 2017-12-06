@@ -4,28 +4,25 @@ import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Blacklist implements IPropSettings{
 
-    private final Set<UUID> blacklistedPlayers = new HashSet<>();
+    private final Map<UUID, String> blacklistedPlayers = new HashMap<>();
 
     @Override
     public void load(Properties props){
         this.blacklistedPlayers.clear();
 
         for(String s : props.stringPropertyNames()){
-            this.blacklistedPlayers.add(UUID.fromString(s));
+            this.blacklistedPlayers.put(UUID.fromString(s), props.getProperty(s));
         }
     }
 
     @Override
     public void save(Properties props){
-        for(UUID id : this.blacklistedPlayers){
-            props.setProperty(id.toString(), "");
+        for(Map.Entry<UUID, String> entry : this.blacklistedPlayers.entrySet()){
+            props.setProperty(entry.getKey().toString(), entry.getValue());
         }
     }
 
@@ -39,8 +36,8 @@ public class Blacklist implements IPropSettings{
         return "Blacklist";
     }
 
-    public void add(UUID id){
-        this.blacklistedPlayers.add(id);
+    public void add(UUID id, String reason){
+        this.blacklistedPlayers.put(id, reason);
     }
 
     public void remove(UUID id){
@@ -48,6 +45,10 @@ public class Blacklist implements IPropSettings{
     }
 
     public boolean isBlacklisted(UUID id){
-        return this.blacklistedPlayers.contains(id);
+        return this.blacklistedPlayers.containsKey(id);
+    }
+
+    public String getBlacklistReason(UUID id){
+        return this.blacklistedPlayers.get(id);
     }
 }

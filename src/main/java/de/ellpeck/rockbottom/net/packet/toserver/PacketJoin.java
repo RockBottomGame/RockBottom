@@ -75,7 +75,7 @@ public class PacketJoin implements IPacket{
             reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"));
         }
         else if(net.isBlacklisted(this.id)){
-            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"));
+            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"), net.getBlacklistReason(this.id));
         }
 
         if(reject == null){

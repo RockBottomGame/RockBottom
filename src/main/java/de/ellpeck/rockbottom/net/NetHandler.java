@@ -201,9 +201,19 @@ public class NetHandler implements INetHandler{
     }
 
     @Override
-    public void blacklist(UUID id){
+    public void blacklist(UUID id, String reason){
         if(this.isServer()){
-            this.server.blacklist.add(id);
+            this.server.blacklist.add(id, reason);
+        }
+    }
+
+    @Override
+    public String getBlacklistReason(UUID id){
+        if(this.isServer()){
+            return this.server.blacklist.getBlacklistReason(id);
+        }
+        else{
+            return null;
         }
     }
 

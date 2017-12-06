@@ -95,7 +95,7 @@ public class ConnectedPlayer extends EntityPlayer{
             this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"))));
         }
         else if(net.isBlacklisted(this.getUniqueId())){
-            this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"))));
+            this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
         }
 
         if(this.isClimbing){
