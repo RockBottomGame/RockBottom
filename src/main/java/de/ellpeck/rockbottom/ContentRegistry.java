@@ -38,6 +38,7 @@ public final class ContentRegistry{
         new TileLadder().register();
         new TileChest().register();
         new TileSign().register();
+        new TileSapling().register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();

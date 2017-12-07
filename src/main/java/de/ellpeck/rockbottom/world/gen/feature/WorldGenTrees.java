@@ -54,7 +54,11 @@ public class WorldGenTrees implements IWorldGenerator{
             if(pos.getY() >= 0 && chunk.getBiomeInner(pos.getX(), pos.getY()).canTreeGrow(world, chunk, pos.getX(), pos.getY())){
                 alreadyGeneratedPositions.add(pos);
 
-                this.makeTree(chunk, world, pos.getX(), pos.getY());
+                int x = chunk.getX()+pos.getX();
+                int y = chunk.getY()+pos.getY();
+                if(this.makeTree(world, x, y, true)){
+                    this.makeTree(world, x, y, false);
+                }
             }
         }
     }
@@ -68,11 +72,11 @@ public class WorldGenTrees implements IWorldGenerator{
         return false;
     }
 
-    private void makeTree(IChunk chunk, IWorld world, int x, int y){
-        this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX()+x, chunk.getY()+y, chunk.getSeed()));
+    public boolean makeTree(IWorld world, int x, int y, boolean simulate){
+        this.treeRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
 
         String[] variant = TreeDesigns.DESIGNS[this.treeRandom.nextInt(TreeDesigns.DESIGNS.length)];
-        for(int subY = 0; subY < variant.length; subY++){
+        for(int subY = variant.length-1; subY >= 0; subY--){
             String line = variant[subY];
             int length = line.length();
 
@@ -85,15 +89,19 @@ public class WorldGenTrees implements IWorldGenerator{
                         int innerY = (variant.length-1-subY);
                         int theY = y+innerY;
 
-                        if(chunk.getStateInner(theX, theY).getTile().canReplace(world, theX, theY, TileLayer.MAIN)){
-                            if(innerY > 0 || !chunk.getStateInner(theX, theY-1).getTile().canReplace(world, theX, theY-1, TileLayer.MAIN)){
-                                chunk.setStateInner(theX, theY, state);
+                        if(((theX == x && theY == y) || world.getState(theX, theY).getTile().canReplace(world, theX, theY, TileLayer.MAIN)) && (innerY > 0 || !world.getState(theX, theY-1).getTile().canReplace(world, theX, theY-1, TileLayer.MAIN))){
+                            if(!simulate){
+                                world.setState(theX, theY, state);
                             }
+                        }
+                        else if(subY < variant.length-1){
+                            return false;
                         }
                     }
                 }
             }
         }
+        return true;
     }
 
     @Override

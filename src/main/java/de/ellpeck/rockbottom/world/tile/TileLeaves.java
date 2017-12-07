@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -34,7 +35,7 @@ public class TileLeaves extends TileBasic{
 
     @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
-        return Collections.emptyList();
+        return Util.RANDOM.nextDouble() >= 0.75 ? Collections.singletonList(new ItemInstance(GameContent.TILE_SAPLING)) : Collections.emptyList();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class TileLeaves extends TileBasic{
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(!world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-                int range = 3;
+                int range = 4;
 
                 for(int addX = -range; addX <= range; addX++){
                     for(int addY = -range; addY <= range; addY++){
