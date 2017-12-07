@@ -14,15 +14,12 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.init.RockBottom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuBackground{
 
     private static final IResourceName RES_LOGO = RockBottomAPI.createInternalRes("logo");
-
-    static{
-        RockBottomAPI.MAIN_MENU_THEMES.add(new BlankTheme());
-    }
 
     private final IMainMenuTheme theme;
     private final TileState[][] tiles = new TileState[IMainMenuTheme.TILE_AMOUNT][IMainMenuTheme.TILE_AMOUNT];
@@ -34,7 +31,7 @@ public class MainMenuBackground{
     private long hoverPauseTime;
 
     public MainMenuBackground(){
-        List<IMainMenuTheme> themes = RockBottomAPI.MAIN_MENU_THEMES;
+        List<IMainMenuTheme> themes = new ArrayList<>(RockBottomAPI.MAIN_MENU_THEMES.getUnmodifiable().values());
         this.theme = themes.get(Util.RANDOM.nextInt(themes.size()));
     }
 

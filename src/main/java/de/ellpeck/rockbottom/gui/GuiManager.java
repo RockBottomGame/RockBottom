@@ -93,20 +93,12 @@ public class GuiManager implements IGuiManager{
         this.onScreenComponents.add(new ComponentHealth(null, (int)game.getGraphics().getWidthInGui()-3-maxHealthParts*13, (int)game.getGraphics().getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
-    private ISpecialCursor pickCursor(IGameInstance game){
-        for(ISpecialCursor cursor : RockBottomAPI.SPECIAL_CURSORS){
-            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), this, game.getInteractionManager())){
-                return cursor;
-            }
-        }
-        return null;
-    }
-
     public void update(RockBottom game){
+        IAssetManager manager = game.getAssetManager();
         if(!game.getSettings().hardwareCursor && Mouse.isInsideWindow()){
-            ISpecialCursor cursor = this.pickCursor(game);
+            ISpecialCursor cursor = manager.pickCurrentCursor(game);
             if(cursor != this.currentCursor){
-                game.getAssetManager().setCursor(game, cursor);
+                manager.setCursor(game, cursor);
                 this.currentCursor = cursor;
             }
         }

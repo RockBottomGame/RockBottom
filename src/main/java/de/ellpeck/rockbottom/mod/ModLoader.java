@@ -169,7 +169,7 @@ public class ModLoader implements IModLoader{
         this.activeMods.sort(comp);
         this.disabledMods.sort(comp);
 
-        RockBottomAPI.logger().info("----- Loaded Mods -----");
+        RockBottomAPI.logger().info("---------- Loaded Mods ----------");
         for(IMod mod : this.allMods){
             String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")";
             if(this.modSettings.isDisabled(mod.getId())){
@@ -177,7 +177,7 @@ public class ModLoader implements IModLoader{
             }
             RockBottomAPI.logger().info(s);
         }
-        RockBottomAPI.logger().info("-----------------------");
+        RockBottomAPI.logger().info("---------------------------------");
     }
 
     @Override

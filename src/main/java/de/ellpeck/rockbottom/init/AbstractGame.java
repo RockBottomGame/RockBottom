@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
@@ -157,10 +158,11 @@ public abstract class AbstractGame implements IGameInstance{
         modLoader.postInit();
         modLoader.postPostInit();
 
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_REGISTRY.getSize()+" tiles!");
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.TILE_STATE_REGISTRY.getSize()+" tile states!");
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ITEM_REGISTRY.getSize()+" items!");
-        RockBottomAPI.logger().info("Registered "+RockBottomAPI.ENTITY_REGISTRY.getSize()+" entities!");
+        RockBottomAPI.logger().info("--------- Registry Info ---------");
+        for(IRegistry registry : RockBottomAPI.getAllRegistries()){
+            RockBottomAPI.logger().info(registry+" @ "+registry.getSize()+" entries");
+        }
+        RockBottomAPI.logger().info("---------------------------------");
     }
 
     protected void update(){

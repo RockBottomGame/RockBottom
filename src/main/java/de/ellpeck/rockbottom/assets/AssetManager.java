@@ -23,6 +23,7 @@ import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
 import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
+import de.ellpeck.rockbottom.gui.menu.background.BlankTheme;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
@@ -46,13 +47,16 @@ public class AssetManager implements IAssetManager{
         new SoundLoader().register();
         new TextureLoader().register();
 
-        RockBottomAPI.SPECIAL_CURSORS.add(new CursorPointer());
-        RockBottomAPI.SPECIAL_CURSORS.add(new CursorFinger());
-        RockBottomAPI.SPECIAL_CURSORS.add(new CursorClosedHand());
-        RockBottomAPI.SPECIAL_CURSORS.add(new CursorOpenHand());
+        RockBottomAPI.SPECIAL_CURSORS.register(0, new CursorPointer());
+        RockBottomAPI.SPECIAL_CURSORS.register(1, new CursorFinger());
+        RockBottomAPI.SPECIAL_CURSORS.register(2, new CursorClosedHand());
+        RockBottomAPI.SPECIAL_CURSORS.register(3, new CursorOpenHand());
+
+        RockBottomAPI.MAIN_MENU_THEMES.register(0, new BlankTheme());
     }
 
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
+    private final List<ISpecialCursor> sortedCursors = new ArrayList<>();
     private final Map<ISpecialCursor, Cursor> cursors = new HashMap<>();
     private ISound missingSound;
     private ITexture missingTexture;
@@ -107,18 +111,20 @@ public class AssetManager implements IAssetManager{
 
         this.currentFont = this.getFont(RockBottomAPI.createInternalRes("default"));
         this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
-
-        this.setCursor(game, null);
     }
 
     public void loadCursors(){
         if(!this.cursors.isEmpty()){
             this.cursors.clear();
         }
+        if(!this.sortedCursors.isEmpty()){
+            this.sortedCursors.clear();
+        }
 
-        RockBottomAPI.SPECIAL_CURSORS.sort(Comparator.comparingInt(ISpecialCursor:: getPriority).reversed());
+        this.sortedCursors.addAll(RockBottomAPI.SPECIAL_CURSORS.getUnmodifiable().values());
+        this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor:: getPriority).reversed());
 
-        for(ISpecialCursor cursor : RockBottomAPI.SPECIAL_CURSORS){
+        for(ISpecialCursor cursor : this.sortedCursors){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
                 int width = texture.getWidth();
@@ -334,5 +340,15 @@ public class AssetManager implements IAssetManager{
     @Override
     public SimpleDateFormat getLocalizedDateFormat(){
         return new SimpleDateFormat(this.localize(RockBottomAPI.createInternalRes("date_format")));
+    }
+
+    @Override
+    public ISpecialCursor pickCurrentCursor(IGameInstance game){
+        for(ISpecialCursor cursor : this.sortedCursors){
+            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), game.getGuiManager(), game.getInteractionManager())){
+                return cursor;
+            }
+        }
+        return null;
     }
 }
