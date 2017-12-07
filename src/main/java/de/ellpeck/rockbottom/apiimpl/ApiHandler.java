@@ -34,7 +34,6 @@ import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -186,29 +185,30 @@ public class ApiHandler implements IApiHandler{
                     if(object.world.isPosLoaded(x, y)){
                         for(TileLayer layer : TileLayer.getAllLayers()){
                             TileState state = object.world.getState(x, y);
+                            List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, tempBox, tempBoxMotion);
 
-                            if(object.canCollideWithTile(state, x, y, layer)){
-                                if(layer.canCollide(object)){
-                                    List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, tempBox, tempBoxMotion);
-                                    object.onTileCollision(x, y, layer, state, tempBox, tempBoxMotion, tileBoxes);
-                                    boxes.addAll(tileBoxes);
-                                }
-                                else{
-                                    object.onTileCollision(x, y, layer, state, tempBox, tempBoxMotion, Collections.emptyList());
-                                }
+                            if(layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)){
+                                object.onTileCollision(x, y, layer, state, tempBox, tempBoxMotion, tileBoxes);
+                                boxes.addAll(tileBoxes);
                             }
+
+                            object.onTileIntersection(x, y, layer, state, tempBox, tempBoxMotion, tileBoxes);
                         }
                     }
                 }
             }
 
-            List<Entity> entities = object.world.getEntities(tempBoxMotion, entity -> entity.canCollideWith(object, tempBox, tempBoxMotion));
+            List<Entity> entities = object.world.getEntities(tempBoxMotion);
             for(Entity entity : entities){
                 BoundBox entityTempBox = entity.getBoundingBox().copy().add(entity.x, entity.y);
                 BoundBox entityTempBoxMotion = entityTempBox.copy().add(entity.motionX, entity.motionY);
 
-                object.onEntityCollision(entity, tempBox, tempBoxMotion, entityTempBox, entityTempBoxMotion);
-                boxes.add(entityTempBox);
+                if(entity.canCollideWith(object, tempBox, tempBoxMotion)){
+                    object.onEntityCollision(entity, tempBox, tempBoxMotion, entityTempBox, entityTempBoxMotion);
+                    boxes.add(entityTempBox);
+                }
+
+                object.onEntityIntersection(entity, tempBox, tempBoxMotion, entityTempBox, entityTempBoxMotion);
             }
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, tempBoxMotion, boxes));
