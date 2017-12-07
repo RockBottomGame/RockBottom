@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
@@ -30,14 +31,16 @@ public class TileSapling extends TileBasic{
 
     @Override
     public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
-        TileState state = world.getState(layer, x, y);
-        if(state.get(StaticTileProps.SAPLING_GROWTH) >= 4){
-            if(GEN.makeTree(world, x, y, true)){
-                GEN.makeTree(world, x, y, false);
+        if(Util.RANDOM.nextDouble() >= 0.75){
+            TileState state = world.getState(layer, x, y);
+            if(state.get(StaticTileProps.SAPLING_GROWTH) >= 4){
+                if(GEN.makeTree(world, x, y, true)){
+                    GEN.makeTree(world, x, y, false);
+                }
             }
-        }
-        else{
-            world.setState(layer, x, y, state.cycleProp(StaticTileProps.SAPLING_GROWTH));
+            else{
+                world.setState(layer, x, y, state.cycleProp(StaticTileProps.SAPLING_GROWTH));
+            }
         }
     }
 
