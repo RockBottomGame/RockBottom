@@ -73,10 +73,14 @@ public class GuiMainMenu extends Gui{
         }
         else{
             this.components.add(new ComponentButton(this, 2, 14, 65, 10, () -> {
-                loggedInUsername = null;
-                loginComplete = false;
+                this.components.add(0, new ComponentConfirmationPopup(this, 27, 19, aBoolean -> {
+                    if(aBoolean){
+                        loggedInUsername = null;
+                        loginComplete = false;
 
-                this.init(game);
+                        this.init(game);
+                    }
+                }));
                 return true;
             }, "Login Again"));
         }
