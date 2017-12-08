@@ -34,7 +34,6 @@ public class Graphics implements IGraphics{
     private final RockBottom game;
 
     public boolean isDebug;
-    public boolean isLightDebug;
     public boolean isItemInfoDebug;
     public boolean isChunkBorderDebug;
     public boolean isGuiDebug;
@@ -302,11 +301,6 @@ public class Graphics implements IGraphics{
     @Override
     public boolean isDebug(){
         return this.isDebug;
-    }
-
-    @Override
-    public boolean isLightDebug(){
-        return this.isLightDebug;
     }
 
     @Override

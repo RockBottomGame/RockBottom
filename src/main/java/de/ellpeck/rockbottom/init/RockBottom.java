@@ -436,10 +436,6 @@ public class RockBottom extends AbstractGame implements InputListener{
             this.graphics.isDebug = !this.graphics.isDebug;
             return;
         }
-        else if(key == Input.KEY_F2){
-            this.graphics.isLightDebug = !this.graphics.isLightDebug;
-            return;
-        }
         else if(key == Input.KEY_F3){
             this.assetManager.load(this);
             this.assetManager.loadCursors();

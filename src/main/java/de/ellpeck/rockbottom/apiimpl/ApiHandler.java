@@ -383,7 +383,7 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public int getColorByLight(int light, TileLayer layer){
-        return Colors.multiply(WorldRenderer.MAIN_COLORS[RockBottomAPI.getGame().getGraphics().isLightDebug() ? Constants.MAX_LIGHT : light], layer.getRenderLightModifier());
+        return Colors.multiply(WorldRenderer.MAIN_COLORS[light], layer.getRenderLightModifier());
     }
 
     @Override
