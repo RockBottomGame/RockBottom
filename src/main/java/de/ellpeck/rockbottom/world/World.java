@@ -282,7 +282,7 @@ public class World implements IWorld{
         IGameInstance game = RockBottomAPI.getGame();
         if(!game.isDedicatedServer()){
             AbstractEntityPlayer player = game.getPlayer();
-            double dist = Util.distanceSq(x, y, player.x, player.y);
+            double dist = Util.distanceSq(x+0.5D, y, player.x, player.y);
             if(dist <= 15D){
                 byte newLight = (byte)(0.85D*(15D-dist));
                 if(light < newLight){
