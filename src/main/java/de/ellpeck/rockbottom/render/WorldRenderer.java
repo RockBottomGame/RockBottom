@@ -94,7 +94,7 @@ public class WorldRenderer{
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
-                    int light = world.getCombinedLight(Util.floor(entity.x), Util.floor(entity.y));
+                    int light = world.getCombinedVisualLight(Util.floor(entity.x), Util.floor(entity.y));
                     renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
                 }
             }

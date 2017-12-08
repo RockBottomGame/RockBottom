@@ -276,6 +276,25 @@ public class World implements IWorld{
     }
 
     @Override
+    public byte getCombinedVisualLight(int x, int y){
+        byte light = this.getCombinedLight(x, y);
+
+        IGameInstance game = RockBottomAPI.getGame();
+        if(!game.isDedicatedServer()){
+            AbstractEntityPlayer player = game.getPlayer();
+            double dist = Util.distanceSq(x, y, player.x, player.y);
+            if(dist <= 15D){
+                byte newLight = (byte)(0.85D*(15D-dist));
+                if(light < newLight){
+                    light = newLight;
+                }
+            }
+        }
+
+        return light;
+    }
+
+    @Override
     public byte getSkyLight(int x, int y){
         IChunk chunk = this.getChunk(x, y);
         return chunk.getSkyLight(x, y);

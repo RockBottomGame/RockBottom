@@ -350,7 +350,7 @@ public class ApiHandler implements IApiHandler{
     @Override
     public int[] interpolateLight(IWorld world, int x, int y){
         if(!RockBottomAPI.getGame().getSettings().smoothLighting){
-            int light = world.getCombinedLight(x, y);
+            int light = world.getCombinedVisualLight(x, y);
             return new int[]{light, light, light, light};
         }
         else{
@@ -359,7 +359,7 @@ public class ApiHandler implements IApiHandler{
             for(int i = 0; i < dirs.length; i++){
                 Direction dir = dirs[i];
                 if(world.isPosLoaded(x+dir.x, y+dir.y)){
-                    lightAround[i] = world.getCombinedLight(x+dir.x, y+dir.y);
+                    lightAround[i] = world.getCombinedVisualLight(x+dir.x, y+dir.y);
                 }
             }
 

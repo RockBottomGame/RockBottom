@@ -33,7 +33,7 @@ public class ParticleManager implements IParticleManager{
 
     public void render(IGameInstance game, IAssetManager manager, IGraphics g, World world, float transX, float transY){
         this.particles.forEach(particle -> {
-            int light = world.getCombinedLight(Util.floor(particle.x), Util.floor(particle.y));
+            int light = world.getCombinedVisualLight(Util.floor(particle.x), Util.floor(particle.y));
             particle.render(game, manager, g, (float)particle.x-transX, (float)-particle.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
         });
     }
