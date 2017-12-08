@@ -48,4 +48,9 @@ public class TileSapling extends TileBasic{
     public boolean canPlaceInLayer(TileLayer layer){
         return layer == TileLayer.MAIN;
     }
+
+    @Override
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+        return world.getState(x, y-1).getTile().canKeepPlants(world, x, y-1, layer);
+    }
 }
