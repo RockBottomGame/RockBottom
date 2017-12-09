@@ -887,10 +887,10 @@ public class World implements IWorld{
     }
 
     public float getSkylightModifier(boolean doMinMax){
-        float mod = Math.min(1F, (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY));
+        float mod = (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY);
 
         if(doMinMax){
-            return Math.max(0.05F, mod)+0.1F;
+            return Math.min(1F, Math.max(0.05F, mod)+0.1F);
         }
         else{
             return mod;
