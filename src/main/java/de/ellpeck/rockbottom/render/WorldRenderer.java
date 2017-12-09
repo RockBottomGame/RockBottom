@@ -39,7 +39,6 @@ public class WorldRenderer{
         for(int i = 0; i < SKY_COLORS.length; i++){
             float percent = (float)i/(float)SKY_COLORS.length;
             SKY_COLORS[i] = Colors.multiply(sky, percent);
-            System.out.println("Sky color "+i+" multiplied by "+percent);
         }
     }
 
