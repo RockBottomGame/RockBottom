@@ -39,13 +39,14 @@ public class WorldRenderer{
         for(int i = 0; i < SKY_COLORS.length; i++){
             float percent = (float)i/(float)SKY_COLORS.length;
             SKY_COLORS[i] = Colors.multiply(sky, percent);
+            System.out.println("Sky color "+i+" multiplied by "+percent);
         }
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IGraphics g, World world, EntityPlayer player, InteractionManager input){
         float scale = g.getWorldScale();
 
-        int skyLight = (int)(world.getSkylightModifier()*(SKY_COLORS.length-1));
+        int skyLight = (int)(world.getSkylightModifier(false)*(SKY_COLORS.length-1));
         int color = SKY_COLORS[skyLight];
         g.backgroundColor(color);
 

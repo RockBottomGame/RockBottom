@@ -564,7 +564,7 @@ public class World implements IWorld{
 
     @Override
     public boolean isDaytime(){
-        float light = this.getSkylightModifier();
+        float light = this.getSkylightModifier(true);
         return light >= 0.7F;
     }
 
@@ -886,8 +886,14 @@ public class World implements IWorld{
         }
     }
 
-    public float getSkylightModifier(){
-        float mod = (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY);
-        return Math.min(1F, Math.max(0.15F, mod)+0.1F);
+    public float getSkylightModifier(boolean doMinMax){
+        float mod = Math.min(1F, (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY));
+
+        if(doMinMax){
+            return Math.max(0.05F, mod)+0.1F;
+        }
+        else{
+            return mod;
+        }
     }
 }

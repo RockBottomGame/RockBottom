@@ -564,7 +564,7 @@ public class Chunk implements IChunk{
     @Override
     public byte getCombinedLightInner(int x, int y){
         byte artificial = this.getArtificialLightInner(x, y);
-        byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier());
+        byte sky = (byte)(this.getSkylightInner(x, y)*this.world.getSkylightModifier(true));
 
         return (byte)Math.min(Constants.MAX_LIGHT, artificial+sky);
     }
