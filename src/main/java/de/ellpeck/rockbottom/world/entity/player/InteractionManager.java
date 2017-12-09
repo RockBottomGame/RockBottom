@@ -194,20 +194,21 @@ public class InteractionManager implements IInteractionManager{
 
                 if(player.world.isPosLoaded(x, y)){
                     TileLayer layer = getInteractionLayer(game, player);
-                    if(layer != null){
-                        if(Settings.KEY_DESTROY.isDown()){
-                            if(this.breakTileX != x || this.breakTileY != y){
-                                this.breakProgress = 0;
+
+                    if(Settings.KEY_DESTROY.isDown()){
+                        if(this.breakTileX != x || this.breakTileY != y){
+                            this.breakProgress = 0;
+                        }
+
+                        if(this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)){
+                            if(RockBottomAPI.getNet().isClient()){
+                                RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
                             }
 
-                            if(this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)){
-                                if(RockBottomAPI.getNet().isClient()){
-                                    RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
-                                }
-
-                                this.attackCooldown = 5;
-                            }
-                            else{
+                            this.attackCooldown = 40;
+                        }
+                        else{
+                            if(layer != null){
                                 Tile tile = player.world.getState(layer, x, y).getTile();
                                 if(defaultTileBreakingCheck(player.world, x, y, layer, mousedTileX, mousedTileY, player) && tile.canBreak(player.world, x, y, layer)){
                                     float hardness = tile.getHardness(player.world, x, y, layer);
@@ -246,11 +247,16 @@ public class InteractionManager implements IInteractionManager{
                                     this.breakProgress = 0;
                                 }
                             }
+                            else{
+                                this.breakProgress = 0;
+                            }
                         }
-                        else{
-                            this.breakProgress = 0;
-                        }
+                    }
+                    else{
+                        this.breakProgress = 0;
+                    }
 
+                    if(layer != null){
                         if(this.placeCooldown <= 0){
                             if(Settings.KEY_PLACE.isDown()){
                                 if(interact(player, layer, mousedTileX, mousedTileY)){
@@ -262,9 +268,6 @@ public class InteractionManager implements IInteractionManager{
                                 }
                             }
                         }
-                    }
-                    else{
-                        this.breakProgress = 0;
                     }
                 }
                 else{
