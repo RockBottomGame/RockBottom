@@ -66,7 +66,7 @@ public final class DebugRenderer{
             if(!RockBottomAPI.getNet().isClient()){
                 list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
             }
-            list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedLight(x, y));
+            list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedVisualLight(x, y));
             list.add("Tile: "+world.getState(x, y)+" / "+world.getState(TileLayer.BACKGROUND, x, y));
             list.add("Biome: "+world.getBiome(x, y).getName());
         }
