@@ -17,6 +17,7 @@ public class PacketChunk implements IPacket{
     private TileLayer[] layers;
     private int[] tileData;
     private byte[] lightData;
+    private short[] biomeData = new short[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
     private int chunkX;
     private int chunkY;
 
@@ -31,9 +32,10 @@ public class PacketChunk implements IPacket{
         this.layers = layers.toArray(new TileLayer[layers.size()]);
 
         int index = 0;
-        for(TileLayer layer : layers){
-            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+        int biomeIndex = 0;
+        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                for(TileLayer layer : layers){
                     this.tileData[index] = chunk.getWorld().getIdForState(chunk.getStateInner(layer, x, y));
 
                     this.lightData[index] = chunk.getSkylightInner(x, y);
@@ -41,6 +43,9 @@ public class PacketChunk implements IPacket{
 
                     index++;
                 }
+
+                this.biomeData[biomeIndex] = (short)chunk.getWorld().getIdForBiome(chunk.getBiomeInner(x, y));
+                biomeIndex++;
             }
         }
     }
@@ -63,6 +68,10 @@ public class PacketChunk implements IPacket{
             buf.writeInt(tile);
         }
         buf.writeBytes(this.lightData);
+
+        for(short biome : this.biomeData){
+            buf.writeShort(biome);
+        }
     }
 
     @Override
@@ -84,6 +93,10 @@ public class PacketChunk implements IPacket{
 
         this.lightData = new byte[amount*2];
         buf.readBytes(this.lightData);
+
+        for(int i = 0; i < this.biomeData.length; i++){
+            this.biomeData[i] = buf.readShort();
+        }
     }
 
     @Override
@@ -97,9 +110,10 @@ public class PacketChunk implements IPacket{
             int amount = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*this.layers.length;
 
             int index = 0;
-            for(TileLayer layer : this.layers){
-                for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+            int biomeIndex = 0;
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    for(TileLayer layer : this.layers){
                         chunk.setStateInner(layer, x, y, chunk.getWorld().getStateForId(this.tileData[index]));
 
                         chunk.setSkylightInner(x, y, this.lightData[index]);
@@ -107,6 +121,9 @@ public class PacketChunk implements IPacket{
 
                         index++;
                     }
+
+                    chunk.setBiomeInner(x, y, chunk.getWorld().getBiomeForId(this.biomeData[biomeIndex]));
+                    biomeIndex++;
                 }
             }
 
