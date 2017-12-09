@@ -35,6 +35,7 @@ public class ChatLog implements IChatLog{
         new CommandTeleport().register();
         new CommandWhitelist().register();
         new CommandBlacklist().register();
+        new CommandTime().register();
     }
 
     private final List<ChatComponent> messages = new ArrayList<>();

@@ -33,6 +33,7 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketSound;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
@@ -100,25 +101,33 @@ public class World implements IWorld{
         }
     }
 
+    protected void updateChunks(IGameInstance game){
+        for(int i = 0; i < this.loadedChunks.size(); i++){
+            IChunk chunk = this.loadedChunks.get(i);
+            chunk.update(game);
+
+            if(chunk.shouldUnload()){
+                this.unloadChunk(chunk);
+                i--;
+            }
+        }
+    }
+
     public void update(AbstractGame game){
         this.checkListSync();
 
         if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
-            for(int i = 0; i < this.loadedChunks.size(); i++){
-                IChunk chunk = this.loadedChunks.get(i);
-                chunk.update(game);
-
-                if(chunk.shouldUnload()){
-                    this.unloadChunk(chunk);
-                    i--;
-                }
-            }
+            this.updateChunks(game);
 
             this.info.totalTimeInWorld++;
 
             this.info.currentWorldTime++;
             if(this.info.currentWorldTime >= Constants.TIME_PER_DAY){
                 this.info.currentWorldTime = 0;
+            }
+
+            if(this.isServer() && this.info.totalTimeInWorld%80 == 0){
+                RockBottomAPI.getNet().sendToAllPlayers(this, new PacketTime(this.info.currentWorldTime, this.info.totalTimeInWorld));
             }
 
             this.saveTicksCounter++;

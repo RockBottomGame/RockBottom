@@ -47,15 +47,7 @@ public class ClientWorld extends World{
         this.checkListSync();
 
         if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
-            for(int i = 0; i < this.loadedChunks.size(); i++){
-                IChunk chunk = this.loadedChunks.get(i);
-                chunk.update(game);
-
-                if(chunk.shouldUnload()){
-                    this.unloadChunk(chunk);
-                    i--;
-                }
-            }
+            this.updateChunks(game);
 
             this.info.totalTimeInWorld++;
 
