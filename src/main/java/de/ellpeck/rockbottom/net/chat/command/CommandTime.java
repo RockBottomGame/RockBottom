@@ -26,7 +26,7 @@ public class CommandTime extends Command{
             WorldInfo info = world.getWorldInfo();
 
             try{
-                int amount = Integer.parseInt(args[1])%Constants.TIME_PER_DAY;
+                int amount = Math.abs(Integer.parseInt(args[1]))%Constants.TIME_PER_DAY;
 
                 if("set".equals(args[0])){
                     info.currentWorldTime = amount;
