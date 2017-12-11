@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -25,6 +26,8 @@ import java.util.List;
 
 public class WorldRenderer{
 
+    private static final IResourceName SUN_RES = RockBottomAPI.createInternalRes("sun");
+    private static final IResourceName MOON_RES = RockBottomAPI.createInternalRes("moon");
     public static final int[] SKY_COLORS = new int[256];
     public static final int[] MAIN_COLORS = new int[Constants.MAX_LIGHT+1];
 
@@ -53,6 +56,30 @@ public class WorldRenderer{
         double height = g.getHeightInWorld();
         float transX = (float)(player.x-width/2);
         float transY = (float)(-player.y-height/2);
+
+        g.pushMatrix();
+        g.scale(g.getWorldScale(), g.getWorldScale());
+
+        int time = world.getWorldInfo().currentWorldTime;
+        float worldScale = game.getSettings().renderScale;
+        double radiusX = 11D/worldScale;
+        double radiusY = 7D/worldScale;
+
+        double sunAngle = (time/(double)Constants.TIME_PER_DAY)*130D+205D;
+        double sunRads = Math.toRadians(sunAngle);
+        float sunX = (float)(width/2D+Math.cos(sunRads)*radiusX);
+        float sunY = (float)(height+Math.sin(sunRads)*radiusY);
+        manager.getTexture(SUN_RES).draw(sunX-2.5F, sunY-2.5F, 5F, 5F);
+
+        double moonAngle = (time/(double)Constants.TIME_PER_DAY*3D)*360D+270D;
+        if(moonAngle <= 450D || moonAngle >= 1170D){
+            double moonRads = Math.toRadians(moonAngle);
+            float moonX = (float)(width/2D+Math.cos(moonRads)*radiusX);
+            float moonY = (float)(height+Math.sin(moonRads)*radiusY);
+            manager.getTexture(MOON_RES).draw(moonX-2F, moonY-2F, 4F, 4F);
+        }
+
+        g.popMatrix();
 
         int topLeftX = Util.toGridPos(transX);
         int topLeftY = Util.toGridPos(-transY+1);
