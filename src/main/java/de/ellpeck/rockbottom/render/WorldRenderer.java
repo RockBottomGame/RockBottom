@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
@@ -30,6 +31,7 @@ public class WorldRenderer{
     private static final IResourceName MOON_RES = RockBottomAPI.createInternalRes("moon");
     public static final int[] SKY_COLORS = new int[256];
     public static final int[] MAIN_COLORS = new int[Constants.MAX_LIGHT+1];
+    private final List<Pos2> starMap = new ArrayList<>();
 
     public static void init(){
         float step = 1F/(Constants.MAX_LIGHT+1);
@@ -47,8 +49,9 @@ public class WorldRenderer{
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IGraphics g, World world, EntityPlayer player, InteractionManager input){
         float scale = g.getWorldScale();
+        float skylightMod = world.getSkylightModifier(false);
 
-        int skyLight = (int)(world.getSkylightModifier(false)*(SKY_COLORS.length-1));
+        int skyLight = (int)(skylightMod*(SKY_COLORS.length-1));
         int color = SKY_COLORS[skyLight];
         g.backgroundColor(color);
 
@@ -62,6 +65,26 @@ public class WorldRenderer{
 
         int time = world.getWorldInfo().currentWorldTime;
         float worldScale = game.getSettings().renderScale;
+
+        float starAlpha = 1F-Math.min(1F, skylightMod+0.5F);
+        if(starAlpha <= 0F){
+            if(!this.starMap.isEmpty()){
+                this.starMap.clear();
+            }
+        }
+        else{
+            if(this.starMap.isEmpty()){
+                for(int i = 0; i < Util.RANDOM.nextInt(50)+30; i++){
+                    this.starMap.add(new Pos2(Util.RANDOM.nextInt(101), Util.RANDOM.nextInt(101)));
+                }
+            }
+
+            int starColor = Colors.multiplyA(Colors.WHITE, starAlpha);
+            for(Pos2 pos : this.starMap){
+                g.fillRect((float)((pos.getX()/100D)*width), (float)((pos.getY()/100D)*height), 0.1F, 0.1F, starColor);
+            }
+        }
+
         double radiusX = 11D/worldScale;
         double radiusY = 7D/worldScale;
 
