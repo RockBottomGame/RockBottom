@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.apiimpl;
 
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -409,25 +408,27 @@ public class ApiHandler implements IApiHandler{
     @Override
     public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate){
         if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof EntityItem)).isEmpty()){
-            Tile tileThere = player.world.getState(layer, x, y).getTile();
-            if(tileThere != tile && tileThere.canReplace(player.world, x, y, layer)){
-                if(InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer)){
-                    if(!simulate){
-                        tile.doPlace(player.world, x, y, layer, selected, player);
+            if(layer.canTileBeInLayer(player.world, x, y, tile)){
+                Tile tileThere = player.world.getState(layer, x, y).getTile();
+                if(tileThere != tile && tileThere.canReplace(player.world, x, y, layer)){
+                    if(InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer)){
+                        if(!simulate){
+                            tile.doPlace(player.world, x, y, layer, selected, player);
 
-                        if(removeItem){
-                            player.getInv().remove(player.getSelectedSlot(), 1);
-                        }
+                            if(removeItem){
+                                player.getInv().remove(player.getSelectedSlot(), 1);
+                            }
 
-                        TileState state = player.world.getState(layer, x, y);
-                        if(state.getTile() == tile){
-                            IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, state);
-                            if(sound != null){
-                                player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+                            TileState state = player.world.getState(layer, x, y);
+                            if(state.getTile() == tile){
+                                IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, state);
+                                if(sound != null){
+                                    player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+                                }
                             }
                         }
+                        return true;
                     }
-                    return true;
                 }
             }
         }

@@ -290,8 +290,11 @@ public class Chunk implements IChunk{
         }
 
         Tile newTile = tile.getTile();
-        Tile lastTile = this.getStateInner(layer, x, y).getTile();
+        if(!layer.canTileBeInLayer(this.world, this.x+x, this.y+y, newTile)){
+            throw new IllegalArgumentException("Tried setting tile "+tile+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
+        }
 
+        Tile lastTile = this.getStateInner(layer, x, y).getTile();
         if(newTile != lastTile){
             lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
