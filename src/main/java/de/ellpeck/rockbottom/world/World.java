@@ -292,8 +292,8 @@ public class World implements IWorld{
         if(!game.isDedicatedServer()){
             AbstractEntityPlayer player = game.getPlayer();
             double dist = Util.distanceSq(x+0.5D, y, player.x, player.y);
-            if(dist <= 25D){
-                byte newLight = (byte)(0.3D*(25D-dist));
+            if(dist <= 15D){
+                byte newLight = (byte)(0.2D*(15D-dist));
                 if(light < newLight){
                     light = newLight;
                 }
