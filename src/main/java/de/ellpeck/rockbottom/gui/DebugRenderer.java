@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,8 +68,14 @@ public final class DebugRenderer{
                 list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
             }
             list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedVisualLight(x, y));
-            list.add("Tile: "+world.getState(x, y)+" / "+world.getState(TileLayer.BACKGROUND, x, y));
             list.add("Biome: "+world.getBiome(x, y).getName());
+
+            list.add("");
+            for(TileLayer layer : TileLayer.getAllLayers()){
+                list.add(layer.getName()+": "+world.getState(layer, x, y).toString());
+            }
+            list.add("");
+
         }
 
         for(int i = 0; i < list.size(); i++){

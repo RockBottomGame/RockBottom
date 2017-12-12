@@ -499,18 +499,16 @@ public class World implements IWorld{
 
     @Override
     public void notifyNeighborsOfChange(int x, int y, TileLayer layer){
-        for(Direction direction : Direction.ADJACENT){
+        for(Direction direction : Direction.ADJACENT_INCLUDING_NONE){
             int offX = x+direction.x;
             int offY = y+direction.y;
 
             if(this.isPosLoaded(offX, offY)){
-                this.getState(layer, offX, offY).getTile().onChangeAround(this, offX, offY, layer, x, y, layer);
-            }
-        }
-
-        for(TileLayer other : TileLayer.getAllLayers()){
-            if(other != layer){
-                this.getState(other, x, y).getTile().onChangeAround(this, x, y, other, x, y, layer);
+                for(TileLayer other : TileLayer.getAllLayers()){
+                    if(direction != Direction.NONE || layer != other){
+                        this.getState(other, offX, offY).getTile().onChangeAround(this, offX, offY, other, x, y, layer);
+                    }
+                }
             }
         }
     }

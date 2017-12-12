@@ -291,14 +291,14 @@ public class Chunk implements IChunk{
 
         Tile newTile = tile.getTile();
         if(!layer.canTileBeInLayer(this.world, this.x+x, this.y+y, newTile)){
-            throw new IllegalArgumentException("Tried setting tile "+tile+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
+            throw new UnsupportedOperationException("Tried setting tile "+tile+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
         }
 
         Tile lastTile = this.getStateInner(layer, x, y).getTile();
         if(newTile != lastTile){
             lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
-            if(lastTile.canProvideTileEntity()){
+            if(layer.canHoldTileEntities() && lastTile.canProvideTileEntity()){
                 this.removeTileEntity(layer, this.x+x, this.y+y);
             }
         }
@@ -310,7 +310,7 @@ public class Chunk implements IChunk{
         }
 
         if(newTile != lastTile){
-            if(newTile.canProvideTileEntity()){
+            if(layer.canHoldTileEntities() && newTile.canProvideTileEntity()){
                 TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y, layer);
                 if(tileEntity != null){
                     this.addTileEntity(tileEntity);
@@ -347,6 +347,10 @@ public class Chunk implements IChunk{
 
     @Override
     public void addTileEntity(TileEntity tile){
+        if(!tile.layer.canHoldTileEntities()){
+            throw new UnsupportedOperationException("Tried adding tile entity "+tile+" at "+tile.x+", "+tile.y+" on layer "+tile.layer+" that doesn't allow tile entities!");
+        }
+
         Pos3 posVec = new Pos3(tile.x, tile.y, tile.layer.index());
         if(!this.tileEntityLookup.containsKey(posVec)){
             this.tileEntities.add(tile);

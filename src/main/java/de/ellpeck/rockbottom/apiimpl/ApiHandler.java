@@ -183,7 +183,7 @@ public class ApiHandler implements IApiHandler{
                 for(int y = Util.floor(tempBoxMotion.getMinY()); y < Util.ceil(tempBoxMotion.getMaxY()); y++){
                     if(object.world.isPosLoaded(x, y)){
                         for(TileLayer layer : TileLayer.getAllLayers()){
-                            TileState state = object.world.getState(x, y);
+                            TileState state = object.world.getState(layer, x, y);
                             List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, tempBox, tempBoxMotion);
 
                             if(layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)){

@@ -31,7 +31,6 @@ import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
@@ -227,27 +226,30 @@ public class GuiManager implements IGuiManager{
                     double tileX = g.getMousedTileX();
                     double tileY = g.getMousedTileY();
 
-                    TileLayer layer = InteractionManager.getInteractionLayer(game, player);
                     int x = Util.floor(tileX);
                     int y = Util.floor(tileY);
-
                     ItemInstance holding = player.getInv().get(player.getSelectedSlot());
-                    if(holding != null){
-                        Item item = holding.getItem();
 
-                        IItemRenderer renderer = item.getRenderer();
-                        if(renderer != null){
-                            boolean inRange = player.isInRange(tileX, tileY, item.getMaxInteractionDistance(player.world, x, y, layer, tileX, tileY, player));
-                            renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/g.getGuiScale(), mouseY, 36F/g.getGuiScale(), Colors.WHITE, inRange);
-                        }
-                    }
+                    for(TileLayer layer : TileLayer.getAllLayers()){
+                        if(layer.canEditLayer(game, player)){
+                            if(holding != null){
+                                Item item = holding.getItem();
 
-                    if(player.world.isPosLoaded(x, y)){
-                        TileState state = player.world.getState(layer, x, y);
-                        Tile tile = state.getTile();
-                        ITileRenderer renderer = tile.getRenderer();
-                        if(renderer != null){
-                            renderer.renderOnMouseOver(game, manager, g, player.world, tile, state, x, y, layer, mouseX, mouseY);
+                                IItemRenderer renderer = item.getRenderer();
+                                if(renderer != null){
+                                    boolean inRange = player.isInRange(tileX, tileY, item.getMaxInteractionDistance(player.world, x, y, layer, tileX, tileY, player));
+                                    renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/g.getGuiScale(), mouseY, 36F/g.getGuiScale(), Colors.WHITE, inRange);
+                                }
+                            }
+
+                            if(player.world.isPosLoaded(x, y)){
+                                TileState state = player.world.getState(layer, x, y);
+                                Tile tile = state.getTile();
+                                ITileRenderer renderer = tile.getRenderer();
+                                if(renderer != null){
+                                    renderer.renderOnMouseOver(game, manager, g, player.world, tile, state, x, y, layer, mouseX, mouseY);
+                                }
+                            }
                         }
                     }
                 }
