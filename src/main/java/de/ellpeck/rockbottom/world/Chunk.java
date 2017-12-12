@@ -54,6 +54,8 @@ public class Chunk implements IChunk{
     protected final Map<Pos3, TileEntity> tileEntityLookup = new HashMap<>();
     protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
     protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
+    protected final List<Entity> entitiesUnmodifiable;
+    protected final List<TileEntity> tileEntitiesUnmodifiable;
     public boolean isGenerating;
     protected boolean needsSave;
     private int internalLoadingTimer;
@@ -75,6 +77,9 @@ public class Chunk implements IChunk{
                 this.biomeGrid[x][y] = GameContent.BIOME_SKY;
             }
         }
+
+        this.entitiesUnmodifiable = Collections.unmodifiableList(this.entities);
+        this.tileEntitiesUnmodifiable = Collections.unmodifiableList(this.tileEntities);
     }
 
     private void generate(List<? extends IWorldGenerator> gens){
@@ -403,12 +408,12 @@ public class Chunk implements IChunk{
 
     @Override
     public List<Entity> getAllEntities(){
-        return this.entities;
+        return this.entitiesUnmodifiable;
     }
 
     @Override
     public List<TileEntity> getAllTileEntities(){
-        return this.tileEntities;
+        return this.tileEntitiesUnmodifiable;
     }
 
     @Override

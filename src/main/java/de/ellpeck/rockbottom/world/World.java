@@ -52,6 +52,7 @@ public class World implements IWorld{
     private final DynamicRegistryInfo regInfo;
     private final List<IWorldGenerator> generators;
     private final List<IRetroactiveGenerator> retroactiveGenerators;
+    protected final List<AbstractEntityPlayer> playersUnmodifiable;
     protected File directory;
     protected File chunksDirectory;
     protected File playerDirectory;
@@ -87,6 +88,8 @@ public class World implements IWorld{
         this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
 
         RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world ("+(this.retroactiveGenerators.size()+" of which can generate retroactively)"));
+
+        this.playersUnmodifiable = Collections.unmodifiableList(this.players);
     }
 
     public void initFiles(File worldDirectory){
@@ -544,7 +547,7 @@ public class World implements IWorld{
 
     @Override
     public List<AbstractEntityPlayer> getAllPlayers(){
-        return this.players;
+        return this.playersUnmodifiable;
     }
 
     @Override
