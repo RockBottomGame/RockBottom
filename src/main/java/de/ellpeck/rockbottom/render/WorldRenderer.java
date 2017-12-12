@@ -202,8 +202,9 @@ public class WorldRenderer{
                 int obscuringLayer = -1;
 
                 for(int i = layers.size()-1; i >= 0; i--){
-                    TileState state = chunk.getState(layers.get(i), x, y);
-                    if(state.getTile().obscuresBackground()){
+                    TileLayer layer = layers.get(i);
+                    TileState state = chunk.getState(layer, x, y);
+                    if(state.getTile().obscuresBackground(world, x, y, layer)){
                         obscuringLayer = i;
                     }
                 }

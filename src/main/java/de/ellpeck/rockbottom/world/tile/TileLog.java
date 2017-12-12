@@ -94,4 +94,10 @@ public class TileLog extends TileBasic{
         LogType type = world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT);
         return !type.isNatural() || type == LogType.TRUNK_BOTTOM || type == LogType.TRUNK_MIDDLE;
     }
+
+    @Override
+    public boolean obscuresBackground(IWorld world, int x, int y, TileLayer layer){
+        LogType type = world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT);
+        return !type.isNatural() || type == LogType.TRUNK_BOTTOM || type == LogType.TRUNK_MIDDLE;
+    }
 }
