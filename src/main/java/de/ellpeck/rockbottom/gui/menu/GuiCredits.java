@@ -32,9 +32,9 @@ public class GuiCredits extends Gui{
         this.credits.add("");
         this.credits.add("");
         this.credits.add("Additional Programming");
+        this.credits.add("  superaxander");
         this.credits.add("  canitzp");
         this.credits.add("  xdjackiexd");
-        this.credits.add("  superaxander");
         this.credits.add("");
         this.credits.add("");
         this.credits.add("Libraries and Additional Code");
