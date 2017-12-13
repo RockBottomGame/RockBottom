@@ -92,7 +92,7 @@ public class WorldRenderer{
         double sunRads = Math.toRadians(sunAngle);
         float sunX = (float)(width/2D+Math.cos(sunRads)*radiusX);
         float sunY = (float)(height+Math.sin(sunRads)*radiusY);
-        manager.getTexture(SUN_RES).draw(sunX-2.5F, sunY-2.5F, 5F, 5F);
+        manager.getTexture(SUN_RES).draw(sunX-2.5F, sunY-2.5F, 4F, 4F);
 
         double moonAngle = (time/(double)Constants.TIME_PER_DAY*3D)*360D+270D;
         if(moonAngle <= 450D || moonAngle >= 1170D){
