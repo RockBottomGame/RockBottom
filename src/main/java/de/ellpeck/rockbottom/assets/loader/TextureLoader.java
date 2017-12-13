@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.assets.Texture;
+import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -31,7 +31,6 @@ public class TextureLoader implements IAssetLoader<ITexture>{
         String resPath = null;
         Map<String, JsonElement> additionalData = null;
         List<ITexture> variations = null;
-        int subCount = 0;
 
         if(element instanceof JsonArray){
             JsonArray array = element.getAsJsonArray();
@@ -65,9 +64,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                             variations = new ArrayList<>();
                         }
 
-                        Texture texture = new Texture(AssetManager.getResource(dataPath), resourceName.toString()+"_sub_"+subCount, false);
-                        subCount++;
-
+                        ITexture texture = new RenderedTexture(AssetManager.getResource(dataPath), false);
                         variations.add(texture);
                     }
                 }
@@ -77,7 +74,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
             resPath = path+element.getAsString();
         }
 
-        Texture texture = new Texture(AssetManager.getResource(resPath), resourceName.toString(), false);
+        RenderedTexture texture = new RenderedTexture(AssetManager.getResource(resPath), false);
 
         if(additionalData != null){
             texture.setAdditionalData(additionalData);
@@ -99,7 +96,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
             JsonObject object = element.getAsJsonObject();
 
             String file = object.getAsJsonPrimitive("file").getAsString();
-            Texture main = new Texture(AssetManager.getResource(path+file), loadingMod.getId()+"/"+resourceName, false);
+            RenderedTexture main = new RenderedTexture(AssetManager.getResource(path+file), false);
 
             for(Map.Entry<String, JsonElement> entry : object.entrySet()){
                 String key = entry.getKey();

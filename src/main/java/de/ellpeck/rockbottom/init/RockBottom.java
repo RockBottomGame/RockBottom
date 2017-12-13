@@ -1,10 +1,7 @@
 package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.IApiHandler;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.data.IDataManager;
@@ -15,7 +12,6 @@ import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
-import de.ellpeck.rockbottom.api.input.IInputHandler;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
@@ -26,9 +22,10 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.Graphics;
 import de.ellpeck.rockbottom.apiimpl.InputHandler;
+import de.ellpeck.rockbottom.apiimpl.SoundHandler;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.assets.Texture;
+import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
 import de.ellpeck.rockbottom.gui.GuiInformation;
 import de.ellpeck.rockbottom.gui.GuiLogo;
@@ -51,12 +48,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
-import org.newdawn.slick.Music;
 import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.ImageIOImageData;
 import org.newdawn.slick.opengl.LoadableImageData;
-import org.newdawn.slick.opengl.renderer.Renderer;
-import org.newdawn.slick.opengl.renderer.SGL;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -87,6 +81,7 @@ public class RockBottom extends AbstractGame{
     private int windowedHeight;
     public Graphics graphics;
     private InputHandler input;
+    private final SoundHandler sound = new SoundHandler();
     private int lastWidth;
     private int lastHeight;
 
@@ -145,7 +140,7 @@ public class RockBottom extends AbstractGame{
         this.initGraphics();
 
         try{
-            ITexture tex = new Texture(AssetManager.getResource("/assets/rockbottom/tex/intro/loading.png"), "loading", false);
+            ITexture tex = new RenderedTexture(AssetManager.getResource("/assets/rockbottom/tex/intro/loading.png"), false);
             tex.draw(0, 0, Display.getWidth(), Display.getHeight());
             Display.update();
         }
@@ -175,8 +170,25 @@ public class RockBottom extends AbstractGame{
         this.lastHeight = height;
 
         this.graphics = new Graphics(this);
-        Renderer.get().initDisplay(width, height);
-        Renderer.get().enterOrtho(width, height);
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_LIGHTING);
+
+        GL11.glClearColor(0F, 0F, 0F, 0F);
+        GL11.glClearDepth(1D);
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        GL11.glViewport(0, 0, width, height);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0D, width, height, 0D, 1D, -1D);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         this.input = new InputHandler(this);
     }
@@ -190,8 +202,8 @@ public class RockBottom extends AbstractGame{
         this.setFullscreen(this.settings.fullscreen);
         Display.setVSyncEnabled(this.settings.vsync);
 
-        SoundStore.get().setSoundVolume(this.settings.soundVolume);
-        SoundStore.get().setMusicVolume(this.settings.musicVolume);
+        this.sound.setSoundVolume(this.settings.soundVolume);
+        this.sound.setMusicVolume(this.settings.musicVolume);
 
         this.assetManager = new AssetManager();
         this.assetManager.load(this);
@@ -395,15 +407,13 @@ public class RockBottom extends AbstractGame{
             this.exit();
         }
         else{
-            Music.poll(delta);
+            SoundStore.get().poll(0);
 
-            Renderer.get().glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
-            Renderer.get().glLoadIdentity();
-            Renderer.get().glDisable(SGL.GL_POLYGON_SMOOTH);
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            GL11.glLoadIdentity();
+            GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
 
             this.render();
-
-            Renderer.get().flush();
 
             if(this.settings.targetFps != -1){
                 Display.sync(this.settings.targetFps);
@@ -488,6 +498,11 @@ public class RockBottom extends AbstractGame{
     @Override
     public IInputHandler getInput(){
         return this.input;
+    }
+
+    @Override
+    public ISoundHandler getSound(){
+        return this.sound;
     }
 
     @Override

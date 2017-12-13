@@ -35,8 +35,8 @@ public class Font implements IFont{
         this.texture = texture;
         this.characters = characters;
 
-        this.charWidth = texture.getWidth()/widthInChars;
-        this.charHeight = texture.getHeight()/heightInChars;
+        this.charWidth = (int)(texture.getWidth()/widthInChars);
+        this.charHeight = (int)(texture.getHeight()/heightInChars);
     }
 
     public static Font fromStream(ITexture texture, InputStream infoStream, String name) throws Exception{

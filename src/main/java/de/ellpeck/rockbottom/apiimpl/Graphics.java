@@ -20,9 +20,8 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.TextureImpl;
-import org.newdawn.slick.opengl.renderer.Renderer;
-import org.newdawn.slick.opengl.renderer.SGL;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,12 +162,12 @@ public class Graphics implements IGraphics{
 
     @Override
     public void pushMatrix(){
-        Renderer.get().glPushMatrix();
+        GL11.glPushMatrix();
     }
 
     @Override
     public void popMatrix(){
-        Renderer.get().glPopMatrix();
+        GL11.glPopMatrix();
     }
 
     @Override
@@ -188,22 +187,22 @@ public class Graphics implements IGraphics{
 
     @Override
     public void backgroundColor(float r, float g, float b, float a){
-        Renderer.get().glClearColor(r, g, b, a);
+        GL11.glClearColor(r, g, b, a);
     }
 
     @Override
     public void scale(float scaleX, float scaleY){
-        Renderer.get().glScalef(scaleX, scaleY, 1F);
+        GL11.glScalef(scaleX, scaleY, 1F);
     }
 
     @Override
     public void translate(float x, float y){
-        Renderer.get().glTranslatef(x, y, 0F);
+        GL11.glTranslatef(x, y, 0F);
     }
 
     @Override
     public void rotate(float angle){
-        Renderer.get().glRotatef(angle, 0F, 0F, 1F);
+        GL11.glRotatef(angle, 0F, 0F, 1F);
     }
 
     @Override
@@ -224,13 +223,12 @@ public class Graphics implements IGraphics{
         TextureImpl.bindNone();
         this.bindColor(color);
 
-        SGL gl = Renderer.get();
-        gl.glBegin(SGL.GL_QUADS);
-        gl.glVertex2f(x, y);
-        gl.glVertex2f(x+width, y);
-        gl.glVertex2f(x+width, y+height);
-        gl.glVertex2f(x, y+height);
-        gl.glEnd();
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glVertex2f(x, y);
+        GL11.glVertex2f(x+width, y);
+        GL11.glVertex2f(x+width, y+height);
+        GL11.glVertex2f(x, y+height);
+        GL11.glEnd();
     }
 
     @Override

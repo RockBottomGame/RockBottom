@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.assets.Texture;
+import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 
@@ -37,7 +37,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
         String anim = array.get(0).getAsString();
         String texture = array.get(1).getAsString();
 
-        Texture tex = new Texture(AssetManager.getResource(path+texture), resourceName.toString(), false);
+        RenderedTexture tex = new RenderedTexture(AssetManager.getResource(path+texture), false);
 
         int frameWidth = 0;
         int frameHeight = 0;

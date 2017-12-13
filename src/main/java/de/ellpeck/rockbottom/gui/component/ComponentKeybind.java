@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiKeybinds;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Input;
 
 public class ComponentKeybind extends ComponentButton{
 

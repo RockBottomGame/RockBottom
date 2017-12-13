@@ -21,7 +21,7 @@ public class SoundLoader implements IAssetLoader<ISound>{
     public ISound loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         String resPath = path+element.getAsString();
 
-        SoundEffect sound = new SoundEffect(AssetManager.getResource(resPath), resPath);
+        SoundEffect sound = new SoundEffect(AssetManager.getResource(resPath));
         RockBottomAPI.logger().config("Loaded sound "+resourceName+" from "+resPath+" for mod "+loadingMod.getDisplayName());
 
         return sound;

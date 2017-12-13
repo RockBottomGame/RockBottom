@@ -1,10 +1,7 @@
 package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.IGraphics;
-import de.ellpeck.rockbottom.api.input.IInputHandler;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -177,6 +174,11 @@ public class RockBottomServer extends AbstractGame{
     @Override
     public IInputHandler getInput(){
         throw new UnsupportedOperationException("Cannot get input on a dedicated server");
+    }
+
+    @Override
+    public ISoundHandler getSound(){
+        throw new UnsupportedOperationException("Cannot get sound handler on a dedicated server");
     }
 
     @Override

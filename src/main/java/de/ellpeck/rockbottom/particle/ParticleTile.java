@@ -46,8 +46,8 @@ public class ParticleTile extends Particle{
             if(renderer != null){
                 ITexture texture = renderer.getParticleTexture(game, manager, g, this.state.getTile(), this.state);
                 if(texture != null){
-                    int width = texture.getWidth();
-                    int height = texture.getHeight();
+                    int width = (int)texture.getWidth();
+                    int height = (int)texture.getHeight();
 
                     int pixelX = Util.RANDOM.nextInt(width);
                     int pixelY = Util.RANDOM.nextInt(height);

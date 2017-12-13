@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.Font;
-import de.ellpeck.rockbottom.assets.Texture;
+import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
 
 public class FontLoader implements IAssetLoader<IFont>{
 
@@ -25,7 +25,7 @@ public class FontLoader implements IAssetLoader<IFont>{
         String info = array.get(0).getAsString();
         String texture = array.get(1).getAsString();
 
-        Font font = Font.fromStream(new Texture(AssetManager.getResource(path+texture), resourceName.toString(), false), AssetManager.getResource(path+info), resourceName.toString());
+        Font font = Font.fromStream(new RenderedTexture(AssetManager.getResource(path+texture), false), AssetManager.getResource(path+info), resourceName.toString());
         RockBottomAPI.logger().config("Loaded font "+resourceName+" from "+path+info+" and "+path+texture+" for mod "+loadingMod.getDisplayName());
 
         return font;

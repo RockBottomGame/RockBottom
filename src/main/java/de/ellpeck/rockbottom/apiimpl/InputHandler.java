@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.apiimpl;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.input.IInputHandler;
+import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -76,12 +76,10 @@ public class InputHandler implements IInputHandler{
                 int button = Mouse.getEventButton();
                 if(button >= 0){
                     if(Mouse.getEventButtonState()){
-                        System.out.println("Mouse pressed");
                         this.pressedMouse[button] = true;
                         this.mousePressed(button);
                     }
                     else{
-                        System.out.println("Mouse let go");
                         this.pressedMouse[button] = false;
                     }
                 }

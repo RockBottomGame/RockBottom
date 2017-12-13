@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class SlickLogWrapper implements LogSystem{
 
-    private static final Logger SLICK_LOGGER = Logging.createLogger("Slick Internal");
+    private static final Logger SLICK_LOGGER = Logging.createLogger("Slick-Util");
 
     @Override
     public void error(String message, Throwable e){
@@ -27,11 +27,6 @@ public class SlickLogWrapper implements LogSystem{
     @Override
     public void warn(String message){
         SLICK_LOGGER.log(Level.WARNING, message);
-    }
-
-    @Override
-    public void warn(String message, Throwable e){
-        SLICK_LOGGER.log(Level.WARNING, message, e);
     }
 
     @Override

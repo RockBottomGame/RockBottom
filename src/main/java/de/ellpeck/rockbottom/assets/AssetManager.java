@@ -19,6 +19,9 @@ import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
 import de.ellpeck.rockbottom.assets.sound.EmptySound;
+import de.ellpeck.rockbottom.assets.tex.EmptyTexture;
+import de.ellpeck.rockbottom.assets.tex.ImageBuffer;
+import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
 import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
 import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
@@ -28,8 +31,10 @@ import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.ImageBuffer;
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.InternalTextureLoader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
@@ -89,14 +94,22 @@ public class AssetManager implements IAssetManager{
             RockBottomAPI.logger().log(Level.SEVERE, "Exception loading resources! ", e);
         }
 
-        ImageBuffer buffer = new ImageBuffer(2, 2);
-        for(int x = 0; x < 2; x++){
-            for(int y = 0; y < 2; y++){
-                boolean areEqual = x == y;
-                buffer.setRGBA(x, y, areEqual ? 255 : 0, 0, areEqual ? 0 : 255, 255);
+        try{
+            ImageBuffer buffer = new ImageBuffer(2, 2);
+            for(int x = 0; x < 2; x++){
+                for(int y = 0; y < 2; y++){
+                    boolean areEqual = x == y;
+                    buffer.setRGBA(x, y, areEqual ? 255 : 0, 0, areEqual ? 0 : 255, 255);
+                }
             }
+
+            this.missingTexture = new RenderedTexture(InternalTextureLoader.get().getTexture(buffer, GL11.GL_NEAREST));
         }
-        this.missingTexture = new Texture(buffer);
+        catch(IOException e){
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't generate missing texture!", e);
+            this.missingTexture = new RenderedTexture(new EmptyTexture());
+        }
+
         this.missingSound = new EmptySound();
         this.missingLocale = new Locale("fallback");
         this.missingFont = new Font("fallback", this.missingTexture, 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0))));
@@ -127,8 +140,8 @@ public class AssetManager implements IAssetManager{
         for(ISpecialCursor cursor : this.sortedCursors){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
-                int width = texture.getWidth();
-                int height = texture.getHeight();
+                int width = (int)texture.getWidth();
+                int height = (int)texture.getHeight();
 
                 ByteBuffer buf = BufferUtils.createByteBuffer(width*height*4);
 

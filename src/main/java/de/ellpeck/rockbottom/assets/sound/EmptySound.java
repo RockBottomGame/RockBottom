@@ -15,6 +15,11 @@ public class EmptySound implements ISound{
     }
 
     @Override
+    public void play(float pitch, float volume, boolean loop){
+
+    }
+
+    @Override
     public void playAt(double x, double y, double z){
 
     }
@@ -25,12 +30,7 @@ public class EmptySound implements ISound{
     }
 
     @Override
-    public void loop(){
-
-    }
-
-    @Override
-    public void loop(float pitch, float volume){
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
 
     }
 
