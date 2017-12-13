@@ -182,6 +182,10 @@ public class InteractionManager implements IInteractionManager{
                 if(player.world.isPosLoaded(x, y)){
                     boolean didBreakProgress = false;
 
+                    if(this.breakTileX != x || this.breakTileY != y){
+                        this.breakProgress = 0;
+                    }
+
                     for(TileLayer layer : TileLayer.getAllLayers()){
                         if(layer.canEditLayer(game, player)){
                             if(Settings.KEY_DESTROY.isDown()){
