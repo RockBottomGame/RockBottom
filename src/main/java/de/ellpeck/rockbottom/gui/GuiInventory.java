@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentFancyToggleButton;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
@@ -23,7 +24,7 @@ public class GuiInventory extends GuiContainer{
         }
     };
 
-    public GuiInventory(EntityPlayer player){
+    public GuiInventory(AbstractEntityPlayer player){
         super(player, 158, 83);
     }
 

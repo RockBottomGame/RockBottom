@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.data.settings.Keybind;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiKeybinds;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Input;
 
@@ -24,7 +25,7 @@ public class ComponentKeybind extends ComponentButton{
 
     @Override
     protected String getText(){
-        String name = this.bind.isMouse() ? Mouse.getButtonName(this.bind.getKey()) : Input.getKeyName(this.bind.getKey());
+        String name = this.bind.isMouse() ? Mouse.getButtonName(this.bind.getKey()) : Keyboard.getKeyName(this.bind.getKey());
         return this.isSelected() ? "<?>" : name;
     }
 

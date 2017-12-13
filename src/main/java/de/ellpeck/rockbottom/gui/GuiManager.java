@@ -324,19 +324,20 @@ public class GuiManager implements IGuiManager{
         }
     }
 
-    public void onMouseAction(RockBottom game, int button, float x, float y){
+    public boolean onMouseAction(RockBottom game, int button, float x, float y){
         if(game.getPlayer() == null || !game.getPlayer().isDead()){
             if(this.gui != null){
-                this.gui.onMouseAction(game, button, x, y);
+                return this.gui.onMouseAction(game, button, x, y);
             }
             else{
                 for(GuiComponent comp : this.onScreenComponents){
                     if(comp.onMouseAction(game, button, x, y)){
-                        return;
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
     public boolean onKeyboardAction(RockBottom game, int button, char character){

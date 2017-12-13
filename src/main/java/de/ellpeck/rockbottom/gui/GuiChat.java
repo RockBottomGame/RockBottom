@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Input;
 
 import java.util.List;
@@ -88,7 +89,7 @@ public class GuiChat extends Gui{
 
     @Override
     public boolean onKeyboardAction(IGameInstance game, int button, char character){
-        if(button == Input.KEY_ENTER){
+        if(button == Keyboard.KEY_RETURN){
             String text = this.inputField.getText();
 
             if(text != null && !text.isEmpty()){

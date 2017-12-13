@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSignText;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
-import org.newdawn.slick.Input;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class GuiSign extends Gui{
 
     @Override
     public boolean onKeyboardAction(IGameInstance game, int button, char character){
-        if(button == Input.KEY_UP){
+        if(button == Keyboard.KEY_UP){
             for(int i = 0; i < this.inputFields.size(); i++){
                 ComponentInputField field = this.inputFields.get(i);
                 if(field.isSelected()){
@@ -73,7 +73,7 @@ public class GuiSign extends Gui{
             }
             return true;
         }
-        else if(button == Input.KEY_DOWN || button == Input.KEY_ENTER || button == Input.KEY_TAB){
+        else if(button == Keyboard.KEY_DOWN || button == Keyboard.KEY_RETURN || button == Keyboard.KEY_TAB){
             for(int i = 0; i < this.inputFields.size(); i++){
                 ComponentInputField field = this.inputFields.get(i);
                 if(field.isSelected()){

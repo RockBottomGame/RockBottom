@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.input.IInputHandler;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
@@ -24,10 +25,14 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.Graphics;
+import de.ellpeck.rockbottom.apiimpl.InputHandler;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.Texture;
-import de.ellpeck.rockbottom.gui.*;
+import de.ellpeck.rockbottom.gui.DebugRenderer;
+import de.ellpeck.rockbottom.gui.GuiInformation;
+import de.ellpeck.rockbottom.gui.GuiLogo;
+import de.ellpeck.rockbottom.gui.GuiManager;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
 import de.ellpeck.rockbottom.net.client.ClientWorld;
@@ -46,8 +51,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.InputListener;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.ImageIOImageData;
@@ -68,22 +71,22 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class RockBottom extends AbstractGame implements InputListener{
+public class RockBottom extends AbstractGame{
 
     protected Settings settings;
     private EntityPlayer player;
     private PlayerDesign playerDesign;
     private GuiManager guiManager;
     private InteractionManager interactionManager;
-    private AssetManager assetManager;
+    public AssetManager assetManager;
     private ParticleManager particleManager;
     private Toaster toaster;
     private UUID uniqueId;
     private WorldRenderer worldRenderer;
     private int windowedWidth;
     private int windowedHeight;
-    private Graphics graphics;
-    private Input input;
+    public Graphics graphics;
+    private InputHandler input;
     private int lastWidth;
     private int lastHeight;
 
@@ -175,8 +178,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         Renderer.get().initDisplay(width, height);
         Renderer.get().enterOrtho(width, height);
 
-        this.input = new Input(height);
-        this.input.addListener(this);
+        this.input = new InputHandler(this);
     }
 
     @Override
@@ -288,6 +290,8 @@ public class RockBottom extends AbstractGame implements InputListener{
 
     @Override
     protected void update(){
+        this.input.update();
+
         if(this.world != null && this.player != null){
             Gui gui = this.guiManager.getGui();
             if(gui == null || !gui.doesPauseGame() || RockBottomAPI.getNet().isActive()){
@@ -386,93 +390,11 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public void mouseWheelMoved(int change){
-
-    }
-
-    @Override
-    public void mouseClicked(int button, int x, int y, int clickCount){
-
-    }
-
-    @Override
-    public void mousePressed(int button, int x, int y){
-        this.interactionManager.onMouseAction(this, button);
-    }
-
-    @Override
-    public void mouseReleased(int button, int x, int y){
-
-    }
-
-    @Override
-    public void mouseMoved(int oldx, int oldy, int newx, int newy){
-
-    }
-
-    @Override
-    public void mouseDragged(int oldx, int oldy, int newx, int newy){
-
-    }
-
-    @Override
-    public void keyPressed(int key, char c){
-        if(this.guiManager.getGui() == null){
-            if(Settings.KEY_MENU.isKey(key)){
-                this.openIngameMenu();
-                return;
-            }
-            else if(Settings.KEY_INVENTORY.isKey(key)){
-                this.player.openGuiContainer(new GuiInventory(this.player), this.player.getInvContainer());
-                return;
-            }
-            else if(Settings.KEY_CHAT.isKey(key) && RockBottomAPI.getNet().isActive()){
-                this.guiManager.openGui(new GuiChat());
-                return;
-            }
-        }
-
-        if(key == Input.KEY_F1){
-            this.graphics.isDebug = !this.graphics.isDebug;
-            return;
-        }
-        else if(key == Input.KEY_F3){
-            this.assetManager.load(this);
-            this.assetManager.loadCursors();
-            return;
-        }
-        else if(key == Input.KEY_F4){
-            this.graphics.isGuiDebug = !this.graphics.isGuiDebug;
-        }
-        else if(key == Input.KEY_F5){
-            this.graphics.isItemInfoDebug = !this.graphics.isItemInfoDebug;
-            return;
-        }
-        else if(key == Input.KEY_F6){
-            this.graphics.isChunkBorderDebug = !this.graphics.isChunkBorderDebug;
-            return;
-        }
-        else if(Settings.KEY_SCREENSHOT.isKey(key)){
-            this.takeScreenshot();
-            return;
-        }
-
-        this.interactionManager.onKeyboardAction(this, key, c);
-    }
-
-    @Override
-    public void keyReleased(int key, char c){
-
-    }
-
-    @Override
     protected void updateTickless(int delta){
         if(Display.isCloseRequested()){
             this.exit();
         }
         else{
-            this.input.poll(Display.getWidth(), Display.getHeight());
-
             Music.poll(delta);
 
             Renderer.get().glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
@@ -564,7 +486,7 @@ public class RockBottom extends AbstractGame implements InputListener{
     }
 
     @Override
-    public Input getInput(){
+    public IInputHandler getInput(){
         return this.input;
     }
 
@@ -578,7 +500,7 @@ public class RockBottom extends AbstractGame implements InputListener{
         return this.uniqueId;
     }
 
-    private void takeScreenshot(){
+    public void takeScreenshot(){
         try{
             RockBottomAPI.logger().info("Taking screenshot");
 
@@ -624,75 +546,5 @@ public class RockBottom extends AbstractGame implements InputListener{
     @Override
     public Settings getSettings(){
         return this.settings;
-    }
-
-    @Override
-    public void controllerLeftPressed(int controller){
-
-    }
-
-    @Override
-    public void controllerLeftReleased(int controller){
-
-    }
-
-    @Override
-    public void controllerRightPressed(int controller){
-
-    }
-
-    @Override
-    public void controllerRightReleased(int controller){
-
-    }
-
-    @Override
-    public void controllerUpPressed(int controller){
-
-    }
-
-    @Override
-    public void controllerUpReleased(int controller){
-
-    }
-
-    @Override
-    public void controllerDownPressed(int controller){
-
-    }
-
-    @Override
-    public void controllerDownReleased(int controller){
-
-    }
-
-    @Override
-    public void controllerButtonPressed(int controller, int button){
-
-    }
-
-    @Override
-    public void controllerButtonReleased(int controller, int button){
-
-    }
-
-    @Override
-    public void setInput(Input input){
-
-    }
-
-    @Override
-    public boolean isAcceptingInput(){
-        return true;
-    }
-
-    @Override
-    public void inputEnded(){
-
-    }
-
-    @Override
-    public void inputStarted(){
-
     }
 }
