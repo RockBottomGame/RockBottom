@@ -80,17 +80,18 @@ public class MainMenuBackground{
         float width = logo.getFrameWidth()*scale;
         float height = logo.getFrameHeight()*scale;
         float x = g.getWidthInGui()/2F-width/2F;
+        float y = 10F;
 
         float mouseX = g.getMouseInGuiX();
         float mouseY = g.getMouseInGuiY();
 
-        if(game.getGuiManager().getGui() instanceof GuiMainMenu && mouseX >= x+72*scale && mouseY >= 28*scale && mouseX <= x+width-72*scale && mouseY <= height-32*scale){
+        if(game.getGuiManager().getGui() instanceof GuiMainMenu && mouseX >= x+72*scale && mouseY >= y+28*scale && mouseX <= x+width-72*scale && mouseY <= y+height-32*scale){
             if(this.hoverStartTime <= 0){
                 this.hoverStartTime = Util.getTimeMillis()-this.hoverPauseTime;
                 this.hoverPauseTime = 0;
             }
 
-            logo.drawRow(this.hoverStartTime, 0, x, 10, width, height, Colors.WHITE);
+            logo.drawRow(this.hoverStartTime, 0, x, y, width, height, Colors.WHITE);
         }
         else{
             if(this.hoverPauseTime <= 0){
@@ -98,7 +99,7 @@ public class MainMenuBackground{
                 this.hoverStartTime = 0;
             }
 
-            logo.drawFrame(0, logo.getFrameByTime(0, this.hoverPauseTime), x, 10, width, height, Colors.WHITE);
+            logo.drawFrame(0, logo.getFrameByTime(0, this.hoverPauseTime), x, y, width, height, Colors.WHITE);
         }
     }
 }
