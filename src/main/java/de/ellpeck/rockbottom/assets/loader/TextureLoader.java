@@ -31,41 +31,56 @@ public class TextureLoader implements IAssetLoader<ITexture>{
         String resPath = null;
         Map<String, JsonElement> additionalData = null;
         List<ITexture> variations = null;
+        int variationCount = 0;
+        boolean shouldStitch = true;
 
-        if(element instanceof JsonArray){
-            JsonArray array = element.getAsJsonArray();
-            for(JsonElement sub : array){
-                String dataPath = path+sub.getAsString();
+        if(element.isJsonObject()){
+            JsonObject object = element.getAsJsonObject();
+            resPath = path+object.get("path").getAsString();
 
-                try{
-                    if(additionalData == null){
-                        additionalData = this.additionalDataCache.get(dataPath);
-                        if(additionalData == null){
-                            InputStreamReader reader = new InputStreamReader(AssetManager.getResource(dataPath), Charsets.UTF_8);
-                            JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
-                            if(main != null){
-                                additionalData = new HashMap<>();
+            if(object.has("should_stitch")){
+                shouldStitch = object.get("should_stitch").getAsBoolean();
+            }
 
-                                for(Map.Entry<String, JsonElement> entry : main.entrySet()){
-                                    additionalData.put(entry.getKey(), entry.getValue());
-                                }
+            if(object.has("variations")){
+                JsonArray varArray = object.get("variations").getAsJsonArray();
+                for(JsonElement variation : varArray){
+                    String dataPath = path+variation.getAsString();
 
-                                this.additionalDataCache.put(dataPath, additionalData);
-                            }
-                        }
+                    if(variations == null){
+                        variations = new ArrayList<>();
                     }
-                }
-                catch(JsonParseException e){
-                    if(resPath == null){
-                        resPath = dataPath;
+
+                    List<ITexture> finalVar = variations;
+                    IStitchCallback callback = (stitchX, stitchY, stitchedTexture) -> finalVar.add(stitchedTexture);
+
+                    if(shouldStitch){
+                        manager.getTextureStitcher().loadTexture(resourceName.addSuffix("_variation_"+variationCount).toString(), AssetManager.getResource(dataPath), false, callback);
                     }
                     else{
-                        if(variations == null){
-                            variations = new ArrayList<>();
-                        }
+                        callback.onStitched(0, 0, new RenderedTexture(AssetManager.getResource(dataPath), false));
+                    }
 
-                        ITexture texture = new RenderedTexture(AssetManager.getResource(dataPath), false);
-                        variations.add(texture);
+                    variationCount++;
+                }
+            }
+
+            if(object.has("data")){
+                String dataPath = path+object.get("data").getAsString();
+                if(additionalData == null){
+                    additionalData = this.additionalDataCache.get(dataPath);
+                    if(additionalData == null){
+                        InputStreamReader reader = new InputStreamReader(AssetManager.getResource(dataPath), Charsets.UTF_8);
+                        JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
+                        if(main != null){
+                            additionalData = new HashMap<>();
+
+                            for(Map.Entry<String, JsonElement> entry : main.entrySet()){
+                                additionalData.put(entry.getKey(), entry.getValue());
+                            }
+
+                            this.additionalDataCache.put(dataPath, additionalData);
+                        }
                     }
                 }
             }

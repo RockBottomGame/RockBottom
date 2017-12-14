@@ -215,7 +215,7 @@ public class AssetManager implements IAssetManager{
                         for(Entry<String, JsonElement> resType : main.entrySet()){
                             String type = resType.getKey();
                             for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
-                                IResourceName identifier = loader.getAssetIdentifier();
+                                IResourceName identifier = loader.getAssetIdentifier().addSuffix(".");
                                 if(identifier.getResourceName().equals(type) || identifier.toString().equals(type)){
                                     String name = type.contains(Constants.RESOURCE_SEPARATOR) ? RockBottomAPI.createRes(type).getResourceName() : type;
 
@@ -252,11 +252,14 @@ public class AssetManager implements IAssetManager{
                 this.assets.putAll(special);
             }
             else{
-                if(!"*".equals(elementName)){
-                    name += "."+elementName;
+                if("*".equals(elementName)){
+                    name = name.substring(0, name.length()-1);
+                }
+                else{
+                    name += elementName;
                 }
 
-                if(element.isJsonPrimitive() || element.isJsonArray()){
+                if(!elementName.endsWith(".")){
                     IResourceName resourceName = RockBottomAPI.createRes(mod, name);
                     IAsset asset = loader.loadAsset(this, resourceName, path, element, elementName, mod);
                     if(asset != null){
@@ -363,5 +366,20 @@ public class AssetManager implements IAssetManager{
             }
         }
         return null;
+    }
+
+    @Override
+    public void addAsset(IResourceName name, IAsset asset){
+        if(!this.isLocked){
+            this.assets.put(name, asset);
+        }
+        else{
+            throw new UnsupportedOperationException("Cannot add assets to the asset manager while it's locked! Add assets during loading!");
+        }
+    }
+
+    @Override
+    public ITextureStitcher getTextureStitcher(){
+        return this.stitcher;
     }
 }
