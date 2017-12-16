@@ -15,7 +15,7 @@ public class ResourceName implements IResourceName{
 
     public ResourceName(String combined){
         if(combined.contains(Constants.RESOURCE_SEPARATOR)){
-            String[] split = combined.split(Constants.RESOURCE_SEPARATOR);
+            String[] split = combined.split(Constants.RESOURCE_SEPARATOR, 2);
             this.domain = split[0];
             this.resourceName = split[1];
         }
