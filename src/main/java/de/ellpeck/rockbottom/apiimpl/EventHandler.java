@@ -1,23 +1,22 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.event.Event;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.IEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EventHandler implements IEventHandler{
 
-    private final Map<Class<? extends Event>, List<IEventListener>> registry = new HashMap<>();
+    private final ListMultimap<Class<? extends Event>, IEventListener> registry = ArrayListMultimap.create();
 
     @Override
     public <T extends Event> void registerListener(Class<T> type, IEventListener<T> listener){
-        List<IEventListener> listeners = this.registry.computeIfAbsent(type, k -> new ArrayList<>());
+        List<IEventListener> listeners = this.registry.get(type);
         listeners.add(listener);
 
         RockBottomAPI.logger().info("Registered event listener "+listener+" for event "+type);
@@ -29,11 +28,6 @@ public class EventHandler implements IEventHandler{
 
         if(listeners != null && listeners.contains(listener)){
             listeners.remove(listener);
-
-            if(listeners.isEmpty()){
-                this.registry.remove(type);
-            }
-
             RockBottomAPI.logger().info("Unregistered event listener "+listener+" for event "+type);
         }
         else{
@@ -44,7 +38,7 @@ public class EventHandler implements IEventHandler{
     @Override
     public void unregisterAllListeners(Class<? extends Event> type){
         if(this.registry.containsKey(type)){
-            this.registry.remove(type);
+            this.registry.removeAll(type);
 
             RockBottomAPI.logger().info("Unregistered all listeners for event "+type);
         }
