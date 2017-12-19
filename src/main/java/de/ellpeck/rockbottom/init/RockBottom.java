@@ -22,7 +22,6 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.Graphics;
 import de.ellpeck.rockbottom.apiimpl.InputHandler;
-import de.ellpeck.rockbottom.apiimpl.SoundHandler;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
@@ -81,7 +80,6 @@ public class RockBottom extends AbstractGame{
     private int windowedHeight;
     public Graphics graphics;
     private InputHandler input;
-    private final SoundHandler sound = new SoundHandler();
     private int lastWidth;
     private int lastHeight;
 
@@ -202,8 +200,8 @@ public class RockBottom extends AbstractGame{
         this.setFullscreen(this.settings.fullscreen);
         Display.setVSyncEnabled(this.settings.vsync);
 
-        this.sound.setSoundVolume(this.settings.soundVolume);
-        this.sound.setMusicVolume(this.settings.musicVolume);
+        SoundStore.get().setSoundVolume(this.settings.soundVolume);
+        SoundStore.get().setMusicVolume(this.settings.musicVolume);
 
         this.assetManager = new AssetManager();
         this.assetManager.load(this);
@@ -498,11 +496,6 @@ public class RockBottom extends AbstractGame{
     @Override
     public IInputHandler getInput(){
         return this.input;
-    }
-
-    @Override
-    public ISoundHandler getSound(){
-        return this.sound;
     }
 
     @Override

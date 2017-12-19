@@ -177,11 +177,6 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public ISoundHandler getSound(){
-        throw new UnsupportedOperationException("Cannot get sound handler on a dedicated server");
-    }
-
-    @Override
     public IToaster getToaster(){
         throw new UnsupportedOperationException("Cannot get toaster on a dedicated server");
     }
