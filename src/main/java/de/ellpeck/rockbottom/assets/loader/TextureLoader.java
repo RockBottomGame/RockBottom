@@ -28,19 +28,13 @@ public class TextureLoader implements IAssetLoader<ITexture>{
 
     @Override
     public ITexture loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-        String resPath = null;
+        String resPath;
         Map<String, JsonElement> additionalData = null;
         List<ITexture> variations = null;
-        int variationCount = 0;
-        boolean shouldStitch = true;
 
         if(element.isJsonObject()){
             JsonObject object = element.getAsJsonObject();
             resPath = path+object.get("path").getAsString();
-
-            if(object.has("should_stitch")){
-                shouldStitch = object.get("should_stitch").getAsBoolean();
-            }
 
             if(object.has("variations")){
                 JsonArray varArray = object.get("variations").getAsJsonArray();
@@ -51,17 +45,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                         variations = new ArrayList<>();
                     }
 
-                    List<ITexture> finalVar = variations;
-                    IStitchCallback callback = (stitchX, stitchY, stitchedTexture) -> finalVar.add(stitchedTexture);
-
-                    if(shouldStitch){
-                        manager.getTextureStitcher().loadTexture(resourceName.addSuffix("_variation_"+variationCount).toString(), AssetManager.getResource(dataPath), false, callback);
-                    }
-                    else{
-                        callback.onStitched(0, 0, new RenderedTexture(AssetManager.getResource(dataPath), false));
-                    }
-
-                    variationCount++;
+                    variations.add(new RenderedTexture(AssetManager.getResource(dataPath), false));
                 }
             }
 

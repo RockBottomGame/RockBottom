@@ -367,19 +367,4 @@ public class AssetManager implements IAssetManager{
         }
         return null;
     }
-
-    @Override
-    public void addAsset(IResourceName name, IAsset asset){
-        if(!this.isLocked){
-            this.assets.put(name, asset);
-        }
-        else{
-            throw new UnsupportedOperationException("Cannot add assets to the asset manager while it's locked! Add assets during loading!");
-        }
-    }
-
-    @Override
-    public ITextureStitcher getTextureStitcher(){
-        return this.stitcher;
-    }
 }
