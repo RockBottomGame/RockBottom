@@ -449,7 +449,108 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void doDefaultLiquidBehavior(IWorld world, int x, int y, TileLayer layer, TileLiquid tile){
+        TileState ourState = world.getState(layer, x, y);
+        int ourLevel = ourState.get(tile.level)+1;
 
+        // Check down
+        if(!world.getState(TileLayer.MAIN, x, y-1).getTile().isFullTile()){
+            TileState beneathState = world.getState(layer, x, y-1);
+            if(!beneathState.getTile().isFullTile()){
+                if(beneathState.getTile() == tile){
+                    // Liquid beneath us
+                    int otherLevel = beneathState.get(tile.level)+1;
+                    int remaining = ourLevel-tile.getLevels()+otherLevel;
+                    if(remaining < tile.getLevels() && tile.getLevels()-otherLevel != 0){ // If more liquid can fit beneath us
+                        if(remaining > 0){
+                            // Transfer one unit to the liquid beneath us
+                            world.setState(layer, x, y, ourState.prop(tile.level, remaining-1));
+                            world.setState(layer, x, y-1, beneathState.prop(tile.level, tile.getLevels()-1));
+                            return;
+                        }
+                        else{
+                            // Transfer our last unit to the liquid beneath us and remove this liquid
+                            world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                            world.setState(layer, x, y-1, beneathState.prop(tile.level, otherLevel+ourLevel-1));
+                            return;
+                        }
+                    }
+                }
+                else{
+                    // Nothing beneath us move down
+                    world.setState(layer, x, y-1, ourState);
+                    world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                    return;
+                }
+            }
+            // Fall through to the balancing and spreading logic
+        }
+
+        // Balance and spread
+        boolean oneToSpare;
+        TileState leftState = world.getState(layer, x-1, y);
+        TileState rightState = world.getState(layer, x+1, y);
+        if(Util.RANDOM.nextBoolean()){
+            // Left first
+            oneToSpare = this.balanceAndSpread(world, layer, leftState, rightState, ourState, ourLevel, x, y, -1, false, tile);
+            ourState = world.getState(layer, x, y);
+            ourLevel = ourState.get(tile.level)+1;
+            // Right second
+            this.balanceAndSpread(world, layer, rightState, leftState, ourState, ourLevel, x, y, 1, oneToSpare, tile);
+        }
+        else{
+            // Right first
+            oneToSpare = this.balanceAndSpread(world, layer, rightState, leftState, ourState, ourLevel, x, y, 1, false, tile);
+            ourState = world.getState(layer, x, y);
+            ourLevel = ourState.get(tile.level)+1;
+            // Left second
+            this.balanceAndSpread(world, layer, leftState, rightState, ourState, ourLevel, x, y, -1, oneToSpare, tile);
+        }
+    }
+
+    // Direction: 1 = right, -1 = left
+    private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState oppositeState, TileState ourState, int ourLevel, int x, int y, int direction, boolean oneToSpare, TileLiquid tile){
+        if(!world.getState(TileLayer.MAIN, x+direction, y).getTile().isFullTile()){
+            if(otherState.getTile() == tile){
+                // Balance with left
+                int otherLevel = otherState.get(tile.level)+1;
+                if(otherLevel > ourLevel){
+                    if(otherLevel-ourLevel > 1){
+                        this.transfer(world, layer, ourLevel, otherState, ourState, x+direction, x, y, tile);
+                    }
+                    else{
+                        // Remember for balancing
+                        return true;
+                    }
+                }
+                else if(otherLevel < ourLevel){
+                    if(otherLevel-ourLevel < -1){
+                        this.transfer(world, layer, otherLevel, ourState, otherState, x, x+direction, y, tile);
+                    }
+                    else if(oneToSpare){ // If we have one to spare we can transfer it here
+                        this.transfer(world, layer, otherLevel, oppositeState, otherState, x-direction, x+direction, y, tile);
+                    }
+                }
+            }
+            else if(otherState.getTile().isAir()){
+                if(ourLevel > 1){
+                    // Spread left
+                    this.spread(world, layer, ourLevel, ourState, x, y, direction, tile);
+                }
+            }
+        }
+        return oneToSpare;
+    }
+
+    // Direction: 1 = right, -1 = left
+    private void spread(IWorld world, TileLayer layer, int ourLevel, TileState ourState, int x, int y, int direction, TileLiquid tile){
+        world.setState(layer, x+direction, y, tile.getDefState()); // Place one unit
+        world.setState(layer, x, y, ourState.prop(tile.level, ourLevel-2)); // Decrease our level
+    }
+
+    // Direction: 1 = right, -1 = left
+    private void transfer(IWorld world, TileLayer layer, int secondLevel, TileState firstState, TileState secondState, int x1, int x2, int y, TileLiquid tile){
+        world.setState(layer, x1, y, firstState.prop(tile.level, firstState.get(tile.level)-1)); // Decrease first by one
+        world.setState(layer, x2, y, secondState.prop(tile.level, secondLevel)); // Increase second by one
     }
 
     private boolean setToInv(ItemInstance inst, ComponentSlot slot){
