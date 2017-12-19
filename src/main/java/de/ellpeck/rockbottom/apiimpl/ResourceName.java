@@ -39,11 +39,6 @@ public class ResourceName implements IResourceName{
     }
 
     @Override
-    public boolean isEmpty(){
-        return this.toString().isEmpty();
-    }
-
-    @Override
     public IResourceName addPrefix(String prefix){
         return new ResourceName(this.domain, prefix+this.resourceName);
     }
