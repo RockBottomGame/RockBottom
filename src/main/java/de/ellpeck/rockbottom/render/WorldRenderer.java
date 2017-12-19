@@ -27,13 +27,15 @@ import java.util.List;
 
 public class WorldRenderer{
 
-    private static final IResourceName SUN_RES = RockBottomAPI.createInternalRes("sun");
-    private static final IResourceName MOON_RES = RockBottomAPI.createInternalRes("moon");
+    private static final IResourceName SUN_RES = RockBottomAPI.createInternalRes("sky.sun");
+    private static final IResourceName MOON_RES = RockBottomAPI.createInternalRes("sky.moon");
+    private static final IResourceName[] CLOUD_TEXTURES = new IResourceName[12];
     public static final int[] SKY_COLORS = new int[256];
     public static final int[] MAIN_COLORS = new int[Constants.MAX_LIGHT+1];
     private final List<Pos2> starMap = new ArrayList<>();
+    private final List<Cloud> clouds = new ArrayList<>();
 
-    public static void init(){
+    public WorldRenderer(){
         float step = 1F/(Constants.MAX_LIGHT+1);
         for(int i = 0; i <= Constants.MAX_LIGHT; i++){
             float modifier = i*step;
@@ -45,6 +47,12 @@ public class WorldRenderer{
             float percent = (float)i/(float)SKY_COLORS.length;
             SKY_COLORS[i] = Colors.multiply(sky, percent);
         }
+
+        for(int i = 0; i < CLOUD_TEXTURES.length; i++){
+            CLOUD_TEXTURES[i] = RockBottomAPI.createInternalRes("sky.cloud."+i);
+        }
+
+        this.addClouds(Util.RANDOM.nextInt(5)+3, true);
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IGraphics g, World world, EntityPlayer player, InteractionManager input){
@@ -60,49 +68,7 @@ public class WorldRenderer{
         float transX = (float)(player.x-width/2);
         float transY = (float)(-player.y-height/2);
 
-        g.pushMatrix();
-        g.scale(g.getWorldScale(), g.getWorldScale());
-
-        int time = world.getWorldInfo().currentWorldTime;
-        float worldScale = game.getSettings().renderScale;
-
-        float starAlpha = 1F-Math.min(1F, skylightMod+0.5F);
-        if(starAlpha <= 0F){
-            if(!this.starMap.isEmpty()){
-                this.starMap.clear();
-            }
-        }
-        else{
-            if(this.starMap.isEmpty()){
-                for(int i = 0; i < Util.RANDOM.nextInt(50)+30; i++){
-                    this.starMap.add(new Pos2(Util.RANDOM.nextInt(101), Util.RANDOM.nextInt(101)));
-                }
-            }
-
-            int starColor = Colors.multiplyA(Colors.WHITE, starAlpha);
-            for(Pos2 pos : this.starMap){
-                g.fillRect((float)((pos.getX()/100D)*width), (float)((pos.getY()/100D)*height), 0.1F, 0.1F, starColor);
-            }
-        }
-
-        double radiusX = 11D/worldScale;
-        double radiusY = 7D/worldScale;
-
-        double sunAngle = (time/(double)Constants.TIME_PER_DAY)*130D+205D;
-        double sunRads = Math.toRadians(sunAngle);
-        float sunX = (float)(width/2D+Math.cos(sunRads)*radiusX);
-        float sunY = (float)(height+Math.sin(sunRads)*radiusY);
-        manager.getTexture(SUN_RES).draw(sunX-2.5F, sunY-2.5F, 4F, 4F);
-
-        double moonAngle = (time/(double)Constants.TIME_PER_DAY*3D)*360D+270D;
-        if(moonAngle <= 450D || moonAngle >= 1170D){
-            double moonRads = Math.toRadians(moonAngle);
-            float moonX = (float)(width/2D+Math.cos(moonRads)*radiusX);
-            float moonY = (float)(height+Math.sin(moonRads)*radiusY);
-            manager.getTexture(MOON_RES).draw(moonX-2F, moonY-2F, 4F, 4F);
-        }
-
-        g.popMatrix();
+        this.renderSky(game, manager, g, world, skylightMod, width, height);
 
         int topLeftX = Util.toGridPos(transX);
         int topLeftY = Util.toGridPos(-transY+1);
@@ -254,6 +220,124 @@ public class WorldRenderer{
                     ITexture brk = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
                     brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
                 }
+            }
+        }
+    }
+
+    private void renderSky(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, float skylightMod, double width, double height){
+        g.pushMatrix();
+        g.scale(g.getWorldScale(), g.getWorldScale());
+
+        int time = world.getWorldInfo().currentWorldTime;
+        float worldScale = game.getSettings().renderScale;
+
+        float starAlpha = 1F-Math.min(1F, skylightMod+0.5F);
+        if(starAlpha <= 0F){
+            if(!this.starMap.isEmpty()){
+                this.starMap.clear();
+            }
+        }
+        else{
+            if(this.starMap.isEmpty()){
+                for(int i = 0; i < Util.RANDOM.nextInt(50)+30; i++){
+                    this.starMap.add(new Pos2(Util.RANDOM.nextInt(101), Util.RANDOM.nextInt(101)));
+                }
+            }
+
+            int starColor = Colors.multiplyA(Colors.WHITE, starAlpha);
+            for(Pos2 pos : this.starMap){
+                g.fillRect((float)((pos.getX()/100D)*width), (float)((pos.getY()/100D)*height), 0.1F, 0.1F, starColor);
+            }
+        }
+
+        double radiusX = 11D/worldScale;
+        double radiusY = 7D/worldScale;
+
+        double sunAngle = (time/(double)Constants.TIME_PER_DAY)*130D+205D;
+        double sunRads = Math.toRadians(sunAngle);
+        float sunX = (float)(width/2D+Math.cos(sunRads)*radiusX);
+        float sunY = (float)(height+Math.sin(sunRads)*radiusY);
+        manager.getTexture(SUN_RES).draw(sunX-2.5F, sunY-2.5F, 4F, 4F);
+
+        double moonAngle = (time/(double)Constants.TIME_PER_DAY*3D)*360D+270D;
+        if(moonAngle <= 450D || moonAngle >= 1170D){
+            double moonRads = Math.toRadians(moonAngle);
+            float moonX = (float)(width/2D+Math.cos(moonRads)*radiusX);
+            float moonY = (float)(height+Math.sin(moonRads)*radiusY);
+            manager.getTexture(MOON_RES).draw(moonX-2F, moonY-2F, 4F, 4F);
+        }
+
+        for(Cloud cloud : this.clouds){
+            cloud.render(manager, width, height, skylightMod);
+        }
+
+        g.popMatrix();
+    }
+
+    public void update(){
+        int possibleAddAmount = 0;
+
+        for(int i = 0; i < this.clouds.size(); i++){
+            Cloud cloud = this.clouds.get(i);
+            cloud.x += cloud.speed;
+
+            if(cloud.x >= 1.5D){
+                this.clouds.remove(i);
+                i--;
+
+                possibleAddAmount += 2;
+            }
+        }
+
+        if(this.clouds.size() < 15){
+            if(this.clouds.size() <= 0){
+                possibleAddAmount += 5;
+            }
+            else if(possibleAddAmount <= 0 && Util.RANDOM.nextFloat() >= 0.9F){
+                possibleAddAmount = Util.RANDOM.nextInt(5);
+            }
+
+            if(possibleAddAmount > 0){
+                this.addClouds(Util.RANDOM.nextInt(possibleAddAmount)+1, false);
+            }
+        }
+    }
+
+    private void addClouds(int amount, boolean randomX){
+        for(int i = 0; i < amount; i++){
+            this.clouds.add(new Cloud(Util.RANDOM.nextDouble()*0.001D, randomX ? Util.RANDOM.nextDouble() : -0.5D, Util.RANDOM.nextDouble()*0.3D));
+        }
+    }
+
+    private static class Cloud{
+
+        private final double speed;
+        private final double y;
+        private double x;
+
+        private final int[] cloudParts;
+        private final Pos2[] cloudOffsets;
+
+        private Cloud(double speed, double x, double y){
+            this.speed = speed;
+            this.x = x;
+            this.y = y;
+
+            this.cloudParts = new int[Util.RANDOM.nextInt(4)+3];
+            this.cloudOffsets = new Pos2[this.cloudParts.length];
+
+            for(int i = 0; i < this.cloudParts.length; i++){
+                this.cloudParts[i] = Util.RANDOM.nextInt(12);
+                this.cloudOffsets[i] = new Pos2(Util.RANDOM.nextInt(17)-8, Util.RANDOM.nextInt(5)-2);
+            }
+        }
+
+        private void render(IAssetManager manager, double width, double height, float lightModifier){
+            for(int i = 0; i < this.cloudParts.length; i++){
+                int part = this.cloudParts[i];
+                Pos2 offset = this.cloudOffsets[i];
+
+                manager.getTexture(CLOUD_TEXTURES[part]).draw((float)(this.x*width)+offset.getX()*0.1F, (float)(this.y*height)+offset.getY()*0.1F, 1F, 1F, Colors.multiplyA(Colors.multiply(Colors.WHITE, lightModifier), 0.75F));
             }
         }
     }

@@ -247,8 +247,6 @@ public class RockBottom extends AbstractGame{
     @Override
     public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         super.init(game, apiHandler, eventHandler);
-
-        WorldRenderer.init();
     }
 
     @Override
@@ -312,6 +310,8 @@ public class RockBottom extends AbstractGame{
 
                 this.particleManager.update(this);
             }
+
+            this.worldRenderer.update();
         }
 
         if(RockBottomAPI.getNet().isClient()){
