@@ -40,8 +40,7 @@ public class Font implements IFont{
     }
 
     public static Font fromStream(ITexture texture, InputStream infoStream, String name) throws Exception{
-        JsonParser parser = new JsonParser();
-        JsonObject main = parser.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
+        JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
 
         int width = 0;
         Map<Character, Pos2> characters = new HashMap<>();

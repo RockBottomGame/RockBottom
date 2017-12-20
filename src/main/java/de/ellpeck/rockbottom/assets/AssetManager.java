@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
@@ -199,8 +200,6 @@ public class AssetManager implements IAssetManager{
     }
 
     private void loadAssets(){
-        JsonParser parser = new JsonParser();
-
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             String path = mod.getResourceLocation();
             if(path != null && !path.isEmpty()){
@@ -210,7 +209,7 @@ public class AssetManager implements IAssetManager{
                 if(stream != null){
                     try{
                         InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8);
-                        JsonObject main = parser.parse(reader).getAsJsonObject();
+                        JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
 
                         for(Entry<String, JsonElement> resType : main.entrySet()){
                             String type = resType.getKey();

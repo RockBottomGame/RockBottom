@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
@@ -47,7 +48,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
             List<AnimationRow> rows = new ArrayList<>();
 
             InputStream infoStream = AssetManager.getResource(path+anim);
-            JsonObject main = new JsonParser().parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
+            JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
 
             for(Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){
                 String key = entry.getKey();

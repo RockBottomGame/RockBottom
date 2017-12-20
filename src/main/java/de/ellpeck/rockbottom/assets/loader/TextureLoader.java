@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
@@ -55,7 +56,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                     additionalData = this.additionalDataCache.get(dataPath);
                     if(additionalData == null){
                         InputStreamReader reader = new InputStreamReader(AssetManager.getResource(dataPath), Charsets.UTF_8);
-                        JsonObject main = new JsonParser().parse(reader).getAsJsonObject();
+                        JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
                         if(main != null){
                             additionalData = new HashMap<>();
 
