@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -87,6 +88,12 @@ public class TileLog extends TileBasic{
     @Override
     public boolean hasSolidSurface(IWorld world, int x, int y, TileLayer layer){
         return !world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT).isNatural();
+    }
+
+    @Override
+    public boolean canLiquidSpreadInto(IWorld world, int x, int y, TileLiquid liquid){
+        LogType type = world.getState(x, y).get(StaticTileProps.LOG_VARIANT);
+        return type != LogType.TRUNK_BOTTOM && type != LogType.TRUNK_MIDDLE;
     }
 
     @Override
