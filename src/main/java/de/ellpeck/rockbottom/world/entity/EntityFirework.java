@@ -49,6 +49,12 @@ public class EntityFirework extends Entity{
                 this.kill();
             }
         }
+
+        if(!game.isDedicatedServer()){
+            if(Util.RANDOM.nextBoolean()){
+                game.getParticleManager().addSmokeParticle(this.world, this.x, this.y, Util.RANDOM.nextGaussian()*0.05F, -0.1F, 0.15F);
+            }
+        }
     }
 
     @Override

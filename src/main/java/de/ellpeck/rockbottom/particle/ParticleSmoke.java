@@ -33,6 +33,6 @@ public class ParticleSmoke extends Particle{
         float size = this.scale*(1F-(float)this.life/(float)this.maxLife);
 
         ITexture image = manager.getTexture(SMOKE_NAME);
-        image.draw(x-(image.getWidth()*size/2), y-(image.getHeight()*size/2), size);
+        image.draw(x-size/2, y-size/2, size, size);
     }
 }

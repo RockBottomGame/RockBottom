@@ -25,7 +25,7 @@ public class ParticleFirework extends Particle{
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g, float x, float y, int filter){
         float lifePercentage = 1F-(float)this.life/(float)this.maxLife;
-        manager.getTexture(TEXTURE).draw(x-0.075F, y-0.075F, 0.15F, 0.15F, Colors.multiplyA(this.particleColor, lifePercentage));
+        manager.getTexture(TEXTURE).draw(x-0.1F, y-0.1F, 0.2F, 0.2F, Colors.multiplyA(this.particleColor, lifePercentage));
     }
 
     @Override
