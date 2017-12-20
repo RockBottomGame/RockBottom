@@ -19,7 +19,7 @@ public class TileWater extends TileLiquid{
 
     @Override
     public int getLevels(){
-        return 8;
+        return 12;
     }
 
     @Override
