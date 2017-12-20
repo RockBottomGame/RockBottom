@@ -36,12 +36,12 @@ public class ModLoader implements IModLoader{
     @Override
     public void loadJarMods(File dir){
         RockBottomAPI.getGame().getDataManager().loadPropSettings(this.modSettings);
+        File infoFile = new File(dir, "HOW TO INSTALL MODS.txt");
 
         if(!dir.exists()){
             dir.mkdirs();
 
             try{
-                File infoFile = new File(dir, "HOW TO INSTALL MODS.txt");
                 BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
                 String l = System.lineSeparator();
 
@@ -68,37 +68,39 @@ public class ModLoader implements IModLoader{
             RockBottomAPI.logger().info("Loading jar mods from mods folder "+dir);
 
             for(File file : dir.listFiles()){
-                String name = file.getName();
-                if(name != null && name.endsWith(".jar")){
-                    try{
-                        JarFile jar = new JarFile(file);
-                        Enumeration<JarEntry> entries = jar.entries();
+                if(!file.equals(infoFile)){
+                    String name = file.getName();
+                    if(name != null && name.endsWith(".jar")){
+                        try{
+                            JarFile jar = new JarFile(file);
+                            Enumeration<JarEntry> entries = jar.entries();
 
-                        Main.classLoader.addURL(file.toURI().toURL());
+                            Main.classLoader.addURL(file.toURI().toURL());
 
-                        boolean foundMod = false;
-                        while(entries.hasMoreElements()){
-                            JarEntry entry = entries.nextElement();
-                            String entryName = entry.getName();
+                            boolean foundMod = false;
+                            while(entries.hasMoreElements()){
+                                JarEntry entry = entries.nextElement();
+                                String entryName = entry.getName();
 
-                            if(this.findMod(entryName)){
-                                amount++;
+                                if(this.findMod(entryName)){
+                                    amount++;
 
-                                foundMod = true;
-                                break;
+                                    foundMod = true;
+                                    break;
+                                }
+                            }
+
+                            if(!foundMod){
+                                RockBottomAPI.logger().warning("Jar file "+file+" doesn't contain a valid mod");
                             }
                         }
-
-                        if(!foundMod){
-                            RockBottomAPI.logger().warning("Jar file "+file+" doesn't contain a valid mod");
+                        catch(Exception e){
+                            RockBottomAPI.logger().log(Level.WARNING, "Loading jar mod from file "+file+" failed", e);
                         }
                     }
-                    catch(Exception e){
-                        RockBottomAPI.logger().log(Level.WARNING, "Loading jar mod from file "+file+" failed", e);
+                    else{
+                        RockBottomAPI.logger().warning("Found non-jar file "+file+" in mods folder "+dir);
                     }
-                }
-                else{
-                    RockBottomAPI.logger().warning("Found non-jar file "+file+" in mods folder "+dir);
                 }
             }
 
