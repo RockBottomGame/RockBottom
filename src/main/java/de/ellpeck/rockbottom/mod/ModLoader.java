@@ -10,7 +10,10 @@ import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.apiimpl.ResourceName;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -36,6 +39,27 @@ public class ModLoader implements IModLoader{
 
         if(!dir.exists()){
             dir.mkdirs();
+
+            try{
+                File infoFile = new File(dir, "HOW TO INSTALL MODS.txt");
+                BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
+                String l = System.lineSeparator();
+
+                writer.write("----------------------------------------------------------"+l);
+                writer.write("To install a mod, place its compiled jar into this folder."+l);
+                writer.write("If your mod doesn't have a compiled jar, or you downloaded"+l);
+                writer.write("something other than one, then please refer to the modding"+l);
+                writer.write("documentation or contact the mod author as mods should be "+l);
+                writer.write("distributed and used in jar form only.                    "+l);
+                writer.write("----------------------------------------------------------"+l);
+                writer.write("~Also known as README.txt~");
+
+                writer.close();
+            }
+            catch(Exception e){
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't create info file in mods folder", e);
+            }
+
             RockBottomAPI.logger().info("Mods folder not found, creating at "+dir);
         }
         else{
