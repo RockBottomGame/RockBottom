@@ -47,10 +47,11 @@ public class TileLeaves extends TileBasic{
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(!world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-                int range = 4;
+                int rangeX = 2;
+                int rangeY = 4;
 
-                for(int addX = -range; addX <= range; addX++){
-                    for(int addY = -range; addY <= range; addY++){
+                for(int addX = -rangeX; addX <= rangeX; addX++){
+                    for(int addY = -rangeY; addY <= rangeY; addY++){
                         TileState state = world.getState(layer, x+addX, y+addY);
                         if(state.getTile().doesSustainLeaves(world, x+addX, y+addY, layer)){
                             return;
