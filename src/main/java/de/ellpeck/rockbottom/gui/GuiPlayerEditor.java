@@ -25,7 +25,7 @@ public class GuiPlayerEditor extends Gui{
     private static final String WIIV_IS_COOL = "wiiv is cool";
     private int wiivIndex;
 
-    private int previewType;
+    private int previewType = 2;
 
     public GuiPlayerEditor(Gui parent){
         super(196, 174, parent);
@@ -84,7 +84,7 @@ public class GuiPlayerEditor extends Gui{
             return true;
         }, "button.player_design.sex"));
 
-        this.components.add(new ComponentSlider(this, x-98, 126, 80, 12, this.previewType+1, 1, 6, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(RockBottomAPI.createInternalRes("button.player_design.preview"))));
+        this.components.add(new ComponentSlider(this, x-98, 126, 80, 12, this.previewType+1, 1, 4, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(RockBottomAPI.createInternalRes("button.player_design.preview"))));
 
         this.components.add(new ComponentFancyButton(this, this.width/2-16, this.height-34, 14, 14, () -> {
             this.components.add(0, new ComponentConfirmationPopup(this, this.width/2-16+7, this.height-38+7, aBoolean -> {
