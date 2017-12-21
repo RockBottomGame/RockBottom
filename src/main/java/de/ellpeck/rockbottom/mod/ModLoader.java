@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.mod;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
@@ -35,7 +36,8 @@ public class ModLoader implements IModLoader{
 
     @Override
     public void loadJarMods(File dir){
-        RockBottomAPI.getGame().getDataManager().loadPropSettings(this.modSettings);
+        IDataManager manager = RockBottomAPI.getGame().getDataManager();
+        manager.loadPropSettings(this.modSettings);
         File infoFile = new File(dir, "HOW TO INSTALL MODS.txt");
 
         if(!dir.exists()){
@@ -68,7 +70,7 @@ public class ModLoader implements IModLoader{
             RockBottomAPI.logger().info("Loading jar mods from mods folder "+dir);
 
             for(File file : dir.listFiles()){
-                if(!file.equals(infoFile)){
+                if(!file.equals(infoFile) && !file.equals(manager.getModConfigFolder())){
                     String name = file.getName();
                     if(name != null && name.endsWith(".jar")){
                         try{
