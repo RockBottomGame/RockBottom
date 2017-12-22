@@ -36,10 +36,11 @@ public class WorldRenderer{
     private final List<Cloud> clouds = new ArrayList<>();
 
     public WorldRenderer(){
-        float step = 1F/(Constants.MAX_LIGHT+1);
+        float step = 1F/Constants.MAX_LIGHT;
         for(int i = 0; i <= Constants.MAX_LIGHT; i++){
             float modifier = i*step;
             MAIN_COLORS[i] = Colors.rgb(modifier, modifier, modifier, 1F);
+            System.out.println(i+" -> "+MAIN_COLORS[i]+" "+Colors.getR(MAIN_COLORS[i])+" "+Colors.getG(MAIN_COLORS[i])+" "+Colors.getB(MAIN_COLORS[i]));
         }
 
         int sky = 0x4C8DFF;
@@ -250,22 +251,20 @@ public class WorldRenderer{
             }
         }
 
-        double radiusX = 11D/worldScale;
+        double radiusX = 10D/worldScale;
         double radiusY = 7D/worldScale;
 
-        double sunAngle = (time/(double)Constants.TIME_PER_DAY)*130D+205D;
+        double sunAngle = (time/(double)Constants.TIME_PER_DAY)*360D+180D;
         double sunRads = Math.toRadians(sunAngle);
         float sunX = (float)(width/2D+Math.cos(sunRads)*radiusX);
         float sunY = (float)(height+Math.sin(sunRads)*radiusY);
-        manager.getTexture(SUN_RES).draw(sunX-2.5F, sunY-2.5F, 4F, 4F);
+        manager.getTexture(SUN_RES).draw(sunX-2F, sunY-2F, 4F, 4F);
 
-        double moonAngle = (time/(double)Constants.TIME_PER_DAY*3D)*360D+270D;
-        if(moonAngle <= 450D || moonAngle >= 1170D){
-            double moonRads = Math.toRadians(moonAngle);
-            float moonX = (float)(width/2D+Math.cos(moonRads)*radiusX);
-            float moonY = (float)(height+Math.sin(moonRads)*radiusY);
-            manager.getTexture(MOON_RES).draw(moonX-2F, moonY-2F, 4F, 4F);
-        }
+        double moonAngle = (time/(double)Constants.TIME_PER_DAY)*360D;
+        double moonRads = Math.toRadians(moonAngle);
+        float moonX = (float)(width/2D+Math.cos(moonRads)*radiusX);
+        float moonY = (float)(height+Math.sin(moonRads)*radiusY);
+        manager.getTexture(MOON_RES).draw(moonX-2F, moonY-2F, 4F, 4F);
 
         for(Cloud cloud : this.clouds){
             cloud.render(manager, width, height, skylightMod);

@@ -295,8 +295,8 @@ public class World implements IWorld{
         if(!game.isDedicatedServer()){
             AbstractEntityPlayer player = game.getPlayer();
             double dist = Util.distanceSq(x+0.5D, y, player.x, player.y);
-            if(dist <= 15D){
-                byte newLight = (byte)(0.2D*(15D-dist));
+            if(dist <= 20D){
+                byte newLight = (byte)(0.35D*(20D-dist));
                 if(light < newLight){
                     light = newLight;
                 }
@@ -888,10 +888,10 @@ public class World implements IWorld{
     }
 
     public float getSkylightModifier(boolean doMinMax){
-        float mod = (float)Math.sin(Math.PI*this.info.currentWorldTime/Constants.TIME_PER_DAY);
+        float mod = ((float)Math.sin(2*Math.PI*((double)this.info.currentWorldTime/(double)Constants.TIME_PER_DAY))+1F)/2F;
 
         if(doMinMax){
-            return Math.min(1F, Math.max(0.05F, mod)+0.1F);
+            return Math.min(1F, mod+0.15F);
         }
         else{
             return mod;
