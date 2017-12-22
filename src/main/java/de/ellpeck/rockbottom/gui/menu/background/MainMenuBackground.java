@@ -80,7 +80,7 @@ public class MainMenuBackground{
         float width = logo.getFrameWidth()*scale;
         float height = logo.getFrameHeight()*scale;
         float x = g.getWidthInGui()/2F-width/2F;
-        float y = 10F;
+        float y = -2F;
 
         float mouseX = g.getMouseInGuiX();
         float mouseY = g.getMouseInGuiY();

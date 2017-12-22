@@ -39,11 +39,6 @@ public class GuiMods extends Gui{
             i++;
         }
 
-        this.components.add(new ComponentButton(this, this.width-47, 2, 45, 10, () -> {
-            game.getGuiManager().openGui(this.parent);
-            return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
-
         this.components.add(new ComponentFancyButton(this, this.width-18, 14, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
 
         this.modGuiButton = new ComponentButton(this, 100+(this.width-100)/2-60, this.height-30, 55, 16, () -> {
@@ -76,6 +71,11 @@ public class GuiMods extends Gui{
         }, "", game.getAssetManager().localize(RockBottomAPI.createInternalRes("info.requires_restart")));
         this.updateDisableButton(game);
         this.components.add(this.disabledButton);
+
+        this.components.add(new ComponentButton(this, this.width/2-40, this.height-30, 80, 16, () -> {
+            game.getGuiManager().openGui(this.parent);
+            return true;
+        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
     }
 
     private void updateDisableButton(IGameInstance game){
@@ -111,10 +111,10 @@ public class GuiMods extends Gui{
                 font.drawCenteredString(center, 65, "By: "+FormattingCode.BOLD+authorString, 0.4F, false);
             }
 
-            font.drawCenteredString(center, 85, "Version: "+FormattingCode.LIGHT_GRAY+FormattingCode.BOLD+this.selectedMod.getVersion(), 0.35F, false);
-            font.drawCenteredString(center, 95, "Mod ID: "+FormattingCode.LIGHT_GRAY+FormattingCode.BOLD+this.selectedMod.getId(), 0.35F, false);
+            font.drawCenteredString(center, 75, "Version: "+FormattingCode.LIGHT_GRAY+FormattingCode.BOLD+this.selectedMod.getVersion(), 0.35F, false);
+            font.drawCenteredString(center, 85, "Mod ID: "+FormattingCode.LIGHT_GRAY+FormattingCode.BOLD+this.selectedMod.getId(), 0.35F, false);
 
-            font.drawSplitString(120, 120, this.selectedMod.getDescription(), 0.4F, width-30);
+            font.drawSplitString(120, 100, this.selectedMod.getDescription(), 0.4F, width-30);
         }
     }
 
