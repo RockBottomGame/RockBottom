@@ -39,7 +39,7 @@ public class GuiMods extends Gui{
             i++;
         }
 
-        this.components.add(new ComponentFancyButton(this, this.width-18, 14, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width-18, 2, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
 
         this.modGuiButton = new ComponentButton(this, 100+(this.width-100)/2-60, this.height-30, 55, 16, () -> {
             Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();
