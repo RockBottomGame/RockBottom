@@ -148,16 +148,16 @@ public class GuiChangelog extends Gui{
             counter++;
         }
 
-        double current = convertVersionToInt(RockBottomAPI.getGame().getVersion());
-        boolean isStableNewer = convertVersionToInt(stable) > current;
-        boolean isLatestNewer = convertVersionToInt(latest) > current;
+        double current = convertToNum(RockBottomAPI.getGame().getVersion());
+        boolean isStableNewer = convertToNum(stable) > current;
+        boolean isLatestNewer = convertToNum(latest) > current;
 
         changelog = new Changelog(latest, stable, isLatestNewer, isStableNewer, infos);
 
         RockBottomAPI.logger().info("Successfully grabbed and parsed the changelog.");
     }
 
-    private static double convertVersionToInt(String version){
+    private static double convertToNum(String version){
         try{
             String[] split = version.split("\\.", 2);
             double num = Integer.parseInt(split[0]);
