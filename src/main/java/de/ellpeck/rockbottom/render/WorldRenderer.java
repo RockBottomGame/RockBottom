@@ -40,7 +40,6 @@ public class WorldRenderer{
         for(int i = 0; i <= Constants.MAX_LIGHT; i++){
             float modifier = i*step;
             MAIN_COLORS[i] = Colors.rgb(modifier, modifier, modifier, 1F);
-            System.out.println(i+" -> "+MAIN_COLORS[i]+" "+Colors.getR(MAIN_COLORS[i])+" "+Colors.getG(MAIN_COLORS[i])+" "+Colors.getB(MAIN_COLORS[i]));
         }
 
         int sky = 0x4C8DFF;
