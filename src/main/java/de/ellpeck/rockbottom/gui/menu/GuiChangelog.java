@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class GuiChangelog extends Gui{
 
@@ -156,11 +157,17 @@ public class GuiChangelog extends Gui{
         RockBottomAPI.logger().info("Successfully grabbed and parsed the changelog.");
     }
 
-    private static double convertVersionToInt(String version) throws Exception{
-        String[] split = version.split("\\.", 2);
-        double num = Integer.parseInt(split[0]);
-        double decimal = Integer.parseInt(split[1].replaceAll("\\.", ""));
-        return num+(decimal/100D);
+    private static double convertVersionToInt(String version){
+        try{
+            String[] split = version.split("\\.", 2);
+            double num = Integer.parseInt(split[0]);
+            double decimal = Integer.parseInt(split[1].replaceAll("\\.", ""));
+            return num+(decimal/100D);
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't parse version string "+version+" into a comparable number", e);
+            return 0D;
+        }
     }
 
     public static class Changelog{
