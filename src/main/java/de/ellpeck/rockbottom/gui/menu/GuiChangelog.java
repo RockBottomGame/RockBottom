@@ -61,9 +61,9 @@ public class GuiChangelog extends Gui{
             outer:
             for(VersionInfo info : changelog.versionInfo){
                 FormattingCode color = info.versionName.equals(changelog.stable) ? FormattingCode.ORANGE : (info.versionName.equals(changelog.latest) ? FormattingCode.YELLOW : FormattingCode.WHITE);
-                font.drawString(x, y, FormattingCode.UNDERLINED.toString()+color+info.versionName, 0.5F);
+                font.drawString(x, y, FormattingCode.UNDERLINED.toString()+color+info.versionName, 0.4F);
 
-                y += 15F;
+                y += 12F;
                 if(y >= maxY){
                     showScrollForMore = true;
                     break;
@@ -73,9 +73,9 @@ public class GuiChangelog extends Gui{
                     List<String> subLines = font.splitTextToLength(this.width-x*2, 0.4F, true, s);
                     for(int i = 0; i < subLines.size(); i++){
                         String line = subLines.get(i);
-                        font.drawString(x, y, (i == 0 ? "- " : "  ")+line, 0.4F);
+                        font.drawString(x, y, (i == 0 ? " - " : "   ")+line, 0.3F);
 
-                        y += 10F;
+                        y += 8F;
                         if(y >= maxY){
                             showScrollForMore = true;
                             break outer;
@@ -83,7 +83,7 @@ public class GuiChangelog extends Gui{
                     }
                 }
 
-                y += 5F;
+                y += 3F;
             }
 
             if(showScrollForMore){
