@@ -12,26 +12,10 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.GuiPlayerEditor;
-
-import java.util.logging.Level;
+import de.ellpeck.rockbottom.util.ChangelogManager;
+import de.ellpeck.rockbottom.util.ChangelogManager.Changelog;
 
 public class GuiMainMenu extends Gui{
-
-    public GuiMainMenu(){
-        if(GuiChangelog.changelog == null && !GuiChangelog.changelogGrabError){
-            Thread loaderThread = new Thread(() -> {
-                try{
-                    GuiChangelog.loadChangelog();
-                }
-                catch(Exception e){
-                    RockBottomAPI.logger().log(Level.WARNING, "There was an error trying to grab and parse the changelog", e);
-                    GuiChangelog.changelogGrabError = true;
-                }
-            }, "ChangelogGrabber");
-            loaderThread.setDaemon(true);
-            loaderThread.start();
-        }
-    }
 
     @Override
     public void init(IGameInstance game){
@@ -73,11 +57,12 @@ public class GuiMainMenu extends Gui{
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.changelog"))){
             @Override
             protected String getText(){
-                if(GuiChangelog.changelog != null){
-                    if(GuiChangelog.changelog.isStableNewer){
+                Changelog log = ChangelogManager.getChangelog();
+                if(log != null){
+                    if(log.isStableNewer){
                         return FormattingCode.ORANGE+super.getText();
                     }
-                    else if(GuiChangelog.changelog.isLatestNewer){
+                    else if(log.isLatestNewer){
                         return FormattingCode.YELLOW+super.getText();
                     }
                 }

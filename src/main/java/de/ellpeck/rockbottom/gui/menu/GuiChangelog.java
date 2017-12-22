@@ -13,6 +13,9 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.util.ChangelogManager;
+import de.ellpeck.rockbottom.util.ChangelogManager.Changelog;
+import de.ellpeck.rockbottom.util.ChangelogManager.VersionInfo;
 import org.lwjgl.input.Mouse;
 
 import java.io.InputStreamReader;
@@ -22,9 +25,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class GuiChangelog extends Gui{
-
-    public static Changelog changelog;
-    public static boolean changelogGrabError;
 
     private float scrollAmount = 0F;
 
@@ -47,6 +47,9 @@ public class GuiChangelog extends Gui{
     @Override
     public void render(IGameInstance game, IAssetManager manager, IGraphics g){
         super.render(game, manager, g);
+
+        Changelog changelog = ChangelogManager.getChangelog();
+        boolean changelogGrabError = ChangelogManager.isChangelogGrabError();
 
         IFont font = manager.getFont();
         if(changelog == null || changelogGrabError){
@@ -117,84 +120,5 @@ public class GuiChangelog extends Gui{
     @Override
     public IResourceName getName(){
         return RockBottomAPI.createInternalRes("changelog");
-    }
-
-    public static void loadChangelog() throws Exception{
-        RockBottomAPI.logger().info("Grabbing the changelog...");
-
-        URL newestURL = new URL("https://raw.githubusercontent.com/RockBottomGame/Changelog/master/changelog.json");
-        InputStreamReader reader = new InputStreamReader(newestURL.openStream());
-
-        RockBottomAPI.logger().info("Parsing the changelog...");
-
-        JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
-
-        String latest = main.get("latest").getAsString();
-        String stable = main.get("stable").getAsString();
-
-        JsonObject changes = main.get("changes").getAsJsonObject();
-        VersionInfo[] infos = new VersionInfo[changes.size()];
-
-        int counter = 0;
-        for(Map.Entry<String, JsonElement> change : changes.entrySet()){
-            JsonArray changelog = change.getValue().getAsJsonArray();
-
-            String[] changelogArray = new String[changelog.size()];
-            for(int i = 0; i < changelog.size(); i++){
-                changelogArray[i] = changelog.get(i).getAsString();
-            }
-
-            infos[counter] = new VersionInfo(change.getKey(), changelogArray);
-            counter++;
-        }
-
-        double current = convertToNum(RockBottomAPI.getGame().getVersion());
-        boolean isStableNewer = convertToNum(stable) > current;
-        boolean isLatestNewer = convertToNum(latest) > current;
-
-        changelog = new Changelog(latest, stable, isLatestNewer, isStableNewer, infos);
-
-        RockBottomAPI.logger().info("Successfully grabbed and parsed the changelog.");
-    }
-
-    private static double convertToNum(String version){
-        try{
-            String[] split = version.split("\\.", 2);
-            double num = Integer.parseInt(split[0]);
-            double decimal = Integer.parseInt(split[1].replaceAll("\\.", ""));
-            return num+(decimal/100D);
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't parse version string "+version+" into a comparable number", e);
-            return 0D;
-        }
-    }
-
-    public static class Changelog{
-
-        public final String latest;
-        public final String stable;
-        public final boolean isLatestNewer;
-        public final boolean isStableNewer;
-        public final VersionInfo[] versionInfo;
-
-        public Changelog(String latest, String stable, boolean isLatestNewer, boolean isStableNewer, VersionInfo[] versionInfo){
-            this.latest = latest;
-            this.stable = stable;
-            this.isLatestNewer = isLatestNewer;
-            this.isStableNewer = isStableNewer;
-            this.versionInfo = versionInfo;
-        }
-    }
-
-    public static class VersionInfo{
-
-        public final String versionName;
-        public final String[] info;
-
-        public VersionInfo(String versionName, String[] info){
-            this.versionName = versionName;
-            this.info = info;
-        }
     }
 }

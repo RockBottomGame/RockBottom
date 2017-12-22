@@ -37,6 +37,7 @@ import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.WorldRenderer;
+import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import joptsimple.internal.Strings;
@@ -135,6 +136,7 @@ public class RockBottom extends AbstractGame{
 
         RockBottomAPI.logger().info("Initializing system");
 
+        ChangelogManager.loadChangelog();
         this.initGraphics();
 
         try{
