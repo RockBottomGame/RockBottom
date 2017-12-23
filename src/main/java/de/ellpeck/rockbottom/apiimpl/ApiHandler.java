@@ -13,7 +13,10 @@ import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
+import de.ellpeck.rockbottom.api.gui.GuiContainer;
+import de.ellpeck.rockbottom.api.gui.GuiContainer.ShiftClickBehavior;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
+import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -259,81 +262,33 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public boolean doDefaultSlotMovement(IGameInstance game, int button, float x, float y, ComponentSlot slot){
-        if(slot.isMouseOver(game)){
-            ItemInstance slotInst = slot.slot.get();
-            ItemInstance slotCopy = slotInst == null ? null : slotInst.copy();
+        ItemInstance slotInst = slot.slot.get();
+        ItemInstance slotCopy = slotInst == null ? null : slotInst.copy();
 
-            if(Settings.KEY_GUI_ACTION_1.isKey(button)){
-                if(slot.container.holdingInst == null){
-                    if(slotCopy != null){
-                        if(this.setToInv(null, slot)){
-                            slot.container.holdingInst = slotCopy;
+        if(Settings.KEY_GUI_ACTION_1.isKey(button)){
+            if(slot.container.holdingInst == null){
+                if(slotCopy != null){
+                    if(this.setToInv(null, slot)){
+                        slot.container.holdingInst = slotCopy;
 
-                            return true;
-                        }
-                    }
-                }
-                else{
-                    if(slotCopy == null){
-                        if(this.setToInv(slot.container.holdingInst, slot)){
-                            slot.container.holdingInst = null;
-
-                            return true;
-                        }
-                    }
-                    else{
-                        if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
-                            int possible = Math.min(slotCopy.getMaxAmount()-slotCopy.getAmount(), slot.container.holdingInst.getAmount());
-                            if(possible > 0){
-                                if(this.setToInv(slotCopy.addAmount(possible), slot)){
-                                    slot.container.holdingInst.removeAmount(possible);
-                                    if(slot.container.holdingInst.getAmount() <= 0){
-                                        slot.container.holdingInst = null;
-                                    }
-
-                                    return true;
-                                }
-                            }
-                        }
-                        else{
-                            ItemInstance copy = slot.container.holdingInst.copy();
-                            if(this.setToInv(copy, slot)){
-                                slot.container.holdingInst = slotCopy;
-
-                                return true;
-                            }
-                        }
+                        return true;
                     }
                 }
             }
-            else if(Settings.KEY_GUI_ACTION_2.isKey(button)){
-                if(slot.container.holdingInst == null){
-                    if(slotCopy != null){
-                        int half = Util.ceil((double)slotCopy.getAmount()/2);
-                        slotCopy.removeAmount(half);
+            else{
+                if(slotCopy == null){
+                    if(this.setToInv(slot.container.holdingInst, slot)){
+                        slot.container.holdingInst = null;
 
-                        if(this.setToInv(slotCopy.getAmount() <= 0 ? null : slotCopy, slot)){
-                            slot.container.holdingInst = slotCopy.copy().setAmount(half);
-
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 else{
-                    if(slotCopy == null){
-                        if(this.setToInv(slot.container.holdingInst.copy().setAmount(1), slot)){
-                            slot.container.holdingInst.removeAmount(1);
-                            if(slot.container.holdingInst.getAmount() <= 0){
-                                slot.container.holdingInst = null;
-                            }
-
-                            return true;
-                        }
-                    }
-                    else if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
-                        if(slotCopy.getAmount() < slotCopy.getMaxAmount()){
-                            if(this.setToInv(slotCopy.addAmount(1), slot)){
-                                slot.container.holdingInst.removeAmount(1);
+                    if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
+                        int possible = Math.min(slotCopy.getMaxAmount()-slotCopy.getAmount(), slot.container.holdingInst.getAmount());
+                        if(possible > 0){
+                            if(this.setToInv(slotCopy.addAmount(possible), slot)){
+                                slot.container.holdingInst.removeAmount(possible);
                                 if(slot.container.holdingInst.getAmount() <= 0){
                                     slot.container.holdingInst = null;
                                 }
@@ -342,6 +297,104 @@ public class ApiHandler implements IApiHandler{
                             }
                         }
                     }
+                    else{
+                        ItemInstance copy = slot.container.holdingInst.copy();
+                        if(this.setToInv(copy, slot)){
+                            slot.container.holdingInst = slotCopy;
+
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        else if(Settings.KEY_GUI_ACTION_2.isKey(button)){
+            if(slot.container.holdingInst == null){
+                if(slotCopy != null){
+                    int half = Util.ceil((double)slotCopy.getAmount()/2);
+                    slotCopy.removeAmount(half);
+
+                    if(this.setToInv(slotCopy.getAmount() <= 0 ? null : slotCopy, slot)){
+                        slot.container.holdingInst = slotCopy.copy().setAmount(half);
+
+                        return true;
+                    }
+                }
+            }
+            else{
+                if(slotCopy == null){
+                    if(this.setToInv(slot.container.holdingInst.copy().setAmount(1), slot)){
+                        slot.container.holdingInst.removeAmount(1);
+                        if(slot.container.holdingInst.getAmount() <= 0){
+                            slot.container.holdingInst = null;
+                        }
+
+                        return true;
+                    }
+                }
+                else if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
+                    if(slotCopy.getAmount() < slotCopy.getMaxAmount()){
+                        if(this.setToInv(slotCopy.addAmount(1), slot)){
+                            slot.container.holdingInst.removeAmount(1);
+                            if(slot.container.holdingInst.getAmount() <= 0){
+                                slot.container.holdingInst = null;
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean doDefaultShiftClicking(IGameInstance game, GuiContainer gui, ComponentSlot slot){
+        if(Settings.KEY_GUI_ACTION_1.isPressed()){
+            if(slot.slot.canRemove()){
+                ItemInstance remaining = slot.slot.get();
+
+                if(remaining != null){
+                    boolean modified = false;
+                    ItemInstance remainingCopy = remaining.copy();
+
+                    for(ShiftClickBehavior behavior : gui.shiftClickBehaviors){
+                        if(behavior.slots.contains(slot.componentId)){
+                            for(int slotInto : behavior.slotsInto){
+                                GuiComponent comp = gui.getComponents().get(slotInto);
+                                if(comp instanceof ComponentSlot){
+                                    ComponentSlot intoSlot = (ComponentSlot)comp;
+                                    ItemInstance existing = intoSlot.slot.get();
+
+                                    if(existing == null){
+                                        if(this.setToInv(remainingCopy, intoSlot)){
+                                            this.setToInv(null, slot);
+                                            return true;
+                                        }
+                                    }
+                                    else if(existing.isEffectivelyEqual(remainingCopy)){
+                                        int possible = Math.min(existing.getMaxAmount()-existing.getAmount(), remainingCopy.getAmount());
+                                        if(possible > 0){
+                                            if(this.setToInv(existing.copy().addAmount(possible), intoSlot)){
+                                                modified = true;
+
+                                                remainingCopy.removeAmount(possible);
+                                                if(remainingCopy.getAmount() <= 0){
+                                                    this.setToInv(null, slot);
+                                                    return true;
+                                                }
+                                                else{
+                                                    this.setToInv(remainingCopy, slot);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return modified;
                 }
             }
         }

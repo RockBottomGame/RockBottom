@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentConstruction;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.function.BiConsumer;
 
@@ -26,6 +25,10 @@ public class GuiInventory extends GuiContainer{
 
     public GuiInventory(AbstractEntityPlayer player){
         super(player, 158, 83);
+
+        ShiftClickBehavior behavior = new ShiftClickBehavior(0, 7, 8, player.getInv().getSlotAmount());
+        this.shiftClickBehaviors.add(behavior);
+        this.shiftClickBehaviors.add(behavior.reversed());
     }
 
     @Override
