@@ -18,6 +18,7 @@ public class CommandStopServer extends Command{
     @Override
     public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         if(game.isDedicatedServer()){
+            game.getWorld().save();
             game.exit();
             return null;
         }
