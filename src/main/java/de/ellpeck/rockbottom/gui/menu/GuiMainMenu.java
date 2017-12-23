@@ -76,11 +76,12 @@ public class GuiMainMenu extends Gui{
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.credits"))));
 
         this.components.add(new ComponentButton(this, 2, 2, 50, 10, () -> {
-            this.components.add(0, new ComponentConfirmationPopup(this, 27, 2+5, aBoolean -> {
+            this.components.add(new ComponentConfirmationPopup(this, 27, 2+5, aBoolean -> {
                 if(aBoolean){
                     game.exit();
                 }
             }));
+            this.sortComponents();
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.quit"))));
 

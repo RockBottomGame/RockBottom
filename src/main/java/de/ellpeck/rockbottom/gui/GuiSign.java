@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFormatSelector;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -20,6 +21,7 @@ public class GuiSign extends Gui{
 
     private boolean isEditing;
     private final List<ComponentInputField> inputFields = new ArrayList<>();
+    private ComponentFormatSelector selector;
 
     private final TileEntitySign tile;
 
@@ -45,13 +47,18 @@ public class GuiSign extends Gui{
             this.inputFields.add(field);
         }
         this.components.addAll(this.inputFields);
-        this.updateInputFields();
 
         this.components.add(new ComponentToggleButton(this, this.width/2-40, this.height-16, 80, 16, this.isEditing, () -> {
             this.isEditing = !this.isEditing;
             this.updateInputFields();
             return true;
         }, "button.edit"));
+
+        ComponentInputField[] fields = this.inputFields.toArray(new ComponentInputField[this.inputFields.size()]);
+        this.selector = new ComponentFormatSelector(this, this.width/2+42, this.height-16, fields);
+        this.components.add(this.selector);
+
+        this.updateInputFields();
     }
 
     @Override
@@ -99,6 +106,7 @@ public class GuiSign extends Gui{
         for(ComponentInputField field : this.inputFields){
             field.setActive(this.isEditing);
         }
+        this.selector.setActive(this.isEditing);
     }
 
     @Override

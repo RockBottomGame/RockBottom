@@ -87,12 +87,13 @@ public class GuiPlayerEditor extends Gui{
         this.components.add(new ComponentSlider(this, x-98, 126, 80, 12, this.previewType+1, 1, 4, ((integer, aBoolean) -> this.previewType = integer-1), assetManager.localize(RockBottomAPI.createInternalRes("button.player_design.preview"))));
 
         this.components.add(new ComponentFancyButton(this, this.width/2-16, this.height-34, 14, 14, () -> {
-            this.components.add(0, new ComponentConfirmationPopup(this, this.width/2-16+7, this.height-38+7, aBoolean -> {
+            this.components.add(new ComponentConfirmationPopup(this, this.width/2-16+7, this.height-38+7, aBoolean -> {
                 if(aBoolean){
                     PlayerDesign.randomizeDesign(design);
                     this.init(game);
                 }
             }));
+            this.sortComponents();
             return true;
         }, RockBottomAPI.createInternalRes("gui.randomize"), assetManager.localize(RockBottomAPI.createInternalRes("info.randomize"))));
 
@@ -103,7 +104,7 @@ public class GuiPlayerEditor extends Gui{
         }, "Copy Design", "Copies the design to your clipboard so you can send it to friends or save it"));
 
         this.components.add(new ComponentButton(this, x, this.height-34, 80, 14, () -> {
-            this.components.add(0, new ComponentConfirmationPopup(this, x+40, this.height-38+7, aBoolean -> {
+            this.components.add(new ComponentConfirmationPopup(this, x+40, this.height-38+7, aBoolean -> {
                 if(aBoolean){
                     try{
                         String data = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
@@ -115,6 +116,7 @@ public class GuiPlayerEditor extends Gui{
                     }
                 }
             }));
+            this.sortComponents();
             return true;
         }, "Paste Design", "Paste a design from your clipboard"));
 

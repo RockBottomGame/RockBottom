@@ -67,7 +67,7 @@ public class GuiSelectWorld extends Gui{
             menu.add(new ComponentFancyButton(this, 0, 0, 12, 12, null, RockBottomAPI.createInternalRes("gui.delete"), "Delete World"){
                 @Override
                 public boolean onPressed(IGameInstance game){
-                    this.gui.getComponents().add(0, new ComponentConfirmationPopup(this.gui, this.x+this.width/2, this.y+this.height/2, aBoolean -> {
+                    this.gui.getComponents().add(new ComponentConfirmationPopup(this.gui, this.x+this.width/2, this.y+this.height/2, aBoolean -> {
                         if(aBoolean){
                             try{
                                 Util.deleteFolder(button.worldFile);
@@ -82,6 +82,7 @@ public class GuiSelectWorld extends Gui{
                             menu.organize();
                         }
                     }));
+                    this.gui.sortComponents();
                     return true;
                 }
             });
