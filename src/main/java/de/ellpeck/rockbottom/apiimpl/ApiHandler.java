@@ -365,7 +365,7 @@ public class ApiHandler implements IApiHandler{
                                 GuiComponent comp = gui.getComponents().get(slotInto);
                                 if(comp instanceof ComponentSlot){
                                     ComponentSlot intoSlot = (ComponentSlot)comp;
-                                    if(behavior.condition.apply(slot.slot, intoSlot.slot)){
+                                    if(behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)){
                                         ItemInstance existing = intoSlot.slot.get();
 
                                         if(existing == null){
