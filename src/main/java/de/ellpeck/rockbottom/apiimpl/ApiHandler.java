@@ -365,27 +365,29 @@ public class ApiHandler implements IApiHandler{
                                 GuiComponent comp = gui.getComponents().get(slotInto);
                                 if(comp instanceof ComponentSlot){
                                     ComponentSlot intoSlot = (ComponentSlot)comp;
-                                    ItemInstance existing = intoSlot.slot.get();
+                                    if(behavior.condition.apply(slot.slot, intoSlot.slot)){
+                                        ItemInstance existing = intoSlot.slot.get();
 
-                                    if(existing == null){
-                                        if(this.setToInv(remainingCopy, intoSlot)){
-                                            this.setToInv(null, slot);
-                                            return true;
+                                        if(existing == null){
+                                            if(this.setToInv(remainingCopy, intoSlot)){
+                                                this.setToInv(null, slot);
+                                                return true;
+                                            }
                                         }
-                                    }
-                                    else if(existing.isEffectivelyEqual(remainingCopy)){
-                                        int possible = Math.min(existing.getMaxAmount()-existing.getAmount(), remainingCopy.getAmount());
-                                        if(possible > 0){
-                                            if(this.setToInv(existing.copy().addAmount(possible), intoSlot)){
-                                                modified = true;
+                                        else if(existing.isEffectivelyEqual(remainingCopy)){
+                                            int possible = Math.min(existing.getMaxAmount()-existing.getAmount(), remainingCopy.getAmount());
+                                            if(possible > 0){
+                                                if(this.setToInv(existing.copy().addAmount(possible), intoSlot)){
+                                                    modified = true;
 
-                                                remainingCopy.removeAmount(possible);
-                                                if(remainingCopy.getAmount() <= 0){
-                                                    this.setToInv(null, slot);
-                                                    return true;
-                                                }
-                                                else{
-                                                    this.setToInv(remainingCopy, slot);
+                                                    remainingCopy.removeAmount(possible);
+                                                    if(remainingCopy.getAmount() <= 0){
+                                                        this.setToInv(null, slot);
+                                                        return true;
+                                                    }
+                                                    else{
+                                                        this.setToInv(remainingCopy, slot);
+                                                    }
                                                 }
                                             }
                                         }
