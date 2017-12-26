@@ -29,7 +29,7 @@ public class CommandBlacklist extends Command{
             if("add".equals(args[0])){
                 if(args.length > 1){
                     try{
-                        UUID id = UUID.fromString(args[1]);
+                        UUID id = chat.getPlayerIdFromString(args[1]);
 
                         String reason = "";
                         if(args.length > 2){
@@ -53,7 +53,7 @@ public class CommandBlacklist extends Command{
             else if("remove".equals(args[0])){
                 if(args.length > 1){
                     try{
-                        UUID id = UUID.fromString(args[1]);
+                        UUID id = chat.getPlayerIdFromString(args[1]);
                         net.removeBlacklist(id);
                         net.saveServerSettings();
                         return new ChatComponentText(FormattingCode.GREEN+"Removed player "+id+" from the blacklist!");
@@ -74,6 +74,9 @@ public class CommandBlacklist extends Command{
     public List<String> getAutocompleteSuggestions(int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
         if(argNumber == 1){
             return Arrays.asList("add", "remove");
+        }
+        else if(argNumber == 2){
+            return chat.getPlayerSuggestions();
         }
         else{
             return Collections.emptyList();

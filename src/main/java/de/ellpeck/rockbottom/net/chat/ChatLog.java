@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.IGraphics;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ChatMessageEvent;
 import de.ellpeck.rockbottom.api.net.chat.Command;
@@ -13,15 +14,18 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.chat.command.*;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
+import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class ChatLog implements IChatLog{
@@ -125,6 +129,38 @@ public class ChatLog implements IChatLog{
     @Override
     public List<ChatComponent> getMessages(){
         return this.messages;
+    }
+
+    //TODO Make this get a uuid from online if one in the world isn't available
+    @Override
+    public UUID getPlayerIdFromString(String nameOrId){
+        try{
+            return UUID.fromString(nameOrId);
+        }
+        catch(Exception e){
+            IWorld world = RockBottomAPI.getGame().getWorld();
+            AbstractEntityPlayer player = world.getPlayer(nameOrId);
+
+            if(player != null){
+                return player.getUniqueId();
+            }
+            else{
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public List<String> getPlayerSuggestions(){
+        List<String> suggestions = new ArrayList<>();
+
+        IWorld world = RockBottomAPI.getGame().getWorld();
+        for(AbstractEntityPlayer player : world.getAllPlayers()){
+            suggestions.add(player.getName());
+            suggestions.add(player.getUniqueId().toString());
+        }
+
+        return suggestions;
     }
 
     @Override

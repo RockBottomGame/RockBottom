@@ -10,7 +10,8 @@ import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 
-import java.util.UUID;
+import java.util.Collections;
+import java.util.List;
 
 public class CommandTeleport extends Command{
 
@@ -41,17 +42,7 @@ public class CommandTeleport extends Command{
         }
 
         if(args.length > 2){
-            try{
-                player = game.getWorld().getPlayer(args[2]);
-            }
-            catch(Exception e){
-                try{
-                    player = game.getWorld().getPlayer(UUID.fromString(args[2]));
-                }
-                catch(Exception e2){
-                    player = null;
-                }
-            }
+            player = game.getWorld().getPlayer(chat.getPlayerIdFromString(args[2]));
 
             if(player == null){
                 return new ChatComponentText(FormattingCode.RED+"Player "+args[2]+" not found!");
@@ -68,5 +59,15 @@ public class CommandTeleport extends Command{
 
         player.setPos(x, y);
         return new ChatComponentText(FormattingCode.GREEN+"Teleported player "+player.getName()+" to "+x+", "+y);
+    }
+
+    @Override
+    public List<String> getAutocompleteSuggestions(int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
+        if(argNumber == 3){
+            return chat.getPlayerSuggestions();
+        }
+        else{
+            return Collections.emptyList();
+        }
     }
 }
