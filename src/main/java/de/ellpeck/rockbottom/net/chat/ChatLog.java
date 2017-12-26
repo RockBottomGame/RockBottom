@@ -91,7 +91,8 @@ public class ChatLog implements IChatLog{
         }
     }
 
-    private Command getCommand(String name){
+    @Override
+    public Command getCommand(String name){
         if(name.contains(Constants.RESOURCE_SEPARATOR)){
             return RockBottomAPI.COMMAND_REGISTRY.get(RockBottomAPI.createRes(name));
         }

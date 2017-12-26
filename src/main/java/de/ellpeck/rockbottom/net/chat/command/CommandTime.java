@@ -13,6 +13,10 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class CommandTime extends Command{
 
     public CommandTime(){
@@ -48,6 +52,16 @@ public class CommandTime extends Command{
         }
         else{
             return new ChatComponentText(FormattingCode.RED+"Wrong number of arguments!");
+        }
+    }
+
+    @Override
+    public List<String> getAutocompleteSuggestions(int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
+        if(argNumber == 1){
+            return Arrays.asList("set", "advance");
+        }
+        else{
+            return Collections.emptyList();
         }
     }
 }

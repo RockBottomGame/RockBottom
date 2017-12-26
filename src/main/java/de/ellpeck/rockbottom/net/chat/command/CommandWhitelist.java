@@ -10,6 +10,9 @@ import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class CommandWhitelist extends Command{
@@ -65,5 +68,15 @@ public class CommandWhitelist extends Command{
             }
         }
         return new ChatComponentText(FormattingCode.RED+"Specify your action!");
+    }
+
+    @Override
+    public List<String> getAutocompleteSuggestions(int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
+        if(argNumber == 1){
+            return Arrays.asList("add", "remove", "enable", "disable");
+        }
+        else{
+            return Collections.emptyList();
+        }
     }
 }
