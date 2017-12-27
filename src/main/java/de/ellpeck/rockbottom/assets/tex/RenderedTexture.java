@@ -10,6 +10,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -81,7 +82,11 @@ public class RenderedTexture implements ITexture{
             sub.setAdditionalData(this.additionalData);
         }
         if(inheritVariations){
-            sub.setVariations(this.variations);
+            List<ITexture> newVariations = new ArrayList<>();
+            for(ITexture variation : this.variations){
+                newVariations.add(variation.getSubTexture(x, y, width, height, inheritVariations, inheritData));
+            }
+            sub.setVariations(newVariations);
         }
 
         return sub;
