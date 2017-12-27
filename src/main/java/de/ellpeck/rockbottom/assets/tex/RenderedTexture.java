@@ -55,6 +55,11 @@ public class RenderedTexture implements ITexture{
 
     @Override
     public RenderedTexture getSubTexture(float x, float y, float width, float height){
+        return this.getSubTexture(x, y, width, height, true, true);
+    }
+
+    @Override
+    public RenderedTexture getSubTexture(float x, float y, float width, float height, boolean inheritVariations, boolean inheritData){
         float texOffsetX = ((x/this.width)*this.textureWidth)+this.textureOffsetX;
         float texOffsetY = ((y/this.height)*this.textureHeight)+this.textureOffsetY;
         float texWidth = ((width/this.width)*this.textureWidth);
@@ -71,6 +76,14 @@ public class RenderedTexture implements ITexture{
         sub.height = height;
         sub.centerX = width/2F;
         sub.centerY = height/2F;
+
+        if(inheritData){
+            sub.setAdditionalData(this.additionalData);
+        }
+        if(inheritVariations){
+            sub.setVariations(this.variations);
+        }
+
         return sub;
     }
 
