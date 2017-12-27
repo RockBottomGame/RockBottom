@@ -142,7 +142,6 @@ public class GuiChat extends Gui{
             g.fillRect(x, y, width, height, Gui.HOVER_INFO_BACKGROUND);
             g.drawRect(x, y, width, height, Gui.GRADIENT_COLOR);
 
-
             for(int i = this.suggestions.size()-1; i >= 0; i--){
                 String sugg = this.suggestions.get(i);
                 font.drawString(this.suggestionX, this.height-30-i*charHeight, sugg, 0.3F, i == this.selectedSuggestion ? Colors.RED : Colors.WHITE);
