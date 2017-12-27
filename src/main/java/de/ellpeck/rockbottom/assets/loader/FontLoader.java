@@ -26,7 +26,7 @@ public class FontLoader implements IAssetLoader<IFont>{
         String texture = array.get(1).getAsString();
 
         Font font = Font.fromStream(new RenderedTexture(AssetManager.getResource(path+texture), false), AssetManager.getResource(path+info), resourceName.toString());
-        RockBottomAPI.logger().config("Loaded font "+resourceName+" from "+path+info+" and "+path+texture+" for mod "+loadingMod.getDisplayName());
+        RockBottomAPI.logger().config("Loaded font "+resourceName+" for mod "+loadingMod.getDisplayName());
 
         return font;
     }

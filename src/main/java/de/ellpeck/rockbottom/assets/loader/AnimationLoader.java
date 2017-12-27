@@ -91,7 +91,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
 
         Animation animation = new Animation(tex, cachedInfo.width, cachedInfo.height, cachedInfo.rows);
 
-        RockBottomAPI.logger().config("Loaded animation "+resourceName+" from "+path+anim+" and "+path+texture+" for mod "+loadingMod.getDisplayName());
+        RockBottomAPI.logger().config("Loaded animation "+resourceName+" for mod "+loadingMod.getDisplayName());
 
         return animation;
     }

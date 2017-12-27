@@ -36,7 +36,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
             }
         }
 
-        RockBottomAPI.logger().config("Loaded locale "+resourceName+" from "+resPath+" for mod "+loadingMod.getDisplayName());
+        RockBottomAPI.logger().config("Loaded locale "+resourceName+" for mod "+loadingMod.getDisplayName());
         return locale;
     }
 

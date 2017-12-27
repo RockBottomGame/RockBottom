@@ -31,6 +31,13 @@ public class TextureLoader implements IAssetLoader<ITexture>{
 
     @Override
     public ITexture loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+        ITexture texture = this.makeTexture(element, path);
+
+        RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
+        return texture;
+    }
+
+    private RenderedTexture makeTexture(JsonElement element, String path) throws Exception{
         String resPath;
         Map<String, JsonElement> additionalData = null;
         List<ITexture> variations = null;
@@ -86,7 +93,6 @@ public class TextureLoader implements IAssetLoader<ITexture>{
             texture.setVariations(variations);
         }
 
-        RockBottomAPI.logger().config("Loaded texture "+resourceName+" from "+resPath+" for mod "+loadingMod.getDisplayName());
         return texture;
     }
 
@@ -96,9 +102,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
             Map<IResourceName, ITexture> subTextures = new HashMap<>();
 
             JsonObject object = element.getAsJsonObject();
-
-            String file = object.getAsJsonPrimitive("file").getAsString();
-            RenderedTexture main = new RenderedTexture(AssetManager.getResource(path+file), false);
+            RenderedTexture main = this.makeTexture(object.get("file"), path);
 
             for(Map.Entry<String, JsonElement> entry : object.entrySet()){
                 String key = entry.getKey();
@@ -117,7 +121,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                     ITexture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
                     subTextures.put(res, texture);
 
-                    RockBottomAPI.logger().config("Loaded subtexture "+res+" from texture "+path+file+" for mod "+loadingMod.getDisplayName());
+                    RockBottomAPI.logger().config("Loaded subtexture "+res+" for mod "+loadingMod.getDisplayName());
                 }
             }
 
