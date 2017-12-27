@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.assets.loader;
 
 import com.google.common.base.Charsets;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -91,6 +93,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
     @Override
     public Map<IResourceName, ITexture> dealWithSpecialCases(IAssetManager manager, String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         if("subtexture".equals(elementName)){
+            System.out.println("Found sub texture "+resourceName+" -> "+path);
             Map<IResourceName, ITexture> subTextures = new HashMap<>();
 
             JsonObject object = element.getAsJsonObject();
@@ -102,7 +105,15 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                 String key = entry.getKey();
                 if(!"file".equals(key)){
                     JsonArray array = entry.getValue().getAsJsonArray();
-                    IResourceName res = RockBottomAPI.createRes(loadingMod, "*".equals(key) ? resourceName : resourceName+"."+key);
+
+                    String resName;
+                    if("*".equals(key)){
+                        resName = resourceName.substring(0, resourceName.length()-1);
+                    }
+                    else{
+                        resName = resourceName+key;
+                    }
+                    IResourceName res = RockBottomAPI.createRes(loadingMod, resName);
 
                     ITexture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
                     subTextures.put(res, texture);
