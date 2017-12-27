@@ -93,7 +93,6 @@ public class TextureLoader implements IAssetLoader<ITexture>{
     @Override
     public Map<IResourceName, ITexture> dealWithSpecialCases(IAssetManager manager, String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         if("subtexture".equals(elementName)){
-            System.out.println("Found sub texture "+resourceName+" -> "+path);
             Map<IResourceName, ITexture> subTextures = new HashMap<>();
 
             JsonObject object = element.getAsJsonObject();
