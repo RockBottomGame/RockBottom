@@ -1,9 +1,9 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -11,13 +11,13 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class InputHandler implements IInputHandler{
 
     private final RockBottom game;
-    private final boolean[] pressedKeys = new boolean[1024];
-    private final boolean[] pressedMouse = new boolean[10];
+    private final Set<Integer> pressedKeys = new HashSet<>();
+    private final Set<Integer> pressedMouse = new HashSet<>();
 
     public InputHandler(RockBottom game){
         this.game = game;
@@ -30,7 +30,7 @@ public class InputHandler implements IInputHandler{
 
     @Override
     public boolean wasMousePressed(int button){
-        return this.pressedMouse[button];
+        return this.pressedMouse.contains(button);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class InputHandler implements IInputHandler{
 
     @Override
     public boolean wasKeyPressed(int key){
-        return this.pressedKeys[key];
+        return this.pressedKeys.contains(key);
     }
 
     @Override
@@ -54,34 +54,25 @@ public class InputHandler implements IInputHandler{
     }
 
     public void update(){
-        if(!Display.isActive()){
-            Arrays.fill(this.pressedMouse, false);
-            Arrays.fill(this.pressedKeys, false);
-        }
-        else{
-            while(Keyboard.next()){
-                char character = Keyboard.getEventCharacter();
-                int key = Keyboard.getEventKey();
+        this.pressedMouse.clear();
+        this.pressedKeys.clear();
 
-                if(Keyboard.getEventKeyState()){
-                    this.pressedKeys[key] = true;
-                    this.keyPressed(key, character);
-                }
-                else{
-                    this.pressedKeys[key] = false;
-                }
+        while(Keyboard.next()){
+            char character = Keyboard.getEventCharacter();
+            int key = Keyboard.getEventKey();
+
+            if(Keyboard.getEventKeyState()){
+                this.pressedKeys.add(key);
+                this.keyPressed(key, character);
             }
+        }
 
-            while(Mouse.next()){
-                int button = Mouse.getEventButton();
-                if(button >= 0){
-                    if(Mouse.getEventButtonState()){
-                        this.pressedMouse[button] = true;
-                        this.mousePressed(button);
-                    }
-                    else{
-                        this.pressedMouse[button] = false;
-                    }
+        while(Mouse.next()){
+            int button = Mouse.getEventButton();
+            if(button >= 0){
+                if(Mouse.getEventButtonState()){
+                    this.pressedMouse.add(button);
+                    this.mousePressed(button);
                 }
             }
         }
