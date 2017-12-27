@@ -112,7 +112,7 @@ public class AssetManager implements IAssetManager{
         }
 
         this.missingSound = new EmptySound();
-        this.missingLocale = new Locale("fallback");
+        this.missingLocale = new Locale("fallback", new HashMap<>());
         this.missingFont = new Font("fallback", this.missingTexture, 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0))));
         this.missingAnimation = new Animation(this.missingTexture, 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F}))));
 
