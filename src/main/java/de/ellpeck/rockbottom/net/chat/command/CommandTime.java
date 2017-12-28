@@ -56,8 +56,8 @@ public class CommandTime extends Command{
     }
 
     @Override
-    public List<String> getAutocompleteSuggestions(int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
-        if(argNumber == 1){
+    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
+        if(argNumber == 0){
             return Arrays.asList("set", "advance");
         }
         else{

@@ -62,8 +62,8 @@ public class CommandTeleport extends Command{
     }
 
     @Override
-    public List<String> getAutocompleteSuggestions(int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
-        if(argNumber == 3){
+    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
+        if(argNumber == 2){
             return chat.getPlayerSuggestions();
         }
         else{

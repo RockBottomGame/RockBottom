@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GuiChat extends Gui{
@@ -81,10 +82,11 @@ public class GuiChat extends Gui{
                 if(split.length > 0){
                     Command command = chat.getCommand(split[0]);
                     if(command != null){
-                        int index = strg.endsWith(" ") ? split.length : split.length-1;
+                        String[] args = Arrays.copyOfRange(split, 1, split.length);
+                        int index = strg.endsWith(" ") ? args.length : args.length-1;
 
-                        for(String suggestion : command.getAutocompleteSuggestions(index, game.getPlayer(), game, game.getChatLog())){
-                            if(index == split.length || (suggestion.startsWith(split[index]) && !suggestion.equals(split[index]))){
+                        for(String suggestion : command.getAutocompleteSuggestions(args, index, game.getPlayer(), game, game.getChatLog())){
+                            if(index == args.length || (suggestion.startsWith(args[index]) && !suggestion.equals(args[index]))){
                                 this.suggestions.add(suggestion);
                             }
                         }
