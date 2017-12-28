@@ -14,10 +14,20 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class CommandSpawnItem extends Command{
+
+    private final List<String> itemAutocomplete = new ArrayList<>();
 
     public CommandSpawnItem(){
         super(RockBottomAPI.createInternalRes("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
+
+        for(IResourceName name : RockBottomAPI.ITEM_REGISTRY.getUnmodifiable().keySet()){
+            this.itemAutocomplete.add(name.toString());
+        }
     }
 
     @Override
@@ -74,6 +84,16 @@ public class CommandSpawnItem extends Command{
         }
         else{
             return new ChatComponentText(FormattingCode.RED+"Only players can spawn items!");
+        }
+    }
+
+    @Override
+    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
+        if(argNumber == 0){
+            return this.itemAutocomplete;
+        }
+        else{
+            return Collections.emptyList();
         }
     }
 }

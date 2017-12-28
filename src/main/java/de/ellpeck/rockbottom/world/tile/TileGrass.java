@@ -36,12 +36,17 @@ public class TileGrass extends TileBasic{
 
     @Override
     public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
-        for(Direction dir : Direction.SURROUNDING){
-            if(world.isPosLoaded(x+dir.x, y+dir.y)){
-                TileState state = world.getState(layer, x+dir.x, y+dir.y);
+        if(world.isPosLoaded(x, y+1) && world.getState(layer, x, y+1).getTile().hasSolidSurface(world, x, y+1, layer)){
+            world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
+        }
+        else{
+            for(Direction dir : Direction.SURROUNDING){
+                if(world.isPosLoaded(x+dir.x, y+dir.y)){
+                    TileState state = world.getState(layer, x+dir.x, y+dir.y);
 
-                if(state.getTile().canGrassSpreadTo(world, x+dir.x, y+dir.y, layer)){
-                    world.setState(layer, x+dir.x, y+dir.y, this.getDefState());
+                    if(state.getTile().canGrassSpreadTo(world, x+dir.x, y+dir.y, layer)){
+                        world.setState(layer, x+dir.x, y+dir.y, this.getDefState());
+                    }
                 }
             }
         }

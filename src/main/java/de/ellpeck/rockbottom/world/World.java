@@ -56,7 +56,9 @@ public class World implements IWorld{
     protected File directory;
     protected File chunksDirectory;
     protected File playerDirectory;
+    protected File additionalDataFile;
     protected int saveTicksCounter;
+    private DataSet additionalData;
 
     public World(WorldInfo info, DynamicRegistryInfo regInfo){
         this.info = info;
@@ -96,6 +98,12 @@ public class World implements IWorld{
         this.directory = worldDirectory;
         this.chunksDirectory = new File(worldDirectory, "chunks");
         this.playerDirectory = new File(worldDirectory, "players");
+
+        this.additionalDataFile = new File(worldDirectory, "additional_data.dat");
+        if(this.additionalDataFile.exists()){
+            this.additionalData = new DataSet();
+            this.additionalData.read(this.additionalDataFile);
+        }
     }
 
     protected void checkListSync(){
@@ -532,6 +540,10 @@ public class World implements IWorld{
             this.savePlayer(player);
         }
 
+        if(this.additionalData != null){
+            this.additionalData.write(this.additionalDataFile);
+        }
+
         if(amount > 0){
             long time = Util.getTimeMillis()-timeStarted;
             RockBottomAPI.logger().info("Saved "+amount+" chunks, took "+time+"ms.");
@@ -896,5 +908,28 @@ public class World implements IWorld{
         else{
             return mod;
         }
+    }
+
+    @Override
+    public boolean hasAdditionalData(){
+        return this.additionalData != null;
+    }
+
+    @Override
+    public DataSet getAdditionalData(){
+        return this.additionalData;
+    }
+
+    @Override
+    public void setAdditionalData(DataSet set){
+        this.additionalData = set;
+    }
+
+    @Override
+    public DataSet getOrCreateAdditionalData(){
+        if(this.additionalData == null){
+            this.additionalData = new DataSet();
+        }
+        return this.additionalData;
     }
 }
