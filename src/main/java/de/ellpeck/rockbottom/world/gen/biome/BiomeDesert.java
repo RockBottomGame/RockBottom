@@ -47,4 +47,9 @@ public class BiomeDesert extends BiomeBasic{
     public int getNoiseSeedModifier(IWorld world){
         return 23872;
     }
+
+    @Override
+    public TileState getFillerTile(IWorld world, IChunk chunk, int x, int y){
+        return GameContent.TILE_SAND.getDefState();
+    }
 }

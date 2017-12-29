@@ -22,7 +22,7 @@ public class WorldGenStartHut implements IWorldGenerator{
     @Override
     public void initWorld(IWorld world){
         this.generatorRandom.setSeed(Util.scrambleSeed(7834, world.getSeed()));
-        this.chunkX = this.generatorRandom.nextInt(4)-2;
+        this.chunkX = this.generatorRandom.nextInt(2)-1;
     }
 
     @Override
@@ -52,7 +52,6 @@ public class WorldGenStartHut implements IWorldGenerator{
     private void genStartHouse(IChunk chunk, int startX, int startY){
         this.generatorRandom.setSeed(Util.scrambleSeed(chunk.getX()+startX, chunk.getY()+startY, chunk.getSeed()));
 
-        TileState soil = GameContent.TILE_SOIL.getDefState();
         TileState board = GameContent.WOOD_BOARDS.getDefState();
         TileState oldBoard = board.prop(GameContent.WOOD_BOARDS.metaProp, 1);
 
@@ -66,7 +65,7 @@ public class WorldGenStartHut implements IWorldGenerator{
 
             for(int y = 0; y <= startY; y++){
                 if(!chunk.getStateInner(startX+x, y).getTile().isFullTile()){
-                    chunk.setStateInner(startX+x, y, soil);
+                    chunk.setStateInner(startX+x, y, chunk.getBiomeInner(startX+x, y).getFillerTile(chunk.getWorld(), chunk, startX+x, y));
                 }
             }
         }
@@ -79,7 +78,7 @@ public class WorldGenStartHut implements IWorldGenerator{
                     tile = this.generatorRandom.nextFloat() >= 0.75F ? board : oldBoard;
                 }
                 else{
-                    tile = GameContent.TILE_SOIL.getDefState();
+                    tile = chunk.getBiomeInner(startX+x, startY+y).getFillerTile(chunk.getWorld(), chunk, startX+x, startY+y);
                 }
 
                 chunk.setStateInner(TileLayer.BACKGROUND, startX+x, startY+y, tile);
@@ -108,7 +107,7 @@ public class WorldGenStartHut implements IWorldGenerator{
                 {6, 1}, {7, 1}
         };
         for(int[] pos : dirtPositions){
-            chunk.setStateInner(startX+pos[0], startY+pos[1], soil);
+            chunk.setStateInner(startX+pos[0], startY+pos[1], chunk.getBiomeInner(startX+pos[0], startY+pos[1]).getFillerTile(chunk.getWorld(), chunk, startX+pos[0], startY+pos[1]));
         }
 
         //Set chest
