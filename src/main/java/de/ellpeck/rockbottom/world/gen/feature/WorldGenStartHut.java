@@ -35,7 +35,7 @@ public class WorldGenStartHut implements IWorldGenerator{
     public void generate(IWorld world, IChunk chunk){
         this.generatorRandom.setSeed(Util.scrambleSeed(chunk.getGridX(), chunk.getGridY(), world.getSeed()));
 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 50; i++){
             int x = this.generatorRandom.nextInt(Constants.CHUNK_SIZE-WIDTH);
 
             int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0, true);
