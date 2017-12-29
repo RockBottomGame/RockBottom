@@ -117,6 +117,9 @@ public class WorldGenStartHut implements IWorldGenerator{
 
         //Set chest
         chunk.setStateInner(startX+5, startY+1, GameContent.TILE_CHEST.getDefState());
+
+        //Goo
+        chunk.setStateInner(TileLayer.LIQUIDS, startX+4, startY+1, GameContent.TILE_REMAINS_GOO.getDefState());
     }
 
     @Override
