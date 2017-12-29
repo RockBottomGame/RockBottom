@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
@@ -92,13 +93,17 @@ public class WorldGenStartHut implements IWorldGenerator{
         //Set walls
         int[][] wallPositions = new int[][]{
                 {0, 1},
-                {1, 0}, {1, 1}, {1, 2}, {1, 3},
+                {1, 0}, {1, 3},
                 {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0},
                 {8, 1}, {8, 2}
         };
         for(int[] pos : wallPositions){
             chunk.setStateInner(startX+pos[0], startY+pos[1], this.generatorRandom.nextFloat() >= 0.75F ? board : oldBoard);
         }
+
+        //Set door
+        chunk.setStateInner(startX+1, startY+1, GameContent.TILE_WOOD_DOOR.getDefState().prop(StaticTileProps.TOP_HALF, false));
+        chunk.setStateInner(startX+1, startY+2, GameContent.TILE_WOOD_DOOR.getDefState().prop(StaticTileProps.TOP_HALF, true));
 
         //Set dirt piles
         int[][] dirtPositions = new int[][]{

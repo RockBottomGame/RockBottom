@@ -20,9 +20,9 @@ public class RenderedTexture implements ITexture{
     private Random rand;
     private Map<String, JsonElement> additionalData;
     private List<ITexture> variations;
+    private byte[] pixelData;
 
     private final Texture underlyingTexture;
-    private final byte[] pixelData;
     private final int underlyingWidth;
     private final int underlyingHeight;
     private final boolean hasAlpha;
@@ -42,13 +42,12 @@ public class RenderedTexture implements ITexture{
 
     public RenderedTexture(Texture tex){
         this.underlyingTexture = tex;
-        this.pixelData = tex.getTextureData();
         this.width = tex.getImageWidth();
         this.height = tex.getImageHeight();
         this.underlyingWidth = tex.getTextureWidth();
         this.underlyingHeight = tex.getTextureHeight();
-        this.textureWidth = this.underlyingWidth;
-        this.textureHeight = this.underlyingHeight;
+        this.textureWidth = tex.getWidth();
+        this.textureHeight = tex.getHeight();
         this.hasAlpha = tex.hasAlpha();
         this.centerX = this.width/2F;
         this.centerY = this.height/2F;
@@ -82,11 +81,13 @@ public class RenderedTexture implements ITexture{
             sub.setAdditionalData(this.additionalData);
         }
         if(inheritVariations){
-            List<ITexture> newVariations = new ArrayList<>();
-            for(ITexture variation : this.variations){
-                newVariations.add(variation.getSubTexture(x, y, width, height, inheritVariations, inheritData));
+            if(this.variations != null){
+                List<ITexture> newVariations = new ArrayList<>();
+                for(ITexture variation : this.variations){
+                    newVariations.add(variation.getSubTexture(x, y, width, height, inheritVariations, inheritData));
+                }
+                sub.setVariations(newVariations);
             }
-            sub.setVariations(newVariations);
         }
 
         return sub;
@@ -229,26 +230,28 @@ public class RenderedTexture implements ITexture{
     }
 
     private void drawEmbedded(float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
-        float width = x2-x;
-        float height = y2-y;
+        float myWidth = x2-x;
+        float myHeight = y2-y;
+        float texWidth = srcX2-srcX;
+        float texHeight = srcY2-srcY;
 
-        float texOffX = srcX/this.underlyingWidth+this.textureOffsetX;
-        float texOffY = srcY/this.underlyingHeight+this.textureOffsetY;
-        float texWidth = (srcX2-srcX)/this.underlyingWidth;
-        float texHeight = (srcY2-srcY)/this.underlyingHeight;
+        float texOffX = ((srcX/this.width)*this.textureWidth)+this.textureOffsetX;
+        float texOffY = ((srcY/this.height)*this.textureHeight)+this.textureOffsetY;
+        float width = (texWidth/this.width)*this.textureWidth;
+        float height = (texHeight/this.height)*this.textureHeight;
 
         this.bindLight(light, TOP_LEFT, filter);
         GL11.glTexCoord2f(texOffX, texOffY);
         GL11.glVertex3f(0F, 0F, 0F);
         this.bindLight(light, BOTTOM_LEFT, filter);
-        GL11.glTexCoord2f(texOffX, texOffY+texHeight);
-        GL11.glVertex3f(0F, height, 0F);
+        GL11.glTexCoord2f(texOffX, texOffY+height);
+        GL11.glVertex3f(0F, myHeight, 0F);
         this.bindLight(light, BOTTOM_RIGHT, filter);
-        GL11.glTexCoord2f(texOffX+texWidth, texOffY+texHeight);
-        GL11.glVertex3f(width, height, 0F);
+        GL11.glTexCoord2f(texOffX+width, texOffY+height);
+        GL11.glVertex3f(myWidth, myHeight, 0F);
         this.bindLight(light, TOP_RIGHT, filter);
-        GL11.glTexCoord2f(texOffX+texWidth, texOffY);
-        GL11.glVertex3f(width, 0F, 0F);
+        GL11.glTexCoord2f(texOffX+width, texOffY);
+        GL11.glVertex3f(myWidth, 0F, 0F);
     }
 
     private void bindLight(int[] light, int index, int filter){
@@ -262,13 +265,17 @@ public class RenderedTexture implements ITexture{
 
     @Override
     public int getTextureColor(int x, int y){
-        int offX = (int)(this.textureOffsetX*this.underlyingWidth);
-        int offY = (int)(this.textureOffsetY*this.underlyingHeight);
+        if(this.pixelData == null){
+            this.pixelData = this.underlyingTexture.getTextureData();
+        }
 
-        x = (this.textureWidth < 0 ? offX-x : offX+x)%this.underlyingWidth;
-        y = (this.textureHeight < 0 ? offY-y : offY+y)%this.underlyingHeight;
+        int xOff = (int)(this.textureOffsetX*this.underlyingWidth);
+        int yOff = (int)(this.textureOffsetY*this.underlyingHeight);
+        x = this.textureWidth < 0 ? xOff-x : xOff+x;
+        y = this.textureHeight < 0 ? yOff-y : yOff+y;
 
-        int offset = (x+(y*this.underlyingHeight))*(this.hasAlpha() ? 4 : 3);
+        int offset = x+(y*this.underlyingWidth);
+        offset *= this.hasAlpha() ? 4 : 3;
 
         if(this.hasAlpha()){
             return Colors.rgb(this.translate(this.pixelData[offset]), this.translate(this.pixelData[offset+1]), this.translate(this.pixelData[offset+2]), this.translate(this.pixelData[offset+3]));

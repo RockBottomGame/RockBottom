@@ -245,7 +245,7 @@ public class InteractionManager implements IInteractionManager{
                                             RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY));
                                         }
 
-                                        this.placeCooldown = 5;
+                                        this.placeCooldown = 10;
                                     }
                                 }
                             }
