@@ -303,7 +303,10 @@ public class Chunk implements IChunk{
             }
         }
 
-        this.getGrid(layer, true)[x][y] = tile;
+        TileState[][] grid = this.getGrid(layer, !newTile.isAir());
+        if(grid != null){
+            grid[x][y] = tile;
+        }
 
         if(this.world.isServer()){
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)), this.x+x, this.y+y);
