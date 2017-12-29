@@ -40,7 +40,7 @@ public class TileWoodDoor extends TileBasic{
 
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
-        return world.getState(x, y+1).getTile().canReplace(world, x, y+1, layer);
+        return world.getState(x, y-1).getTile().isFullTile() && world.getState(x, y+1).getTile().canReplace(world, x, y+1, layer);
     }
 
     @Override
@@ -100,5 +100,10 @@ public class TileWoodDoor extends TileBasic{
         else{
             return state.get(StaticTileProps.FACING_RIGHT) ? this.boxRight : this.boxLeft;
         }
+    }
+
+    @Override
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+        return world.getState(layer, x, y).get(StaticTileProps.TOP_HALF) || world.getState(layer, x, y-1).getTile().isFullTile();
     }
 }
