@@ -56,7 +56,7 @@ public class EventHandler implements IEventHandler{
             for(IEventListener listener : listeners){
                 result = listener.listen(result, event);
 
-                if(result.shouldCancel()){
+                if(result == EventResult.CANCELLED){
                     break;
                 }
             }
