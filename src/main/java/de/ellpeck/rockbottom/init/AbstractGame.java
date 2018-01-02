@@ -19,6 +19,7 @@ import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.apiimpl.ApiHandler;
 import de.ellpeck.rockbottom.apiimpl.EventHandler;
+import de.ellpeck.rockbottom.apiimpl.ResourceRegistry;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.mod.ModLoader;
@@ -57,6 +58,7 @@ public abstract class AbstractGame implements IGameInstance{
         internals.setApi(new ApiHandler());
         internals.setEvent(new EventHandler());
         internals.setNet(new NetHandler());
+        internals.setResource(new ResourceRegistry());
 
         try{
             game.init();

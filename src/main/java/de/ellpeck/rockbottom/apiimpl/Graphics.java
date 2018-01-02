@@ -92,7 +92,7 @@ public class Graphics implements IGraphics{
             desc.add(FormattingCode.GRAY+"Meta: "+instance.getMeta());
             desc.add(FormattingCode.GRAY+"Data: "+instance.getAdditionalData());
             desc.add(FormattingCode.GRAY+"Max Amount: "+instance.getMaxAmount());
-            desc.add(FormattingCode.GRAY+"Resources: "+ResourceRegistry.getNames(new ResInfo(instance)));
+            desc.add(FormattingCode.GRAY+"Resources: "+RockBottomAPI.getResourceRegistry().getNames(new ResInfo(instance)));
         }
 
         if(RockBottomAPI.getEventHandler().fireEvent(new TooltipEvent(instance, game, manager, this, desc)) != EventResult.CANCELLED){
