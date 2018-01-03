@@ -14,7 +14,6 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.internal.IInternalHooks;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -29,7 +28,6 @@ import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class InternalHooks implements IInternalHooks{
 
@@ -312,21 +310,6 @@ public class InternalHooks implements IInternalHooks{
                         }
                     }
                     return modified;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
-        if(instance != null){
-            Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
-            if(!tools.isEmpty()){
-                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
-                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())){
-                        return true;
-                    }
                 }
             }
         }

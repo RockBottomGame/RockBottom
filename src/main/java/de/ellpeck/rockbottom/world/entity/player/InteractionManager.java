@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.event.impl.InteractionEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -23,6 +24,7 @@ import de.ellpeck.rockbottom.net.packet.toserver.*;
 import org.lwjgl.input.Mouse;
 
 import java.util.List;
+import java.util.Map;
 
 public class InteractionManager implements IInteractionManager{
 
@@ -141,6 +143,20 @@ public class InteractionManager implements IInteractionManager{
 
     }
 
+    public static boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y){
+        if(instance != null){
+            Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
+            if(!tools.isEmpty()){
+                for(Map.Entry<ToolType, Integer> entry : tools.entrySet()){
+                    if(tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public void update(RockBottom game){
         if(game.getWorld() != null){
             EntityPlayer player = game.getPlayer();
@@ -203,7 +219,7 @@ public class InteractionManager implements IInteractionManager{
                                         float progressAmount = 0.05F/hardness;
 
                                         ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-                                        boolean effective = RockBottomAPI.getInternalHooks().isToolEffective(player, selected, tile, layer, x, y);
+                                        boolean effective = isToolEffective(player, selected, tile, layer, x, y);
                                         if(selected != null){
                                             progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
                                         }

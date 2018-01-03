@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -61,7 +60,7 @@ public class PacketBreakTile implements IPacket{
 
                 Tile tile = world.getState(this.layer, x, y).getTile();
                 if(InteractionManager.defaultTileBreakingCheck(world, x, y, this.layer, this.x, this.y, player) && tile.canBreak(world, x, y, this.layer)){
-                    boolean isRightTool = RockBottomAPI.getInternalHooks().isToolEffective(player, player.getInv().get(player.getSelectedSlot()), tile, this.layer, x, y);
+                    boolean isRightTool = InteractionManager.isToolEffective(player, player.getInv().get(player.getSelectedSlot()), tile, this.layer, x, y);
                     InteractionManager.breakTile(tile, player, x, y, this.layer, isRightTool);
                 }
             }
