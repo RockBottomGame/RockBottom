@@ -10,6 +10,9 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContainerInventory extends ItemContainer{
 
     public ContainerInventory(EntityPlayer player){
@@ -21,18 +24,21 @@ public class ContainerInventory extends ItemContainer{
         if(recipe.isKnown(player)){
             for(int a = 0; a < amount; a++){
                 if(IRecipe.matchesInv(recipe, player.getInv())){
-                    for(IUseInfo input : recipe.getInputs()){
+                    List<ItemInstance> usedInputs = new ArrayList<>();
+
+                    for(IUseInfo input : recipe.getActualInputs(player.getInv())){
                         for(int i = 0; i < player.getInv().getSlotAmount(); i++){
                             ItemInstance inv = player.getInv().get(i);
 
                             if(inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()){
+                                usedInputs.add(inv.copy().setAmount(input.getAmount()));
                                 player.getInv().remove(i, input.getAmount());
                                 break;
                             }
                         }
                     }
 
-                    for(ItemInstance output : recipe.getOutputs()){
+                    for(ItemInstance output : recipe.getActualOutputs(player.getInv(), usedInputs)){
                         ItemInstance left = player.getInv().addExistingFirst(output, false);
                         if(left != null){
                             EntityItem.spawn(player.world, left, player.x, player.y, 0F, 0F);
