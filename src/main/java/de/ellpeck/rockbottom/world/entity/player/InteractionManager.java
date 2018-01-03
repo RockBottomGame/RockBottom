@@ -203,7 +203,7 @@ public class InteractionManager implements IInteractionManager{
                                         float progressAmount = 0.05F/hardness;
 
                                         ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-                                        boolean effective = RockBottomAPI.getApiHandler().isToolEffective(player, selected, tile, layer, x, y);
+                                        boolean effective = RockBottomAPI.getInternalHooks().isToolEffective(player, selected, tile, layer, x, y);
                                         if(selected != null){
                                             progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
                                         }
