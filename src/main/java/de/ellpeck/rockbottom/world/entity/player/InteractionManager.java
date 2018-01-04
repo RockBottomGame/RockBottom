@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.AddBreakProgressEvent;
 import de.ellpeck.rockbottom.api.event.impl.BreakEvent;
 import de.ellpeck.rockbottom.api.event.impl.InteractionEvent;
+import de.ellpeck.rockbottom.api.event.impl.LayerActionEvent;
+import de.ellpeck.rockbottom.api.event.impl.LayerActionEvent.Type;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -131,7 +133,7 @@ public class InteractionManager implements IInteractionManager{
             return false;
         }
 
-        for(TileLayer testLayer : TileLayer.getAllLayers()){
+        for(TileLayer testLayer : TileLayer.getLayersByInteractionPrio()){
             for(Direction dir : Direction.ADJACENT_INCLUDING_NONE){
                 Tile other = world.getState(testLayer, x+dir.x, y+dir.y).getTile();
                 if(!other.isAir()){
@@ -197,22 +199,28 @@ public class InteractionManager implements IInteractionManager{
 
                 if(player.world.isPosLoaded(x, y)){
                     boolean didBreakProgress = false;
+                    boolean attacked = false;
 
                     if(this.breakTileX != x || this.breakTileY != y){
                         this.breakProgress = 0;
                     }
 
-                    for(TileLayer layer : TileLayer.getAllLayers()){
-                        if(layer.canEditLayer(game, player)){
-                            if(Settings.KEY_DESTROY.isDown()){
-                                if(this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)){
-                                    if(RockBottomAPI.getNet().isClient()){
-                                        RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
-                                    }
+                    if(Settings.KEY_DESTROY.isDown()){
+                        if(this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)){
+                            if(RockBottomAPI.getNet().isClient()){
+                                RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
+                            }
 
-                                    this.attackCooldown = 40;
-                                }
-                                else{
+                            this.attackCooldown = 40;
+                            attacked = true;
+                        }
+                    }
+
+                    if(!attacked){
+                        for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
+                            EventResult breakResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.BREAK, player.world, layer, mousedTileX, mousedTileY));
+                            if(breakResult != EventResult.CANCELLED && (breakResult == EventResult.MODIFIED || layer.canEditLayer(game, player))){
+                                if(Settings.KEY_DESTROY.isDown()){
                                     Tile tile = player.world.getState(layer, x, y).getTile();
                                     if(defaultTileBreakingCheck(player.world, x, y, layer, mousedTileX, mousedTileY, player) && tile.canBreak(player.world, x, y, layer)){
                                         float hardness = tile.getHardness(player.world, x, y, layer);
@@ -241,6 +249,7 @@ public class InteractionManager implements IInteractionManager{
                                             else{
                                                 breakTile(tile, player, x, y, layer, effective);
                                             }
+                                            break;
                                         }
                                         else{
                                             this.breakTileX = x;
@@ -250,18 +259,19 @@ public class InteractionManager implements IInteractionManager{
                                     }
                                 }
                             }
-                            else{
-                                this.breakProgress = 0;
-                            }
 
-                            if(this.placeCooldown <= 0){
-                                if(Settings.KEY_PLACE.isDown()){
-                                    if(interact(player, layer, mousedTileX, mousedTileY)){
-                                        if(RockBottomAPI.getNet().isClient()){
-                                            RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY));
+                            EventResult placeResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.BREAK, player.world, layer, mousedTileX, mousedTileY));
+                            if(placeResult != EventResult.CANCELLED && (placeResult == EventResult.MODIFIED || layer.canEditLayer(game, player))){
+                                if(this.placeCooldown <= 0){
+                                    if(Settings.KEY_PLACE.isDown()){
+                                        if(interact(player, layer, mousedTileX, mousedTileY)){
+                                            if(RockBottomAPI.getNet().isClient()){
+                                                RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY));
+                                            }
+
+                                            this.placeCooldown = 10;
+                                            break;
                                         }
-
-                                        this.placeCooldown = 10;
                                     }
                                 }
                             }

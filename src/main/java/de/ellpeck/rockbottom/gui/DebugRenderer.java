@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,7 +70,7 @@ public final class DebugRenderer{
             list.add("Biome: "+world.getBiome(x, y).getName());
 
             list.add("");
-            for(TileLayer layer : TileLayer.getAllLayers()){
+            for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
                 list.add(layer.getName()+": "+world.getState(layer, x, y).toString());
             }
             list.add("");

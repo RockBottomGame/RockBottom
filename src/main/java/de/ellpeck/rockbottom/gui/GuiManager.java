@@ -230,7 +230,7 @@ public class GuiManager implements IGuiManager{
                     int y = Util.floor(tileY);
                     ItemInstance holding = player.getInv().get(player.getSelectedSlot());
 
-                    for(TileLayer layer : TileLayer.getAllLayers()){
+                    for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
                         if(layer.canEditLayer(game, player)){
                             if(holding != null){
                                 Item item = holding.getItem();

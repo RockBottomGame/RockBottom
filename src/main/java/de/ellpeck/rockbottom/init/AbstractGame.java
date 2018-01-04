@@ -2,7 +2,10 @@ package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IApiHandler;
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.WorldCreationEvent;
@@ -185,7 +188,7 @@ public abstract class AbstractGame implements IGameInstance{
     @Override
     public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         this.chatLog = new ChatLog();
-        TileLayer.initLayerList();
+        TileLayer.init();
     }
 
     @Override

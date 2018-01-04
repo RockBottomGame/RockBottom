@@ -80,11 +80,9 @@ public class WorldRenderer{
         int maxX = Math.max(topLeftX, bottomRightX);
         int maxY = Math.max(topLeftY, bottomRightY);
 
+        List<TileLayer> layers = TileLayer.getLayersByRenderPrio();
         List<Entity> entities = new ArrayList<>();
         List<EntityPlayer> players = new ArrayList<>();
-
-        List<TileLayer> layers = new ArrayList<>(TileLayer.getAllLayers());
-        layers.sort(Comparator.comparingInt(TileLayer:: getRenderPriority).reversed());
 
         for(int gridX = minX; gridX <= maxX; gridX++){
             for(int gridY = minY; gridY <= maxY; gridY++){
