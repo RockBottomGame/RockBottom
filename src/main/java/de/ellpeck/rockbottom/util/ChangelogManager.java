@@ -28,6 +28,7 @@ public final class ChangelogManager{
 
                 JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
 
+                String current = RockBottomAPI.getGame().getVersion();
                 String latest = main.get("latest").getAsString();
                 String stable = main.get("stable").getAsString();
 
@@ -47,11 +48,7 @@ public final class ChangelogManager{
                     counter++;
                 }
 
-                double current = convertToNum(RockBottomAPI.getGame().getVersion());
-                boolean isStableNewer = convertToNum(stable) > current;
-                boolean isLatestNewer = convertToNum(latest) > current;
-
-                changelog = new Changelog(latest, stable, isLatestNewer, isStableNewer, infos);
+                changelog = new Changelog(latest, stable, isHigher(latest, current), isHigher(stable, current), infos);
 
                 RockBottomAPI.logger().info("Successfully grabbed and parsed the changelog.");
             }
@@ -64,17 +61,28 @@ public final class ChangelogManager{
         loaderThread.start();
     }
 
-    private static double convertToNum(String version){
+    private static boolean isHigher(String newVersion, String oldVersion){
         try{
-            String[] split = version.split("\\.", 2);
-            double num = Integer.parseInt(split[0]);
-            double decimal = Integer.parseInt(split[1].replaceAll("\\.", ""));
-            return num+(decimal/100D);
+            String[] newParts = newVersion.split("\\.");
+            String[] oldParts = oldVersion.split("\\.");
+
+            int maxLength = Math.max(newParts.length, oldParts.length);
+            for(int i = 0; i < maxLength; i++){
+                int newInt = newParts.length > i ? Integer.parseInt(newParts[i]) : 0;
+                int oldInt = oldParts.length > i ? Integer.parseInt(oldParts[i]) : 0;
+
+                if(newInt > oldInt){
+                    return true;
+                }
+                else if(newInt < oldInt){
+                    return false;
+                }
+            }
         }
         catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't parse version string "+version+" into a comparable number", e);
-            return 0D;
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't compare version string "+newVersion+" to old version string "+oldVersion, e);
         }
+        return false;
     }
 
     public static Changelog getChangelog(){
