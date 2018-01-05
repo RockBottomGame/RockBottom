@@ -30,9 +30,8 @@ public class LocaleLoader implements IAssetLoader<Locale>{
         Locale locale = this.fromStream(AssetManager.getResource(resPath), elementName);
 
         for(Locale asset : manager.getAllOfType(Locale.class).values()){
-            Locale mergedLocale = this.merge(asset, locale);
-            if(mergedLocale != null){
-                return mergedLocale;
+            if(this.merge(asset, locale)){
+                return null;
             }
         }
 
@@ -89,20 +88,17 @@ public class LocaleLoader implements IAssetLoader<Locale>{
         }
     }
 
-    private Locale merge(Locale locale, Locale otherLocale){
+    private boolean merge(Locale locale, Locale otherLocale){
         String name = locale.getName();
         if(name.equals(otherLocale.getName())){
             Map<IResourceName, String> other = otherLocale.getLocalization();
-
-            Map<IResourceName, String> newLocale = new HashMap<>();
-            newLocale.putAll(locale.getLocalization());
-            newLocale.putAll(other);
+            locale.override(other);
 
             RockBottomAPI.logger().config("Merged locale "+name+" with "+other.size()+" bits of additional localization information");
-            return new Locale(name, newLocale);
+            return true;
         }
         else{
-            return null;
+            return false;
         }
     }
 }
