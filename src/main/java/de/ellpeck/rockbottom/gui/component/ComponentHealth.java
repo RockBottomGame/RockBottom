@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ITexture;
@@ -22,7 +22,7 @@ public class ComponentHealth extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         if(game.getWorld() != null){
             int healthParts = Util.floor(game.getPlayer().getHealth()/20);
             int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
@@ -54,7 +54,7 @@ public class ComponentHealth extends GuiComponent{
     }
 
     @Override
-    public void renderOverlay(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void renderOverlay(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         if(game.getWorld() != null){
             if(this.isMouseOverPrioritized(game)){
                 g.drawHoverInfoAtMouse(game, manager, false, 0, manager.localize(LOC_HEALTH)+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());

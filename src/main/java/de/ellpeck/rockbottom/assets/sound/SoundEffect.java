@@ -1,22 +1,15 @@
 package de.ellpeck.rockbottom.assets.sound;
 
 import de.ellpeck.rockbottom.api.assets.ISound;
-import org.newdawn.slick.openal.Audio;
-import org.newdawn.slick.openal.AudioLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class SoundEffect implements ISound{
 
-    private final Audio underlyingSound;
-
+    //TODO Load sounds
     public SoundEffect(InputStream stream) throws IOException{
-        this(AudioLoader.getAudio("OGG", stream));
-    }
 
-    public SoundEffect(Audio sound){
-        this.underlyingSound = sound;
     }
 
     @Override
@@ -44,18 +37,24 @@ public class SoundEffect implements ISound{
         this.playAt(pitch, volume, x, y, z, false);
     }
 
+    //TODO Figure all this out
     @Override
     public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
-        this.underlyingSound.playAsSoundEffect(pitch, volume, loop, (float)x, (float)y, (float)z);
+
     }
 
     @Override
     public boolean isPlaying(){
-        return this.underlyingSound.isPlaying();
+        return false;
     }
 
     @Override
     public void stop(){
-        this.underlyingSound.stop();
+
+    }
+
+    @Override
+    public void dispose(){
+
     }
 }

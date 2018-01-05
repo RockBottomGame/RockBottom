@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.net.chat;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -20,7 +20,6 @@ import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.chat.command.*;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -169,7 +168,7 @@ public class ChatLog implements IChatLog{
         this.newMessageCounter.clear();
     }
 
-    public void drawNewMessages(RockBottom game, IAssetManager manager, IGraphics g){
+    public void drawNewMessages(RockBottom game, IAssetManager manager, IRenderer g){
         if(!this.newMessageCounter.isEmpty()){
             GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size());
         }

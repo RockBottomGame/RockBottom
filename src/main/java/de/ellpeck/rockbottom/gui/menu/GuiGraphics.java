@@ -1,14 +1,13 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import org.lwjgl.opengl.Display;
 
 public class GuiGraphics extends Gui{
 
@@ -35,13 +34,13 @@ public class GuiGraphics extends Gui{
 
         this.components.add(new ComponentSlider(this, 154, 0, 150, 16, (int)(settings.renderScale*100F), 50, 150, (integer, aBoolean) -> {
             settings.renderScale = (float)integer/100F;
-            game.getGraphics().calcScales();
+            game.getRenderer().calcScales();
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.render_scale"))));
         this.components.add(new ComponentSlider(this, 154, 20, 150, 16, (int)(settings.guiScale*100F), 50, 100, (integer, aBoolean) -> {
             if(aBoolean){
                 settings.guiScale = (float)integer/100F;
                 game.getDataManager().savePropSettings(settings);
-                game.getGraphics().calcScales();
+                game.getRenderer().calcScales();
                 game.getGuiManager().updateDimensions();
             }
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.gui_scale"))));
@@ -59,7 +58,8 @@ public class GuiGraphics extends Gui{
         }, "button.fullscreen"));
         this.components.add(new ComponentToggleButton(this, 154, 80, 150, 16, !settings.vsync, () -> {
             settings.vsync = !settings.vsync;
-            Display.setVSyncEnabled(settings.vsync);
+            //TODO Vsync?
+            //Display.setVSyncEnabled(settings.vsync);
             return true;
         }, "button.vsync"));
         this.components.add(new ComponentToggleButton(this, 154, 100, 150, 16, !settings.smoothLighting, () -> {
@@ -85,7 +85,7 @@ public class GuiGraphics extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g){
         manager.getFont().drawCenteredString(this.x+75, this.y+62, manager.localize(RockBottomAPI.createInternalRes("info.gui_color")), 0.35F, false);
 
         super.render(game, manager, g);

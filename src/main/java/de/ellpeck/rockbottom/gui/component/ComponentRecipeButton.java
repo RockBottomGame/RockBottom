@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -40,7 +40,7 @@ public class ComponentRecipeButton extends ComponentButton{
 
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         if(this.recipe != null && this.recipe.isKnown(this.player)){
             super.render(game, manager, g, x, y);
 

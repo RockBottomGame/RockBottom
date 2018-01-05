@@ -7,75 +7,18 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-
-import java.util.*;
+import org.lwjgl.glfw.GLFW;
 
 public class InputHandler implements IInputHandler{
 
     private final RockBottom game;
-    private final Set<Integer> pressedKeys = new HashSet<>();
-    private final Set<Integer> pressedMouse = new HashSet<>();
 
     public InputHandler(RockBottom game){
         this.game = game;
     }
 
-    @Override
-    public boolean isMouseDown(int button){
-        return Mouse.isButtonDown(button);
-    }
-
-    @Override
-    public boolean wasMousePressed(int button){
-        return this.pressedMouse.contains(button);
-    }
-
-    @Override
-    public boolean isKeyDown(int key){
-        return Keyboard.isKeyDown(key);
-    }
-
-    @Override
-    public boolean wasKeyPressed(int key){
-        return this.pressedKeys.contains(key);
-    }
-
-    @Override
-    public int getMouseX(){
-        return Mouse.getX();
-    }
-
-    @Override
-    public int getMouseY(){
-        return Display.getHeight()-Mouse.getY()-1;
-    }
-
     public void update(){
-        this.pressedMouse.clear();
-        this.pressedKeys.clear();
-
-        while(Keyboard.next()){
-            char character = Keyboard.getEventCharacter();
-            int key = Keyboard.getEventKey();
-
-            if(Keyboard.getEventKeyState()){
-                this.pressedKeys.add(key);
-                this.keyPressed(key, character);
-            }
-        }
-
-        while(Mouse.next()){
-            int button = Mouse.getEventButton();
-            if(button >= 0){
-                if(Mouse.getEventButtonState()){
-                    this.pressedMouse.add(button);
-                    this.mousePressed(button);
-                }
-            }
-        }
+        //TODO Update keys
     }
 
     protected void mousePressed(int button){
@@ -99,25 +42,26 @@ public class InputHandler implements IInputHandler{
             }
         }
 
-        if(key == Keyboard.KEY_F1){
-            this.game.graphics.isDebug = !this.game.graphics.isDebug;
+        if(key == GLFW.GLFW_KEY_F1){
+            this.game.renderer.isDebug = !this.game.renderer.isDebug;
             return;
         }
-        else if(key == Keyboard.KEY_F3){
+        else if(key == GLFW.GLFW_KEY_F3){
             this.game.assetManager.load(this.game);
+            this.game.renderer.init();
             this.game.assetManager.loadCursors();
             return;
         }
-        else if(key == Keyboard.KEY_F4){
-            this.game.graphics.isGuiDebug = !this.game.graphics.isGuiDebug;
+        else if(key == GLFW.GLFW_KEY_F4){
+            this.game.renderer.isGuiDebug = !this.game.renderer.isGuiDebug;
             return;
         }
-        else if(key == Keyboard.KEY_F5){
-            this.game.graphics.isItemInfoDebug = !this.game.graphics.isItemInfoDebug;
+        else if(key == GLFW.GLFW_KEY_F5){
+            this.game.renderer.isItemInfoDebug = !this.game.renderer.isItemInfoDebug;
             return;
         }
-        else if(key == Keyboard.KEY_F6){
-            this.game.graphics.isChunkBorderDebug = !this.game.graphics.isChunkBorderDebug;
+        else if(key == GLFW.GLFW_KEY_F6){
+            this.game.renderer.isChunkBorderDebug = !this.game.renderer.isChunkBorderDebug;
             return;
         }
         else if(Settings.KEY_SCREENSHOT.isKey(key)){
@@ -126,5 +70,52 @@ public class InputHandler implements IInputHandler{
         }
 
         this.game.getInteractionManager().onKeyboardAction(this.game, key, c);
+    }
+
+    //TODO All this
+
+    @Override
+    public boolean isMouseInWindow(){
+        return false;
+    }
+
+    @Override
+    public boolean isMouseDown(int button){
+        return false;
+    }
+
+    @Override
+    public boolean wasMousePressed(int button){
+        return false;
+    }
+
+    @Override
+    public boolean isKeyDown(int key){
+        return false;
+    }
+
+    @Override
+    public boolean wasKeyPressed(int key){
+        return false;
+    }
+
+    @Override
+    public void setKeyboardRepeatEvents(boolean should){
+
+    }
+
+    @Override
+    public int getMouseWheel(){
+        return 0;
+    }
+
+    @Override
+    public int getMouseX(){
+        return 0;
+    }
+
+    @Override
+    public int getMouseY(){
+        return 0;
     }
 }

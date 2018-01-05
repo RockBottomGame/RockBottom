@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -31,7 +31,6 @@ import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +80,7 @@ public class GuiManager implements IGuiManager{
     }
 
     private void initOnScreenComponents(IGameInstance game, AbstractEntityPlayer player){
-        double width = game.getGraphics().getWidthInGui();
+        double width = game.getRenderer().getWidthInGui();
 
         for(int i = 0; i < 8; i++){
             int x = (int)(width/2-59.25+i*15);
@@ -89,12 +88,12 @@ public class GuiManager implements IGuiManager{
         }
 
         int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
-        this.onScreenComponents.add(new ComponentHealth(null, (int)game.getGraphics().getWidthInGui()-3-maxHealthParts*13, (int)game.getGraphics().getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
+        this.onScreenComponents.add(new ComponentHealth(null, (int)game.getRenderer().getWidthInGui()-3-maxHealthParts*13, (int)game.getRenderer().getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
     public void update(RockBottom game){
         IAssetManager manager = game.getAssetManager();
-        if(!game.getSettings().hardwareCursor && Mouse.isInsideWindow()){
+        if(!game.getSettings().hardwareCursor && game.getInput().isMouseInWindow()){
             ISpecialCursor cursor = manager.pickCurrentCursor(game);
             if(cursor != this.currentCursor){
                 manager.setCursor(game, cursor);
@@ -128,7 +127,7 @@ public class GuiManager implements IGuiManager{
         }
     }
 
-    public void render(RockBottom game, IAssetManager manager, IGraphics g, EntityPlayer player){
+    public void render(RockBottom game, IAssetManager manager, IRenderer g, EntityPlayer player){
         IFont font = manager.getFont();
         float width = g.getWidthInGui();
         float height = g.getHeightInGui();
@@ -163,14 +162,14 @@ public class GuiManager implements IGuiManager{
         if(player == null || !player.isDead()){
             if(gui != null){
                 if(gui.hasGradient()){
-                    g.fillRect(0F, 0F, width, height, Gui.GRADIENT_COLOR);
+                    g.addFilledRect(0F, 0F, width, height, Gui.GRADIENT_COLOR);
                 }
 
                 gui.render(game, manager, g);
                 gui.renderOverlay(game, manager, g);
 
                 if(g.isGuiDebug()){
-                    g.drawRect(gui.getX(), gui.getY(), gui.getWidth(), gui.getHeight(), Colors.RED);
+                    g.addEmptyRect(gui.getX(), gui.getY(), gui.getWidth(), gui.getHeight(), Colors.RED);
 
                     int addY = 0;
                     List<GuiComponent> components = gui.getComponents();
@@ -184,7 +183,7 @@ public class GuiManager implements IGuiManager{
 
                             this.debugRandom.setSeed(Util.scrambleSeed(i));
                             int color = Colors.random(this.debugRandom);
-                            g.drawRect(x, y, w, h, 0.5F, color);
+                            g.addEmptyRect(x, y, w, h, 0.5F, color);
 
                             if(mouseX >= x && mouseY >= y && mouseX < x+w && mouseY < y+h){
                                 font.drawString(3, 3+addY, "name: "+component.getName()+"; render_xy: "+x+", "+y+"; xy: "+component.getX()+", "+component.getY()+"; wh: "+w+", "+h, 0.2F, color);
@@ -217,11 +216,11 @@ public class GuiManager implements IGuiManager{
         }
 
         if(fadeOpacity != 0F){
-            g.fillRect(0, 0, width, height, Colors.multiplyA(Colors.BLACK, fadeOpacity));
+            g.addFilledRect(0, 0, width, height, Colors.multiplyA(Colors.BLACK, fadeOpacity));
         }
 
         if(game.getSettings().cursorInfos){
-            if(player != null && !player.isDead() && gui == null && Mouse.isInsideWindow()){
+            if(player != null && !player.isDead() && gui == null && game.getInput().isMouseInWindow()){
                 if(this.onScreenComponents.stream().noneMatch(comp -> comp.isMouseOver(game))){
                     double tileX = g.getMousedTileX();
                     double tileY = g.getMousedTileY();

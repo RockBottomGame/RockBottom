@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.cursor;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
@@ -20,7 +20,7 @@ public class CursorOpenHand implements ISpecialCursor{
     }
 
     @Override
-    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IGraphics graphics, IGuiManager guiManager, IInteractionManager interactionManager){
+    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager){
         Gui gui = guiManager.getGui();
         if(gui != null){
             for(GuiComponent component : gui.getComponents()){

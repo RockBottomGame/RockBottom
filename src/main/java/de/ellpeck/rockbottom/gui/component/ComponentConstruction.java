@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -101,7 +101,7 @@ public class ComponentConstruction extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         super.render(game, manager, g, x, y);
 
         if(this.menu.isEmpty()){

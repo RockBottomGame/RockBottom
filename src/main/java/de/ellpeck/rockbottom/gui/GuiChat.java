@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
@@ -14,7 +14,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class GuiChat extends Gui{
     private int selectedSuggestion;
     private float suggestionX;
 
-    public static void drawMessages(IGameInstance game, IAssetManager manager, IGraphics g, List<ChatComponent> messages, int maxCount){
+    public static void drawMessages(IGameInstance game, IAssetManager manager, IRenderer g, List<ChatComponent> messages, int maxCount){
         IFont font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
@@ -47,7 +47,7 @@ public class GuiChat extends Gui{
         for(ChatComponent message : messages){
             List<String> split = font.splitTextToLength(sizeX, scale, true, message.getDisplayWithChildren(game, manager));
 
-            g.fillRect(5, y-fontHeight*(split.size()-1), sizeX, fontHeight*split.size()+1, alternate ? BACKING_ONE : BACKING_TWO);
+            g.addFilledRect(5, y-fontHeight*(split.size()-1), sizeX, fontHeight*split.size()+1, alternate ? BACKING_ONE : BACKING_TWO);
 
             for(int i = split.size()-1; i >= 0; i--){
                 String s = split.get(i);
@@ -121,7 +121,7 @@ public class GuiChat extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g){
         drawMessages(game, manager, g, game.getChatLog().getMessages(), 20);
 
         if(!this.suggestions.isEmpty()){
@@ -141,8 +141,8 @@ public class GuiChat extends Gui{
             float width = longestWidth+1;
             float height = this.suggestions.size()*charHeight+1;
 
-            g.fillRect(x, y, width, height, Gui.HOVER_INFO_BACKGROUND);
-            g.drawRect(x, y, width, height, Gui.GRADIENT_COLOR);
+            g.addFilledRect(x, y, width, height, Gui.HOVER_INFO_BACKGROUND);
+            g.addEmptyRect(x, y, width, height, Gui.GRADIENT_COLOR);
 
             for(int i = this.suggestions.size()-1; i >= 0; i--){
                 String sugg = this.suggestions.get(i);
@@ -155,7 +155,7 @@ public class GuiChat extends Gui{
 
     @Override
     public boolean onKeyboardAction(IGameInstance game, int button, char character){
-        if(button == Keyboard.KEY_RETURN){
+        if(button == GLFW.GLFW_KEY_ENTER){
             String text = this.inputField.getText();
 
             if(text != null && !text.isEmpty()){
@@ -175,21 +175,21 @@ public class GuiChat extends Gui{
             }
 
         }
-        else if(button == Keyboard.KEY_DOWN){
+        else if(button == GLFW.GLFW_KEY_DOWN){
             this.selectedSuggestion--;
             if(this.selectedSuggestion < 0){
                 this.selectedSuggestion = this.suggestions.size()-1;
             }
             return true;
         }
-        else if(button == Keyboard.KEY_UP){
+        else if(button == GLFW.GLFW_KEY_UP){
             this.selectedSuggestion++;
             if(this.selectedSuggestion >= this.suggestions.size()){
                 this.selectedSuggestion = 0;
             }
             return true;
         }
-        else if(button == Keyboard.KEY_TAB){
+        else if(button == GLFW.GLFW_KEY_TAB){
             if(!this.suggestions.isEmpty()){
                 String suggestion = this.suggestions.get(this.selectedSuggestion);
                 String text = this.inputField.getText();

@@ -19,7 +19,7 @@
 package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.particle.Particle;
@@ -40,7 +40,7 @@ public class ParticleTile extends Particle{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, float x, float y, int filter){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, float x, float y, int filter){
         if(this.renderPixel == -1){
             ITileRenderer renderer = this.state.getTile().getRenderer();
             if(renderer != null){
@@ -57,7 +57,7 @@ public class ParticleTile extends Particle{
         }
 
         if(this.renderPixel != -1){
-            g.fillRect(x, y, 0.12F, 0.12F, this.renderPixel);
+            g.addFilledRect(x, y, 0.12F, 0.12F, this.renderPixel);
         }
     }
 }

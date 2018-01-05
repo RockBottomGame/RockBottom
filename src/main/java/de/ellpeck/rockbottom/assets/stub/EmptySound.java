@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.assets.sound;
+package de.ellpeck.rockbottom.assets.stub;
 
 import de.ellpeck.rockbottom.api.assets.ISound;
 
@@ -41,6 +41,11 @@ public class EmptySound implements ISound{
 
     @Override
     public void stop(){
+
+    }
+
+    @Override
+    public void dispose(){
 
     }
 }

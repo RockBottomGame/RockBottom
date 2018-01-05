@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -35,7 +35,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         super.render(game, manager, g, x, y);
         IFont font = manager.getFont();
         font.drawCutOffString(x+2F, y+1F, this.worldFile.getName(), 0.45F, this.width-4, false, false);

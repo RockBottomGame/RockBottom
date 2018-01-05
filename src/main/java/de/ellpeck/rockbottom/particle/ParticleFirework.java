@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
@@ -23,7 +23,7 @@ public class ParticleFirework extends Particle{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, float x, float y, int filter){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, float x, float y, int filter){
         float lifePercentage = 1F-(float)this.life/(float)this.maxLife;
         manager.getTexture(TEXTURE).draw(x-0.1F, y-0.1F, 0.2F, 0.2F, Colors.multiplyA(this.particleColor, lifePercentage));
     }

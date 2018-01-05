@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -27,7 +27,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         g.renderSlotInGui(game, manager, this.inv.get(this.id), x, y, 0.75F, game.getGuiManager().getGui() == null && this.isMouseOverPrioritized(game));
 
         if(this.player.getSelectedSlot() == this.id){
@@ -36,7 +36,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public void renderOverlay(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void renderOverlay(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         if(this.isMouseOverPrioritized(game)){
             ItemInstance instance = this.inv.get(this.id);
             if(instance != null){

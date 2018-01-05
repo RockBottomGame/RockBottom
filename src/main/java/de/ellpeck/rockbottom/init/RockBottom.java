@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.init;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -20,11 +19,10 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.apiimpl.Graphics;
 import de.ellpeck.rockbottom.apiimpl.InputHandler;
+import de.ellpeck.rockbottom.apiimpl.Renderer;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
 import de.ellpeck.rockbottom.gui.GuiInformation;
 import de.ellpeck.rockbottom.gui.GuiLogo;
@@ -42,15 +40,13 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.openal.AL;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.glfw.Callbacks;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
-import org.newdawn.slick.openal.SoundStore;
-import org.newdawn.slick.opengl.ImageIOImageData;
-import org.newdawn.slick.opengl.LoadableImageData;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -58,8 +54,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.ByteBuffer;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.nio.IntBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -79,10 +74,20 @@ public class RockBottom extends AbstractGame{
     private WorldRenderer worldRenderer;
     private int windowedWidth;
     private int windowedHeight;
-    public Graphics graphics;
+    public Renderer renderer;
     private InputHandler input;
     private int lastWidth;
     private int lastHeight;
+    private final GLFWErrorCallback errorCallback = new GLFWErrorCallback(){
+        @Override
+        public void invoke(int error, long description){
+            //TODO Make a seperate logger for GLFW errors
+            RockBottomAPI.logger().log(Level.WARNING, "GLFW error:\n"+GLFWErrorCallback.getDescription(description));
+        }
+    };
+    private int width;
+    private int height;
+    private long windowId;
 
     public static void startGame(){
         doInit(new RockBottom());
@@ -90,18 +95,26 @@ public class RockBottom extends AbstractGame{
 
     @Override
     public void init(){
-        try{
-            Display.setDisplayMode(new DisplayMode(Main.width, Main.height));
-            Display.setFullscreen(Main.fullscreen);
-        }
-        catch(LWJGLException e){
-            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't set initial display mode", e);
+        GLFW.glfwSetErrorCallback(this.errorCallback);
+
+        if(!GLFW.glfwInit()){
+            throw new IllegalStateException("Unable to inialize GLFW");
         }
 
-        Display.setTitle(AbstractGame.NAME+" "+AbstractGame.VERSION);
-        Display.setResizable(true);
+        GLFW.glfwDefaultWindowHints();
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 
-        try{
+        this.windowId = GLFW.glfwCreateWindow(Main.width, Main.height, AbstractGame.NAME+" "+AbstractGame.VERSION, MemoryUtil.NULL, MemoryUtil.NULL);
+        if(this.windowId == MemoryUtil.NULL){
+            GLFW.glfwTerminate();
+            throw new RuntimeException("Unable to create window");
+        }
+
+        //TODO Fix icons
+        /*try{
             String[] icons = new String[]{"16x16.png", "32x32.png", "128x128.png"};
             ByteBuffer[] bufs = new ByteBuffer[icons.length];
 
@@ -114,39 +127,25 @@ public class RockBottom extends AbstractGame{
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't set game icon", e);
-        }
-
-        AccessController.doPrivileged((PrivilegedAction)() -> {
-            try{
-                PixelFormat format = new PixelFormat(8, 8, 0);
-                Display.create(format);
-            }
-            catch(LWJGLException e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't create pixel format", e);
-
-                try{
-                    Display.create();
-                }
-                catch(LWJGLException e2){
-                    throw new RuntimeException("Failed to initialize LWJGL display", e2);
-                }
-            }
-            return null;
-        });
+        }*/
 
         RockBottomAPI.logger().info("Initializing system");
 
         ChangelogManager.loadChangelog();
-        this.initGraphics();
 
-        try{
+        GLFW.glfwMakeContextCurrent(this.windowId);
+        GL.createCapabilities();
+        this.reloadGraphics();
+
+        //TODO Display loading screen image
+        /*try{
             ITexture tex = new RenderedTexture(AssetManager.getResource("/assets/rockbottom/tex/intro/loading.png"), false);
             tex.draw(0, 0, Display.getWidth(), Display.getHeight());
             Display.update();
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't render loading screen image", e);
-        }
+        }*/
 
         RockBottomAPI.logger().info("Finished initializing system");
 
@@ -162,33 +161,21 @@ public class RockBottom extends AbstractGame{
         this.guiManager.fadeIn(30, null);
     }
 
-    protected void initGraphics(){
-        int width = Display.getWidth();
-        int height = Display.getHeight();
+    protected void reloadGraphics(){
+        this.lastWidth = this.width;
+        this.lastHeight = this.height;
 
-        this.lastWidth = width;
-        this.lastHeight = height;
+        MemoryStack stack = MemoryStack.stackPush();
+        IntBuffer width = stack.mallocInt(1);
+        IntBuffer height = stack.mallocInt(1);
 
-        this.graphics = new Graphics(this);
+        GLFW.glfwGetFramebufferSize(this.windowId, width, height);
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        this.width = width.get();
+        this.height = height.get();
+        stack.pop();
 
-        GL11.glClearColor(0F, 0F, 0F, 0F);
-        GL11.glClearDepth(1D);
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        GL11.glViewport(0, 0, width, height);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0D, width, height, 0D, 1D, -1D);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        this.renderer = new Renderer(this);
 
         this.input = new InputHandler(this);
     }
@@ -200,19 +187,17 @@ public class RockBottom extends AbstractGame{
         this.dataManager.loadPropSettings(this.settings);
 
         this.setFullscreen(this.settings.fullscreen);
-        Display.setVSyncEnabled(this.settings.vsync);
-
-        SoundStore.get().setSoundVolume(this.settings.soundVolume);
-        SoundStore.get().setMusicVolume(this.settings.musicVolume);
+        //TODO Deal with vsync?
 
         this.assetManager = new AssetManager();
         this.assetManager.load(this);
+        this.renderer.init();
 
         RockBottomAPI.getModLoader().initAssets();
         this.assetManager.loadCursors();
 
         this.setPlayerDesign();
-        this.graphics.calcScales();
+        this.renderer.calcScales();
     }
 
     private void setPlayerDesign(){
@@ -264,7 +249,8 @@ public class RockBottom extends AbstractGame{
     @Override
     public void setFullscreen(boolean fullscreen){
         try{
-            if(Display.isFullscreen() != fullscreen){
+            //TODO Change fullscreen
+            /*if(Display.isFullscreen() != fullscreen){
                 if(fullscreen){
                     this.windowedWidth = Display.getWidth();
                     this.windowedHeight = Display.getHeight();
@@ -286,7 +272,7 @@ public class RockBottom extends AbstractGame{
                 if(this.guiManager != null){
                     this.guiManager.updateDimensions();
                 }
-            }
+            }*/
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Failed to set fullscreen", e);
@@ -397,58 +383,63 @@ public class RockBottom extends AbstractGame{
     public void shutdown(){
         super.shutdown();
 
-        Display.destroy();
-        AL.destroy();
+        if(this.renderer != null){
+            this.renderer.dispose();
+        }
+        if(this.assetManager != null){
+            this.assetManager.dispose();
+        }
+
+        if(this.windowId != MemoryUtil.NULL){
+            GLFW.glfwDestroyWindow(this.windowId);
+            Callbacks.glfwFreeCallbacks(this.windowId);
+        }
+
+        GLFW.glfwTerminate();
+        this.errorCallback.free();
     }
 
     @Override
     protected void updateTickless(int delta){
-        if(Display.isCloseRequested()){
+        if(GLFW.glfwWindowShouldClose(this.windowId)){
             this.exit();
         }
         else{
-            SoundStore.get().poll(0);
-
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-            GL11.glLoadIdentity();
-            GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
 
+            this.renderer.begin();
             this.render();
+            this.renderer.end();
 
-            if(this.settings.targetFps != -1){
-                Display.sync(this.settings.targetFps);
-            }
+            GLFW.glfwSwapBuffers(this.windowId);
+            GLFW.glfwPollEvents();
 
-            Display.update();
-
-            if(!Display.isFullscreen() && Display.wasResized()){
+            //TODO Fix fullscreen rescaling
+            /*if(!Display.isFullscreen() && Display.wasResized()){
                 if(this.lastWidth != Display.getWidth() || this.lastHeight != Display.getHeight()){
                     this.initGraphics();
                     this.graphics.calcScales();
 
                     this.guiManager.updateDimensions();
                 }
-            }
+            }*/
         }
     }
 
     protected void render(){
         if(this.world != null){
-            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.graphics, this.world, this.player, this.interactionManager);
-
-            if(this.graphics.isDebug()){
-                DebugRenderer.render(this, this.assetManager, this.world, this.player, this.graphics);
-            }
+            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, this.world, this.player, this.interactionManager);
         }
 
-        this.graphics.pushMatrix();
-        float scale = this.graphics.getGuiScale();
-        this.graphics.scale(scale, scale);
+        if(this.renderer.isDebug()){
+            DebugRenderer.render(this, this.assetManager, this.world, this.player, this.renderer);
+        }
 
-        this.guiManager.render(this, this.assetManager, this.graphics, this.player);
-        this.toaster.render(this, this.assetManager, this.graphics);
+        float scale = this.renderer.getGuiScale();
+        this.renderer.setScale(scale, scale);
 
-        this.graphics.popMatrix();
+        this.guiManager.render(this, this.assetManager, this.renderer, this.player);
+        this.toaster.render(this, this.assetManager, this.renderer);
     }
 
     @Override
@@ -481,8 +472,8 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    public IGraphics getGraphics(){
-        return this.graphics;
+    public IRenderer getRenderer(){
+        return this.renderer;
     }
 
     @Override
@@ -506,6 +497,16 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
+    public int getWidth(){
+        return this.width;
+    }
+
+    @Override
+    public int getHeight(){
+        return this.height;
+    }
+
+    @Override
     public UUID getUniqueId(){
         return this.uniqueId;
     }
@@ -515,24 +516,22 @@ public class RockBottom extends AbstractGame{
             RockBottomAPI.logger().info("Taking screenshot");
 
             GL11.glReadBuffer(GL11.GL_FRONT);
-            int width = Display.getWidth();
-            int height = Display.getHeight();
             int colors = 4;
 
-            ByteBuffer buf = BufferUtils.createByteBuffer(width*height*colors);
-            GL11.glReadPixels(0, 0, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+            ByteBuffer buf = BufferUtils.createByteBuffer(this.width*this.height*colors);
+            GL11.glReadPixels(0, 0, this.width, this.height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
 
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            BufferedImage image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
 
-            for(int x = 0; x < width; x++){
-                for(int y = 0; y < height; y++){
-                    int i = (x+(y*width))*colors;
+            for(int x = 0; x < this.width; x++){
+                for(int y = 0; y < this.height; y++){
+                    int i = (x+(y*this.width))*colors;
 
                     int r = buf.get(i) & 0xFF;
                     int g = buf.get(i+1) & 0xFF;
                     int b = buf.get(i+2) & 0xFF;
 
-                    image.setRGB(x, height-(y+1), Colors.rgb(r, g, b));
+                    image.setRGB(x, this.height-(y+1), Colors.rgb(r, g, b));
                 }
             }
 

@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -12,9 +11,9 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
+import de.ellpeck.rockbottom.assets.tex.Texture;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,7 +37,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
         String anim = array.get(0).getAsString();
         String texture = array.get(1).getAsString();
 
-        RenderedTexture tex = new RenderedTexture(AssetManager.getResource(path+texture), false);
+        Texture tex = new Texture(AssetManager.getResourceAsStream(path+texture));
 
         int frameWidth = 0;
         int frameHeight = 0;
@@ -47,7 +46,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
         if(cachedInfo == null){
             List<AnimationRow> rows = new ArrayList<>();
 
-            InputStream infoStream = AssetManager.getResource(path+anim);
+            InputStream infoStream = AssetManager.getResourceAsStream(path+anim);
             JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
 
             for(Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){

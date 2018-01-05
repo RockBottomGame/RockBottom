@@ -1,7 +1,10 @@
 package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.IInputHandler;
+import de.ellpeck.rockbottom.api.IRenderer;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -132,7 +135,7 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public IGraphics getGraphics(){
+    public IRenderer getRenderer(){
         throw new UnsupportedOperationException("Cannot get the graphics on a dedicated server");
     }
 
@@ -179,6 +182,16 @@ public class RockBottomServer extends AbstractGame{
     @Override
     public IToaster getToaster(){
         throw new UnsupportedOperationException("Cannot get toaster on a dedicated server");
+    }
+
+    @Override
+    public int getWidth(){
+        throw new UnsupportedOperationException("Cannot get width on a dedicated server");
+    }
+
+    @Override
+    public int getHeight(){
+        throw new UnsupportedOperationException("Cannot get height on a dedicated server");
     }
 
     @Override

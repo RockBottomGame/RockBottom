@@ -23,7 +23,6 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
-import org.lwjgl.input.Mouse;
 
 import java.util.List;
 import java.util.Map;
@@ -191,8 +190,8 @@ public class InteractionManager implements IInteractionManager{
                     moveAndSend(player, 2);
                 }
 
-                double mousedTileX = game.getGraphics().getMousedTileX();
-                double mousedTileY = game.getGraphics().getMousedTileY();
+                double mousedTileX = game.getRenderer().getMousedTileX();
+                double mousedTileY = game.getRenderer().getMousedTileY();
 
                 int x = Util.floor(mousedTileX);
                 int y = Util.floor(mousedTileY);
@@ -289,7 +288,7 @@ public class InteractionManager implements IInteractionManager{
                 boolean slotChange = false;
                 int slot = player.getSelectedSlot();
 
-                int scroll = Mouse.getDWheel();
+                int scroll = game.getInput().getMouseWheel();
                 if(scroll < 0){
                     slot++;
                     if(slot >= 8){
@@ -320,7 +319,7 @@ public class InteractionManager implements IInteractionManager{
     }
 
     public void onMouseAction(RockBottom game, int button){
-        game.getGuiManager().onMouseAction(game, button, game.getGraphics().getMouseInGuiX(), game.getGraphics().getMouseInGuiY());
+        game.getGuiManager().onMouseAction(game, button, game.getRenderer().getMouseInGuiX(), game.getRenderer().getMouseInGuiY());
     }
 
     public void onKeyboardAction(RockBottom game, int button, char character){

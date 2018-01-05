@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -33,11 +33,11 @@ public class ComponentCheckBox extends GuiComponent{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, int x, int y){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         super.render(game, manager, g, x, y);
 
-        g.fillRect(x, y, this.width, this.height, this.isMouseOverPrioritized(game) ? getElementColor() : getUnselectedElementColor());
-        g.drawRect(x, y, this.width, this.height, getElementOutlineColor());
+        g.addFilledRect(x, y, this.width, this.height, this.isMouseOverPrioritized(game) ? getElementColor() : getUnselectedElementColor());
+        g.addEmptyRect(x, y, this.width, this.height, getElementOutlineColor());
 
         if(this.state){
             manager.getFont().drawCenteredString(x+this.width/2, y+this.height/2+1, "X", 0.5F, true);

@@ -6,8 +6,6 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,6 +28,7 @@ public final class Main{
     public static int width;
     public static int height;
     public static boolean fullscreen;
+    public static int vertexCache;
 
     public static boolean isDedicatedServer;
     public static int port;
@@ -45,6 +44,7 @@ public final class Main{
             OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
             OptionSpec<Integer> optionWidth = parser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(1280);
             OptionSpec<Integer> optionHeight = parser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(720);
+            OptionSpec<Integer> optionVertexCache = parser.accepts("vertexCache").withRequiredArg().ofType(Integer.class).defaultsTo(32768);
             OptionSpec<Integer> optionPort = parser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(8000);
             OptionSpec optionSkipIntro = parser.accepts("skipIntro");
             OptionSpec optionFullscreen = parser.accepts("fullscreen");
@@ -78,6 +78,7 @@ public final class Main{
             skipIntro = options.has(optionSkipIntro);
             width = options.valueOf(optionWidth);
             height = options.valueOf(optionHeight);
+            vertexCache = options.valueOf(optionVertexCache);
             fullscreen = options.has(optionFullscreen);
 
             try{
@@ -135,7 +136,7 @@ public final class Main{
         }
     }
 
-    private static String loadLib(String libName){
+    /*private static String loadLib(String libName){
         if(nativeDir != null){
             try{
                 String mapped = System.mapLibraryName(libName);
@@ -179,7 +180,7 @@ public final class Main{
         else{
             throw new UnsupportedOperationException("Tried loading native library "+libName+" with the native library folder being null! This is likely due to the dedicated server trying to load a native library which is disallowed!");
         }
-    }
+    }*/
 
     public static class CustomClassLoader extends URLClassLoader{
 
@@ -192,7 +193,7 @@ public final class Main{
             super.addURL(url);
         }
 
-        @Override
+        /*@Override
         protected String findLibrary(String libName){
             String lib = loadLib(libName);
 
@@ -202,6 +203,6 @@ public final class Main{
             else{
                 return super.findLibrary(libName);
             }
-        }
+        }*/
     }
 }

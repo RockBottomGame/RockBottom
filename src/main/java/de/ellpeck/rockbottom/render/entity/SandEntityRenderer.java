@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.render.entity;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -16,7 +16,7 @@ public class SandEntityRenderer implements IEntityRenderer<EntitySand>{
     private final ItemInstance instance = new ItemInstance(GameContent.TILE_SAND);
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, EntitySand entity, float x, float y, int light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntitySand entity, float x, float y, int light){
         Item item = this.instance.getItem();
         IItemRenderer renderer = item.getRenderer();
         if(renderer != null){

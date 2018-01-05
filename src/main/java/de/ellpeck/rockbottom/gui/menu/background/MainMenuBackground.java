@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu.background;
 
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -55,9 +55,10 @@ public class MainMenuBackground{
         }
     }
 
-    public void render(RockBottom game, IAssetManager manager, IGraphics g){
+    public void render(RockBottom game, IAssetManager manager, IRenderer g){
         int color = this.theme.getBackgroundColor();
-        g.backgroundColor(color);
+        //TODO Set background color for main menu here
+        /*g.backgroundColor(color);*/
 
         float tileSize = Math.max(g.getWidthInGui(), g.getHeightInGui())/(float)IMainMenuTheme.TILE_AMOUNT;
 

@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ITexture;
@@ -29,7 +29,7 @@ public class ParticleSmoke extends Particle{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, float x, float y, int filter){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, float x, float y, int filter){
         float size = this.scale*(1F-(float)this.life/(float)this.maxLife);
 
         ITexture image = manager.getTexture(SMOKE_NAME);

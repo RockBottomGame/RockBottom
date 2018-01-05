@@ -166,4 +166,9 @@ public class Animation implements IAnimation{
     public JsonElement getAdditionalFrameData(String name, int row, int frame){
         return this.getRow(row).getAdditionalData(name, frame);
     }
+
+    @Override
+    public void dispose(){
+        this.texture.dispose();
+    }
 }

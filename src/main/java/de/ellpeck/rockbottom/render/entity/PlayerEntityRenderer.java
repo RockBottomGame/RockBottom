@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.render.entity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -25,7 +25,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     private static final IResourceName SPECIAL_BASE = RockBottomAPI.createInternalRes("player.base.s");
     private static final IResourceName SPECIAL_ARMS = RockBottomAPI.createInternalRes("player.arm.skin_s");
 
-    public static void renderPlayer(EntityPlayer player, IGameInstance game, IAssetManager manager, IGraphics g, IPlayerDesign design, float x, float y, float scale, int row, int light){
+    public static void renderPlayer(EntityPlayer player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light){
         ItemInstance holding = player != null ? player.getInv().get(player.getSelectedSlot()) : null;
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
@@ -144,7 +144,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, EntityPlayer entity, float x, float y, int light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityPlayer entity, float x, float y, int light){
         IPlayerDesign design = entity.getDesign();
         boolean isRight = entity.facing == Direction.RIGHT;
         boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;

@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.render.tile;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
@@ -29,7 +29,7 @@ public class TileDoorRenderer extends DefaultTileRenderer<TileWoodDoor>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, TileWoodDoor tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileWoodDoor tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
         int half = state.get(StaticTileProps.TOP_HALF) ? 0 : 1;
 
         IResourceName tex;

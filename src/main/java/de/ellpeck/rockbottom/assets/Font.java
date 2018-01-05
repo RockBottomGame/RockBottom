@@ -3,8 +3,7 @@ package de.ellpeck.rockbottom.assets;
 import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
@@ -35,8 +34,8 @@ public class Font implements IFont{
         this.texture = texture;
         this.characters = characters;
 
-        this.charWidth = (int)(texture.getWidth()/widthInChars);
-        this.charHeight = (int)(texture.getHeight()/heightInChars);
+        this.charWidth = texture.getWidth()/widthInChars;
+        this.charHeight = texture.getHeight()/heightInChars;
     }
 
     public static Font fromStream(ITexture texture, InputStream infoStream, String name) throws Exception{
@@ -205,7 +204,7 @@ public class Font implements IFont{
 
     @Override
     public void drawCharacter(float x, float y, char character, float scale, int color, FontProp prop, int shadowColor){
-        IGraphics g = RockBottomAPI.getGame().getGraphics();
+        IRenderer g = RockBottomAPI.getGame().getRenderer();
 
         float scaledWidth = (float)this.charWidth*scale;
         float scaledHeight = (float)this.charHeight*scale;
@@ -254,8 +253,9 @@ public class Font implements IFont{
                 boolean upsideDown = prop == FontProp.UPSIDE_DOWN;
 
                 if(italics || upsideDown){
-                    this.texture.setRotationCenter(0F, 0F);
-                    this.texture.setRotation(italics ? 5F : 180F);
+                    //TODO Change text based on italics and upside down
+                    /*this.texture.setRotationCenter(0F, 0F);
+                    this.texture.setRotation(italics ? 5F : 180F);*/
 
                     if(upsideDown){
                         y += scaledHeight;
@@ -272,7 +272,7 @@ public class Font implements IFont{
                 this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
 
                 if(italics || upsideDown){
-                    this.texture.setRotation(0F);
+                    /*this.texture.setRotation(0F);*/
                 }
             }
             else{
@@ -286,9 +286,9 @@ public class Font implements IFont{
             float lineY = y+(underlined ? scaledHeight-4F*scale : scaledHeight/2F-3F*scale);
 
             if(shadow){
-                g.fillRect(x+shadowOffset, lineY+shadowOffset, scaledWidth, 2F*scale, shadowColor);
+                g.addFilledRect(x+shadowOffset, lineY+shadowOffset, scaledWidth, 2F*scale, shadowColor);
             }
-            g.fillRect(x, lineY, scaledWidth, 2F*scale, color);
+            g.addFilledRect(x, lineY, scaledWidth, 2F*scale, color);
         }
 
     }
@@ -375,4 +375,8 @@ public class Font implements IFont{
         return result;
     }
 
+    @Override
+    public void dispose(){
+        this.texture.dispose();
+    }
 }

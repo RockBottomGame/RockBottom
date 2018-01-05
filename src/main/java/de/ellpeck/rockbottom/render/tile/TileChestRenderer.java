@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.render.tile;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -21,7 +21,7 @@ public class TileChestRenderer extends DefaultTileRenderer<TileChest>{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, TileChest tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileChest tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
         TileEntityChest tileEntity = world.getTileEntity(layer, x, y, TileEntityChest.class);
         if(tileEntity != null && tileEntity.getOpenCount() > 0){
             manager.getTexture(this.texOpen).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);

@@ -1,28 +1,19 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.util.ChangelogManager.Changelog;
 import de.ellpeck.rockbottom.util.ChangelogManager.VersionInfo;
-import org.lwjgl.input.Mouse;
 
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 
 public class GuiChangelog extends Gui{
 
@@ -45,7 +36,7 @@ public class GuiChangelog extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g){
         super.render(game, manager, g);
 
         Changelog changelog = ChangelogManager.getChangelog();
@@ -95,7 +86,7 @@ public class GuiChangelog extends Gui{
             }
 
             float scroll = 10F;
-            int mouse = Mouse.getDWheel();
+            int mouse = game.getInput().getMouseWheel();
             if(mouse > 0){
                 if(this.scrollAmount < 0F){
                     this.scrollAmount += scroll;

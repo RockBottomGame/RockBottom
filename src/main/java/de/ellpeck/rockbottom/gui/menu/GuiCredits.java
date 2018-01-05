@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IGraphics;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -70,7 +70,7 @@ public class GuiCredits extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IGraphics g){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g){
         float y = this.renderY;
         for(String s : this.credits){
             manager.getFont().drawString(20, y, s, 0.45F);

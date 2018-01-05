@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.log;
 
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import org.newdawn.slick.util.Log;
 
 import java.io.File;
 import java.util.Locale;
@@ -51,8 +50,6 @@ public final class Logging{
         catch(Exception e){
             mainLogger.log(Level.SEVERE, "Could not initialize logger file saving", e);
         }
-
-        Log.setLogSystem(new SlickLogWrapper());
     }
 
     private static Level getLogLevel(String level){

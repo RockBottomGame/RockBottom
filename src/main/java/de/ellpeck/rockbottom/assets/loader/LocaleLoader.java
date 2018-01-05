@@ -27,7 +27,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
     @Override
     public Locale loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         String resPath = path+element.getAsString();
-        Locale locale = this.fromStream(AssetManager.getResource(resPath), elementName);
+        Locale locale = this.fromStream(AssetManager.getResourceAsStream(resPath), elementName);
 
         for(Locale asset : manager.getAllOfType(Locale.class).values()){
             if(this.merge(asset, locale)){

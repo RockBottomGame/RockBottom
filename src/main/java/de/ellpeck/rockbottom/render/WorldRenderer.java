@@ -55,13 +55,13 @@ public class WorldRenderer{
         this.addClouds(Util.RANDOM.nextInt(5)+3, true);
     }
 
-    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IGraphics g, World world, EntityPlayer player, InteractionManager input){
+    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, World world, EntityPlayer player, InteractionManager input){
         float scale = g.getWorldScale();
         float skylightMod = world.getSkylightModifier(false);
 
         int skyLight = (int)(skylightMod*(SKY_COLORS.length-1));
         int color = SKY_COLORS[skyLight];
-        g.backgroundColor(color);
+        //TODO Set sky color here somehow (maybe fill a rectangle with it?)
 
         double width = g.getWidthInWorld();
         double height = g.getHeightInWorld();
@@ -101,8 +101,7 @@ public class WorldRenderer{
             }
         }
 
-        g.pushMatrix();
-        g.scale(g.getWorldScale(), g.getWorldScale());
+        g.setScale(scale, scale);
 
         entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
@@ -131,13 +130,13 @@ public class WorldRenderer{
                         int x = Util.toWorldPos(gridX);
                         int y = Util.toWorldPos(gridY);
 
-                        g.drawRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 1F/scale, Colors.GREEN);
+                        g.addEmptyRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 1F/scale, Colors.GREEN);
                     }
                 }
             }
         }
 
-        g.popMatrix();
+        g.setScale(1F, 1F);
 
         for(int gridX = minX; gridX <= maxX; gridX++){
             for(int gridY = minY; gridY <= maxY; gridY++){
@@ -150,7 +149,7 @@ public class WorldRenderer{
 
     }
 
-    private void renderChunk(IGameInstance game, IAssetManager manager, IGraphics g, InteractionManager input, IWorld world, IChunk chunk, float transX, float transY, float scale, List<TileLayer> layers, boolean foreground){
+    private void renderChunk(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, float transX, float transY, float scale, List<TileLayer> layers, boolean foreground){
         int chunkX = chunk.getX();
         int chunkY = chunk.getY();
 
@@ -180,7 +179,7 @@ public class WorldRenderer{
         }
     }
 
-    private void renderLayer(IGameInstance game, IAssetManager manager, IGraphics g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float transX, float transY, float scale, int[] light, boolean foreground){
+    private void renderLayer(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float transX, float transY, float scale, int[] light, boolean foreground){
         if(layer.isVisible(game, game.getPlayer(), chunk, x, y, foreground)){
             IApiHandler api = RockBottomAPI.getApiHandler();
             TileState state = chunk.getState(layer, x, y);
@@ -222,9 +221,9 @@ public class WorldRenderer{
         }
     }
 
-    private void renderSky(IGameInstance game, IAssetManager manager, IGraphics g, IWorld world, float skylightMod, double width, double height){
-        g.pushMatrix();
-        g.scale(g.getWorldScale(), g.getWorldScale());
+    private void renderSky(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, float skylightMod, double width, double height){
+        float scale = g.getWorldScale();
+        g.setScale(scale, scale);
 
         int time = world.getWorldInfo().currentWorldTime;
         float worldScale = game.getSettings().renderScale;
@@ -244,7 +243,7 @@ public class WorldRenderer{
 
             int starColor = Colors.multiplyA(Colors.WHITE, starAlpha);
             for(Pos2 pos : this.starMap){
-                g.fillRect((float)((pos.getX()/100D)*width), (float)((pos.getY()/100D)*height), 0.1F, 0.1F, starColor);
+                g.addFilledRect((float)((pos.getX()/100D)*width), (float)((pos.getY()/100D)*height), 0.1F, 0.1F, starColor);
             }
         }
 
@@ -267,7 +266,7 @@ public class WorldRenderer{
             cloud.render(manager, width, height, skylightMod);
         }
 
-        g.popMatrix();
+        g.setScale(1F, 1F);
     }
 
     public void update(){

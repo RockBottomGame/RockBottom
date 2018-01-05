@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
+import de.ellpeck.rockbottom.api.render.engine.IDisposable;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -18,10 +19,11 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
-import de.ellpeck.rockbottom.assets.sound.EmptySound;
-import de.ellpeck.rockbottom.assets.tex.EmptyTexture;
+import de.ellpeck.rockbottom.assets.stub.EmptyShaderProgram;
+import de.ellpeck.rockbottom.assets.stub.EmptySound;
+import de.ellpeck.rockbottom.assets.stub.EmptyTexture;
 import de.ellpeck.rockbottom.assets.tex.ImageBuffer;
-import de.ellpeck.rockbottom.assets.tex.RenderedTexture;
+import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
 import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
@@ -29,21 +31,17 @@ import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
 import de.ellpeck.rockbottom.gui.menu.background.BlankTheme;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.InternalTextureLoader;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-public class AssetManager implements IAssetManager{
+public class AssetManager implements IAssetManager, IDisposable{
 
     static{
         new AnimationLoader().register();
@@ -51,6 +49,7 @@ public class AssetManager implements IAssetManager{
         new LocaleLoader().register();
         new SoundLoader().register();
         new TextureLoader().register();
+        new ShaderLoader().register();
 
         RockBottomAPI.SPECIAL_CURSORS.register(0, new CursorPointer());
         RockBottomAPI.SPECIAL_CURSORS.register(1, new CursorFinger());
@@ -62,7 +61,8 @@ public class AssetManager implements IAssetManager{
 
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
     private final List<ISpecialCursor> sortedCursors = new ArrayList<>();
-    private final Map<ISpecialCursor, Cursor> cursors = new HashMap<>();
+    //TODO Figure out cursors
+    //private final Map<ISpecialCursor, Cursor> cursors = new HashMap<>();
     private ISound missingSound;
     private ITexture missingTexture;
     private Locale missingLocale;
@@ -71,12 +71,19 @@ public class AssetManager implements IAssetManager{
     private Locale currentLocale;
     private Locale defaultLocale;
     private IFont currentFont;
+    private IShaderProgram missingShader;
 
-    public static InputStream getResource(String s){
+    public static InputStream getResourceAsStream(String s){
         return AssetManager.class.getResourceAsStream(s);
     }
 
+    public static URL getResource(String s){
+        return AssetManager.class.getResource(s);
+    }
+
     public void load(RockBottom game){
+        this.dispose();
+
         if(!this.assets.isEmpty()){
             this.assets.clear();
         }
@@ -103,17 +110,18 @@ public class AssetManager implements IAssetManager{
                 }
             }
 
-            this.missingTexture = new RenderedTexture(InternalTextureLoader.get().getTexture(buffer, GL11.GL_NEAREST));
+            this.missingTexture = new Texture(2, 2, buffer.getRGBA());
         }
-        catch(IOException e){
+        catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't generate missing texture!", e);
-            this.missingTexture = new RenderedTexture(new EmptyTexture());
+            this.missingTexture = new EmptyTexture();
         }
 
         this.missingSound = new EmptySound();
         this.missingLocale = new Locale("fallback", new HashMap<>());
         this.missingFont = new Font("fallback", this.missingTexture, 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0))));
         this.missingAnimation = new Animation(this.missingTexture, 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F}))));
+        this.missingShader = new EmptyShaderProgram();
 
         RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ITexture.class).size()+" texture resources!");
         RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ISound.class).size()+" sound resources!");
@@ -127,9 +135,9 @@ public class AssetManager implements IAssetManager{
     }
 
     public void loadCursors(){
-        if(!this.cursors.isEmpty()){
+        /*if(!this.cursors.isEmpty()){
             this.cursors.clear();
-        }
+        }*/
         if(!this.sortedCursors.isEmpty()){
             this.sortedCursors.clear();
         }
@@ -140,8 +148,8 @@ public class AssetManager implements IAssetManager{
         for(ISpecialCursor cursor : this.sortedCursors){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
-                int width = (int)texture.getWidth();
-                int height = (int)texture.getHeight();
+                int width = texture.getWidth();
+                int height = texture.getHeight();
 
                 ByteBuffer buf = BufferUtils.createByteBuffer(width*height*4);
 
@@ -158,7 +166,7 @@ public class AssetManager implements IAssetManager{
 
                 buf.flip();
 
-                this.cursors.put(cursor, new Cursor(width, height, cursor.getHotspotX(), height-1-cursor.getHotspotY(), 1, buf.asIntBuffer(), null));
+                //this.cursors.put(cursor, new Cursor(width, height, cursor.getHotspotX(), height-1-cursor.getHotspotY(), 1, buf.asIntBuffer(), null));
             }
             catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "Could not load mouse cursor "+cursor, e);
@@ -170,10 +178,10 @@ public class AssetManager implements IAssetManager{
     public void setCursor(IGameInstance game, ISpecialCursor cursor){
         try{
             if(!game.getSettings().hardwareCursor){
-                Mouse.setNativeCursor(this.cursors.get(cursor));
+                //Mouse.setNativeCursor(this.cursors.get(cursor));
             }
             else{
-                Mouse.setNativeCursor(null);
+                //Mouse.setNativeCursor(null);
             }
 
             RockBottomAPI.logger().config("Setting cursor to "+cursor);
@@ -189,7 +197,6 @@ public class AssetManager implements IAssetManager{
 
         for(Entry<IResourceName, IAsset> entry : this.assets.entrySet()){
             IAsset asset = entry.getValue();
-
             if(type.isAssignableFrom(asset.getClass())){
                 assets.put(entry.getKey(), (T)asset);
             }
@@ -204,7 +211,7 @@ public class AssetManager implements IAssetManager{
             if(path != null && !path.isEmpty()){
                 int prevAmount = this.assets.size();
 
-                InputStream stream = getResource(path+"/assets.json");
+                InputStream stream = getResourceAsStream(path+"/assets.json");
                 if(stream != null){
                     try{
                         InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8);
@@ -247,7 +254,12 @@ public class AssetManager implements IAssetManager{
         try{
             Map<IResourceName, IAsset> special = loader.dealWithSpecialCases(this, name, path, element, elementName, mod);
             if(special != null && !special.isEmpty()){
-                this.assets.putAll(special);
+                for(Map.Entry<IResourceName, IAsset> entry : special.entrySet()){
+                    IAsset asset = entry.getValue();
+                    if(asset != null){
+                        this.assets.put(entry.getKey(), asset);
+                    }
+                }
             }
             else{
                 if("*".equals(elementName)){
@@ -307,6 +319,11 @@ public class AssetManager implements IAssetManager{
     }
 
     @Override
+    public IShaderProgram getShaderProgram(IResourceName path){
+        return this.getAssetWithFallback(path.addPrefix("shader."), this.missingShader);
+    }
+
+    @Override
     public Locale getLocale(IResourceName path){
         return this.getAssetWithFallback(path.addPrefix("loc."), this.missingLocale);
     }
@@ -343,6 +360,11 @@ public class AssetManager implements IAssetManager{
 
     @Override
     public InputStream getResourceStream(String s){
+        return getResourceAsStream(s);
+    }
+
+    @Override
+    public URL getResourceURL(String s){
         return getResource(s);
     }
 
@@ -359,10 +381,23 @@ public class AssetManager implements IAssetManager{
     @Override
     public ISpecialCursor pickCurrentCursor(IGameInstance game){
         for(ISpecialCursor cursor : this.sortedCursors){
-            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getGraphics(), game.getGuiManager(), game.getInteractionManager())){
+            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getRenderer(), game.getGuiManager(), game.getInteractionManager())){
                 return cursor;
             }
         }
         return null;
+    }
+
+    @Override
+    public void dispose(){
+        if(!this.assets.isEmpty()){
+            for(IAsset asset : this.assets.values()){
+                asset.dispose();
+            }
+        }
+
+        if(this.missingTexture != null){
+            this.missingTexture.dispose();
+        }
     }
 }
