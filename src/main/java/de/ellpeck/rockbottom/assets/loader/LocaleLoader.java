@@ -70,16 +70,11 @@ public class LocaleLoader implements IAssetLoader<Locale>{
                     if("*".equals(key)){
                         newName = name.substring(0, name.length()-1);
                     }
+                    else if("*.".equals(key)){
+                        newName = name;
+                    }
                     else{
-                        //TODO Deprecated check, the stuff in the if should be the "actual" code
-                        if(name.endsWith(".")){
-                            newName = name+key;
-                        }
-                        else{
-                            newName = name+"."+key;
-
-                            RockBottomAPI.logger().warning("Locale with name "+localeName+" is still using dotless notation in entry "+newName+"! It should be changed to dotted notation where every category ends with a . while every actual entry doesn't!");
-                        }
+                        newName = name+key;
                     }
                 }
 

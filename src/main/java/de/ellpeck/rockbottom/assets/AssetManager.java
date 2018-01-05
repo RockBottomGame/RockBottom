@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.assets;
 import com.google.common.base.Charsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -254,7 +253,7 @@ public class AssetManager implements IAssetManager{
                 if("*".equals(elementName)){
                     name = name.substring(0, name.length()-1);
                 }
-                else{
+                else if(!"*.".equals(elementName)){
                     name += elementName;
                 }
 
