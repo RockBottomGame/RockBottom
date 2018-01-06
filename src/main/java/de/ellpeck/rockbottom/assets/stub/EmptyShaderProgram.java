@@ -81,6 +81,16 @@ public class EmptyShaderProgram implements IShaderProgram{
     }
 
     @Override
+    public void setComponentsPerVertex(int components){
+
+    }
+
+    @Override
+    public int getComponentsPerVertex(){
+        return 0;
+    }
+
+    @Override
     public void dispose(){
 
     }

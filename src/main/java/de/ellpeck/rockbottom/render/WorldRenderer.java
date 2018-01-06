@@ -193,7 +193,7 @@ public class WorldRenderer{
                         renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
                         if(input.breakingLayer == layer){
-                            this.doBreakAnimation(input, manager, world, x, y, state, layer, transX, transY, scale);
+                            this.doBreakAnimation(input, manager, x, y, transX, transY, scale);
                         }
                     }
 
@@ -203,20 +203,18 @@ public class WorldRenderer{
                     renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
                     if(input.breakingLayer == layer){
-                        this.doBreakAnimation(input, manager, world, x, y, state, layer, transX, transY, scale);
+                        this.doBreakAnimation(input, manager, x, y, transX, transY, scale);
                     }
                 }
             }
         }
     }
 
-    private void doBreakAnimation(InteractionManager input, IAssetManager manager, IWorld world, int tileX, int tileY, TileState state, TileLayer layer, float transX, float transY, float scale){
+    private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY, float scale){
         if(input.breakProgress > 0){
             if(tileX == input.breakTileX && tileY == input.breakTileY){
-                if(state.getTile().shouldShowBreakAnimation(world, tileX, tileY, layer)){
-                    ITexture brk = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
-                    brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
-                }
+                ITexture brk = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
+                brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
             }
         }
     }

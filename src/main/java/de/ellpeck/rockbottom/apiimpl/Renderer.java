@@ -23,7 +23,6 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
 import de.ellpeck.rockbottom.assets.tex.Texture;
-import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.render.engine.VertexArrayObject;
 import de.ellpeck.rockbottom.render.engine.VertexBufferObject;
 import org.lwjgl.opengl.GL11;
@@ -37,7 +36,7 @@ import java.util.List;
 public class Renderer implements IRenderer{
 
     private static final IResourceName SLOT_NAME = RockBottomAPI.createInternalRes("gui.slot");
-    private final RockBottom game;
+    private final IGameInstance game;
 
     private final VertexBufferObject vbo;
     private final VertexArrayObject vao;
@@ -46,6 +45,7 @@ public class Renderer implements IRenderer{
     private IShaderProgram defaultProgram;
     private IShaderProgram program;
     private int vertexAmount;
+    private int componentCounter;
     private boolean isDrawing;
     private ITexture texture;
     private int backgroundColor;
@@ -77,7 +77,7 @@ public class Renderer implements IRenderer{
     private int lastFlushes;
     private int flushCounter;
 
-    public Renderer(RockBottom game){
+    public Renderer(IGameInstance game){
         this.game = game;
 
         this.vao = new VertexArrayObject();
@@ -170,7 +170,7 @@ public class Renderer implements IRenderer{
     @Override
     public void addVertex(float x, float y, int color, float u, float v){
         if(this.isDrawing){
-            if(this.vertices.remaining() < 8*3 && this.vertexAmount%3 == 0){
+            if(this.vertices.remaining() < this.program.getComponentsPerVertex()*3 && this.vertexAmount%3 == 0){
                 this.flush();
             }
 
@@ -200,15 +200,27 @@ public class Renderer implements IRenderer{
                 theY *= this.scaleY;
             }
 
-            this.vertices.put(theX).put(theY)
+            this.put(theX).put(theY)
                     .put(Colors.getR(color)).put(Colors.getG(color)).put(Colors.getB(color)).put(Colors.getA(color))
                     .put(u).put(v);
-
-            this.vertexAmount++;
         }
         else{
             throw new RuntimeException("Can't add vertices to a renderer while it's not drawing!");
         }
+    }
+
+    @Override
+    public IRenderer put(float f){
+        this.vertices.put(f);
+
+        this.componentCounter++;
+        if(this.componentCounter >= this.program.getComponentsPerVertex()){
+            this.vertexAmount++;
+
+            this.componentCounter = 0;
+        }
+
+        return this;
     }
 
     @Override
@@ -247,9 +259,6 @@ public class Renderer implements IRenderer{
         if(this.vertexAmount > 0){
             if(this.texture != null){
                 this.texture.bind();
-            }
-            else{
-                this.unbindTexture();
             }
 
             this.vertices.flip();
@@ -538,6 +547,13 @@ public class Renderer implements IRenderer{
     @Override
     public IVBO createVBO(boolean isStatic){
         return new VertexBufferObject(isStatic);
+    }
+
+    @Override
+    public IRenderer createRenderer(){
+        Renderer renderer = new Renderer(RockBottomAPI.getGame());
+        renderer.init();
+        return renderer;
     }
 
     @Override

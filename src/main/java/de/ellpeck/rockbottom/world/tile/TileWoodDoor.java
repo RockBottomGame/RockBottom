@@ -82,11 +82,6 @@ public class TileWoodDoor extends TileBasic{
     }
 
     @Override
-    public boolean shouldShowBreakAnimation(IWorld world, int x, int y, TileLayer layer){
-        return world.getState(layer, x, y).get(StaticTileProps.OPEN);
-    }
-
-    @Override
     public boolean isFullTile(){
         return false;
     }

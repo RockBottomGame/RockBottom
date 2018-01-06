@@ -17,6 +17,7 @@ public class ShaderProgram implements IShaderProgram{
     private final int id;
     private final Map<String, Integer> attributeLocations = new HashMap<>();
     private final Map<String, Integer> uniformLocations = new HashMap<>();
+    private int componentsPerVertex;
 
     public ShaderProgram(Shader vertex, Shader fragment){
         this.id = GL20.glCreateProgram();
@@ -37,6 +38,8 @@ public class ShaderProgram implements IShaderProgram{
         this.pointVertexAttribute(true, "position", 2, 8*floatSize, 0);
         this.pointVertexAttribute(true, "color", 4, 8*floatSize, 2*floatSize);
         this.pointVertexAttribute(true, "texCoord", 2, 8*floatSize, 6*floatSize);
+
+        this.setComponentsPerVertex(8);
 
         this.setUniform("model", new Matrix4f());
         this.setUniform("view", new Matrix4f());
@@ -135,6 +138,16 @@ public class ShaderProgram implements IShaderProgram{
     @Override
     public int getId(){
         return this.id;
+    }
+
+    @Override
+    public void setComponentsPerVertex(int components){
+        this.componentsPerVertex = components;
+    }
+
+    @Override
+    public int getComponentsPerVertex(){
+        return this.componentsPerVertex;
     }
 
     @Override
