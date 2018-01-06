@@ -169,58 +169,58 @@ public class Renderer implements IRenderer{
 
     @Override
     public void addVertex(float x, float y, int color, float u, float v){
-        if(this.isDrawing){
-            float theX;
-            float theY;
+        float theX;
+        float theY;
 
-            if(this.rotation != 0F){
-                theX = x*this.cosRot-y*this.sinRot;
-                theY = x*this.sinRot+y*this.cosRot;
-            }
-            else{
-                theX = x;
-                theY = y;
-            }
-
-            if(this.translationX != 0F){
-                theX += this.translationX;
-            }
-            if(this.translationY != 0F){
-                theY += this.translationY;
-            }
-
-            if(this.scaleX != 1F){
-                theX *= this.scaleX;
-            }
-            if(this.scaleY != 1F){
-                theY *= this.scaleY;
-            }
-
-            this.put(theX).put(theY)
-                    .put(Colors.getR(color)).put(Colors.getG(color)).put(Colors.getB(color)).put(Colors.getA(color))
-                    .put(u).put(v);
+        if(this.rotation != 0F){
+            theX = x*this.cosRot-y*this.sinRot;
+            theY = x*this.sinRot+y*this.cosRot;
         }
         else{
-            throw new RuntimeException("Can't add vertices to a renderer while it's not drawing!");
+            theX = x;
+            theY = y;
         }
+
+        if(this.translationX != 0F){
+            theX += this.translationX;
+        }
+        if(this.translationY != 0F){
+            theY += this.translationY;
+        }
+
+        if(this.scaleX != 1F){
+            theX *= this.scaleX;
+        }
+        if(this.scaleY != 1F){
+            theY *= this.scaleY;
+        }
+
+        this.put(theX).put(theY)
+                .put(Colors.getR(color)).put(Colors.getG(color)).put(Colors.getB(color)).put(Colors.getA(color))
+                .put(u).put(v);
     }
 
     @Override
     public IRenderer put(float f){
-        if(this.vertices.remaining() < this.program.getComponentsPerVertex()*3 && this.vertexAmount%3 == 0){
-            this.flush();
+        if(this.isDrawing){
+            if(this.vertices.remaining() < this.program.getComponentsPerVertex()*3 && this.vertexAmount%3 == 0){
+                this.flush();
+            }
+
+            this.vertices.put(f);
+
+            this.componentCounter++;
+            if(this.componentCounter >= this.program.getComponentsPerVertex()){
+                this.vertexAmount++;
+
+                this.componentCounter = 0;
+            }
+
+            return this;
         }
-
-        this.vertices.put(f);
-
-        this.componentCounter++;
-        if(this.componentCounter >= this.program.getComponentsPerVertex()){
-            this.vertexAmount++;
-
-            this.componentCounter = 0;
+        else{
+            throw new RuntimeException("Can't add vertices to a renderer while it's not drawing!");
         }
-
-        return this;
     }
 
     @Override
