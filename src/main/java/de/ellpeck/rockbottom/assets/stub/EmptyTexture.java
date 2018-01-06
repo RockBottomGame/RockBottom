@@ -14,7 +14,7 @@ public class EmptyTexture implements ITexture{
     private final ByteBuffer pixelData = BufferUtil.newByteBuffer(0);
 
     @Override
-    public void bind(TextureBank bank){
+    public void bind(TextureBank bank, boolean revertAfterBind){
 
     }
 
@@ -49,7 +49,7 @@ public class EmptyTexture implements ITexture{
     }
 
     @Override
-    public void unbind(TextureBank bank){
+    public void unbind(TextureBank bank, boolean revertAfterUnbind){
 
     }
 
