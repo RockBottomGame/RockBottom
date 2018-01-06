@@ -9,21 +9,27 @@ import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.glfw.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class InputHandler implements IInputHandler{
 
     private final RockBottom game;
 
+    private final List<Integer> keysToProcess = new ArrayList<>();
+    private final List<Integer> mouseInputsToProcess = new ArrayList<>();
+    private final List<Integer> charsToProcess = new ArrayList<>();
+
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final Set<Integer> pressedMouse = new HashSet<>();
 
-    private boolean keyboardRepeats;
     private boolean isMouseInWindow = true;
     private int mouseX;
     private int mouseY;
-    private int mouseWheel;
+    private int nextMouseWheelDelta;
+    private int mouseWheelDelta;
 
     public InputHandler(RockBottom game){
         this.game = game;
@@ -38,34 +44,28 @@ public class InputHandler implements IInputHandler{
         GLFW.glfwSetScrollCallback(game.getWindow(), new GLFWScrollCallback(){
             @Override
             public void invoke(long window, double xOffset, double yOffset){
-                game.enqueueAction((game, o) -> InputHandler.this.mouseWheel = (int)yOffset, null);
+                InputHandler.this.nextMouseWheelDelta = (int)yOffset;
             }
         });
         GLFW.glfwSetKeyCallback(game.getWindow(), new GLFWKeyCallback(){
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods){
-                if(action == GLFW.GLFW_PRESS || (InputHandler.this.keyboardRepeats && action == GLFW.GLFW_REPEAT)){
-                    game.enqueueAction((game, o) -> {
-                        InputHandler.this.pressedKeys.add(key);
-                        InputHandler.this.keyPressed(key);
-                    }, null);
+                if(action == GLFW.GLFW_PRESS){
+                    InputHandler.this.keysToProcess.add(key);
                 }
             }
         });
         GLFW.glfwSetCharCallback(game.getWindow(), new GLFWCharCallback(){
             @Override
             public void invoke(long window, int codepoint){
-                game.enqueueAction((game, o) -> InputHandler.this.charInput(codepoint, Character.toChars(codepoint)), null);
+                InputHandler.this.charsToProcess.add(codepoint);
             }
         });
         GLFW.glfwSetMouseButtonCallback(game.getWindow(), new GLFWMouseButtonCallback(){
             @Override
             public void invoke(long window, int button, int action, int mods){
                 if(action == GLFW.GLFW_PRESS){
-                    game.enqueueAction((game, o) -> {
-                        InputHandler.this.pressedMouse.add(button);
-                        InputHandler.this.mousePressed(button);
-                    }, null);
+                    InputHandler.this.mouseInputsToProcess.add(button);
                 }
             }
         });
@@ -77,65 +77,87 @@ public class InputHandler implements IInputHandler{
         });
     }
 
-    public void reset(){
+    public void update(){
         this.pressedKeys.clear();
         this.pressedMouse.clear();
-        this.mouseWheel = 0;
+
+        this.mouseWheelDelta = this.nextMouseWheelDelta;
+        this.nextMouseWheelDelta = 0;
+
+        for(int code : this.charsToProcess){
+            this.charInput(code, Character.toChars(code));
+        }
+
+        for(int key : this.keysToProcess){
+            if(!this.keyPressed(key)){
+                this.pressedKeys.add(key);
+            }
+        }
+
+        for(int button : this.mouseInputsToProcess){
+            if(!this.mousePressed(button)){
+                this.pressedMouse.add(button);
+            }
+        }
+
+        this.keysToProcess.clear();
+        this.charsToProcess.clear();
+        this.mouseInputsToProcess.clear();
     }
 
-    protected void mousePressed(int button){
-        this.game.getInteractionManager().onMouseAction(this.game, button);
+    protected boolean mousePressed(int button){
+        return this.game.getInteractionManager().onMouseAction(this.game, button);
     }
 
-    protected void keyPressed(int key){
+    protected boolean keyPressed(int key){
         if(this.game.getGuiManager().getGui() == null){
             if(Settings.KEY_MENU.isKey(key)){
                 this.game.openIngameMenu();
-                return;
+                return true;
             }
             else if(Settings.KEY_INVENTORY.isKey(key)){
                 AbstractEntityPlayer player = this.game.getPlayer();
                 player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
-                return;
+                return true;
             }
             else if(Settings.KEY_CHAT.isKey(key) && RockBottomAPI.getNet().isActive()){
                 this.game.getGuiManager().openGui(new GuiChat());
-                return;
+                return true;
             }
         }
 
         if(key == GLFW.GLFW_KEY_F1){
             this.game.renderer.isDebug = !this.game.renderer.isDebug;
-            return;
+            return true;
         }
         else if(key == GLFW.GLFW_KEY_F3){
             this.game.assetManager.load(this.game);
             this.game.renderer.init();
             this.game.assetManager.loadCursors();
-            return;
+            return true;
         }
         else if(key == GLFW.GLFW_KEY_F4){
             this.game.renderer.isGuiDebug = !this.game.renderer.isGuiDebug;
-            return;
+            return true;
         }
         else if(key == GLFW.GLFW_KEY_F5){
             this.game.renderer.isItemInfoDebug = !this.game.renderer.isItemInfoDebug;
-            return;
+            return true;
         }
         else if(key == GLFW.GLFW_KEY_F6){
             this.game.renderer.isChunkBorderDebug = !this.game.renderer.isChunkBorderDebug;
-            return;
+            return true;
         }
         else if(Settings.KEY_SCREENSHOT.isKey(key)){
             this.game.takeScreenshot();
-            return;
+            return true;
         }
 
-        this.game.getInteractionManager().onKeyPressed(this.game, key);
+        return this.game.getInteractionManager().onKeyPressed(this.game, key);
     }
 
-    protected void charInput(int codePoint, char[] characters){
-        this.game.getInteractionManager().onCharInput(this.game, codePoint, characters);
+    protected boolean charInput(int codePoint, char[] characters){
+        return this.game.getInteractionManager().onCharInput(this.game, codePoint, characters);
     }
 
     @Override
@@ -164,13 +186,8 @@ public class InputHandler implements IInputHandler{
     }
 
     @Override
-    public void setKeyboardRepeatEvents(boolean should){
-        this.keyboardRepeats = should;
-    }
-
-    @Override
     public int getMouseWheelChange(){
-        return this.mouseWheel;
+        return this.mouseWheelDelta;
     }
 
     @Override

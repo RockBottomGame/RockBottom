@@ -318,12 +318,15 @@ public class InteractionManager implements IInteractionManager{
         }
     }
 
-    public void onMouseAction(RockBottom game, int button){
-        game.getGuiManager().onMouseAction(game, button, game.getRenderer().getMouseInGuiX(), game.getRenderer().getMouseInGuiY());
+    public boolean onMouseAction(RockBottom game, int button){
+        return game.getGuiManager().onMouseAction(game, button, game.getRenderer().getMouseInGuiX(), game.getRenderer().getMouseInGuiY());
     }
 
-    public void onKeyPressed(RockBottom game, int button){
-        if(!game.getGuiManager().onKeyPressed(game, button)){
+    public boolean onKeyPressed(RockBottom game, int button){
+        if(game.getGuiManager().onKeyPressed(game, button)){
+            return true;
+        }
+        else{
             if(game.getWorld() != null && game.getGuiManager().getGui() == null){
                 for(int i = 0; i < Settings.KEYS_ITEM_SELECTION.length; i++){
                     if(Settings.KEYS_ITEM_SELECTION[i].isKey(button)){
@@ -333,15 +336,16 @@ public class InteractionManager implements IInteractionManager{
                             RockBottomAPI.getNet().sendToServer(new PacketHotbar(game.getPlayer().getUniqueId(), i));
                         }
 
-                        break;
+                        return true;
                     }
                 }
             }
+            return false;
         }
     }
 
-    public void onCharInput(RockBottom game, int codePoint, char[] characters){
-        game.getGuiManager().onCharInput(game, codePoint, characters);
+    public boolean onCharInput(RockBottom game, int codePoint, char[] characters){
+        return game.getGuiManager().onCharInput(game, codePoint, characters);
     }
 
     @Override

@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -25,6 +26,9 @@ public final class DebugRenderer{
         list.add("Display Ratio: "+g.getDisplayRatio());
         list.add("Gui Scale: "+g.getGuiScale());
         list.add("World Scale: "+g.getWorldScale());
+        list.add("");
+
+        list.add("Texture Binds: "+Texture.binds);
         list.add("Renderer Flushes: "+g.getFlushes());
         list.add("");
 

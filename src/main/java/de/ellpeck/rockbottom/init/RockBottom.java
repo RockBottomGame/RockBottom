@@ -310,6 +310,8 @@ public class RockBottom extends AbstractGame{
 
     @Override
     protected void update(){
+        this.input.update();
+
         if(this.world != null && this.player != null){
             Gui gui = this.guiManager.getGui();
             if(gui == null || !gui.doesPauseGame() || RockBottomAPI.getNet().isActive()){
@@ -331,8 +333,6 @@ public class RockBottom extends AbstractGame{
 
         this.guiManager.update(this);
         this.toaster.update();
-
-        this.input.reset();
     }
 
     @Override
@@ -440,6 +440,8 @@ public class RockBottom extends AbstractGame{
             this.renderer.begin();
             this.render();
             this.renderer.end();
+
+            Texture.binds = 0;
 
             GLFW.glfwSwapBuffers(this.windowId);
             GLFW.glfwPollEvents();

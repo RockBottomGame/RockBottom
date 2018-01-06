@@ -23,6 +23,7 @@ import java.util.Random;
 
 public class Texture implements ITexture{
 
+    public static int binds;
     private static Texture boundTexture;
 
     private Random rand;
@@ -235,6 +236,8 @@ public class Texture implements ITexture{
         if(boundTexture != this){
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id);
             boundTexture = this;
+
+            binds++;
         }
     }
 

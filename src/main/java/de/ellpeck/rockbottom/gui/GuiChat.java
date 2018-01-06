@@ -115,8 +115,6 @@ public class GuiChat extends Gui{
 
     @Override
     public void onClosed(IGameInstance game){
-        super.onClosed(game);
-
         isSelectorOpen = this.selector.isMenuOpen();
     }
 
