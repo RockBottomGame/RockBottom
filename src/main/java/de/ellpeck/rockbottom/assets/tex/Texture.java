@@ -234,14 +234,17 @@ public class Texture implements ITexture{
     @Override
     public void bind(){
         if(boundTexture != this){
-            this.forceBind();
+            this.forceBind(true);
         }
     }
 
     @Override
-    public void forceBind(){
+    public void forceBind(boolean overrideBound){
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id);
-        boundTexture = this;
+
+        if(overrideBound){
+            boundTexture = this;
+        }
 
         binds++;
     }
@@ -280,18 +283,21 @@ public class Texture implements ITexture{
     @Override
     public void unbind(){
         if(boundTexture == this){
-            this.forceUnbind();
+            this.forceUnbind(true);
         }
     }
 
     @Override
-    public void forceUnbind(){
-        unbindAll();
+    public void forceUnbind(boolean overrideBound){
+        unbindAll(overrideBound);
     }
 
-    public static void unbindAll(){
+    public static void unbindAll(boolean overrideBound){
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        boundTexture = null;
+
+        if(overrideBound){
+            boundTexture = null;
+        }
     }
 
     @Override

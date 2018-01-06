@@ -18,6 +18,11 @@ public class EmptyTexture implements ITexture{
     }
 
     @Override
+    public void forceBind(boolean overrideBound){
+
+    }
+
+    @Override
     public void param(int param, int value){
 
     }
@@ -44,6 +49,11 @@ public class EmptyTexture implements ITexture{
 
     @Override
     public void unbind(){
+
+    }
+
+    @Override
+    public void forceUnbind(boolean overrideBound){
 
     }
 

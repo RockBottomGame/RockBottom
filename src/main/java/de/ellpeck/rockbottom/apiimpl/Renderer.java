@@ -521,7 +521,7 @@ public class Renderer implements IRenderer{
 
     @Override
     public void unbindTexture(){
-        Texture.unbindAll();
+        Texture.unbindAll(true);
     }
 
     @Override
