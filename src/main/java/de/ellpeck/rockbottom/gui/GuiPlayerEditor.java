@@ -135,10 +135,11 @@ public class GuiPlayerEditor extends Gui{
     }
 
     @Override
-    public boolean onKeyboardAction(IGameInstance game, int button, char character){
-        if(!super.onKeyboardAction(game, button, character)){
+    public boolean onCharInput(IGameInstance game, int codePoint, char[] characters){
+        boolean did = false;
+        for(char c : characters){
             if(this.wiivIndex < WIIV_IS_COOL.length()){
-                if(WIIV_IS_COOL.charAt(this.wiivIndex) == character){
+                if(WIIV_IS_COOL.charAt(this.wiivIndex) == c){
                     this.wiivIndex++;
 
                     if(this.wiivIndex >= WIIV_IS_COOL.length()){
@@ -149,17 +150,14 @@ public class GuiPlayerEditor extends Gui{
                         this.init(game);
                     }
 
-                    return true;
+                    did = true;
                 }
                 else{
                     this.wiivIndex = 0;
                 }
             }
-            return false;
         }
-        else{
-            return true;
-        }
+        return did;
     }
 
     @Override

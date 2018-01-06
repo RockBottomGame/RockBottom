@@ -56,13 +56,7 @@ public class GuiGraphics extends Gui{
             game.setFullscreen(settings.fullscreen);
             return true;
         }, "button.fullscreen"));
-        this.components.add(new ComponentToggleButton(this, 154, 80, 150, 16, !settings.vsync, () -> {
-            settings.vsync = !settings.vsync;
-            //TODO Vsync?
-            //Display.setVSyncEnabled(settings.vsync);
-            return true;
-        }, "button.vsync"));
-        this.components.add(new ComponentToggleButton(this, 154, 100, 150, 16, !settings.smoothLighting, () -> {
+        this.components.add(new ComponentToggleButton(this, 154, 80, 150, 16, !settings.smoothLighting, () -> {
             settings.smoothLighting = !settings.smoothLighting;
             return true;
         }, "button.smooth_lighting"));

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -29,20 +30,24 @@ public class Texture implements ITexture{
     private List<ITexture> variations;
 
     private final int id;
-    private int width;
-    private int height;
+    private int textureWidth;
+    private int textureHeight;
+    private int renderWidth;
+    private int renderHeight;
+    private int renderOffsetX;
+    private int renderOffsetY;
     private ByteBuffer pixelData;
 
-    public Texture(int width, int height, ByteBuffer data){
+    public Texture(int textureWidth, int textureHeight, ByteBuffer data){
         this(GL11.GL_NEAREST);
-        this.width = width;
-        this.height = height;
+        this.textureWidth = textureWidth;
+        this.textureHeight = textureHeight;
         this.pixelData = data;
 
         this.init();
     }
 
-    public Texture(InputStream stream) throws IOException{
+    public Texture(InputStream stream) throws Exception{
         this(GL11.GL_NEAREST);
         this.load(stream);
     }
@@ -54,16 +59,28 @@ public class Texture implements ITexture{
         this.param(GL11.GL_TEXTURE_MAG_FILTER, filter);
     }
 
+    private Texture(int id, int textureWidth, int textureHeight, ByteBuffer pixelData){
+        this.id = id;
+        this.textureWidth = textureWidth;
+        this.textureHeight = textureHeight;
+        this.pixelData = pixelData;
+    }
+
     @Override
-    public Texture getSubTexture(float x, float y, float width, float height){
+    public Texture getSubTexture(int x, int y, int width, int height){
         return this.getSubTexture(x, y, width, height, true, true);
     }
 
     @Override
-    public Texture getSubTexture(float x, float y, float width, float height, boolean inheritVariations, boolean inheritData){
-        //TODO Sub textures
+    public Texture getSubTexture(int x, int y, int width, int height, boolean inheritVariations, boolean inheritData){
+        Texture sub = new Texture(this.getId(), this.textureWidth, this.textureHeight, this.pixelData);
 
-        /*if(inheritData){
+        sub.renderOffsetX = x;
+        sub.renderOffsetY = y;
+        sub.renderWidth = width;
+        sub.renderHeight = height;
+
+        if(inheritData){
             sub.setAdditionalData(this.additionalData);
         }
         if(inheritVariations){
@@ -74,9 +91,9 @@ public class Texture implements ITexture{
                 }
                 sub.setVariations(newVariations);
             }
-        }*/
+        }
 
-        return this;
+        return sub;
     }
 
     public void setAdditionalData(Map<String, JsonElement> data){
@@ -99,7 +116,7 @@ public class Texture implements ITexture{
 
     @Override
     public void draw(float x, float y, float scale){
-        this.draw(x, y, this.width*1F, this.height*1F);
+        this.draw(x, y, this.textureWidth*1F, this.textureHeight*1F);
     }
 
     @Override
@@ -114,12 +131,12 @@ public class Texture implements ITexture{
 
     @Override
     public void draw(float x, float y, float width, float height, int filter){
-        this.draw(x, y, x+width, y+height, 0, 0, this.width, this.height, null, filter);
+        this.draw(x, y, x+width, y+height, 0, 0, this.renderWidth, this.renderHeight, null, filter);
     }
 
     @Override
     public void draw(float x, float y, float width, float height, int[] light, int filter){
-        this.draw(x, y, x+width, y+height, 0, 0, this.width, this.height, light, filter);
+        this.draw(x, y, x+width, y+height, 0, 0, this.renderWidth, this.renderHeight, light, filter);
     }
 
     @Override
@@ -142,20 +159,23 @@ public class Texture implements ITexture{
         IRenderer renderer = RockBottomAPI.getGame().getRenderer();
         renderer.setTexture(this);
 
-        //TODO Add light-based coloring back
+        float u = (srcX+this.renderOffsetX)/this.textureWidth;
+        float v = (srcY+this.renderOffsetY)/this.textureHeight;
+        float u2 = (srcX2+this.renderOffsetX)/this.textureWidth;
+        float v2 = (srcY2+this.renderOffsetY)/this.textureHeight;
 
-        float u = srcX/this.width;
-        float v = srcY/this.height;
-        float u2 = srcX2/this.width;
-        float v2 = srcY2/this.height;
+        int topLeft = this.combineLight(light, TOP_LEFT, filter);
+        int bottomLeft = this.combineLight(light, BOTTOM_LEFT, filter);
+        int bottomRight = this.combineLight(light, BOTTOM_RIGHT, filter);
+        int topRight = this.combineLight(light, TOP_RIGHT, filter);
 
-        renderer.addVertex(x, y, filter, u, v);
-        renderer.addVertex(x, y2, filter, u, v2);
-        renderer.addVertex(x2, y2, filter, u2, v2);
+        renderer.addVertex(x, y, topLeft, u, v);
+        renderer.addVertex(x, y2, bottomLeft, u, v2);
+        renderer.addVertex(x2, y2, bottomRight, u2, v2);
 
-        renderer.addVertex(x, y, filter, u, v);
-        renderer.addVertex(x2, y2, filter, u2, v2);
-        renderer.addVertex(x2, y, filter, u2, v);
+        renderer.addVertex(x, y, topLeft, u, v);
+        renderer.addVertex(x2, y2, bottomRight, u2, v2);
+        renderer.addVertex(x2, y, topRight, u2, v);
     }
 
     private int combineLight(int[] light, int corner, int filter){
@@ -169,8 +189,8 @@ public class Texture implements ITexture{
 
     @Override
     public int getTextureColor(int x, int y){
-        //TODO Get texture colors
-        return 0;
+        int offset = (x+(y*this.textureWidth))*4;
+        return Colors.rgb(this.pixelData.get(offset), this.pixelData.get(offset+1), this.pixelData.get(offset+2), this.pixelData.get(offset+3));
     }
 
     @Override
@@ -205,7 +225,7 @@ public class Texture implements ITexture{
         }
     }
 
-    private void load(InputStream stream) throws IOException{
+    private void load(InputStream stream) throws Exception{
         byte[] input = ByteStreams.toByteArray(stream);
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);
@@ -217,11 +237,14 @@ public class Texture implements ITexture{
 
         this.pixelData = STBImage.stbi_load_from_memory(data, width, height, stack.mallocInt(1), 4);
         if(this.pixelData == null){
-            throw new IOException("Failed to load texture :\n"+STBImage.stbi_failure_reason());
+            throw new IOException("Failed to load texture:\n"+STBImage.stbi_failure_reason());
         }
 
-        this.width = width.get();
-        this.height = height.get();
+        this.textureWidth = width.get();
+        this.textureHeight = height.get();
+
+        this.renderWidth = this.textureWidth;
+        this.renderHeight = this.textureHeight;
 
         stack.pop();
 
@@ -238,7 +261,7 @@ public class Texture implements ITexture{
 
     private void init(){
         this.bind();
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.width, this.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, this.pixelData);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.textureWidth, this.textureHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, this.pixelData);
     }
 
     @Override
@@ -253,13 +276,13 @@ public class Texture implements ITexture{
     }
 
     @Override
-    public int getWidth(){
-        return this.width;
+    public int getTextureWidth(){
+        return this.textureWidth;
     }
 
     @Override
-    public int getHeight(){
-        return this.height;
+    public int getTextureHeight(){
+        return this.textureHeight;
     }
 
     @Override
@@ -283,5 +306,25 @@ public class Texture implements ITexture{
     public void dispose(){
         this.unbind();
         GL11.glDeleteTextures(this.id);
+    }
+
+    @Override
+    public int getRenderWidth(){
+        return this.renderWidth;
+    }
+
+    @Override
+    public int getRenderHeight(){
+        return this.renderHeight;
+    }
+
+    @Override
+    public int getRenderOffsetX(){
+        return this.renderOffsetX;
+    }
+
+    @Override
+    public int getRenderOffsetY(){
+        return this.renderOffsetY;
     }
 }

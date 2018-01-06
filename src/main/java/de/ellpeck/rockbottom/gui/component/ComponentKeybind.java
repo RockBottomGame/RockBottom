@@ -22,13 +22,11 @@ public class ComponentKeybind extends ComponentButton{
 
     @Override
     protected String getText(){
-        //TODO actually make this display the key's name rather than its id
-        String name = String.valueOf(this.bind.getKey());
-        return this.isSelected() ? "<?>" : name;
+        return this.isSelected() ? "<?>" : this.bind.getDisplayName();
     }
 
     @Override
-    public boolean onKeyboardAction(IGameInstance game, int button, char character){
+    public boolean onKeyPressed(IGameInstance game, int button){
         if(this.isSelected()){
             this.bind.setBind(button, false);
             this.gui.selectedKeybind = -1;
@@ -36,7 +34,7 @@ public class ComponentKeybind extends ComponentButton{
             return true;
         }
         else{
-            return super.onKeyboardAction(game, button, character);
+            return super.onKeyPressed(game, button);
         }
     }
 

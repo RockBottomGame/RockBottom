@@ -154,7 +154,7 @@ public class GuiChat extends Gui{
     }
 
     @Override
-    public boolean onKeyboardAction(IGameInstance game, int button, char character){
+    public boolean onKeyPressed(IGameInstance game, int button){
         if(button == GLFW.GLFW_KEY_ENTER){
             String text = this.inputField.getText();
 
@@ -205,7 +205,7 @@ public class GuiChat extends Gui{
                 return true;
             }
         }
-        return super.onKeyboardAction(game, button, character);
+        return super.onKeyPressed(game, button);
     }
 
     @Override

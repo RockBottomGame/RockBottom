@@ -57,8 +57,7 @@ public class MainMenuBackground{
 
     public void render(RockBottom game, IAssetManager manager, IRenderer g){
         int color = this.theme.getBackgroundColor();
-        //TODO Set background color for main menu here
-        /*g.backgroundColor(color);*/
+        g.backgroundColor(color);
 
         float tileSize = Math.max(g.getWidthInGui(), g.getHeightInGui())/(float)IMainMenuTheme.TILE_AMOUNT;
 

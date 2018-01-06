@@ -34,8 +34,8 @@ public class Font implements IFont{
         this.texture = texture;
         this.characters = characters;
 
-        this.charWidth = texture.getWidth()/widthInChars;
-        this.charHeight = texture.getHeight()/heightInChars;
+        this.charWidth = texture.getTextureWidth()/widthInChars;
+        this.charHeight = texture.getTextureHeight()/heightInChars;
     }
 
     public static Font fromStream(ITexture texture, InputStream infoStream, String name) throws Exception{
@@ -249,30 +249,19 @@ public class Font implements IFont{
                     y2 += boldness;
                 }
 
-                boolean italics = prop == FontProp.ITALICS;
-                boolean upsideDown = prop == FontProp.UPSIDE_DOWN;
-
-                if(italics || upsideDown){
-                    //TODO Change text based on italics and upside down
-                    /*this.texture.setRotationCenter(0F, 0F);
-                    this.texture.setRotation(italics ? 5F : 180F);*/
-
-                    if(upsideDown){
-                        y += scaledHeight;
-                        y2 += scaledHeight;
-
-                        x += scaledWidth;
-                        x2 += scaledWidth;
-                    }
-                }
-
                 if(shadow){
                     this.texture.draw(x+shadowOffset, y+shadowOffset, x2+shadowOffset, y2+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, shadowColor);
                 }
-                this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
 
-                if(italics || upsideDown){
-                    /*this.texture.setRotation(0F);*/
+                //TODO Italics and upside down text
+                if(prop == FontProp.ITALICS){
+                    this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
+                }
+                else if(prop == FontProp.UPSIDE_DOWN){
+                    this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
+                }
+                else{
+                    this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
                 }
             }
             else{

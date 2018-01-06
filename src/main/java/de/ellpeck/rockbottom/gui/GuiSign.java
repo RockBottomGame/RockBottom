@@ -62,7 +62,7 @@ public class GuiSign extends Gui{
     }
 
     @Override
-    public boolean onKeyboardAction(IGameInstance game, int button, char character){
+    public boolean onKeyPressed(IGameInstance game, int button){
         if(button == GLFW.GLFW_KEY_UP){
             for(int i = 0; i < this.inputFields.size(); i++){
                 ComponentInputField field = this.inputFields.get(i);
@@ -98,7 +98,7 @@ public class GuiSign extends Gui{
             return true;
         }
         else{
-            return super.onKeyboardAction(game, button, character);
+            return super.onKeyPressed(game, button);
         }
     }
 

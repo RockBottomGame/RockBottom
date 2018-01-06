@@ -7,25 +7,87 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class InputHandler implements IInputHandler{
 
     private final RockBottom game;
 
+    private final Set<Integer> pressedKeys = new HashSet<>();
+    private final Set<Integer> pressedMouse = new HashSet<>();
+
+    private boolean keyboardRepeats;
+    private boolean isMouseInWindow = true;
+    private int mouseX;
+    private int mouseY;
+    private int mouseWheel;
+
     public InputHandler(RockBottom game){
         this.game = game;
+
+        GLFW.glfwSetCursorPosCallback(game.getWindow(), new GLFWCursorPosCallback(){
+            @Override
+            public void invoke(long window, double x, double y){
+                InputHandler.this.mouseX = (int)x;
+                InputHandler.this.mouseY = (int)y;
+            }
+        });
+        GLFW.glfwSetScrollCallback(game.getWindow(), new GLFWScrollCallback(){
+            @Override
+            public void invoke(long window, double xOffset, double yOffset){
+                game.enqueueAction((game, o) -> InputHandler.this.mouseWheel = (int)yOffset, null);
+            }
+        });
+        GLFW.glfwSetKeyCallback(game.getWindow(), new GLFWKeyCallback(){
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods){
+                if(action == GLFW.GLFW_PRESS || (InputHandler.this.keyboardRepeats && action == GLFW.GLFW_REPEAT)){
+                    game.enqueueAction((game, o) -> {
+                        InputHandler.this.pressedKeys.add(key);
+                        InputHandler.this.keyPressed(key);
+                    }, null);
+                }
+            }
+        });
+        GLFW.glfwSetCharCallback(game.getWindow(), new GLFWCharCallback(){
+            @Override
+            public void invoke(long window, int codepoint){
+                game.enqueueAction((game, o) -> InputHandler.this.charInput(codepoint, Character.toChars(codepoint)), null);
+            }
+        });
+        GLFW.glfwSetMouseButtonCallback(game.getWindow(), new GLFWMouseButtonCallback(){
+            @Override
+            public void invoke(long window, int button, int action, int mods){
+                if(action == GLFW.GLFW_PRESS){
+                    game.enqueueAction((game, o) -> {
+                        InputHandler.this.pressedMouse.add(button);
+                        InputHandler.this.mousePressed(button);
+                    }, null);
+                }
+            }
+        });
+        GLFW.glfwSetCursorEnterCallback(game.getWindow(), new GLFWCursorEnterCallback(){
+            @Override
+            public void invoke(long window, boolean entered){
+                InputHandler.this.isMouseInWindow = entered;
+            }
+        });
     }
 
-    public void update(){
-        //TODO Update keys
+    public void reset(){
+        this.pressedKeys.clear();
+        this.pressedMouse.clear();
+        this.mouseWheel = 0;
     }
 
     protected void mousePressed(int button){
         this.game.getInteractionManager().onMouseAction(this.game, button);
     }
 
-    protected void keyPressed(int key, char c){
+    protected void keyPressed(int key){
         if(this.game.getGuiManager().getGui() == null){
             if(Settings.KEY_MENU.isKey(key)){
                 this.game.openIngameMenu();
@@ -69,53 +131,55 @@ public class InputHandler implements IInputHandler{
             return;
         }
 
-        this.game.getInteractionManager().onKeyboardAction(this.game, key, c);
+        this.game.getInteractionManager().onKeyPressed(this.game, key);
     }
 
-    //TODO All this
+    protected void charInput(int codePoint, char[] characters){
+        this.game.getInteractionManager().onCharInput(this.game, codePoint, characters);
+    }
 
     @Override
     public boolean isMouseInWindow(){
-        return false;
+        return this.isMouseInWindow;
     }
 
     @Override
     public boolean isMouseDown(int button){
-        return false;
+        return GLFW.glfwGetMouseButton(this.game.getWindow(), button) == GLFW.GLFW_PRESS;
     }
 
     @Override
     public boolean wasMousePressed(int button){
-        return false;
+        return this.pressedMouse.contains(button);
     }
 
     @Override
     public boolean isKeyDown(int key){
-        return false;
+        return GLFW.glfwGetKey(this.game.getWindow(), key) == GLFW.GLFW_PRESS;
     }
 
     @Override
     public boolean wasKeyPressed(int key){
-        return false;
+        return this.pressedKeys.contains(key);
     }
 
     @Override
     public void setKeyboardRepeatEvents(boolean should){
-
+        this.keyboardRepeats = should;
     }
 
     @Override
-    public int getMouseWheel(){
-        return 0;
+    public int getMouseWheelChange(){
+        return this.mouseWheel;
     }
 
     @Override
     public int getMouseX(){
-        return 0;
+        return this.mouseX;
     }
 
     @Override
     public int getMouseY(){
-        return 0;
+        return this.mouseY;
     }
 }

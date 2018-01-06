@@ -17,7 +17,8 @@ import java.util.List;
 
 public class GuiChangelog extends Gui{
 
-    private float scrollAmount = 0F;
+    private float scrollAmount;
+    private int mouseWheelChange;
 
     public GuiChangelog(Gui parent){
         super(parent);
@@ -33,6 +34,13 @@ public class GuiChangelog extends Gui{
             game.getGuiManager().openGui(this.parent);
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
+    }
+
+    @Override
+    public void update(IGameInstance game){
+        super.update(game);
+
+        this.mouseWheelChange = game.getInput().getMouseWheelChange();
     }
 
     @Override
@@ -86,13 +94,12 @@ public class GuiChangelog extends Gui{
             }
 
             float scroll = 10F;
-            int mouse = game.getInput().getMouseWheel();
-            if(mouse > 0){
+            if(this.mouseWheelChange > 0){
                 if(this.scrollAmount < 0F){
                     this.scrollAmount += scroll;
                 }
             }
-            else if(mouse < 0){
+            else if(this.mouseWheelChange < 0){
                 if(showScrollForMore){
                     this.scrollAmount -= scroll;
                 }

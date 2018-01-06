@@ -28,12 +28,12 @@ public class EmptyTexture implements ITexture{
     }
 
     @Override
-    public int getWidth(){
+    public int getTextureWidth(){
         return 0;
     }
 
     @Override
-    public int getHeight(){
+    public int getTextureHeight(){
         return 0;
     }
 
@@ -113,18 +113,38 @@ public class EmptyTexture implements ITexture{
     }
 
     @Override
-    public ITexture getSubTexture(float x, float y, float width, float height){
+    public ITexture getSubTexture(int x, int y, int width, int height){
         return this;
     }
 
     @Override
-    public ITexture getSubTexture(float x, float y, float width, float height, boolean inheritVariations, boolean inheritData){
+    public ITexture getSubTexture(int x, int y, int width, int height, boolean inheritVariations, boolean inheritData){
         return this;
     }
 
     @Override
     public int getTextureColor(int x, int y){
         return Colors.TRANSPARENT;
+    }
+
+    @Override
+    public int getRenderWidth(){
+        return 0;
+    }
+
+    @Override
+    public int getRenderHeight(){
+        return 0;
+    }
+
+    @Override
+    public int getRenderOffsetX(){
+        return 0;
+    }
+
+    @Override
+    public int getRenderOffsetY(){
+        return 0;
     }
 
     @Override

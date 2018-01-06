@@ -25,7 +25,7 @@ public final class DebugRenderer{
         list.add("Display Ratio: "+g.getDisplayRatio());
         list.add("Gui Scale: "+g.getGuiScale());
         list.add("World Scale: "+g.getWorldScale());
-        list.add("Flushes: "+g.getFlushes());
+        list.add("Renderer Flushes: "+g.getFlushes());
         list.add("");
 
         if(world != null && player != null){

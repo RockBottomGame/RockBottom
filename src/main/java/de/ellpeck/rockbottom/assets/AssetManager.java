@@ -31,6 +31,9 @@ import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
 import de.ellpeck.rockbottom.gui.menu.background.BlankTheme;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,8 +64,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
     private final List<ISpecialCursor> sortedCursors = new ArrayList<>();
-    //TODO Figure out cursors
-    //private final Map<ISpecialCursor, Cursor> cursors = new HashMap<>();
+    private final Map<ISpecialCursor, Long> cursors = new HashMap<>();
     private ISound missingSound;
     private ITexture missingTexture;
     private Locale missingLocale;
@@ -135,9 +137,9 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     public void loadCursors(){
-        /*if(!this.cursors.isEmpty()){
+        if(!this.cursors.isEmpty()){
             this.cursors.clear();
-        }*/
+        }
         if(!this.sortedCursors.isEmpty()){
             this.sortedCursors.clear();
         }
@@ -148,12 +150,13 @@ public class AssetManager implements IAssetManager, IDisposable{
         for(ISpecialCursor cursor : this.sortedCursors){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
-                int width = texture.getWidth();
-                int height = texture.getHeight();
+                int width = texture.getTextureWidth();
+                int height = texture.getTextureHeight();
 
+                GLFWImage image = GLFWImage.malloc();
                 ByteBuffer buf = BufferUtils.createByteBuffer(width*height*4);
 
-                for(int y = height-1; y >= 0; y--){
+                for(int y = 0; y < height; y++){
                     for(int x = 0; x < width; x++){
                         int color = texture.getTextureColor(x, y);
 
@@ -165,8 +168,11 @@ public class AssetManager implements IAssetManager, IDisposable{
                 }
 
                 buf.flip();
+                image.set(width, height, buf);
 
-                //this.cursors.put(cursor, new Cursor(width, height, cursor.getHotspotX(), height-1-cursor.getHotspotY(), 1, buf.asIntBuffer(), null));
+                this.cursors.put(cursor, GLFW.glfwCreateCursor(image, cursor.getHotspotX(), cursor.getHotspotY()));
+
+                image.free();
             }
             catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "Could not load mouse cursor "+cursor, e);
@@ -178,10 +184,10 @@ public class AssetManager implements IAssetManager, IDisposable{
     public void setCursor(IGameInstance game, ISpecialCursor cursor){
         try{
             if(!game.getSettings().hardwareCursor){
-                //Mouse.setNativeCursor(this.cursors.get(cursor));
+                GLFW.glfwSetCursor(game.getWindow(), this.cursors.get(cursor));
             }
             else{
-                //Mouse.setNativeCursor(null);
+                GLFW.glfwSetCursor(game.getWindow(), MemoryUtil.NULL);
             }
 
             RockBottomAPI.logger().config("Setting cursor to "+cursor);

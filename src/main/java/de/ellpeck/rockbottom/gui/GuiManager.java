@@ -339,7 +339,11 @@ public class GuiManager implements IGuiManager{
         return false;
     }
 
-    public boolean onKeyboardAction(RockBottom game, int button, char character){
-        return (game.getPlayer() == null || !game.getPlayer().isDead()) && this.gui != null && this.gui.onKeyboardAction(game, button, character);
+    public boolean onKeyPressed(RockBottom game, int button){
+        return (game.getPlayer() == null || !game.getPlayer().isDead()) && this.gui != null && this.gui.onKeyPressed(game, button);
+    }
+
+    public boolean onCharInput(RockBottom game, int codePoint, char[] characters){
+        return (game.getPlayer() == null || !game.getPlayer().isDead()) && this.gui != null && this.gui.onCharInput(game, codePoint, characters);
     }
 }

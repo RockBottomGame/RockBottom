@@ -61,7 +61,7 @@ public class WorldRenderer{
 
         int skyLight = (int)(skylightMod*(SKY_COLORS.length-1));
         int color = SKY_COLORS[skyLight];
-        //TODO Set sky color here somehow (maybe fill a rectangle with it?)
+        g.backgroundColor(color);
 
         double width = g.getWidthInWorld();
         double height = g.getHeightInWorld();

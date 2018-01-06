@@ -195,6 +195,11 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public long getWindow(){
+        throw new UnsupportedOperationException("Cannot get window on a dedicated server");
+    }
+
+    @Override
     public Settings getSettings(){
         throw new UnsupportedOperationException("Cannot get settings on a dedicated server");
     }

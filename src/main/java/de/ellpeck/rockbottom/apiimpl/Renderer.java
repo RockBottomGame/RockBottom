@@ -48,8 +48,9 @@ public class Renderer implements IRenderer{
     private int vertexAmount;
     private boolean isDrawing;
     private ITexture texture;
+    private int backgroundColor;
 
-    public boolean isDebug = true;
+    public boolean isDebug;
     public boolean isItemInfoDebug;
     public boolean isChunkBorderDebug;
     public boolean isGuiDebug;
@@ -94,6 +95,12 @@ public class Renderer implements IRenderer{
         this.setProgram(this.defaultProgram);
     }
 
+    public void onResize(int width, int height){
+        if(this.defaultProgram != null){
+            this.defaultProgram.updateProjection(width, height);
+        }
+    }
+
     @Override
     public void setProgram(IShaderProgram program){
         if(this.program != program){
@@ -135,18 +142,18 @@ public class Renderer implements IRenderer{
                 this.flush();
             }
 
-            if(this.scaleX != 1F){
-                x *= this.scaleX;
-            }
-            if(this.scaleY != 1F){
-                y *= this.scaleY;
-            }
-
             if(this.translationX != 0F){
                 x += this.translationX;
             }
             if(this.translationY != 0F){
                 y += this.translationY;
+            }
+
+            if(this.scaleX != 1F){
+                x *= this.scaleX;
+            }
+            if(this.scaleY != 1F){
+                y *= this.scaleY;
             }
 
             float theX;
@@ -256,7 +263,7 @@ public class Renderer implements IRenderer{
 
     @Override
     public void scale(float x, float y){
-        this.setScale(this.scaleX+x, this.scaleY+y);
+        this.setScale(this.scaleX*x, this.scaleY*y);
     }
 
     @Override
@@ -266,7 +273,7 @@ public class Renderer implements IRenderer{
     }
 
     @Override
-    public float getAngle(){
+    public float getRotation(){
         return this.rotation;
     }
 
@@ -321,7 +328,7 @@ public class Renderer implements IRenderer{
             color = Colors.multiply(color, 0.75F);
         }
 
-        texture.draw(x, y, texture.getWidth()*scale, texture.getHeight()*scale, color);
+        texture.draw(x, y, texture.getTextureWidth()*scale, texture.getTextureHeight()*scale, color);
 
         if(slot != null){
             this.renderItemInGui(game, manager, slot, x+3F*scale, y+3F*scale, scale, Colors.WHITE);
@@ -571,5 +578,13 @@ public class Renderer implements IRenderer{
         double mouseY = this.game.getInput().getMouseY();
         double worldAtScreenY = -this.game.getPlayer().y-this.getHeightInWorld()/2;
         return -(worldAtScreenY+mouseY/(double)this.getWorldScale())+1;
+    }
+
+    @Override
+    public void backgroundColor(int color){
+        if(this.backgroundColor != color){
+            GL11.glClearColor(Colors.getR(color), Colors.getG(color), Colors.getB(color), Colors.getA(color));
+            this.backgroundColor = color;
+        }
     }
 }

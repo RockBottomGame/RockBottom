@@ -13,7 +13,6 @@ public class GuiSound extends Gui{
         super(150, 150, parent);
     }
 
-    //TODO Figure out sound volumes
     @Override
     public void init(IGameInstance game){
         super.init(game);
@@ -21,13 +20,11 @@ public class GuiSound extends Gui{
         this.components.add(new ComponentSlider(this, this.width/2-75, 0, 150, 16, (int)(game.getSettings().soundVolume*100F), 0, 100, (integer, aBoolean) -> {
             if(aBoolean){
                 game.getSettings().soundVolume = (float)integer/100F;
-                //SoundStore.get().setSoundVolume(game.getSettings().soundVolume);
             }
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.sound_volume"))));
         this.components.add(new ComponentSlider(this, this.width/2-75, 20, 150, 16, (int)(game.getSettings().musicVolume*100F), 0, 100, (integer, aBoolean) -> {
             if(aBoolean){
                 game.getSettings().musicVolume = (float)integer/100F;
-                //SoundStore.get().setMusicVolume(game.getSettings().musicVolume);
             }
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.music_volume"))));
 

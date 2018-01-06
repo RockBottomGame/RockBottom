@@ -288,7 +288,7 @@ public class InteractionManager implements IInteractionManager{
                 boolean slotChange = false;
                 int slot = player.getSelectedSlot();
 
-                int scroll = game.getInput().getMouseWheel();
+                int scroll = game.getInput().getMouseWheelChange();
                 if(scroll < 0){
                     slot++;
                     if(slot >= 8){
@@ -322,8 +322,8 @@ public class InteractionManager implements IInteractionManager{
         game.getGuiManager().onMouseAction(game, button, game.getRenderer().getMouseInGuiX(), game.getRenderer().getMouseInGuiY());
     }
 
-    public void onKeyboardAction(RockBottom game, int button, char character){
-        if(!game.getGuiManager().onKeyboardAction(game, button, character)){
+    public void onKeyPressed(RockBottom game, int button){
+        if(!game.getGuiManager().onKeyPressed(game, button)){
             if(game.getWorld() != null && game.getGuiManager().getGui() == null){
                 for(int i = 0; i < Settings.KEYS_ITEM_SELECTION.length; i++){
                     if(Settings.KEYS_ITEM_SELECTION[i].isKey(button)){
@@ -338,6 +338,10 @@ public class InteractionManager implements IInteractionManager{
                 }
             }
         }
+    }
+
+    public void onCharInput(RockBottom game, int codePoint, char[] characters){
+        game.getGuiManager().onCharInput(game, codePoint, characters);
     }
 
     @Override

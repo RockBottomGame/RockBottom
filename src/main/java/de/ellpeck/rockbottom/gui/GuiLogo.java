@@ -53,7 +53,7 @@ public class GuiLogo extends Gui{
         g.addFilledRect(0, 0, this.width, this.height, 0xFF519FFF);
 
         ITexture tex = manager.getTexture(this.isAngry ? this.texAngry : this.texture);
-        tex.draw(this.width/2-tex.getWidth()/2, this.height/2-tex.getHeight()/2);
+        tex.draw(this.width/2-tex.getTextureWidth()/2, this.height/2-tex.getTextureHeight()/2);
     }
 
     @Override

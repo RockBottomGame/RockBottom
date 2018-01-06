@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.gui.GuiSign;
 import de.ellpeck.rockbottom.world.tile.TileSign;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
 
@@ -24,11 +25,9 @@ public class TileSignRenderer extends DefaultTileRenderer<TileSign>{
         if(player.isInRange(g.getMousedTileX(), g.getMousedTileY(), AbstractEntityPlayer.RANGE)){
             TileEntitySign tileEntity = world.getTileEntity(x, y, TileEntitySign.class);
             if(tileEntity != null){
-                //TODO Draw the sign on the cursor
-                /*g.pushMatrix();
                 g.scale(0.5F, 0.5F);
                 GuiSign.drawSign(manager, tileEntity.text, true, (mouseX+3)*2F, (mouseY+3)*2F);
-                g.popMatrix();*/
+                g.scale(2F, 2F);
             }
         }
     }
