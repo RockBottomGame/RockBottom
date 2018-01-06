@@ -71,6 +71,9 @@ public class Renderer implements IRenderer{
     private float scaleX;
     private float scaleY;
 
+    private boolean mirroredHor;
+    private boolean mirroredVert;
+
     private int lastFlushes;
     private int flushCounter;
 
@@ -129,10 +132,39 @@ public class Renderer implements IRenderer{
     }
 
     @Override
-    public void addTriangle(float x1, float y1, float x2, float y2, float x3, float y3, int color, float u1, float v1, float u2, float v2, float u3, float v3){
-        this.addVertex(x1, y1, color, u1, v1);
-        this.addVertex(x2, y2, color, u2, v2);
-        this.addVertex(x3, y3, color, u3, v3);
+    public void addTexturedRegion(ITexture texture, float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
+        this.setTexture(texture);
+
+        float u = (srcX+texture.getRenderOffsetX())/texture.getTextureWidth();
+        float v = (srcY+texture.getRenderOffsetY())/texture.getTextureHeight();
+        float u2 = (srcX2+texture.getRenderOffsetX())/texture.getTextureWidth();
+        float v2 = (srcY2+texture.getRenderOffsetY())/texture.getTextureHeight();
+
+        if(this.mirroredHor){
+            float temp = u2;
+            u2 = u;
+            u = temp;
+        }
+        if(this.mirroredVert){
+            float temp = v2;
+            v2 = v;
+            v = temp;
+        }
+
+        int topLeft = this.combineLight(light, ITexture.TOP_LEFT, filter);
+        int bottomLeft = this.combineLight(light, ITexture.BOTTOM_LEFT, filter);
+        int bottomRight = this.combineLight(light, ITexture.BOTTOM_RIGHT, filter);
+        int topRight = this.combineLight(light, ITexture.TOP_RIGHT, filter);
+
+        this.addTriangle(x, y, x, y2, x2, y2, topLeft, bottomLeft, bottomRight, u, v, u, v2, u2, v2);
+        this.addTriangle(x, y, x2, y2, x2, y, topLeft, bottomRight, topRight, u, v, u2, v2, u2, v);
+    }
+
+    @Override
+    public void addTriangle(float x1, float y1, float x2, float y2, float x3, float y3, int color1, int color2, int color3, float u1, float v1, float u2, float v2, float u3, float v3){
+        this.addVertex(x1, y1, color1, u1, v1);
+        this.addVertex(x2, y2, color2, u2, v2);
+        this.addVertex(x3, y3, color3, u3, v3);
     }
 
     @Override
@@ -140,20 +172,6 @@ public class Renderer implements IRenderer{
         if(this.isDrawing){
             if(this.vertices.remaining() < 8*3 && this.vertexAmount%3 == 0){
                 this.flush();
-            }
-
-            if(this.translationX != 0F){
-                x += this.translationX;
-            }
-            if(this.translationY != 0F){
-                y += this.translationY;
-            }
-
-            if(this.scaleX != 1F){
-                x *= this.scaleX;
-            }
-            if(this.scaleY != 1F){
-                y *= this.scaleY;
             }
 
             float theX;
@@ -166,6 +184,20 @@ public class Renderer implements IRenderer{
             else{
                 theX = x;
                 theY = y;
+            }
+
+            if(this.translationX != 0F){
+                theX += this.translationX;
+            }
+            if(this.translationY != 0F){
+                theY += this.translationY;
+            }
+
+            if(this.scaleX != 1F){
+                theX *= this.scaleX;
+            }
+            if(this.scaleY != 1F){
+                theY *= this.scaleY;
             }
 
             this.vertices.put(theX).put(theY)
@@ -186,9 +218,7 @@ public class Renderer implements IRenderer{
             this.vertexAmount = 0;
             this.flushCounter = 0;
 
-            this.setScale(1F, 1F);
-            this.setTranslation(0F, 0F);
-            this.setRotation(0F);
+            this.resetTransformation();
 
             this.isDrawing = true;
         }
@@ -246,8 +276,9 @@ public class Renderer implements IRenderer{
     public void setRotation(float angle){
         this.rotation = angle%360F;
 
-        this.sinRot = (float)Math.sin(Math.toRadians(this.rotation));
-        this.cosRot = (float)Math.cos(Math.toRadians(this.rotation));
+        double rads = Math.toRadians(this.rotation);
+        this.sinRot = (float)Math.sin(rads);
+        this.cosRot = (float)Math.cos(rads);
     }
 
     @Override
@@ -273,6 +304,25 @@ public class Renderer implements IRenderer{
     }
 
     @Override
+    public void mirror(boolean hor, boolean vert){
+        this.setMirrored(hor != this.mirroredHor, vert != this.mirroredVert);
+    }
+
+    @Override
+    public void setMirrored(boolean hor, boolean vert){
+        this.mirroredHor = hor;
+        this.mirroredVert = vert;
+    }
+
+    @Override
+    public void resetTransformation(){
+        this.setRotation(0F);
+        this.setTranslation(0F, 0F);
+        this.setScale(1F, 1F);
+        this.setMirrored(false, false);
+    }
+
+    @Override
     public float getRotation(){
         return this.rotation;
     }
@@ -295,6 +345,16 @@ public class Renderer implements IRenderer{
     @Override
     public float getScaleY(){
         return this.scaleY;
+    }
+
+    @Override
+    public boolean isMirroredHor(){
+        return this.mirroredHor;
+    }
+
+    @Override
+    public boolean isMirroredVert(){
+        return this.mirroredVert;
     }
 
     @Override
@@ -446,8 +506,8 @@ public class Renderer implements IRenderer{
     @Override
     public void addFilledRect(float x, float y, float width, float height, int color){
         this.setTexture(null);
-        this.addTriangle(x, y, x, y+height, x+width, y, color, 0F, 0F, 0F, 0F, 0F, 0F);
-        this.addTriangle(x+width, y, x, y+height, x+width, y+height, color, 0F, 0F, 0F, 0F, 0F, 0F);
+        this.addTriangle(x, y, x, y+height, x+width, y, color, color, color, 0F, 0F, 0F, 0F, 0F, 0F);
+        this.addTriangle(x+width, y, x, y+height, x+width, y+height, color, color, color, 0F, 0F, 0F, 0F, 0F, 0F);
     }
 
     @Override
@@ -585,6 +645,15 @@ public class Renderer implements IRenderer{
         if(this.backgroundColor != color){
             GL11.glClearColor(Colors.getR(color), Colors.getG(color), Colors.getB(color), Colors.getA(color));
             this.backgroundColor = color;
+        }
+    }
+
+    private int combineLight(int[] light, int corner, int filter){
+        if(light != null){
+            return Colors.multiply(light[corner], filter);
+        }
+        else{
+            return filter;
         }
     }
 }

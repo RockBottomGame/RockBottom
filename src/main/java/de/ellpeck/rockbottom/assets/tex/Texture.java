@@ -157,34 +157,7 @@ public class Texture implements ITexture{
     @Override
     public void draw(float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
         IRenderer renderer = RockBottomAPI.getGame().getRenderer();
-        renderer.setTexture(this);
-
-        float u = (srcX+this.renderOffsetX)/this.textureWidth;
-        float v = (srcY+this.renderOffsetY)/this.textureHeight;
-        float u2 = (srcX2+this.renderOffsetX)/this.textureWidth;
-        float v2 = (srcY2+this.renderOffsetY)/this.textureHeight;
-
-        int topLeft = this.combineLight(light, TOP_LEFT, filter);
-        int bottomLeft = this.combineLight(light, BOTTOM_LEFT, filter);
-        int bottomRight = this.combineLight(light, BOTTOM_RIGHT, filter);
-        int topRight = this.combineLight(light, TOP_RIGHT, filter);
-
-        renderer.addVertex(x, y, topLeft, u, v);
-        renderer.addVertex(x, y2, bottomLeft, u, v2);
-        renderer.addVertex(x2, y2, bottomRight, u2, v2);
-
-        renderer.addVertex(x, y, topLeft, u, v);
-        renderer.addVertex(x2, y2, bottomRight, u2, v2);
-        renderer.addVertex(x2, y, topRight, u2, v);
-    }
-
-    private int combineLight(int[] light, int corner, int filter){
-        if(light != null){
-            return Colors.multiply(light[corner], filter);
-        }
-        else{
-            return filter;
-        }
+        renderer.addTexturedRegion(this, x, y, x2, y2, srcX, srcY, srcX2, srcY2, light, filter);
     }
 
     @Override
