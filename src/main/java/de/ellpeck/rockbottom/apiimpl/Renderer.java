@@ -95,14 +95,7 @@ public class Renderer implements IRenderer{
 
     public void init(){
         this.defaultProgram = this.game.getAssetManager().getShaderProgram(RockBottomAPI.createInternalRes("default"));
-        this.defaultProgram.setDefaultValues(this.game.getWidth(), this.game.getHeight());
         this.setProgram(this.defaultProgram);
-    }
-
-    public void onResize(int width, int height){
-        if(this.defaultProgram != null){
-            this.defaultProgram.updateProjection(width, height);
-        }
     }
 
     @Override

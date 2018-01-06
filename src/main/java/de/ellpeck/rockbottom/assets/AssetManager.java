@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
 import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.event.impl.LoadAssetsEvent;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.render.engine.IDisposable;
@@ -134,6 +135,8 @@ public class AssetManager implements IAssetManager, IDisposable{
 
         this.currentFont = this.getFont(RockBottomAPI.createInternalRes("default"));
         this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
+
+        RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(game, this, game.getRenderer()));
     }
 
     public void loadCursors(){
@@ -406,6 +409,12 @@ public class AssetManager implements IAssetManager, IDisposable{
 
         if(this.missingTexture != null){
             this.missingTexture.dispose();
+        }
+    }
+
+    public void onResize(int width, int height){
+        for(IShaderProgram program : this.getAllOfType(IShaderProgram.class).values()){
+            program.updateProjection(width, height);
         }
     }
 }

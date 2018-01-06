@@ -204,8 +204,8 @@ public class RockBottom extends AbstractGame{
             this.guiManager.updateDimensions();
         }
 
-        if(this.renderer != null){
-            this.renderer.onResize(this.width, this.height);
+        if(this.assetManager != null){
+            this.assetManager.onResize(this.width, this.height);
         }
     }
 
