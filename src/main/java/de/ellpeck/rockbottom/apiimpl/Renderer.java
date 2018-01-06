@@ -93,8 +93,9 @@ public class Renderer implements IRenderer{
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public void init(){
-        this.defaultProgram = this.game.getAssetManager().getShaderProgram(RockBottomAPI.createInternalRes("default"));
+    @Override
+    public void initDefaultShader(IShaderProgram program){
+        this.defaultProgram = program;
         this.setProgram(this.defaultProgram);
     }
 
@@ -554,9 +555,9 @@ public class Renderer implements IRenderer{
     }
 
     @Override
-    public IRenderer createRenderer(){
+    public IRenderer createRenderer(IShaderProgram defaultProgram){
         Renderer renderer = new Renderer(RockBottomAPI.getGame());
-        renderer.init();
+        renderer.initDefaultShader(defaultProgram);
         return renderer;
     }
 

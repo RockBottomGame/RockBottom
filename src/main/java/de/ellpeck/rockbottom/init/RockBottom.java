@@ -219,7 +219,6 @@ public class RockBottom extends AbstractGame{
 
         this.assetManager = new AssetManager();
         this.assetManager.load(this);
-        this.renderer.init();
 
         RockBottomAPI.getModLoader().initAssets();
         this.assetManager.loadCursors();
