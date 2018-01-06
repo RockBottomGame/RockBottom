@@ -284,6 +284,7 @@ public class Texture implements ITexture{
     }
 
     public static void unbindCurrentBank(){
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         BOUND_TEXTURES[activeBank.ordinal()] = null;
     }
 
