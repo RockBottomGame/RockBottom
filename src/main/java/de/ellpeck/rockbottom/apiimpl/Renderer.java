@@ -522,7 +522,7 @@ public class Renderer implements IRenderer{
 
     @Override
     public void activateTextureBank(TextureBank bank){
-        Texture.activateTextureBank(bank, false);
+        Texture.activateTextureBank(bank);
     }
 
     @Override

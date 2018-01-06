@@ -235,8 +235,8 @@ public class Texture implements ITexture{
         this.init();
     }
 
-    public static void activateTextureBank(TextureBank bank, boolean force){
-        if(activeBank != bank || force){
+    public static void activateTextureBank(TextureBank bank){
+        if(activeBank != bank){
             GL13.glActiveTexture(GL13.GL_TEXTURE0+activeBank.ordinal());
             activeBank = bank;
         }
@@ -246,11 +246,11 @@ public class Texture implements ITexture{
     public void bind(TextureBank bank, boolean revertAfterBind){
         TextureBank last = activeBank;
 
-        activateTextureBank(bank, false);
+        activateTextureBank(bank);
         this.bind();
 
         if(revertAfterBind){
-            activateTextureBank(last, false);
+            activateTextureBank(last);
         }
     }
 
@@ -268,11 +268,11 @@ public class Texture implements ITexture{
     public void unbind(TextureBank bank, boolean revertAfterUnbind){
         TextureBank last = activeBank;
 
-        activateTextureBank(bank, false);
+        activateTextureBank(bank);
         this.unbind();
 
         if(revertAfterUnbind){
-            activateTextureBank(last, false);
+            activateTextureBank(last);
         }
     }
 
@@ -289,21 +289,16 @@ public class Texture implements ITexture{
     }
 
     public static void unbindAllBanks(){
-        boolean changed = false;
+        TextureBank last = activeBank;
 
         for(int i = 0; i < BOUND_TEXTURES.length; i++){
             if(BOUND_TEXTURES[i] != null){
-                activateTextureBank(TextureBank.BANKS[i], false);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-
-                BOUND_TEXTURES[i] = null;
-                changed = TextureBank.BANKS[i] != activeBank;
+                activateTextureBank(TextureBank.BANKS[i]);
+                unbindCurrentBank();
             }
         }
 
-        if(changed){
-            activateTextureBank(activeBank, true);
-        }
+        activateTextureBank(last);
     }
 
     private void init(){
