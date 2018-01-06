@@ -39,7 +39,7 @@ public class GuiCredits extends Gui{
         this.credits.add("");
         this.credits.add("Libraries and Additional Code");
         this.credits.add("  The Lightweight Java Game Library");
-        this.credits.add("  The Slick-Util library for loading assets");
+        this.credits.add("  Netty");
         this.credits.add("");
         this.credits.add("  Stefan Gustavson (Simplex Noise Impl)");
         this.credits.add("");
