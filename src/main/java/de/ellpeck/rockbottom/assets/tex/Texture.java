@@ -156,8 +156,14 @@ public class Texture implements ITexture{
 
     @Override
     public void draw(float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
+        this.draw(x, y, x, y2, x2, y2, x2, y, srcX, srcY, srcX2, srcY2, light, filter);
+    }
+
+    @Override
+    public void draw(float x, float y, float x2, float y2, float x3, float y3, float x4, float y4, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
+
         IRenderer renderer = RockBottomAPI.getGame().getRenderer();
-        renderer.addTexturedRegion(this, x, y, x2, y2, srcX, srcY, srcX2, srcY2, light, filter);
+        renderer.addTexturedRegion(this, x, y, x2, y2, x3, y3, x4, y4, srcX, srcY, srcX2, srcY2, light, filter);
     }
 
     @Override

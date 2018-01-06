@@ -249,18 +249,27 @@ public class Font implements IFont{
                     y2 += boldness;
                 }
 
-                if(shadow){
-                    this.texture.draw(x+shadowOffset, y+shadowOffset, x2+shadowOffset, y2+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, shadowColor);
-                }
-
-                //TODO Italics and upside down text
                 if(prop == FontProp.ITALICS){
-                    this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
+                    float italicness = 3F;
+
+                    if(shadow){
+                        this.texture.draw(x+italicness+shadowOffset, y+shadowOffset, x+shadowOffset, y2+shadowOffset, x2+shadowOffset, y2+shadowOffset, x2+italicness+shadowOffset, y+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, null, shadowColor);
+                    }
+
+                    this.texture.draw(x+italicness, y, x, y2, x2, y2, x2+italicness, y, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, null, color);
                 }
                 else if(prop == FontProp.UPSIDE_DOWN){
-                    this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
+                    if(shadow){
+                        this.texture.draw(x2+shadowOffset, y2+shadowOffset, x+shadowOffset, y+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, shadowColor);
+                    }
+
+                    this.texture.draw(x2, y2, x, y, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
                 }
                 else{
+                    if(shadow){
+                        this.texture.draw(x+shadowOffset, y+shadowOffset, x2+shadowOffset, y2+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, shadowColor);
+                    }
+
                     this.texture.draw(x, y, x2, y2, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, color);
                 }
             }

@@ -132,7 +132,7 @@ public class Renderer implements IRenderer{
     }
 
     @Override
-    public void addTexturedRegion(ITexture texture, float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
+    public void addTexturedRegion(ITexture texture, float x, float y, float x2, float y2, float x3, float y3, float x4, float y4, float srcX, float srcY, float srcX2, float srcY2, int[] light, int filter){
         this.setTexture(texture);
 
         float u = (srcX+texture.getRenderOffsetX())/texture.getTextureWidth();
@@ -156,8 +156,8 @@ public class Renderer implements IRenderer{
         int bottomRight = this.combineLight(light, ITexture.BOTTOM_RIGHT, filter);
         int topRight = this.combineLight(light, ITexture.TOP_RIGHT, filter);
 
-        this.addTriangle(x, y, x, y2, x2, y2, topLeft, bottomLeft, bottomRight, u, v, u, v2, u2, v2);
-        this.addTriangle(x, y, x2, y2, x2, y, topLeft, bottomRight, topRight, u, v, u2, v2, u2, v);
+        this.addTriangle(x, y, x2, y2, x3, y3, topLeft, bottomLeft, bottomRight, u, v, u, v2, u2, v2);
+        this.addTriangle(x, y, x3, y3, x4, y4, topLeft, bottomRight, topRight, u, v, u2, v2, u2, v);
     }
 
     @Override
