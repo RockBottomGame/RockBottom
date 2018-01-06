@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.assets.shader;
 
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
+import de.ellpeck.rockbottom.render.engine.VertexArrayObject;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -15,12 +16,16 @@ public class ShaderProgram implements IShaderProgram{
     private static ShaderProgram boundProgram;
 
     private final int id;
+    private final VertexArrayObject vao;
     private final Map<String, Integer> attributeLocations = new HashMap<>();
     private final Map<String, Integer> uniformLocations = new HashMap<>();
-    private int componentsPerVertex;
+    private int componentsPerVertex = 8;
+    private int attributeOffset;
 
     public ShaderProgram(Shader vertex, Shader fragment){
         this.id = GL20.glCreateProgram();
+        this.vao = new VertexArrayObject();
+
         GL20.glAttachShader(this.id, vertex.getId());
         GL20.glAttachShader(this.id, fragment.getId());
 
@@ -34,12 +39,9 @@ public class ShaderProgram implements IShaderProgram{
         this.link();
         this.bind();
 
-        int floatSize = Float.BYTES;
-        this.pointVertexAttribute(true, "position", 2, 8*floatSize, 0);
-        this.pointVertexAttribute(true, "color", 4, 8*floatSize, 2*floatSize);
-        this.pointVertexAttribute(true, "texCoord", 2, 8*floatSize, 6*floatSize);
-
-        this.setComponentsPerVertex(8);
+        this.pointVertexAttribute("position", 2);
+        this.pointVertexAttribute("color", 4);
+        this.pointVertexAttribute("texCoord", 2);
 
         this.setUniform("model", new Matrix4f());
         this.setUniform("view", new Matrix4f());
@@ -70,8 +72,13 @@ public class ShaderProgram implements IShaderProgram{
     @Override
     public void bind(){
         if(boundProgram != this){
-            GL20.glUseProgram(this.id);
             boundProgram = this;
+            GL20.glUseProgram(this.id);
+            this.vao.bind();
+
+            for(int i : this.attributeLocations.values()){
+                GL20.glEnableVertexAttribArray(i);
+            }
         }
     }
 
@@ -88,18 +95,19 @@ public class ShaderProgram implements IShaderProgram{
     }
 
     @Override
-    public void pointVertexAttribute(boolean enable, String name, int size, int stride, int offset){
+    public void pointVertexAttribute(String name, int size){
         int location = this.getAttributeLocation(name);
-        if(enable){
-            GL20.glEnableVertexAttribArray(location);
-        }
-        GL20.glVertexAttribPointer(location, size, GL11.GL_FLOAT, false, stride, offset);
+        GL20.glVertexAttribPointer(location, size, GL11.GL_FLOAT, false, this.componentsPerVertex*Float.BYTES, this.attributeOffset);
+        this.attributeOffset += size*Float.BYTES;
+
+        GL20.glEnableVertexAttribArray(location);
     }
 
     @Override
     public void setUniform(String name, Matrix4f matrix){
+        int location = this.getUniformLocation(name);
         MemoryStack stack = MemoryStack.stackPush();
-        GL20.glUniformMatrix4fv(this.getUniformLocation(name), false, matrix.get(stack.mallocFloat(4*4)));
+        GL20.glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(4*4)));
         stack.pop();
     }
 
@@ -126,13 +134,20 @@ public class ShaderProgram implements IShaderProgram{
     @Override
     public void unbind(){
         if(boundProgram == this){
-            unbindAll();
+            for(int i : this.attributeLocations.values()){
+                GL20.glDisableVertexAttribArray(i);
+            }
+
+            this.vao.unbind();
+            GL20.glUseProgram(0);
+            boundProgram = null;
         }
     }
 
     public static void unbindAll(){
-        GL20.glUseProgram(0);
-        boundProgram = null;
+        if(boundProgram != null){
+            boundProgram.unbind();
+        }
     }
 
     @Override
@@ -148,6 +163,11 @@ public class ShaderProgram implements IShaderProgram{
     @Override
     public int getComponentsPerVertex(){
         return this.componentsPerVertex;
+    }
+
+    @Override
+    public void draw(int amount){
+        this.vao.draw(amount);
     }
 
     @Override

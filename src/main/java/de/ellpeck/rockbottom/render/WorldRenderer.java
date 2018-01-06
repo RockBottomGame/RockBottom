@@ -190,32 +190,26 @@ public class WorldRenderer{
             if(renderer != null){
                 if(foreground){
                     if(forcesForeground){
-                        renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
-
-                        if(input.breakingLayer == layer){
-                            this.doBreakAnimation(input, manager, x, y, transX, transY, scale);
-                        }
+                        this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light);
                     }
 
                     renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
                 }
                 else if(!forcesForeground){
-                    renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
-
-                    if(input.breakingLayer == layer){
-                        this.doBreakAnimation(input, manager, x, y, transX, transY, scale);
-                    }
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light);
                 }
             }
         }
     }
 
-    private void doBreakAnimation(InteractionManager input, IAssetManager manager, int tileX, int tileY, float transX, float transY, float scale){
-        if(input.breakProgress > 0){
-            if(tileX == input.breakTileX && tileY == input.breakTileY){
-                ITexture brk = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
-                brk.draw((tileX-transX)*scale, (-tileY-transY)*scale, scale, scale);
-            }
+    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, IApiHandler api, int x, int y, float transX, float transY, float scale, int[] light){
+        boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
+
+        renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+
+        if(isBreakTile){
+            ITexture tex = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
+            tex.draw((x-transX)*scale, (-y-transY)*scale, scale, scale);
         }
     }
 

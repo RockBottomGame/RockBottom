@@ -41,7 +41,7 @@ public class EmptyShaderProgram implements IShaderProgram{
     }
 
     @Override
-    public void pointVertexAttribute(boolean enable, String name, int size, int stride, int offset){
+    public void pointVertexAttribute(String name, int size){
 
     }
 
@@ -88,6 +88,11 @@ public class EmptyShaderProgram implements IShaderProgram{
     @Override
     public int getComponentsPerVertex(){
         return 0;
+    }
+
+    @Override
+    public void draw(int amount){
+
     }
 
     @Override

@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.assets.loader;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -34,9 +33,6 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
         Shader fragment = this.loadShader(path+fragmentPath, GL20.GL_FRAGMENT_SHADER);
 
         ShaderProgram shader = new ShaderProgram(vertex, fragment);
-
-        IGameInstance game = RockBottomAPI.getGame();
-        shader.setDefaultValues(game.getWidth(), game.getHeight());
 
         RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
         return shader;

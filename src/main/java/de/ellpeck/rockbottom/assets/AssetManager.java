@@ -137,7 +137,12 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
 
         RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(game, this, game.getRenderer()));
-        game.renderer.initDefaultShader(this.getShaderProgram(RockBottomAPI.createInternalRes("default")));
+        this.initInternalShaders(game);
+    }
+
+    private void initInternalShaders(RockBottom game){
+        IShaderProgram defaultShader = this.getShaderProgram(RockBottomAPI.createInternalRes("default"));
+        game.renderer.initDefaultShader(defaultShader);
     }
 
     public void loadCursors(){

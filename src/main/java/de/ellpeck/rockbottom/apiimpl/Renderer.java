@@ -40,7 +40,6 @@ public class Renderer implements IRenderer{
     private final IGameInstance game;
 
     private final VertexBufferObject vbo;
-    private final VertexArrayObject vao;
     private final FloatBuffer vertices;
 
     private IShaderProgram defaultProgram;
@@ -81,9 +80,6 @@ public class Renderer implements IRenderer{
     public Renderer(IGameInstance game){
         this.game = game;
 
-        this.vao = new VertexArrayObject();
-        this.vao.bind();
-
         this.vbo = new VertexBufferObject(false);
         this.vertices = MemoryUtil.memAllocFloat(Main.vertexCache);
 
@@ -96,6 +92,7 @@ public class Renderer implements IRenderer{
     @Override
     public void initDefaultShader(IShaderProgram program){
         this.defaultProgram = program;
+        this.defaultProgram.setDefaultValues(this.game.getWidth(), this.game.getHeight());
         this.setProgram(this.defaultProgram);
     }
 
@@ -123,6 +120,10 @@ public class Renderer implements IRenderer{
             }
 
             this.texture = texture;
+
+            if(this.texture != null){
+                this.texture.bind();
+            }
         }
     }
 
@@ -252,17 +253,11 @@ public class Renderer implements IRenderer{
     @Override
     public void flush(){
         if(this.vertexAmount > 0){
-            if(this.texture != null){
-                this.texture.bind();
-            }
-
             this.vertices.flip();
-            this.vao.bind();
             this.program.bind();
 
             this.vbo.subData(this.vertices);
-
-            this.vao.draw(this.vertexAmount);
+            this.program.draw(this.vertexAmount);
 
             this.vertices.clear();
             this.vertexAmount = 0;
@@ -375,7 +370,6 @@ public class Renderer implements IRenderer{
     public void dispose(){
         MemoryUtil.memFree(this.vertices);
         this.vbo.dispose();
-        this.vao.dispose();
     }
 
     @Override
