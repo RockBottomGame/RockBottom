@@ -170,10 +170,6 @@ public class Renderer implements IRenderer{
     @Override
     public void addVertex(float x, float y, int color, float u, float v){
         if(this.isDrawing){
-            if(this.vertices.remaining() < this.program.getComponentsPerVertex()*3 && this.vertexAmount%3 == 0){
-                this.flush();
-            }
-
             float theX;
             float theY;
 
@@ -211,6 +207,10 @@ public class Renderer implements IRenderer{
 
     @Override
     public IRenderer put(float f){
+        if(this.vertices.remaining() < this.program.getComponentsPerVertex()*3 && this.vertexAmount%3 == 0){
+            this.flush();
+        }
+
         this.vertices.put(f);
 
         this.componentCounter++;
