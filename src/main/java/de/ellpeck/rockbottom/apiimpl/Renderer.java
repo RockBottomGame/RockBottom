@@ -18,6 +18,7 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.engine.IVAO;
 import de.ellpeck.rockbottom.api.render.engine.IVBO;
+import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -520,8 +521,18 @@ public class Renderer implements IRenderer{
     }
 
     @Override
+    public void activateTextureBank(TextureBank bank){
+        Texture.activateTextureBank(bank, false);
+    }
+
+    @Override
     public void unbindTexture(){
-        Texture.unbindAll(true);
+        Texture.unbindCurrentBank();
+    }
+
+    @Override
+    public void unbindAllTextures(){
+        Texture.unbindAllBanks();
     }
 
     @Override

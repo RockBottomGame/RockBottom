@@ -396,6 +396,8 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     @Override
     public void dispose(){
+        Texture.unbindAllBanks();
+
         if(!this.assets.isEmpty()){
             for(IAsset asset : this.assets.values()){
                 asset.dispose();

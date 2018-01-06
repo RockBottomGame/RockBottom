@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.assets.stub;
 import com.google.gson.JsonElement;
 import com.sun.prism.impl.BufferUtil;
 import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.util.Colors;
 
 import java.nio.ByteBuffer;
@@ -13,12 +14,12 @@ public class EmptyTexture implements ITexture{
     private final ByteBuffer pixelData = BufferUtil.newByteBuffer(0);
 
     @Override
-    public void bind(){
+    public void bind(TextureBank bank){
 
     }
 
     @Override
-    public void forceBind(boolean overrideBound){
+    public void bind(){
 
     }
 
@@ -48,12 +49,12 @@ public class EmptyTexture implements ITexture{
     }
 
     @Override
-    public void unbind(){
+    public void unbind(TextureBank bank){
 
     }
 
     @Override
-    public void forceUnbind(boolean overrideBound){
+    public void unbind(){
 
     }
 

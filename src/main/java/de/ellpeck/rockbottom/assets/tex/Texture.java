@@ -5,10 +5,12 @@ import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
@@ -24,7 +26,9 @@ import java.util.Random;
 public class Texture implements ITexture{
 
     public static int binds;
-    private static Texture boundTexture;
+
+    private static final Texture[] BOUND_TEXTURES = new Texture[TextureBank.BANKS.length];
+    private static TextureBank activeBank = TextureBank.BANK_1;
 
     private Random rand;
     private Map<String, JsonElement> additionalData;
@@ -231,22 +235,74 @@ public class Texture implements ITexture{
         this.init();
     }
 
-    @Override
-    public void bind(){
-        if(boundTexture != this){
-            this.forceBind(true);
+    public static void activateTextureBank(TextureBank bank, boolean force){
+        if(activeBank != bank || force){
+            GL13.glActiveTexture(GL13.GL_TEXTURE0+activeBank.ordinal());
+            activeBank = bank;
         }
     }
 
     @Override
-    public void forceBind(boolean overrideBound){
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id);
+    public void bind(TextureBank bank, boolean revertAfterBind){
+        TextureBank last = activeBank;
 
-        if(overrideBound){
-            boundTexture = this;
+        activateTextureBank(bank, false);
+        this.bind();
+
+        if(revertAfterBind){
+            activateTextureBank(last, false);
+        }
+    }
+
+    @Override
+    public void bind(){
+        if(BOUND_TEXTURES[activeBank.ordinal()] != this){
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id);
+            BOUND_TEXTURES[activeBank.ordinal()] = this;
+
+            binds++;
+        }
+    }
+
+    @Override
+    public void unbind(TextureBank bank, boolean revertAfterUnbind){
+        TextureBank last = activeBank;
+
+        activateTextureBank(bank, false);
+        this.unbind();
+
+        if(revertAfterUnbind){
+            activateTextureBank(last, false);
+        }
+    }
+
+    @Override
+    public void unbind(){
+        if(BOUND_TEXTURES[activeBank.ordinal()] == this){
+            unbindCurrentBank();
+        }
+    }
+
+    public static void unbindCurrentBank(){
+        BOUND_TEXTURES[activeBank.ordinal()] = null;
+    }
+
+    public static void unbindAllBanks(){
+        boolean changed = false;
+
+        for(int i = 0; i < BOUND_TEXTURES.length; i++){
+            if(BOUND_TEXTURES[i] != null){
+                activateTextureBank(TextureBank.BANKS[i], false);
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+
+                BOUND_TEXTURES[i] = null;
+                changed = TextureBank.BANKS[i] != activeBank;
+            }
         }
 
-        binds++;
+        if(changed){
+            activateTextureBank(activeBank, true);
+        }
     }
 
     private void init(){
@@ -278,26 +334,6 @@ public class Texture implements ITexture{
     @Override
     public ByteBuffer getPixelData(){
         return this.pixelData;
-    }
-
-    @Override
-    public void unbind(){
-        if(boundTexture == this){
-            this.forceUnbind(true);
-        }
-    }
-
-    @Override
-    public void forceUnbind(boolean overrideBound){
-        unbindAll(overrideBound);
-    }
-
-    public static void unbindAll(boolean overrideBound){
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-
-        if(overrideBound){
-            boundTexture = null;
-        }
     }
 
     @Override
