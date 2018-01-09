@@ -29,7 +29,7 @@ public final class Main{
     public static int height;
     public static boolean fullscreen;
     public static int vertexCache;
-    public static boolean saveTextureSheet = true;
+    public static boolean saveTextureSheet;
 
     public static boolean isDedicatedServer;
     public static int port;
@@ -49,6 +49,7 @@ public final class Main{
             OptionSpec<Integer> optionPort = parser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(8000);
             OptionSpec optionSkipIntro = parser.accepts("skipIntro");
             OptionSpec optionFullscreen = parser.accepts("fullscreen");
+            OptionSpec optionSaveTextureSheet = parser.accepts("saveTextureSheet");
             OptionSpec optionServer = parser.accepts("server");
             OptionSpec optionIgnored = parser.nonOptions();
 
@@ -81,6 +82,7 @@ public final class Main{
             height = options.valueOf(optionHeight);
             vertexCache = options.valueOf(optionVertexCache);
             fullscreen = options.has(optionFullscreen);
+            saveTextureSheet = options.has(optionSaveTextureSheet);
 
             try{
                 URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();
