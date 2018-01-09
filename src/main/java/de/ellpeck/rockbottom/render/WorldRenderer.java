@@ -18,6 +18,7 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -29,7 +30,6 @@ import java.util.List;
 
 public class WorldRenderer{
 
-    private static final IResourceName BREAK_SHADER = RockBottomAPI.createInternalRes("break");
     private static final IResourceName SUN_RES = RockBottomAPI.createInternalRes("sky.sun");
     private static final IResourceName MOON_RES = RockBottomAPI.createInternalRes("sky.moon");
     private static final IResourceName[] CLOUD_TEXTURES = new IResourceName[12];
@@ -209,7 +209,7 @@ public class WorldRenderer{
         boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
 
         if(isBreakTile){
-            IShaderProgram program = manager.getShaderProgram(BREAK_SHADER);
+            IShaderProgram program = manager.getShaderProgram(ShaderProgram.BREAK_SHADER);
             g.setProgram(program);
         }
 
@@ -219,7 +219,7 @@ public class WorldRenderer{
             ITexture tex = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
             tex.bind(TextureBank.BANK_2, true);
 
-            g.setProgram(null);
+            g.setLastProgram();
         }
     }
 

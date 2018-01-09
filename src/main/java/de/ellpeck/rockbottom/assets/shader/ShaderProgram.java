@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.assets.shader;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.render.engine.VertexProcessor;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.render.engine.VertexArrayObject;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -13,6 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ShaderProgram implements IShaderProgram{
+
+    public static final IResourceName GUI_SHADER = RockBottomAPI.createInternalRes("gui");
+    public static final IResourceName WORLD_SHADER = RockBottomAPI.createInternalRes("world");
+    public static final IResourceName BREAK_SHADER = RockBottomAPI.createInternalRes("break");
 
     private static int boundProgram;
     private static ShaderProgram boundProgramRef;
