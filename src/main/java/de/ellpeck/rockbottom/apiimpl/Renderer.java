@@ -233,6 +233,8 @@ public class Renderer implements IRenderer{
             this.resetTransformation();
 
             this.isDrawing = true;
+
+            this.program.getProcessor().onBegin(this);
         }
         else{
             throw new RuntimeException("Can't begin a renderer that is already drawing!");
@@ -248,6 +250,8 @@ public class Renderer implements IRenderer{
 
             this.lastFlushes = this.flushCounter;
             this.flushCounter = 0;
+
+            this.program.getProcessor().onEnd(this);
         }
         else{
             throw new RuntimeException("Can't end a renderer that isn't drawing!");
@@ -267,6 +271,8 @@ public class Renderer implements IRenderer{
             this.vertexAmount = 0;
 
             this.flushCounter++;
+
+            this.program.getProcessor().onFlush(this);
         }
     }
 

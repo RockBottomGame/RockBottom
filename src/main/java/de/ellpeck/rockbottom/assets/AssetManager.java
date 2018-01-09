@@ -200,6 +200,11 @@ public class AssetManager implements IAssetManager, IDisposable{
                     this.vertexCounter = 0;
                 }
             }
+
+            @Override
+            public void onFlush(IRenderer renderer){
+                this.vertexCounter = 0;
+            }
         });
         breakShader.setDefaultValues(width, height);
         breakShader.pointVertexAttribute("breakTexCoord", 2);
