@@ -117,9 +117,7 @@ public class Renderer implements IRenderer{
 
     @Override
     public void setLastProgram(){
-        if(this.lastProgram != null){
-            this.setProgram(this.lastProgram);
-        }
+        this.setProgram(this.lastProgram);
     }
 
     @Override
