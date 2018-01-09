@@ -59,11 +59,13 @@ public class GuiInventory extends GuiContainer{
 
     @Override
     public void onOpened(IGameInstance game){
+        super.onOpened(game);
         this.player.getInv().addChangeCallback(this.invCallback);
     }
 
     @Override
     public void onClosed(IGameInstance game){
+        super.onClosed(game);
         this.player.getInv().removeChangeCallback(this.invCallback);
     }
 

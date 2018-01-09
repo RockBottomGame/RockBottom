@@ -72,6 +72,7 @@ public class GuiJoinServer extends Gui{
 
     @Override
     public void onClosed(IGameInstance game){
+        super.onClosed(game);
         if(this.joinThread != null){
             this.joinThread.interrupt();
             this.joinThread = null;

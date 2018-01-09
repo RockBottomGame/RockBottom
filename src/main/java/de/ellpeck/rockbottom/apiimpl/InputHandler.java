@@ -30,6 +30,7 @@ public class InputHandler implements IInputHandler{
     private int mouseY;
     private int nextMouseWheelDelta;
     private int mouseWheelDelta;
+    private boolean allowKeyboardRepeats;
 
     public InputHandler(RockBottom game){
         this.game = game;
@@ -50,7 +51,7 @@ public class InputHandler implements IInputHandler{
         GLFW.glfwSetKeyCallback(game.getWindow(), new GLFWKeyCallback(){
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods){
-                if(action == GLFW.GLFW_PRESS){
+                if(action == GLFW.GLFW_PRESS || (action == GLFW.GLFW_REPEAT && InputHandler.this.allowKeyboardRepeats)){
                     InputHandler.this.keysToProcess.add(key);
                 }
             }
@@ -197,5 +198,10 @@ public class InputHandler implements IInputHandler{
     @Override
     public int getMouseY(){
         return this.mouseY;
+    }
+
+    @Override
+    public void allowKeyboardEvents(boolean allow){
+        this.allowKeyboardRepeats = allow;
     }
 }

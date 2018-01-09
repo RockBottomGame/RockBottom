@@ -133,6 +133,7 @@ public class GuiSign extends Gui{
 
     @Override
     public void onClosed(IGameInstance game){
+        super.onClosed(game);
         this.tile.world.setDirty(this.tile.x, this.tile.y);
 
         if(this.tile.world.isServer()){

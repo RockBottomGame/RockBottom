@@ -162,6 +162,7 @@ public class GuiPlayerEditor extends Gui{
 
     @Override
     public void onClosed(IGameInstance game){
+        super.onClosed(game);
         IPlayerDesign design = game.getPlayerDesign();
         RockBottom.savePlayerDesign(game, design);
     }
