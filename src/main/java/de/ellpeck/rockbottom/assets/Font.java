@@ -5,10 +5,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -34,8 +34,8 @@ public class Font implements IFont{
         this.texture = texture;
         this.characters = characters;
 
-        this.charWidth = texture.getTextureWidth()/widthInChars;
-        this.charHeight = texture.getTextureHeight()/heightInChars;
+        this.charWidth = texture.getRenderWidth()/widthInChars;
+        this.charHeight = texture.getRenderHeight()/heightInChars;
     }
 
     public static Font fromStream(ITexture texture, InputStream infoStream, String name) throws Exception{

@@ -4,7 +4,7 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -27,7 +27,7 @@ public class Texture implements ITexture{
 
     public static int binds;
 
-    private static final Texture[] BOUND_TEXTURES = new Texture[TextureBank.BANKS.length];
+    private static final int[] BOUND_TEXTURES = new int[TextureBank.BANKS.length];
     private static TextureBank activeBank = TextureBank.BANK_1;
 
     private Random rand;
@@ -80,14 +80,15 @@ public class Texture implements ITexture{
     public Texture getSubTexture(int x, int y, int width, int height, boolean inheritVariations, boolean inheritData){
         Texture sub = new Texture(this.getId(), this.textureWidth, this.textureHeight, this.pixelData);
 
-        sub.renderOffsetX = x;
-        sub.renderOffsetY = y;
+        sub.renderOffsetX = this.renderOffsetX+x;
+        sub.renderOffsetY = this.renderOffsetY+y;
         sub.renderWidth = width;
         sub.renderHeight = height;
 
         if(inheritData){
             sub.setAdditionalData(this.additionalData);
         }
+
         if(inheritVariations){
             if(this.variations != null){
                 List<ITexture> newVariations = new ArrayList<>();
@@ -101,10 +102,12 @@ public class Texture implements ITexture{
         return sub;
     }
 
+    @Override
     public void setAdditionalData(Map<String, JsonElement> data){
         this.additionalData = data;
     }
 
+    @Override
     public void setVariations(List<ITexture> variations){
         this.variations = variations;
     }
@@ -121,7 +124,7 @@ public class Texture implements ITexture{
 
     @Override
     public void draw(float x, float y, float scale){
-        this.draw(x, y, this.textureWidth*1F, this.textureHeight*1F);
+        this.draw(x, y, this.renderWidth*1F, this.renderHeight*1F);
     }
 
     @Override
@@ -172,7 +175,7 @@ public class Texture implements ITexture{
 
     @Override
     public int getTextureColor(int x, int y){
-        int offset = (x+(y*this.textureWidth))*4;
+        int offset = (x+this.renderOffsetX+((y+this.renderOffsetY)*this.textureWidth))*4;
         return Colors.rgb(this.pixelData.get(offset), this.pixelData.get(offset+1), this.pixelData.get(offset+2), this.pixelData.get(offset+3));
     }
 
@@ -255,9 +258,9 @@ public class Texture implements ITexture{
 
     @Override
     public void bind(){
-        if(BOUND_TEXTURES[activeBank.ordinal()] != this){
+        if(BOUND_TEXTURES[activeBank.ordinal()] != this.id){
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id);
-            BOUND_TEXTURES[activeBank.ordinal()] = this;
+            BOUND_TEXTURES[activeBank.ordinal()] = this.id;
 
             binds++;
         }
@@ -277,21 +280,21 @@ public class Texture implements ITexture{
 
     @Override
     public void unbind(){
-        if(BOUND_TEXTURES[activeBank.ordinal()] == this){
+        if(BOUND_TEXTURES[activeBank.ordinal()] == this.id){
             unbindCurrentBank();
         }
     }
 
     public static void unbindCurrentBank(){
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        BOUND_TEXTURES[activeBank.ordinal()] = null;
+        BOUND_TEXTURES[activeBank.ordinal()] = -1;
     }
 
     public static void unbindAllBanks(){
         TextureBank last = activeBank;
 
         for(int i = 0; i < BOUND_TEXTURES.length; i++){
-            if(BOUND_TEXTURES[i] != null){
+            if(BOUND_TEXTURES[i] >= 0){
                 activateTextureBank(TextureBank.BANKS[i]);
                 unbindCurrentBank();
             }

@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 
 public class VertexBufferObject implements IVBO{
 
-    private static VertexBufferObject boundVBO;
+    private static int boundVBO;
 
     private final int id;
     private final boolean isStatic;
@@ -19,9 +19,9 @@ public class VertexBufferObject implements IVBO{
 
     @Override
     public void bind(){
-        if(boundVBO != this){
+        if(boundVBO != this.id){
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.id);
-            boundVBO = this;
+            boundVBO = this.id;
         }
     }
 
@@ -44,14 +44,14 @@ public class VertexBufferObject implements IVBO{
 
     @Override
     public void unbind(){
-        if(boundVBO == this){
+        if(boundVBO == this.id){
             unbindAll();
         }
     }
 
     public static void unbindAll(){
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        boundVBO = null;
+        boundVBO = -1;
     }
 
     @Override

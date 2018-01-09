@@ -4,7 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.util.BoundBox;
@@ -53,7 +53,7 @@ public class GuiLogo extends Gui{
         g.addFilledRect(0, 0, this.width, this.height, 0xFF519FFF);
 
         ITexture tex = manager.getTexture(this.isAngry ? this.texAngry : this.texture);
-        tex.draw(this.width/2-tex.getTextureWidth()/2, this.height/2-tex.getTextureHeight()/2);
+        tex.draw(this.width/2-tex.getRenderWidth()/2, this.height/2-tex.getRenderHeight()/2);
     }
 
     @Override

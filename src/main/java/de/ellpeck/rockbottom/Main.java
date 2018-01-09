@@ -29,6 +29,7 @@ public final class Main{
     public static int height;
     public static boolean fullscreen;
     public static int vertexCache;
+    public static boolean saveTextureSheet = true;
 
     public static boolean isDedicatedServer;
     public static int port;
@@ -44,7 +45,7 @@ public final class Main{
             OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
             OptionSpec<Integer> optionWidth = parser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(1280);
             OptionSpec<Integer> optionHeight = parser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(720);
-            OptionSpec<Integer> optionVertexCache = parser.accepts("vertexCache").withRequiredArg().ofType(Integer.class).defaultsTo(32768);
+            OptionSpec<Integer> optionVertexCache = parser.accepts("vertexCache").withRequiredArg().ofType(Integer.class).defaultsTo(65536);
             OptionSpec<Integer> optionPort = parser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(8000);
             OptionSpec optionSkipIntro = parser.accepts("skipIntro");
             OptionSpec optionFullscreen = parser.accepts("fullscreen");

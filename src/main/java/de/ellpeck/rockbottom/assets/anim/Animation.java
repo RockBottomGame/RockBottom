@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.assets.anim;
 
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
-import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.util.Util;
 
 import java.util.List;

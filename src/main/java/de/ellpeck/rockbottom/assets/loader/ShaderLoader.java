@@ -24,7 +24,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
     }
 
     @Override
-    public IShaderProgram loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         JsonObject object = element.getAsJsonObject();
         String vertexPath = object.get("vertex").getAsString();
         String fragmentPath = object.get("fragment").getAsString();
@@ -33,9 +33,8 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
         Shader fragment = this.loadShader(path+fragmentPath, GL20.GL_FRAGMENT_SHADER);
 
         ShaderProgram shader = new ShaderProgram(vertex, fragment);
-
         RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
-        return shader;
+        manager.addAsset(resourceName, shader);
     }
 
     private Shader loadShader(String path, int type) throws Exception{

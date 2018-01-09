@@ -6,9 +6,9 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
-import de.ellpeck.rockbottom.api.assets.ITexture;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.construction.resource.ResInfo;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -98,7 +98,7 @@ public class Renderer implements IRenderer{
 
     @Override
     public void setProgram(IShaderProgram program){
-        if(this.program != program){
+        if((this.program == null) != (program == null) || this.program.getId() != program.getId()){
             if(this.isDrawing){
                 this.flush();
             }
@@ -114,7 +114,7 @@ public class Renderer implements IRenderer{
 
     @Override
     public void setTexture(ITexture texture){
-        if(this.texture != texture){
+        if((this.texture == null) != (texture == null) || this.texture.getId() != texture.getId()){
             if(this.isDrawing){
                 this.flush();
             }
@@ -386,7 +386,7 @@ public class Renderer implements IRenderer{
             color = Colors.multiply(color, 0.75F);
         }
 
-        texture.draw(x, y, texture.getTextureWidth()*scale, texture.getTextureHeight()*scale, color);
+        texture.draw(x, y, texture.getRenderWidth()*scale, texture.getRenderHeight()*scale, color);
 
         if(slot != null){
             this.renderItemInGui(game, manager, slot, x+3F*scale, y+3F*scale, scale, Colors.WHITE);
@@ -503,7 +503,6 @@ public class Renderer implements IRenderer{
 
     @Override
     public void addFilledRect(float x, float y, float width, float height, int color){
-        this.setTexture(null);
         this.addTriangle(x, y, x, y+height, x+width, y, color, color, color, 0F, 0F, 0F, 0F, 0F, 0F);
         this.addTriangle(x+width, y, x, y+height, x+width, y+height, color, color, color, 0F, 0F, 0F, 0F, 0F, 0F);
     }

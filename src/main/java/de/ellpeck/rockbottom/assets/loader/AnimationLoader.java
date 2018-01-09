@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -32,12 +33,25 @@ public class AnimationLoader implements IAssetLoader<Animation>{
     }
 
     @Override
-    public Animation loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-        JsonArray array = element.getAsJsonArray();
-        String anim = array.get(0).getAsString();
-        String texture = array.get(1).getAsString();
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+        boolean shouldStitch = true;
+        String anim;
+        String texture;
 
-        Texture tex = new Texture(AssetManager.getResourceAsStream(path+texture));
+        if(element.isJsonObject()){
+            JsonObject object = element.getAsJsonObject();
+            anim = object.get("data").getAsString();
+            texture = object.get("path").getAsString();
+
+            if(object.has("should_stitch")){
+                shouldStitch = object.get("should_stitch").getAsBoolean();
+            }
+        }
+        else{
+            JsonArray array = element.getAsJsonArray();
+            anim = array.get(0).getAsString();
+            texture = array.get(1).getAsString();
+        }
 
         int frameWidth = 0;
         int frameHeight = 0;
@@ -88,11 +102,19 @@ public class AnimationLoader implements IAssetLoader<Animation>{
             this.rowCache.put(path+anim, cachedInfo);
         }
 
-        Animation animation = new Animation(tex, cachedInfo.width, cachedInfo.height, cachedInfo.rows);
+        CachedAnimInfo finalCachedInfo = cachedInfo;
+        IStitchCallback callback = (stitchX, stitchY, stitchedTexture) -> {
+            Animation animation = new Animation(stitchedTexture, finalCachedInfo.width, finalCachedInfo.height, finalCachedInfo.rows);
+            RockBottomAPI.logger().config("Loaded animation "+resourceName+" for mod "+loadingMod.getDisplayName());
+            manager.addAsset(resourceName, animation);
+        };
 
-        RockBottomAPI.logger().config("Loaded animation "+resourceName+" for mod "+loadingMod.getDisplayName());
-
-        return animation;
+        if(shouldStitch){
+            manager.getTextureStitcher().loadTexture(resourceName.toString(), AssetManager.getResourceAsStream(path+texture), callback);
+        }
+        else{
+            callback.onStitched(0, 0, new Texture(AssetManager.getResourceAsStream(path+texture)));
+        }
     }
 
     @Override

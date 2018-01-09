@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.Font;
-import de.ellpeck.rockbottom.assets.tex.Texture;
 
 public class FontLoader implements IAssetLoader<IFont>{
 
@@ -20,14 +19,15 @@ public class FontLoader implements IAssetLoader<IFont>{
     }
 
     @Override
-    public IFont loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         JsonArray array = element.getAsJsonArray();
         String info = array.get(0).getAsString();
         String texture = array.get(1).getAsString();
 
-        Font font = Font.fromStream(new Texture(AssetManager.getResourceAsStream(path+texture)), AssetManager.getResourceAsStream(path+info), resourceName.toString());
-        RockBottomAPI.logger().config("Loaded font "+resourceName+" for mod "+loadingMod.getDisplayName());
-
-        return font;
+        manager.getTextureStitcher().loadTexture(resourceName.toString(), AssetManager.getResourceAsStream(path+texture), (stitchX, stitchY, stitchedTexture) -> {
+            Font font = Font.fromStream(stitchedTexture, AssetManager.getResourceAsStream(path+info), resourceName.toString());
+            RockBottomAPI.logger().config("Loaded font "+resourceName+" for mod "+loadingMod.getDisplayName());
+            manager.addAsset(resourceName, font);
+        });
     }
 }

@@ -7,7 +7,8 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.ITexture;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
+import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -30,21 +31,26 @@ public class TextureLoader implements IAssetLoader<ITexture>{
     }
 
     @Override
-    public ITexture loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-        ITexture texture = this.makeTexture(element, path);
-
-        RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
-        return texture;
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+        this.makeTexture(manager, resourceName.toString(), element, path, (stitchX, stitchY, stitchedTexture) -> {
+            RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
+            manager.addAsset(resourceName, stitchedTexture);
+        });
     }
 
-    private Texture makeTexture(JsonElement element, String path) throws Exception{
+    private void makeTexture(IAssetManager manager, String refName, JsonElement element, String path, IStitchCallback callback) throws Exception{
         String resPath;
         Map<String, JsonElement> additionalData = null;
         List<ITexture> variations = null;
+        boolean shouldStitch = true;
 
         if(element.isJsonObject()){
             JsonObject object = element.getAsJsonObject();
             resPath = path+object.get("path").getAsString();
+
+            if(object.has("should_stitch")){
+                shouldStitch = object.get("should_stitch").getAsBoolean();
+            }
 
             if(object.has("variations")){
                 JsonArray varArray = object.get("variations").getAsJsonArray();
@@ -55,7 +61,15 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                         variations = new ArrayList<>();
                     }
 
-                    variations.add(new Texture(AssetManager.getResourceAsStream(dataPath)));
+                    List<ITexture> finalVars = variations;
+                    IStitchCallback call = (stitchX, stitchY, stitchedTexture) -> finalVars.add(stitchedTexture);
+
+                    if(shouldStitch){
+                        manager.getTextureStitcher().loadTexture(refName+"_variation_"+variations.size(), AssetManager.getResourceAsStream(dataPath), call);
+                    }
+                    else{
+                        call.onStitched(0, 0, new Texture(AssetManager.getResourceAsStream(dataPath)));
+                    }
                 }
             }
 
@@ -83,52 +97,59 @@ public class TextureLoader implements IAssetLoader<ITexture>{
             resPath = path+element.getAsString();
         }
 
-        Texture texture = new Texture(AssetManager.getResourceAsStream(resPath));
+        Map<String, JsonElement> finalAdditionalData = additionalData;
+        List<ITexture> finalVariations = variations;
+        IStitchCallback back = (stitchX, stitchY, stitchedTexture) -> {
+            if(finalAdditionalData != null){
+                stitchedTexture.setAdditionalData(finalAdditionalData);
+            }
 
-        if(additionalData != null){
-            texture.setAdditionalData(additionalData);
+            if(finalVariations != null){
+                stitchedTexture.setVariations(finalVariations);
+            }
+
+            callback.onStitched(stitchX, stitchY, stitchedTexture);
+        };
+
+        if(shouldStitch){
+            manager.getTextureStitcher().loadTexture(refName, AssetManager.getResourceAsStream(resPath), back);
         }
-
-        if(variations != null){
-            texture.setVariations(variations);
+        else{
+            back.onStitched(0, 0, new Texture(AssetManager.getResourceAsStream(resPath)));
         }
-
-        return texture;
     }
 
     @Override
-    public Map<IResourceName, ITexture> dealWithSpecialCases(IAssetManager manager, String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public boolean dealWithSpecialCases(IAssetManager manager, String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         if("subtexture".equals(elementName)){
-            Map<IResourceName, ITexture> subTextures = new HashMap<>();
-
             JsonObject object = element.getAsJsonObject();
-            Texture main = this.makeTexture(object.get("file"), path);
 
-            for(Map.Entry<String, JsonElement> entry : object.entrySet()){
-                String key = entry.getKey();
-                if(!"file".equals(key)){
-                    JsonArray array = entry.getValue().getAsJsonArray();
+            this.makeTexture(manager, "subtexture_"+resourceName, object.get("file"), path, (stitchX, stitchY, stitchedTexture) -> {
+                for(Map.Entry<String, JsonElement> entry : object.entrySet()){
+                    String key = entry.getKey();
+                    if(!"file".equals(key)){
+                        JsonArray array = entry.getValue().getAsJsonArray();
 
-                    String resName;
-                    if("*".equals(key)){
-                        resName = resourceName.substring(0, resourceName.length()-1);
+                        String resName;
+                        if("*".equals(key)){
+                            resName = resourceName.substring(0, resourceName.length()-1);
+                        }
+                        else{
+                            resName = resourceName+key;
+                        }
+                        IResourceName res = RockBottomAPI.createRes(loadingMod, resName);
+
+                        ITexture texture = stitchedTexture.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
+                        RockBottomAPI.logger().config("Loaded subtexture "+res+" for mod "+loadingMod.getDisplayName());
+                        manager.addAsset(res, texture);
                     }
-                    else{
-                        resName = resourceName+key;
-                    }
-                    IResourceName res = RockBottomAPI.createRes(loadingMod, resName);
-
-                    ITexture texture = main.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
-                    subTextures.put(res, texture);
-
-                    RockBottomAPI.logger().config("Loaded subtexture "+res+" for mod "+loadingMod.getDisplayName());
                 }
-            }
+            });
 
-            return subTextures;
+            return true;
         }
         else{
-            return null;
+            return false;
         }
     }
 

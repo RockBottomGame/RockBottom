@@ -13,7 +13,8 @@ import java.util.Map;
 
 public class ShaderProgram implements IShaderProgram{
 
-    private static ShaderProgram boundProgram;
+    private static int boundProgram;
+    private static ShaderProgram boundProgramRef;
 
     private final int id;
     private final VertexArrayObject vao;
@@ -71,8 +72,10 @@ public class ShaderProgram implements IShaderProgram{
 
     @Override
     public void bind(){
-        if(boundProgram != this){
-            boundProgram = this;
+        if(boundProgram != this.id){
+            boundProgram = this.id;
+            boundProgramRef = this;
+
             GL20.glUseProgram(this.id);
             this.vao.bind();
 
@@ -133,20 +136,22 @@ public class ShaderProgram implements IShaderProgram{
 
     @Override
     public void unbind(){
-        if(boundProgram == this){
+        if(boundProgram == this.id){
             for(int i : this.attributeLocations.values()){
                 GL20.glDisableVertexAttribArray(i);
             }
 
             this.vao.unbind();
             GL20.glUseProgram(0);
-            boundProgram = null;
+
+            boundProgram = -1;
+            boundProgramRef = null;
         }
     }
 
     public static void unbindAll(){
-        if(boundProgram != null){
-            boundProgram.unbind();
+        if(boundProgram >= 0){
+            boundProgramRef.unbind();
         }
     }
 

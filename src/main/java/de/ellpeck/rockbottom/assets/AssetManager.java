@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
 import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
+import de.ellpeck.rockbottom.api.assets.texture.ImageBuffer;
 import de.ellpeck.rockbottom.api.event.impl.LoadAssetsEvent;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
@@ -22,9 +24,8 @@ import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
 import de.ellpeck.rockbottom.assets.stub.EmptyShaderProgram;
 import de.ellpeck.rockbottom.assets.stub.EmptySound;
-import de.ellpeck.rockbottom.assets.stub.EmptyTexture;
-import de.ellpeck.rockbottom.assets.tex.ImageBuffer;
 import de.ellpeck.rockbottom.assets.tex.Texture;
+import de.ellpeck.rockbottom.assets.tex.TextureStitcher;
 import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
 import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
@@ -63,6 +64,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         RockBottomAPI.MAIN_MENU_THEMES.register(0, new BlankTheme());
     }
 
+    private final TextureStitcher stitcher = new TextureStitcher();
     private final Map<IResourceName, IAsset> assets = new HashMap<>();
     private final List<ISpecialCursor> sortedCursors = new ArrayList<>();
     private final Map<ISpecialCursor, Long> cursors = new HashMap<>();
@@ -75,6 +77,7 @@ public class AssetManager implements IAssetManager, IDisposable{
     private Locale defaultLocale;
     private IFont currentFont;
     private IShaderProgram missingShader;
+    private boolean isLocked = true;
 
     public static InputStream getResourceAsStream(String s){
         return AssetManager.class.getResourceAsStream(s);
@@ -91,6 +94,8 @@ public class AssetManager implements IAssetManager, IDisposable{
             this.assets.clear();
         }
 
+        this.isLocked = false;
+
         try{
             RockBottomAPI.logger().info("Loading resources...");
 
@@ -104,20 +109,21 @@ public class AssetManager implements IAssetManager, IDisposable{
             RockBottomAPI.logger().log(Level.SEVERE, "Exception loading resources! ", e);
         }
 
-        try{
-            ImageBuffer buffer = new ImageBuffer(2, 2);
-            for(int x = 0; x < 2; x++){
-                for(int y = 0; y < 2; y++){
-                    boolean areEqual = x == y;
-                    buffer.setRGBA(x, y, areEqual ? 255 : 0, 0, areEqual ? 0 : 255, 255);
-                }
+        ImageBuffer buffer = new ImageBuffer(2, 2);
+        for(int x = 0; x < 2; x++){
+            for(int y = 0; y < 2; y++){
+                boolean areEqual = x == y;
+                buffer.setRGBA(x, y, areEqual ? 255 : 0, 0, areEqual ? 0 : 255, 255);
             }
+        }
+        this.stitcher.loadTexture("missing", buffer, (stitchX, stitchY, stitchedTexture) -> this.missingTexture = stitchedTexture);
 
-            this.missingTexture = new Texture(2, 2, buffer.getRGBA());
+        try{
+            this.stitcher.doStitch();
+            this.stitcher.reset();
         }
         catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't generate missing texture!", e);
-            this.missingTexture = new EmptyTexture();
+            RockBottomAPI.logger().log(Level.SEVERE, "Exception stitching textures", e);
         }
 
         this.missingSound = new EmptySound();
@@ -138,6 +144,8 @@ public class AssetManager implements IAssetManager, IDisposable{
 
         RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(game, this, game.getRenderer()));
         this.initInternalShaders(game);
+
+        this.isLocked = true;
     }
 
     private void initInternalShaders(RockBottom game){
@@ -159,8 +167,8 @@ public class AssetManager implements IAssetManager, IDisposable{
         for(ISpecialCursor cursor : this.sortedCursors){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
-                int width = texture.getTextureWidth();
-                int height = texture.getTextureHeight();
+                int width = texture.getRenderWidth();
+                int height = texture.getRenderHeight();
 
                 GLFWImage image = GLFWImage.malloc();
                 ByteBuffer buf = BufferUtils.createByteBuffer(width*height*4);
@@ -267,16 +275,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     private void loadRes(IMod mod, String path, IAssetLoader loader, String name, JsonElement element, String elementName){
         try{
-            Map<IResourceName, IAsset> special = loader.dealWithSpecialCases(this, name, path, element, elementName, mod);
-            if(special != null && !special.isEmpty()){
-                for(Map.Entry<IResourceName, IAsset> entry : special.entrySet()){
-                    IAsset asset = entry.getValue();
-                    if(asset != null){
-                        this.assets.put(entry.getKey(), asset);
-                    }
-                }
-            }
-            else{
+            if(!loader.dealWithSpecialCases(this, name, path, element, elementName, mod)){
                 if("*".equals(elementName)){
                     name = name.substring(0, name.length()-1);
                 }
@@ -286,10 +285,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
                 if(!elementName.endsWith(".")){
                     IResourceName resourceName = RockBottomAPI.createRes(mod, name);
-                    IAsset asset = loader.loadAsset(this, resourceName, path, element, elementName, mod);
-                    if(asset != null){
-                        this.assets.put(resourceName, asset);
-                    }
+                    loader.loadAsset(this, resourceName, path, element, elementName, mod);
                 }
                 else if(element.isJsonObject()){
                     JsonObject object = element.getAsJsonObject();
@@ -421,6 +417,21 @@ public class AssetManager implements IAssetManager, IDisposable{
     public void onResize(int width, int height){
         for(IShaderProgram program : this.getAllOfType(IShaderProgram.class).values()){
             program.updateProjection(width, height);
+        }
+    }
+
+    @Override
+    public TextureStitcher getTextureStitcher(){
+        return this.stitcher;
+    }
+
+    @Override
+    public void addAsset(IResourceName name, IAsset asset){
+        if(!this.isLocked){
+            this.assets.put(name, asset);
+        }
+        else{
+            throw new UnsupportedOperationException("Cannot add assets to the asset manager while it's locked! Add assets during loading!");
         }
     }
 }

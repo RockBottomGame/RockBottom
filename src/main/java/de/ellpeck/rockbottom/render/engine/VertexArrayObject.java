@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL30;
 
 public class VertexArrayObject implements IVAO{
 
-    private static VertexArrayObject boundVAO;
+    private static int boundVAO;
 
     private final int id;
 
@@ -16,9 +16,9 @@ public class VertexArrayObject implements IVAO{
 
     @Override
     public void bind(){
-        if(boundVAO != this){
+        if(boundVAO != this.id){
             GL30.glBindVertexArray(this.id);
-            boundVAO = this;
+            boundVAO = this.id;
         }
     }
 
@@ -30,14 +30,14 @@ public class VertexArrayObject implements IVAO{
 
     @Override
     public void unbind(){
-        if(boundVAO == this){
+        if(boundVAO == this.id){
             unbindAll();
         }
     }
 
     public static void unbindAll(){
         GL30.glBindVertexArray(0);
-        boundVAO = null;
+        boundVAO = -1;
     }
 
     @Override
