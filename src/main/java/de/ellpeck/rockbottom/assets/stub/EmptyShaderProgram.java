@@ -1,9 +1,12 @@
 package de.ellpeck.rockbottom.assets.stub;
 
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
+import de.ellpeck.rockbottom.api.render.engine.VertexProcessor;
 import org.joml.Matrix4f;
 
 public class EmptyShaderProgram implements IShaderProgram{
+
+    private final VertexProcessor processor = new VertexProcessor();
 
     @Override
     public void setDefaultValues(int width, int height){
@@ -81,13 +84,18 @@ public class EmptyShaderProgram implements IShaderProgram{
     }
 
     @Override
-    public void setComponentsPerVertex(int components){
+    public void setVertexProcessing(int componentsPerVertex, VertexProcessor processor){
 
     }
 
     @Override
     public int getComponentsPerVertex(){
         return 0;
+    }
+
+    @Override
+    public VertexProcessor getProcessor(){
+        return this.processor;
     }
 
     @Override

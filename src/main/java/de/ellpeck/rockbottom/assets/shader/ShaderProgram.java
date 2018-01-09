@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.assets.shader;
 
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
+import de.ellpeck.rockbottom.api.render.engine.VertexProcessor;
 import de.ellpeck.rockbottom.render.engine.VertexArrayObject;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -20,8 +21,9 @@ public class ShaderProgram implements IShaderProgram{
     private final VertexArrayObject vao;
     private final Map<String, Integer> attributeLocations = new HashMap<>();
     private final Map<String, Integer> uniformLocations = new HashMap<>();
-    private int componentsPerVertex = 8;
+    private int componentsPerVertex;
     private int attributeOffset;
+    private VertexProcessor processor;
 
     public ShaderProgram(Shader vertex, Shader fragment){
         this.id = GL20.glCreateProgram();
@@ -32,6 +34,8 @@ public class ShaderProgram implements IShaderProgram{
 
         vertex.dispose();
         fragment.dispose();
+
+        this.setVertexProcessing(8, new VertexProcessor());
     }
 
     @Override
@@ -161,13 +165,19 @@ public class ShaderProgram implements IShaderProgram{
     }
 
     @Override
-    public void setComponentsPerVertex(int components){
-        this.componentsPerVertex = components;
+    public void setVertexProcessing(int componentsPerVertex, VertexProcessor processor){
+        this.componentsPerVertex = componentsPerVertex;
+        this.processor = processor;
     }
 
     @Override
     public int getComponentsPerVertex(){
         return this.componentsPerVertex;
+    }
+
+    @Override
+    public VertexProcessor getProcessor(){
+        return this.processor;
     }
 
     @Override

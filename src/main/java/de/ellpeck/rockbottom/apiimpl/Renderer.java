@@ -152,15 +152,12 @@ public class Renderer implements IRenderer{
         int bottomRight = this.combineLight(light, ITexture.BOTTOM_RIGHT, filter);
         int topRight = this.combineLight(light, ITexture.TOP_RIGHT, filter);
 
-        this.addTriangle(x, y, x2, y2, x3, y3, topLeft, bottomLeft, bottomRight, u, v, u, v2, u2, v2);
-        this.addTriangle(x, y, x3, y3, x4, y4, topLeft, bottomRight, topRight, u, v, u2, v2, u2, v);
+        this.program.getProcessor().addTexturedRegion(this, texture, x, y, x2, y2, x3, y3, x4, y4, u, v, u2, v2, topLeft, bottomLeft, bottomRight, topRight);
     }
 
     @Override
     public void addTriangle(float x1, float y1, float x2, float y2, float x3, float y3, int color1, int color2, int color3, float u1, float v1, float u2, float v2, float u3, float v3){
-        this.addVertex(x1, y1, color1, u1, v1);
-        this.addVertex(x2, y2, color2, u2, v2);
-        this.addVertex(x3, y3, color3, u3, v3);
+        this.program.getProcessor().addTriangle(this, x1, y1, x2, y2, x3, y3, color1, color2, color3, u1, v1, u2, v2, u3, v3);
     }
 
     @Override
@@ -191,9 +188,7 @@ public class Renderer implements IRenderer{
             theY *= this.scaleY;
         }
 
-        this.put(theX).put(theY)
-                .put(Colors.getR(color)).put(Colors.getG(color)).put(Colors.getB(color)).put(Colors.getA(color))
-                .put(u).put(v);
+        this.program.getProcessor().addVertex(this, theX, theY, color, u, v);
     }
 
     @Override
@@ -208,6 +203,7 @@ public class Renderer implements IRenderer{
             this.componentCounter++;
             if(this.componentCounter >= this.program.getComponentsPerVertex()){
                 this.vertexAmount++;
+                this.program.getProcessor().onVertexCompleted(this);
 
                 this.componentCounter = 0;
             }
@@ -669,5 +665,15 @@ public class Renderer implements IRenderer{
         else{
             return filter;
         }
+    }
+
+    @Override
+    public FloatBuffer getVertices(){
+        return this.vertices;
+    }
+
+    @Override
+    public int getVertexAmount(){
+        return this.vertexAmount;
     }
 }
