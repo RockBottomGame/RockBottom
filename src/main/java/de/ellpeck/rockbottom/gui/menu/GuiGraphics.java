@@ -44,19 +44,13 @@ public class GuiGraphics extends Gui{
                 game.getGuiManager().updateDimensions();
             }
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.gui_scale"))));
-        this.components.add(new ComponentSlider(this, 154, 40, 150, 16, settings.targetFps, 30, 256, ((integer, aBoolean) -> settings.targetFps = integer), assetManager.localize(RockBottomAPI.createInternalRes("button.target_fps"))){
-            @Override
-            protected String getText(){
-                return this.number >= this.max ? this.text+": "+assetManager.localize(RockBottomAPI.createInternalRes("info.unlimited")) : super.getText();
-            }
-        });
-        this.components.add(new ComponentToggleButton(this, 154, 60, 150, 16, !settings.fullscreen, () -> {
+        this.components.add(new ComponentToggleButton(this, 154, 40, 150, 16, !settings.fullscreen, () -> {
             settings.fullscreen = !settings.fullscreen;
             game.getDataManager().savePropSettings(settings);
             game.setFullscreen(settings.fullscreen);
             return true;
         }, "button.fullscreen"));
-        this.components.add(new ComponentToggleButton(this, 154, 80, 150, 16, !settings.smoothLighting, () -> {
+        this.components.add(new ComponentToggleButton(this, 154, 60, 150, 16, !settings.smoothLighting, () -> {
             settings.smoothLighting = !settings.smoothLighting;
             return true;
         }, "button.smooth_lighting"));
