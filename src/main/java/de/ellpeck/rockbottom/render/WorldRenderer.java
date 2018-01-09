@@ -2,9 +2,11 @@ package de.ellpeck.rockbottom.render;
 
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
+import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -27,6 +29,7 @@ import java.util.List;
 
 public class WorldRenderer{
 
+    private static final IResourceName BREAK_SHADER = RockBottomAPI.createInternalRes("break");
     private static final IResourceName SUN_RES = RockBottomAPI.createInternalRes("sky.sun");
     private static final IResourceName MOON_RES = RockBottomAPI.createInternalRes("sky.moon");
     private static final IResourceName[] CLOUD_TEXTURES = new IResourceName[12];
@@ -205,11 +208,18 @@ public class WorldRenderer{
     private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, IApiHandler api, int x, int y, float transX, float transY, float scale, int[] light){
         boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
 
+        if(isBreakTile){
+            IShaderProgram program = manager.getShaderProgram(BREAK_SHADER);
+            g.setProgram(program);
+        }
+
         renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
         if(isBreakTile){
             ITexture tex = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
-            tex.draw((x-transX)*scale, (-y-transY)*scale, scale, scale);
+            tex.bind(TextureBank.BANK_2, true);
+
+            g.setProgram(null);
         }
     }
 

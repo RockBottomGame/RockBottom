@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
 import de.ellpeck.rockbottom.api.assets.Locale;
@@ -15,6 +16,7 @@ import de.ellpeck.rockbottom.api.event.impl.LoadAssetsEvent;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.render.engine.IDisposable;
+import de.ellpeck.rockbottom.api.render.engine.VertexProcessor;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -143,14 +145,61 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.currentLocale = this.getAssetWithFallback(RockBottomAPI.createRes(game.getSettings().currentLocale), this.missingLocale);
 
         RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(game, this, game.getRenderer()));
-        this.initInternalShaders(game);
+        this.initInternalShaders(game, game.getWidth(), game.getHeight());
 
         this.isLocked = true;
     }
 
-    private void initInternalShaders(RockBottom game){
+    private void initInternalShaders(RockBottom game, int width, int height){
         IShaderProgram defaultShader = this.getShaderProgram(RockBottomAPI.createInternalRes("default"));
         game.renderer.initDefaultShader(defaultShader);
+
+        IShaderProgram breakShader = this.getShaderProgram(RockBottomAPI.createInternalRes("break"));
+        breakShader.setVertexProcessing(10, new VertexProcessor(){
+            private int vertexCounter;
+
+            @Override
+            public void addVertex(IRenderer renderer, float x, float y, int color, float u, float v){
+                super.addVertex(renderer, x, y, color, u, v);
+
+                ITexture tex = AssetManager.this.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(RockBottomAPI.getGame().getInteractionManager().getBreakProgress()*8F)));
+
+                float breakU;
+                float breakV;
+
+                switch(this.vertexCounter){
+                    case 0:
+                    case 3:
+                        breakU = 0F;
+                        breakV = 0F;
+                        break;
+                    case 1:
+                        breakU = 0F;
+                        breakV = 1F;
+                        break;
+                    case 2:
+                    case 4:
+                        breakU = 1F;
+                        breakV = 1F;
+                        break;
+                    default:
+                        breakU = 1F;
+                        breakV = 0F;
+                        break;
+                }
+
+                renderer.put((breakU*tex.getRenderWidth()+tex.getRenderOffsetX())/tex.getTextureWidth())
+                        .put((breakV*tex.getRenderHeight()+tex.getRenderOffsetY())/tex.getTextureHeight());
+
+                this.vertexCounter++;
+                if(this.vertexCounter >= 6){
+                    this.vertexCounter = 0;
+                }
+            }
+        });
+        breakShader.setDefaultValues(width, height);
+        breakShader.pointVertexAttribute("breakTexCoord", 2);
+        breakShader.setUniform("breakImage", 0);
     }
 
     public void loadCursors(){
