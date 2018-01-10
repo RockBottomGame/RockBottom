@@ -208,7 +208,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         });
         breakShader.setDefaultValues(width, height);
         breakShader.pointVertexAttribute("breakTexCoord", 2);
-        breakShader.setUniform("breakImage", 0);
+        breakShader.setUniform("breakImage", 1);
     }
 
     public void loadCursors(){
