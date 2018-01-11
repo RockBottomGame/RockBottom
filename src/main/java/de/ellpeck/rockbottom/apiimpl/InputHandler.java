@@ -28,8 +28,8 @@ public class InputHandler implements IInputHandler{
     private boolean isMouseInWindow = true;
     private int mouseX;
     private int mouseY;
-    private int nextMouseWheelDelta;
-    private int mouseWheelDelta;
+    private final int[] nextMouseWheelDelta = new int[2];
+    private final int[] mouseWheelDelta = new int[2];
     private boolean allowKeyboardRepeats;
 
     public InputHandler(RockBottom game){
@@ -45,7 +45,8 @@ public class InputHandler implements IInputHandler{
         GLFW.glfwSetScrollCallback(game.getWindow(), new GLFWScrollCallback(){
             @Override
             public void invoke(long window, double xOffset, double yOffset){
-                InputHandler.this.nextMouseWheelDelta = (int)yOffset;
+                InputHandler.this.nextMouseWheelDelta[0] = (int)xOffset;
+                InputHandler.this.nextMouseWheelDelta[1] = (int)yOffset;
             }
         });
         GLFW.glfwSetKeyCallback(game.getWindow(), new GLFWKeyCallback(){
@@ -82,8 +83,10 @@ public class InputHandler implements IInputHandler{
         this.pressedKeys.clear();
         this.pressedMouse.clear();
 
-        this.mouseWheelDelta = this.nextMouseWheelDelta;
-        this.nextMouseWheelDelta = 0;
+        for(int i = 0; i < 2; i++){
+            this.mouseWheelDelta[i] = this.nextMouseWheelDelta[i];
+            this.nextMouseWheelDelta[i] = 0;
+        }
 
         for(int code : this.charsToProcess){
             this.charInput(code, Character.toChars(code));
@@ -187,7 +190,12 @@ public class InputHandler implements IInputHandler{
 
     @Override
     public int getMouseWheelChange(){
-        return this.mouseWheelDelta;
+        return this.mouseWheelDelta[1];
+    }
+
+    @Override
+    public int getHorizontalMouseWheelChange(){
+        return this.mouseWheelDelta[0];
     }
 
     @Override

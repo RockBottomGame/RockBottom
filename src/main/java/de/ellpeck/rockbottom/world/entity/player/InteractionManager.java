@@ -289,14 +289,16 @@ public class InteractionManager implements IInteractionManager{
                 int slot = player.getSelectedSlot();
 
                 int scroll = game.getInput().getMouseWheelChange();
-                if(scroll < 0){
+                int scrollHor = game.getInput().getHorizontalMouseWheelChange();
+
+                if(scroll < 0 || scrollHor < 0){
                     slot++;
                     if(slot >= 8){
                         slot = 0;
                     }
                     slotChange = true;
                 }
-                else if(scroll > 0){
+                else if(scroll > 0 || scrollHor > 0){
                     slot--;
                     if(slot < 0){
                         slot = 7;
