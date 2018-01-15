@@ -99,19 +99,17 @@ public class Renderer implements IRenderer{
 
     @Override
     public void setProgram(IShaderProgram program){
+        if(program == null){
+            program = this.defaultProgram;
+        }
+
         if((this.program == null) != (program == null) || this.program.getId() != program.getId()){
             if(this.isDrawing){
                 this.flush();
             }
 
             this.lastProgram = this.program;
-
-            if(program == null){
-                this.program = this.defaultProgram;
-            }
-            else{
-                this.program = program;
-            }
+            this.program = program;
         }
     }
 

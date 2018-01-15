@@ -87,8 +87,8 @@ public class WorldRenderer{
         List<Entity> entities = new ArrayList<>();
         List<EntityPlayer> players = new ArrayList<>();
 
-        for(int gridX = minX; gridX <= maxX; gridX++){
-            for(int gridY = minY; gridY <= maxY; gridY++){
+        for(int gridY = minY; gridY <= maxY; gridY++){
+            for(int gridX = minX; gridX <= maxX; gridX++){
                 if(world.isChunkLoaded(gridX, gridY)){
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
                     this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, layers, false);
@@ -103,6 +103,7 @@ public class WorldRenderer{
                 }
             }
         }
+        g.setProgram(null);
 
         g.setScale(scale, scale);
 
@@ -141,15 +142,15 @@ public class WorldRenderer{
 
         g.setScale(1F, 1F);
 
-        for(int gridX = minX; gridX <= maxX; gridX++){
-            for(int gridY = minY; gridY <= maxY; gridY++){
+        for(int gridY = minY; gridY <= maxY; gridY++){
+            for(int gridX = minX; gridX <= maxX; gridX++){
                 if(world.isChunkLoaded(gridX, gridY)){
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
                     this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, layers, true);
                 }
             }
         }
-
+        g.setProgram(null);
     }
 
     private void renderChunk(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, float transX, float transY, float scale, List<TileLayer> layers, boolean foreground){
@@ -161,8 +162,8 @@ public class WorldRenderer{
         int endX = Math.min(Util.ceil(transX+g.getWidthInWorld()), chunkX+Constants.CHUNK_SIZE);
         int endY = Math.min(Util.ceil(-transY+1), chunkY+Constants.CHUNK_SIZE);
 
-        for(int x = startX; x < endX; x++){
-            for(int y = startY; y < endY; y++){
+        for(int y = startY; y < endY; y++){
+            for(int x = startX; x < endX; x++){
                 int[] light = RockBottomAPI.getApiHandler().interpolateLight(world, x, y);
 
                 int obscuringLayer = -1;
@@ -212,14 +213,15 @@ public class WorldRenderer{
             IShaderProgram program = manager.getShaderProgram(ShaderProgram.BREAK_SHADER);
             g.setProgram(program);
         }
+        else{
+            g.setProgram(null);
+        }
 
         renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
         if(isBreakTile){
             ITexture tex = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
             tex.bind(TextureBank.BANK_2, true);
-
-            g.setLastProgram();
         }
     }
 
