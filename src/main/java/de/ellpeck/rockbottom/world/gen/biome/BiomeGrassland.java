@@ -18,12 +18,12 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
-        return getState(layer, chunk.getX()+x, chunk.getY()+y, noise, 10D);
+        return getState(layer, chunk.getX()+x, chunk.getY()+y, noise, 0, 10);
     }
 
-    public static TileState getState(TileLayer layer, int x, int y, INoiseGen noise, double maxHeight){
+    public static TileState getState(TileLayer layer, int x, int y, INoiseGen noise, int minHeight, int maxHeight){
         if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
-            int height = (int)(((noise.make2dNoise(x/100D, 0D)+noise.make2dNoise(x/20D, 0D)*2D)/3D)*maxHeight);
+            int height = (int)(((noise.make2dNoise(x/100D, 0D)+noise.make2dNoise(x/20D, 0D)*2D)/3D)*(double)(maxHeight-minHeight))+minHeight;
 
             if(layer == TileLayer.BACKGROUND){
                 height -= Util.ceil(noise.make2dNoise(x/10D, 0D)*3D);
