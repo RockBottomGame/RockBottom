@@ -44,7 +44,7 @@ public class MainMenuBackground{
                 }
                 while(this.tiles[placeX][this.currentY] != null);
 
-                this.tiles[placeX][this.currentY] = this.theme.getState(placeX, this.currentY);
+                this.tiles[placeX][this.currentY] = this.theme.getState(placeX, this.currentY, this.tiles);
                 this.layerCounter++;
 
                 if(this.layerCounter >= IMainMenuTheme.TILE_AMOUNT){
