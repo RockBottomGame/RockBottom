@@ -191,6 +191,8 @@ public class GuiManager implements IGuiManager{
                             }
                         }
                     }
+
+                    font.drawString(3, height-3-font.getHeight(0.3F), components.size()+" components", 0.3F, Colors.RED);
                 }
             }
             else{
