@@ -319,9 +319,8 @@ public class RockBottom extends AbstractGame{
                 this.interactionManager.update(this);
 
                 this.particleManager.update(this);
+                this.worldRenderer.update();
             }
-
-            this.worldRenderer.update();
         }
 
         if(RockBottomAPI.getNet().isClient()){
