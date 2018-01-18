@@ -331,12 +331,9 @@ public class InternalHooks implements IInternalHooks{
                                 player.getInv().remove(player.getSelectedSlot(), 1);
                             }
 
-                            TileState state = player.world.getState(layer, x, y);
-                            if(state.getTile() == tile){
-                                IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, state);
-                                if(sound != null){
-                                    player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
-                                }
+                            IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
+                            if(sound != null){
+                                player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
                             }
                         }
                         return true;
