@@ -476,6 +476,17 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
+    public double getJumpHeight(){
+        double height = 0.28D;
+
+        if(this.hasEffect(GameContent.EFFECT_JUMP_HEIGHT)){
+            height += 0.1D;
+        }
+
+        return height;
+    }
+
+    @Override
     public void resetAndSpawn(IGameInstance game){
         this.respawnTimer = 0;
         this.dead = false;
@@ -511,7 +522,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
             return true;
         }
         else if(type == 2){
-            this.jump(0.28);
+            this.jump(this.getJumpHeight());
             return true;
         }
         else if(type == 3){

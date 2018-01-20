@@ -69,5 +69,6 @@ public final class ContentRegistry{
         RockBottomAPI.INFORMATION_REGISTRY.register(RockBottomAPI.createInternalRes("recipe"), RecipeInformation.class);
 
         new BasicEffect(RockBottomAPI.createInternalRes("speed"), false, false, 36000).register();
+        new BasicEffect(RockBottomAPI.createInternalRes("jump_height"), false, false, 36000).register();
     }
 }
