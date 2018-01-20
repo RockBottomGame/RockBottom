@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Util;
 
@@ -21,7 +22,7 @@ public final class ChangelogManager{
             try{
                 RockBottomAPI.logger().info("Grabbing the changelog...");
 
-                URL newestURL = new URL("https://raw.githubusercontent.com/RockBottomGame/Changelog/master/changelog.json");
+                URL newestURL = new URL(Constants.UPDATE_LINK);
                 InputStreamReader reader = new InputStreamReader(newestURL.openStream());
 
                 RockBottomAPI.logger().info("Parsing the changelog...");
