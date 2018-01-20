@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
@@ -72,10 +73,10 @@ public class CommandSpawnItem extends Command{
                 ItemInstance left = player.getInv().addExistingFirst(instance, false);
 
                 if(left != null && left.isEffectivelyEqual(instance)){
-                    return new ChatComponentText(FormattingCode.RED+"Not enough space for "+instance.getDisplayName()+" x"+instance.getAmount());
+                    return new ChatComponentText(FormattingCode.RED+"Not enough space for ").append(new ChatComponentTranslation(item.getUnlocalizedName(instance))).append(new ChatComponentText(" x"+instance.getAmount()));
                 }
                 else{
-                    return new ChatComponentText(FormattingCode.GREEN+"Spawned "+instance.getDisplayName()+" x"+instance.getAmount());
+                    return new ChatComponentText(FormattingCode.GREEN+"Spawned ").append(new ChatComponentTranslation(item.getUnlocalizedName(instance))).append(new ChatComponentText(" x"+instance.getAmount()));
                 }
             }
             else{

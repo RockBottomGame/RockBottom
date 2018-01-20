@@ -39,6 +39,7 @@ public class ChatLog implements IChatLog{
         new CommandWhitelist().register();
         new CommandBlacklist().register();
         new CommandTime().register();
+        new CommandEffect().register();
     }
 
     private final List<ChatComponent> messages = new ArrayList<>();

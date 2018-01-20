@@ -40,14 +40,14 @@ public class ComponentHealth extends GuiComponent{
 
                     if(healthParts == i){
                         alpha = ((float)game.getPlayer().getHealth()%20)/20F;
-                        heartEmpty.draw(x+currX, y, heartEmpty.getRenderWidth()*0.75F, heartEmpty.getRenderHeight()*0.75F);
+                        heartEmpty.draw(x+currX, y, heartEmpty.getRenderWidth(), heartEmpty.getRenderHeight());
                     }
                 }
                 else{
                     toUse = heartEmpty;
                 }
 
-                toUse.draw(x+currX, y, toUse.getRenderWidth()*0.75F, toUse.getRenderHeight()*0.75F, Colors.setA(Colors.WHITE, alpha));
+                toUse.draw(x+currX, y, toUse.getRenderWidth(), toUse.getRenderHeight(), Colors.setA(Colors.WHITE, alpha));
                 currX += 13;
             }
         }

@@ -1,11 +1,14 @@
 package de.ellpeck.rockbottom.gui;
 
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
+import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ComponentRenderEvent;
@@ -147,6 +150,35 @@ public class GuiManager implements IGuiManager{
                 GuiComponent component = this.onScreenComponents.get(i);
                 if(RockBottomAPI.getEventHandler().fireEvent(new ComponentRenderEvent(null, i, component)) != EventResult.CANCELLED){
                     component.render(game, manager, g, component.getRenderX(), component.getRenderY());
+                }
+            }
+
+            if(player != null){
+                float x = width-3F-13F;
+                float y = height-3F-26F;
+
+                for(ActiveEffect effect : player.getActiveEffects()){
+                    IResourceName icon = effect.getEffect().getIcon(effect, player);
+                    if(icon != null){
+                        ITexture tex = manager.getTexture(icon);
+                        tex.draw(x, y, 12F, 12F);
+
+                        String display;
+                        int seconds = effect.getTime()/Constants.TARGET_TPS;
+                        if(seconds < 60){
+                            display = seconds+"s";
+                        }
+                        else{
+                            display = seconds/60+"m";
+                        }
+                        font.drawString(x, y+8F, display, 0.25F);
+
+                        if(mouseX >= x && mouseY >= y && mouseX < x+12F && mouseY < y+12F){
+                            g.drawHoverInfoAtMouse(game, manager, true, 0, manager.localize(effect.getEffect().getUnlocalizedName(effect, player)), String.format("%02d:%02d", seconds/60, seconds%60));
+                        }
+
+                        x -= 13F;
+                    }
                 }
             }
 

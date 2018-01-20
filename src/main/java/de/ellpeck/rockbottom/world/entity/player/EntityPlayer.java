@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.net.INetHandler;
-import de.ellpeck.rockbottom.net.server.settings.CommandPermissions;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
@@ -17,6 +16,7 @@ import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
@@ -460,6 +460,22 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
+    public double getMoveSpeed(){
+        double speed = MOVE_SPEED;
+
+        if(this.hasEffect(GameContent.EFFECT_SPEED)){
+            speed += 0.07D;
+        }
+
+        return speed;
+    }
+
+    @Override
+    public double getClimbSpeed(){
+        return CLIMB_SPEED;
+    }
+
+    @Override
     public void resetAndSpawn(IGameInstance game){
         this.respawnTimer = 0;
         this.dead = false;
@@ -485,12 +501,12 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public boolean move(int type){
         if(type == 0){
-            this.motionX -= MOVE_SPEED;
+            this.motionX -= this.getMoveSpeed();
             this.facing = Direction.LEFT;
             return true;
         }
         else if(type == 1){
-            this.motionX += MOVE_SPEED;
+            this.motionX += this.getMoveSpeed();
             this.facing = Direction.RIGHT;
             return true;
         }
@@ -500,14 +516,14 @@ public class EntityPlayer extends AbstractEntityPlayer{
         }
         else if(type == 3){
             if(this.canClimb){
-                this.motionY += CLIMB_SPEED;
+                this.motionY += this.getClimbSpeed();
                 this.facing = Direction.UP;
                 return true;
             }
         }
         else if(type == 4){
             if(this.canClimb){
-                this.motionY -= CLIMB_SPEED;
+                this.motionY -= this.getClimbSpeed();
                 this.facing = Direction.DOWN;
                 return true;
             }
