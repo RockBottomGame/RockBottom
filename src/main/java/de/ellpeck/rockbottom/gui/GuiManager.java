@@ -154,6 +154,7 @@ public class GuiManager implements IGuiManager{
             }
 
             if(player != null){
+                String[] hover = null;
                 float x = width-3F-13F;
                 float y = height-3F-26F;
 
@@ -174,11 +175,15 @@ public class GuiManager implements IGuiManager{
                         font.drawString(x, y+8F, display, 0.25F);
 
                         if(mouseX >= x && mouseY >= y && mouseX < x+12F && mouseY < y+12F){
-                            g.drawHoverInfoAtMouse(game, manager, true, 0, manager.localize(effect.getEffect().getUnlocalizedName(effect, player)), String.format("%02d:%02d", seconds/60, seconds%60));
+                            hover = new String[]{manager.localize(effect.getEffect().getUnlocalizedName(effect, player)), String.format("%02d:%02d", seconds/60, seconds%60)};
                         }
 
                         x -= 13F;
                     }
+                }
+
+                if(hover != null){
+                    g.drawHoverInfoAtMouse(game, manager, true, 0, hover);
                 }
             }
 
