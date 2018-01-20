@@ -4,6 +4,8 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
+import de.ellpeck.rockbottom.api.effect.ActiveEffect;
+import de.ellpeck.rockbottom.api.effect.IEffect;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
@@ -33,7 +35,7 @@ import java.util.List;
 public class InternalHooks implements IInternalHooks{
 
     @Override
-    public void doDefaultEntityUpdate(Entity entity){
+    public void doDefaultEntityUpdate(Entity entity, List<ActiveEffect> effects){
         if(!entity.isDead()){
             entity.applyMotion();
 
@@ -74,6 +76,23 @@ public class InternalHooks implements IInternalHooks{
         }
 
         entity.ticksExisted++;
+
+        for(int i = 0; i < effects.size(); i++){
+            ActiveEffect active = effects.get(i);
+
+            IEffect effect = active.getEffect();
+            if(!effect.isInstant(entity)){
+                effect.updateLasting(active, entity);
+            }
+
+            active.removeTime(1);
+            if(active.getTime() <= 0){
+                effects.remove(i);
+                effect.onRemovedOrEnded(active, entity, true);
+
+                i--;
+            }
+        }
 
         if(entity.world.isServer()){
             if(entity.doesSync()){
