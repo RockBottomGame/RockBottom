@@ -21,7 +21,6 @@ public final class Main{
     public static CustomClassLoader classLoader;
 
     public static File gameDir;
-    public static File nativeDir;
     public static File unpackedModsDir;
 
     public static boolean skipIntro;
@@ -41,7 +40,6 @@ public final class Main{
             OptionSpec<String> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(String.class).defaultsTo(Level.INFO.getName());
             File defaultGameDir = new File(".", "rockbottom");
             OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(defaultGameDir);
-            OptionSpec<File> optionTempDir = parser.accepts("nativeDir").withRequiredArg().ofType(File.class).defaultsTo(new File(defaultGameDir, "lib"));
             OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
             OptionSpec<Integer> optionWidth = parser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(1280);
             OptionSpec<Integer> optionHeight = parser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(720);
@@ -66,11 +64,6 @@ public final class Main{
 
             isDedicatedServer = options.has(optionServer);
             port = options.valueOf(optionPort);
-
-            if(!isDedicatedServer){
-                nativeDir = options.valueOf(optionTempDir);
-                Logging.mainLogger.info("Setting native library folder to "+nativeDir);
-            }
 
             unpackedModsDir = options.valueOf(optionUnpackedDir);
             if(unpackedModsDir != null){
@@ -139,52 +132,6 @@ public final class Main{
         }
     }
 
-    /*private static String loadLib(String libName){
-        if(nativeDir != null){
-            try{
-                String mapped = System.mapLibraryName(libName);
-
-                if(!nativeDir.exists()){
-                    nativeDir.mkdirs();
-                }
-
-                File file = new File(nativeDir, mapped);
-                if(file.exists()){
-                    Logging.mainLogger.info("Using native library cache file "+file);
-                    return file.getAbsolutePath();
-                }
-                else{
-                    Logging.mainLogger.info("Creating native library cache file "+file);
-
-                    InputStream in = classLoader.getResourceAsStream(mapped);
-                    FileOutputStream out = new FileOutputStream(file);
-                    byte[] buffer = new byte[65536];
-
-                    while(true){
-                        int bufferSize = in.read(buffer, 0, buffer.length);
-
-                        if(bufferSize != -1){
-                            out.write(buffer, 0, bufferSize);
-                        }
-                        else{
-                            break;
-                        }
-                    }
-
-                    out.close();
-
-                    return file.getAbsolutePath();
-                }
-            }
-            catch(Exception e){
-                throw new RuntimeException("Couldn't load native library with name "+libName, e);
-            }
-        }
-        else{
-            throw new UnsupportedOperationException("Tried loading native library "+libName+" with the native library folder being null! This is likely due to the dedicated server trying to load a native library which is disallowed!");
-        }
-    }*/
-
     public static class CustomClassLoader extends URLClassLoader{
 
         public CustomClassLoader(URL[] urls, ClassLoader parent){
@@ -195,17 +142,5 @@ public final class Main{
         public void addURL(URL url){
             super.addURL(url);
         }
-
-        /*@Override
-        protected String findLibrary(String libName){
-            String lib = loadLib(libName);
-
-            if(lib != null && !lib.isEmpty()){
-                return lib;
-            }
-            else{
-                return super.findLibrary(libName);
-            }
-        }*/
     }
 }
