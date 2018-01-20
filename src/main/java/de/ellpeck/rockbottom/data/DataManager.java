@@ -81,6 +81,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(31, PacketReject.class);
         RockBottomAPI.PACKET_REGISTRY.register(32, PacketTime.class);
         RockBottomAPI.PACKET_REGISTRY.register(33, PacketAttack.class);
+        RockBottomAPI.PACKET_REGISTRY.register(34, PacketEffect.class);
 
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(0, ChatComponentText.class);
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(1, ChatComponentTranslation.class);

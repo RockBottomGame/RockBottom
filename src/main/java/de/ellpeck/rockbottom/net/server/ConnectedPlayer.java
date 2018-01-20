@@ -2,6 +2,8 @@ package de.ellpeck.rockbottom.net.server;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.effect.ActiveEffect;
+import de.ellpeck.rockbottom.api.effect.IEffect;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -169,5 +171,27 @@ public class ConnectedPlayer extends EntityPlayer{
         RockBottomAPI.logger().config("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
+    }
+
+    @Override
+    public int addEffect(ActiveEffect effect){
+        int remaining = super.addEffect(effect);
+
+        if(remaining != effect.getTime()){
+            this.sendPacket(new PacketEffect(effect, false));
+        }
+
+        return remaining;
+    }
+
+    @Override
+    public boolean removeEffect(IEffect effect){
+        if(super.removeEffect(effect)){
+            this.sendPacket(new PacketEffect(new ActiveEffect(effect), true));
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
