@@ -152,17 +152,34 @@ public class GuiChat extends Gui{
                 }
             }
 
+            int displayed = Math.min(20, this.suggestions.size()-1);
+
             float x = this.suggestionX-1;
-            float y = this.height-30-(this.suggestions.size()-1)*charHeight-1;
+            float y = this.height-30-displayed*charHeight-1;
             float width = longestWidth+1;
-            float height = this.suggestions.size()*charHeight+1;
+            float height = (displayed+1)*charHeight+1;
 
             g.addFilledRect(x, y, width, height, Gui.HOVER_INFO_BACKGROUND);
             g.addEmptyRect(x, y, width, height, Gui.GRADIENT_COLOR);
 
-            for(int i = this.suggestions.size()-1; i >= 0; i--){
-                String sugg = this.suggestions.get(i);
-                font.drawString(this.suggestionX, this.height-30-i*charHeight, sugg, 0.3F, i == this.selectedSuggestion ? Colors.RED : Colors.WHITE);
+            for(int i = displayed; i >= 0; i--){
+                int displayOffset = i;
+                int index = i;
+
+                if(this.suggestions.size()-1 > displayed){
+                    if(this.selectedSuggestion >= displayed/2){
+                        if(this.selectedSuggestion <= this.suggestions.size()-1-displayed/2){
+                            index = this.selectedSuggestion+i-displayed/2;
+                        }
+                        else{
+                            index = this.suggestions.size()-1-i;
+                            displayOffset = displayed-i;
+                        }
+                    }
+                }
+
+                String sugg = this.suggestions.get(index);
+                font.drawString(this.suggestionX, this.height-30-displayOffset*charHeight, sugg, 0.3F, index == this.selectedSuggestion ? Colors.RED : Colors.WHITE);
             }
         }
 
