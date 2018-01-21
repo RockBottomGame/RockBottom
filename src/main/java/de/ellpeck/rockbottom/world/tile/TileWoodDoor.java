@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.tile;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.EntityLiving;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -54,15 +55,21 @@ public class TileWoodDoor extends TileBasic{
 
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
-        if(!world.isClient()){
-            TileState state = world.getState(layer, x, y);
-            boolean open = !state.get(StaticTileProps.OPEN);
-            int yAdd = state.get(StaticTileProps.TOP_HALF) ? -1 : 1;
+        TileState state = world.getState(layer, x, y);
+        int yAdd = state.get(StaticTileProps.TOP_HALF) ? -1 : 1;
 
-            world.setState(layer, x, y, state.prop(StaticTileProps.OPEN, open));
-            world.setState(layer, x, y+yAdd, world.getState(layer, x, y+yAdd).prop(StaticTileProps.OPEN, open));
+        if(world.getEntities(new BoundBox(0, 0, 1, 2).add(x, y+yAdd), EntityLiving.class).isEmpty()){
+            if(!world.isClient()){
+                boolean open = !state.get(StaticTileProps.OPEN);
+
+                world.setState(layer, x, y, state.prop(StaticTileProps.OPEN, open));
+                world.setState(layer, x, y+yAdd, world.getState(layer, x, y+yAdd).prop(StaticTileProps.OPEN, open));
+            }
+            return true;
         }
-        return true;
+        else{
+            return false;
+        }
     }
 
     @Override
