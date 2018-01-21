@@ -35,6 +35,7 @@ public class GuiChat extends Gui{
 
     private final List<String> suggestions = new ArrayList<>();
     private int selectedSuggestion;
+    private int selectedLastInput = -1;
     private float suggestionX;
 
     public static int drawMessages(IGameInstance game, IAssetManager manager, IRenderer g, List<ChatComponent> messages, int offset, int maxHeight){
@@ -84,6 +85,7 @@ public class GuiChat extends Gui{
             this.suggestions.clear();
             this.suggestionX = 8+game.getAssetManager().getFont().getWidth(strg, 0.35F);
             this.selectedSuggestion = 0;
+            this.selectedLastInput = -1;
 
             if(strg.startsWith("/")){
                 String[] split = strg.substring(1).split(" ");
@@ -169,6 +171,8 @@ public class GuiChat extends Gui{
 
     @Override
     public boolean onKeyPressed(IGameInstance game, int button){
+        List<String> lastInputs = game.getChatLog().getLastInputs();
+
         if(button == GLFW.GLFW_KEY_ENTER){
             String text = this.inputField.getText();
 
@@ -178,6 +182,7 @@ public class GuiChat extends Gui{
                 }
                 else{
                     game.getChatLog().sendCommandSenderMessage(text, game.getPlayer());
+                    game.getChatLog().getLastInputs().add(0, text);
                 }
 
                 this.inputField.setText("");
@@ -190,18 +195,42 @@ public class GuiChat extends Gui{
 
         }
         else if(button == GLFW.GLFW_KEY_DOWN){
-            this.selectedSuggestion--;
-            if(this.selectedSuggestion < 0){
-                this.selectedSuggestion = this.suggestions.size()-1;
+            if(this.suggestions.isEmpty()){
+                if(!lastInputs.isEmpty()){
+                    int newSelected = this.selectedLastInput-1;
+                    if(newSelected >= 0){
+                        this.inputField.setText(lastInputs.get(newSelected));
+                        this.selectedLastInput = newSelected;
+                        return true;
+                    }
+                }
             }
-            return true;
+            else{
+                this.selectedSuggestion--;
+                if(this.selectedSuggestion < 0){
+                    this.selectedSuggestion = this.suggestions.size()-1;
+                }
+                return true;
+            }
         }
         else if(button == GLFW.GLFW_KEY_UP){
-            this.selectedSuggestion++;
-            if(this.selectedSuggestion >= this.suggestions.size()){
-                this.selectedSuggestion = 0;
+            if(this.suggestions.isEmpty()){
+                if(!lastInputs.isEmpty()){
+                    int newSelected = this.selectedLastInput+1;
+                    if(newSelected < lastInputs.size()){
+                        this.inputField.setText(lastInputs.get(newSelected));
+                        this.selectedLastInput = newSelected;
+                        return true;
+                    }
+                }
             }
-            return true;
+            else{
+                this.selectedSuggestion++;
+                if(this.selectedSuggestion >= this.suggestions.size()){
+                    this.selectedSuggestion = 0;
+                }
+                return true;
+            }
         }
         else if(button == GLFW.GLFW_KEY_TAB){
             if(!this.suggestions.isEmpty()){

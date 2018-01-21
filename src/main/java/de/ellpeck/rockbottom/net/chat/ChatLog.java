@@ -44,6 +44,7 @@ public class ChatLog implements IChatLog{
 
     private final List<ChatComponent> messages = new ArrayList<>();
     private final List<Integer> newMessageCounter = new ArrayList<>();
+    private final List<String> lastInputs = new ArrayList<>();
 
     @Override
     public void displayMessage(ChatComponent message){
@@ -131,6 +132,11 @@ public class ChatLog implements IChatLog{
         return this.messages;
     }
 
+    @Override
+    public List<String> getLastInputs(){
+        return this.lastInputs;
+    }
+
     //TODO Make this get a uuid from online if one in the world isn't available
     @Override
     public UUID getPlayerIdFromString(String nameOrId){
@@ -167,6 +173,7 @@ public class ChatLog implements IChatLog{
     public void clear(){
         this.messages.clear();
         this.newMessageCounter.clear();
+        this.lastInputs.clear();
     }
 
     public void drawNewMessages(RockBottom game, IAssetManager manager, IRenderer g){
