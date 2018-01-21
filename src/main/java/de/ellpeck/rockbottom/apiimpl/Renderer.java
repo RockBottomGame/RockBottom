@@ -359,6 +359,7 @@ public class Renderer implements IRenderer{
         this.setTranslation(0F, 0F);
         this.setScale(1F, 1F);
         this.setMirrored(false, false);
+        this.setRotationCenter(0F, 0F);
     }
 
     @Override
