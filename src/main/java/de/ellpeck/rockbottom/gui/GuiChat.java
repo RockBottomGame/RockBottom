@@ -8,9 +8,11 @@ import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentFormatSelector;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
+import de.ellpeck.rockbottom.api.gui.component.ComponentScrollBar;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
@@ -29,42 +31,48 @@ public class GuiChat extends Gui{
 
     private ComponentFormatSelector selector;
     private ComponentInputField inputField;
+    private ComponentScrollBar scrollBar;
 
     private final List<String> suggestions = new ArrayList<>();
     private int selectedSuggestion;
     private float suggestionX;
 
-    public static void drawMessages(IGameInstance game, IAssetManager manager, IRenderer g, List<ChatComponent> messages, int maxCount){
+    public static int drawMessages(IGameInstance game, IAssetManager manager, IRenderer g, List<ChatComponent> messages, int offset, int maxHeight){
         IFont font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
         int sizeX = (int)g.getWidthInGui()/2;
-        int y = (int)g.getHeightInGui()-26-(int)fontHeight;
+
+        int yStart = (int)g.getHeightInGui()-26-(int)fontHeight;
+        int yAdd = 0;
 
         boolean alternate = game.getChatLog().getMessages().size()%2 == 0;
-        int messageCounter = 0;
 
+        int lineCounter = 0;
+        outer:
         for(ChatComponent message : messages){
             List<String> split = font.splitTextToLength(sizeX, scale, true, message.getDisplayWithChildren(game, manager));
-
-            g.addFilledRect(5, y-fontHeight*(split.size()-1), sizeX, fontHeight*split.size()+1, alternate ? BACKING_ONE : BACKING_TWO);
 
             for(int i = split.size()-1; i >= 0; i--){
                 String s = split.get(i);
 
-                font.drawString(6, y+1, s, scale);
+                lineCounter++;
+                if(lineCounter > offset){
+                    if(yAdd+fontHeight+1 >= maxHeight){
+                        break outer;
+                    }
 
-                y -= fontHeight;
+                    g.addFilledRect(8, yStart-yAdd, sizeX, fontHeight+1, alternate ? BACKING_ONE : BACKING_TWO);
+                    font.drawString(9, yStart-yAdd+1, s, scale);
+
+                    yAdd += fontHeight+1;
+                }
             }
 
-            y -= 1;
             alternate = !alternate;
-
-            messageCounter++;
-            if(messageCounter >= maxCount){
-                break;
-            }
         }
+
+        return lineCounter;
     }
 
     @Override
@@ -72,7 +80,7 @@ public class GuiChat extends Gui{
         super.init(game);
 
         IChatLog chat = game.getChatLog();
-        this.inputField = new ComponentInputField(this, 5, this.height-21, this.width/2-18, 16, true, false, true, 512, true, strg -> {
+        this.inputField = new ComponentInputField(this, 8, this.height-21, this.width/2-18, 16, true, false, true, 512, true, strg -> {
             this.suggestions.clear();
             this.suggestionX = 8+game.getAssetManager().getFont().getWidth(strg, 0.35F);
             this.selectedSuggestion = 0;
@@ -106,11 +114,17 @@ public class GuiChat extends Gui{
         });
         this.components.add(this.inputField);
 
-        this.selector = new ComponentFormatSelector(this, 5+this.width/2-16, this.height-21, this.inputField);
+        this.selector = new ComponentFormatSelector(this, 7+this.width/2-16, this.height-21, this.inputField);
         this.components.add(this.selector);
         if(isSelectorOpen){
             this.selector.openMenu();
         }
+
+        int height = this.height/3*2;
+        int y = (int)game.getRenderer().getHeightInGui()-24-height;
+        this.scrollBar = new ComponentScrollBar(this, 1, y, height-1, new BoundBox(0, 0, game.getRenderer().getWidthInGui()/2, height).add(8, y), 0, null);
+        this.scrollBar.setDrawReversed(true);
+        this.components.add(this.scrollBar);
     }
 
     @Override
@@ -121,7 +135,8 @@ public class GuiChat extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g){
-        drawMessages(game, manager, g, game.getChatLog().getMessages(), 20);
+        int drawnLines = drawMessages(game, manager, g, game.getChatLog().getMessages(), this.scrollBar.getNumber(), this.height/3*2);
+        this.scrollBar.setMax(drawnLines);
 
         if(!this.suggestions.isEmpty()){
             IFont font = manager.getFont();

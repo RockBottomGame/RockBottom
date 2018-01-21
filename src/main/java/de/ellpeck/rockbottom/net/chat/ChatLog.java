@@ -171,7 +171,7 @@ public class ChatLog implements IChatLog{
 
     public void drawNewMessages(RockBottom game, IAssetManager manager, IRenderer g){
         if(!this.newMessageCounter.isEmpty()){
-            GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size());
+            GuiChat.drawMessages(game, manager, g, this.messages, 0, (int)g.getHeightInGui()/2);
         }
     }
 

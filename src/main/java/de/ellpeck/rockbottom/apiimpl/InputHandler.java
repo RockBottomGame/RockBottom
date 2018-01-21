@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -124,8 +125,13 @@ public class InputHandler implements IInputHandler{
                 player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
                 return true;
             }
-            else if(Settings.KEY_CHAT.isKey(key) && RockBottomAPI.getNet().isActive()){
-                this.game.getGuiManager().openGui(new GuiChat());
+            else if(Settings.KEY_CHAT.isKey(key)){
+                if(RockBottomAPI.getNet().isActive()){
+                    this.game.getGuiManager().openGui(new GuiChat());
+                }
+                else{
+                    this.game.getChatLog().displayMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.no_server")));
+                }
                 return true;
             }
         }
