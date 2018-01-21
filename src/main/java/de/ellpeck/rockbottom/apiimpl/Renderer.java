@@ -63,6 +63,8 @@ public class Renderer implements IRenderer{
     private float worldWidth;
     private float worldHeight;
 
+    private float rotationCenterX;
+    private float rotationCenterY;
     private float rotation;
     private float sinRot;
     private float cosRot;
@@ -172,8 +174,22 @@ public class Renderer implements IRenderer{
         float theY;
 
         if(this.rotation != 0F){
-            theX = x*this.cosRot-y*this.sinRot;
-            theY = x*this.sinRot+y*this.cosRot;
+            if(this.rotationCenterX != 0F){
+                x -= this.rotationCenterX;
+                theX = this.rotationCenterX+x*this.cosRot-y*this.sinRot;
+            }
+            else{
+                theX = x*this.cosRot-y*this.sinRot;
+            }
+
+            if(this.rotationCenterY != 0F){
+                y -= this.rotationCenterY;
+                theY = this.rotationCenterY+x*this.sinRot+y*this.cosRot;
+            }
+            else{
+                theY = x*this.sinRot+y*this.cosRot;
+            }
+
         }
         else{
             theX = x;
@@ -286,6 +302,22 @@ public class Renderer implements IRenderer{
         double rads = Math.toRadians(this.rotation);
         this.sinRot = (float)Math.sin(rads);
         this.cosRot = (float)Math.cos(rads);
+    }
+
+    @Override
+    public void setRotationCenter(float x, float y){
+        this.rotationCenterX = x;
+        this.rotationCenterY = y;
+    }
+
+    @Override
+    public float getRotationCenterX(){
+        return this.rotationCenterX;
+    }
+
+    @Override
+    public float getRotationCenterY(){
+        return this.rotationCenterY;
     }
 
     @Override
