@@ -436,9 +436,7 @@ public class RockBottom extends AbstractGame{
         else{
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-            this.renderer.begin();
             this.render();
-            this.renderer.end();
 
             Texture.binds = 0;
 
@@ -448,13 +446,14 @@ public class RockBottom extends AbstractGame{
     }
 
     protected void render(){
-        this.renderer.setProgram(this.assetManager.getShaderProgram(ShaderProgram.WORLD_SHADER));
+        this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(ShaderProgram.WORLD_SHADER));
+        this.renderer.begin();
 
         if(this.world != null){
             this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, this.world, this.player, this.interactionManager);
         }
 
-        this.renderer.setProgram(this.assetManager.getShaderProgram(ShaderProgram.GUI_SHADER));
+        this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(ShaderProgram.GUI_SHADER));
 
         float scale = this.renderer.getGuiScale();
         this.renderer.setScale(scale, scale);
@@ -467,6 +466,8 @@ public class RockBottom extends AbstractGame{
         if(this.renderer.isDebug()){
             DebugRenderer.render(this, this.assetManager, this.world, this.player, this.renderer);
         }
+
+        this.renderer.end();
     }
 
     @Override

@@ -155,7 +155,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     private void initInternalShaders(RockBottom game, int width, int height){
         IShaderProgram guiShader = this.getShaderProgram(ShaderProgram.GUI_SHADER);
-        game.renderer.initDefaultShader(guiShader);
+        guiShader.setDefaultValues(width, height);
 
         IShaderProgram worldShader = this.getShaderProgram(ShaderProgram.WORLD_SHADER);
         worldShader.setDefaultValues(width, height);

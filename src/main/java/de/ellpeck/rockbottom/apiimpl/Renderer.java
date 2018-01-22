@@ -93,10 +93,9 @@ public class Renderer implements IRenderer{
     }
 
     @Override
-    public void initDefaultShader(IShaderProgram program){
-        this.defaultProgram = program;
-        this.defaultProgram.setDefaultValues(this.game.getWidth(), this.game.getHeight());
-        this.setProgram(this.defaultProgram);
+    public void setDefaultProgram(IShaderProgram defaultProgram){
+        this.defaultProgram = defaultProgram;
+        this.setProgram(null);
     }
 
     @Override
@@ -591,7 +590,7 @@ public class Renderer implements IRenderer{
     @Override
     public IRenderer createRenderer(IShaderProgram defaultProgram){
         Renderer renderer = new Renderer(RockBottomAPI.getGame());
-        renderer.initDefaultShader(defaultProgram);
+        renderer.setDefaultProgram(defaultProgram);
         return renderer;
     }
 
