@@ -41,6 +41,7 @@ import java.util.Random;
 
 public class GuiManager implements IGuiManager{
 
+    public static boolean rainbowMode;
     private static final IResourceName LOC_DEAD = RockBottomAPI.createInternalRes("info.dead");
     private static final IResourceName LOC_DEAD_INFO = RockBottomAPI.createInternalRes("info.dead.wait");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
@@ -131,6 +132,11 @@ public class GuiManager implements IGuiManager{
     }
 
     public void render(RockBottom game, IAssetManager manager, IRenderer g, EntityPlayer player){
+        int actualColor = game.getSettings().guiColor;
+        if(rainbowMode){
+            game.getSettings().guiColor = Colors.rainbow((Util.getTimeMillis()/20)%256);
+        }
+
         IFont font = manager.getFont();
         float width = g.getWidthInGui();
         float height = g.getHeightInGui();
@@ -292,6 +298,10 @@ public class GuiManager implements IGuiManager{
                     }
                 }
             }
+        }
+
+        if(rainbowMode){
+            game.getSettings().guiColor = actualColor;
         }
     }
 

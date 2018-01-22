@@ -8,8 +8,12 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.gui.GuiManager;
 
 public class GuiGraphics extends Gui{
+
+    private static final String RAINBOW = "do the disco dance";
+    private int rainbowIndex;
 
     public GuiGraphics(Gui parent){
         super(304, 150, parent);
@@ -60,6 +64,7 @@ public class GuiGraphics extends Gui{
             this.components.add(new ComponentConfirmationPopup(this, 99+8, 94+8, aBoolean -> {
                 if(aBoolean){
                     settings.guiColor = Settings.DEFAULT_GUI_COLOR;
+                    GuiManager.rainbowMode = false;
                 }
             }));
             this.sortComponents();
@@ -70,6 +75,29 @@ public class GuiGraphics extends Gui{
             game.getGuiManager().openGui(this.parent);
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
+    }
+
+    @Override
+    public boolean onCharInput(IGameInstance game, int codePoint, char[] characters){
+        boolean did = false;
+        for(char c : characters){
+            if(this.rainbowIndex < RAINBOW.length()){
+                if(RAINBOW.charAt(this.rainbowIndex) == c){
+                    this.rainbowIndex++;
+
+                    if(this.rainbowIndex >= RAINBOW.length()){
+                        GuiManager.rainbowMode = true;
+                        this.rainbowIndex = 0;
+                    }
+
+                    did = true;
+                }
+                else{
+                    this.rainbowIndex = 0;
+                }
+            }
+        }
+        return did;
     }
 
     @Override
