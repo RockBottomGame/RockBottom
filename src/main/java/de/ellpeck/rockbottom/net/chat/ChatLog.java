@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -43,7 +44,7 @@ public class ChatLog implements IChatLog{
     }
 
     private final List<ChatComponent> messages = new ArrayList<>();
-    private final List<Integer> newMessageCounter = new ArrayList<>();
+    private final List<Counter> newMessageCounter = new ArrayList<>();
     private final List<String> lastInputs = new ArrayList<>();
 
     @Override
@@ -51,7 +52,7 @@ public class ChatLog implements IChatLog{
         this.messages.add(0, message);
 
         if(!RockBottomAPI.getGame().isDedicatedServer()){
-            this.newMessageCounter.add(0, 400);
+            this.newMessageCounter.add(0, new Counter(400));
         }
 
         CHAT_LOGGER.info(message.getUnformattedWithChildren());
@@ -178,19 +179,17 @@ public class ChatLog implements IChatLog{
 
     public void drawNewMessages(RockBottom game, IAssetManager manager, IRenderer g){
         if(!this.newMessageCounter.isEmpty()){
-            GuiChat.drawMessages(game, manager, g, this.messages, 0, (int)g.getHeightInGui()/2);
+            GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size(), 0, (int)g.getHeightInGui()/2);
         }
     }
 
     public void updateNewMessages(){
         if(!this.newMessageCounter.isEmpty()){
             for(int i = 0; i < this.newMessageCounter.size(); i++){
-                int newAmount = this.newMessageCounter.get(i)-1;
+                Counter counter = this.newMessageCounter.get(i);
+                counter.add(-1);
 
-                if(newAmount > 0){
-                    this.newMessageCounter.set(i, newAmount);
-                }
-                else{
+                if(counter.get() <= 0){
                     this.newMessageCounter.remove(i);
                     i--;
                 }

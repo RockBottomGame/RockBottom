@@ -38,7 +38,7 @@ public class GuiChat extends Gui{
     private int selectedLastInput = -1;
     private float suggestionX;
 
-    public static int drawMessages(IGameInstance game, IAssetManager manager, IRenderer g, List<ChatComponent> messages, int offset, int maxHeight){
+    public static int drawMessages(IGameInstance game, IAssetManager manager, IRenderer g, List<ChatComponent> messages, int messageCount, int offset, int maxHeight){
         IFont font = manager.getFont();
         float scale = 0.25F;
         float fontHeight = font.getHeight(scale);
@@ -51,7 +51,8 @@ public class GuiChat extends Gui{
 
         int lineCounter = 0;
         outer:
-        for(ChatComponent message : messages){
+        for(int j = 0; j < messageCount; j++){
+            ChatComponent message = messages.get(j);
             List<String> split = font.splitTextToLength(sizeX, scale, true, message.getDisplayWithChildren(game, manager));
 
             for(int i = split.size()-1; i >= 0; i--){
@@ -137,7 +138,8 @@ public class GuiChat extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g){
-        int drawnLines = drawMessages(game, manager, g, game.getChatLog().getMessages(), this.scrollBar.getNumber(), this.height/3*2);
+        List<ChatComponent> messages = game.getChatLog().getMessages();
+        int drawnLines = drawMessages(game, manager, g, messages, this.scrollBar.getNumber(), messages.size(), this.height/3*2);
         this.scrollBar.setMax(drawnLines);
 
         if(!this.suggestions.isEmpty()){
