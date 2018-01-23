@@ -69,9 +69,11 @@ public class ComponentConstruction extends GuiComponent{
                         boolean matches = IRecipe.matchesInv(recipe, this.gui.player.getInv());
 
                         if(matches ? counter == 0 : counter == 1){
-                            GuiComponent custom = recipe.getCustomComponent(this.gui.player.getInv());
-                            if(custom != null){
-                                this.menu.add(custom);
+                            List<GuiComponent> custom = recipe.getCustomComponents(this.gui.player.getInv());
+                            if(!custom.isEmpty()){
+                                for(GuiComponent comp : custom){
+                                    this.menu.add(comp);
+                                }
                             }
                             else{
                                 this.menu.add(new ComponentRecipeButton(this, 0, 0, 16, 16, recipe, recipe.getName(), matches));
