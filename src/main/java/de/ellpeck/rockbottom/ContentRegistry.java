@@ -41,7 +41,8 @@ public final class ContentRegistry{
         new TileSapling().register();
         new TileWater().register();
         new TileWoodBoards().register();
-        new TileWoodDoor().register();
+        new TileWoodDoor(RockBottomAPI.createInternalRes("wood_door")).register();
+        new TileWoodDoor(RockBottomAPI.createInternalRes("wood_door_old")).register();
         new TileRemainsGoo().register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();

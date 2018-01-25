@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityLiving;
@@ -24,8 +23,8 @@ public class TileWoodDoor extends TileBasic{
     private final BoundBox boxLeft = new BoundBox(0D, 0D, 2D/12D, 1D);
     private final BoundBox boxRight = new BoundBox(1D-2D/12D, 0D, 1D, 1D);
 
-    public TileWoodDoor(){
-        super(RockBottomAPI.createInternalRes("wood_door"));
+    public TileWoodDoor(IResourceName name){
+        super(name);
         this.addProps(StaticTileProps.TOP_HALF, StaticTileProps.OPEN, StaticTileProps.FACING_RIGHT);
     }
 

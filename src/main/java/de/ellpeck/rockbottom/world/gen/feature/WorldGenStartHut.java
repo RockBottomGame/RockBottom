@@ -102,8 +102,9 @@ public class WorldGenStartHut implements IWorldGenerator{
         }
 
         //Set door
-        chunk.setStateInner(startX+1, startY+1, GameContent.TILE_WOOD_DOOR.getDefState().prop(StaticTileProps.TOP_HALF, false));
-        chunk.setStateInner(startX+1, startY+2, GameContent.TILE_WOOD_DOOR.getDefState().prop(StaticTileProps.TOP_HALF, true));
+        TileState state = GameContent.TILE_WOOD_DOOR_OLD.getDefState();
+        chunk.setStateInner(startX+1, startY+1, state.prop(StaticTileProps.TOP_HALF, false));
+        chunk.setStateInner(startX+1, startY+2, state.prop(StaticTileProps.TOP_HALF, true));
 
         //Set dirt piles
         int[][] dirtPositions = new int[][]{
