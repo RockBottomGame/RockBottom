@@ -363,6 +363,11 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
+    public boolean hasAsset(IResourceName identifier, IResourceName path){
+        return this.assets.contains(identifier, path);
+    }
+
+    @Override
     public ITexture getTexture(IResourceName path){
         return this.getAssetWithFallback(ITexture.ID, path, this.missingTexture);
     }

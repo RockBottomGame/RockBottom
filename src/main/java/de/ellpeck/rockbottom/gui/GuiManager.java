@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
@@ -167,8 +168,14 @@ public class GuiManager implements IGuiManager{
                 for(ActiveEffect effect : player.getActiveEffects()){
                     IResourceName icon = effect.getEffect().getIcon(effect, player);
                     if(icon != null){
-                        ITexture tex = manager.getTexture(icon);
-                        tex.draw(x, y, 12F, 12F);
+                        if(manager.hasAsset(ITexture.ID, icon)){
+                            ITexture tex = manager.getTexture(icon);
+                            tex.draw(x, y, 12F, 12F);
+                        }
+                        else{
+                            IAnimation anim = manager.getAnimation(icon);
+                            anim.drawRow(0, x, y, 12F, 12F, Colors.WHITE);
+                        }
 
                         String display;
                         int seconds = effect.getTime()/Constants.TARGET_TPS;

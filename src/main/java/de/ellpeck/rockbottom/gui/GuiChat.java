@@ -139,7 +139,7 @@ public class GuiChat extends Gui{
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g){
         List<ChatComponent> messages = game.getChatLog().getMessages();
-        int drawnLines = drawMessages(game, manager, g, messages, this.scrollBar.getNumber(), messages.size(), this.height/3*2);
+        int drawnLines = drawMessages(game, manager, g, messages, messages.size(), this.scrollBar.getNumber(), this.height/3*2);
         this.scrollBar.setMax(drawnLines);
 
         if(!this.suggestions.isEmpty()){
