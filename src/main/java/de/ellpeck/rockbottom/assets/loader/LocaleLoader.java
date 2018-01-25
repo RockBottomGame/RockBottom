@@ -21,7 +21,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
 
     @Override
     public IResourceName getAssetIdentifier(){
-        return RockBottomAPI.createInternalRes("loc");
+        return Locale.ID;
     }
 
     @Override
@@ -29,14 +29,14 @@ public class LocaleLoader implements IAssetLoader<Locale>{
         String resPath = path+element.getAsString();
         Locale locale = this.fromStream(AssetManager.getResourceAsStream(resPath), elementName);
 
-        for(Locale asset : manager.getAllOfType(Locale.class).values()){
+        for(Locale asset : manager.<Locale>getAllOfType(Locale.ID).values()){
             if(this.merge(asset, locale)){
                 return;
             }
         }
 
         RockBottomAPI.logger().config("Loaded locale "+resourceName+" for mod "+loadingMod.getDisplayName());
-        manager.addAsset(resourceName, locale);
+        manager.addAsset(this, resourceName, locale);
     }
 
     private Locale fromStream(InputStream stream, String name) throws Exception{

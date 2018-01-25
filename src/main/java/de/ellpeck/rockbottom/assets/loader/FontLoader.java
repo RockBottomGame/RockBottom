@@ -15,7 +15,7 @@ public class FontLoader implements IAssetLoader<IFont>{
 
     @Override
     public IResourceName getAssetIdentifier(){
-        return RockBottomAPI.createInternalRes("font");
+        return IFont.ID;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class FontLoader implements IAssetLoader<IFont>{
         manager.getTextureStitcher().loadTexture(resourceName.toString(), AssetManager.getResourceAsStream(path+texture), (stitchX, stitchY, stitchedTexture) -> {
             Font font = Font.fromStream(stitchedTexture, AssetManager.getResourceAsStream(path+info), resourceName.toString());
             RockBottomAPI.logger().config("Loaded font "+resourceName+" for mod "+loadingMod.getDisplayName());
-            manager.addAsset(resourceName, font);
+            manager.addAsset(this, resourceName, font);
         });
     }
 }

@@ -23,18 +23,19 @@ import java.util.Map;
 
 public class TextureLoader implements IAssetLoader<ITexture>{
 
+    ;
     private final Map<String, Map<String, JsonElement>> additionalDataCache = new HashMap<>();
 
     @Override
     public IResourceName getAssetIdentifier(){
-        return RockBottomAPI.createInternalRes("tex");
+        return ITexture.ID;
     }
 
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         this.makeTexture(manager, resourceName.toString(), element, path, (stitchX, stitchY, stitchedTexture) -> {
             RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
-            manager.addAsset(resourceName, stitchedTexture);
+            manager.addAsset(this, resourceName, stitchedTexture);
         });
     }
 
@@ -141,7 +142,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
 
                         ITexture texture = stitchedTexture.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
                         RockBottomAPI.logger().config("Loaded subtexture "+res+" for mod "+loadingMod.getDisplayName());
-                        manager.addAsset(res, texture);
+                        manager.addAsset(this, res, texture);
                     }
                 }
             });

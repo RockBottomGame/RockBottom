@@ -27,7 +27,7 @@ public class GuiLanguage extends Gui{
         this.components.add(menu);
 
         IAssetManager manager = game.getAssetManager();
-        for(Map.Entry<IResourceName, Locale> entry : manager.getAllOfType(Locale.class).entrySet()){
+        for(Map.Entry<IResourceName, Locale> entry : manager.<Locale>getAllOfType(Locale.ID).entrySet()){
             IResourceName res = entry.getKey();
             Locale loc = entry.getValue();
 
@@ -41,7 +41,7 @@ public class GuiLanguage extends Gui{
                     return true;
                 }
                 return false;
-            }, loc.localize(null, res)));
+            }, loc.localize(null, res.addPrefix("loc."))));
         }
 
         menu.organize();

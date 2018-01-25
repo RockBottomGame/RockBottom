@@ -20,7 +20,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
 
     @Override
     public IResourceName getAssetIdentifier(){
-        return RockBottomAPI.createInternalRes("shader");
+        return IShaderProgram.ID;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
 
         ShaderProgram shader = new ShaderProgram(vertex, fragment);
         RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
-        manager.addAsset(resourceName, shader);
+        manager.addAsset(this, resourceName, shader);
     }
 
     private Shader loadShader(String path, int type) throws Exception{

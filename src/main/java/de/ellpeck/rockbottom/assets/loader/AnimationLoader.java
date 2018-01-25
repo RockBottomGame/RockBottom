@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
@@ -29,7 +30,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
 
     @Override
     public IResourceName getAssetIdentifier(){
-        return RockBottomAPI.createInternalRes("anim");
+        return IAnimation.ID;
     }
 
     @Override
@@ -106,7 +107,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
         IStitchCallback callback = (stitchX, stitchY, stitchedTexture) -> {
             Animation animation = new Animation(stitchedTexture, finalCachedInfo.width, finalCachedInfo.height, finalCachedInfo.rows);
             RockBottomAPI.logger().config("Loaded animation "+resourceName+" for mod "+loadingMod.getDisplayName());
-            manager.addAsset(resourceName, animation);
+            manager.addAsset(this, resourceName, animation);
         };
 
         if(shouldStitch){

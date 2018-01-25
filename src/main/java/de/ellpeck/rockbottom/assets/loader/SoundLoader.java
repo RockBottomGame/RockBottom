@@ -14,7 +14,7 @@ public class SoundLoader implements IAssetLoader<ISound>{
 
     @Override
     public IResourceName getAssetIdentifier(){
-        return RockBottomAPI.createInternalRes("sound");
+        return ISound.ID;
     }
 
     @Override
@@ -23,6 +23,6 @@ public class SoundLoader implements IAssetLoader<ISound>{
 
         SoundEffect sound = new SoundEffect(AssetManager.getResourceAsStream(resPath));
         RockBottomAPI.logger().config("Loaded sound "+resourceName+" for mod "+loadingMod.getDisplayName());
-        manager.addAsset(resourceName, sound);
+        manager.addAsset(this, resourceName, sound);
     }
 }
