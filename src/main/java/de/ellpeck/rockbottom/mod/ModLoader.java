@@ -13,7 +13,6 @@ import de.ellpeck.rockbottom.apiimpl.ResourceName;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -233,10 +232,26 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
+    public void preInitAssets(){
+        IGameInstance game = RockBottomAPI.getGame();
+        for(IMod mod : this.activeMods){
+            mod.preInitAssets(game, game.getAssetManager(), RockBottomAPI.getApiHandler());
+        }
+    }
+
+    @Override
     public void initAssets(){
         IGameInstance game = RockBottomAPI.getGame();
         for(IMod mod : this.activeMods){
             mod.initAssets(game, game.getAssetManager(), RockBottomAPI.getApiHandler());
+        }
+    }
+
+    @Override
+    public void postInitAssets(){
+        IGameInstance game = RockBottomAPI.getGame();
+        for(IMod mod : this.activeMods){
+            mod.postInitAssets(game, game.getAssetManager(), RockBottomAPI.getApiHandler());
         }
     }
 

@@ -142,7 +142,6 @@ public class InputHandler implements IInputHandler{
         }
         else if(key == GLFW.GLFW_KEY_F3){
             this.game.assetManager.load(this.game);
-            this.game.assetManager.loadCursors();
             return true;
         }
         else if(key == GLFW.GLFW_KEY_F4){

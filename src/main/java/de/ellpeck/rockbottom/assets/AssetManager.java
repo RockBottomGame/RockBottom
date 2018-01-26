@@ -95,12 +95,12 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     public void load(RockBottom game){
         this.dispose();
-
         if(!this.assets.isEmpty()){
             this.assets.clear();
         }
 
         this.isLocked = false;
+        RockBottomAPI.getModLoader().preInitAssets();
 
         try{
             RockBottomAPI.logger().info("Loading resources...");
@@ -132,6 +132,9 @@ public class AssetManager implements IAssetManager, IDisposable{
             RockBottomAPI.logger().log(Level.SEVERE, "Exception stitching textures", e);
         }
 
+        this.loadCursors();
+        RockBottomAPI.getModLoader().initAssets();
+
         this.missingSound = new EmptySound();
         this.missingLocale = new Locale("fallback", new HashMap<>());
         this.missingFont = new Font("fallback", this.missingTexture, 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0))));
@@ -151,6 +154,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(game, this, game.getRenderer()));
         this.initInternalShaders(game.getWidth(), game.getHeight());
 
+        RockBottomAPI.getModLoader().postInitAssets();
         this.isLocked = true;
     }
 
@@ -214,7 +218,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         breakShader.setUniform("breakImage", 1);
     }
 
-    public void loadCursors(){
+    private void loadCursors(){
         if(!this.cursors.isEmpty()){
             this.cursors.clear();
         }
