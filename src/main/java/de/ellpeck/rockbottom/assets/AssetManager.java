@@ -25,7 +25,6 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
-import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
 import de.ellpeck.rockbottom.assets.stub.EmptyShaderProgram;
 import de.ellpeck.rockbottom.assets.stub.EmptySound;
 import de.ellpeck.rockbottom.assets.tex.Texture;
@@ -159,13 +158,13 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     private void initInternalShaders(int width, int height){
-        IShaderProgram guiShader = this.getShaderProgram(ShaderProgram.GUI_SHADER);
+        IShaderProgram guiShader = this.getShaderProgram(IShaderProgram.GUI_SHADER);
         guiShader.setDefaultValues(width, height);
 
-        IShaderProgram worldShader = this.getShaderProgram(ShaderProgram.WORLD_SHADER);
+        IShaderProgram worldShader = this.getShaderProgram(IShaderProgram.WORLD_SHADER);
         worldShader.setDefaultValues(width, height);
 
-        IShaderProgram breakShader = this.getShaderProgram(ShaderProgram.BREAK_SHADER);
+        IShaderProgram breakShader = this.getShaderProgram(IShaderProgram.BREAK_SHADER);
         breakShader.setVertexProcessing(10, new VertexProcessor(){
             private int vertexCounter;
 

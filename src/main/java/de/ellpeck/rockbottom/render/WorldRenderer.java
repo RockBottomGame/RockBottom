@@ -18,7 +18,6 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -111,11 +110,15 @@ public class WorldRenderer{
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
+                    IResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
+                    g.setProgram(program.equals(IShaderProgram.WORLD_SHADER) ? null : manager.getShaderProgram(program));
+
                     int light = world.getCombinedVisualLight(Util.floor(entity.x), Util.floor(entity.y));
                     renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
                 }
             }
         });
+        g.setProgram(null);
 
         particles.render(game, manager, g, world, transX, transY);
 
@@ -210,11 +213,12 @@ public class WorldRenderer{
         boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
 
         if(isBreakTile){
-            IShaderProgram program = manager.getShaderProgram(ShaderProgram.BREAK_SHADER);
+            IShaderProgram program = manager.getShaderProgram(IShaderProgram.BREAK_SHADER);
             g.setProgram(program);
         }
         else{
-            g.setProgram(null);
+            IResourceName program = renderer.getRenderShader(game, manager, g, world, tile, state, x, y, layer);
+            g.setProgram(program.equals(IShaderProgram.WORLD_SHADER) ? null : manager.getShaderProgram(program));
         }
 
         renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));

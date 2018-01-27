@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.init;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -23,7 +24,6 @@ import de.ellpeck.rockbottom.apiimpl.InputHandler;
 import de.ellpeck.rockbottom.apiimpl.Renderer;
 import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
-import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
 import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
@@ -443,14 +443,14 @@ public class RockBottom extends AbstractGame{
     }
 
     protected void render(){
-        this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(ShaderProgram.WORLD_SHADER));
+        this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.WORLD_SHADER));
         this.renderer.begin();
 
         if(this.world != null){
             this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, this.world, this.player, this.interactionManager);
         }
 
-        this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(ShaderProgram.GUI_SHADER));
+        this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.GUI_SHADER));
 
         float scale = this.renderer.getGuiScale();
         this.renderer.setScale(scale, scale);

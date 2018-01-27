@@ -44,7 +44,6 @@ public class Renderer implements IRenderer{
 
     private IShaderProgram defaultProgram;
     private IShaderProgram program;
-    private IShaderProgram lastProgram;
     private int vertexAmount;
     private int componentCounter;
     private boolean isDrawing;
@@ -109,14 +108,8 @@ public class Renderer implements IRenderer{
                 this.flush();
             }
 
-            this.lastProgram = this.program;
             this.program = program;
         }
-    }
-
-    @Override
-    public void setLastProgram(){
-        this.setProgram(this.lastProgram);
     }
 
     @Override
@@ -719,10 +712,5 @@ public class Renderer implements IRenderer{
     @Override
     public int getVertexAmount(){
         return this.vertexAmount;
-    }
-
-    @Override
-    public IShaderProgram getLastProgram(){
-        return this.lastProgram;
     }
 }
