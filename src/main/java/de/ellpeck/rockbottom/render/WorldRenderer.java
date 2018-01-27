@@ -121,6 +121,7 @@ public class WorldRenderer{
         g.setProgram(null);
 
         particles.render(game, manager, g, world, transX, transY);
+        g.setProgram(null);
 
         RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, transX, transY));
 

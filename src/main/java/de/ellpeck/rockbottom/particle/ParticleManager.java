@@ -4,10 +4,12 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.World;
@@ -33,6 +35,9 @@ public class ParticleManager implements IParticleManager{
 
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, World world, float transX, float transY){
         this.particles.forEach(particle -> {
+            IResourceName program = particle.getRenderShader(game, manager, g);
+            g.setProgram(program.equals(IShaderProgram.WORLD_SHADER) ? null : manager.getShaderProgram(program));
+
             int light = world.getCombinedVisualLight(Util.floor(particle.x), Util.floor(particle.y));
             particle.render(game, manager, g, (float)particle.x-transX, (float)-particle.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
         });
