@@ -10,12 +10,10 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChestOpen;
 
-import java.util.Collections;
-
 public class TileEntityChest extends TileEntity{
 
     private int openCount;
-    private final TileInventory inventory = new TileInventory(this, 20, Collections.unmodifiableList(Util.makeIntList(0, this.inventory.getSlotAmount())));
+    private final TileInventory inventory = new TileInventory(this, 20, Util.makeIntList(0, 20));
 
     public TileEntityChest(IWorld world, int x, int y, TileLayer layer){
         super(world, x, y, layer);
