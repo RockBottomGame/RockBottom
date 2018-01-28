@@ -25,7 +25,6 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
-import de.ellpeck.rockbottom.api.world.gen.IRetroactiveGenerator;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -51,7 +50,7 @@ public class World implements IWorld{
     protected final WorldInfo info;
     private final DynamicRegistryInfo regInfo;
     private final List<IWorldGenerator> generators;
-    private final List<IRetroactiveGenerator> retroactiveGenerators;
+    private final List<IWorldGenerator> retroactiveGenerators;
     protected final List<AbstractEntityPlayer> playersUnmodifiable;
     protected File directory;
     protected File chunksDirectory;
@@ -65,15 +64,15 @@ public class World implements IWorld{
         this.regInfo = regInfo;
 
         List<IWorldGenerator> generators = new ArrayList<>();
-        List<IRetroactiveGenerator> retroactiveGenerators = new ArrayList<>();
+        List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
         for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS.getUnmodifiable().values()){
             try{
                 IWorldGenerator generator = genClass.newInstance();
                 generator.initWorld(this);
 
-                if(generator instanceof IRetroactiveGenerator){
-                    retroactiveGenerators.add((IRetroactiveGenerator)generator);
+                if(generator.generatesRetroactively()){
+                    retroactiveGenerators.add(generator);
                 }
                 generators.add(generator);
             }
@@ -684,7 +683,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public List<IRetroactiveGenerator> getSortedRetroactiveGenerators(){
+    public List<IWorldGenerator> getSortedRetroactiveGenerators(){
         return this.retroactiveGenerators;
     }
 
