@@ -283,8 +283,8 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public boolean doDefaultShiftClicking(IGameInstance game, GuiContainer gui, ComponentSlot slot){
-        if(Settings.KEY_GUI_ACTION_1.isPressed()){
+    public boolean doDefaultShiftClicking(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot){
+        if(Settings.KEY_GUI_ACTION_1.isKey(button)){
             if(slot.slot.canRemove()){
                 ItemInstance remaining = slot.slot.get();
 
