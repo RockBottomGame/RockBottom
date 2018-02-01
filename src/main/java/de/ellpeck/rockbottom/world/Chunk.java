@@ -572,11 +572,6 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public boolean hasLocalPlayer(){
-        return this.world.hasLocalPlayer();
-    }
-
-    @Override
     public boolean isLocalPlayer(Entity entity){
         return this.world.isLocalPlayer(entity);
     }

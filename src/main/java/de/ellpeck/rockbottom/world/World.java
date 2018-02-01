@@ -401,11 +401,6 @@ public class World implements IWorld{
     }
 
     @Override
-    public boolean hasLocalPlayer(){
-        return !this.isDedicatedServer();
-    }
-
-    @Override
     public boolean isLocalPlayer(Entity entity){
         return RockBottomAPI.getNet().isThePlayer(entity);
     }
