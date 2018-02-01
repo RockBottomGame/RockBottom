@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
 
 import java.util.Arrays;
@@ -27,24 +26,23 @@ public class CommandTime extends Command{
     public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         if(args.length >= 2){
             IWorld world = game.getWorld();
-            WorldInfo info = world.getWorldInfo();
 
             try{
                 int amount = Math.abs(Integer.parseInt(args[1]))%Constants.TIME_PER_DAY;
 
                 if("set".equals(args[0])){
-                    info.currentWorldTime = amount;
+                    world.setCurrentTime(amount);
                 }
                 else if("advance".equals(args[0])){
-                    info.currentWorldTime += amount;
+                    world.setCurrentTime(world.getCurrentTime()+amount);
                 }
                 else{
                     return new ChatComponentText(FormattingCode.RED+"Specify your action!");
                 }
 
-                RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(info.currentWorldTime, info.totalTimeInWorld));
+                RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(world.getCurrentTime(), world.getTotalTime()));
 
-                return new ChatComponentText(FormattingCode.GREEN+"Set time to "+info.currentWorldTime+"!");
+                return new ChatComponentText(FormattingCode.GREEN+"Set time to "+world.getCurrentTime()+"!");
             }
             catch(NumberFormatException e){
                 return new ChatComponentText(FormattingCode.RED+"Couldn't parse time!");

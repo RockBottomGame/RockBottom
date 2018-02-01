@@ -50,8 +50,8 @@ public final class DebugRenderer{
                 scheduledTileAmount += chunk.getScheduledUpdateAmount();
             }
             list.add("Scheduled Tile Updates: "+scheduledTileAmount);
-            list.add("Seed: "+world.getWorldInfo().seed);
-            list.add("Time: Local "+world.getWorldInfo().currentWorldTime+" / Total "+world.getWorldInfo().totalTimeInWorld);
+            list.add("Seed: "+world.getSeed());
+            list.add("Time: Local "+world.getCurrentTime()+" / Total "+world.getTotalTime());
             list.add("");
 
             list.add("Player:");

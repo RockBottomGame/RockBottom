@@ -120,7 +120,7 @@ public class ConnectedPlayer extends EntityPlayer{
             this.lastY = this.y;
         }
 
-        if(this.getHealth() != this.lastHealth && this.world.getWorldInfo().totalTimeInWorld%10 == 0){
+        if(this.getHealth() != this.lastHealth && this.world.getTotalTime()%10 == 0){
             this.lastHealth = this.getHealth();
             this.sendPacket(new PacketHealth(this.getHealth()));
         }

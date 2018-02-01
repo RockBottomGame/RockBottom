@@ -455,6 +455,26 @@ public class World implements IWorld{
     }
 
     @Override
+    public int getCurrentTime(){
+        return this.info.currentWorldTime;
+    }
+
+    @Override
+    public int getTotalTime(){
+        return this.info.totalTimeInWorld;
+    }
+
+    @Override
+    public void setCurrentTime(int time){
+        this.info.currentWorldTime = time;
+    }
+
+    @Override
+    public void setTotalTime(int time){
+        this.info.totalTimeInWorld = time;
+    }
+
+    @Override
     public IChunk getChunk(double x, double y){
         return this.getChunkFromGridCoords(Util.toGridPos(x), Util.toGridPos(y));
     }
