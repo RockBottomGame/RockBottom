@@ -3,12 +3,16 @@ package de.ellpeck.rockbottom.world.gen.feature;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.StaticTileProps;
+import de.ellpeck.rockbottom.api.inventory.IInventory;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.item.ItemStartNote;
+import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
 import java.util.Random;
 
@@ -118,6 +122,15 @@ public class WorldGenStartHut implements IWorldGenerator{
 
         //Set chest
         chunk.setStateInner(startX+5, startY+1, GameContent.TILE_CHEST.getDefState());
+
+        //Fill chest
+        TileEntityChest chest = chunk.getTileEntity(chunk.getX()+startX+5, chunk.getY()+startY+1, TileEntityChest.class);
+        if(chest != null){
+            IInventory inv = chest.getInventory();
+
+            ItemInstance note = new ItemInstance(GameContent.ITEM_STAT_NOTE, 1, this.generatorRandom.nextInt(ItemStartNote.TEXT_VARIATIONS));
+            inv.set(this.generatorRandom.nextInt(inv.getSlotAmount()), note);
+        }
 
         //Goo
         chunk.setStateInner(TileLayer.LIQUIDS, startX+4, startY+1, GameContent.TILE_REMAINS_GOO.getDefState());

@@ -567,6 +567,21 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public boolean isDedicatedServer(){
+        return this.world.isDedicatedServer();
+    }
+
+    @Override
+    public boolean hasLocalPlayer(){
+        return this.world.hasLocalPlayer();
+    }
+
+    @Override
+    public boolean isLocalPlayer(Entity entity){
+        return this.world.isLocalPlayer(entity);
+    }
+
+    @Override
     public void callRetroactiveGeneration(){
         this.generate(this.world.getSortedRetroactiveGenerators());
     }

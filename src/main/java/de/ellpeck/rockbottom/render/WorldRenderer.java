@@ -126,7 +126,7 @@ public class WorldRenderer{
         RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, transX, transY));
 
         players.forEach(entity -> {
-            if(entity.shouldRender() && !RockBottomAPI.getNet().isThePlayer(entity)){
+            if(entity.shouldRender() && !entity.isLocalPlayer()){
                 manager.getFont().drawCenteredString((float)entity.x-transX, (float)-entity.y-transY-1.25F, entity.getChatColorFormat()+entity.getName(), 0.015F, false);
             }
         });

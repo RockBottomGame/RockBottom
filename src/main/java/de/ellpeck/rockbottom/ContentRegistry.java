@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.item.ItemFirework;
+import de.ellpeck.rockbottom.item.ItemStartNote;
 import de.ellpeck.rockbottom.world.entity.EntityFirework;
 import de.ellpeck.rockbottom.world.entity.EntitySand;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
@@ -49,6 +50,7 @@ public final class ContentRegistry{
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_shovel"), 2F, ToolType.SHOVEL, 1).register();
         new ItemFirework().register();
+        new ItemStartNote().register();
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();

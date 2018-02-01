@@ -457,7 +457,7 @@ public class Renderer implements IRenderer{
         }
 
         if(RockBottomAPI.getEventHandler().fireEvent(new TooltipEvent(instance, game, manager, this, desc)) != EventResult.CANCELLED){
-            this.drawHoverInfoAtMouse(game, manager, true, 500, desc);
+            this.drawHoverInfoAtMouse(game, manager, true, 125, desc);
         }
     }
 

@@ -182,7 +182,7 @@ public class KnowledgeManager implements IKnowledgeManager{
         if(!this.information.containsKey(information.getName())){
             this.information.put(information.getName(), information);
 
-            if(RockBottomAPI.getNet().isThePlayer(this.player)){
+            if(this.player.isLocalPlayer()){
                 Toast toast = information.announceTeach();
                 if(toast != null){
                     RockBottomAPI.getGame().getToaster().displayToast(toast);
@@ -241,7 +241,7 @@ public class KnowledgeManager implements IKnowledgeManager{
         if(info != null){
             this.information.remove(name);
 
-            if(RockBottomAPI.getNet().isThePlayer(this.player)){
+            if(this.player.isLocalPlayer()){
                 Toast toast = info.announceForget();
                 if(toast != null){
                     RockBottomAPI.getGame().getToaster().displayToast(toast);

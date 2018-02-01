@@ -87,7 +87,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public boolean openGui(Gui gui){
-        if(RockBottomAPI.getNet().isThePlayer(this)){
+        if(this.isLocalPlayer()){
             RockBottomAPI.getGame().getGuiManager().openGui(gui);
             return true;
         }
@@ -209,7 +209,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
 
-        if(RockBottomAPI.getNet().isThePlayer(this)){
+        if(this.isLocalPlayer()){
             int range = 24;
             int layers = TileLayer.getAllLayers().size();
             for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES*layers; i++){
@@ -357,7 +357,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
             INetHandler net = RockBottomAPI.getNet();
             int level = net.getCommandLevel(this);
 
-            if(level < Constants.ADMIN_PERMISSION && RockBottomAPI.getNet().isThePlayer(this)){
+            if(level < Constants.ADMIN_PERMISSION && this.isLocalPlayer()){
                 level = Constants.ADMIN_PERMISSION;
 
                 net.setCommandLevel(this, level);
@@ -426,7 +426,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public void sendMessageTo(IChatLog chat, ChatComponent message){
-        if(RockBottomAPI.getNet().isThePlayer(this)){
+        if(this.isLocalPlayer()){
             chat.displayMessage(message);
         }
         else if(RockBottomAPI.getNet().isActive()){
@@ -487,6 +487,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
+    public boolean isLocalPlayer(){
+        return this.world.isLocalPlayer(this);
+    }
+
+    @Override
     public void resetAndSpawn(IGameInstance game){
         this.respawnTimer = 0;
         this.dead = false;
@@ -496,7 +501,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         this.fallStartY = 0;
         this.setHealth(this.getMaxHealth());
 
-        if(RockBottomAPI.getNet().isThePlayer(this)){
+        if(this.isLocalPlayer()){
             if(game.getGuiManager() != null){
                 game.getGuiManager().closeGui();
             }

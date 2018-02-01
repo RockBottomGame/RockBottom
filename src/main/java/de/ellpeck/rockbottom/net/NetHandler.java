@@ -56,9 +56,9 @@ public class NetHandler implements INetHandler{
     }
 
     @Override
-    public boolean isThePlayer(AbstractEntityPlayer player){
+    public boolean isThePlayer(Entity entity){
         IGameInstance game = RockBottomAPI.getGame();
-        return !game.isDedicatedServer() && game.getPlayer() == player;
+        return !game.isDedicatedServer() && game.getPlayer() == entity;
     }
 
     @Override
