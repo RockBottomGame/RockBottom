@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ItemStartNote extends ItemBasic{
 
-    public static final int TEXT_VARIATIONS = 5;
+    public static final int TEXT_VARIATIONS = 3;
 
     public ItemStartNote(){
         super(RockBottomAPI.createInternalRes("start_note"));
