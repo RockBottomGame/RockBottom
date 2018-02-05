@@ -289,7 +289,7 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public String getResourceLocation(){
-        return "/assets/rockbottom";
+        return "assets/rockbottom";
     }
 
     @Override

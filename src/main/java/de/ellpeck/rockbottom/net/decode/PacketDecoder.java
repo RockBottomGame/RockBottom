@@ -17,7 +17,7 @@ public class PacketDecoder extends ByteToMessageDecoder{
 
         Class<? extends IPacket> packetClass = RockBottomAPI.PACKET_REGISTRY.get(id);
         if(packetClass != null){
-            IPacket packet = packetClass.newInstance();
+            IPacket packet = packetClass.getConstructor().newInstance();
 
             try{
                 packet.fromBuffer(buf);

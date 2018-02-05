@@ -157,7 +157,7 @@ public class ModLoader implements IModLoader{
 
             if(aClass != null && !aClass.isInterface()){
                 if(IMod.class.isAssignableFrom(aClass)){
-                    IMod instance = (IMod)aClass.newInstance();
+                    IMod instance = (IMod)aClass.getConstructor().newInstance();
                     String id = instance.getId();
 
                     if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){

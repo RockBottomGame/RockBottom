@@ -6,14 +6,17 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 public final class Main{
@@ -56,6 +59,8 @@ public final class Main{
             gameDir = options.valueOf(optionGameDir);
             Logging.createMain(options.valueOf(optionLogLevel));
 
+            Logging.mainLogger.info("Using Java version "+System.getProperty("java.version"));
+
             Logging.mainLogger.info("Found launch args "+Arrays.toString(args));
             Logging.mainLogger.info("Ignoring unrecognized launch args "+options.valuesOf(optionIgnored));
 
@@ -78,14 +83,21 @@ public final class Main{
             saveTextureSheet = options.has(optionSaveTextureSheet);
 
             try{
-                URLClassLoader loader = (URLClassLoader)Main.class.getClassLoader();
+                ClassLoader loader = Main.class.getClassLoader();
 
-                classLoader = new CustomClassLoader(loader.getURLs(), loader);
+                URL[] urls;
+                if(loader instanceof URLClassLoader){
+                    urls = ((URLClassLoader)loader).getURLs();
+                }
+                else{
+                    String classPath = appendPath(System.getProperty("java.class.path"), System.getProperty("env.class.path"));
+                    urls = pathToURLs(classPath);
+                }
+
+                classLoader = new CustomClassLoader(urls, loader);
                 Thread.currentThread().setContextClassLoader(classLoader);
 
                 Logging.mainLogger.info("Replacing class loader "+loader+" with new loader "+classLoader);
-
-                loader.close();
             }
             catch(Exception e){
                 throw new RuntimeException("Failed to override original class loader", e);
@@ -130,6 +142,52 @@ public final class Main{
 
             System.exit(1);
         }
+
+        System.exit(0);
+    }
+
+    private static URL fileToURL(File file){
+        try{
+            return file.toURI().toURL();
+        }
+        catch(MalformedURLException e){
+            Logging.mainLogger.log(Level.WARNING, "Couldn't convert "+file+" to URL", e);
+            return null;
+        }
+    }
+
+    private static String appendPath(String pathTo, String pathFrom){
+        if(pathTo == null || pathTo.isEmpty()){
+            return pathFrom;
+        }
+        else if(pathFrom == null || pathFrom.isEmpty()){
+            return pathTo;
+        }
+        else{
+            return pathTo+File.pathSeparator+pathFrom;
+        }
+    }
+
+    private static URL[] pathToURLs(String path){
+        StringTokenizer tokenizer = new StringTokenizer(path, File.pathSeparator);
+        URL[] urls = new URL[tokenizer.countTokens()];
+
+        int count = 0;
+        while(tokenizer.hasMoreTokens()){
+            URL url = fileToURL(new File(tokenizer.nextToken()));
+            if(url != null){
+                urls[count] = url;
+                count++;
+            }
+        }
+
+        if(urls.length != count){
+            URL[] tmp = new URL[count];
+            System.arraycopy(urls, 0, tmp, 0, count);
+            urls = tmp;
+        }
+
+        return urls;
     }
 
     public static class CustomClassLoader extends URLClassLoader{
@@ -141,6 +199,11 @@ public final class Main{
         @Override
         public void addURL(URL url){
             super.addURL(url);
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name){
+            return super.getResourceAsStream(name);
         }
     }
 }

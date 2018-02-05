@@ -135,7 +135,7 @@ public class RockBottom extends AbstractGame{
             GLFWImage.Buffer imageBuffer = GLFWImage.malloc(icons.length);
 
             for(int i = 0; i < icons.length; i++){
-                Texture texture = new Texture(AssetManager.getResourceAsStream("/assets/rockbottom/tex/icon/"+icons[i]));
+                Texture texture = new Texture(AssetManager.getResourceAsStream("assets/rockbottom/tex/icon/"+icons[i]));
                 imageBuffer.position(i).width(texture.getTextureWidth()).height(texture.getTextureHeight()).pixels(texture.getPixelData());
             }
 

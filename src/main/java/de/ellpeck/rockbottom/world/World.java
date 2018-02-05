@@ -67,7 +67,7 @@ public class World implements IWorld{
 
         for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS.getUnmodifiable().values()){
             try{
-                IWorldGenerator generator = genClass.newInstance();
+                IWorldGenerator generator = genClass.getConstructor().newInstance();
                 generator.initWorld(this);
 
                 if(generator.generatesRetroactively()){
@@ -75,7 +75,7 @@ public class World implements IWorld{
                 }
                 generators.add(generator);
             }
-            catch(InstantiationException | IllegalAccessException e){
+            catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class "+genClass, e);
             }
         }

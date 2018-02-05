@@ -5,6 +5,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -85,11 +86,11 @@ public class AssetManager implements IAssetManager, IDisposable{
     private boolean isLocked = true;
 
     public static InputStream getResourceAsStream(String s){
-        return AssetManager.class.getResourceAsStream(s);
+        return Main.classLoader.getResourceAsStream(s);
     }
 
     public static URL getResource(String s){
-        return AssetManager.class.getResource(s);
+        return Main.classLoader.getResource(s);
     }
 
     public void load(RockBottom game){
@@ -287,6 +288,12 @@ public class AssetManager implements IAssetManager, IDisposable{
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             String path = mod.getResourceLocation();
             if(path != null && !path.isEmpty()){
+                //TODO Remove deprecated slash warning
+                if(path.startsWith("/")){
+                    path = path.substring(1);
+                    RockBottomAPI.logger().warning("Mod "+mod.getDisplayName()+" uses a resource location that starts with a slash! Please remove the leading / as this is deprecated behavior.");
+                }
+
                 InputStream stream = getResourceAsStream(path+"/assets.json");
                 if(stream != null){
                     try{
