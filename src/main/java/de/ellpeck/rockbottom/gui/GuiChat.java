@@ -84,7 +84,7 @@ public class GuiChat extends Gui{
         IChatLog chat = game.getChatLog();
         this.inputField = new ComponentInputField(this, 8, this.height-21, this.width/2-18, 16, true, false, true, 512, true, strg -> {
             this.suggestions.clear();
-            this.suggestionX = 8+game.getAssetManager().getFont().getWidth(strg, 0.35F);
+            this.suggestionX = 8+Math.min(this.inputField.getWidth()-6, game.getAssetManager().getFont().getWidth(strg, 0.35F));
             this.selectedSuggestion = 0;
             this.selectedLastInput = -1;
 
