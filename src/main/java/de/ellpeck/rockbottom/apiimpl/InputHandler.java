@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.gui.GuiChat;
+import de.ellpeck.rockbottom.gui.GuiCompendium;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.glfw.*;
@@ -116,14 +117,17 @@ public class InputHandler implements IInputHandler{
 
     protected boolean keyPressed(int key){
         if(this.game.getGuiManager().getGui() == null){
+            AbstractEntityPlayer player = this.game.getPlayer();
             if(Settings.KEY_MENU.isKey(key)){
                 this.game.openIngameMenu();
                 return true;
             }
             else if(Settings.KEY_INVENTORY.isKey(key)){
-                AbstractEntityPlayer player = this.game.getPlayer();
                 player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
                 return true;
+            }
+            else if(Settings.KEY_COMPENDIUM.isKey(key)){
+                player.openGuiContainer(new GuiCompendium(player), player.getInvContainer());
             }
             else if(Settings.KEY_CHAT.isKey(key)){
                 if(RockBottomAPI.getNet().isActive()){

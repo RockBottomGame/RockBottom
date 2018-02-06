@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
-import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.time.LocalDateTime;
@@ -31,13 +30,6 @@ public class CursorFinger implements ISpecialCursor{
     @Override
     public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager){
         Gui gui = guiManager.getGui();
-        if(gui != null){
-            for(GuiComponent component : gui.getComponents()){
-                if(component.shouldDoFingerCursor(game)){
-                    return true;
-                }
-            }
-        }
-        return false;
+        return gui != null && gui.shouldDoFingerCursor(game);
     }
 }
