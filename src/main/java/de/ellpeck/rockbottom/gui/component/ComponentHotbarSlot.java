@@ -20,7 +20,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     private final int id;
 
     public ComponentHotbarSlot(AbstractEntityPlayer player, Inventory inventory, int id, int x, int y){
-        super(null, x, y, 14, 14);
+        super(null, x, y, 12, 12);
         this.player = player;
         this.inv = inventory;
         this.id = id;
@@ -31,7 +31,7 @@ public class ComponentHotbarSlot extends GuiComponent{
         g.renderSlotInGui(game, manager, this.inv.get(this.id), x, y, 0.75F, game.getGuiManager().getGui() == null && this.isMouseOverPrioritized(game));
 
         if(this.player.getSelectedSlot() == this.id){
-            manager.getTexture(TEX_ARROW).draw(x+0.75F, 1F);
+            manager.getTexture(TEX_ARROW).draw(x, 1F, 0.75F);
         }
     }
 

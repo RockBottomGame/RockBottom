@@ -2,11 +2,9 @@ package de.ellpeck.rockbottom.world.entity.player.knowledge;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
-import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
@@ -92,19 +90,6 @@ public class KnowledgeManager implements IKnowledgeManager{
     public boolean knowsRecipe(IRecipe recipe){
         return this.knowsInformation(RecipeInformation.getInfoName(recipe));
     }
-
-    @Override
-    public boolean knowsIngredient(IRecipe recipe, IUseInfo info){
-        RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
-        return information != null && information.knownInputs.contains(info);
-    }
-
-    @Override
-    public boolean knowsOutput(IRecipe recipe, ItemInstance instance){
-        RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
-        return information != null && information.knownOutputs.contains(instance);
-    }
-
     @Override
     public boolean knowsInformation(IResourceName name){
         return this.information.containsKey(name);
@@ -127,54 +112,16 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     @Override
-    public void teachRecipe(IRecipe recipe, boolean teachAllParts, boolean announce){
+    public void teachRecipe(IRecipe recipe, boolean announce){
         if(!this.knowsRecipe(recipe)){
             RecipeInformation information = new RecipeInformation(recipe);
-            if(teachAllParts){
-                information.knownInputs.addAll(recipe.getInputs());
-                information.knownOutputs.addAll(recipe.getOutputs());
-            }
             this.teachInformation(information, announce);
         }
     }
 
     @Override
-    public void teachRecipe(IRecipe recipe, boolean teachAllParts){
-        this.teachRecipe(recipe, teachAllParts, true);
-    }
-
-    @Override
-    public void teachIngredient(IRecipe recipe, IUseInfo info, boolean announce){
-        RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
-
-        if(information == null){
-            information = new RecipeInformation(recipe);
-            this.teachInformation(information, announce);
-        }
-
-        information.knownInputs.add(info);
-    }
-
-    @Override
-    public void teachIngredient(IRecipe recipe, IUseInfo info){
-        this.teachIngredient(recipe, info, true);
-    }
-
-    @Override
-    public void teachOutput(IRecipe recipe, ItemInstance instance, boolean announce){
-        RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
-
-        if(information == null){
-            information = new RecipeInformation(recipe);
-            this.teachInformation(information, announce);
-        }
-
-        information.knownOutputs.add(instance);
-    }
-
-    @Override
-    public void teachOutput(IRecipe recipe, ItemInstance instance){
-        this.teachOutput(recipe, instance, true);
+    public void teachRecipe(IRecipe recipe){
+        this.teachRecipe(recipe, true);
     }
 
     @Override
@@ -207,32 +154,6 @@ public class KnowledgeManager implements IKnowledgeManager{
     @Override
     public void forgetRecipe(IRecipe recipe, boolean forgetAllParts){
         this.forgetRecipe(recipe, forgetAllParts, true);
-    }
-
-    @Override
-    public void forgetIngredient(IRecipe recipe, IUseInfo info, boolean announce){
-        RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
-        if(information != null){
-            information.knownInputs.remove(info);
-        }
-    }
-
-    @Override
-    public void forgetIngredient(IRecipe recipe, IUseInfo info){
-        this.forgetIngredient(recipe, info, true);
-    }
-
-    @Override
-    public void forgetOutput(IRecipe recipe, ItemInstance instance, boolean announce){
-        RecipeInformation information = this.getInformation(RecipeInformation.getInfoName(recipe), RecipeInformation.class);
-        if(information != null){
-            information.knownOutputs.remove(instance);
-        }
-    }
-
-    @Override
-    public void forgetOutput(IRecipe recipe, ItemInstance instance){
-        this.forgetOutput(recipe, instance, true);
     }
 
     @Override

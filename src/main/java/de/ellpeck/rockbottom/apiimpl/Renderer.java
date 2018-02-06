@@ -429,14 +429,19 @@ public class Renderer implements IRenderer{
 
     @Override
     public void renderItemInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, int color){
+        this.renderItemInGui(game, manager, slot, x, y, scale, color, true);
+    }
+
+    @Override
+    public void renderItemInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, int color, boolean displayAmount){
         Item item = slot.getItem();
         IItemRenderer renderer = item.getRenderer();
         if(renderer != null){
-            renderer.render(game, manager, this, item, slot, x, y, 12F*scale, color);
+            renderer.render(game, manager, this, item, slot, x, y, 10F*scale, color);
         }
 
-        if(slot.getAmount() > 1){
-            manager.getFont().drawStringFromRight(x+15F*scale, y+9F*scale, String.valueOf(slot.getAmount()), 0.3F*scale);
+        if(displayAmount && slot.getAmount() > 1){
+            manager.getFont().drawStringFromRight(x+11F*scale, y+6F*scale, String.valueOf(slot.getAmount()), 0.3F*scale);
         }
     }
 

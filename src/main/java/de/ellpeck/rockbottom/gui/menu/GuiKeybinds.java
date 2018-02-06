@@ -5,8 +5,9 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Keybind;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
+import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
 import de.ellpeck.rockbottom.api.gui.component.ComponentText;
+import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
@@ -28,7 +29,7 @@ public class GuiKeybinds extends Gui{
         super.init(game);
 
         BoundBox box = new BoundBox(this.width/2-104, 0, this.width/2+98, this.height-26).add(this.getX(), this.getY());
-        ComponentScrollMenu menu = new ComponentScrollMenu(this, this.width/2-112, 0, this.height-26, 2, 7, box);
+        ComponentMenu menu = new ComponentMenu(this, this.width/2-112, 0, this.height-26, 1, 7, box);
         this.components.add(menu);
 
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
@@ -41,8 +42,9 @@ public class GuiKeybinds extends Gui{
 
         int id = 0;
         for(Keybind bind : binds){
-            menu.add(new ComponentText(this, 0, 0, 100, 16, 0.35F, true, game.getAssetManager().localize(bind.getName().addPrefix("key."))+": "));
-            menu.add(new ComponentKeybind(this, id, 0, 0, bind));
+            menu.add(new MenuComponent(202, 16)
+                    .add(0, 0, new ComponentText(this, 0, 0, 100, 16, 0.35F, true, game.getAssetManager().localize(bind.getName().addPrefix("key."))+": "))
+                    .add(102, 0, new ComponentKeybind(this, id, 0, 0, bind)));
             id++;
         }
 

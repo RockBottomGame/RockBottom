@@ -14,7 +14,7 @@ public class ContainerChest extends ItemContainer{
         super(player, player.getInv(), tile.getInventory());
         this.tile = tile;
 
-        this.addPlayerInventory(player, 20, 55);
+        this.addPlayerInventory(player, 17, 45);
         this.addSlotGrid(tile.getInventory(), 0, tile.getInventory().getSlotAmount(), 0, 0, 10);
     }
 

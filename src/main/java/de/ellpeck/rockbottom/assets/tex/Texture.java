@@ -124,7 +124,7 @@ public class Texture implements ITexture{
 
     @Override
     public void draw(float x, float y, float scale){
-        this.draw(x, y, this.renderWidth*1F, this.renderHeight*1F);
+        this.draw(x, y, this.renderWidth*scale, this.renderHeight*scale);
     }
 
     @Override
@@ -212,6 +212,10 @@ public class Texture implements ITexture{
     }
 
     private void load(InputStream stream) throws Exception{
+        if(stream == null){
+            throw new IOException("Missing input stream! The texture might not be at the location it's supposed to be");
+        }
+
         byte[] input = ByteStreams.toByteArray(stream);
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);

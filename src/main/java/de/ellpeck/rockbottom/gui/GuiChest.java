@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 public class GuiChest extends GuiContainer{
 
     public GuiChest(AbstractEntityPlayer player, IInventory inv){
-        super(player, 198, 138);
+        super(player, 169, 115);
 
         int playerSlots = player.getInv().getSlotAmount();
         ShiftClickBehavior behavior = new ShiftClickBehavior(0, playerSlots-1, playerSlots, playerSlots+inv.getSlotAmount());

@@ -6,7 +6,8 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.gui.component.ComponentScrollMenu;
+import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
+import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
@@ -23,7 +24,7 @@ public class GuiLanguage extends Gui{
         super.init(game);
 
         BoundBox area = new BoundBox(0, 0, 150, 106).add(this.getX(), this.getY());
-        ComponentScrollMenu menu = new ComponentScrollMenu(this, -8, 0, 106, 1, 6, area);
+        ComponentMenu menu = new ComponentMenu(this, -8, 0, 106, 1, 6, area);
         this.components.add(menu);
 
         IAssetManager manager = game.getAssetManager();
@@ -31,7 +32,7 @@ public class GuiLanguage extends Gui{
             IResourceName res = entry.getKey();
             Locale loc = entry.getValue();
 
-            menu.add(new ComponentButton(this, 0, 0, 150, 16, () -> {
+            menu.add(new MenuComponent(150, 16).add(0, 0, new ComponentButton(this, 0, 0, 150, 16, () -> {
                 if(manager.getLocale() != loc){
                     game.getSettings().currentLocale = res.toString();
                     game.getDataManager().savePropSettings(game.getSettings());
@@ -41,7 +42,7 @@ public class GuiLanguage extends Gui{
                     return true;
                 }
                 return false;
-            }, loc.localize(null, res.addPrefix("loc."))));
+            }, loc.localize(null, res.addPrefix("loc.")))));
         }
 
         menu.organize();

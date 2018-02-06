@@ -88,7 +88,7 @@ public class GuiManager implements IGuiManager{
         double width = game.getRenderer().getWidthInGui();
 
         for(int i = 0; i < 8; i++){
-            int x = (int)(width/2-59.25+i*15);
+            int x = (int)(width/2-4*13+1+i*13);
             this.onScreenComponents.add(new ComponentHotbarSlot(player, player.getInv(), i, x, 3));
         }
 

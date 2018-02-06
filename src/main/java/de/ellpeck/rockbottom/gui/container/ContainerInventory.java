@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class ContainerInventory extends ItemContainer{
 
     public ContainerInventory(EntityPlayer player){
         super(player, player.getInv());
-        this.addPlayerInventory(player, 0, 0);
+        this.addPlayerInventory(player, 5, GuiInventory.PAGE_HEIGHT+5);
     }
 
     public static void doInvBasedConstruction(AbstractEntityPlayer player, IRecipe recipe, int amount){
