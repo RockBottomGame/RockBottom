@@ -87,11 +87,16 @@ public class GuiCompendium extends GuiContainer{
         this.menu.clear();
         this.polaroids.clear();
 
+        boolean containsSelected = false;
         for(BasicRecipe recipe : RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.getUnmodifiable().values()){
             if(recipe.isKnown(this.player)){
                 if(this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())){
                     for(ComponentPolaroid polaroid : recipe.getPolaroidButtons(this, this.player, IRecipe.matchesInv(recipe, this.player.getInv()))){
-                        polaroid.isSelected = this.selectedRecipe != null && this.selectedRecipe == recipe;
+                        polaroid.isSelected = this.selectedRecipe == recipe;
+                        if(polaroid.isSelected){
+                            containsSelected = true;
+                        }
+
                         this.polaroids.add(polaroid);
                     }
                 }
@@ -99,6 +104,9 @@ public class GuiCompendium extends GuiContainer{
             else if(this.searchText.isEmpty()){
                 this.polaroids.add(new ComponentPolaroid(this, null, false));
             }
+        }
+        if(!containsSelected){
+            this.selectedRecipe = null;
         }
 
         this.polaroids.sort((p1, p2) -> Integer.compare(Boolean.compare(p1.recipe == null, p2.recipe == null)*2, Boolean.compare(p1.canConstruct, p2.canConstruct)));
