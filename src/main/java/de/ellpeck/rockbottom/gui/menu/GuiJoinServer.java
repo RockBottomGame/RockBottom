@@ -25,7 +25,7 @@ public class GuiJoinServer extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        this.inputField = new ComponentInputField(this, this.width/2-80, this.height/2-40, 160, 16, true, true, false, 128, false);
+        this.inputField = new ComponentInputField(this, this.width/2-80, this.height/2-40, 160, 16, true, false, true, 128, false);
         this.components.add(this.inputField);
         this.inputField.setText(game.getSettings().lastServerIp);
 

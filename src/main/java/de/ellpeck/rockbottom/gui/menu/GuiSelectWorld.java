@@ -19,29 +19,29 @@ import java.util.logging.Level;
 public class GuiSelectWorld extends Gui{
 
     public GuiSelectWorld(Gui parent){
-        super(200, 160, parent);
+        super(parent);
     }
 
     @Override
     public void init(IGameInstance game){
         super.init(game);
 
-        BoundBox box = new BoundBox(0, 0, 200, 128).add(this.getX(), this.getY());
-        ComponentMenu menu = new ComponentMenu(this, -8, 0, 128, 1, 5, box);
+        int menuX = this.width/2-(186+14+8)/2;
+        BoundBox box = new BoundBox(0, 0, 186+14+8, 138).add(this.getX()+menuX, this.getY()+5);
+        ComponentMenu menu = new ComponentMenu(this, menuX, 5, 138, 1, 5, box);
         this.components.add(menu);
 
-        int bottomY = this.height;
-        this.components.add(new ComponentButton(this, this.width/2-82, bottomY-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2-82, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(new GuiCreateWorld(this));
             return true;
         }, "Create World"));
 
-        this.components.add(new ComponentButton(this, this.width/2, bottomY-30, 62, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2, this.height-30, 62, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
-        this.components.add(new ComponentFancyButton(this, this.width/2+64, bottomY-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getWorldsDir()), RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width/2+64, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getWorldsDir()), RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
 
         File worldFolder = game.getDataManager().getWorldsDir();
         File[] worlds = worldFolder.listFiles();
@@ -58,7 +58,7 @@ public class GuiSelectWorld extends Gui{
         validWorlds.sort(Comparator.comparingLong(WorldInfo:: lastModified).reversed());
 
         for(File file : validWorlds){
-            MenuComponent component = new MenuComponent(186+14, 24);
+            MenuComponent component = new MenuComponent(186+14, 26);
 
             ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, 0, 0, file);
             component.add(0, 0, button);
@@ -84,6 +84,11 @@ public class GuiSelectWorld extends Gui{
                     return true;
                 }
             });
+
+            component.add(186+2, 14, new ComponentFancyButton(this, 0, 0, 12, 12, () -> {
+                game.getGuiManager().openGui(new GuiRenameWorld(this, file));
+                return true;
+            }, RockBottomAPI.createInternalRes("gui.rename"), "Rename World"));
 
             menu.add(component);
         }

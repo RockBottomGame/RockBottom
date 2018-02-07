@@ -47,7 +47,7 @@ public class GuiCreateWorld extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-82, bottomY-30, 80, 16, () -> {
             this.updateNameAndSeed(game);
 
-            File file = this.makeWorldFile(game);
+            File file = makeWorldFile(game, this.worldName);
             WorldInfo info = new WorldInfo(file);
             info.seed = this.seed;
             info.save();
@@ -70,31 +70,7 @@ public class GuiCreateWorld extends Gui{
     }
 
     private void updateNameAndSeed(IGameInstance game){
-        String name = this.nameField.getText();
-
-        if(name.trim().isEmpty()){
-            name = "Unnamed";
-        }
-
-        if(!this.worldName.equals(name)){
-            this.worldName = name;
-
-            for(String s : DISALLOWED_CHARACTERS){
-                this.worldName = this.worldName.replaceAll(s, "-");
-            }
-
-            for(String s : DISALLOWED_FILENAMES){
-                if(this.worldName.equals(s)){
-                    this.worldName = "-"+s+"-";
-                }
-            }
-
-            File file = this.makeWorldFile(game);
-            while(file.exists()){
-                this.worldName += "-";
-                file = this.makeWorldFile(game);
-            }
-        }
+        this.worldName = makeNameSafe(game, this.nameField.getText());
 
         String seed = this.seedField.getText();
 
@@ -114,8 +90,32 @@ public class GuiCreateWorld extends Gui{
         }
     }
 
-    private File makeWorldFile(IGameInstance game){
-        return new File(game.getDataManager().getWorldsDir(), this.worldName);
+    public static String makeNameSafe(IGameInstance game, String name){
+        if(name.trim().isEmpty()){
+            name = "Unnamed";
+        }
+
+        for(String s : DISALLOWED_CHARACTERS){
+            name = name.replaceAll(s, "-");
+        }
+
+        for(String s : DISALLOWED_FILENAMES){
+            if(name.equals(s)){
+                name = "-"+s+"-";
+            }
+        }
+
+        File file = makeWorldFile(game, name);
+        while(file.exists()){
+            name += "-";
+            file = makeWorldFile(game, name);
+        }
+
+        return name;
+    }
+
+    private static File makeWorldFile(IGameInstance game, String name){
+        return new File(game.getDataManager().getWorldsDir(), name);
     }
 
     @Override

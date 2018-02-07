@@ -25,7 +25,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     private final String lastModified;
 
     public ComponentSelectWorldButton(Gui gui, int x, int y, File file){
-        super(gui, x, y, 186, 24, null, null);
+        super(gui, x, y, 186, 26, null, null);
         this.worldFile = file;
 
         this.info = new WorldInfo(this.worldFile);
