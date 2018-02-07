@@ -294,6 +294,6 @@ public class GuiCompendium extends GuiContainer{
     @Override
     public boolean shouldDoFingerCursor(IGameInstance game){
         IRenderer g = game.getRenderer();
-        return this.searchButtonBox.contains(g.getMouseInGuiX(), g.getMouseInGuiY());
+        return this.searchButtonBox.contains(g.getMouseInGuiX(), g.getMouseInGuiY()) || super.shouldDoFingerCursor(game);
     }
 }
