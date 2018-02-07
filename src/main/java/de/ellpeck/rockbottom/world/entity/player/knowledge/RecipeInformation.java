@@ -35,12 +35,12 @@ public class RecipeInformation extends Information{
 
     @Override
     public Toast announceForget(){
-        return new Toast(RockBottomAPI.createInternalRes("gui.construction_toggled"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
+        return new Toast(RockBottomAPI.createInternalRes("gui.construction.book_closed"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
     }
 
     @Override
     public Toast announceTeach(){
-        return new Toast(RockBottomAPI.createInternalRes("gui.construction"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
+        return new Toast(RockBottomAPI.createInternalRes("gui.construction.book_open"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
     }
 
     private ChatComponent getOutputName(){
