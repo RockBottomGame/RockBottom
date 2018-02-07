@@ -48,7 +48,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private final KnowledgeManager knowledge = new KnowledgeManager(this);
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
-    private final BoundBox boundingBox = new BoundBox(-0.45, -0.5, 0.45, 1.35);
+    private final BoundBox boundingBox = new BoundBox(-0.415, -0.5, 0.415, 1.35);
     private final IEntityRenderer renderer = new PlayerEntityRenderer();
     private final List<IChunk> chunksInRange = new ArrayList<>();
     private final IPlayerDesign design;
