@@ -156,7 +156,20 @@ public class InternalHooks implements IInternalHooks{
                     for(BoundBox box : boxes){
                         if(motionY != 0){
                             if(!box.isEmpty()){
-                                motionY = box.getYDistanceWithMax(tempBox, motionY);
+                                if(tempBox.getMaxX() > box.getMinX() && tempBox.getMinX() < box.getMaxX()){
+                                    if(motionY > 0 && tempBox.getMaxY() <= box.getMinY()){
+                                        double diff = box.getMinY()-tempBox.getMaxY();
+                                        if(diff < motionY){
+                                            motionY = diff;
+                                        }
+                                    }
+                                    else if(motionY < 0 && tempBox.getMinY() >= box.getMaxY()){
+                                        double diff = box.getMaxY()-tempBox.getMinY();
+                                        if(diff > motionY){
+                                            motionY = diff;
+                                        }
+                                    }
+                                }
                             }
                         }
                         else{
@@ -175,7 +188,20 @@ public class InternalHooks implements IInternalHooks{
                     for(BoundBox box : boxes){
                         if(motionX != 0){
                             if(!box.isEmpty()){
-                                motionX = box.getXDistanceWithMax(tempBox, motionX);
+                                if(tempBox.getMaxY() > box.getMinY() && tempBox.getMinY() < box.getMaxY()){
+                                    if(motionX > 0 && tempBox.getMaxX() <= box.getMinX()){
+                                        double diff = box.getMinX()-tempBox.getMaxX();
+                                        if(diff < motionX){
+                                            motionX = diff;
+                                        }
+                                    }
+                                    else if(motionX < 0 && tempBox.getMinX() >= box.getMaxX()){
+                                        double diff = box.getMaxX()-tempBox.getMinX();
+                                        if(diff > motionX){
+                                            motionX = diff;
+                                        }
+                                    }
+                                }
                             }
                         }
                         else{
