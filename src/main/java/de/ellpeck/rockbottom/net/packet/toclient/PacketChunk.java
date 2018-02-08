@@ -14,10 +14,11 @@ import java.util.Set;
 
 public class PacketChunk implements IPacket{
 
+    private static final int TOTAL = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE;
     private TileLayer[] layers;
     private int[] tileData;
-    private byte[] lightData;
-    private short[] biomeData = new short[Constants.CHUNK_SIZE*Constants.CHUNK_SIZE];
+    private final byte[] lightData = new byte[TOTAL*2];
+    private final short[] biomeData = new short[TOTAL];
     private int chunkX;
     private int chunkY;
 
@@ -26,23 +27,23 @@ public class PacketChunk implements IPacket{
         this.chunkY = chunk.getGridY();
 
         Set<TileLayer> layers = chunk.getLoadedLayers();
-        int amount = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*layers.size();
-        this.tileData = new int[amount];
-        this.lightData = new byte[amount*2];
+        this.tileData = new int[TOTAL*layers.size()];
         this.layers = layers.toArray(new TileLayer[layers.size()]);
 
         int index = 0;
+        int lightIndex = 0;
         int biomeIndex = 0;
+
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                 for(TileLayer layer : layers){
                     this.tileData[index] = chunk.getWorld().getIdForState(chunk.getStateInner(layer, x, y));
-
-                    this.lightData[index] = chunk.getSkylightInner(x, y);
-                    this.lightData[amount+index] = chunk.getArtificialLightInner(x, y);
-
                     index++;
                 }
+
+                this.lightData[lightIndex] = chunk.getSkylightInner(x, y);
+                this.lightData[TOTAL+lightIndex] = chunk.getArtificialLightInner(x, y);
+                lightIndex++;
 
                 this.biomeData[biomeIndex] = (short)chunk.getWorld().getIdForBiome(chunk.getBiomeInner(x, y));
                 biomeIndex++;
@@ -67,6 +68,7 @@ public class PacketChunk implements IPacket{
         for(int tile : this.tileData){
             buf.writeInt(tile);
         }
+
         buf.writeBytes(this.lightData);
 
         for(short biome : this.biomeData){
@@ -84,14 +86,11 @@ public class PacketChunk implements IPacket{
             this.layers[i] = TileLayer.getAllLayers().get(buf.readInt());
         }
 
-        int amount = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*this.layers.length;
-
-        this.tileData = new int[amount];
+        this.tileData = new int[TOTAL*this.layers.length];
         for(int i = 0; i < this.tileData.length; i++){
             this.tileData[i] = buf.readInt();
         }
 
-        this.lightData = new byte[amount*2];
         buf.readBytes(this.lightData);
 
         for(int i = 0; i < this.biomeData.length; i++){
@@ -107,20 +106,20 @@ public class PacketChunk implements IPacket{
             IChunk chunk = game.getWorld().getChunkFromGridCoords(this.chunkX, this.chunkY);
             chunk.setGenerating(true);
 
-            int amount = Constants.CHUNK_SIZE*Constants.CHUNK_SIZE*this.layers.length;
-
             int index = 0;
+            int lightIndex = 0;
             int biomeIndex = 0;
+
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                     for(TileLayer layer : this.layers){
                         chunk.setStateInner(layer, x, y, chunk.getWorld().getStateForId(this.tileData[index]));
-
-                        chunk.setSkylightInner(x, y, this.lightData[index]);
-                        chunk.setArtificialLightInner(x, y, this.lightData[amount+index]);
-
                         index++;
                     }
+
+                    chunk.setSkylightInner(x, y, this.lightData[lightIndex]);
+                    chunk.setArtificialLightInner(x, y, this.lightData[TOTAL+lightIndex]);
+                    lightIndex++;
 
                     chunk.setBiomeInner(x, y, chunk.getWorld().getBiomeForId(this.biomeData[biomeIndex]));
                     biomeIndex++;
