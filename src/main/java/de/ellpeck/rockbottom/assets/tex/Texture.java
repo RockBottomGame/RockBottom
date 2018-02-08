@@ -16,6 +16,7 @@ import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -219,7 +220,7 @@ public class Texture implements ITexture{
         byte[] input = ByteStreams.toByteArray(stream);
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);
-        data.flip();
+        ((Buffer)data).flip();
 
         MemoryStack stack = MemoryStack.stackPush();
         IntBuffer width = stack.mallocInt(1);

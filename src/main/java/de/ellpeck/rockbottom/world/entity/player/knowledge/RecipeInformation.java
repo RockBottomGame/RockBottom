@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RecipeInformation extends Information{
 
-    private static final IResourceName REG_NAME = RockBottomAPI.createInternalRes("recipe");
+    public static final IResourceName REG_NAME = RockBottomAPI.createInternalRes("recipe");
 
     private IRecipe recipe;
 

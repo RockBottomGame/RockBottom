@@ -9,6 +9,7 @@ import org.lwjgl.stb.STBVorbisInfo;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
@@ -31,7 +32,7 @@ public class SoundEffect implements ISound{
         byte[] input = ByteStreams.toByteArray(stream);
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);
-        data.flip();
+        ((Buffer)data).flip();
 
         IntBuffer error = BufferUtils.createIntBuffer(1);
         long decoder = STBVorbis.stb_vorbis_open_memory(data, error, null);
@@ -45,7 +46,7 @@ public class SoundEffect implements ISound{
         ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples);
 
         int channels = info.channels();
-        pcm.limit(STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm)*channels);
+        ((Buffer)pcm).limit(STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm)*channels);
         STBVorbis.stb_vorbis_close(decoder);
 
         return pcm;

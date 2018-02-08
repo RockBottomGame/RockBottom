@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 public abstract class AbstractGame implements IGameInstance{
 
@@ -115,8 +116,13 @@ public abstract class AbstractGame implements IGameInstance{
             }
         }
         finally{
-            game.shutdown();
-            RockBottomAPI.logger().info("Game shutting down");
+            try{
+                RockBottomAPI.logger().info("Game shutting down");
+                game.shutdown();
+            }
+            catch(Exception e){
+                RockBottomAPI.logger().log(Level.SEVERE, "There was an error while shutting down the game and disposing of resources", e);
+            }
         }
     }
 

@@ -4,7 +4,7 @@
 -keepattributes Deprecated,*Annotation*,Synthetic
 -adaptresourcefilenames **.properties
 -adaptresourcefilecontents **.properties,META-INF/MANIFEST.MF
--libraryjars  <java.home>/lib/rt.jar;build/temp/libs/lib
+-libraryjars <java.home>/jmods/(!**.jar;!module-info.class);build/temp/libs/lib
 -ignorewarnings
 
 -keep class !de.ellpeck.rockbottom.** {

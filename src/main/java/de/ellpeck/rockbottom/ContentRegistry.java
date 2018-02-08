@@ -69,7 +69,7 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("coal"), WorldGenCoal.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("start_hut"), WorldGenStartHut.class);
 
-        RockBottomAPI.INFORMATION_REGISTRY.register(RockBottomAPI.createInternalRes("recipe"), RecipeInformation.class);
+        RockBottomAPI.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 
         new BasicEffect(RockBottomAPI.createInternalRes("speed"), false, false, 36000).register();
         new BasicEffect(RockBottomAPI.createInternalRes("jump_height"), false, false, 36000).register();

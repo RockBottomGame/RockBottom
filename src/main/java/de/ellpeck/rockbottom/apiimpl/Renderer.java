@@ -29,6 +29,7 @@ import de.ellpeck.rockbottom.render.engine.VertexBufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -232,7 +233,7 @@ public class Renderer implements IRenderer{
     @Override
     public void begin(){
         if(!this.isDrawing){
-            this.vertices.clear();
+            ((Buffer)this.vertices).clear();
             this.vertexAmount = 0;
             this.flushCounter = 0;
 
@@ -267,13 +268,13 @@ public class Renderer implements IRenderer{
     @Override
     public void flush(){
         if(this.vertexAmount > 0){
-            this.vertices.flip();
+            ((Buffer)this.vertices).flip();
             this.program.bind();
 
             this.vbo.subData(this.vertices);
             this.program.draw(this.vertexAmount);
 
-            this.vertices.clear();
+            ((Buffer)this.vertices).clear();
             this.vertexAmount = 0;
 
             this.flushCounter++;
