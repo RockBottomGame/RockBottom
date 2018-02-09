@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.tile.entity;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.tile.entity.FilteredInventory;
+import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.entity.TileInventory;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -20,7 +21,7 @@ public class TileEntityChest extends TileEntity{
     }
 
     @Override
-    public FilteredInventory getInventory(){
+    public IFilteredInventory getTileInventory(){
         return this.inventory;
     }
 

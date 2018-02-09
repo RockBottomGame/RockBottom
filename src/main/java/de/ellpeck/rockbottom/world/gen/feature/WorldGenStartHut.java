@@ -126,7 +126,7 @@ public class WorldGenStartHut implements IWorldGenerator{
         //Fill chest
         TileEntityChest chest = chunk.getTileEntity(chunk.getX()+startX+5, chunk.getY()+startY+1, TileEntityChest.class);
         if(chest != null){
-            IInventory inv = chest.getInventory();
+            IInventory inv = chest.getTileInventory();
 
             ItemInstance note = new ItemInstance(GameContent.ITEM_STAT_NOTE, 1, this.generatorRandom.nextInt(ItemStartNote.TEXT_VARIATIONS));
             inv.set(this.generatorRandom.nextInt(inv.getSlotAmount()), note);

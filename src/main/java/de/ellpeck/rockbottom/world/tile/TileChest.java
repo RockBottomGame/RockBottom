@@ -48,7 +48,7 @@ public class TileChest extends TileBasic{
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
         TileEntityChest tile = world.getTileEntity(x, y, TileEntityChest.class);
-        return tile != null && player.openGuiContainer(new GuiChest(player, tile.getInventory()), new ContainerChest(player, tile));
+        return tile != null && player.openGuiContainer(new GuiChest(player, tile.getTileInventory()), new ContainerChest(player, tile));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TileChest extends TileBasic{
         if(!world.isClient()){
             TileEntityChest tile = world.getTileEntity(x, y, TileEntityChest.class);
             if(tile != null){
-                tile.dropInventory(tile.getInventory());
+                tile.dropInventory(tile.getTileInventory());
             }
         }
     }
