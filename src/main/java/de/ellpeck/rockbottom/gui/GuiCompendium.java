@@ -21,7 +21,6 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 
 import java.util.ArrayList;
@@ -91,7 +90,7 @@ public class GuiCompendium extends GuiContainer{
         for(BasicRecipe recipe : RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.getUnmodifiable().values()){
             if(recipe.isKnown(this.player)){
                 if(this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())){
-                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(this.player));
+                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(this.player.getInv()));
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if(polaroid.isSelected){
@@ -175,7 +174,7 @@ public class GuiCompendium extends GuiContainer{
         }
 
         if(recipe != null){
-            this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(this.player));
+            this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(this.player.getInv()));
             this.components.add(this.construct);
         }
     }
@@ -242,7 +241,9 @@ public class GuiCompendium extends GuiContainer{
                         RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), RockBottomAPI.ALL_CONSTRUCTION_RECIPES.getId(this.selectedRecipe), 1));
                     }
                     else{
-                        ContainerInventory.doInvBasedConstruction(game.getPlayer(), this.selectedRecipe, 1);
+                        if(this.selectedRecipe.isKnown(this.player)){
+                            this.selectedRecipe.construct(this.player.world, this.player.x, this.player.y, this.player.getInv(), 1);
+                        }
                     }
                     return true;
                 }

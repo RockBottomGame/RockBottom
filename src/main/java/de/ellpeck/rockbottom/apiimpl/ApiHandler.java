@@ -3,8 +3,13 @@ package de.ellpeck.rockbottom.apiimpl;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
+import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
+import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -14,6 +19,9 @@ import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -124,6 +132,37 @@ public class ApiHandler implements IApiHandler{
             colors[i] = this.getColorByLight(interpolatedLight[i], layer);
         }
         return colors;
+    }
+
+    @Override
+    public void construct(IWorld world, double x, double y, Inventory inventory, IRecipe recipe, int amount, List<IUseInfo> inputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter){
+        for(int a = 0; a < amount; a++){
+            if(recipe.canConstruct(inventory)){
+                List<ItemInstance> usedInputs = new ArrayList<>();
+
+                for(IUseInfo input : inputs){
+                    for(int i = 0; i < inventory.getSlotAmount(); i++){
+                        ItemInstance inv = inventory.get(i);
+
+                        if(inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()){
+                            usedInputs.add(inv.copy().setAmount(input.getAmount()));
+                            inventory.remove(i, input.getAmount());
+                            break;
+                        }
+                    }
+                }
+
+                for(ItemInstance output : outputGetter.apply(usedInputs)){
+                    ItemInstance left = inventory.addExistingFirst(output, false);
+                    if(left != null){
+                        EntityItem.spawn(world, left, x, y, 0F, 0F);
+                    }
+                }
+            }
+            else{
+                break;
+            }
+        }
     }
 
     @Override

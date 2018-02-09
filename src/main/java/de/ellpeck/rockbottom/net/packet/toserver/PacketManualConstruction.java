@@ -50,8 +50,8 @@ public class PacketManualConstruction implements IPacket{
             AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
             if(player != null){
                 IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(this.recipeName);
-                if(recipe != null){
-                    ContainerInventory.doInvBasedConstruction(player, recipe, this.amount);
+                if(recipe != null && recipe.isKnown(player)){
+                    recipe.construct(player.world, player.x, player.y, player.getInv(), this.amount);
                 }
             }
         }
