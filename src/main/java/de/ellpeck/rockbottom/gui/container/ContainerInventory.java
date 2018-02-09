@@ -23,7 +23,7 @@ public class ContainerInventory extends ItemContainer{
     public static void doInvBasedConstruction(AbstractEntityPlayer player, IRecipe recipe, int amount){
         if(recipe.isKnown(player)){
             for(int a = 0; a < amount; a++){
-                if(IRecipe.matchesInv(recipe, player.getInv())){
+                if(recipe.canConstruct(player)){
                     List<ItemInstance> usedInputs = new ArrayList<>();
 
                     for(IUseInfo input : recipe.getActualInputs(player.getInv())){
