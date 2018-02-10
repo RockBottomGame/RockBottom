@@ -113,7 +113,7 @@ public class InteractionManager implements IInteractionManager{
             if(layer == TileLayer.MAIN){
                 return true;
             }
-            else{
+            else if(layer == TileLayer.BACKGROUND){
                 if(!world.getState(x, y).getTile().isFullTile()){
                     for(Direction dir : Direction.ADJACENT){
                         Tile other = world.getState(layer, x+dir.x, y+dir.y).getTile();
@@ -122,6 +122,9 @@ public class InteractionManager implements IInteractionManager{
                         }
                     }
                 }
+            }
+            else{
+                return true;
             }
         }
         return false;
