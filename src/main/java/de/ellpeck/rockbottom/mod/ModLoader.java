@@ -48,6 +48,8 @@ public class ModLoader implements IModLoader{
 
                 writer.write("----------------------------------------------------------"+l);
                 writer.write("To install a mod, place its compiled jar into this folder."+l);
+                writer.write("Note that the game has to be restarted to activate a mod. "+l);
+                writer.write("                                                          "+l);
                 writer.write("If your mod doesn't have a compiled jar, or you downloaded"+l);
                 writer.write("something other than one, then please refer to the modding"+l);
                 writer.write("documentation or contact the mod author as mods should be "+l);
