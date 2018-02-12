@@ -105,13 +105,18 @@ public class GuiCreateWorld extends Gui{
             }
         }
 
-        File file = makeWorldFile(game, name);
+        int counter = 0;
+        String actualName = name;
+
+        File file = makeWorldFile(game, actualName);
         while(file.exists()){
-            name += "-";
-            file = makeWorldFile(game, name);
+            counter++;
+            actualName = name+counter;
+
+            file = makeWorldFile(game, actualName);
         }
 
-        return name;
+        return actualName;
     }
 
     private static File makeWorldFile(IGameInstance game, String name){
