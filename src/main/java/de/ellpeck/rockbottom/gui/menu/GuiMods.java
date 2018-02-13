@@ -101,9 +101,9 @@ public class GuiMods extends Gui{
         String strg = "Authors: ";
         String[] authors = this.selectedMod.getAuthors();
         for(int i = 0; i < authors.length; i++){
-            strg+=authors[i];
+            strg += authors[i];
             if(i < authors.length-1){
-                strg+=", ";
+                strg += ", ";
             }
         }
         font.drawSplitString(125, 45, strg, 0.35F, this.width-135);
