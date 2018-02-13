@@ -1,8 +1,9 @@
 package de.ellpeck.rockbottom.apiimpl;
 
-import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.effect.IEffect;
@@ -12,6 +13,7 @@ import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
+import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.internal.IInternalHooks;
@@ -29,7 +31,10 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class InternalHooks implements IInternalHooks{
@@ -839,5 +844,92 @@ public class InternalHooks implements IInternalHooks{
         else{
             return false;
         }
+    }
+
+    @Override
+    public boolean doInputFieldKeyPress(IGameInstance game, int button, ComponentInputField field){
+        if(field.isSelected()){
+            if(button == GLFW.GLFW_KEY_BACKSPACE){
+                if(!field.getText().isEmpty()){
+                    field.setText(field.getText().substring(0, field.getText().length()-1));
+                }
+                return true;
+            }
+            else if(button == GLFW.GLFW_KEY_ESCAPE){
+                if(field.selectable){
+                    field.setSelected(false);
+                    return true;
+                }
+            }
+            else{
+                IInputHandler input = game.getInput();
+                if(input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) || input.isKeyDown(GLFW.GLFW_KEY_RIGHT_CONTROL)){
+                    if(button == GLFW.GLFW_KEY_V){
+                        try{
+                            String data = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+
+                            int space = this.getTextSpace(game, field);
+                            if(space < data.length()){
+                                data = data.substring(0, space);
+                            }
+
+                            field.setText(field.getText()+data);
+
+                            return true;
+                        }
+                        catch(Exception ignored){
+                        }
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean doInputFieldCharInput(IGameInstance game, char[] characters, ComponentInputField field){
+        boolean did = false;
+        if(field.isSelected()){
+            for(char character : characters){
+                if(character >= 32 && character <= 254){
+                    if(this.getTextSpace(game, field) > 0){
+                        field.setText(field.getText()+character);
+                        did = true;
+                    }
+                }
+            }
+        }
+        return did;
+    }
+
+    @Override
+    public void doInputFieldRender(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y, ComponentInputField field){
+        if(field.renderBox){
+            g.addFilledRect(x, y, field.getWidth(), field.getHeight(), field.isMouseOverPrioritized(game) ? GuiComponent.getElementColor() : GuiComponent.getUnselectedElementColor());
+            g.addEmptyRect(x, y, field.getWidth(), field.getHeight(), GuiComponent.getElementOutlineColor());
+        }
+
+        IFont font = manager.getFont();
+
+        String text = field.getDisplayText();
+        if(field.isCensored()){
+            char[] chars = new char[text.length()];
+            Arrays.fill(chars, '*');
+            text = new String(chars);
+        }
+
+        String display = text+(field.isSelected() ? ((game.getTotalTicks()/15)%2 == 0 ? "|" : " ") : "");
+        font.drawCutOffString(x+3, y+field.getHeight()/2F-font.getHeight(0.35F)/2F, display, 0.35F, field.getWidth()-6, true, false);
+
+        if(field.displaxMaxLength){
+            int space = this.getTextSpace(game, field);
+            FormattingCode format = space <= 0 ? FormattingCode.RED : (space <= field.maxLength/8 ? FormattingCode.ORANGE : (space <= field.maxLength/4 ? FormattingCode.YELLOW : FormattingCode.NONE));
+            font.drawStringFromRight(x+field.getWidth()-1, y+field.getHeight()-font.getHeight(0.2F), format.toString()+(field.maxLength-space)+"/"+field.maxLength, 0.2F);
+        }
+    }
+
+    private int getTextSpace(IGameInstance game, ComponentInputField field){
+        return field.maxLength-game.getAssetManager().getFont().removeFormatting(field.getText()).length();
     }
 }
