@@ -2,8 +2,8 @@ package de.ellpeck.rockbottom.net.server;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
-import de.ellpeck.rockbottom.net.decode.PacketDecoder;
-import de.ellpeck.rockbottom.net.encode.PacketEncoder;
+import de.ellpeck.rockbottom.net.PacketDecoder;
+import de.ellpeck.rockbottom.net.PacketEncoder;
 import de.ellpeck.rockbottom.net.server.settings.Blacklist;
 import de.ellpeck.rockbottom.net.server.settings.CommandPermissions;
 import de.ellpeck.rockbottom.net.server.settings.Whitelist;

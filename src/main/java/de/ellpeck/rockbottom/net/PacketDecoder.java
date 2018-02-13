@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.net.decode;
+package de.ellpeck.rockbottom.net;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;

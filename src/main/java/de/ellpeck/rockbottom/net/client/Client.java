@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.client;
 
-import de.ellpeck.rockbottom.net.decode.PacketDecoder;
-import de.ellpeck.rockbottom.net.encode.PacketEncoder;
+import de.ellpeck.rockbottom.net.PacketDecoder;
+import de.ellpeck.rockbottom.net.PacketEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;

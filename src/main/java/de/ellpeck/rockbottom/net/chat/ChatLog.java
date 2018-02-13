@@ -30,8 +30,6 @@ import java.util.logging.Logger;
 
 public class ChatLog implements IChatLog{
 
-    private static final Logger CHAT_LOGGER = Logging.createLogger("Chat");
-
     static{
         new CommandHelp().register();
         new CommandStopServer().register();
@@ -55,7 +53,7 @@ public class ChatLog implements IChatLog{
             this.newMessageCounter.add(0, new Counter(400));
         }
 
-        CHAT_LOGGER.info(message.getUnformattedWithChildren());
+        Logging.chatLogger.info(message.getUnformattedWithChildren());
     }
 
     @Override
@@ -88,7 +86,7 @@ public class ChatLog implements IChatLog{
                         this.sendMessageTo(sender, cmdFeedback);
                     }
 
-                    CHAT_LOGGER.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback '"+cmdFeedback+"'");
+                    Logging.chatLogger.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback '"+cmdFeedback+"'");
                 }
                 else{
                     this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat()+"["+sender.getName()+"] &4"+message));

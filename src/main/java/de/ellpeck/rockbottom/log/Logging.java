@@ -13,8 +13,11 @@ import java.util.logging.Logger;
 public final class Logging{
 
     public static Logger mainLogger;
+    public static Logger chatLogger;
+    public static Logger glfwLogger;
+    public static Logger nettyLogger;
 
-    public static void createMain(String levelName){
+    public static void init(String levelName){
         Level level = getLogLevel(levelName);
         mainLogger = Logger.getLogger(AbstractGame.NAME);
         mainLogger.setLevel(level);
@@ -50,6 +53,10 @@ public final class Logging{
         catch(Exception e){
             mainLogger.log(Level.SEVERE, "Could not initialize logger file saving", e);
         }
+
+        chatLogger = createLogger("Chat");
+        glfwLogger = createLogger("GLFW");
+        nettyLogger = createLogger("Netty");
     }
 
     private static Level getLogLevel(String level){

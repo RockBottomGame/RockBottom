@@ -32,6 +32,7 @@ import de.ellpeck.rockbottom.gui.GuiLogo;
 import de.ellpeck.rockbottom.gui.GuiManager;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.gui.menu.GuiMenu;
+import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.client.ClientWorld;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
@@ -80,8 +81,7 @@ public class RockBottom extends AbstractGame{
     private final GLFWErrorCallback errorCallback = new GLFWErrorCallback(){
         @Override
         public void invoke(int error, long description){
-            RockBottomAPI.logger().log(Level.WARNING, "GLFW error:\n"+GLFWErrorCallback.getDescription(description)+"\nDump follows.");
-            Thread.dumpStack();
+            Logging.glfwLogger.log(Level.WARNING, GLFWErrorCallback.getDescription(description), new RuntimeException());
         }
     };
     private int width;

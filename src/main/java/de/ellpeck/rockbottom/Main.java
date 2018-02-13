@@ -57,7 +57,7 @@ public final class Main{
             OptionSet options = parser.parse(args);
 
             gameDir = options.valueOf(optionGameDir);
-            Logging.createMain(options.valueOf(optionLogLevel));
+            Logging.init(options.valueOf(optionLogLevel));
 
             Logging.mainLogger.info("Using Java version "+System.getProperty("java.version"));
 
