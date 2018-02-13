@@ -21,6 +21,11 @@ public class PacketDecoder extends ByteToMessageDecoder{
 
             try{
                 packet.fromBuffer(buf);
+
+                if(buf.isReadable()){
+                   RockBottomAPI.logger().log(Level.WARNING, "Packet "+packetClass+" with id "+id+" read from buffer, but left "+buf.readableBytes()+" bytes behind!");
+                   buf.clear();
+                }
             }
             catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "Couldn't read packet "+packetClass+" with id "+id+" from buffer", e);
