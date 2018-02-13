@@ -305,7 +305,7 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public String getDescription(){
-        return "The base game and all its features";
+        return "Rock Bottom is a 2-dimensional sidescrolling game in which you collect resources and build different tools and machines in order to try to figure out why you're on this planet and what the people that were here before you did!";
     }
 
     @Override
