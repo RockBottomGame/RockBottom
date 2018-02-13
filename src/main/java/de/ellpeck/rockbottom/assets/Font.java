@@ -210,9 +210,6 @@ public class Font implements IFont{
         float scaledHeight = (float)this.charHeight*scale;
 
         boolean shadow = shadowColor != Colors.NO_COLOR;
-        if(shadow){
-            shadowColor = Colors.setA(Colors.BLACK, Colors.getA(color));
-        }
         float shadowOffset = 2F*scale;
 
         if(character != ' '){
