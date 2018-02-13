@@ -8,10 +8,12 @@ import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.util.logging.Level;
@@ -76,6 +78,8 @@ public class GuiMods extends Gui{
         this.components.add(this.disableButton);
 
         this.updateButtons();
+
+        this.components.add(new ComponentFancyButton(this, 18+(this.width-118)/2+42, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
 
         this.components.add(new ComponentButton(this, 118+(this.width-118)/2-40, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
