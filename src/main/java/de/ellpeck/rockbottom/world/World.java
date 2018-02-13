@@ -873,43 +873,50 @@ public class World implements IWorld{
     }
 
     private byte getTileLight(int x, int y, boolean isSky){
-        Tile foreground = this.getState(x, y).getTile();
-        Tile background = this.getState(TileLayer.BACKGROUND, x, y).getTile();
+        int highestLight = 0;
+        boolean nonAir = false;
 
-        if(foreground.isAir() && background.isAir()){
-            if(isSky){
-                return Constants.MAX_LIGHT;
+        for(TileLayer layer : TileLayer.getAllLayers()){
+            Tile tile = this.getState(layer, x, y).getTile();
+            if(!tile.isAir()){
+                int light = tile.getLight(this, x, y, layer);
+                if(light > highestLight){
+                    highestLight = light;
+                }
+
+                nonAir = true;
             }
         }
-        else{
+
+        if(nonAir){
             if(!isSky){
-                int foregroundLight = foreground.getLight(this, x, y, TileLayer.MAIN);
-                int backgroundLight = background.getLight(this, x, y, TileLayer.BACKGROUND);
-                return (byte)Math.max(foregroundLight, backgroundLight);
+                return (byte)highestLight;
             }
+        }
+        else if(isSky){
+            return Constants.MAX_LIGHT;
         }
         return 0;
     }
 
     private float getTileModifier(int x, int y, boolean isSky){
-        float foregroundMod = 1F;
-        float backgroundMod = 1F;
+        float smallestMod = 1F;
         boolean nonAir = false;
 
-        Tile foreground = this.getState(x, y).getTile();
-        if(!foreground.isAir()){
-            foregroundMod = foreground.getTranslucentModifier(this, x, y, TileLayer.MAIN, isSky);
-            nonAir = true;
-        }
+        for(TileLayer layer : TileLayer.getAllLayers()){
+            Tile tile = this.getState(layer, x, y).getTile();
+            if(!tile.isAir()){
+                float mod = tile.getTranslucentModifier(this, x, y, layer, isSky);
+                if(mod < smallestMod){
+                    smallestMod = mod;
+                }
 
-        Tile background = this.getState(TileLayer.BACKGROUND, x, y).getTile();
-        if(!background.isAir()){
-            backgroundMod = background.getTranslucentModifier(this, x, y, TileLayer.BACKGROUND, isSky);
-            nonAir = true;
+                nonAir = true;
+            }
         }
 
         if(nonAir){
-            return Math.min(foregroundMod, backgroundMod);
+            return smallestMod;
         }
         else{
             return isSky ? 1F : 0.8F;
