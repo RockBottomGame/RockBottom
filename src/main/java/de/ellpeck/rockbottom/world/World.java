@@ -228,6 +228,15 @@ public class World implements IWorld{
     }
 
     @Override
+    public List<TileEntity> getAllTickingTileEntities(){
+        List<TileEntity> tiles = new ArrayList<>();
+        for(IChunk chunk : this.loadedChunks){
+            tiles.addAll(chunk.getAllTickingTileEntities());
+        }
+        return tiles;
+    }
+
+    @Override
     public Entity getEntity(UUID id){
         for(IChunk chunk : this.loadedChunks){
             Entity entity = chunk.getEntity(id);

@@ -52,10 +52,12 @@ public class Chunk implements IChunk{
     protected final Map<UUID, Entity> entityLookup = new HashMap<>();
     protected final List<TileEntity> tileEntities = new ArrayList<>();
     protected final Map<Pos3, TileEntity> tileEntityLookup = new HashMap<>();
+    protected final List<TileEntity> tickingTileEntities = new ArrayList<>();
     protected final List<ScheduledUpdate> scheduledUpdates = new ArrayList<>();
     protected final Map<Pos3, ScheduledUpdate> scheduledUpdateLookup = new HashMap<>();
     protected final List<Entity> entitiesUnmodifiable;
     protected final List<TileEntity> tileEntitiesUnmodifiable;
+    protected final List<TileEntity> tickingTileEntitiesUnmodifiable;
     public boolean isGenerating;
     protected boolean needsSave;
     private int internalLoadingTimer;
@@ -80,6 +82,7 @@ public class Chunk implements IChunk{
 
         this.entitiesUnmodifiable = Collections.unmodifiableList(this.entities);
         this.tileEntitiesUnmodifiable = Collections.unmodifiableList(this.tileEntities);
+        this.tickingTileEntitiesUnmodifiable = Collections.unmodifiableList(this.tickingTileEntities);
     }
 
     private void generate(List<? extends IWorldGenerator> gens){
@@ -163,8 +166,8 @@ public class Chunk implements IChunk{
             }
         }
 
-        for(int i = 0; i < this.tileEntities.size(); i++){
-            TileEntity tile = this.tileEntities.get(i);
+        for(int i = 0; i < this.tickingTileEntities.size(); i++){
+            TileEntity tile = this.tickingTileEntities.get(i);
 
             if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
                 tile.update(game);
@@ -359,6 +362,10 @@ public class Chunk implements IChunk{
             this.tileEntities.add(tile);
             this.tileEntityLookup.put(posVec, tile);
 
+            if(tile.doesTick()){
+                this.tickingTileEntities.add(tile);
+            }
+
             if(!this.isGenerating){
                 this.world.notifyNeighborsOfChange(tile.x, tile.y, tile.layer);
                 this.setDirty();
@@ -382,6 +389,10 @@ public class Chunk implements IChunk{
         if(tile != null){
             this.tileEntities.remove(tile);
             this.tileEntityLookup.remove(new Pos3(tile.x, tile.y, tile.layer.index()));
+
+            if(tile.doesTick()){
+                this.tickingTileEntities.remove(tile);
+            }
 
             if(!this.isGenerating){
                 this.world.notifyNeighborsOfChange(this.x+x, this.y+y, tile.layer);
@@ -424,6 +435,11 @@ public class Chunk implements IChunk{
     @Override
     public List<TileEntity> getAllTileEntities(){
         return this.tileEntitiesUnmodifiable;
+    }
+
+    @Override
+    public List<TileEntity> getAllTickingTileEntities(){
+        return this.tickingTileEntitiesUnmodifiable;
     }
 
     @Override

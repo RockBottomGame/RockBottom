@@ -43,7 +43,7 @@ public final class DebugRenderer{
             if(!RockBottomAPI.getNet().isClient()){
                 list.add("Players: "+world.players.size());
             }
-            list.add("TileEntities: "+world.getAllTileEntities().size());
+            list.add("TileEntities: "+world.getAllTileEntities().size()+ ", Ticking: "+world.getAllTickingTileEntities().size());
             list.add("Particles: "+game.getParticleManager().getAmount());
             int scheduledTileAmount = 0;
             for(IChunk chunk : world.loadedChunks){

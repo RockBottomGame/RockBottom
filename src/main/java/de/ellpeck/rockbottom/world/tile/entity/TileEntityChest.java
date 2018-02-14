@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.world.tile.entity;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.tile.entity.FilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.entity.TileInventory;
@@ -23,6 +22,11 @@ public class TileEntityChest extends TileEntity{
     @Override
     public IFilteredInventory getTileInventory(){
         return this.inventory;
+    }
+
+    @Override
+    public boolean doesTick(){
+        return false;
     }
 
     @Override
