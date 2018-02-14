@@ -122,6 +122,9 @@ public class Chunk implements IChunk{
         if(this.tileEntities.size() != this.tileEntityLookup.size()){
             throw new IllegalStateException("TileEntities and TileEntityLookup are out of sync!");
         }
+        if(this.tickingTileEntities.size() > this.tileEntities.size()){
+            throw new IllegalStateException("There are more ticking TileEntities than there are normal ones!");
+        }
         if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
             throw new IllegalStateException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
         }
