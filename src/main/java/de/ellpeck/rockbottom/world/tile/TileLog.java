@@ -59,10 +59,6 @@ public class TileLog extends TileBasic{
                 }
                 while(foundOne);
             }
-
-            if(destroyer instanceof AbstractEntityPlayer){
-                ((AbstractEntityPlayer)destroyer).getKnowledge().teachRecipe(ConstructionRegistry.torch, true);
-            }
         }
     }
 

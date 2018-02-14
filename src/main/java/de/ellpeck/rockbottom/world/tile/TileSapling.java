@@ -32,7 +32,7 @@ public class TileSapling extends TileBasic{
     @Override
     public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
         if(Util.RANDOM.nextDouble() >= 0.75){
-            if(world.getSkyLight(x, y) >= 25){
+            if(world.isDaytime() && world.getSkyLight(x, y) >= 25){
                 TileState state = world.getState(layer, x, y);
                 if(state.get(StaticTileProps.SAPLING_GROWTH) >= 4){
                     if(GEN.makeTree(world, x, y, true)){

@@ -35,7 +35,7 @@ public final class ContentRegistry{
         new TileSand().register();
         new TileBasic(RockBottomAPI.createInternalRes("sandstone")).register();
         new TileOreMaterial(RockBottomAPI.createInternalRes("coal")).register();
-        new TileTorch().register();
+        new TileTorch(RockBottomAPI.createInternalRes("torch")).register();
         new TileLadder().register();
         new TileChest().register();
         new TileSign().register();
@@ -45,6 +45,7 @@ public final class ContentRegistry{
         new TileWoodDoor(RockBottomAPI.createInternalRes("wood_door")).register();
         new TileWoodDoor(RockBottomAPI.createInternalRes("wood_door_old")).register();
         new TileRemainsGoo().register();
+        new TileGrassTorch().register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();

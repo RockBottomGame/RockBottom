@@ -15,8 +15,8 @@ import de.ellpeck.rockbottom.render.tile.TileTorchRenderer;
 
 public class TileTorch extends TileBasic{
 
-    public TileTorch(){
-        super(RockBottomAPI.createInternalRes("torch"));
+    public TileTorch(IResourceName name){
+        super(name);
         this.addProps(StaticTileProps.TORCH_FACING);
     }
 
