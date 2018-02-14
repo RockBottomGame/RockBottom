@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import com.google.common.collect.Table;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -20,6 +21,8 @@ import de.ellpeck.rockbottom.api.internal.IInternalHooks;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
+import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
+import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -33,8 +36,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 public class InternalHooks implements IInternalHooks{
@@ -931,5 +933,59 @@ public class InternalHooks implements IInternalHooks{
 
     private int getTextSpace(IGameInstance game, ComponentInputField field){
         return field.maxLength-game.getAssetManager().getFont().removeFormatting(field.getText()).length();
+    }
+
+    @Override
+    public void doTileStateInit(TileState thisState, IResourceName name, Tile tile, Map<String, Comparable> properties, Table<String, Comparable, TileState> subStates){
+        RockBottomAPI.TILE_STATE_REGISTRY.register(name, thisState);
+
+        for(TileProp prop : tile.getProps()){
+            String propName = prop.getName();
+            for(int i = 0; i < prop.getVariants(); i++){
+                Comparable value = prop.getValue(i);
+                if(!properties.get(propName).equals(value)){
+                    Map<String, Comparable> subProps = new TreeMap<>(properties);
+                    subProps.put(propName, value);
+
+                    IResourceName subName = generateTileStateName(tile, subProps);
+                    if(tile.hasState(subName, subProps)){
+                        TileState state = RockBottomAPI.TILE_STATE_REGISTRY.get(subName);
+
+                        if(state == null){
+                            state = new TileState(subName, tile, subProps);
+                        }
+
+                        subStates.put(propName, value, state);
+                    }
+                }
+            }
+        }
+    }
+
+    public static IResourceName generateTileStateName(Tile tile, Map<String, Comparable> properties){
+        String suffix = "";
+
+        if(!properties.isEmpty()){
+            suffix += ";";
+
+            Iterator<Map.Entry<String, Comparable>> iterator = properties.entrySet().iterator();
+            while(iterator.hasNext()){
+                Map.Entry<String, Comparable> entry = iterator.next();
+
+                String append = entry.getKey()+"@"+entry.getValue();
+                if(iterator.hasNext()){
+                    append += ",";
+                }
+
+                suffix += append;
+            }
+        }
+
+        return tile.getName().addSuffix(suffix);
+    }
+
+    @Override
+    public IStateHandler makeStateHandler(Tile tile){
+        return new StateHandler(tile);
     }
 }
