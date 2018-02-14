@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -14,6 +15,8 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.item.ItemStartNote;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class WorldGenStartHut implements IWorldGenerator{
@@ -126,10 +129,18 @@ public class WorldGenStartHut implements IWorldGenerator{
         //Fill chest
         TileEntityChest chest = chunk.getTileEntity(chunk.getX()+startX+5, chunk.getY()+startY+1, TileEntityChest.class);
         if(chest != null){
-            IInventory inv = chest.getTileInventory();
+            List<ItemInstance> items = new ArrayList<>();
 
             ItemInstance note = new ItemInstance(GameContent.ITEM_STAT_NOTE, 1, this.generatorRandom.nextInt(ItemStartNote.TEXT_VARIATIONS));
-            inv.set(this.generatorRandom.nextInt(inv.getSlotAmount()), note);
+            items.add(note);
+
+            int amount = this.generatorRandom.nextInt(15);
+            for(int i = 0; i <= amount; i++){
+                ItemInstance torch = new ItemInstance(GameContent.TILE_GRASS_TORCH);
+                items.add(torch);
+            }
+
+            Inventory.fillRandomly(chest.getTileInventory(), this.generatorRandom, items);
         }
 
         //Goo

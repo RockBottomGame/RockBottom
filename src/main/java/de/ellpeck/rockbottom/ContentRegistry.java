@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.effect.BasicEffect;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
@@ -52,6 +53,7 @@ public final class ContentRegistry{
         new ItemTool(RockBottomAPI.createInternalRes("brittle_shovel"), 2F, ToolType.SHOVEL, 1).register();
         new ItemFirework().register();
         new ItemStartNote().register();
+        new ItemBasic(RockBottomAPI.createInternalRes("plant_fiber")).register();
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();

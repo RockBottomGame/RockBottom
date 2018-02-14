@@ -15,6 +15,7 @@ public final class ConstructionRegistry{
     public static final List<IRecipe> BRITTLE_TOOLS = new ArrayList<>();
     public static IRecipe ladder;
     public static IRecipe chest;
+    public static IRecipe grassTorch;
 
     public static void init(){
         BRITTLE_TOOLS.add(new KnowledgeBasedRecipe(new ItemInstance(GameContent.ITEM_BRITTLE_PICKAXE), new ItemUseInfo(GameContent.TILE_PEBBLES, 12), new ItemUseInfo(GameContent.WOOD_BOARDS, 4)).registerManual());
@@ -22,8 +23,8 @@ public final class ConstructionRegistry{
         BRITTLE_TOOLS.add(new KnowledgeBasedRecipe(new ItemInstance(GameContent.ITEM_BRITTLE_SHOVEL), new ItemUseInfo(GameContent.TILE_PEBBLES, 8), new ItemUseInfo(GameContent.WOOD_BOARDS, 4)).registerManual());
 
         ladder = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_LADDER, 5), new ItemUseInfo(GameContent.WOOD_BOARDS, 8)).registerManual();
-
         chest = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_CHEST), new ItemUseInfo(GameContent.WOOD_BOARDS, 20), new ItemUseInfo(GameContent.TILE_LOG, 4)).registerManual();
+        grassTorch = new KnowledgeBasedRecipe(new ItemInstance(GameContent.TILE_GRASS_TORCH, 2), new ItemUseInfo(GameContent.ITEM_PLANT_FIBER, 4), new ItemUseInfo(GameContent.WOOD_BOARDS, 2)).registerManual();
 
         new BasicRecipe(new ItemInstance(GameContent.TILE_SIGN), new ItemUseInfo(GameContent.WOOD_BOARDS, 8)).registerManual();
         new BasicRecipe(new ItemInstance(GameContent.WOOD_BOARDS, 3), new ItemUseInfo(GameContent.TILE_LOG)).registerManual();
