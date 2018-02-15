@@ -210,6 +210,12 @@ public class World implements IWorld{
     }
 
     @Override
+    public void reevaluateTickBehavior(TileEntity tile){
+        IChunk chunk = this.getChunk(tile.x, tile.y);
+        chunk.reevaluateTickBehavior(tile);
+    }
+
+    @Override
     public List<Entity> getAllEntities(){
         List<Entity> entities = new ArrayList<>();
         for(IChunk chunk : this.loadedChunks){

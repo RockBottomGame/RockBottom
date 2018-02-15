@@ -431,6 +431,18 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public void reevaluateTickBehavior(TileEntity tile){
+        if(tile.doesTick()){
+            if(!this.tickingTileEntities.contains(tile)){
+                this.tickingTileEntities.add(tile);
+            }
+        }
+        else{
+            this.tickingTileEntities.remove(tile);
+        }
+    }
+
+    @Override
     public List<Entity> getAllEntities(){
         return this.entitiesUnmodifiable;
     }
