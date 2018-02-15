@@ -35,7 +35,7 @@ public class WorldGenStartHut implements IWorldGenerator{
 
     @Override
     public boolean shouldGenerate(IWorld world, IChunk chunk){
-        return chunk.getGridX() == this.chunkX && (!world.hasAdditionalData() || !world.getAdditionalData().getBoolean("start_house_created"));
+        return world.isStoryMode() && chunk.getGridX() == this.chunkX && (!world.hasAdditionalData() || !world.getAdditionalData().getBoolean("start_house_created"));
     }
 
     @Override

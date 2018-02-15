@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
+import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -28,6 +29,7 @@ public class GuiCreateWorld extends Gui{
     private String lastSeed = "";
     private final long defaultSeed = Util.RANDOM.nextLong();
     private long seed;
+    private boolean storyMode = true;
 
     public GuiCreateWorld(Gui parent){
         super(parent);
@@ -50,6 +52,7 @@ public class GuiCreateWorld extends Gui{
             File file = makeWorldFile(game, this.worldName);
             WorldInfo info = new WorldInfo(file);
             info.seed = this.seed;
+            info.storyMode = this.storyMode;
             info.save();
 
             IGuiManager gui = game.getGuiManager();
@@ -60,6 +63,11 @@ public class GuiCreateWorld extends Gui{
 
             return true;
         }, "Create"));
+
+        this.components.add(new ComponentToggleButton(this, this.width/2-50, 112, 100, 16, this.storyMode, ()->{
+            this.storyMode = !this.storyMode;
+            return true;
+        }, "button.story_mode"));
 
         this.components.add(new ComponentButton(this, this.width/2+2, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);

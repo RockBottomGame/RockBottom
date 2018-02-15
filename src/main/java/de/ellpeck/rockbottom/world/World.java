@@ -327,6 +327,11 @@ public class World implements IWorld{
     }
 
     @Override
+    public boolean isStoryMode(){
+        return this.info.storyMode;
+    }
+
+    @Override
     public byte getSkyLight(int x, int y){
         IChunk chunk = this.getChunk(x, y);
         return chunk.getSkyLight(x, y);

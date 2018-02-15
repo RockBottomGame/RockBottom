@@ -41,6 +41,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
         font.drawCutOffString(x+2F, y+1F, this.worldFile.getName(), 0.45F, this.width-4, false, false);
         font.drawString(x+2F, y+12F, FormattingCode.GRAY+manager.localize(RES_LAST_MODIFIED)+": "+this.lastModified, 0.25F);
         font.drawString(x+2F, y+18F, FormattingCode.GRAY+manager.localize(RES_SEED)+": "+this.info.seed, 0.25F);
+        font.drawStringFromRight(x+this.width-2F, y+2F, this.info.storyMode ? "Story Mode" : "Free Mode", 0.3F);
     }
 
     @Override

@@ -33,7 +33,7 @@ public class InventoryPlayer extends Inventory{
             this.addChangeCallback((inv, slot) -> {
                 if(!ConstructionRegistry.grassTorch.isKnown(player)){
                     ItemInstance instance = inv.get(slot);
-                    if(instance != null && (instance.getItem() == GameContent.ITEM_PLANT_FIBER || instance.getItem() == GameContent.TILE_GRASS_TORCH.getItem())){
+                    if(instance != null && instance.getItem() == GameContent.TILE_GRASS_TORCH.getItem()){
                         player.getKnowledge().teachRecipe(ConstructionRegistry.grassTorch, true);
                     }
                 }
