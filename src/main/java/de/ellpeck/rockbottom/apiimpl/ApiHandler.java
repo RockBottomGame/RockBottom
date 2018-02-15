@@ -46,8 +46,8 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void readDataSet(DataSet set, File file){
-        if(!set.data.isEmpty()){
-            set.data.clear();
+        if(!set.isEmpty()){
+            set.clear();
         }
 
         try{
@@ -64,9 +64,9 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void writeSet(DataOutput stream, DataSet set) throws Exception{
-        stream.writeInt(set.data.size());
+        stream.writeInt(set.size());
 
-        for(DataPart part : set.data.values()){
+        for(DataPart part : set.getData().values()){
             this.writePart(stream, part);
         }
     }
@@ -77,7 +77,7 @@ public class ApiHandler implements IApiHandler{
 
         for(int i = 0; i < amount; i++){
             DataPart part = this.readPart(stream);
-            set.data.put(part.getName(), part);
+            set.addPart(part);
         }
     }
 
