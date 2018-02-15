@@ -134,7 +134,7 @@ public class WorldGenStartHut implements IWorldGenerator{
             ItemInstance note = new ItemInstance(GameContent.ITEM_STAT_NOTE, 1, this.generatorRandom.nextInt(ItemStartNote.TEXT_VARIATIONS));
             items.add(note);
 
-            int amount = this.generatorRandom.nextInt(15);
+            int amount = this.generatorRandom.nextInt(10)+5;
             for(int i = 0; i <= amount; i++){
                 ItemInstance torch = new ItemInstance(GameContent.TILE_GRASS_TORCH);
                 items.add(torch);
