@@ -171,14 +171,18 @@ public class Chunk implements IChunk{
 
         for(int i = 0; i < this.tickingTileEntities.size(); i++){
             TileEntity tile = this.tickingTileEntities.get(i);
+            if(this.getTileEntity(tile.layer, tile.x, tile.y) == tile){
+                if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
+                    tile.update(game);
+                }
 
-            if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
-                tile.update(game);
+                if(tile.shouldRemove()){
+                    this.removeTileEntity(tile.layer, tile.x, tile.y);
+                    i--;
+                }
             }
-
-            if(tile.shouldRemove()){
-                this.removeTileEntity(tile.layer, tile.x, tile.y);
-                i--;
+            else{
+                throw new IllegalStateException("There is a ticking tile entity at "+tile.x+", "+tile.y+" that shouldn't exist there as there is no tile entity registered for that position!");
             }
         }
     }
