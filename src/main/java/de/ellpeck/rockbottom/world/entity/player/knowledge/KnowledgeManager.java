@@ -113,7 +113,7 @@ public class KnowledgeManager implements IKnowledgeManager{
 
     @Override
     public void teachRecipe(IRecipe recipe, boolean announce){
-        if(!this.knowsRecipe(recipe)){
+        if(!recipe.isKnown(this.player)){
             RecipeInformation information = new RecipeInformation(recipe);
             this.teachInformation(information, announce);
         }
