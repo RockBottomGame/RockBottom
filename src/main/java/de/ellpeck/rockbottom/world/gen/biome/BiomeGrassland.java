@@ -18,17 +18,11 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
-        return getState(layer, chunk.getX()+x, chunk.getY()+y, noise, 0, 10);
+        return getState(layer, chunk.getY()+y, this.getExpectedSurfaceHeight(world, chunk, x, layer, noise));
     }
 
-    public static TileState getState(TileLayer layer, int x, int y, INoiseGen noise, int minHeight, int maxHeight){
+    public static TileState getState(TileLayer layer, int y, int height){
         if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
-            int height = (int)(((noise.make2dNoise(x/100D, 0D)+noise.make2dNoise(x/20D, 0D)*2D)/3D)*(double)(maxHeight-minHeight))+minHeight;
-
-            if(layer == TileLayer.BACKGROUND){
-                height -= Util.ceil(noise.make2dNoise(x/10D, 0D)*3D);
-            }
-
             if(y == height && layer == TileLayer.MAIN){
                 return GameContent.TILE_GRASS.getDefState();
             }
@@ -37,6 +31,21 @@ public class BiomeGrassland extends BiomeBasic{
             }
         }
         return GameContent.TILE_AIR.getDefState();
+    }
+
+    public static int getHeight(TileLayer layer, int x, INoiseGen noise, int minHeight, int maxHeight){
+        int height = (int)(((noise.make2dNoise(x/100D, 0D)+noise.make2dNoise(x/20D, 0D)*2D)/3D)*(double)(maxHeight-minHeight))+minHeight;
+
+        if(layer == TileLayer.BACKGROUND){
+            height -= Util.ceil(noise.make2dNoise(x/10D, 0D)*3D);
+        }
+
+        return height;
+    }
+
+    @Override
+    public int getExpectedSurfaceHeight(IWorld world, IChunk chunk, int x, TileLayer layer, INoiseGen noise){
+        return getHeight(layer, chunk.getX()+x, noise, 0, 10);
     }
 
     @Override
@@ -57,10 +66,5 @@ public class BiomeGrassland extends BiomeBasic{
     @Override
     public boolean canTreeGrow(IWorld world, IChunk chunk, int x, int y){
         return y > 0 && chunk.getStateInner(x, y-1).getTile().canKeepPlants(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN);
-    }
-
-    @Override
-    public int getNoiseSeedModifier(IWorld world){
-        return 23872;
     }
 }

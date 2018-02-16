@@ -20,7 +20,7 @@ public class BiomeDesert extends BiomeBasic{
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
         if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
             double worldX = chunk.getX()+x;
-            int height = (int)(((noise.make2dNoise(worldX/100D, 0D)+noise.make2dNoise(worldX/20D, 0D)*2D)/3D)*10D);
+            int height = this.getExpectedSurfaceHeight(world, chunk, x, layer, noise);
 
             if(layer == TileLayer.BACKGROUND){
                 height -= Util.ceil(noise.make2dNoise(worldX/10D, 0D)*3D);
@@ -39,13 +39,14 @@ public class BiomeDesert extends BiomeBasic{
     }
 
     @Override
-    public float getPebbleChance(){
-        return 0.35F;
+    public int getExpectedSurfaceHeight(IWorld world, IChunk chunk, int x, TileLayer layer, INoiseGen noise){
+        double worldX = chunk.getX()+x;
+        return (int)(((noise.make2dNoise(worldX/100D, 0D)+noise.make2dNoise(worldX/20D, 0D)*2D)/3D)*10D);
     }
 
     @Override
-    public int getNoiseSeedModifier(IWorld world){
-        return 23872;
+    public float getPebbleChance(){
+        return 0.35F;
     }
 
     @Override
