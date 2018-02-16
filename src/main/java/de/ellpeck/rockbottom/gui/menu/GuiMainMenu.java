@@ -86,7 +86,7 @@ public class GuiMainMenu extends Gui{
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.quit"))));
 
-        this.components.add(new ComponentClickableText(this, this.width-2, this.height-7, 0.25F, true, () -> Util.openWebsite(Constants.ELLPECK_LINK), "Copyright 2017 Ellpeck"));
+        this.components.add(new ComponentClickableText(this, this.width-2, this.height-7, 0.25F, true, () -> Util.openWebsite(Constants.ELLPECK_LINK), "Copyright 2017-2018 Ellpeck"));
         this.components.add(new ComponentClickableText(this, 2, this.height-7, 0.25F, false, () -> Util.openWebsite(Constants.WEBSITE_LINK), game.getDisplayName()+" "+game.getVersion()+" - API "+RockBottomAPI.VERSION));
     }
 
