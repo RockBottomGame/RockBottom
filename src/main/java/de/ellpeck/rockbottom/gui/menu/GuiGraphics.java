@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
@@ -44,20 +43,14 @@ public class GuiGraphics extends Gui{
         this.components.add(new ComponentSlider(this, 154, 20, 150, 16, (int)(settings.guiScale*100F), 50, 100, (integer, aBoolean) -> {
             if(aBoolean){
                 settings.guiScale = (float)integer/100F;
-
-                IDataManager data = game.getDataManager();
-                data.saveSettings(settings, data.getSettingsFile());
-
+                game.getDataManager().savePropSettings(settings);
                 game.getRenderer().calcScales();
                 game.getGuiManager().updateDimensions();
             }
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.gui_scale"))));
         this.components.add(new ComponentToggleButton(this, 154, 40, 150, 16, !settings.fullscreen, () -> {
             settings.fullscreen = !settings.fullscreen;
-
-            IDataManager data = game.getDataManager();
-            data.saveSettings(settings, data.getSettingsFile());
-
+            game.getDataManager().savePropSettings(settings);
             game.setFullscreen(settings.fullscreen);
             return true;
         }, "button.fullscreen"));

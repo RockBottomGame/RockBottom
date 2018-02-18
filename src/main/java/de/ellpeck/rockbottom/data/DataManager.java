@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.api.data.set.part.num.*;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortArray;
-import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
@@ -20,12 +19,13 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDropItem;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -111,9 +111,9 @@ public class DataManager implements IDataManager{
 
         this.gameDataFile = new File(this.gameDirectory, "game_info.dat");
         this.playerDesignFile = new File(this.gameDirectory, "player_design.dat");
-        this.settingsFile = new File(this.gameDirectory, "settings.json");
+        this.settingsFile = new File(this.gameDirectory, "settings.properties");
         this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.properties");
-        this.whitelistFile = new File(this.gameDirectory, "whitelist.properties");
+        this.whitelistFile =new File(this.gameDirectory, "whitelist.properties");
         this.blacklistFile = new File(this.gameDirectory, "blacklist.properties");
         this.modSettingsFile = new File(this.gameDirectory, "mod_settings.properties");
 
@@ -242,43 +242,5 @@ public class DataManager implements IDataManager{
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Couldn't save "+settings.getName(), e);
         }
-    }
-
-    @Override
-    public void saveSettings(IJsonSettings settings, File file){
-        try{
-            if(!file.exists()){
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-
-            FileWriter writer = new FileWriter(file);
-            Util.GSON.toJson(settings, writer);
-            writer.close();
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't save json settings to "+file, e);
-        }
-    }
-
-    @Override
-    public <T extends IJsonSettings> T loadSettings(File file, Class<T> settingsClass, T defaultSettings){
-        T settings = defaultSettings;
-
-        if(file.exists()){
-            try{
-                FileReader reader = new FileReader(file);
-                settings = Util.GSON.fromJson(reader, settingsClass);
-                reader.close();
-            }
-            catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't load json settings from "+file, e);
-            }
-        }
-        else{
-            RockBottomAPI.logger().info("Creating json settings "+file+" from default");
-        }
-
-        return settings;
     }
 }

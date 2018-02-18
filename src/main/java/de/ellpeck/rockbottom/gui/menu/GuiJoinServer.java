@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.GuiInformation;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketJoin;
@@ -83,6 +82,7 @@ public class GuiJoinServer extends Gui{
         String text = this.inputField.getText();
         if(!settings.lastServerIp.equals(text)){
             settings.lastServerIp = text;
+            game.getDataManager().savePropSettings(settings);
         }
     }
 }

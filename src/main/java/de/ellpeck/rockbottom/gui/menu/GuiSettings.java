@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.gui.menu;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
@@ -57,7 +56,6 @@ public class GuiSettings extends Gui{
     @Override
     public void onClosed(IGameInstance game){
         super.onClosed(game);
-        IDataManager manager = game.getDataManager();
-        manager.saveSettings(game.getSettings(), manager.getSettingsFile());
+        game.getDataManager().savePropSettings(game.getSettings());
     }
 }
