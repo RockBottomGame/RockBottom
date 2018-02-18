@@ -5,8 +5,12 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 public class ResourceName implements IResourceName{
 
-    private final String domain;
-    private final String resourceName;
+    private String domain;
+    private String resourceName;
+
+    public ResourceName(){
+
+    }
 
     public ResourceName(String domain, String resourceName){
         this.domain = domain;

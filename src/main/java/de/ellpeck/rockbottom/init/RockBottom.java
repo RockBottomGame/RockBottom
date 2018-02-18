@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.settings.Keybind;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
@@ -214,7 +215,14 @@ public class RockBottom extends AbstractGame{
     public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         this.settings = new Settings();
         RockBottomAPI.getEventHandler().fireEvent(new LoadSettingsEvent(this.settings));
-        this.dataManager.loadPropSettings(this.settings);
+
+        this.settings = this.dataManager.loadSettings(this.dataManager.getSettingsFile(), Settings.class, new Settings());
+        for(Keybind bind : RockBottomAPI.KEYBIND_REGISTRY.getUnmodifiable().values()){
+            String name = bind.getStringName();
+            if(!this.settings.keybinds.containsKey(name)){
+                this.settings.keybinds.put(name, new Settings.BindInfo(bind.getDefaultKey(), bind.isDefaultMouse()));
+            }
+        }
 
         this.setFullscreen(this.settings.fullscreen);
 

@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.gui.component;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Keybind;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiKeybinds;
@@ -28,7 +29,7 @@ public class ComponentKeybind extends ComponentButton{
     @Override
     public boolean onKeyPressed(IGameInstance game, int button){
         if(this.isSelected()){
-            this.bind.setBind(button, false);
+            this.setKeybind(game, button, false);
             this.gui.selectedKeybind = -1;
 
             return true;
@@ -41,7 +42,7 @@ public class ComponentKeybind extends ComponentButton{
     @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isSelected()){
-            this.bind.setBind(button, true);
+            this.setKeybind(game, button, true);
             this.gui.selectedKeybind = -1;
 
             return true;
@@ -49,6 +50,12 @@ public class ComponentKeybind extends ComponentButton{
         else{
             return super.onMouseAction(game, button, x, y);
         }
+    }
+
+    private void setKeybind(IGameInstance game, int button, boolean isMouse){
+       Settings.BindInfo info = game.getSettings().keybinds.get(this.bind.getName().toString());
+       info.key = button;
+       info.isMouse = isMouse;
     }
 
     @Override
