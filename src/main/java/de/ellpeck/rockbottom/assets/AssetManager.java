@@ -318,10 +318,12 @@ public class AssetManager implements IAssetManager, IDisposable{
                     }
                     catch(Exception e){
                         RockBottomAPI.logger().log(Level.SEVERE, "Couldn't read assets.json from mod "+mod.getDisplayName(), e);
+                        continue;
                     }
                 }
                 else{
                     RockBottomAPI.logger().severe("Mod "+mod.getDisplayName()+" is missing assets.json file at path "+path);
+                    continue;
                 }
 
                 RockBottomAPI.logger().info("Loaded assets from assets.json file for mod "+mod.getDisplayName()+" at path "+path);
