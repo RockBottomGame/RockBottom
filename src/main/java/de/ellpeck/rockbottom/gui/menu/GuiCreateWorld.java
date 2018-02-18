@@ -69,7 +69,7 @@ public class GuiCreateWorld extends Gui{
             return true;
         }, "button.story_mode"));
 
-        this.components.add(new ComponentButton(this, this.width/2+2, bottomY-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));

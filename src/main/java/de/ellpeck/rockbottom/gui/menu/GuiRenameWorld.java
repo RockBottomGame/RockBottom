@@ -42,7 +42,7 @@ public class GuiRenameWorld extends Gui{
             return true;
         }, "Rename boi"));
 
-        this.components.add(new ComponentButton(this, this.width/2+2, this.height-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
