@@ -136,28 +136,33 @@ public class GuiPlayerEditor extends Gui{
 
     @Override
     public boolean onCharInput(IGameInstance game, int codePoint, char[] characters){
-        boolean did = false;
-        for(char c : characters){
-            if(this.wiivIndex < WIIV_IS_COOL.length()){
-                if(WIIV_IS_COOL.charAt(this.wiivIndex) == c){
-                    this.wiivIndex++;
+        if(!super.onCharInput(game, codePoint, characters)){
+            boolean did = false;
+            for(char c : characters){
+                if(this.wiivIndex < WIIV_IS_COOL.length()){
+                    if(WIIV_IS_COOL.charAt(this.wiivIndex) == c){
+                        this.wiivIndex++;
 
-                    if(this.wiivIndex >= WIIV_IS_COOL.length()){
-                        IPlayerDesign desgin = game.getPlayerDesign();
-                        desgin.setBase(-1);
+                        if(this.wiivIndex >= WIIV_IS_COOL.length()){
+                            IPlayerDesign desgin = game.getPlayerDesign();
+                            desgin.setBase(-1);
 
-                        this.wiivIndex = 0;
-                        this.init(game);
+                            this.wiivIndex = 0;
+                            this.init(game);
+                        }
+
+                        did = true;
                     }
-
-                    did = true;
-                }
-                else{
-                    this.wiivIndex = 0;
+                    else{
+                        this.wiivIndex = 0;
+                    }
                 }
             }
+            return did;
         }
-        return did;
+        else{
+            return true;
+        }
     }
 
     @Override
