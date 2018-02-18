@@ -17,7 +17,7 @@ public class NatureTheme implements IMainMenuTheme{
 
     @Override
     public TileState getState(int x, int y, TileState[][] grid){
-        TileState state = BiomeGrassland.getState(TileLayer.MAIN, x, y, this.noiseGen, 2, 5);
+        TileState state = BiomeGrassland.getState(TileLayer.MAIN, y, BiomeGrassland.getHeight(TileLayer.MAIN, x, this.noiseGen, 2, 5));
         if(state.getTile().isAir()){
             if(Util.RANDOM.nextFloat() >= 0.45F){
                 if(grid[x][y-1].getTile().isFullTile()){
