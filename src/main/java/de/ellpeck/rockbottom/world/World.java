@@ -655,7 +655,7 @@ public class World implements IWorld{
     @Override
     public void playSound(AbstractEntityPlayer player, IResourceName name, double x, double y, double z, float pitch, float volume){
         if(this.isLocalPlayer(player)){
-            this.playRelativeSound(name, RockBottomAPI.getGame().getPlayer(), x, y, z, pitch, volume);
+            RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x, y, z);
         }
         else{
             player.sendPacket(new PacketSound(name, x, y, z, pitch, volume));
@@ -679,12 +679,8 @@ public class World implements IWorld{
         }
 
         if(!this.isDedicatedServer() && !this.isLocalPlayer(except)){
-            this.playRelativeSound(name, RockBottomAPI.getGame().getPlayer(), x, y, z, pitch, volume);
+            RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x, y, z);
         }
-    }
-
-    private void playRelativeSound(IResourceName name, AbstractEntityPlayer player, double x, double y, double z, float pitch, float volume){
-        RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume*10F, x-player.x, y-player.y, z-30D);
     }
 
     @Override

@@ -64,7 +64,7 @@ public class SoundEffect implements ISound{
 
     @Override
     public void play(float pitch, float volume, boolean loop){
-        this.playAt(pitch, volume, 0D, 0D, 0D, loop);
+        this.playAt(pitch, volume, SoundHandler.playerX, SoundHandler.playerY, SoundHandler.playerZ);
     }
 
     @Override

@@ -30,6 +30,7 @@ import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
@@ -210,6 +211,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
         }
 
         if(this.isLocalPlayer()){
+            SoundHandler.setPlayerPos(this.x, this.y);
+
             int range = 24;
             int layers = TileLayer.getAllLayers().size();
             for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES*layers; i++){
@@ -451,7 +454,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public boolean isInRange(double x, double y, double maxDistance){
-        return Util.distanceSq(this.x, this.y+1, x, y) <= maxDistance*maxDistance;
+        return true;//Util.distanceSq(this.x, this.y+1, x, y) <= maxDistance*maxDistance;
     }
 
     @Override
