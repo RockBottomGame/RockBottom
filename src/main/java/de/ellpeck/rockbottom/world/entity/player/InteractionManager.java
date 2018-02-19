@@ -263,6 +263,8 @@ public class InteractionManager implements IInteractionManager{
                                             this.breakTileY = y;
                                             this.breakingLayer = layer;
                                         }
+
+                                        break;
                                     }
                                 }
                             }
