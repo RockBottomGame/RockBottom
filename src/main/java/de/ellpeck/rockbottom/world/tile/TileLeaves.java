@@ -41,7 +41,7 @@ public class TileLeaves extends TileBasic{
             drops.add(new ItemInstance(GameContent.TILE_SAPLING));
         }
 
-        if(Util.RANDOM.nextDouble() >= 0.75){
+        if(destroyer != null && Util.RANDOM.nextDouble() >= 0.65){
             drops.add(new ItemInstance(GameContent.ITEM_TWIG));
         }
 
