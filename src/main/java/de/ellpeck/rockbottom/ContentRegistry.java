@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.item.ItemFirework;
 import de.ellpeck.rockbottom.item.ItemStartNote;
+import de.ellpeck.rockbottom.item.ItemTwig;
 import de.ellpeck.rockbottom.world.entity.EntityFirework;
 import de.ellpeck.rockbottom.world.entity.EntitySand;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
@@ -54,6 +55,7 @@ public final class ContentRegistry{
         new ItemFirework().register();
         new ItemStartNote().register();
         new ItemBasic(RockBottomAPI.createInternalRes("plant_fiber")).register();
+        new ItemTwig().register();
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();

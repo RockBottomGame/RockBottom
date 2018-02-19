@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TileLeaves extends TileBasic{
@@ -35,7 +35,17 @@ public class TileLeaves extends TileBasic{
 
     @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
-        return Util.RANDOM.nextDouble() >= 0.75 ? Collections.singletonList(new ItemInstance(GameContent.TILE_SAPLING)) : Collections.emptyList();
+        List<ItemInstance> drops = new ArrayList<>();
+
+        if(Util.RANDOM.nextDouble() >= 0.85){
+            drops.add(new ItemInstance(GameContent.TILE_SAPLING));
+        }
+
+        if(Util.RANDOM.nextDouble() >= 0.75){
+            drops.add(new ItemInstance(GameContent.ITEM_TWIG));
+        }
+
+        return drops;
     }
 
     @Override

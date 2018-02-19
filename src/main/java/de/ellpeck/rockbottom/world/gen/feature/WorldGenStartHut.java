@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.world.gen.feature;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.StaticTileProps;
-import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -134,10 +133,14 @@ public class WorldGenStartHut implements IWorldGenerator{
             ItemInstance note = new ItemInstance(GameContent.ITEM_STAT_NOTE, 1, this.generatorRandom.nextInt(ItemStartNote.TEXT_VARIATIONS));
             items.add(note);
 
-            int amount = this.generatorRandom.nextInt(10)+5;
-            for(int i = 0; i <= amount; i++){
+            for(int i = this.generatorRandom.nextInt(5)+5; i >= 0; i--){
                 ItemInstance torch = new ItemInstance(GameContent.TILE_GRASS_TORCH);
                 items.add(torch);
+            }
+
+            for(int i = this.generatorRandom.nextInt(5)+3; i >= 0; i--){
+                ItemInstance twig = new ItemInstance(GameContent.ITEM_TWIG);
+                items.add(twig);
             }
 
             Inventory.fillRandomly(chest.getTileInventory(), this.generatorRandom, items);
