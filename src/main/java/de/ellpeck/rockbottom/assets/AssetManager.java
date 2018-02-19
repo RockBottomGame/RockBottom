@@ -289,12 +289,6 @@ public class AssetManager implements IAssetManager, IDisposable{
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             String path = mod.getResourceLocation();
             if(path != null && !path.isEmpty()){
-                //TODO Remove deprecated slash warning
-                if(path.startsWith("/")){
-                    path = path.substring(1);
-                    RockBottomAPI.logger().warning("Mod "+mod.getDisplayName()+" uses a resource location that starts with a slash! Please remove the leading / as this is deprecated behavior.");
-                }
-
                 InputStream stream = getResourceAsStream(path+"/assets.json");
                 if(stream != null){
                     try{
