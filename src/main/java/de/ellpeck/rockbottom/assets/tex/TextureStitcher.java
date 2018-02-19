@@ -143,7 +143,7 @@ public class TextureStitcher implements ITextureStitcher{
     private int getStitchPosition(int x, int y, int width, int height, List<StitchPosition> positions){
         for(int i = 0; i < positions.size(); i++){
             StitchPosition position = positions.get(i);
-            if(x < position.x+position.texture.getTextureWidth() && x+width > position.x && y < position.y+position.texture.getTextureHeight() && y+height > position.y){
+            if(x <= position.x+position.texture.getTextureWidth() && x+width >= position.x && y <= position.y+position.texture.getTextureHeight() && y+height >= position.y){
                 return i;
             }
         }
