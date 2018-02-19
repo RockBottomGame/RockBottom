@@ -4,13 +4,16 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import org.lwjgl.openal.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public final class SoundHandler{
 
     private static final int MAX_SOURCES = 64;
     private static final List<Integer> SOURCES = new ArrayList<>();
+    private static final Map<Integer, SoundEffect> CURRENT_EFFECTS = new HashMap<>();
 
     private static long context;
     private static long device;
@@ -58,17 +61,22 @@ public final class SoundHandler{
         }
     }
 
-    public static int playAsSoundAt(int buffer, float pitch, float volume, boolean loop, float x, float y, float z){
+    public static int playAsSoundAt(SoundEffect effect, int id, float pitch, float volume, boolean loop, float x, float y, float z){
         volume *= RockBottomAPI.getGame().getSettings().soundVolume;
 
         if(volume > 0F){
             int index = findFreeSourceIndex();
             if(index >= 0){
+                SoundEffect current = CURRENT_EFFECTS.get(index);
+                if(current != null){
+                    current.stop();
+                }
+
+                CURRENT_EFFECTS.put(index, effect);
+
                 int source = SOURCES.get(index);
 
-                AL10.alSourceStop(source);
-
-                AL10.alSourcei(source, AL10.AL_BUFFER, buffer);
+                AL10.alSourcei(source, AL10.AL_BUFFER, id);
                 AL10.alSourcef(source, AL10.AL_PITCH, pitch);
                 AL10.alSourcef(source, AL10.AL_GAIN, volume);
                 AL10.alSourcei(source, AL10.AL_LOOPING, loop ? AL10.AL_TRUE : AL10.AL_FALSE);
@@ -98,8 +106,8 @@ public final class SoundHandler{
         return -1;
     }
 
-    public static void stopSoundEffect(int id){
-        AL10.alSourceStop(id);
+    public static void stopSoundEffect(int index){
+        AL10.alSourceStop(SOURCES.get(index));
     }
 
     public static void dispose(){
