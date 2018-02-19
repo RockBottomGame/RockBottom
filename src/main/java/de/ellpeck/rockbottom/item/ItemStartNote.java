@@ -25,6 +25,11 @@ public class ItemStartNote extends ItemBasic{
     }
 
     @Override
+    public int getInteractionPriority(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance){
+        return -5;
+    }
+
+    @Override
     public double getMaxInteractionDistance(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
         return Double.MAX_VALUE;
     }

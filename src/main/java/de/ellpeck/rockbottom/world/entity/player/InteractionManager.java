@@ -24,8 +24,11 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class InteractionManager implements IInteractionManager{
 
@@ -37,38 +40,40 @@ public class InteractionManager implements IInteractionManager{
     public int placeCooldown;
     public int attackCooldown;
 
-    public static boolean interact(AbstractEntityPlayer player, TileLayer layer, double mouseX, double mouseY){
+    public static boolean interact(AbstractEntityPlayer player, TileLayer inputLayer, double mouseX, double mouseY){
         List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
 
-        int x = Util.floor(mouseX);
-        int y = Util.floor(mouseY);
-
-        InteractionEvent event = new InteractionEvent(player, entities, layer, x, y, mouseX, mouseY);
+        InteractionEvent event = new InteractionEvent(player, entities, inputLayer, Util.floor(mouseX), Util.floor(mouseY), mouseX, mouseY);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
-            layer = event.layer;
-            x = event.x;
-            y = event.y;
+            TileLayer layer = event.layer;
+            int x = event.x;
+            int y = event.y;
+
+            List<InteractionInfo> interactions = new ArrayList<>();
 
             for(Entity entity : entities){
                 if(player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player))){
-                    if(entity.onInteractWith(player, mouseX, mouseY)){
-                        return true;
-                    }
+                    interactions.add(new InteractionInfo(() -> entity.onInteractWith(player, mouseX, mouseY), entity.getInteractionPriority(player, mouseX, mouseY)));
                 }
             }
 
             Tile tile = player.world.getState(layer, x, y).getTile();
             if(player.isInRange(mouseX, mouseY, tile.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
-                if(tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)){
-                    return true;
-                }
+                interactions.add(new InteractionInfo(() -> tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player), tile.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player)));
             }
 
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
             if(selected != null){
                 Item item = selected.getItem();
                 if(player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
-                    return item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected);
+                    interactions.add(new InteractionInfo(() -> item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected), item.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player, selected)));
+                }
+            }
+
+            interactions.sort(Comparator.comparingInt(InteractionInfo:: getPriority).reversed());
+            for(InteractionInfo info : interactions){
+                if(info.interaction.get()){
+                    return true;
                 }
             }
         }
@@ -376,5 +381,20 @@ public class InteractionManager implements IInteractionManager{
     @Override
     public int getPlaceCooldown(){
         return this.placeCooldown;
+    }
+
+    private static class InteractionInfo{
+
+        private final Supplier<Boolean> interaction;
+        private final int priority;
+
+        public InteractionInfo(Supplier<Boolean> interaction, int priority){
+            this.interaction = interaction;
+            this.priority = priority;
+        }
+
+        public int getPriority(){
+            return this.priority;
+        }
     }
 }
