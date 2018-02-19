@@ -11,6 +11,10 @@ public class GuiInventory extends GuiContainer{
 
     public GuiInventory(AbstractEntityPlayer player){
         super(player, 135, 70);
+
+        ShiftClickBehavior behavior = new ShiftClickBehavior(0, 7, 8, player.getInv().getSlotAmount()-1);
+        this.shiftClickBehaviors.add(behavior);
+        this.shiftClickBehaviors.add(behavior.reversed());
     }
 
     @Override

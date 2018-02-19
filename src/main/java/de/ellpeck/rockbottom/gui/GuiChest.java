@@ -12,7 +12,7 @@ public class GuiChest extends GuiContainer{
         super(player, 169, 115);
 
         int playerSlots = player.getInv().getSlotAmount();
-        ShiftClickBehavior behavior = new ShiftClickBehavior(0, playerSlots-1, playerSlots, playerSlots+inv.getSlotAmount());
+        ShiftClickBehavior behavior = new ShiftClickBehavior(0, playerSlots-1, playerSlots, playerSlots+inv.getSlotAmount()-1);
         this.shiftClickBehaviors.add(behavior);
         this.shiftClickBehaviors.add(behavior.reversed());
     }

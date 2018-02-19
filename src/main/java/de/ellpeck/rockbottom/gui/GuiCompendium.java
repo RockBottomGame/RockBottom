@@ -53,6 +53,10 @@ public class GuiCompendium extends GuiContainer{
 
     public GuiCompendium(AbstractEntityPlayer player){
         super(player, PAGE_WIDTH*2+1, PAGE_HEIGHT+75);
+
+        ShiftClickBehavior behavior = new ShiftClickBehavior(0, 7, 8, player.getInv().getSlotAmount()-1);
+        this.shiftClickBehaviors.add(behavior);
+        this.shiftClickBehaviors.add(behavior.reversed());
     }
 
     @Override
