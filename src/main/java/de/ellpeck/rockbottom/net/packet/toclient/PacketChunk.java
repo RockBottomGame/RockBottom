@@ -36,7 +36,7 @@ public class PacketChunk implements IPacket{
 
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                for(TileLayer layer : layers){
+                for(TileLayer layer : this.layers){
                     this.tileData[index] = chunk.getWorld().getIdForState(chunk.getStateInner(layer, x, y));
                     index++;
                 }

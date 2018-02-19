@@ -46,7 +46,7 @@ public class Chunk implements IChunk{
     public final Map<AbstractEntityPlayer, Counter> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final World world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-    protected final Map<TileLayer, TileState[][]> stateGrid = new TreeMap<>(Comparator.comparing(TileLayer:: getName));
+    protected final Map<TileLayer, TileState[][]> stateGrid = new HashMap<>();
     protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final List<Entity> entities = new ArrayList<>();
     protected final Map<UUID, Entity> entityLookup = new HashMap<>();
