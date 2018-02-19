@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.resource.IResourceRegistry;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.WorldCreationEvent;
@@ -173,9 +174,14 @@ public abstract class AbstractGame implements IGameInstance{
         modLoader.postPostInit();
 
         RockBottomAPI.logger().info("--------- Registry Info ---------");
+
         for(IRegistry registry : RockBottomAPI.getAllRegistries()){
-            RockBottomAPI.logger().info(registry+" @ "+registry.getSize()+" entries");
+            RockBottomAPI.logger().info(registry+": "+registry.getSize()+" entries");
         }
+
+        IResourceRegistry res = RockBottomAPI.getResourceRegistry();
+        RockBottomAPI.logger().info("resource_registry: "+res.getAllResourceNames().size()+" names, "+res.getAllResources().size()+" resources");
+
         RockBottomAPI.logger().info("---------------------------------");
     }
 
