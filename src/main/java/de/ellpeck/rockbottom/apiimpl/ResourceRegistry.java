@@ -2,9 +2,12 @@ package de.ellpeck.rockbottom.apiimpl;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import de.ellpeck.rockbottom.api.construction.resource.IResourceRegistry;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.resource.IResourceRegistry;
 import de.ellpeck.rockbottom.api.construction.resource.ResInfo;
+import de.ellpeck.rockbottom.api.item.Item;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.tile.Tile;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +18,47 @@ public class ResourceRegistry implements IResourceRegistry{
 
     private final ListMultimap<String, ResInfo> resources = ArrayListMultimap.create();
     private final ListMultimap<ResInfo, String> resourceNames = ArrayListMultimap.create();
+
+    @Override
+    public String addResources(String name, Item item){
+        return this.addResources(name, new ResInfo(item));
+    }
+
+    @Override
+    public String addResources(String name, Item item, int meta){
+        return this.addResources(name, new ResInfo(item, meta));
+    }
+
+    @Override
+    public String addResources(String name, Item item, int lowestMeta, int highestMeta){
+        for(int i = lowestMeta; i <= highestMeta; i++){
+            this.addResources(name, item, i);
+        }
+        return name;
+    }
+
+    @Override
+    public String addResources(String name, Tile tile){
+        return this.addResources(name, new ResInfo(tile));
+    }
+
+    @Override
+    public String addResources(String name, Tile tile, int meta){
+        return this.addResources(name, new ResInfo(tile, meta));
+    }
+
+    @Override
+    public String addResources(String name, Tile tile, int lowestMeta, int highestMeta){
+        for(int i = lowestMeta; i <= highestMeta; i++){
+            this.addResources(name, tile, i);
+        }
+        return name;
+    }
+
+    @Override
+    public String addResources(String name, ItemInstance instance){
+        return this.addResources(name, new ResInfo(instance));
+    }
 
     @Override
     public String addResources(String name, ResInfo... resources){
