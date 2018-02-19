@@ -454,7 +454,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public boolean isInRange(double x, double y, double maxDistance){
-        return true;//Util.distanceSq(this.x, this.y+1, x, y) <= maxDistance*maxDistance;
+        return Util.distanceSq(this.x, this.y+1, x, y) <= maxDistance*maxDistance;
     }
 
     @Override
