@@ -684,7 +684,7 @@ public class World implements IWorld{
     }
 
     private void playRelativeSound(IResourceName name, AbstractEntityPlayer player, double x, double y, double z, float pitch, float volume){
-        RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x-player.x, y-player.y, z-3);
+        RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume*10F, x-player.x, y-player.y, z-30D);
     }
 
     @Override
