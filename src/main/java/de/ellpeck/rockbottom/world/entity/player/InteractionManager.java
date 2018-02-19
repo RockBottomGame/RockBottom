@@ -256,7 +256,6 @@ public class InteractionManager implements IInteractionManager{
                                             else{
                                                 breakTile(tile, player, x, y, layer, effective);
                                             }
-                                            break;
                                         }
                                         else{
                                             this.breakTileX = x;
