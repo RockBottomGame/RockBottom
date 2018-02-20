@@ -1,12 +1,15 @@
 package de.ellpeck.rockbottom.net.server.settings;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 
 import java.io.File;
 import java.util.*;
 
-public class Whitelist implements IPropSettings{
+public class Whitelist implements IPropSettings, IJsonSettings{
 
     private final Set<UUID> whitelistedPlayers = new HashSet<>();
     private boolean isEnabled = false;
@@ -26,16 +29,34 @@ public class Whitelist implements IPropSettings{
     }
 
     @Override
-    public void save(Properties props){
-        props.setProperty("enabled", String.valueOf(this.isEnabled));
+    public File getFile(IDataManager manager){
+        return new File(manager.getGameDir(), "whitelist.properties");
+    }
 
-        for(UUID id : this.whitelistedPlayers){
-            props.setProperty(id.toString(), "");
+    @Override
+    public void load(JsonObject object){
+        this.isEnabled = object.get("enabled").getAsBoolean();
+
+        this.whitelistedPlayers.clear();
+        JsonArray array = object.get("players").getAsJsonArray();
+        for(int i = 0; i < array.size(); i++){
+            this.whitelistedPlayers.add(UUID.fromString(array.get(i).getAsString()));
         }
     }
 
     @Override
-    public File getFile(IDataManager manager){
+    public void save(JsonObject object){
+        object.addProperty("enabled", this.isEnabled);
+
+        JsonArray array = new JsonArray();
+        for(UUID id : this.whitelistedPlayers){
+            array.add(id.toString());
+        }
+        object.add("players", array);
+    }
+
+    @Override
+    public File getSettingsFile(IDataManager manager){
         return manager.getWhitelistFile();
     }
 

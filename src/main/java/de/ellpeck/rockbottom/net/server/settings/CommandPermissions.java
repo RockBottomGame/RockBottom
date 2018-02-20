@@ -1,6 +1,9 @@
 package de.ellpeck.rockbottom.net.server.settings;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 
@@ -10,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-public class CommandPermissions implements IPropSettings{
+public class CommandPermissions implements IPropSettings, IJsonSettings{
 
     private final Map<UUID, Integer> commandLevels = new HashMap<>();
 
@@ -27,14 +30,38 @@ public class CommandPermissions implements IPropSettings{
     }
 
     @Override
-    public void save(Properties props){
-        for(Map.Entry<UUID, Integer> entry : this.commandLevels.entrySet()){
-            props.setProperty(entry.getKey().toString(), entry.getValue().toString());
+    public File getFile(IDataManager manager){
+        return new File(manager.getGameDir(), "command_permissions.properties");
+    }
+
+    @Override
+    public void load(JsonObject object){
+        this.commandLevels.clear();
+
+        JsonArray array =object.get("players").getAsJsonArray();
+        for(int i = 0; i < array.size(); i++){
+            JsonObject sub = array.get(i).getAsJsonObject();
+
+            UUID id = UUID.fromString(sub.get("id").getAsString());
+            int level = sub.get("level").getAsInt();
+            this.commandLevels.put(id, level);
         }
     }
 
     @Override
-    public File getFile(IDataManager manager){
+    public void save(JsonObject object){
+        JsonArray array = new JsonArray();
+        for(Map.Entry<UUID, Integer> entry : this.commandLevels.entrySet()){
+            JsonObject sub = new JsonObject();
+            sub.addProperty("id", entry.getKey().toString());
+            sub.addProperty("level", entry.getValue());
+            array.add(sub);
+        }
+        object.add("players", array);
+    }
+
+    @Override
+    public File getSettingsFile(IDataManager manager){
         return manager.getCommandPermsFile();
     }
 

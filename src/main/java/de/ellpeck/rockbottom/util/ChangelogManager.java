@@ -52,6 +52,8 @@ public final class ChangelogManager{
                 changelog = new Changelog(latest, stable, isHigher(latest, current), isHigher(stable, current), infos);
 
                 RockBottomAPI.logger().info("Successfully grabbed and parsed the changelog.");
+
+                reader.close();
             }
             catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "There was an error trying to grab and parse the changelog", e);

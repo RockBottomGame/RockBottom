@@ -56,6 +56,6 @@ public class GuiSettings extends Gui{
     @Override
     public void onClosed(IGameInstance game){
         super.onClosed(game);
-        game.getDataManager().savePropSettings(game.getSettings());
+        game.getSettings().save();
     }
 }

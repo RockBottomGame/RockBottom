@@ -43,14 +43,14 @@ public class GuiGraphics extends Gui{
         this.components.add(new ComponentSlider(this, 154, 20, 150, 16, (int)(settings.guiScale*100F), 50, 100, (integer, aBoolean) -> {
             if(aBoolean){
                 settings.guiScale = (float)integer/100F;
-                game.getDataManager().savePropSettings(settings);
+                settings.save();
                 game.getRenderer().calcScales();
                 game.getGuiManager().updateDimensions();
             }
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.gui_scale"))));
         this.components.add(new ComponentToggleButton(this, 154, 40, 150, 16, !settings.fullscreen, () -> {
             settings.fullscreen = !settings.fullscreen;
-            game.getDataManager().savePropSettings(settings);
+            settings.save();
             game.setFullscreen(settings.fullscreen);
             return true;
         }, "button.fullscreen"));

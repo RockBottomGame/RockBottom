@@ -207,10 +207,10 @@ public abstract class AbstractGame implements IGameInstance{
     public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated){
         RockBottomAPI.logger().info("Starting world with file "+worldFile);
 
-        NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), Integer.MAX_VALUE);
+        NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), new File(worldFile, "tile_reg_info.json"), Integer.MAX_VALUE);
         this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_STATE_REGISTRY);
 
-        NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), Short.MAX_VALUE);
+        NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), new File(worldFile, "biome_reg_info.json"), Short.MAX_VALUE);
         this.populateIndexInfo(biomeRegInfo, RockBottomAPI.BIOME_REGISTRY);
 
         DynamicRegistryInfo regInfo = new DynamicRegistryInfo(tileRegInfo, biomeRegInfo);
@@ -226,11 +226,11 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     private void populateIndexInfo(NameToIndexInfo info, NameRegistry reg){
-        this.dataManager.loadPropSettings(info);
+        info.load();
         info.populate(reg);
 
         if(info.needsSave()){
-            this.dataManager.savePropSettings(info);
+            info.save();
         }
     }
 

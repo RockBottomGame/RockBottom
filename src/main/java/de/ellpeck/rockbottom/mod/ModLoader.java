@@ -36,7 +36,7 @@ public class ModLoader implements IModLoader{
     @Override
     public void loadJarMods(File dir){
         IDataManager manager = RockBottomAPI.getGame().getDataManager();
-        manager.loadPropSettings(this.modSettings);
+        this.modSettings.load();
         File infoFile = new File(dir, "HOW TO INSTALL MODS.txt");
 
         if(!dir.exists()){

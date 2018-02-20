@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.net;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.INetHandler;
@@ -232,10 +231,9 @@ public class NetHandler implements INetHandler{
     @Override
     public void saveServerSettings(){
         if(this.isServer()){
-            IDataManager data = RockBottomAPI.getGame().getDataManager();
-            data.savePropSettings(this.server.commandPermissions);
-            data.savePropSettings(this.server.whitelist);
-            data.savePropSettings(this.server.blacklist);
+            this.server.commandPermissions.save();
+            this.server.whitelist.save();
+            this.server.blacklist.save();
         }
     }
 }

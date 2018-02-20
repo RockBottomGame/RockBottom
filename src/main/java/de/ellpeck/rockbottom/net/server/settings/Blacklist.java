@@ -1,12 +1,18 @@
 package de.ellpeck.rockbottom.net.server.settings;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
-public class Blacklist implements IPropSettings{
+public class Blacklist implements IPropSettings, IJsonSettings{
 
     private final Map<UUID, String> blacklistedPlayers = new HashMap<>();
 
@@ -20,14 +26,38 @@ public class Blacklist implements IPropSettings{
     }
 
     @Override
-    public void save(Properties props){
-        for(Map.Entry<UUID, String> entry : this.blacklistedPlayers.entrySet()){
-            props.setProperty(entry.getKey().toString(), entry.getValue());
+    public File getFile(IDataManager manager){
+        return new File(manager.getGameDir(), "blacklist.properties");
+    }
+
+    @Override
+    public void load(JsonObject object){
+        this.blacklistedPlayers.clear();
+
+        JsonArray array =object.get("players").getAsJsonArray();
+        for(int i = 0; i < array.size(); i++){
+            JsonObject sub = array.get(i).getAsJsonObject();
+
+            UUID id = UUID.fromString(sub.get("id").getAsString());
+            String reason = sub.get("reason").getAsString();
+            this.blacklistedPlayers.put(id, reason);
         }
     }
 
     @Override
-    public File getFile(IDataManager manager){
+    public void save(JsonObject object){
+        JsonArray array = new JsonArray();
+        for(Map.Entry<UUID, String> entry : this.blacklistedPlayers.entrySet()){
+            JsonObject sub = new JsonObject();
+            sub.addProperty("id", entry.getKey().toString());
+            sub.addProperty("reason", entry.getValue());
+            array.add(sub);
+        }
+        object.add("players", array);
+    }
+
+    @Override
+    public File getSettingsFile(IDataManager manager){
         return manager.getBlacklistFile();
     }
 

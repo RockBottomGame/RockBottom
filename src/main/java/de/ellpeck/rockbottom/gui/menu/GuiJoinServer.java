@@ -82,7 +82,7 @@ public class GuiJoinServer extends Gui{
         String text = this.inputField.getText();
         if(!settings.lastServerIp.equals(text)){
             settings.lastServerIp = text;
-            game.getDataManager().savePropSettings(settings);
+            settings.save();
         }
     }
 }

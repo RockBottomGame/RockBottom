@@ -1,7 +1,5 @@
 package de.ellpeck.rockbottom.net.server;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.net.PacketDecoder;
 import de.ellpeck.rockbottom.net.PacketEncoder;
 import de.ellpeck.rockbottom.net.server.settings.Blacklist;
@@ -37,10 +35,9 @@ public class Server{
     public final Blacklist blacklist = new Blacklist();
 
     public Server(String ip, int port) throws Exception{
-        IDataManager data = RockBottomAPI.getGame().getDataManager();
-        data.loadPropSettings(this.commandPermissions);
-        data.loadPropSettings(this.whitelist);
-        data.loadPropSettings(this.blacklist);
+        this.commandPermissions.load();
+        this.whitelist.load();
+        this.blacklist.load();
 
         this.group = Epoll.isAvailable() ?
                 new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollServer", true)) :

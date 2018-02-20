@@ -70,7 +70,7 @@ public class GuiMods extends Gui{
         this.disableButton = new ComponentButton(this, 118+(this.width-118)/2+1, this.height-50, 80, 16, () -> {
             ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
             settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));
-            game.getDataManager().savePropSettings(settings);
+            settings.save();
 
             this.updateButtons();
             return true;

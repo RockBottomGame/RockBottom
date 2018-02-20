@@ -35,7 +35,7 @@ public class GuiLanguage extends Gui{
             menu.add(new MenuComponent(150, 16).add(0, 0, new ComponentButton(this, 0, 0, 150, 16, () -> {
                 if(manager.getLocale() != loc){
                     game.getSettings().currentLocale = res.toString();
-                    game.getDataManager().savePropSettings(game.getSettings());
+                    game.getSettings().save();
 
                     manager.setLocale(loc);
                     game.getGuiManager().updateDimensions();

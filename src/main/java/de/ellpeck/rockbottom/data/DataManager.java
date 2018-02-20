@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.data;
 
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
@@ -12,6 +13,7 @@ import de.ellpeck.rockbottom.api.data.set.part.num.*;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortArray;
+import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
@@ -19,13 +21,12 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDropItem;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -111,11 +112,11 @@ public class DataManager implements IDataManager{
 
         this.gameDataFile = new File(this.gameDirectory, "game_info.dat");
         this.playerDesignFile = new File(this.gameDirectory, "player_design.dat");
-        this.settingsFile = new File(this.gameDirectory, "settings.properties");
-        this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.properties");
-        this.whitelistFile =new File(this.gameDirectory, "whitelist.properties");
-        this.blacklistFile = new File(this.gameDirectory, "blacklist.properties");
-        this.modSettingsFile = new File(this.gameDirectory, "mod_settings.properties");
+        this.settingsFile = new File(this.gameDirectory, "settings.json");
+        this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.json");
+        this.whitelistFile = new File(this.gameDirectory, "whitelist.json");
+        this.blacklistFile = new File(this.gameDirectory, "blacklist.json");
+        this.modSettingsFile = new File(this.gameDirectory, "mod_settings.json");
 
         if(!game.isDedicatedServer()){
             this.gameInfo.read(this.gameDataFile);
@@ -205,7 +206,9 @@ public class DataManager implements IDataManager{
         File file = settings.getFile(this);
         if(file.exists()){
             try{
-                props.load(new FileInputStream(file));
+                FileInputStream stream = new FileInputStream(file);
+                props.load(stream);
+                stream.close();
                 loaded = true;
             }
             catch(Exception e){
@@ -238,6 +241,88 @@ public class DataManager implements IDataManager{
             }
 
             props.store(new FileOutputStream(file), null);
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't save "+settings.getName(), e);
+        }
+    }
+
+    @Override
+    public void loadSettings(IJsonSettings settings){
+        JsonObject object = null;
+        boolean loaded = false;
+
+        File file = settings.getSettingsFile(this);
+        if(file.exists() || (settings instanceof IPropSettings && ((IPropSettings)settings).getFile(this).exists())){
+            try{
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(file));
+                object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                reader.close();
+
+                loaded = true;
+            }
+            catch(Exception e){
+                if(settings instanceof IPropSettings){
+                    RockBottomAPI.logger().info("Couldn't load "+settings.getName()+" as json settings, trying to load them as property settings for compatibility...");
+
+                    try{
+                        this.loadPropSettings((IPropSettings)settings);
+                        ((IPropSettings)settings).getFile(this).delete();
+
+                        settings.save();
+
+                        return;
+                    }
+                    catch(Exception e2){
+                        RockBottomAPI.logger().log(Level.SEVERE, "Failed loading "+settings.getName()+" as property settings", e);
+                    }
+                }
+                else{
+                    RockBottomAPI.logger().log(Level.SEVERE, "Couldn't load "+settings.getName(), e);
+                }
+            }
+        }
+
+        try{
+            settings.load(object == null ? new JsonObject() : object);
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't parse "+settings.getName(), e);
+        }
+
+        if(!loaded){
+            RockBottomAPI.logger().info("Creating "+settings.getName()+" from default");
+            settings.save();
+        }
+        else{
+            RockBottomAPI.logger().info("Loaded "+settings.getName());
+        }
+    }
+
+    @Override
+    public void saveSettings(IJsonSettings settings){
+        JsonObject object = new JsonObject();
+
+        try{
+            settings.save(object);
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't jsonify "+settings.getName(), e);
+        }
+
+        try{
+            File file = settings.getSettingsFile(this);
+
+            if(!file.exists()){
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+
+                RockBottomAPI.logger().info("Creating file for "+settings.getName()+" at "+file);
+            }
+
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file));
+            Util.GSON.toJson(object, writer);
+            writer.close();
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Couldn't save "+settings.getName(), e);

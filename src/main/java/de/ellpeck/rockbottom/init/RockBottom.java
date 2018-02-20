@@ -214,7 +214,7 @@ public class RockBottom extends AbstractGame{
     public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         this.settings = new Settings();
         RockBottomAPI.getEventHandler().fireEvent(new LoadSettingsEvent(this.settings));
-        this.dataManager.loadPropSettings(this.settings);
+        this.settings.load();
 
         this.setFullscreen(this.settings.fullscreen);
 
