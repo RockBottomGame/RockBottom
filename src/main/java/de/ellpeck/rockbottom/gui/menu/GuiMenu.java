@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -47,6 +48,7 @@ public class GuiMenu extends Gui{
                     }
                     catch(Exception e){
                         RockBottomAPI.logger().log(Level.WARNING, "Couldn't start server", e);
+                        game.getToaster().displayToast(new Toast(new ChatComponentText("Oh no!"), new ChatComponentText("Something went wrong, please check the log."), 160));
                     }
                 }
                 return false;
