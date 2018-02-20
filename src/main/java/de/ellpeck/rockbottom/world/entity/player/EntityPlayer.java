@@ -110,7 +110,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         ContainerOpenEvent event = new ContainerOpenEvent(this, container);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
             if(this.currentContainer != null){
-                for(IInventory inv : this.currentContainer.containedInventories){
+                for(IInventory inv : this.currentContainer.getContainedInventories()){
                     if(inv != this.inv){
                         inv.removeChangeCallback(this.invCallback);
                     }
@@ -134,7 +134,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
                 this.currentContainer.onOpened();
 
-                for(IInventory inv : this.currentContainer.containedInventories){
+                for(IInventory inv : this.currentContainer.getContainedInventories()){
                     if(inv != this.inv){
                         inv.addChangeCallback(this.invCallback);
                     }

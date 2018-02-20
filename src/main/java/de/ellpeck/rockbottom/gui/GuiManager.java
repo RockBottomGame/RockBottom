@@ -12,10 +12,7 @@ import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
-import de.ellpeck.rockbottom.api.event.impl.ComponentRenderEvent;
-import de.ellpeck.rockbottom.api.event.impl.ComponentRenderOverlayEvent;
-import de.ellpeck.rockbottom.api.event.impl.GuiOpenEvent;
-import de.ellpeck.rockbottom.api.event.impl.OverlayRenderEvent;
+import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
@@ -63,8 +60,7 @@ public class GuiManager implements IGuiManager{
         IGameInstance game = RockBottomAPI.getGame();
 
         if(this.gui != null){
-            this.gui.init(game);
-            this.gui.sortComponents();
+            this.initAndSortGui(game);
         }
 
         if(!this.onScreenComponents.isEmpty()){
@@ -82,6 +78,13 @@ public class GuiManager implements IGuiManager{
         }
 
         RockBottomAPI.logger().config("Successfully re-initialized Gui Manager");
+    }
+
+    private void initAndSortGui(IGameInstance game){
+        this.gui.init(game);
+        RockBottomAPI.getEventHandler().fireEvent(new GuiInitEvent(this.gui));
+
+        this.gui.sortComponents();
     }
 
     private void initOnScreenComponents(IGameInstance game, AbstractEntityPlayer player){
@@ -326,8 +329,7 @@ public class GuiManager implements IGuiManager{
 
             if(this.gui != null){
                 this.gui.onOpened(game);
-                this.gui.init(game);
-                this.gui.sortComponents();
+                this.initAndSortGui(game);
             }
 
             if(this.gui == null){

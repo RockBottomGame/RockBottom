@@ -12,7 +12,7 @@ public class ContainerChest extends ItemContainer{
     private final TileEntityChest tile;
 
     public ContainerChest(AbstractEntityPlayer player, TileEntityChest tile){
-        super(player, player.getInv(), tile.getTileInventory());
+        super(player);
         this.tile = tile;
 
         this.addPlayerInventory(player, 17, 45);

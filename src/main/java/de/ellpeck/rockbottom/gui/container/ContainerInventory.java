@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 public class ContainerInventory extends ItemContainer{
 
     public ContainerInventory(EntityPlayer player){
-        super(player, player.getInv());
+        super(player);
         this.addPlayerInventory(player, 0, 0);
     }
 
