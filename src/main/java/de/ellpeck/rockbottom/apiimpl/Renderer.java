@@ -442,7 +442,7 @@ public class Renderer implements IRenderer{
         }
 
         if(displayAmount && slot.getAmount() > 1){
-            manager.getFont().drawStringFromRight(x+11F*scale, y+6F*scale, String.valueOf(slot.getAmount()), 0.3F*scale);
+            manager.getFont().drawStringFromRight(x+12F*scale, y+6F*scale, String.valueOf(slot.getAmount()), 0.3F*scale);
         }
     }
 
