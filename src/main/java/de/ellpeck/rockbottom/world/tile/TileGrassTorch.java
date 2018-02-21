@@ -20,7 +20,17 @@ public class TileGrassTorch extends TileTorch{
 
     @Override
     public int getLight(IWorld world, int x, int y, TileLayer layer){
-        return world.getState(layer, x, y).get(StaticTileProps.TORCH_TIMER) < 4 ? 20 : 0;
+        int timer = world.getState(layer, x, y).get(StaticTileProps.TORCH_TIMER);
+        switch(timer){
+            case 4:
+                return 3;
+            case 3:
+                return 10;
+            case 2:
+                return 15;
+            default:
+                return 20;
+        }
     }
 
     @Override
@@ -41,7 +51,7 @@ public class TileGrassTorch extends TileTorch{
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
         TileState state = world.getState(layer, x, y);
-        if(state.get(StaticTileProps.TORCH_TIMER) >= 4){
+        if(state.get(StaticTileProps.TORCH_TIMER) > 0){
             if(!world.isClient()){
                 world.setState(layer, x, y, state.prop(StaticTileProps.TORCH_TIMER, 0));
             }
