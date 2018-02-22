@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.log.Logging;
+import de.ellpeck.rockbottom.util.CrashManager;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -32,6 +33,7 @@ public final class Main{
     public static boolean fullscreen;
     public static int vertexCache;
     public static boolean saveTextureSheet;
+    public static boolean suppressCrashPaste;
 
     public static boolean isDedicatedServer;
     public static int port;
@@ -51,6 +53,7 @@ public final class Main{
             OptionSpec optionSkipIntro = parser.accepts("skipIntro");
             OptionSpec optionFullscreen = parser.accepts("fullscreen");
             OptionSpec optionSaveTextureSheet = parser.accepts("saveTextureSheet");
+            OptionSpec optionSuppressPaste = parser.accepts("suppressCrashPaste");
             OptionSpec optionServer = parser.accepts("server");
             OptionSpec optionIgnored = parser.nonOptions();
 
@@ -81,6 +84,7 @@ public final class Main{
             vertexCache = options.valueOf(optionVertexCache);
             fullscreen = options.has(optionFullscreen);
             saveTextureSheet = options.has(optionSaveTextureSheet);
+            suppressCrashPaste = options.has(optionSuppressPaste);
 
             try{
                 ClassLoader loader = Main.class.getClassLoader();
@@ -114,32 +118,11 @@ public final class Main{
             }
             catch(InvocationTargetException e){
                 Throwable target = e.getTargetException();
-                throw new RuntimeException("There was an exception running the game", target == null ? e : target);
+                throw target == null ? e : target;
             }
         }
         catch(Throwable t){
-            File dir = new File(gameDir, "crashes");
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-
-            File file = new File(dir, new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date())+".txt");
-
-            if(Logging.mainLogger != null){
-                Logging.mainLogger.log(Level.SEVERE, "Detected game crash, saving report to "+file, t);
-            }
-
-            try{
-                PrintWriter writer = new PrintWriter(file);
-                t.fillInStackTrace().printStackTrace(writer);
-                writer.flush();
-            }
-            catch(Exception e2){
-                if(Logging.mainLogger != null){
-                    Logging.mainLogger.log(Level.SEVERE, "Couldn't save crash report to "+file, e2);
-                }
-            }
-
+            CrashManager.makeCrashReport(t);
             System.exit(1);
         }
 

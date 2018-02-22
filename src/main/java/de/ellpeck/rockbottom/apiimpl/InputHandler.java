@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -33,6 +34,7 @@ public class InputHandler implements IInputHandler{
     private final int[] nextMouseWheelDelta = new int[2];
     private final int[] mouseWheelDelta = new int[2];
     private boolean allowKeyboardRepeats;
+    private int forcedCrashTimer;
 
     public InputHandler(RockBottom game){
         this.game = game;
@@ -103,6 +105,13 @@ public class InputHandler implements IInputHandler{
         for(int button : this.mouseInputsToProcess){
             if(!this.mousePressed(button)){
                 this.pressedMouse.add(button);
+            }
+        }
+
+        if(this.isKeyDown(GLFW.GLFW_KEY_F7)){
+            this.forcedCrashTimer++;
+            if(this.forcedCrashTimer >= Constants.TARGET_TPS*3){
+                throw new RuntimeException("You forced a crash!");
             }
         }
 
