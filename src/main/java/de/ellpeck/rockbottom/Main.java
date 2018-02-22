@@ -125,7 +125,6 @@ public final class Main{
             CrashManager.makeCrashReport(t);
             System.exit(1);
         }
-
         System.exit(0);
     }
 
