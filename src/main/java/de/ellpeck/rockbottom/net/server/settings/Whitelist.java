@@ -38,9 +38,11 @@ public class Whitelist implements IPropSettings, IJsonSettings{
         this.isEnabled = object.get("enabled").getAsBoolean();
 
         this.whitelistedPlayers.clear();
-        JsonArray array = object.get("players").getAsJsonArray();
-        for(int i = 0; i < array.size(); i++){
-            this.whitelistedPlayers.add(UUID.fromString(array.get(i).getAsString()));
+        if(object.has("players")){
+            JsonArray array = object.get("players").getAsJsonArray();
+            for(int i = 0; i < array.size(); i++){
+                this.whitelistedPlayers.add(UUID.fromString(array.get(i).getAsString()));
+            }
         }
     }
 

@@ -38,13 +38,15 @@ public class CommandPermissions implements IPropSettings, IJsonSettings{
     public void load(JsonObject object){
         this.commandLevels.clear();
 
-        JsonArray array =object.get("players").getAsJsonArray();
-        for(int i = 0; i < array.size(); i++){
-            JsonObject sub = array.get(i).getAsJsonObject();
+        if(object.has("players")){
+            JsonArray array = object.get("players").getAsJsonArray();
+            for(int i = 0; i < array.size(); i++){
+                JsonObject sub = array.get(i).getAsJsonObject();
 
-            UUID id = UUID.fromString(sub.get("id").getAsString());
-            int level = sub.get("level").getAsInt();
-            this.commandLevels.put(id, level);
+                UUID id = UUID.fromString(sub.get("id").getAsString());
+                int level = sub.get("level").getAsInt();
+                this.commandLevels.put(id, level);
+            }
         }
     }
 
