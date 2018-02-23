@@ -28,7 +28,7 @@ public class ComponentKeybind extends ComponentButton{
     @Override
     public boolean onKeyPressed(IGameInstance game, int button){
         if(this.isSelected()){
-            this.bind.setBind(button, false);
+            this.bind.setBind(button);
             this.gui.selectedKeybind = -1;
 
             return true;
@@ -41,7 +41,7 @@ public class ComponentKeybind extends ComponentButton{
     @Override
     public boolean onMouseAction(IGameInstance game, int button, float x, float y){
         if(this.isSelected()){
-            this.bind.setBind(button, true);
+            this.bind.setBind(button);
             this.gui.selectedKeybind = -1;
 
             return true;
