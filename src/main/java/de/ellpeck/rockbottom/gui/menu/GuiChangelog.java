@@ -69,7 +69,7 @@ public class GuiChangelog extends Gui{
     private int drawAndGetHeight(Changelog changelog, IFont font, int x, int y, int maxY, boolean doDraw){
         outer:
         for(VersionInfo info : changelog.versionInfo){
-            if(doDraw){
+            if(doDraw && y >= this.y){
                 FormattingCode color = info.versionName.equals(changelog.stable) ? FormattingCode.ORANGE : (info.versionName.equals(changelog.latest) ? FormattingCode.YELLOW : FormattingCode.WHITE);
                 font.drawString(x, y, FormattingCode.UNDERLINED.toString()+color+info.versionName, 0.4F);
             }
@@ -82,7 +82,7 @@ public class GuiChangelog extends Gui{
             for(String s : info.info){
                 List<String> subLines = font.splitTextToLength(this.width-x*2, 0.4F, true, s);
                 for(int i = 0; i < subLines.size(); i++){
-                    if(doDraw){
+                    if(doDraw && y >= this.y){
                         String line = subLines.get(i);
                         font.drawString(x, y, (i == 0 ? " - " : "   ")+line, 0.3F);
                     }
