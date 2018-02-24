@@ -203,6 +203,19 @@ public class Font implements IFont{
     }
 
     @Override
+    public void drawAutoScaledString(float x, float y, String s, float maxScale, int width, int color, int shadowColor, boolean centeredOnX, boolean centeredOnY){
+        String noFormat = this.removeFormatting(s);
+        float actualWidth = this.charWidth*noFormat.length()*maxScale;
+
+        if(actualWidth > width){
+            maxScale = width/(float)this.charWidth/(float)noFormat.length();
+            actualWidth = width;
+        }
+
+        this.drawString(centeredOnX ? x-actualWidth/2 : x, centeredOnY ? (y-this.getHeight(maxScale)/2F) : y, s, 0, s.length(), maxScale, color, shadowColor);
+    }
+
+    @Override
     public void drawCharacter(float x, float y, char character, float scale, int color, FontProp prop, int shadowColor){
         IRenderer g = RockBottomAPI.getGame().getRenderer();
 

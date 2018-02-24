@@ -190,7 +190,7 @@ public class GuiCompendium extends GuiContainer{
 
         if(this.selectedRecipe != null){
             String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
-            manager.getFont().drawString(this.x+109-manager.getFont().getWidth(strg, 0.25F)/2, this.y+6, strg, 0, strg.length(), 0.25F, Colors.BLACK, Colors.NO_COLOR);
+            manager.getFont().drawAutoScaledString(this.x+109, this.y+6, strg, 0.25F, PAGE_WIDTH-2, Colors.BLACK, Colors.NO_COLOR, true, false);
         }
 
         if(this.searchBar.isActive()){
