@@ -39,7 +39,7 @@ public final class CrashManager{
         log(Level.SEVERE, "The game encountered a fatal exception", t);
 
         String name = AbstractGame.NAME.toUpperCase()+" CRASH REPORT";
-        String divider = "====================================================================================================";
+        String divider = "------------------------------------------------------------";
 
         String pasteLink = null;
 
@@ -65,12 +65,12 @@ public final class CrashManager{
             log(Level.WARNING, "Couldn't save crash report to "+file, e);
         }
 
-        log(Level.INFO, "======================================================================", null);
+        log(Level.INFO, divider, null);
         if(pasteLink != null){
             log(Level.INFO, "Uploaded crash report to "+pasteLink, null);
         }
         log(Level.INFO, "Saved crash report to "+file, null);
-        log(Level.INFO, "======================================================================", null);
+        log(Level.INFO, divider, null);
 
         if(!Main.isDedicatedServer && pasteLink != null){
             try{
@@ -92,9 +92,14 @@ public final class CrashManager{
         }
 
         writer.println(divider);
+        writer.println("//TODO "+getComment());
+        writer.println(divider);
 
+        writer.println("Game Version: "+AbstractGame.VERSION);
+        writer.println("API Version: "+RockBottomAPI.VERSION);
+
+        writer.println(divider);
         t.printStackTrace(writer);
-
         writer.println(divider);
 
         try{
@@ -142,6 +147,43 @@ public final class CrashManager{
         String resString = EntityUtils.toString(response.getEntity());
 
         return Util.JSON_PARSER.parse(resString).getAsJsonObject();
+    }
+
+    private static String getComment(){
+        String[] comments = new String[]{
+                "Baby you're the highlight of my lowlife",
+                "Oh no, this broke. What am I going to do?",
+                "Zoom, zoom, fast reports!",
+                "Aw yea yea, aw yea yea yea yea",
+                "I WANNA KNOOOOOOW CAN YOU SHOOOOW ME",
+                "TELL ME MOOOORE PLEEEASE SHOOW ME",
+                "I'll be needing stitches",
+                "Fite ma fite all alone",
+                "I really need to fix that issue at some point",
+                "Yea, I know that the name field is broken",
+                "This is probably that stupid collision error again",
+                "I said hey, what's going on?",
+                "Never gonna give you up",
+                "Never gonna let you down",
+                "Never gonna run around and desert you",
+                "We drew a map to a better place",
+                "SUGAAAAAAR YES PLEEEEASE",
+                "Just turn it off and back on, that'll fix it",
+                "THIRTY-THREE YEARS AGO",
+                "It's always the twin!",
+                "BUT I'VE NEVER HAD A CRASH!",
+                "Which brings us here... now...",
+                "A journey through the time",
+                "Always watch the sub",
+                "What's up with this thing?",
+                "I know I always romanticize things",
+                "Michael dies!",
+                "It's you! It's always been you!",
+                "Who's Sin Rostro?",
+                "I wouldn't mind if this stopped happening",
+                "Did you press F7 for too long again?"
+        };
+        return comments[(int)(Util.getTimeMillis()%comments.length)];
     }
 
     private static void log(Level level, String text, Throwable t){
