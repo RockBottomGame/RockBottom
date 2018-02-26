@@ -33,10 +33,17 @@ public final class CrashManager{
             dir.mkdirs();
         }
 
-        String date = new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date());
-        File file = new File(dir, date+".txt");
-
         log(Level.SEVERE, "The game encountered a fatal exception", t);
+
+        String date = new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date());
+
+        File file;
+        if(Util.RANDOM.nextInt(100000) <= 0){
+            file = new File(dir, "traceback.txt");
+        }
+        else{
+            file = new File(dir, date+".txt");
+        }
 
         String name = AbstractGame.NAME.toUpperCase()+" CRASH REPORT";
         String divider = "------------------------------------------------------------";
@@ -181,7 +188,9 @@ public final class CrashManager{
                 "It's you! It's always been you!",
                 "Who's Sin Rostro?",
                 "I wouldn't mind if this stopped happening",
-                "Did you press F7 for too long again?"
+                "Did you press F7 for too long again?",
+                "Oh jeez...I didn't break anything, did I? Hold on a sec, I can probably fix this...I think... Actually, you know what? This would probably be a lot easier if I just deleted her. She's the one who's making this so difficult. Ahaha! Well, here's goes nothing.",
+                "Just Monika."
         };
         return comments[(int)(Util.getTimeMillis()%comments.length)];
     }

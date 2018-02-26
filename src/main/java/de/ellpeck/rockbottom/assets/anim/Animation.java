@@ -147,7 +147,7 @@ public class Animation implements IAnimation{
     public int getFrameByTime(int row, long millis){
         long runningTime = millis%this.getTotalTime(row);
 
-        int accum = 0;
+        long accum = 0;
         for(int i = 0; i < this.getFrameAmount(row); i++){
             accum += this.getFrameTime(row, i);
             if(accum >= runningTime){
