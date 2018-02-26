@@ -36,14 +36,7 @@ public final class CrashManager{
         log(Level.SEVERE, "The game encountered a fatal exception", t);
 
         String date = new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date());
-
-        File file;
-        if(Util.RANDOM.nextInt(100000) <= 0){
-            file = new File(dir, "traceback.txt");
-        }
-        else{
-            file = new File(dir, date+".txt");
-        }
+        File file = new File(dir, date+".txt");
 
         String name = AbstractGame.NAME.toUpperCase()+" CRASH REPORT";
         String divider = "------------------------------------------------------------";
