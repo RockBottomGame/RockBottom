@@ -119,8 +119,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         ImageBuffer buffer = new ImageBuffer(2, 2);
         for(int x = 0; x < 2; x++){
             for(int y = 0; y < 2; y++){
-                boolean areEqual = x == y;
-                buffer.setRGBA(x, y, areEqual ? 255 : 0, 0, areEqual ? 0 : 255, 255);
+                buffer.setRGBA(x, y, 0, x == y ? 255 : 0, 0, 255);
             }
         }
         this.stitcher.loadTexture("missing", buffer, (stitchX, stitchY, stitchedTexture) -> this.missingTexture = stitchedTexture);
