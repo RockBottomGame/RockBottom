@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.gui.GuiCompendium;
 import de.ellpeck.rockbottom.gui.GuiInventory;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -152,6 +153,10 @@ public class InputHandler implements IInputHandler{
         if(key == GLFW.GLFW_KEY_F1){
             this.game.renderer.isDebug = !this.game.renderer.isDebug;
             return true;
+        }
+        else if(key == GLFW.GLFW_KEY_F2){
+            this.game.renderer.isLineDebug = !this.game.renderer.isLineDebug;
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, this.game.renderer.isLineDebug ? GL11.GL_LINE : GL11.GL_FILL);
         }
         else if(key == GLFW.GLFW_KEY_F3){
             this.game.assetManager.load(this.game);

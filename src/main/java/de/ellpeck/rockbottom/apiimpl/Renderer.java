@@ -55,6 +55,7 @@ public class Renderer implements IRenderer{
     public boolean isItemInfoDebug;
     public boolean isChunkBorderDebug;
     public boolean isGuiDebug;
+    public boolean isLineDebug;
     private float displayRatio;
     private float guiScale;
     private float worldScale;
@@ -677,6 +678,11 @@ public class Renderer implements IRenderer{
     @Override
     public boolean isGuiDebug(){
         return this.isGuiDebug;
+    }
+
+    @Override
+    public boolean isLineDebug(){
+        return this.isLineDebug;
     }
 
     @Override
