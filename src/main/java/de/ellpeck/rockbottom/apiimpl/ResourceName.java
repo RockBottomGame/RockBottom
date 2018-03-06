@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.apiimpl;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 public class ResourceName implements IResourceName{
@@ -14,7 +15,7 @@ public class ResourceName implements IResourceName{
     }
 
     public ResourceName(String combined){
-        if(combined.contains(Constants.RESOURCE_SEPARATOR)){
+        if(Util.isResourceName(combined)){
             String[] split = combined.split(Constants.RESOURCE_SEPARATOR, 2);
             this.domain = split[0];
             this.resourceName = split[1];

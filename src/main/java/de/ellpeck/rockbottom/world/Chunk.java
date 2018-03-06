@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -61,7 +62,7 @@ public class Chunk implements IChunk{
     public boolean isGenerating;
     protected boolean needsSave;
     private int internalLoadingTimer;
-    private DataSet additionalData;
+    private ModBasedDataSet additionalData;
 
     public Chunk(World world, int gridX, int gridY){
         this.world = world;
@@ -672,6 +673,7 @@ public class Chunk implements IChunk{
         return this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
     }
 
+    @Override
     public void setDirty(){
         this.needsSave = true;
     }
@@ -771,7 +773,7 @@ public class Chunk implements IChunk{
         set.addDataSet("s_u", updateSet);
 
         if(this.additionalData != null){
-            set.addDataSet("ad_da", this.additionalData);
+            set.addModBasedDataSet("ad_da", this.additionalData);
         }
 
         this.needsSave = false;
@@ -900,7 +902,7 @@ public class Chunk implements IChunk{
             }
 
             if(set.hasKey("ad_da")){
-                this.additionalData = set.getDataSet("ad_da");
+                this.additionalData = set.getModBasedDataSet("ad_da");
             }
 
             this.callRetroactiveGeneration();
@@ -1000,19 +1002,19 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public DataSet getAdditionalData(){
+    public ModBasedDataSet getAdditionalData(){
         return this.additionalData;
     }
 
     @Override
-    public void setAdditionalData(DataSet set){
+    public void setAdditionalData(ModBasedDataSet set){
         this.additionalData = set;
     }
 
     @Override
-    public DataSet getOrCreateAdditionalData(){
+    public ModBasedDataSet getOrCreateAdditionalData(){
         if(this.additionalData == null){
-            this.additionalData = new DataSet();
+            this.additionalData = new ModBasedDataSet();
         }
         return this.additionalData;
     }

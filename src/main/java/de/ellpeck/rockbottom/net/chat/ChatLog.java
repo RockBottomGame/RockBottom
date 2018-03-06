@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.net.chat;
 
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -15,6 +14,7 @@ import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.util.Counter;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public class ChatLog implements IChatLog{
 
@@ -97,7 +96,7 @@ public class ChatLog implements IChatLog{
 
     @Override
     public Command getCommand(String name){
-        if(name.contains(Constants.RESOURCE_SEPARATOR)){
+        if(Util.isResourceName(name)){
             return RockBottomAPI.COMMAND_REGISTRY.get(RockBottomAPI.createRes(name));
         }
         else{

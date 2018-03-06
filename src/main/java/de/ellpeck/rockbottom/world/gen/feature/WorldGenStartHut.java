@@ -2,11 +2,13 @@ package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
@@ -20,6 +22,7 @@ import java.util.Random;
 
 public class WorldGenStartHut implements IWorldGenerator{
 
+    private static final IResourceName HOUSE_CREATED = RockBottomAPI.createInternalRes("start_house_created");
     private static final int WIDTH = 9;
     private static final int HEIGHT = 4;
 
@@ -34,7 +37,7 @@ public class WorldGenStartHut implements IWorldGenerator{
 
     @Override
     public boolean shouldGenerate(IWorld world, IChunk chunk){
-        return world.isStoryMode() && chunk.getGridX() == this.chunkX && (!world.hasAdditionalData() || !world.getAdditionalData().getBoolean("start_house_created"));
+        return world.isStoryMode() && chunk.getGridX() == this.chunkX && (!world.hasAdditionalData() || !world.getAdditionalData().getBoolean(HOUSE_CREATED));
     }
 
     @Override
@@ -49,7 +52,9 @@ public class WorldGenStartHut implements IWorldGenerator{
                 if(chunk.getStateInner(x, y-1).getTile().isFullTile()){
                     this.genStartHouse(chunk, x, y-1);
 
-                    world.getOrCreateAdditionalData().addBoolean("start_house_created", true);
+                    world.getOrCreateAdditionalData().addBoolean(HOUSE_CREATED, true);
+                    chunk.setDirty();
+
                     break;
                 }
             }

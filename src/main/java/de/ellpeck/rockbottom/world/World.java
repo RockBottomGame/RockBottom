@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -56,7 +57,7 @@ public class World implements IWorld{
     protected File playerDirectory;
     protected File additionalDataFile;
     protected int saveTicksCounter;
-    private DataSet additionalData;
+    private ModBasedDataSet additionalData;
 
     public World(WorldInfo info, DynamicRegistryInfo regInfo){
         this.info = info;
@@ -99,7 +100,7 @@ public class World implements IWorld{
 
         this.additionalDataFile = new File(worldDirectory, "additional_data.dat");
         if(this.additionalDataFile.exists()){
-            this.additionalData = new DataSet();
+            this.additionalData = new ModBasedDataSet();
             this.additionalData.read(this.additionalDataFile);
         }
     }
@@ -956,19 +957,19 @@ public class World implements IWorld{
     }
 
     @Override
-    public DataSet getAdditionalData(){
+    public ModBasedDataSet getAdditionalData(){
         return this.additionalData;
     }
 
     @Override
-    public void setAdditionalData(DataSet set){
+    public void setAdditionalData(ModBasedDataSet set){
         this.additionalData = set;
     }
 
     @Override
-    public DataSet getOrCreateAdditionalData(){
+    public ModBasedDataSet getOrCreateAdditionalData(){
         if(this.additionalData == null){
-            this.additionalData = new DataSet();
+            this.additionalData = new ModBasedDataSet();
         }
         return this.additionalData;
     }

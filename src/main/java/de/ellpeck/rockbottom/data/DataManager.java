@@ -5,10 +5,7 @@ import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.data.set.part.PartBoolean;
-import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
-import de.ellpeck.rockbottom.api.data.set.part.PartString;
-import de.ellpeck.rockbottom.api.data.set.part.PartUniqueId;
+import de.ellpeck.rockbottom.api.data.set.part.*;
 import de.ellpeck.rockbottom.api.data.set.part.num.*;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
@@ -47,6 +44,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PART_REGISTRY.register(10, PartShort.class);
         RockBottomAPI.PART_REGISTRY.register(11, PartBoolean.class);
         RockBottomAPI.PART_REGISTRY.register(12, PartString.class);
+        RockBottomAPI.PART_REGISTRY.register(13, PartModBasedDataSet.class);
 
         RockBottomAPI.PACKET_REGISTRY.register(0, PacketJoin.class);
         RockBottomAPI.PACKET_REGISTRY.register(1, PacketChunk.class);

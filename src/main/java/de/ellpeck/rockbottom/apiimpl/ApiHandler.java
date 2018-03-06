@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
-import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 public class ApiHandler implements IApiHandler{
 
     @Override
-    public void writeDataSet(DataSet set, File file){
+    public void writeDataSet(AbstractDataSet set, File file){
         try{
             if(!file.exists()){
                 file.getParentFile().mkdirs();
@@ -45,7 +45,7 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void readDataSet(DataSet set, File file){
+    public void readDataSet(AbstractDataSet set, File file){
         if(!set.isEmpty()){
             set.clear();
         }
@@ -63,7 +63,7 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void writeSet(DataOutput stream, DataSet set) throws Exception{
+    public void writeSet(DataOutput stream, AbstractDataSet set) throws Exception{
         stream.writeInt(set.size());
 
         for(DataPart part : set.getData().values()){
@@ -72,7 +72,7 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void readSet(DataInput stream, DataSet set) throws Exception{
+    public void readSet(DataInput stream, AbstractDataSet set) throws Exception{
         int amount = stream.readInt();
 
         for(int i = 0; i < amount; i++){
