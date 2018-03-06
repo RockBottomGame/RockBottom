@@ -18,16 +18,23 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
-        return getState(layer, chunk.getY()+y, this.getExpectedSurfaceHeight(world, chunk, x, layer, noise));
+        int height = this.getExpectedSurfaceHeight(world, chunk, x, layer, noise);
+        int stoneHeight = height-Util.ceil(noise.make2dNoise((chunk.getX()+x)/5D, 0D)*3D)-2;
+        return getState(layer, chunk.getY()+y, height, stoneHeight);
     }
 
-    public static TileState getState(TileLayer layer, int y, int height){
+    public static TileState getState(TileLayer layer, int y, int height, int stoneHeight){
         if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
             if(y == height && layer == TileLayer.MAIN){
                 return GameContent.TILE_GRASS.getDefState();
             }
             else if(y <= height){
-                return GameContent.TILE_SOIL.getDefState();
+                if(y >= stoneHeight){
+                    return GameContent.TILE_SOIL.getDefState();
+                }
+                else{
+                    return GameContent.TILE_STONE.getDefState();
+                }
             }
         }
         return GameContent.TILE_AIR.getDefState();
