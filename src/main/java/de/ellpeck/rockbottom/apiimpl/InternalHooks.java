@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.apiimpl;
 import com.google.common.collect.Table;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -25,6 +26,7 @@ import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -980,5 +982,38 @@ public class InternalHooks implements IInternalHooks{
     @Override
     public IStateHandler makeStateHandler(Tile tile){
         return new StateHandler(tile);
+    }
+
+    @Override
+    public FormattingCode getFormattingCode(String s, int index, Map<Character, FormattingCode> defaults){
+        if(s.length() > index+1 && s.charAt(index) == '&'){
+            char formatChar = s.charAt(index+1);
+
+            if(formatChar == '('){
+                int closingIndex = s.indexOf(")", index+2);
+                if(closingIndex > index+2){
+                    String code = s.substring(index+2, closingIndex);
+                    String[] colors = code.split(",");
+
+                    if(colors.length == 3){
+                        try{
+                            return new FormattingCode(' ', Colors.rgb(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])), FontProp.NONE, code.length()+3, "&("+code+")");
+                        }
+                        catch(Exception ignored){
+                        }
+                    }
+                }
+            }
+            else if(formatChar == 'r'){
+                return new FormattingCode('r', Colors.rainbow((Util.getTimeMillis()/10)%256));
+            }
+            else{
+                FormattingCode def = defaults.get(formatChar);
+                if(def != null){
+                    return def;
+                }
+            }
+        }
+        return FormattingCode.NONE;
     }
 }
