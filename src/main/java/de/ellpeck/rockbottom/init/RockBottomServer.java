@@ -66,11 +66,12 @@ public class RockBottomServer extends AbstractGame{
         };
 
         Thread consoleThread = new Thread(() -> {
+            Scanner scanner = new Scanner(System.in);
             while(this.isRunning){
-                Scanner scanner = new Scanner(System.in);
                 String input = scanner.nextLine();
                 this.enqueueAction((game, object) -> this.chatLog.sendCommandSenderMessage(input, consoleCommandSender), null);
             }
+            scanner.close();
         }, "ConsoleListener");
         consoleThread.setDaemon(true);
         consoleThread.start();

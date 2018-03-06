@@ -81,6 +81,8 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                     if(additionalData == null){
                         InputStreamReader reader = new InputStreamReader(AssetManager.getResourceAsStream(dataPath), Charsets.UTF_8);
                         JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                        reader.close();
+
                         if(main != null){
                             additionalData = new HashMap<>();
 

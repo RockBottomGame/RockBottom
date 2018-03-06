@@ -50,6 +50,8 @@ public final class CrashManager{
 
                 JsonObject object = paste(writer.toString(), name+" "+date);
                 pasteLink = object.get("link").getAsString();
+
+                writer.close();
             }
             catch(Exception e){
                 log(Level.WARNING, "Couldn't paste crash report online", e);

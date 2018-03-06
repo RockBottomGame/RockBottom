@@ -63,6 +63,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
 
             InputStream infoStream = AssetManager.getResourceAsStream(path+anim);
             JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
+            infoStream.close();
 
             for(Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){
                 String key = entry.getKey();

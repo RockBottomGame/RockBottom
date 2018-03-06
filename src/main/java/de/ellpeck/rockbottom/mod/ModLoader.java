@@ -93,6 +93,8 @@ public class ModLoader implements IModLoader{
                                 }
                             }
 
+                            jar.close();
+
                             if(!foundMod){
                                 RockBottomAPI.logger().warning("Jar file "+file+" doesn't contain a valid mod");
                             }

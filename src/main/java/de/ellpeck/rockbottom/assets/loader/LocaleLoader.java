@@ -41,6 +41,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
 
     private Locale fromStream(InputStream stream, String name) throws Exception{
         JsonElement main = Util.JSON_PARSER.parse(new InputStreamReader(stream, Charsets.UTF_8));
+        stream.close();
 
         Map<IResourceName, String> locale = new HashMap<>();
         for(Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){

@@ -218,6 +218,8 @@ public class Texture implements ITexture{
         }
 
         byte[] input = ByteStreams.toByteArray(stream);
+        stream.close();
+
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);
         ((Buffer)data).flip();

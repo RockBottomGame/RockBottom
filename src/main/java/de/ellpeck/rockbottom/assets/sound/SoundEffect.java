@@ -30,6 +30,8 @@ public class SoundEffect implements ISound{
 
     private ShortBuffer readVorbis(InputStream stream, STBVorbisInfo info) throws Exception{
         byte[] input = ByteStreams.toByteArray(stream);
+        stream.close();
+
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);
         ((Buffer)data).flip();

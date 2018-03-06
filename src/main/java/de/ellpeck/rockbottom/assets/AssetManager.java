@@ -293,6 +293,7 @@ public class AssetManager implements IAssetManager, IDisposable{
                     try{
                         InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8);
                         JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                        reader.close();
 
                         for(Entry<String, JsonElement> resType : main.entrySet()){
                             String type = resType.getKey();

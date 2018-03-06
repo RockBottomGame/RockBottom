@@ -50,6 +50,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
                 break;
             }
         }
+        reader.close();
 
         return new Shader(type, shader);
     }

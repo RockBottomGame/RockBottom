@@ -7,16 +7,12 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
@@ -181,11 +177,6 @@ public final class Main{
         @Override
         public void addURL(URL url){
             super.addURL(url);
-        }
-
-        @Override
-        public InputStream getResourceAsStream(String name){
-            return super.getResourceAsStream(name);
         }
     }
 }
