@@ -1,16 +1,15 @@
 package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.IInputHandler;
-import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.settings.ServerSettings;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
+import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
@@ -28,6 +27,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class RockBottomServer extends AbstractGame{
+
+    protected ServerSettings settings;
 
     public static void startGame(){
         doInit(new RockBottomServer());
@@ -100,8 +101,14 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        this.settings = new ServerSettings();
+        this.settings.load();
+    }
+
+    @Override
     public int getAutosaveInterval(){
-        return 60;
+        return this.settings.autosaveIntervalSeconds;
     }
 
     @Override

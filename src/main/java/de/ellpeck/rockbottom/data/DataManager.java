@@ -96,6 +96,7 @@ public class DataManager implements IDataManager{
     private final File modConfigDirectory;
     private final File gameDataFile;
     private final File settingsFile;
+    private final File serverSettingsFile;
     private final File commandPermissionFile;
     private final File whitelistFile;
     private final File blacklistFile;
@@ -113,6 +114,7 @@ public class DataManager implements IDataManager{
         this.gameDataFile = new File(this.gameDirectory, "game_info.dat");
         this.playerDesignFile = new File(this.gameDirectory, "player_design.dat");
         this.settingsFile = new File(this.gameDirectory, "settings.json");
+        this.serverSettingsFile = new File(this.gameDirectory, "server_settings.json");
         this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.json");
         this.whitelistFile = new File(this.gameDirectory, "whitelist.json");
         this.blacklistFile = new File(this.gameDirectory, "blacklist.json");
@@ -161,6 +163,11 @@ public class DataManager implements IDataManager{
     @Override
     public File getSettingsFile(){
         return this.settingsFile;
+    }
+
+    @Override
+    public File getServerSettingsFile(){
+        return this.serverSettingsFile;
     }
 
     @Override
