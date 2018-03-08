@@ -105,6 +105,8 @@ public class RockBottomServer extends AbstractGame{
     public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         this.settings = new ServerSettings();
         this.settings.load();
+
+        super.preInit(game, apiHandler, eventHandler);
     }
 
     @Override

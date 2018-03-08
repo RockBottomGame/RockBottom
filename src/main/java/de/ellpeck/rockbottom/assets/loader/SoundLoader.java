@@ -7,8 +7,8 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ISound;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.sound.SoundEffect;
+import de.ellpeck.rockbottom.content.ContentManager;
 
 public class SoundLoader implements IAssetLoader<ISound>{
 
@@ -21,7 +21,7 @@ public class SoundLoader implements IAssetLoader<ISound>{
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         String resPath = path+element.getAsString();
 
-        SoundEffect sound = new SoundEffect(AssetManager.getResourceAsStream(resPath));
+        SoundEffect sound = new SoundEffect(ContentManager.getResourceAsStream(resPath));
         RockBottomAPI.logger().config("Loaded sound "+resourceName+" for mod "+loadingMod.getDisplayName());
         manager.addAsset(this, resourceName, sound);
     }

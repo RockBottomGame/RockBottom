@@ -8,9 +8,9 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.shader.Shader;
 import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
+import de.ellpeck.rockbottom.content.ContentManager;
 import org.lwjgl.opengl.GL20;
 
 import java.io.BufferedReader;
@@ -40,7 +40,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
     private Shader loadShader(String path, int type) throws Exception{
         String shader = "";
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(AssetManager.getResourceAsStream(path)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream(path)));
         while(true){
             String line = reader.readLine();
             if(line != null){

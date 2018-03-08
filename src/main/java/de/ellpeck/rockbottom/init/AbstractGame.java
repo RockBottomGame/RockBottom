@@ -27,6 +27,7 @@ import de.ellpeck.rockbottom.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.apiimpl.InternalHooks;
 import de.ellpeck.rockbottom.apiimpl.ResourceRegistry;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
+import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
@@ -192,6 +193,11 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
+    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        ContentManager.init(this);
+    }
+
+    @Override
     public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         ContentRegistry.init();
         ConstructionRegistry.init();
@@ -302,6 +308,11 @@ public abstract class AbstractGame implements IGameInstance{
     @Override
     public String getResourceLocation(){
         return "assets/rockbottom";
+    }
+
+    @Override
+    public String getContentLocation(){
+        return "assets/rockbottom/content";
     }
 
     @Override

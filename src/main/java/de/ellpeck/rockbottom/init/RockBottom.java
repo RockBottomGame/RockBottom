@@ -26,6 +26,7 @@ import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
+import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
 import de.ellpeck.rockbottom.gui.GuiInformation;
 import de.ellpeck.rockbottom.gui.GuiLogo;
@@ -135,7 +136,7 @@ public class RockBottom extends AbstractGame{
             GLFWImage.Buffer imageBuffer = GLFWImage.malloc(icons.length);
 
             for(int i = 0; i < icons.length; i++){
-                Texture texture = new Texture(AssetManager.getResourceAsStream("assets/rockbottom/tex/icon/"+icons[i]));
+                Texture texture = new Texture(ContentManager.getResourceAsStream("assets/rockbottom/tex/icon/"+icons[i]));
                 imageBuffer.position(i).width(texture.getTextureWidth()).height(texture.getTextureHeight()).pixels(texture.getPixelData());
             }
 
@@ -223,6 +224,8 @@ public class RockBottom extends AbstractGame{
 
         this.setPlayerDesign();
         this.renderer.calcScales();
+
+        super.preInit(game, apiHandler, eventHandler);
     }
 
     private void setPlayerDesign(){

@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.assets.AssetManager;
+import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +27,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
         String resPath = path+element.getAsString();
-        Locale locale = this.fromStream(AssetManager.getResourceAsStream(resPath), elementName);
+        Locale locale = this.fromStream(ContentManager.getResourceAsStream(resPath), elementName);
 
         for(Locale asset : manager.<Locale>getAllOfType(Locale.ID).values()){
             if(this.merge(asset, locale)){

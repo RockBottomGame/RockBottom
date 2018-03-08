@@ -12,8 +12,8 @@ import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.tex.Texture;
+import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -66,10 +66,10 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                     IStitchCallback call = (stitchX, stitchY, stitchedTexture) -> finalVars.add(stitchedTexture);
 
                     if(shouldStitch){
-                        manager.getTextureStitcher().loadTexture(refName+"_variation_"+variations.size(), AssetManager.getResourceAsStream(dataPath), call);
+                        manager.getTextureStitcher().loadTexture(refName+"_variation_"+variations.size(), ContentManager.getResourceAsStream(dataPath), call);
                     }
                     else{
-                        call.onStitched(0, 0, new Texture(AssetManager.getResourceAsStream(dataPath)));
+                        call.onStitched(0, 0, new Texture(ContentManager.getResourceAsStream(dataPath)));
                     }
                 }
             }
@@ -79,7 +79,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                 if(additionalData == null){
                     additionalData = this.additionalDataCache.get(dataPath);
                     if(additionalData == null){
-                        InputStreamReader reader = new InputStreamReader(AssetManager.getResourceAsStream(dataPath), Charsets.UTF_8);
+                        InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(dataPath), Charsets.UTF_8);
                         JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
                         reader.close();
 
@@ -115,10 +115,10 @@ public class TextureLoader implements IAssetLoader<ITexture>{
         };
 
         if(shouldStitch){
-            manager.getTextureStitcher().loadTexture(refName, AssetManager.getResourceAsStream(resPath), back);
+            manager.getTextureStitcher().loadTexture(refName, ContentManager.getResourceAsStream(resPath), back);
         }
         else{
-            back.onStitched(0, 0, new Texture(AssetManager.getResourceAsStream(resPath)));
+            back.onStitched(0, 0, new Texture(ContentManager.getResourceAsStream(resPath)));
         }
     }
 

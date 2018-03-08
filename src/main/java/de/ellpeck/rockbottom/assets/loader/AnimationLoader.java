@@ -12,10 +12,10 @@ import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.tex.Texture;
+import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,7 +61,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
         if(cachedInfo == null){
             List<AnimationRow> rows = new ArrayList<>();
 
-            InputStream infoStream = AssetManager.getResourceAsStream(path+anim);
+            InputStream infoStream = ContentManager.getResourceAsStream(path+anim);
             JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
             infoStream.close();
 
@@ -112,10 +112,10 @@ public class AnimationLoader implements IAssetLoader<Animation>{
         };
 
         if(shouldStitch){
-            manager.getTextureStitcher().loadTexture(resourceName.toString(), AssetManager.getResourceAsStream(path+texture), callback);
+            manager.getTextureStitcher().loadTexture(resourceName.toString(), ContentManager.getResourceAsStream(path+texture), callback);
         }
         else{
-            callback.onStitched(0, 0, new Texture(AssetManager.getResourceAsStream(path+texture)));
+            callback.onStitched(0, 0, new Texture(ContentManager.getResourceAsStream(path+texture)));
         }
     }
 

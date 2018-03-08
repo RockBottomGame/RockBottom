@@ -1,11 +1,8 @@
 package de.ellpeck.rockbottom.assets;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -30,6 +27,8 @@ import de.ellpeck.rockbottom.assets.stub.EmptyShaderProgram;
 import de.ellpeck.rockbottom.assets.stub.EmptySound;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.assets.tex.TextureStitcher;
+import de.ellpeck.rockbottom.content.ContentManager;
+import de.ellpeck.rockbottom.content.ContentManager.LoaderCallback;
 import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
 import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
@@ -43,13 +42,11 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 public class AssetManager implements IAssetManager, IDisposable{
@@ -86,14 +83,6 @@ public class AssetManager implements IAssetManager, IDisposable{
     private IShaderProgram missingShader;
     private boolean isLocked = true;
 
-    public static InputStream getResourceAsStream(String s){
-        return Main.classLoader.getResourceAsStream(s);
-    }
-
-    public static URL getResource(String s){
-        return Main.classLoader.getResource(s);
-    }
-
     public void load(RockBottom game){
         this.dispose();
         if(!this.assets.isEmpty()){
@@ -106,7 +95,11 @@ public class AssetManager implements IAssetManager, IDisposable{
         try{
             RockBottomAPI.logger().info("Loading resources...");
 
-            this.loadAssets();
+            List<LoaderCallback> callbacks = new ArrayList<>();
+            for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
+                callbacks.add(new AssetCallback(loader));
+            }
+            ContentManager.loadContent(IMod:: getResourceLocation, "assets.json", callbacks);
 
             for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
                 loader.finalize(this);
@@ -284,77 +277,6 @@ public class AssetManager implements IAssetManager, IDisposable{
         return (Map<IResourceName, T>)this.assets.row(identifier);
     }
 
-    private void loadAssets(){
-        for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
-            String path = mod.getResourceLocation();
-            if(path != null && !path.isEmpty()){
-                InputStream stream = getResourceAsStream(path+"/assets.json");
-                if(stream != null){
-                    try{
-                        InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8);
-                        JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
-                        reader.close();
-
-                        for(Entry<String, JsonElement> resType : main.entrySet()){
-                            String type = resType.getKey();
-                            for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
-                                IResourceName identifier = loader.getAssetIdentifier().addSuffix(".");
-                                if(identifier.getResourceName().equals(type) || identifier.toString().equals(type)){
-                                    JsonObject resources = resType.getValue().getAsJsonObject();
-                                    for(Entry<String, JsonElement> resource : resources.entrySet()){
-                                        this.loadRes(mod, path, loader, "", resource.getValue(), resource.getKey());
-                                    }
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    catch(Exception e){
-                        RockBottomAPI.logger().log(Level.SEVERE, "Couldn't read assets.json from mod "+mod.getDisplayName(), e);
-                        continue;
-                    }
-                }
-                else{
-                    RockBottomAPI.logger().severe("Mod "+mod.getDisplayName()+" is missing assets.json file at path "+path);
-                    continue;
-                }
-
-                RockBottomAPI.logger().info("Loaded assets from assets.json file for mod "+mod.getDisplayName()+" at path "+path);
-            }
-            else{
-                RockBottomAPI.logger().info("Skipping mod "+mod.getDisplayName()+" that doesn't have a resource location");
-            }
-        }
-    }
-
-    private void loadRes(IMod mod, String path, IAssetLoader loader, String name, JsonElement element, String elementName){
-        try{
-            if(!loader.dealWithSpecialCases(this, name, path, element, elementName, mod)){
-                if("*".equals(elementName)){
-                    name = name.substring(0, name.length()-1);
-                }
-                else if(!"*.".equals(elementName)){
-                    name += elementName;
-                }
-
-                if(!elementName.endsWith(".")){
-                    IResourceName resourceName = RockBottomAPI.createRes(mod, name);
-                    loader.loadAsset(this, resourceName, path, element, elementName, mod);
-                }
-                else if(element.isJsonObject()){
-                    JsonObject object = element.getAsJsonObject();
-                    for(Entry<String, JsonElement> entry : object.entrySet()){
-                        this.loadRes(mod, path, loader, name, entry.getValue(), entry.getKey());
-                    }
-                }
-            }
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't load resource "+name+" for mod "+mod.getDisplayName(), e);
-        }
-    }
-
     @Override
     public <T extends IAsset> T getAssetWithFallback(IResourceName identifier, IResourceName path, T fallback){
         IAsset asset = this.assets.get(identifier, path);
@@ -431,12 +353,12 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     @Override
     public InputStream getResourceStream(String s){
-        return getResourceAsStream(s);
+        return ContentManager.getResourceAsStream(s);
     }
 
     @Override
     public URL getResourceURL(String s){
-        return getResource(s);
+        return ContentManager.getResource(s);
     }
 
     @Override
@@ -492,6 +414,30 @@ public class AssetManager implements IAssetManager, IDisposable{
         }
         else{
             throw new UnsupportedOperationException("Cannot add assets to the asset manager while it's locked! Add assets during loading!");
+        }
+    }
+
+    private class AssetCallback implements LoaderCallback{
+
+        private final IAssetLoader loader;
+
+        public AssetCallback(IAssetLoader loader){
+            this.loader = loader;
+        }
+
+        @Override
+        public IResourceName getIdentifier(){
+            return this.loader.getAssetIdentifier();
+        }
+
+        @Override
+        public void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+            this.loader.loadAsset(AssetManager.this, resourceName, path, element, elementName, loadingMod);
+        }
+
+        @Override
+        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+            return this.loader.dealWithSpecialCases(AssetManager.this, resourceName, path, element, elementName, loadingMod);
         }
     }
 }
