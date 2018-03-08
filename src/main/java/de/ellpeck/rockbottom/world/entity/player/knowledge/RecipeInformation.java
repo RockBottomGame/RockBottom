@@ -64,7 +64,7 @@ public class RecipeInformation extends Information{
     @Override
     public void load(DataSet set, IKnowledgeManager manager){
         IResourceName recName = RockBottomAPI.createRes(set.getString("recipe_name"));
-        this.recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(recName);
+        this.recipe = IRecipe.forName(recName);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.construction;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.item.Item;
 
@@ -30,6 +29,6 @@ public final class ConstructionRegistry{
     }
 
     private static IRecipe getRecipe(Item item){
-        return RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(item.getName());
+        return IRecipe.forName(item.getName());
     }
 }
