@@ -10,9 +10,7 @@ import de.ellpeck.rockbottom.api.content.pack.IContentPackLoader;
 import de.ellpeck.rockbottom.api.data.settings.ContentPackSettings;
 import de.ellpeck.rockbottom.api.util.Util;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.logging.Level;
@@ -37,8 +35,32 @@ public class ContentPackLoader implements IContentPackLoader{
     public void load(File dir){
         this.packSettings.load();
 
+        File infoFile = new File(dir, "HOW TO INSTALL CONTENT PACKS.txt");
+
         if(!dir.exists()){
             dir.mkdirs();
+
+            try{
+                BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
+                String l = System.lineSeparator();
+
+                writer.write("----------------------------------------------------------"+l);
+                writer.write("To install a content pack, place the zip into this folder."+l);
+                writer.write("Note that a content pack has to be enabled in the content "+l);
+                writer.write("packs settings page for it to have an effect on the game. "+l);
+                writer.write("                                                          "+l);
+                writer.write("If your content pack did not come in a zip, then please   "+l);
+                writer.write("refer to the content pack documentation or contact the    "+l);
+                writer.write("author of the pack as content packs should be distributed "+l);
+                writer.write("and used in zip form only.                                "+l);
+                writer.write("----------------------------------------------------------"+l);
+                writer.write("~Also known as README.txt~");
+
+                writer.close();
+            }
+            catch(Exception e){
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't create info file in content packs folder", e);
+            }
             RockBottomAPI.logger().info("Content packs folder not found, creating at "+dir);
         }
         else{
@@ -47,38 +69,40 @@ public class ContentPackLoader implements IContentPackLoader{
             RockBottomAPI.logger().info("Loading jar mods from mods folder "+dir);
 
             for(File file : dir.listFiles()){
-                String name = file.getName();
-                if(name != null && name.endsWith(".zip")){
-                    try{
-                        ZipFile zip = new ZipFile(file);
-                        Enumeration<? extends ZipEntry> entries = zip.entries();
+                if(!file.equals(infoFile)){
+                    String name = file.getName();
+                    if(name != null && name.endsWith(".zip")){
+                        try{
+                            ZipFile zip = new ZipFile(file);
+                            Enumeration<? extends ZipEntry> entries = zip.entries();
 
-                        Main.classLoader.addURL(file.toURI().toURL());
+                            Main.classLoader.addURL(file.toURI().toURL());
 
-                        boolean foundPack = false;
-                        while(entries.hasMoreElements()){
-                            ZipEntry entry = entries.nextElement();
+                            boolean foundPack = false;
+                            while(entries.hasMoreElements()){
+                                ZipEntry entry = entries.nextElement();
 
-                            if(this.findPack(zip, entry)){
-                                amount++;
+                                if(this.findPack(zip, entry)){
+                                    amount++;
 
-                                foundPack = true;
-                                break;
+                                    foundPack = true;
+                                    break;
+                                }
+                            }
+
+                            zip.close();
+
+                            if(!foundPack){
+                                RockBottomAPI.logger().warning("Zip file "+file+" doesn't contain a valid pack.json");
                             }
                         }
-
-                        zip.close();
-
-                        if(!foundPack){
-                            RockBottomAPI.logger().warning("Zip file "+file+" doesn't contain a valid pack.json");
+                        catch(Exception e){
+                            RockBottomAPI.logger().log(Level.WARNING, "Loading content pack from file "+file+" failed", e);
                         }
                     }
-                    catch(Exception e){
-                        RockBottomAPI.logger().log(Level.WARNING, "Loading content pack from file "+file+" failed", e);
+                    else{
+                        RockBottomAPI.logger().warning("Found non-zip file "+file+" in content packs folder "+dir);
                     }
-                }
-                else{
-                    RockBottomAPI.logger().warning("Found non-zip file "+file+" in content packs folder "+dir);
                 }
             }
 
