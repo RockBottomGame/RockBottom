@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
+import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -17,7 +18,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.logging.Level;
 
 public final class ContentManager{
@@ -25,19 +25,25 @@ public final class ContentManager{
     public static void init(IGameInstance game){
         new RecipeLoader().register();
 
+        List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
         List<LoaderCallback> callbacks = new ArrayList<>();
         for(IContentLoader loader : RockBottomAPI.CONTENT_LOADER_REGISTRY.getUnmodifiable().values()){
             callbacks.add(new ContentCallback(loader, game));
         }
-        loadContent(IMod:: getContentLocation, "content.json", callbacks);
+        for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
+            loadContent(mod, mod.getContentLocation(), "content.json", callbacks, packs);
+        }
     }
 
-    public static void loadContent(Function<IMod, String> pathGetter, String file, List<LoaderCallback> callbacks){
-        for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
-            String path = pathGetter.apply(mod);
-            if(path != null && !path.isEmpty()){
-                InputStream stream = getResourceAsStream(path+"/"+file);
+    public static void loadContent(IMod mod, String path, String file, List<LoaderCallback> callbacks, List<ContentPack> contentPacks){
+        if(path != null && !path.isEmpty()){
+            for(ContentPack pack : contentPacks){
+                String pathPrefix = pack.isDefault() ? "" : pack.getId()+"/";
+                InputStream stream = getResourceAsStream(pathPrefix+path+"/"+file);
+
                 if(stream != null){
+                    RockBottomAPI.logger().info("Loading "+file+" file for mod "+mod.getDisplayName()+" at path "+pathPrefix+path+" in content pack "+pack.getName());
+
                     try{
                         InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8);
                         JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
@@ -50,7 +56,7 @@ public final class ContentManager{
                                 if(identifier.getResourceName().equals(type) || identifier.toString().equals(type)){
                                     JsonObject resources = resType.getValue().getAsJsonObject();
                                     for(Map.Entry<String, JsonElement> resource : resources.entrySet()){
-                                        loadRes(mod, path, callback, "", resource.getValue(), resource.getKey());
+                                        loadRes(mod, pathPrefix+path, callback, "", resource.getValue(), resource.getKey(), pack);
                                     }
 
                                     break;
@@ -59,26 +65,30 @@ public final class ContentManager{
                         }
                     }
                     catch(Exception e){
-                        RockBottomAPI.logger().log(Level.SEVERE, "Couldn't read "+file+" from mod "+mod.getDisplayName(), e);
+                        RockBottomAPI.logger().log(Level.SEVERE, "Couldn't read "+file+" from mod "+mod.getDisplayName()+" in content pack "+pack.getName(), e);
                         continue;
                     }
                 }
+                else if(pack.isDefault()){
+                    RockBottomAPI.logger().warning("Mod "+mod.getDisplayName()+" is missing "+file+" file at path "+pathPrefix+path);
+                    continue;
+                }
                 else{
-                    RockBottomAPI.logger().severe("Mod "+mod.getDisplayName()+" is missing "+file+" file at path "+path);
+                    RockBottomAPI.logger().config("Content pack "+pack.getName()+" does not have "+file+" file at path "+pathPrefix+path+" for mod "+mod.getDisplayName());
                     continue;
                 }
 
-                RockBottomAPI.logger().info("Loaded everything in "+file+" file for mod "+mod.getDisplayName()+" at path "+path);
+                RockBottomAPI.logger().info("Loaded everything in "+file+" file for mod "+mod.getDisplayName()+" at path "+pathPrefix+path+" in content pack "+pack.getName());
             }
-            else{
-                RockBottomAPI.logger().info("Skipping mod "+mod.getDisplayName()+" that doesn't have a folder set for "+file);
-            }
+        }
+        else{
+            RockBottomAPI.logger().info("Skipping mod "+mod.getDisplayName()+" that doesn't have a folder set for "+file);
         }
     }
 
-    private static void loadRes(IMod mod, String path, LoaderCallback loader, String name, JsonElement element, String elementName){
+    private static void loadRes(IMod mod, String path, LoaderCallback loader, String name, JsonElement element, String elementName, ContentPack pack){
         try{
-            if(!loader.dealWithSpecialCases(name, path, element, elementName, mod)){
+            if(!loader.dealWithSpecialCases(name, path, element, elementName, mod, pack)){
                 if("*".equals(elementName)){
                     name = name.substring(0, name.length()-1);
                 }
@@ -88,12 +98,12 @@ public final class ContentManager{
 
                 if(!elementName.endsWith(".")){
                     IResourceName resourceName = RockBottomAPI.createRes(mod, name);
-                    loader.load(resourceName, path, element, elementName, mod);
+                    loader.load(resourceName, path, element, elementName, mod, pack);
                 }
                 else if(element.isJsonObject()){
                     JsonObject object = element.getAsJsonObject();
                     for(Map.Entry<String, JsonElement> entry : object.entrySet()){
-                        loadRes(mod, path, loader, name, entry.getValue(), entry.getKey());
+                        loadRes(mod, path, loader, name, entry.getValue(), entry.getKey(), pack);
                     }
                 }
             }
@@ -115,9 +125,9 @@ public final class ContentManager{
 
         IResourceName getIdentifier();
 
-        void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception;
+        void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception;
 
-        boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception;
+        boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception;
     }
 
     private static class ContentCallback implements LoaderCallback{
@@ -136,13 +146,13 @@ public final class ContentManager{
         }
 
         @Override
-        public void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-            this.loader.loadContent(this.game, resourceName, path, element, elementName, loadingMod);
+        public void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+            this.loader.loadContent(this.game, resourceName, path, element, elementName, loadingMod, pack);
         }
 
         @Override
-        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-            return this.loader.dealWithSpecialCases(this.game, resourceName, path, element, elementName, loadingMod);
+        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+            return this.loader.dealWithSpecialCases(this.game, resourceName, path, element, elementName, loadingMod, pack);
         }
     }
 }

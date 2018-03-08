@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
+import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
@@ -31,7 +32,7 @@ public class RecipeLoader implements IContentLoader<IRecipe>{
     }
 
     @Override
-    public void loadContent(IGameInstance game, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public void loadContent(IGameInstance game, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         String resPath = path+element.getAsString();
 
         InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
@@ -71,16 +72,21 @@ public class RecipeLoader implements IContentLoader<IRecipe>{
             }
         }
 
-        if("manual".equals(type)){
-            new BasicRecipe(resourceName, inputList, outputList).registerManual();
-        }
-        else if("manual_knowledge".equals(type)){
-            new KnowledgeBasedRecipe(resourceName, inputList, outputList).registerManual();
+        if(IRecipe.forName(resourceName) != null){
+            RockBottomAPI.logger().info("Recipe with name "+resourceName+" already exists, not adding recipe for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
         }
         else{
-            throw new IllegalArgumentException("Invalid recipe type "+type+" for recipe "+resourceName);
-        }
+            if("manual".equals(type)){
+                new BasicRecipe(resourceName, inputList, outputList).registerManual();
+            }
+            else if("manual_knowledge".equals(type)){
+                new KnowledgeBasedRecipe(resourceName, inputList, outputList).registerManual();
+            }
+            else{
+                throw new IllegalArgumentException("Invalid recipe type "+type+" for recipe "+resourceName);
+            }
 
-        RockBottomAPI.logger().config("Loaded recipe "+resourceName+" for mod "+loadingMod.getDisplayName()+" with type "+type+", inputs "+inputList+" and outputs "+outputList);
+            RockBottomAPI.logger().config("Loaded recipe "+resourceName+" for mod "+loadingMod.getDisplayName()+" with type "+type+", inputs "+inputList+" and outputs "+outputList);
+        }
     }
 }

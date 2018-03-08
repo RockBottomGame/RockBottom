@@ -89,6 +89,7 @@ public class DataManager implements IDataManager{
 
     private final File gameDirectory;
     private final File modsDirectory;
+    private final File contentPacksDirectory;
     private final File saveDirectory;
     private final File screenshotDirectory;
     private final File modConfigDirectory;
@@ -99,12 +100,14 @@ public class DataManager implements IDataManager{
     private final File whitelistFile;
     private final File blacklistFile;
     private final File modSettingsFile;
+    private final File contentPackSettingsFile;
     private final File playerDesignFile;
     private final DataSet gameInfo = new DataSet();
 
     public DataManager(AbstractGame game){
         this.gameDirectory = Main.gameDir;
         this.modsDirectory = new File(this.gameDirectory, "mods");
+        this.contentPacksDirectory = new File(this.gameDirectory, "contentpacks");
         this.saveDirectory = new File(this.gameDirectory, "save");
         this.screenshotDirectory = new File(this.gameDirectory, "screenshot");
         this.modConfigDirectory = new File(this.modsDirectory, "config");
@@ -117,6 +120,7 @@ public class DataManager implements IDataManager{
         this.whitelistFile = new File(this.gameDirectory, "whitelist.json");
         this.blacklistFile = new File(this.gameDirectory, "blacklist.json");
         this.modSettingsFile = new File(this.gameDirectory, "mod_settings.json");
+        this.contentPackSettingsFile = new File(this.gameDirectory, "content_pack_settings.json");
 
         if(!game.isDedicatedServer()){
             this.gameInfo.read(this.gameDataFile);
@@ -141,6 +145,11 @@ public class DataManager implements IDataManager{
     @Override
     public File getModsDir(){
         return this.modsDirectory;
+    }
+
+    @Override
+    public File getContentPacksDir(){
+        return this.contentPacksDirectory;
     }
 
     @Override
@@ -186,6 +195,11 @@ public class DataManager implements IDataManager{
     @Override
     public File getModSettingsFile(){
         return this.modSettingsFile;
+    }
+
+    @Override
+    public File getContentPackSettingsFile(){
+        return this.contentPackSettingsFile;
     }
 
     @Override

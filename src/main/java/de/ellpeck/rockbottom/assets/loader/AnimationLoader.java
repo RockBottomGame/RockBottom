@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
+import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -34,7 +35,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         boolean shouldStitch = true;
         String anim;
         String texture;
@@ -107,8 +108,12 @@ public class AnimationLoader implements IAssetLoader<Animation>{
         CachedAnimInfo finalCachedInfo = cachedInfo;
         IStitchCallback callback = (stitchX, stitchY, stitchedTexture) -> {
             Animation animation = new Animation(stitchedTexture, finalCachedInfo.width, finalCachedInfo.height, finalCachedInfo.rows);
-            RockBottomAPI.logger().config("Loaded animation "+resourceName+" for mod "+loadingMod.getDisplayName());
-            manager.addAsset(this, resourceName, animation);
+            if(manager.addAsset(this, resourceName, animation)){
+                RockBottomAPI.logger().config("Loaded animation "+resourceName+" for mod "+loadingMod.getDisplayName());
+            }
+            else{
+                RockBottomAPI.logger().info("Animation "+resourceName+" already exists, not adding animation for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+            }
         };
 
         if(shouldStitch){

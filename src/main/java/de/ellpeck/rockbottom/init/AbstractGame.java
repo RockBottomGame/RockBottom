@@ -28,6 +28,7 @@ import de.ellpeck.rockbottom.apiimpl.InternalHooks;
 import de.ellpeck.rockbottom.apiimpl.ResourceRegistry;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.content.ContentManager;
+import de.ellpeck.rockbottom.content.pack.ContentPackLoader;
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
@@ -63,6 +64,7 @@ public abstract class AbstractGame implements IGameInstance{
 
         internals.setGame(game);
         internals.setMod(new ModLoader());
+        internals.setContent(new ContentPackLoader());
         internals.setApi(new ApiHandler());
         internals.setHooks(new InternalHooks());
         internals.setEvent(new EventHandler());
@@ -167,6 +169,8 @@ public abstract class AbstractGame implements IGameInstance{
             modLoader.loadUnpackedMods(Main.unpackedModsDir);
         }
         modLoader.sortMods();
+
+        RockBottomAPI.getContentPackLoader().load(this.dataManager.getContentPacksDir());
 
         modLoader.prePreInit();
         modLoader.preInit();

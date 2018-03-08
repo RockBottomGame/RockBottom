@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
+import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.shader.Shader;
@@ -24,7 +25,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         JsonObject object = element.getAsJsonObject();
         String vertexPath = object.get("vertex").getAsString();
         String fragmentPath = object.get("fragment").getAsString();
@@ -33,8 +34,12 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
         Shader fragment = this.loadShader(path+fragmentPath, GL20.GL_FRAGMENT_SHADER);
 
         ShaderProgram shader = new ShaderProgram(vertex, fragment);
-        RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
-        manager.addAsset(this, resourceName, shader);
+        if(manager.addAsset(this, resourceName, shader)){
+            RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
+        }
+        else{
+            RockBottomAPI.logger().info("Shader "+resourceName+" already exists, not adding shader for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+        }
     }
 
     private Shader loadShader(String path, int type) throws Exception{

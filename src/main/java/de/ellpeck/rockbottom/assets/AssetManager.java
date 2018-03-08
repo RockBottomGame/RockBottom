@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.assets.texture.ImageBuffer;
+import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.event.impl.LoadAssetsEvent;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.mod.IMod;
@@ -95,11 +96,14 @@ public class AssetManager implements IAssetManager, IDisposable{
         try{
             RockBottomAPI.logger().info("Loading resources...");
 
+            List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
             List<LoaderCallback> callbacks = new ArrayList<>();
             for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
                 callbacks.add(new AssetCallback(loader));
             }
-            ContentManager.loadContent(IMod:: getResourceLocation, "assets.json", callbacks);
+            for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
+                ContentManager.loadContent(mod, mod.getResourceLocation(), "assets.json", callbacks, packs);
+            }
 
             for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
                 loader.finalize(this);
@@ -408,9 +412,16 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public void addAsset(IAssetLoader loader, IResourceName name, IAsset asset){
+    public boolean addAsset(IAssetLoader loader, IResourceName name, IAsset asset){
         if(!this.isLocked){
-            this.assets.put(loader.getAssetIdentifier(), name, asset);
+            IResourceName id = loader.getAssetIdentifier();
+            if(!this.assets.contains(id, name)){
+                this.assets.put(loader.getAssetIdentifier(), name, asset);
+                return true;
+            }
+            else{
+                return false;
+            }
         }
         else{
             throw new UnsupportedOperationException("Cannot add assets to the asset manager while it's locked! Add assets during loading!");
@@ -431,13 +442,13 @@ public class AssetManager implements IAssetManager, IDisposable{
         }
 
         @Override
-        public void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-            this.loader.loadAsset(AssetManager.this, resourceName, path, element, elementName, loadingMod);
+        public void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+            this.loader.loadAsset(AssetManager.this, resourceName, path, element, elementName, loadingMod, pack);
         }
 
         @Override
-        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
-            return this.loader.dealWithSpecialCases(AssetManager.this, resourceName, path, element, elementName, loadingMod);
+        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+            return this.loader.dealWithSpecialCases(AssetManager.this, resourceName, path, element, elementName, loadingMod, pack);
         }
     }
 }

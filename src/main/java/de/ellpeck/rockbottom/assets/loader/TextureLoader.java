@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
+import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
@@ -31,10 +32,14 @@ public class TextureLoader implements IAssetLoader<ITexture>{
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         this.makeTexture(manager, resourceName.toString(), element, path, (stitchX, stitchY, stitchedTexture) -> {
-            RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
-            manager.addAsset(this, resourceName, stitchedTexture);
+            if(manager.addAsset(this, resourceName, stitchedTexture)){
+                RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
+            }
+            else{
+                RockBottomAPI.logger().info("Texture "+resourceName+" already exists, not adding texture for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+            }
         });
     }
 
@@ -122,7 +127,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
     }
 
     @Override
-    public boolean dealWithSpecialCases(IAssetManager manager, String resourceName, String path, JsonElement element, String elementName, IMod loadingMod) throws Exception{
+    public boolean dealWithSpecialCases(IAssetManager manager, String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if("subtexture".equals(elementName)){
             JsonObject object = element.getAsJsonObject();
 
