@@ -97,15 +97,17 @@ public class AssetManager implements IAssetManager, IDisposable{
             RockBottomAPI.logger().info("Loading resources...");
 
             List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
+            Set<IAssetLoader> loaders = RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values();
+
             List<LoaderCallback> callbacks = new ArrayList<>();
-            for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
+            for(IAssetLoader loader : loaders){
                 callbacks.add(new AssetCallback(loader));
             }
             for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
                 ContentManager.loadContent(mod, mod.getResourceLocation(), "assets.json", callbacks, packs);
             }
 
-            for(IAssetLoader loader : RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values()){
+            for(IAssetLoader loader : loaders){
                 loader.finalize(this);
             }
         }

@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 public final class ContentManager{
@@ -26,12 +27,18 @@ public final class ContentManager{
         new RecipeLoader().register();
 
         List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
+        Set<IContentLoader> loaders = RockBottomAPI.CONTENT_LOADER_REGISTRY.getUnmodifiable().values();
+
         List<LoaderCallback> callbacks = new ArrayList<>();
-        for(IContentLoader loader : RockBottomAPI.CONTENT_LOADER_REGISTRY.getUnmodifiable().values()){
+        for(IContentLoader loader : loaders){
             callbacks.add(new ContentCallback(loader, game));
         }
         for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
             loadContent(mod, mod.getContentLocation(), "content.json", callbacks, packs);
+        }
+
+        for(IContentLoader loader : loaders){
+            loader.finalize(game);
         }
     }
 
