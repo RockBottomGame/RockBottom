@@ -146,20 +146,30 @@ public class ContentPackLoader implements IContentPackLoader{
                 authorStrgs[i] = authors.get(i).getAsString();
             }
 
-            ContentPack pack = new ContentPack(id, name, version, authorStrgs, desc);
+            if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
+                if(this.getPack(id) == null){
+                    ContentPack pack = new ContentPack(id, name, version, authorStrgs, desc);
 
-            if(this.packSettings.isDisabled(id)){
-                this.disabledPacks.add(pack);
-                RockBottomAPI.logger().info("Content pack "+name+" with id "+id+" and version "+version+" is loaded but disabled");
+                    if(this.packSettings.isDisabled(id)){
+                        this.disabledPacks.add(pack);
+                        RockBottomAPI.logger().info("Content pack "+name+" with id "+id+" and version "+version+" is loaded but disabled");
+                    }
+                    else{
+                        this.activePacks.add(pack);
+                        RockBottomAPI.logger().info("Loaded content pack "+name+" with id "+id+" and version "+version);
+                    }
+
+                    this.allPacks.add(pack);
+
+                    return true;
+                }
+                else{
+                    RockBottomAPI.logger().warning("Cannot load content pack "+name+" with id "+id+" and version "+version+" because a pack with that id is already present");
+                }
             }
             else{
-                this.activePacks.add(pack);
-                RockBottomAPI.logger().info("Loaded content pack "+name+" with id "+id+" and version "+version);
+                RockBottomAPI.logger().warning("Cannot load content pack "+name+" with id "+id+" and version "+version+" because the id is either missing, empty, not all lower case or contains spaces");
             }
-
-            this.allPacks.add(pack);
-
-            return true;
         }
         return false;
     }
@@ -182,5 +192,15 @@ public class ContentPackLoader implements IContentPackLoader{
     @Override
     public ContentPackSettings getPackSettings(){
         return this.packSettings;
+    }
+
+    @Override
+    public ContentPack getPack(String id){
+        for(ContentPack pack : this.allPacks){
+            if(pack.getId().equals(id)){
+                return pack;
+            }
+        }
+        return null;
     }
 }
