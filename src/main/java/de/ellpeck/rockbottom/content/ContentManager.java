@@ -23,6 +23,8 @@ import java.util.logging.Level;
 public final class ContentManager{
 
     public static void init(IGameInstance game){
+        new RecipeLoader().register();
+
         List<LoaderCallback> callbacks = new ArrayList<>();
         for(IContentLoader loader : RockBottomAPI.CONTENT_LOADER_REGISTRY.getUnmodifiable().values()){
             callbacks.add(new ContentCallback(loader, game));

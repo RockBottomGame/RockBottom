@@ -23,7 +23,6 @@ import java.util.Map;
 
 public class TextureLoader implements IAssetLoader<ITexture>{
 
-    ;
     private final Map<String, Map<String, JsonElement>> additionalDataCache = new HashMap<>();
 
     @Override

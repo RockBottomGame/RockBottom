@@ -193,11 +193,6 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
-    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
-        ContentManager.init(this);
-    }
-
-    @Override
     public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         ContentRegistry.init();
         ConstructionRegistry.init();
@@ -205,6 +200,9 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        ContentManager.init(this);
+        ConstructionRegistry.postInit();
+
         this.chatLog = new ChatLog();
         TileLayer.init();
     }

@@ -224,8 +224,6 @@ public class RockBottom extends AbstractGame{
 
         this.setPlayerDesign();
         this.renderer.calcScales();
-
-        super.preInit(game, apiHandler, eventHandler);
     }
 
     private void setPlayerDesign(){
