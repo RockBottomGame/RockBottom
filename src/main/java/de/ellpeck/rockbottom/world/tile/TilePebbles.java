@@ -73,7 +73,9 @@ public class TilePebbles extends TileBasic{
         if(!world.isClient() && destroyer instanceof AbstractEntityPlayer){
             AbstractEntityPlayer player = (AbstractEntityPlayer)destroyer;
             for(IRecipe recipe : ConstructionRegistry.BRITTLE_TOOLS){
-                player.getKnowledge().teachRecipe(recipe, true);
+                if(recipe != null){
+                    player.getKnowledge().teachRecipe(recipe, true);
+                }
             }
         }
     }
