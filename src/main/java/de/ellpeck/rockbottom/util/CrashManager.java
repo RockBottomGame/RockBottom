@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.content.pack.ContentPack;
+import de.ellpeck.rockbottom.api.content.pack.IContentPackLoader;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -28,25 +30,39 @@ import java.util.logging.Level;
 public final class CrashManager{
 
     public static void makeCrashReport(Throwable t){
+        Main.memReserve = null;
+        System.gc();
+
         File dir = new File(Main.gameDir, "crashes");
         if(!dir.exists()){
             dir.mkdirs();
         }
 
-        log(Level.SEVERE, "The game encountered a fatal exception", t);
+        log(Level.SEVERE, "The game encountered a fatal exception, creating crash report...", null);
 
         String date = new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date());
         File file = new File(dir, date+".txt");
 
         String name = AbstractGame.NAME.toUpperCase()+" CRASH REPORT";
         String divider = "------------------------------------------------------------";
+        String comment = getComment();
 
         String pasteLink = null;
+
+        try{
+            StringWriter writer = new StringWriter();
+            writeInfo(new PrintWriter(writer), divider, name, date, "Find a file with this crash report at "+file, comment, t);
+            log(Level.SEVERE, "Crash Report:\n"+writer.toString(), null);
+        }
+        catch(Exception e){
+            log(Level.WARNING, "Couldn't generate full crash report", e);
+            log(Level.SEVERE, "The game crashed for the following reason", t);
+        }
 
         if(!Main.suppressCrashPaste){
             try{
                 StringWriter writer = new StringWriter();
-                writeInfo(new PrintWriter(writer), divider, name, date, pasteLink, t);
+                writeInfo(new PrintWriter(writer), divider, name, date, null, comment, t);
 
                 JsonObject object = paste(writer.toString(), name+" "+date);
                 pasteLink = object.get("link").getAsString();
@@ -60,7 +76,7 @@ public final class CrashManager{
 
         try{
             PrintWriter writer = new PrintWriter(file);
-            writeInfo(writer, divider, name, date, pasteLink, t);
+            writeInfo(writer, divider, name, date, "Find an online version of this crash report at "+pasteLink, comment, t);
             writer.flush();
         }
         catch(Exception e){
@@ -84,21 +100,32 @@ public final class CrashManager{
         }
     }
 
-    private static void writeInfo(PrintWriter writer, String divider, String name, String date, String pasteLink, Throwable t){
+    private static void writeInfo(PrintWriter writer, String divider, String name, String date, String extraInfo, String comment, Throwable t){
         writer.println(divider);
 
         writer.println(name);
         writer.println(date);
-        if(pasteLink != null){
-            writer.println("Find an online version of this crash report at "+pasteLink);
+        if(extraInfo != null){
+            writer.println(extraInfo);
         }
 
         writer.println(divider);
-        writer.println("//TODO "+getComment());
+        writer.println("//TODO "+comment);
         writer.println(divider);
 
         writer.println("Game Version: "+AbstractGame.VERSION);
         writer.println("API Version: "+RockBottomAPI.VERSION);
+
+        writer.println(divider);
+
+        Runtime runtime = Runtime.getRuntime();
+        writer.println("Java Version: "+System.getProperty("java.version"));
+        writer.println("Operating System: "+System.getProperty("os.name")+" "+System.getProperty("os.version"));
+        writer.println("Processors: "+runtime.availableProcessors());
+        long free = runtime.freeMemory();
+        writer.println("Free Memory: "+free+" bytes ("+free/1024+" megabytes)");
+        long max = runtime.maxMemory();
+        writer.println("Max Memory: "+(max >= Long.MAX_VALUE ? "None" : max+" bytes ("+max/1024+" megabytes"));
 
         writer.println(divider);
         t.printStackTrace(writer);
@@ -120,10 +147,29 @@ public final class CrashManager{
             writer.println("Mod information unavailable");
         }
 
+        writer.println(divider);
+
+        try{
+            writer.println("LOADED CONTENT PACKS:");
+
+            IContentPackLoader loader = RockBottomAPI.getContentPackLoader();
+            for(ContentPack pack : loader.getAllPacks()){
+                String s = pack.getName()+" @ "+pack.getVersion()+" ("+pack.getId()+")";
+                if(loader.getPackSettings().isDisabled(pack.getId())){
+                    s += " [DISABLED]";
+                }
+                writer.println(s);
+            }
+        }
+        catch(Exception e){
+            writer.println("Content pack information unavailable");
+        }
+
         writer.print(divider);
     }
 
-    private static JsonObject paste(String code, String name) throws Exception{
+    private static JsonObject paste(String code, String name) throws
+            Exception{
         HttpClient client = HttpClients.createDefault();
 
         String url = "https://api.paste.ee/v1/pastes";

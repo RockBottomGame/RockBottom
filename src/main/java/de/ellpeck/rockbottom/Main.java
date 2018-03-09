@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 public final class Main{
 
+    public static byte[] memReserve = new byte[10*1024*1024];
     public static CustomClassLoader classLoader;
 
     public static File gameDir;
