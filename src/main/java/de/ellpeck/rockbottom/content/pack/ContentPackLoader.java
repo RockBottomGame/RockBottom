@@ -150,7 +150,7 @@ public class ContentPackLoader implements IContentPackLoader{
                 if(this.getPack(id) == null){
                     ContentPack pack = new ContentPack(id, name, version, authorStrgs, desc);
 
-                    if(this.packSettings.isDisabled(id)){
+                    if(!pack.isDefault() && this.packSettings.isDisabled(id)){
                         this.disabledPacks.add(pack);
                         RockBottomAPI.logger().info("Content pack "+name+" with id "+id+" and version "+version+" is loaded but disabled");
                     }

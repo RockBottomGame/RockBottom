@@ -166,7 +166,7 @@ public class ModLoader implements IModLoader{
 
                     if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
                         if(this.getMod(id) == null){
-                            if(this.modSettings.isDisabled(id)){
+                            if(instance.isDisableable() && this.modSettings.isDisabled(id)){
                                 this.disabledMods.add(instance);
                                 RockBottomAPI.logger().info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
                             }
