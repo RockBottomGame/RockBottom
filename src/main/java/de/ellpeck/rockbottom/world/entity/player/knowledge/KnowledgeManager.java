@@ -88,8 +88,9 @@ public class KnowledgeManager implements IKnowledgeManager{
 
     @Override
     public boolean knowsRecipe(IRecipe recipe){
-        return this.knowsInformation(RecipeInformation.getInfoName(recipe));
+        return this.knowsInformation(recipe.getKnowledgeInformationName());
     }
+
     @Override
     public boolean knowsInformation(IResourceName name){
         return this.information.containsKey(name);
@@ -148,7 +149,7 @@ public class KnowledgeManager implements IKnowledgeManager{
 
     @Override
     public void forgetRecipe(IRecipe recipe, boolean forgetAllParts, boolean announce){
-        this.forgetInformation(RecipeInformation.getInfoName(recipe), announce);
+        this.forgetInformation(recipe.getKnowledgeInformationName(), announce);
     }
 
     @Override

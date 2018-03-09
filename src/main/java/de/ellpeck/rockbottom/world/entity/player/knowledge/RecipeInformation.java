@@ -21,16 +21,12 @@ public class RecipeInformation extends Information{
     private IRecipe recipe;
 
     public RecipeInformation(IRecipe recipe){
-        super(getInfoName(recipe));
+        super(recipe.getKnowledgeInformationName());
         this.recipe = recipe;
     }
 
     public RecipeInformation(IResourceName name){
         super(name);
-    }
-
-    public static IResourceName getInfoName(IRecipe recipe){
-        return recipe.getName().addPrefix("recipe_");
     }
 
     @Override

@@ -204,7 +204,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                     }
                 }
 
-                if(this.y <= 0){
+                if(this.y <= 0 && ConstructionRegistry.ladder != null){
                     this.getKnowledge().teachRecipe(ConstructionRegistry.ladder, true);
                 }
             }

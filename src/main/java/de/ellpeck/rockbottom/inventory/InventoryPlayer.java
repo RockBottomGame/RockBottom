@@ -16,7 +16,7 @@ public class InventoryPlayer extends Inventory{
 
         if(!player.world.isClient()){
             this.addChangeCallback((inv, slot) -> {
-                if(!ConstructionRegistry.chest.isKnown(player)){
+                if(ConstructionRegistry.chest != null && !ConstructionRegistry.chest.isKnown(player)){
                     int fullness = 0;
                     for(int i = 0; i < inv.getSlotAmount(); i++){
                         if(inv.get(i) != null){
@@ -31,7 +31,7 @@ public class InventoryPlayer extends Inventory{
             });
 
             this.addChangeCallback((inv, slot) -> {
-                if(!ConstructionRegistry.grassTorch.isKnown(player)){
+                if(ConstructionRegistry.grassTorch != null && !ConstructionRegistry.grassTorch.isKnown(player)){
                     ItemInstance instance = inv.get(slot);
                     if(instance != null && instance.getItem() == GameContent.TILE_GRASS_TORCH.getItem()){
                         player.getKnowledge().teachRecipe(ConstructionRegistry.grassTorch, true);
