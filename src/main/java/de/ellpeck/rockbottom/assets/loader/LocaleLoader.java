@@ -16,9 +16,13 @@ import de.ellpeck.rockbottom.content.ContentManager;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class LocaleLoader implements IAssetLoader<Locale>{
+
+    private final Set<IResourceName> disabled = new HashSet<>();
 
     @Override
     public IResourceName getAssetIdentifier(){
@@ -27,17 +31,27 @@ public class LocaleLoader implements IAssetLoader<Locale>{
 
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
-        String resPath = path+element.getAsString();
-        Locale locale = this.fromStream(ContentManager.getResourceAsStream(resPath), elementName);
+        if(!this.disabled.contains(resourceName)){
+            String resPath = path+element.getAsString();
+            Locale locale = this.fromStream(ContentManager.getResourceAsStream(resPath), elementName);
 
-        for(Locale asset : manager.<Locale>getAllOfType(Locale.ID).values()){
-            if(this.merge(asset, locale)){
-                return;
+            for(Locale asset : manager.<Locale>getAllOfType(Locale.ID).values()){
+                if(this.merge(asset, locale)){
+                    return;
+                }
             }
-        }
 
-        RockBottomAPI.logger().config("Loaded locale "+resourceName+" for mod "+loadingMod.getDisplayName());
-        manager.addAsset(this, resourceName, locale);
+            RockBottomAPI.logger().config("Loaded locale "+resourceName+" for mod "+loadingMod.getDisplayName());
+            manager.addAsset(this, resourceName, locale);
+        }
+        else{
+            RockBottomAPI.logger().info("Locale "+resourceName+" will not be loaded for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName()+" because it was disabled by another content pack!");
+        }
+    }
+
+    @Override
+    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+        this.disabled.add(resourceName);
     }
 
     private Locale fromStream(InputStream stream, String name) throws Exception{

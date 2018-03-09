@@ -452,5 +452,10 @@ public class AssetManager implements IAssetManager, IDisposable{
         public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
             return this.loader.dealWithSpecialCases(AssetManager.this, resourceName, path, element, elementName, loadingMod, pack);
         }
+
+        @Override
+        public void disable(IResourceName resourceName){
+            this.loader.disableAsset(AssetManager.this, resourceName);
+        }
     }
 }

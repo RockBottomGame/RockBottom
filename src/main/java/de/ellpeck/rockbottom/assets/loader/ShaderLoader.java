@@ -16,8 +16,12 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ShaderLoader implements IAssetLoader<IShaderProgram>{
+
+    private final Set<IResourceName> disabled = new HashSet<>();
 
     @Override
     public IResourceName getAssetIdentifier(){
@@ -26,20 +30,30 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
 
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
-        JsonObject object = element.getAsJsonObject();
-        String vertexPath = object.get("vertex").getAsString();
-        String fragmentPath = object.get("fragment").getAsString();
+        if(!this.disabled.contains(resourceName)){
+            JsonObject object = element.getAsJsonObject();
+            String vertexPath = object.get("vertex").getAsString();
+            String fragmentPath = object.get("fragment").getAsString();
 
-        Shader vertex = this.loadShader(path+vertexPath, GL20.GL_VERTEX_SHADER);
-        Shader fragment = this.loadShader(path+fragmentPath, GL20.GL_FRAGMENT_SHADER);
+            Shader vertex = this.loadShader(path+vertexPath, GL20.GL_VERTEX_SHADER);
+            Shader fragment = this.loadShader(path+fragmentPath, GL20.GL_FRAGMENT_SHADER);
 
-        ShaderProgram shader = new ShaderProgram(vertex, fragment);
-        if(manager.addAsset(this, resourceName, shader)){
-            RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
+            ShaderProgram shader = new ShaderProgram(vertex, fragment);
+            if(manager.addAsset(this, resourceName, shader)){
+                RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
+            }
+            else{
+                RockBottomAPI.logger().info("Shader "+resourceName+" already exists, not adding shader for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+            }
         }
         else{
-            RockBottomAPI.logger().info("Shader "+resourceName+" already exists, not adding shader for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+            RockBottomAPI.logger().info("Shader "+resourceName+" will not be loaded for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName()+" because it was disabled by another content pack!");
         }
+    }
+
+    @Override
+    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+        this.disabled.add(resourceName);
     }
 
     private Shader loadShader(String path, int type) throws Exception{

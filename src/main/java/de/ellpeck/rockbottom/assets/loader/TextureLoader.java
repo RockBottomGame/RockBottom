@@ -17,14 +17,12 @@ import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TextureLoader implements IAssetLoader<ITexture>{
 
     private final Map<String, Map<String, JsonElement>> additionalDataCache = new HashMap<>();
+    private final Set<IResourceName> disabled = new HashSet<>();
 
     @Override
     public IResourceName getAssetIdentifier(){
@@ -33,14 +31,24 @@ public class TextureLoader implements IAssetLoader<ITexture>{
 
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
-        this.makeTexture(manager, resourceName.toString(), element, path, (stitchX, stitchY, stitchedTexture) -> {
-            if(manager.addAsset(this, resourceName, stitchedTexture)){
-                RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
-            }
-            else{
-                RockBottomAPI.logger().info("Texture "+resourceName+" already exists, not adding texture for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
-            }
-        });
+        if(!this.disabled.contains(resourceName)){
+            this.makeTexture(manager, resourceName.toString(), element, path, (stitchX, stitchY, stitchedTexture) -> {
+                if(manager.addAsset(this, resourceName, stitchedTexture)){
+                    RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
+                }
+                else{
+                    RockBottomAPI.logger().info("Texture "+resourceName+" already exists, not adding texture for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+                }
+            });
+        }
+        else{
+            RockBottomAPI.logger().info("Texture "+resourceName+" will not be loaded for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName()+" because it was disabled by another content pack!");
+        }
+    }
+
+    @Override
+    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+        this.disabled.add(resourceName);
     }
 
     private void makeTexture(IAssetManager manager, String refName, JsonElement element, String path, IStitchCallback callback) throws Exception{
@@ -144,11 +152,21 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                         else{
                             resName = resourceName+key;
                         }
-                        IResourceName res = RockBottomAPI.createRes(loadingMod, resName);
 
-                        ITexture texture = stitchedTexture.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
-                        RockBottomAPI.logger().config("Loaded subtexture "+res+" for mod "+loadingMod.getDisplayName());
-                        manager.addAsset(this, res, texture);
+                        IResourceName res = RockBottomAPI.createRes(loadingMod, resName);
+                        if(!this.disabled.contains(res)){
+                            ITexture texture = stitchedTexture.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
+
+                            if(manager.addAsset(this, res, texture)){
+                                RockBottomAPI.logger().config("Loaded subtexture "+res+" for mod "+loadingMod.getDisplayName());
+                            }
+                            else{
+                                RockBottomAPI.logger().info("Subtexture "+resourceName+" already exists, not adding subtexture for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+                            }
+                        }
+                        else{
+                            RockBottomAPI.logger().info("Subtexture "+resourceName+" will not be loaded for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName()+" because it was disabled by another content pack!");
+                        }
                     }
                 }
             });

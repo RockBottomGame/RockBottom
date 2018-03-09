@@ -105,7 +105,13 @@ public final class ContentManager{
 
                 if(!elementName.endsWith(".")){
                     IResourceName resourceName = RockBottomAPI.createRes(mod, name);
-                    loader.load(resourceName, path, element, elementName, mod, pack);
+
+                    if(element.isJsonPrimitive() && "none".equals(element.getAsString())){
+                        loader.disable(resourceName);
+                    }
+                    else{
+                        loader.load(resourceName, path, element, elementName, mod, pack);
+                    }
                 }
                 else if(element.isJsonObject()){
                     JsonObject object = element.getAsJsonObject();
@@ -135,6 +141,8 @@ public final class ContentManager{
         void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception;
 
         boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception;
+
+        void disable(IResourceName resourceName);
     }
 
     private static class ContentCallback implements LoaderCallback{
@@ -160,6 +168,11 @@ public final class ContentManager{
         @Override
         public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
             return this.loader.dealWithSpecialCases(this.game, resourceName, path, element, elementName, loadingMod, pack);
+        }
+
+        @Override
+        public void disable(IResourceName resourceName){
+            this.loader.disableContent(this.game, resourceName);
         }
     }
 }
