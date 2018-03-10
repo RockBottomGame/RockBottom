@@ -384,6 +384,12 @@ public class World implements IWorld{
     }
 
     @Override
+    public int getHeight(TileLayer layer, int x, int bottomY){
+        IChunk chunk = this.getChunk(x, bottomY);
+        return chunk.getHeight(layer, x, bottomY);
+    }
+
+    @Override
     public int getLowestAirUpwards(TileLayer layer, int x, int y){
         return this.getLowestAirUpwards(layer, x, y, false);
     }

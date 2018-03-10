@@ -510,7 +510,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
 
-        this.setPos(this.world.getSpawnX()+0.5, this.world.getLowestAirUpwards(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
+        this.setPos(this.world.getSpawnX()+0.5, this.world.getHeight(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
 
         if(this.world.isServer()){
             RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketRespawn(this.getUniqueId()));

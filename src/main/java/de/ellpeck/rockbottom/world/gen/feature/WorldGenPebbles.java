@@ -23,8 +23,8 @@ public class WorldGenPebbles implements IWorldGenerator{
     @Override
     public void generate(IWorld world, IChunk chunk){
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 0, true);
-            if(y >= 0){
+            int y = chunk.getHeightInner(TileLayer.MAIN, x);
+            if(y < Constants.CHUNK_SIZE && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
                 float chance = chunk.getBiomeInner(x, y).getPebbleChance();
 
                 this.pebbleRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));

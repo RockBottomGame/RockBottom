@@ -74,4 +74,9 @@ public class BiomeGrassland extends BiomeBasic{
     public boolean canTreeGrow(IWorld world, IChunk chunk, int x, int y){
         return y > 0 && chunk.getStateInner(x, y-1).getTile().canKeepPlants(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN);
     }
+
+    @Override
+    public boolean hasPonds(){
+        return true;
+    }
 }

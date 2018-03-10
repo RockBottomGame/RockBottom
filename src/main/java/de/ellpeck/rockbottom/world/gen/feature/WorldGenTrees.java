@@ -40,7 +40,7 @@ public class WorldGenTrees implements IWorldGenerator{
                 this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX()+mod, chunk.getY()+mod, world.getSeed()));
 
                 int x = Util.ceil(this.treeRandom.nextDouble()*(double)(Constants.CHUNK_SIZE-8))+4;
-                int y = chunk.getLowestAirUpwardsInner(TileLayer.MAIN, x, 1, true);
+                int y = chunk.getHeightInner(TileLayer.MAIN, x);
                 pos = new Pos2(x, y);
 
                 tries++;
@@ -51,7 +51,7 @@ public class WorldGenTrees implements IWorldGenerator{
             }
             while(this.alreadyHasTree(alreadyGeneratedPositions, pos));
 
-            if(pos.getY() >= 0 && chunk.getBiomeInner(pos.getX(), pos.getY()).canTreeGrow(world, chunk, pos.getX(), pos.getY())){
+            if(pos.getY() < Constants.CHUNK_SIZE && chunk.getBiomeInner(pos.getX(), pos.getY()).canTreeGrow(world, chunk, pos.getX(), pos.getY())){
                 alreadyGeneratedPositions.add(pos);
 
                 int x = chunk.getX()+pos.getX();

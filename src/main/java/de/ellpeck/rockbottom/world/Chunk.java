@@ -63,6 +63,10 @@ public class Chunk implements IChunk{
     protected boolean needsSave;
     private int internalLoadingTimer;
     private ModBasedDataSet additionalData;
+    private final Map<Biome, Counter> biomeAmounts = new HashMap<>();
+    private Biome mostProminentBiome = GameContent.BIOME_SKY;
+    private final Map<TileLayer, int[]> heights = new HashMap<>();
+    private final Map<TileLayer, Integer> averageHeights = new HashMap<>();
 
     public Chunk(World world, int gridX, int gridY){
         this.world = world;
@@ -72,7 +76,6 @@ public class Chunk implements IChunk{
         this.gridX = gridX;
         this.gridY = gridY;
 
-        this.isGenerating = true;
         this.internalLoadingTimer = Constants.CHUNK_LOAD_TIME;
 
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
@@ -334,6 +337,31 @@ public class Chunk implements IChunk{
             newTile.onAdded(this.world, this.x+x, this.y+y, layer);
         }
 
+        int newHeight = 0;
+        if(!newTile.factorsIntoHeightMap(this.world, this.x+x, this.y+y, layer)){
+            for(int checkY = y; checkY >= 0; checkY--){
+                if(this.getStateInner(layer, x, checkY).getTile().factorsIntoHeightMap(this.world, this.x+x, this.y+checkY, layer)){
+                    newHeight = checkY+1;
+                }
+            }
+        }
+        else{
+            newHeight = y+1;
+        }
+
+        int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
+        if(heights[x] < newHeight){
+            heights[x] = newHeight;
+
+            for(Map.Entry<TileLayer, int[]> entry : this.heights.entrySet()){
+                int totalHeight = 0;
+                for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
+                    totalHeight += entry.getValue()[checkX];
+                }
+                this.averageHeights.put(entry.getKey(), totalHeight/Constants.CHUNK_SIZE);
+            }
+        }
+
         if(!this.isGenerating){
             this.world.causeLightUpdate(this.x+x, this.y+y);
 
@@ -548,6 +576,17 @@ public class Chunk implements IChunk{
     @Override
     public void setDirty(int x, int y){
         this.setDirty();
+    }
+
+    @Override
+    public int getHeight(TileLayer layer, int x, int bottomY){
+        int result = this.getHeightInner(layer, x-this.x);
+        return result-bottomY-this.y;
+    }
+
+    @Override
+    public int getHeight(TileLayer layer, int x){
+        return this.getHeight(layer, x, 0);
     }
 
     @Override
@@ -926,9 +965,39 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public Biome getMostProminentBiome(){
+        return this.mostProminentBiome;
+    }
+
+    @Override
+    public int getAverageHeight(TileLayer layer){
+        return this.averageHeights.getOrDefault(layer, 0);
+    }
+
+    @Override
     public void setBiomeInner(int x, int y, Biome biome){
         if(biome == null){
             throw new IllegalArgumentException("Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+"!");
+        }
+
+        Biome oldBiome = this.getBiomeInner(x, y);
+        if(biome != oldBiome){
+            Counter oldCounter = this.biomeAmounts.get(oldBiome);
+            if(oldCounter != null && oldCounter.get() > 0){
+                oldCounter.add(-1);
+            }
+
+            Counter newCounter = this.biomeAmounts.computeIfAbsent(biome, b -> new Counter(0));
+            newCounter.add(1);
+
+            int highestAmount = 0;
+            for(Map.Entry<Biome, Counter> entry : this.biomeAmounts.entrySet()){
+                Counter counter = entry.getValue();
+                if(counter.get() > highestAmount){
+                    highestAmount = counter.get();
+                    this.mostProminentBiome = entry.getKey();
+                }
+            }
         }
 
         this.biomeGrid[x][y] = biome;
@@ -977,6 +1046,12 @@ public class Chunk implements IChunk{
     @Override
     public int getY(){
         return this.y;
+    }
+
+    @Override
+    public int getHeightInner(TileLayer layer, int x){
+        int[] heights = this.heights.get(layer);
+        return heights == null ? 0 : heights[x];
     }
 
     private TileState[][] getGrid(TileLayer layer, boolean create){

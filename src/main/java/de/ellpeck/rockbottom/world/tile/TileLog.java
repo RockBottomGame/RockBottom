@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.StaticTileProps.LogType;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
@@ -14,7 +13,6 @@ import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.render.tile.TileLogRenderer;
 
 public class TileLog extends TileBasic{
@@ -102,5 +100,10 @@ public class TileLog extends TileBasic{
     public boolean obscuresBackground(IWorld world, int x, int y, TileLayer layer){
         LogType type = world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT);
         return !type.isNatural() || type == LogType.TRUNK_BOTTOM || type == LogType.TRUNK_MIDDLE;
+    }
+
+    @Override
+    public boolean factorsIntoHeightMap(IWorld world, int x, int y, TileLayer layer){
+        return false;
     }
 }

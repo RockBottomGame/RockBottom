@@ -73,10 +73,11 @@ public final class DebugRenderer{
                 }
                 list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedVisualLight(x, y));
                 list.add("Biome: "+world.getBiome(x, y).getName());
+                list.add("Most Prominent Biome: "+chunk.getMostProminentBiome().getName());
 
                 list.add("");
                 for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
-                    list.add(layer.getName()+": "+world.getState(layer, x, y).toString());
+                    list.add(layer.getName()+": "+world.getState(layer, x, y).toString()+ ", Avg Height: "+chunk.getAverageHeight(layer));
                 }
                 list.add("");
 

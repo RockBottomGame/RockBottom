@@ -59,7 +59,7 @@ public final class ContentRegistry{
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();
-        new BiomeDesert(RockBottomAPI.createInternalRes("desert"), 60, -5, 300).register();
+        new BiomeDesert(RockBottomAPI.createInternalRes("desert"), 60, -5, 500).register();
         new BiomeUnderground(RockBottomAPI.createInternalRes("underground"), -5, Integer.MIN_VALUE, 1000).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("item"), EntityItem.class);
