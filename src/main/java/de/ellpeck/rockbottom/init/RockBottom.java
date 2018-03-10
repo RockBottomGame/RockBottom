@@ -158,7 +158,7 @@ public class RockBottom extends AbstractGame{
 
             List<String> lines = new ArrayList<>();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/loading.txt")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/comment/loading.txt")));
             while(true){
                 String line = reader.readLine();
                 if(line != null){

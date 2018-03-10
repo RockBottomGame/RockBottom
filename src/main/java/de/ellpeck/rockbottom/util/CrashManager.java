@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.content.pack.IContentPackLoader;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.log.Logging;
 import org.apache.http.HttpResponse;
@@ -19,12 +20,12 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.awt.*;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 public final class CrashManager{
@@ -45,7 +46,14 @@ public final class CrashManager{
 
         String name = AbstractGame.NAME.toUpperCase()+" CRASH REPORT";
         String divider = "------------------------------------------------------------";
-        String comment = getComment();
+
+        String comment;
+        try{
+            comment = getComment();
+        }
+        catch(Exception e){
+            comment = "Comment unavailable for some reason :(";
+        }
 
         String pasteLink = null;
 
@@ -197,43 +205,22 @@ public final class CrashManager{
         return Util.JSON_PARSER.parse(resString).getAsJsonObject();
     }
 
-    private static String getComment(){
-        String[] comments = new String[]{
-                "Baby you're the highlight of my lowlife",
-                "Oh no, this broke. What am I going to do?",
-                "Zoom, zoom, fast reports!",
-                "Aw yea yea, aw yea yea yea yea",
-                "I WANNA KNOOOOOOW CAN YOU SHOOOOW ME",
-                "TELL ME MOOOORE PLEEEASE SHOOW ME",
-                "I'll be needing stitches",
-                "Fite ma fite all alone",
-                "I really need to fix that issue at some point",
-                "Yea, I know that the name field is broken",
-                "This is probably that stupid collision error again",
-                "I said hey, what's going on?",
-                "Never gonna give you up",
-                "Never gonna let you down",
-                "Never gonna run around and desert you",
-                "We drew a map to a better place",
-                "SUGAAAAAAR YES PLEEEEASE",
-                "Just turn it off and back on, that'll fix it",
-                "THIRTY-THREE YEARS AGO",
-                "It's always the twin!",
-                "BUT I'VE NEVER HAD A CRASH!",
-                "Which brings us here... now...",
-                "A journey through the time",
-                "Always watch the sub",
-                "What's up with this thing?",
-                "I know I always romanticize things",
-                "Michael dies!",
-                "It's you! It's always been you!",
-                "Who's Sin Rostro?",
-                "I wouldn't mind if this stopped happening",
-                "Did you press F7 for too long again?",
-                "Oh jeez...I didn't break anything, did I? Hold on a sec, I can probably fix this...I think... Actually, you know what? This would probably be a lot easier if I just deleted her. She's the one who's making this so difficult. Ahaha! Well, here's goes nothing.",
-                "Just Monika."
-        };
-        return comments[(int)(Util.getTimeMillis()%comments.length)];
+    private static String getComment() throws Exception{
+        List<String> lines = new ArrayList<>();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/comment/crash.txt")));
+        while(true){
+            String line = reader.readLine();
+            if(line != null){
+                lines.add(line);
+            }
+            else{
+                break;
+            }
+        }
+        reader.close();
+
+        return lines.get((int)(Util.getTimeMillis()%lines.size()))+"...";
     }
 
     private static void log(Level level, String text, Throwable t){
