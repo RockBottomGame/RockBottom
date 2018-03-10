@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -150,28 +151,31 @@ public class InputHandler implements IInputHandler{
             }
         }
 
-        if(key == GLFW.GLFW_KEY_F1){
-            this.game.renderer.isDebug = !this.game.renderer.isDebug;
-            return true;
+        if(Main.debugMode){
+            if(key == GLFW.GLFW_KEY_F1){
+                this.game.renderer.isDebug = !this.game.renderer.isDebug;
+                return true;
+            }
+            else if(key == GLFW.GLFW_KEY_F2){
+                this.game.renderer.isLineDebug = !this.game.renderer.isLineDebug;
+                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, this.game.renderer.isLineDebug ? GL11.GL_LINE : GL11.GL_FILL);
+            }
+            else if(key == GLFW.GLFW_KEY_F4){
+                this.game.renderer.isGuiDebug = !this.game.renderer.isGuiDebug;
+                return true;
+            }
+            else if(key == GLFW.GLFW_KEY_F5){
+                this.game.renderer.isItemInfoDebug = !this.game.renderer.isItemInfoDebug;
+                return true;
+            }
+            else if(key == GLFW.GLFW_KEY_F6){
+                this.game.renderer.isChunkBorderDebug = !this.game.renderer.isChunkBorderDebug;
+                return true;
+            }
         }
-        else if(key == GLFW.GLFW_KEY_F2){
-            this.game.renderer.isLineDebug = !this.game.renderer.isLineDebug;
-            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, this.game.renderer.isLineDebug ? GL11.GL_LINE : GL11.GL_FILL);
-        }
-        else if(key == GLFW.GLFW_KEY_F3){
+
+        if(key == GLFW.GLFW_KEY_F3){
             this.game.assetManager.load();
-            return true;
-        }
-        else if(key == GLFW.GLFW_KEY_F4){
-            this.game.renderer.isGuiDebug = !this.game.renderer.isGuiDebug;
-            return true;
-        }
-        else if(key == GLFW.GLFW_KEY_F5){
-            this.game.renderer.isItemInfoDebug = !this.game.renderer.isItemInfoDebug;
-            return true;
-        }
-        else if(key == GLFW.GLFW_KEY_F6){
-            this.game.renderer.isChunkBorderDebug = !this.game.renderer.isChunkBorderDebug;
             return true;
         }
         else if(Settings.KEY_SCREENSHOT.isKey(key)){
