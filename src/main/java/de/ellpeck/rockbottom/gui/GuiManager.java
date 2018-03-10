@@ -102,9 +102,9 @@ public class GuiManager implements IGuiManager{
     public void update(RockBottom game){
         IAssetManager manager = game.getAssetManager();
         if(!game.getSettings().hardwareCursor && game.getInput().isMouseInWindow()){
-            ISpecialCursor cursor = manager.pickCurrentCursor(game);
+            ISpecialCursor cursor = manager.pickCurrentCursor();
             if(cursor != this.currentCursor){
-                manager.setCursor(game, cursor);
+                manager.setCursor(cursor);
                 this.currentCursor = cursor;
             }
         }

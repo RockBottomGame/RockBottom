@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.assets;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
-import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
@@ -18,13 +17,11 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.render.engine.IDisposable;
 import de.ellpeck.rockbottom.api.render.engine.VertexProcessor;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
-import de.ellpeck.rockbottom.assets.stub.EmptyShaderProgram;
 import de.ellpeck.rockbottom.assets.stub.EmptySound;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.assets.tex.TextureStitcher;
@@ -76,15 +73,18 @@ public class AssetManager implements IAssetManager, IDisposable{
     private ISound missingSound;
     private ITexture missingTexture;
     private Locale missingLocale;
-    private IFont missingFont;
     private IAnimation missingAnimation;
     private Locale currentLocale;
     private Locale defaultLocale;
     private IFont currentFont;
-    private IShaderProgram missingShader;
     private boolean isLocked = true;
+    private final RockBottom game;
 
-    public void load(RockBottom game){
+    public AssetManager(RockBottom game){
+        this.game = game;
+    }
+
+    public void load(){
         this.dispose();
         if(!this.assets.isEmpty()){
             this.assets.clear();
@@ -136,9 +136,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
         this.missingSound = new EmptySound();
         this.missingLocale = new Locale("fallback", new HashMap<>());
-        this.missingFont = new Font("fallback", this.missingTexture, 1, 1, new HashMap<>(Collections.singletonMap('?', new Pos2(0, 0))));
         this.missingAnimation = new Animation(this.missingTexture, 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F}))));
-        this.missingShader = new EmptyShaderProgram();
 
         RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ITexture.ID).size()+" texture resources!");
         RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ISound.ID).size()+" sound resources!");
@@ -148,10 +146,10 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.defaultLocale = this.getLocale(RockBottomAPI.createInternalRes("us_english"));
 
         this.currentFont = this.getFont(RockBottomAPI.createInternalRes("default"));
-        this.currentLocale = this.getLocale(RockBottomAPI.createRes(game.getSettings().currentLocale));
+        this.currentLocale = this.getLocale(RockBottomAPI.createRes(this.game.getSettings().currentLocale));
 
-        RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(game, this, game.getRenderer()));
-        this.initInternalShaders(game.getWidth(), game.getHeight());
+        RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(this.game, this, this.game.getRenderer()));
+        this.initInternalShaders(this.game.getWidth(), this.game.getHeight());
 
         RockBottomAPI.getModLoader().postInitAssets();
         this.isLocked = true;
@@ -262,13 +260,13 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public void setCursor(IGameInstance game, ISpecialCursor cursor){
+    public void setCursor(ISpecialCursor cursor){
         try{
-            if(!game.getSettings().hardwareCursor){
-                GLFW.glfwSetCursor(game.getWindow(), this.cursors.get(cursor));
+            if(!this.game.getSettings().hardwareCursor){
+                GLFW.glfwSetCursor(this.game.getWindow(), this.cursors.get(cursor));
             }
             else{
-                GLFW.glfwSetCursor(game.getWindow(), MemoryUtil.NULL);
+                GLFW.glfwSetCursor(this.game.getWindow(), MemoryUtil.NULL);
             }
 
             RockBottomAPI.logger().config("Setting cursor to "+cursor);
@@ -319,7 +317,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     @Override
     public IShaderProgram getShaderProgram(IResourceName path){
-        return this.getAssetWithFallback(IShaderProgram.ID, path, this.missingShader);
+        return this.getAssetWithFallback(IShaderProgram.ID, path, this.game.renderer.simpleProgram);
     }
 
     @Override
@@ -329,7 +327,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     @Override
     public IFont getFont(IResourceName path){
-        return this.getAssetWithFallback(IFont.ID, path, this.missingFont);
+        return this.getAssetWithFallback(IFont.ID, path, this.game.renderer.simpleFont);
     }
 
     @Override
@@ -378,9 +376,9 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public ISpecialCursor pickCurrentCursor(IGameInstance game){
+    public ISpecialCursor pickCurrentCursor(){
         for(ISpecialCursor cursor : this.sortedCursors){
-            if(cursor.shouldUseCursor(game, game.getAssetManager(), game.getRenderer(), game.getGuiManager(), game.getInteractionManager())){
+            if(cursor.shouldUseCursor(this.game, this.game.getAssetManager(), this.game.getRenderer(), this.game.getGuiManager(), this.game.getInteractionManager())){
                 return cursor;
             }
         }
@@ -397,8 +395,15 @@ public class AssetManager implements IAssetManager, IDisposable{
             }
         }
 
-        if(this.missingTexture != null){
-            this.missingTexture.dispose();
+        this.disposeOptionalResource(this.missingAnimation);
+        this.disposeOptionalResource(this.missingLocale);
+        this.disposeOptionalResource(this.missingSound);
+        this.disposeOptionalResource(this.missingTexture);
+    }
+
+    private void disposeOptionalResource(IAsset asset){
+        if(asset != null){
+            asset.dispose();
         }
     }
 
@@ -406,6 +411,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         for(IShaderProgram program : this.<IShaderProgram>getAllOfType(IShaderProgram.ID).values()){
             program.updateProjection(width, height);
         }
+        this.game.renderer.simpleProgram.updateProjection(width, height);
     }
 
     @Override

@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
+import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -53,13 +54,13 @@ import org.lwjgl.system.MemoryUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -126,10 +127,9 @@ public class RockBottom extends AbstractGame{
 
         GLFW.glfwMakeContextCurrent(this.windowId);
         GL.createCapabilities();
-        this.getWindowSize();
 
-        this.renderer = new Renderer(this);
-        this.input = new InputHandler(this);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         try{
             String[] icons = new String[]{"16x16.png", "32x32.png", "128x128.png"};
@@ -148,17 +148,44 @@ public class RockBottom extends AbstractGame{
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't set game icon", e);
         }
 
-        GLFW.glfwShowWindow(this.windowId);
-        GLFW.glfwPollEvents();
+        this.getWindowSize();
+        this.renderer = new Renderer(this);
 
-        /*try{
-            ITexture tex = new Texture(AssetManager.getResourceAsStream("/assets/rockbottom/tex/intro/loading.png"));
+        this.renderer.begin();
+        try{
+            ITexture tex = new Texture(ContentManager.getResourceAsStream("assets/rockbottom/tex/intro/loading.png"));
             tex.draw(0, 0, this.width, this.height);
-            GLFW.glfwSwapBuffers(this.windowId);
+
+            List<String> lines = new ArrayList<>();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/loading.txt")));
+            while(true){
+                String line = reader.readLine();
+                if(line != null){
+                    lines.add(line);
+                }
+                else{
+                    break;
+                }
+            }
+            reader.close();
+
+            String line = lines.get((int)(Util.getTimeMillis()%lines.size()))+"...";
+
+            float scale = (this.width/this.height)*2F;
+            List<String> list = this.renderer.simpleFont.splitTextToLength(this.width-10, scale, true, line);
+            for(int i = 0; i < list.size(); i++){
+                this.renderer.simpleFont.drawCenteredString(this.width/2, 30+(this.renderer.simpleFont.getHeight(scale)*i), list.get(i), scale, false);
+            }
         }
         catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't render loading screen image", e);
-        }*/
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't render loading screen", e);
+        }
+        this.renderer.end();
+
+        GLFW.glfwShowWindow(this.windowId);
+        GLFW.glfwSwapBuffers(this.windowId);
+        GLFW.glfwPollEvents();
 
         GLFW.glfwSetWindowSizeCallback(this.windowId, new GLFWWindowSizeCallback(){
             @Override
@@ -167,6 +194,7 @@ public class RockBottom extends AbstractGame{
             }
         });
 
+        this.input = new InputHandler(this);
         SoundHandler.init();
 
         RockBottomAPI.logger().info("Finished initializing system");
@@ -219,8 +247,8 @@ public class RockBottom extends AbstractGame{
 
         this.setFullscreen(this.settings.fullscreen);
 
-        this.assetManager = new AssetManager();
-        this.assetManager.load(this);
+        this.assetManager = new AssetManager(this);
+        this.assetManager.load();
 
         this.setPlayerDesign();
         this.renderer.calcScales();

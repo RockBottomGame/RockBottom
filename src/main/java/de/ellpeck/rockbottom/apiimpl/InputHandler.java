@@ -159,7 +159,7 @@ public class InputHandler implements IInputHandler{
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, this.game.renderer.isLineDebug ? GL11.GL_LINE : GL11.GL_FILL);
         }
         else if(key == GLFW.GLFW_KEY_F3){
-            this.game.assetManager.load(this.game);
+            this.game.assetManager.load();
             return true;
         }
         else if(key == GLFW.GLFW_KEY_F4){

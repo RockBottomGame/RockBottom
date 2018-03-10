@@ -128,7 +128,11 @@ public final class SoundHandler{
             AL10.alDeleteSources(source);
         }
 
-        ALC10.alcDestroyContext(context);
-        ALC10.alcCloseDevice(device);
+        if(context != 0){
+            ALC10.alcDestroyContext(context);
+        }
+        if(device != 0){
+            ALC10.alcCloseDevice(device);
+        }
     }
 }

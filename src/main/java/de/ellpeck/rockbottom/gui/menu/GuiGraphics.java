@@ -27,7 +27,7 @@ public class GuiGraphics extends Gui{
 
         this.components.add(new ComponentToggleButton(this, 0, 0, 150, 16, settings.hardwareCursor, () -> {
             settings.hardwareCursor = !settings.hardwareCursor;
-            game.getAssetManager().setCursor(game, game.getGuiManager().getCursor());
+            game.getAssetManager().setCursor(game.getGuiManager().getCursor());
             return true;
         }, "button.hardware_cursor", assetManager.localize(RockBottomAPI.createInternalRes("info.hardware_cursor"))));
         this.components.add(new ComponentToggleButton(this, 0, 20, 150, 16, settings.cursorInfos, () -> {

@@ -22,7 +22,10 @@ import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.assets.font.Font;
+import de.ellpeck.rockbottom.assets.font.SimpleFont;
 import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
+import de.ellpeck.rockbottom.assets.stub.SimpleShaderProgram;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.render.engine.VertexArrayObject;
 import de.ellpeck.rockbottom.render.engine.VertexBufferObject;
@@ -38,6 +41,10 @@ import java.util.List;
 public class Renderer implements IRenderer{
 
     private static final IResourceName SLOT_NAME = RockBottomAPI.createInternalRes("gui.slot");
+
+    public ShaderProgram simpleProgram;
+    public Font simpleFont;
+
     private final IGameInstance game;
 
     private final VertexBufferObject vbo;
@@ -89,8 +96,10 @@ public class Renderer implements IRenderer{
 
         this.vbo.data(this.vertices.capacity()*Float.BYTES);
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        this.simpleProgram = new SimpleShaderProgram(game.getWidth(), game.getHeight());
+        this.setDefaultProgram(this.simpleProgram);
+
+        this.simpleFont = new SimpleFont();
     }
 
     @Override
@@ -405,6 +414,9 @@ public class Renderer implements IRenderer{
     public void dispose(){
         MemoryUtil.memFree(this.vertices);
         this.vbo.dispose();
+
+        this.simpleProgram.dispose();
+        this.simpleFont.dispose();
     }
 
     @Override
@@ -585,13 +597,6 @@ public class Renderer implements IRenderer{
     @Override
     public IVBO createVBO(boolean isStatic){
         return new VertexBufferObject(isStatic);
-    }
-
-    @Override
-    public IRenderer createRenderer(IShaderProgram defaultProgram){
-        Renderer renderer = new Renderer(RockBottomAPI.getGame());
-        renderer.setDefaultProgram(defaultProgram);
-        return renderer;
     }
 
     @Override

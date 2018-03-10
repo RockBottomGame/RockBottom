@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.assets.Font;
+import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.util.HashSet;
