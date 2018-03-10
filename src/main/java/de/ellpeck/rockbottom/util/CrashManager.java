@@ -220,7 +220,7 @@ public final class CrashManager{
         }
         reader.close();
 
-        return lines.get((int)(Util.getTimeMillis()%lines.size()))+"...";
+        return lines.get((int)(Util.getTimeMillis()%lines.size()));
     }
 
     private static void log(Level level, String text, Throwable t){
