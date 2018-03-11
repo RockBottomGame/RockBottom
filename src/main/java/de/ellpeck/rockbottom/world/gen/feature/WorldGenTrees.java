@@ -1,22 +1,32 @@
 package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.gen.IStructure;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.world.gen.feature.trees.TreeDesigns;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class WorldGenTrees implements IWorldGenerator{
 
     private final Random treeRandom = new Random();
+    private final List<IStructure> treeDesigns = new ArrayList<>();
+
+    @Override
+    public void initWorld(IWorld world){
+        for(Map.Entry<IResourceName, IStructure> entry : RockBottomAPI.STRUCTURE_REGISTRY.getUnmodifiable().entrySet()){
+            if(entry.getKey().getResourceName().contains("grassland_tree")){
+                this.treeDesigns.add(entry.getValue());
+            }
+        }
+    }
 
     @Override
     public boolean shouldGenerate(IWorld world, IChunk chunk){
@@ -75,28 +85,22 @@ public class WorldGenTrees implements IWorldGenerator{
     public boolean makeTree(IWorld world, int x, int y, boolean simulate){
         this.treeRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
 
-        String[] variant = TreeDesigns.DESIGNS[this.treeRandom.nextInt(TreeDesigns.DESIGNS.length)];
-        for(int subY = variant.length-1; subY >= 0; subY--){
-            String line = variant[subY];
-            int length = line.length();
+        IStructure structure = this.treeDesigns.get(this.treeRandom.nextInt(this.treeDesigns.size()));
+        for(int subY = structure.getHeight()-1; subY >= 0; subY--){
+            for(int subX = 0; subX < structure.getWidth(); subX++){
+                TileState state = structure.getTile(subX, subY);
+                if(!state.getTile().isAir()){
+                    int theX = x+subX-structure.getWidth()/2;
+                    int innerY = (structure.getHeight()-1-subY);
+                    int theY = y+innerY;
 
-            for(int subX = 0; subX < length; subX++){
-                char c = line.charAt(subX);
-                if(c != ' '){
-                    TileState state = TreeDesigns.STATE_MAP.get(c);
-                    if(state != null){
-                        int theX = x+subX-length/2;
-                        int innerY = (variant.length-1-subY);
-                        int theY = y+innerY;
-
-                        if(((theX == x && theY == y) || world.getState(theX, theY).getTile().canReplace(world, theX, theY, TileLayer.MAIN)) && (innerY > 0 || !world.getState(theX, theY-1).getTile().canReplace(world, theX, theY-1, TileLayer.MAIN))){
-                            if(!simulate){
-                                world.setState(theX, theY, state);
-                            }
+                    if(((theX == x && theY == y) || world.getState(theX, theY).getTile().canReplace(world, theX, theY, TileLayer.MAIN)) && (innerY > 0 || !world.getState(theX, theY-1).getTile().canReplace(world, theX, theY-1, TileLayer.MAIN))){
+                        if(!simulate){
+                            world.setState(theX, theY, state);
                         }
-                        else if(subY < variant.length-1){
-                            return false;
-                        }
+                    }
+                    else if(subY < structure.getHeight()-1){
+                        return false;
                     }
                 }
             }

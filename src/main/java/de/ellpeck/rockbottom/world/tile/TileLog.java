@@ -10,10 +10,14 @@ import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileLogRenderer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileLog extends TileBasic{
 
@@ -39,23 +43,25 @@ public class TileLog extends TileBasic{
 
         if(destroyer != null && !world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT).isNatural()){
-                int yOffset = 0;
-                boolean foundOne;
+                List<Pos2> alreadyChecked = new ArrayList<>();
+                this.recursiveTreeCheck(world, x, y, layer, y, alreadyChecked);
+            }
+        }
+    }
 
-                do{
-                    foundOne = false;
+    private void recursiveTreeCheck(IWorld world, int x, int y, TileLayer layer, int originalY, List<Pos2> alreadyChecked){
+        for(Direction direction : Direction.ADJACENT){
+            if(direction != Direction.DOWN){
+                Pos2 pos = new Pos2(x+direction.x, y+direction.y);
+                if(!alreadyChecked.contains(pos)){
+                    alreadyChecked.add(pos);
 
-                    for(Direction dir : new Direction[]{Direction.NONE, Direction.LEFT, Direction.RIGHT}){
-                        TileState up = world.getState(layer, x+dir.x, y+yOffset);
-                        if(up.getTile() == this && up.get(StaticTileProps.LOG_VARIANT).isNatural()){
-                            world.scheduleUpdate(x+dir.x, y+yOffset, layer, yOffset*3);
-                            foundOne = true;
-                        }
+                    TileState state = world.getState(layer, pos.getX(), pos.getY());
+                    if(state.getTile() == this && state.get(StaticTileProps.LOG_VARIANT).isNatural()){
+                        world.scheduleUpdate(pos.getX(), pos.getY(), layer, (y-originalY)*3);
+                        this.recursiveTreeCheck(world, pos.getX(), pos.getY(), layer, originalY, alreadyChecked);
                     }
-
-                    yOffset++;
                 }
-                while(foundOne);
             }
         }
     }

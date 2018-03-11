@@ -91,7 +91,7 @@ public class RecipeLoader implements IContentLoader<IRecipe>{
                     throw new IllegalArgumentException("Invalid recipe type "+type+" for recipe "+resourceName);
                 }
 
-                RockBottomAPI.logger().config("Loaded recipe "+resourceName+" for mod "+loadingMod.getDisplayName()+" with type "+type+", inputs "+inputList+" and outputs "+outputList);
+                RockBottomAPI.logger().config("Loaded recipe "+resourceName+" for mod "+loadingMod.getDisplayName()+" with type "+type+", inputs "+inputList+" and outputs "+outputList+" with content pack "+pack.getName());
             }
         }
         else{
