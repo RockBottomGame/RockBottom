@@ -1,5 +1,8 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
@@ -12,6 +15,7 @@ import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -28,16 +32,26 @@ import java.util.logging.Logger;
 public class ApiHandler implements IApiHandler{
 
     @Override
-    public void writeDataSet(AbstractDataSet set, File file){
+    public void writeDataSet(AbstractDataSet set, File file, boolean asJson){
         try{
             if(!file.exists()){
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
 
-            DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
-            this.writeSet(stream, set);
-            stream.close();
+            if(asJson){
+                JsonObject object = new JsonObject();
+                this.writeDataSet(object, set);
+
+                OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file));
+                Util.GSON.toJson(object, writer);
+                writer.close();
+            }
+            else{
+                DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
+                this.writeDataSet(stream, set);
+                stream.close();
+            }
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.SEVERE, "Exception saving a data set to disk!", e);
@@ -45,16 +59,25 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void readDataSet(AbstractDataSet set, File file){
+    public void readDataSet(AbstractDataSet set, File file, boolean asJson){
         if(!set.isEmpty()){
             set.clear();
         }
 
         try{
             if(file.exists()){
-                DataInputStream stream = new DataInputStream(new FileInputStream(file));
-                this.readSet(stream, set);
-                stream.close();
+                if(asJson){
+                    InputStreamReader reader = new InputStreamReader(new FileInputStream(file));
+                    JsonObject object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                    reader.close();
+
+                    this.readDataSet(object, set);
+                }
+                else{
+                    DataInputStream stream = new DataInputStream(new FileInputStream(file));
+                    this.readDataSet(stream, set);
+                    stream.close();
+                }
             }
         }
         catch(Exception e){
@@ -63,7 +86,7 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void writeSet(DataOutput stream, AbstractDataSet set) throws Exception{
+    public void writeDataSet(DataOutput stream, AbstractDataSet set) throws Exception{
         stream.writeInt(set.size());
 
         for(DataPart part : set.getData().values()){
@@ -72,7 +95,7 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void readSet(DataInput stream, AbstractDataSet set) throws Exception{
+    public void readDataSet(DataInput stream, AbstractDataSet set) throws Exception{
         int amount = stream.readInt();
 
         for(int i = 0; i < amount; i++){
@@ -82,20 +105,57 @@ public class ApiHandler implements IApiHandler{
     }
 
     @Override
-    public void writePart(DataOutput stream, DataPart part) throws Exception{
+    public void writeDataSet(JsonObject main, AbstractDataSet set) throws Exception{
+        JsonArray data = new JsonArray();
+        for(DataPart part : set.getData().values()){
+            this.writePart(data, part);
+        }
+        main.add("data", data);
+    }
+
+    @Override
+    public void readDataSet(JsonObject main, AbstractDataSet set) throws Exception{
+        JsonArray data = main.get("data").getAsJsonArray();
+        for(int i = 0; i < data.size(); i++){
+            DataPart part = this.readPart(data, i);
+            set.addPart(part);
+        }
+    }
+
+    private void writePart(DataOutput stream, DataPart part) throws Exception{
         stream.writeByte(RockBottomAPI.PART_REGISTRY.getId(part.getClass()));
         stream.writeUTF(part.getName());
         part.write(stream);
     }
 
-    @Override
-    public DataPart readPart(DataInput stream) throws Exception{
+    private DataPart readPart(DataInput stream) throws Exception{
         int id = stream.readByte();
         String name = stream.readUTF();
 
         Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(id);
         DataPart part = partClass.getConstructor(String.class).newInstance(name);
         part.read(stream);
+
+        return part;
+    }
+
+    private void writePart(JsonArray array, DataPart part) throws Exception{
+        JsonObject object = new JsonObject();
+        object.addProperty("id", RockBottomAPI.PART_REGISTRY.getId(part.getClass()));
+        object.addProperty("name", part.getName());
+        object.add("data", part.write());
+        array.add(object);
+    }
+
+    private DataPart readPart(JsonArray array, int i) throws Exception{
+        JsonObject object = array.get(i).getAsJsonObject();
+        Integer id = object.get("id").getAsInt();
+        String name = object.get("name").getAsString();
+        JsonElement data = object.get("data");
+
+        Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(id);
+        DataPart part = partClass.getConstructor(String.class).newInstance(name);
+        part.read(data);
 
         return part;
     }
