@@ -53,10 +53,14 @@ public class ParticleManager implements IParticleManager{
         for(int i = 0; i < Util.RANDOM.nextInt(30)+20; i++){
             double motionX = Util.RANDOM.nextGaussian()*0.1F;
             double motionY = Util.RANDOM.nextGaussian()*0.1F;
-
-            Particle particle = new ParticleTile(world, x+0.5, y+0.5, motionX, motionY, state);
-            this.addParticle(particle);
+            this.addSingleTileParticle(world, x+0.5, y+0.5, motionX, motionY, state);
         }
+    }
+
+    @Override
+    public void addSingleTileParticle(IWorld world, double x, double y, double motionX, double motionY, TileState state){
+        Particle particle = new ParticleTile(world, x, y, motionX, motionY, state);
+        this.addParticle(particle);
     }
 
     @Override
