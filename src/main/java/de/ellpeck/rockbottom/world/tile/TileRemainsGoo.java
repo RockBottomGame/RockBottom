@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -28,7 +29,7 @@ public class TileRemainsGoo extends TileBasic{
     }
 
     @Override
-    public boolean canBreak(IWorld world, int x, int y, TileLayer layer){
+    public boolean canBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player, boolean isRightTool){
         return false;
     }
 

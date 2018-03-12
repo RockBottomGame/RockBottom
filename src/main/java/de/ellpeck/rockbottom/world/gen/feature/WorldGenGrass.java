@@ -28,7 +28,7 @@ public class WorldGenGrass implements IWorldGenerator{
                 this.grassRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
                 if(this.grassRandom.nextFloat() >= 0.5F){
                     TileMeta tile = GameContent.TILE_GRASS_TUFT;
-                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
+                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
                         int type = Util.floor(this.grassRandom.nextDouble()*(double)tile.metaProp.getVariants());
                         chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
                     }

@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemTile;
 import de.ellpeck.rockbottom.api.render.item.DefaultItemRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
@@ -30,7 +31,7 @@ public class TileOreMaterial extends TileBasic{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return false;
     }
 }

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
@@ -52,7 +53,7 @@ public class TileSapling extends TileBasic{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return world.getState(x, y-1).getTile().canKeepPlants(world, x, y-1, layer);
     }
 }

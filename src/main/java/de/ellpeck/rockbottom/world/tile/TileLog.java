@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.StaticTileProps.LogType;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
@@ -97,9 +98,14 @@ public class TileLog extends TileBasic{
     }
 
     @Override
-    public boolean canBreak(IWorld world, int x, int y, TileLayer layer){
-        LogType type = world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT);
-        return !type.isNatural() || type == LogType.TRUNK_BOTTOM || type == LogType.TRUNK_MIDDLE;
+    public boolean canBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player, boolean isRightTool){
+        if(isRightTool){
+            LogType type = world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT);
+            return !type.isNatural() || type == LogType.TRUNK_BOTTOM || type == LogType.TRUNK_MIDDLE;
+        }
+        else{
+            return false;
+        }
     }
 
     @Override

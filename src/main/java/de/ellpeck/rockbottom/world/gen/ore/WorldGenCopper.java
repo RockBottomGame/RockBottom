@@ -1,14 +1,15 @@
 package de.ellpeck.rockbottom.world.gen.ore;
 
-import com.google.common.collect.Sets;
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.world.gen.WorldGenOre;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 
+import java.util.Collections;
 import java.util.Set;
 
-public class WorldGenCoal extends WorldGenOre{
+public class WorldGenCopper extends WorldGenOre{
 
     @Override
     protected int getHighestGridPos(){
@@ -17,7 +18,7 @@ public class WorldGenCoal extends WorldGenOre{
 
     @Override
     protected int getMaxAmount(){
-        return 8;
+        return 3;
     }
 
     @Override
@@ -32,7 +33,8 @@ public class WorldGenCoal extends WorldGenOre{
 
     @Override
     protected TileState getOreState(){
-        return GameContent.TILE_COAL.getDefState();
+        TileState state = GameContent.TILE_COPPER.getDefState();
+        return this.oreRandom.nextInt(30) <= 0 ? state.prop(StaticTileProps.HAS_CANISTER, true) : state;
     }
 
     @Override
@@ -42,6 +44,6 @@ public class WorldGenCoal extends WorldGenOre{
 
     @Override
     protected Set<Biome> getAllowedBiomes(){
-        return Sets.newHashSet(GameContent.BIOME_GRASSLAND, GameContent.BIOME_UNDERGROUND);
+        return Collections.singleton(GameContent.BIOME_UNDERGROUND);
     }
 }

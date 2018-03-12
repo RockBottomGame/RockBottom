@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -39,7 +40,7 @@ public class TileLadder extends TileBasic{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return this.isLadderPos(world, x, y);
     }
 

@@ -377,7 +377,7 @@ public class InternalHooks implements IInternalHooks{
             if(layer.canTileBeInLayer(player.world, x, y, tile)){
                 Tile tileThere = player.world.getState(layer, x, y).getTile();
                 if(tileThere != tile && tileThere.canReplace(player.world, x, y, layer)){
-                    if(InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer)){
+                    if(InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer, player)){
                         if(!simulate){
                             tile.doPlace(player.world, x, y, layer, selected, player);
 

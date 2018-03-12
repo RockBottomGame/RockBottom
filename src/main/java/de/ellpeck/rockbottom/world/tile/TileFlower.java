@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -26,7 +27,7 @@ public class TileFlower extends TileMeta{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return world.isPosLoaded(x, y-1) && world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
     }
 

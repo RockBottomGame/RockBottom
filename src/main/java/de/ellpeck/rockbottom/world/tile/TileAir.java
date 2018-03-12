@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -18,7 +19,7 @@ public class TileAir extends Tile{
     }
 
     @Override
-    public boolean canBreak(IWorld world, int x, int y, TileLayer layer){
+    public boolean canBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player, boolean isRightTool){
         return false;
     }
 

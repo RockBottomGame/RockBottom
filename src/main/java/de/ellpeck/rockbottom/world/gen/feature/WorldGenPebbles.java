@@ -30,7 +30,7 @@ public class WorldGenPebbles implements IWorldGenerator{
                 this.pebbleRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
                 if(chance > 0F && this.pebbleRandom.nextFloat() <= chance){
                     Tile tile = GameContent.TILE_PEBBLES;
-                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
+                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
                         chunk.setStateInner(x, y, tile.getDefState());
                     }
                 }

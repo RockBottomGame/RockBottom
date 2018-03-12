@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.item.ItemCopperCanister;
 import de.ellpeck.rockbottom.item.ItemFirework;
 import de.ellpeck.rockbottom.item.ItemStartNote;
 import de.ellpeck.rockbottom.item.ItemTwig;
@@ -20,6 +21,7 @@ import de.ellpeck.rockbottom.world.gen.biome.BiomeSky;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeUnderground;
 import de.ellpeck.rockbottom.world.gen.feature.*;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.tile.*;
 
 public final class ContentRegistry{
@@ -28,7 +30,7 @@ public final class ContentRegistry{
         new TileAir().register();
         new TileSoil().register();
         new TileGrass().register();
-        new TileBasic(RockBottomAPI.createInternalRes("stone")).register();
+        new TileStone().register();
         new TileGrassTuft().register();
         new TileLog().register();
         new TileLeaves().register();
@@ -48,6 +50,7 @@ public final class ContentRegistry{
         new TileWoodDoor(RockBottomAPI.createInternalRes("wood_door_old")).register();
         new TileRemainsGoo().register();
         new TileGrassTorch().register();
+        new TileCopper().register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();
@@ -56,6 +59,10 @@ public final class ContentRegistry{
         new ItemStartNote().register();
         new ItemBasic(RockBottomAPI.createInternalRes("plant_fiber")).register();
         new ItemTwig().register();
+        new ItemTool(RockBottomAPI.createInternalRes("stone_pickaxe"), 4F, ToolType.PICKAXE, 5).register();
+        new ItemTool(RockBottomAPI.createInternalRes("stone_axe"), 3F, ToolType.AXE, 5).register();
+        new ItemTool(RockBottomAPI.createInternalRes("stone_shovel"), 3F, ToolType.SHOVEL, 5).register();
+        new ItemCopperCanister().register();
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();
@@ -73,6 +80,7 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("pebbles"), WorldGenPebbles.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("coal"), WorldGenCoal.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("start_hut"), WorldGenStartHut.class);
+        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("copper"), WorldGenCopper.class);
 
         RockBottomAPI.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 

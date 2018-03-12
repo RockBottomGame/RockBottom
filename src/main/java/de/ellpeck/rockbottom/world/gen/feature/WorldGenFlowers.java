@@ -30,7 +30,7 @@ public class WorldGenFlowers implements IWorldGenerator{
                 this.flowerRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
                 if(chance > 0F && this.flowerRandom.nextFloat() <= chance){
                     TileMeta tile = GameContent.TILE_FLOWER;
-                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
+                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
                         int type = Util.floor(this.flowerRandom.nextDouble()*(double)tile.metaProp.getVariants());
                         chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
                     }

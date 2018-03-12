@@ -30,13 +30,13 @@ public class TileSign extends TileBasic{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile();
     }
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return this.canPlace(world, x, y, layer);
+        return this.canPlace(world, x, y, layer, null);
     }
 
     @Override

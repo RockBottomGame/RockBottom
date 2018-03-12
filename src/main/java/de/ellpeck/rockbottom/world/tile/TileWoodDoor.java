@@ -39,7 +39,7 @@ public class TileWoodDoor extends TileBasic{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return world.getState(x, y-1).getTile().isFullTile() && world.getState(x, y+1).getTile().canReplace(world, x, y+1, layer);
     }
 

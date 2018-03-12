@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -36,7 +35,7 @@ public class TileTorch extends TileBasic{
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return this.getTorchState(world, x, y) != null;
     }
 

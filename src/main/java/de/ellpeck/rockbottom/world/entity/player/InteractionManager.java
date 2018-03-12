@@ -229,12 +229,14 @@ public class InteractionManager implements IInteractionManager{
                             if(breakResult != EventResult.CANCELLED && (breakResult == EventResult.MODIFIED || layer.canEditLayer(game, player))){
                                 if(Settings.KEY_DESTROY.isDown()){
                                     Tile tile = player.world.getState(layer, x, y).getTile();
-                                    if(defaultTileBreakingCheck(player.world, x, y, layer, mousedTileX, mousedTileY, player) && tile.canBreak(player.world, x, y, layer)){
+
+                                    ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+                                    boolean effective = isToolEffective(player, selected, tile, layer, x, y);
+
+                                    if(defaultTileBreakingCheck(player.world, x, y, layer, mousedTileX, mousedTileY, player) && tile.canBreak(player.world, x, y, layer, player, effective)){
                                         float hardness = tile.getHardness(player.world, x, y, layer);
                                         float progressAmount = 0.05F/hardness;
 
-                                        ItemInstance selected = player.getInv().get(player.getSelectedSlot());
-                                        boolean effective = isToolEffective(player, selected, tile, layer, x, y);
                                         if(selected != null){
                                             progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
                                         }
