@@ -18,12 +18,18 @@ public class WorldGenTrees implements IWorldGenerator{
 
     private final Random treeRandom = new Random();
     private final List<IStructure> treeDesigns = new ArrayList<>();
+    private int widestTree;
 
     @Override
     public void initWorld(IWorld world){
         for(Map.Entry<IResourceName, IStructure> entry : RockBottomAPI.STRUCTURE_REGISTRY.getUnmodifiable().entrySet()){
             if(entry.getKey().getResourceName().contains("grassland_tree")){
-                this.treeDesigns.add(entry.getValue());
+                IStructure structure = entry.getValue();
+                this.treeDesigns.add(structure);
+
+                if(this.widestTree < structure.getWidth()){
+                    this.widestTree = structure.getWidth();
+                }
             }
         }
     }
@@ -49,7 +55,7 @@ public class WorldGenTrees implements IWorldGenerator{
                 int mod = i*2000+tries*500;
                 this.treeRandom.setSeed(Util.scrambleSeed(chunk.getX()+mod, chunk.getY()+mod, world.getSeed()));
 
-                int x = Util.ceil(this.treeRandom.nextDouble()*(double)(Constants.CHUNK_SIZE-8))+4;
+                int x = Util.ceil(this.treeRandom.nextDouble()*(double)(Constants.CHUNK_SIZE-(this.widestTree+1))+this.widestTree/2D);
                 int y = chunk.getHeightInner(TileLayer.MAIN, x);
                 pos = new Pos2(x, y);
 
