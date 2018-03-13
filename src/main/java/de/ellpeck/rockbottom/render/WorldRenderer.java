@@ -111,7 +111,7 @@ public class WorldRenderer{
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
                     IResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
-                    g.setProgram(program.equals(IShaderProgram.WORLD_SHADER) ? null : manager.getShaderProgram(program));
+                    g.setProgram(program == null ? null : manager.getShaderProgram(program));
 
                     int light = world.getCombinedVisualLight(Util.floor(entity.x), Util.floor(entity.y));
                     renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
@@ -219,7 +219,7 @@ public class WorldRenderer{
         }
         else{
             IResourceName program = renderer.getRenderShader(game, manager, g, world, tile, state, x, y, layer);
-            g.setProgram(program.equals(IShaderProgram.WORLD_SHADER) ? null : manager.getShaderProgram(program));
+            g.setProgram(program == null ? null : manager.getShaderProgram(program));
         }
 
         renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
