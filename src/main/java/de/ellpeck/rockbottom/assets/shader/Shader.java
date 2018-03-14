@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets.shader;
 
+import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.api.render.engine.IDisposable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -16,9 +17,7 @@ public class Shader implements IDisposable{
         GL20.glShaderSource(this.id, source);
         GL20.glCompileShader(this.id);
 
-        if(GL20.glGetShaderi(this.id, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE){
-            throw new RuntimeException("Couldn't compile shader:\n"+GL20.glGetShaderInfoLog(this.id));
-        }
+        Preconditions.checkState(GL20.glGetShaderi(this.id, GL20.GL_COMPILE_STATUS) == GL11.GL_TRUE, "Couldn't compile shader:\n"+GL20.glGetShaderInfoLog(this.id));
     }
 
     public int getId(){

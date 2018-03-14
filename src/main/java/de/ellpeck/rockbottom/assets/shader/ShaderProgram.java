@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets.shader;
 
+import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.render.engine.VertexProcessor;
 import de.ellpeck.rockbottom.render.engine.VertexArrayObject;
@@ -69,9 +70,7 @@ public class ShaderProgram implements IShaderProgram{
     public void link(){
         GL20.glLinkProgram(this.id);
 
-        if(GL20.glGetProgrami(this.id, GL20.GL_LINK_STATUS) != GL11.GL_TRUE){
-            throw new RuntimeException("Couldn't compile shader program:\n"+GL20.glGetProgramInfoLog(this.id));
-        }
+        Preconditions.checkState(GL20.glGetProgrami(this.id, GL20.GL_LINK_STATUS) == GL11.GL_TRUE, "Couldn't compile shader program:\n"+GL20.glGetProgramInfoLog(this.id));
     }
 
     @Override

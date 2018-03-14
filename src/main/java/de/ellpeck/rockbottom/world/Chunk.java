@@ -121,21 +121,11 @@ public class Chunk implements IChunk{
     }
 
     protected void checkListSync(){
-        if(this.entities.size() != this.entityLookup.size()){
-            throw new IllegalStateException("Entities and EntityLookup are out of sync!");
-        }
-        if(this.tileEntities.size() != this.tileEntityLookup.size()){
-            throw new IllegalStateException("TileEntities and TileEntityLookup are out of sync!");
-        }
-        if(this.tickingTileEntities.size() > this.tileEntities.size()){
-            throw new IllegalStateException("There are more ticking TileEntities than there are normal ones!");
-        }
-        if(this.scheduledUpdates.size() != this.scheduledUpdateLookup.size()){
-            throw new IllegalStateException("ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
-        }
-        if(this.playersOutOfRangeCached.size() != this.playersOutOfRangeCachedTimers.size()){
-            throw new IllegalStateException("PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
-        }
+        Preconditions.checkState(this.entities.size() == this.entityLookup.size(), "Entities and EntityLookup are out of sync!");
+        Preconditions.checkState(this.tileEntities.size() == this.tileEntityLookup.size(), "TileEntities and TileEntityLookup are out of sync!");
+        Preconditions.checkState(this.tickingTileEntities.size() <= this.tileEntities.size(), "There are more ticking TileEntities than there are normal ones!");
+        Preconditions.checkState(this.scheduledUpdates.size() == this.scheduledUpdateLookup.size(), "ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
+        Preconditions.checkState(this.playersOutOfRangeCached.size() == this.playersOutOfRangeCachedTimers.size(), "PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
     }
 
     protected void updateEntities(IGameInstance game){
@@ -176,18 +166,16 @@ public class Chunk implements IChunk{
 
         for(int i = 0; i < this.tickingTileEntities.size(); i++){
             TileEntity tile = this.tickingTileEntities.get(i);
-            if(this.getTileEntity(tile.layer, tile.x, tile.y) == tile){
-                if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
-                    tile.update(game);
-                }
 
-                if(tile.shouldRemove()){
-                    this.removeTileEntity(tile.layer, tile.x, tile.y);
-                    i--;
-                }
+            Preconditions.checkState(this.getTileEntity(tile.layer, tile.x, tile.y) == tile, "There is a ticking tile entity at "+tile.x+", "+tile.y+" that shouldn't exist there as there is no tile entity registered for that position!");
+
+            if(RockBottomAPI.getEventHandler().fireEvent(new TileEntityTickEvent(tile)) != EventResult.CANCELLED){
+                tile.update(game);
             }
-            else{
-                throw new IllegalStateException("There is a ticking tile entity at "+tile.x+", "+tile.y+" that shouldn't exist there as there is no tile entity registered for that position!");
+
+            if(tile.shouldRemove()){
+                this.removeTileEntity(tile.layer, tile.x, tile.y);
+                i--;
             }
         }
     }
@@ -304,9 +292,7 @@ public class Chunk implements IChunk{
         Preconditions.checkNotNull(layer, "Tried setting tile to null layer in chunk at "+this.gridX+", "+this.gridY+"!");
 
         Tile newTile = tile.getTile();
-        if(!layer.canTileBeInLayer(this.world, this.x+x, this.y+y, newTile)){
-            throw new UnsupportedOperationException("Tried setting tile "+tile+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
-        }
+        Preconditions.checkArgument(layer.canTileBeInLayer(this.world, this.x+x, this.y+y, newTile), "Tried setting tile "+tile+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
 
         Tile lastTile = this.getStateInner(layer, x, y).getTile();
         if(newTile != lastTile){
@@ -389,9 +375,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void addTileEntity(TileEntity tile){
-        if(!tile.layer.canHoldTileEntities()){
-            throw new UnsupportedOperationException("Tried adding tile entity "+tile+" at "+tile.x+", "+tile.y+" on layer "+tile.layer+" that doesn't allow tile entities!");
-        }
+        Preconditions.checkArgument(tile.layer.canHoldTileEntities(), "Tried adding tile entity "+tile+" at "+tile.x+", "+tile.y+" on layer "+tile.layer+" that doesn't allow tile entities!");
 
         Pos3 posVec = new Pos3(tile.x, tile.y, tile.layer.index());
         if(!this.tileEntityLookup.containsKey(posVec)){

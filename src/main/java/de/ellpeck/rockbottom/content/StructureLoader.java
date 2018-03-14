@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.content;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -57,9 +58,7 @@ public class StructureLoader implements IContentLoader<IStructure>{
 
                     String tileName = object.get("tile").getAsString();
                     Tile tile = RockBottomAPI.TILE_REGISTRY.get(RockBottomAPI.createRes(tileName));
-                    if(tile == null){
-                        throw new IllegalArgumentException("Tile with name "+tileName+" doesn't exist!");
-                    }
+                    Preconditions.checkNotNull(tile, "Tile with name "+tileName+" doesn't exist!");
 
                     TileState state = tile.getDefState();
 
@@ -103,8 +102,8 @@ public class StructureLoader implements IContentLoader<IStructure>{
                 if(width < 0){
                     width = row.length();
                 }
-                else if(row.length() != width){
-                    throw new IllegalArgumentException("Can't create a structure that isn't rectangular!");
+                else{
+                    Preconditions.checkArgument(row.length() == width, "Can't create a structure that isn't rectangular!");
                 }
 
                 for(int x = 0; x < row.length(); x++){

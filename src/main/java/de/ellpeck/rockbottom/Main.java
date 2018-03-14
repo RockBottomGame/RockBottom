@@ -104,7 +104,7 @@ public final class Main{
                 Logging.mainLogger.info("Replacing class loader "+loader+" with new loader "+classLoader);
             }
             catch(Exception e){
-                throw new RuntimeException("Failed to override original class loader", e);
+                throw new IllegalStateException("Failed to override original class loader", e);
             }
 
             try{

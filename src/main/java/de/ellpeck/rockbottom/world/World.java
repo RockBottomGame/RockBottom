@@ -111,9 +111,7 @@ public class World implements IWorld{
     }
 
     protected void checkListSync(){
-        if(this.loadedChunks.size() != this.chunkLookup.size()){
-            throw new IllegalStateException("LoadedChunks and ChunkLookup are out of sync!");
-        }
+        Preconditions.checkState(this.loadedChunks.size() == this.chunkLookup.size(), "LoadedChunks and ChunkLookup are out of sync!");
     }
 
     protected void updateChunks(IGameInstance game){

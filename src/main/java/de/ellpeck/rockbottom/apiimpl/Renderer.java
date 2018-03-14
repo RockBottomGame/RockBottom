@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
@@ -218,61 +219,52 @@ public class Renderer implements IRenderer{
 
     @Override
     public IRenderer put(float f){
-        if(this.isDrawing){
-            if(this.vertices.remaining() < this.program.getComponentsPerVertex()*3 && this.vertexAmount%3 == 0){
-                this.flush();
-            }
+        Preconditions.checkState(this.isDrawing, "Can't add vertices to a renderer while it's not drawing!");
 
-            this.vertices.put(f);
-
-            this.componentCounter++;
-            if(this.componentCounter >= this.program.getComponentsPerVertex()){
-                this.vertexAmount++;
-                this.program.getProcessor().onVertexCompleted(this);
-
-                this.componentCounter = 0;
-            }
-
-            return this;
+        if(this.vertices.remaining() < this.program.getComponentsPerVertex()*3 && this.vertexAmount%3 == 0){
+            this.flush();
         }
-        else{
-            throw new RuntimeException("Can't add vertices to a renderer while it's not drawing!");
+
+        this.vertices.put(f);
+
+        this.componentCounter++;
+        if(this.componentCounter >= this.program.getComponentsPerVertex()){
+            this.vertexAmount++;
+            this.program.getProcessor().onVertexCompleted(this);
+
+            this.componentCounter = 0;
         }
+
+        return this;
     }
 
     @Override
     public void begin(){
-        if(!this.isDrawing){
-            ((Buffer)this.vertices).clear();
-            this.vertexAmount = 0;
-            this.flushCounter = 0;
+        Preconditions.checkState(!this.isDrawing, "Can't begin a renderer that is already drawing!");
 
-            this.resetTransformation();
+        ((Buffer)this.vertices).clear();
+        this.vertexAmount = 0;
+        this.flushCounter = 0;
 
-            this.isDrawing = true;
+        this.resetTransformation();
 
-            this.program.getProcessor().onBegin(this);
-        }
-        else{
-            throw new RuntimeException("Can't begin a renderer that is already drawing!");
-        }
+        this.isDrawing = true;
+
+        this.program.getProcessor().onBegin(this);
     }
 
     @Override
     public void end(){
-        if(this.isDrawing){
-            this.flush();
+        Preconditions.checkState(this.isDrawing, "Can't end a renderer that isn't drawing!");
 
-            this.isDrawing = false;
+        this.flush();
 
-            this.lastFlushes = this.flushCounter;
-            this.flushCounter = 0;
+        this.isDrawing = false;
 
-            this.program.getProcessor().onEnd(this);
-        }
-        else{
-            throw new RuntimeException("Can't end a renderer that isn't drawing!");
-        }
+        this.lastFlushes = this.flushCounter;
+        this.flushCounter = 0;
+
+        this.program.getProcessor().onEnd(this);
     }
 
     @Override

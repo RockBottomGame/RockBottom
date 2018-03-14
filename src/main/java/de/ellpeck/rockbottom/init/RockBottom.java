@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.init;
 
+import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -101,9 +102,7 @@ public class RockBottom extends AbstractGame{
 
         GLFW.glfwSetErrorCallback(this.errorCallback);
 
-        if(!GLFW.glfwInit()){
-            throw new IllegalStateException("Unable to inialize GLFW");
-        }
+        Preconditions.checkState(GLFW.glfwInit(), "Unable to inialize GLFW");
 
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -117,7 +116,7 @@ public class RockBottom extends AbstractGame{
         this.windowId = GLFW.glfwCreateWindow(Main.width, Main.height, AbstractGame.NAME+" "+AbstractGame.VERSION, MemoryUtil.NULL, MemoryUtil.NULL);
         if(this.windowId == MemoryUtil.NULL){
             GLFW.glfwTerminate();
-            throw new RuntimeException("Unable to create window");
+            throw new IllegalStateException("Unable to create window");
         }
 
         GLFWVidMode mode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());

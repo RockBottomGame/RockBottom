@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets.sound;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
 import de.ellpeck.rockbottom.api.assets.ISound;
 import org.lwjgl.BufferUtils;
@@ -38,9 +39,7 @@ public class SoundEffect implements ISound{
 
         IntBuffer error = BufferUtils.createIntBuffer(1);
         long decoder = STBVorbis.stb_vorbis_open_memory(data, error, null);
-        if(decoder == MemoryUtil.NULL){
-            throw new RuntimeException("Failed to load sound:\n"+error.get(0));
-        }
+        Preconditions.checkState(decoder != MemoryUtil.NULL, "Failed to load sound:\n"+error.get(0));
 
         STBVorbis.stb_vorbis_get_info(decoder, info);
 

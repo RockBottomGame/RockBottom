@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets.tex;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.IRenderer;
@@ -14,7 +15,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -213,9 +213,7 @@ public class Texture implements ITexture{
     }
 
     private void load(InputStream stream) throws Exception{
-        if(stream == null){
-            throw new IOException("Missing input stream! The texture might not be at the location it's supposed to be");
-        }
+        Preconditions.checkNotNull(stream, "Missing input stream! The texture might not be at the location it's supposed to be");
 
         byte[] input = ByteStreams.toByteArray(stream);
         stream.close();
@@ -229,9 +227,7 @@ public class Texture implements ITexture{
         IntBuffer height = stack.mallocInt(1);
 
         this.pixelData = STBImage.stbi_load_from_memory(data, width, height, stack.mallocInt(1), 4);
-        if(this.pixelData == null){
-            throw new IOException("Failed to load texture:\n"+STBImage.stbi_failure_reason());
-        }
+        Preconditions.checkNotNull(this.pixelData, "Failed to load texture:\n"+STBImage.stbi_failure_reason());
 
         this.textureWidth = width.get();
         this.textureHeight = height.get();
