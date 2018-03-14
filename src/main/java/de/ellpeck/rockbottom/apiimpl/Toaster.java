@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.toast.Toast;
-import de.ellpeck.rockbottom.api.util.Counter;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -14,47 +13,52 @@ import java.util.Map.Entry;
 
 public class Toaster implements IToaster{
 
-    private final Map<Toast, Counter> toasts = new LinkedHashMap<>();
+    private final Map<Toast, ToastPosition> toasts = new LinkedHashMap<>();
 
     public void update(){
-        Iterator<Entry<Toast, Counter>> iterator = this.toasts.entrySet().iterator();
+        Iterator<ToastPosition> iterator = this.toasts.values().iterator();
         while(iterator.hasNext()){
-            Entry<Toast, Counter> entry = iterator.next();
+            ToastPosition pos = iterator.next();
+            pos.timer--;
 
-            Counter timer = entry.getValue();
-            timer.add(-1);
-            if(timer.get() <= 0){
+            if(pos.timer <= 0){
                 iterator.remove();
             }
         }
     }
 
     public void render(IGameInstance game, IAssetManager manager, IRenderer g){
-        float y = 2;
-        for(Entry<Toast, Counter> entry : this.toasts.entrySet()){
+        for(Entry<Toast, ToastPosition> entry : this.toasts.entrySet()){
             Toast toast = entry.getKey();
+            ToastPosition pos = entry.getValue();
+
             float width = toast.getWidth();
-            Counter timer = entry.getValue();
+            int time = toast.getDisplayTime();
+            float movementTime = toast.getMovementTime();
 
             float x;
-            if(timer.get() <= 10){
-                x = -width+((timer.get()/10F)*(width+2));
+            if(pos.timer <= movementTime){
+                x = -width+((pos.timer/movementTime)*(width+2));
             }
-            else if(timer.get() >= toast.getDisplayTime()-10){
-                x = -width+(((toast.getDisplayTime()-timer.get())/10F)*(width+2));
+            else if(pos.timer >= time-movementTime){
+                x = -width+(((time-pos.timer)/movementTime)*(width+2));
             }
             else{
                 x = 2;
             }
 
-            toast.render(game, manager, g, x, y);
-            y += toast.getHeight()+2;
+            toast.render(game, manager, g, x, pos.y);
         }
     }
 
     @Override
     public void displayToast(Toast toast){
-        this.toasts.put(toast, new Counter(toast.getDisplayTime()));
+        int y = 2;
+        for(Toast t : this.toasts.keySet()){
+            y += t.getHeight()+2;
+        }
+
+        this.toasts.put(toast, new ToastPosition(y, toast.getDisplayTime()));
     }
 
     @Override
@@ -66,6 +70,17 @@ public class Toaster implements IToaster{
     public void cancelAllToasts(){
         if(!this.toasts.isEmpty()){
             this.toasts.clear();
+        }
+    }
+
+    private static class ToastPosition{
+
+        private final float y;
+        private int timer;
+
+        public ToastPosition(float y, int timer){
+            this.y = y;
+            this.timer = timer;
         }
     }
 }
