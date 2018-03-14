@@ -53,12 +53,16 @@ public class Toaster implements IToaster{
 
     @Override
     public void displayToast(Toast toast){
-        int y = 2;
-        for(Toast t : this.toasts.keySet()){
-            y += t.getHeight()+2;
+        float lowestY = 2;
+
+        for(Map.Entry<Toast, ToastPosition> entry : this.toasts.entrySet()){
+            float y = entry.getValue().y+entry.getKey().getHeight()+2;
+            if(lowestY < y){
+                lowestY = y;
+            }
         }
 
-        this.toasts.put(toast, new ToastPosition(y, toast.getDisplayTime()));
+        this.toasts.put(toast, new ToastPosition(lowestY, toast.getDisplayTime()));
     }
 
     @Override
