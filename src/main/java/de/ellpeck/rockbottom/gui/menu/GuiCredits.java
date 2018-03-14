@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
+import com.google.common.base.Charsets;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -7,10 +8,13 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.content.ContentManager;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class GuiCredits extends Gui{
 
@@ -20,41 +24,29 @@ public class GuiCredits extends Gui{
     public GuiCredits(Gui parent){
         super(parent);
 
-        this.credits.add(AbstractGame.NAME+" - a Game by Ellpeck");
-        this.credits.add("");
-        this.credits.add("");
-        this.credits.add("Programming");
-        this.credits.add("  Ellpeck");
-        this.credits.add("");
-        this.credits.add("");
-        this.credits.add("Art");
-        this.credits.add("  wiiv");
-        this.credits.add("");
-        this.credits.add("");
-        this.credits.add("Additional Programming");
-        this.credits.add("  superaxander");
-        this.credits.add("  canitzp");
-        this.credits.add("  xdjackiexd");
-        this.credits.add("");
-        this.credits.add("");
-        this.credits.add("Libraries and Additional Code");
-        this.credits.add("  The Lightweight Java Game Library");
-        this.credits.add("  Netty");
-        this.credits.add("");
-        this.credits.add("  Stefan Gustavson (Simplex Noise Impl)");
-        this.credits.add("");
-        this.credits.add("");
-        this.credits.add("Special Thanks");
-        this.credits.add("  TTFTCUTS (A lot of Terrain Gen help)");
-        this.credits.add("  witsend66 (Game Name)");
-        this.credits.add("");
-        this.credits.add("  Beta Modders");
-        this.credits.add("    raphydaphy");
-        this.credits.add("    Quarris");
-        this.credits.add("    Kinomora");
-        this.credits.add("    AKTheKnight");
-        this.credits.add("");
-        this.credits.add("");
+        String path = "assets/rockbottom/credits.txt";
+        try{
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream(path), Charsets.UTF_8));
+
+            while(true){
+                String line = reader.readLine();
+                if(line != null){
+                    this.credits.add(line);
+                }
+                else{
+                    break;
+                }
+            }
+
+            reader.close();
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't read credits file from "+path, e);
+
+            this.credits.clear();
+            this.credits.add("Credits couldn't be loaded :(");
+            this.credits.add("Check the log for info!");
+        }
     }
 
     @Override

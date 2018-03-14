@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -43,7 +44,7 @@ public class ApiHandler implements IApiHandler{
                 JsonObject object = new JsonObject();
                 this.writeDataSet(object, set);
 
-                OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file));
+                OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8);
                 Util.GSON.toJson(object, writer);
                 writer.close();
             }
@@ -67,7 +68,7 @@ public class ApiHandler implements IApiHandler{
         try{
             if(file.exists()){
                 if(asJson){
-                    InputStreamReader reader = new InputStreamReader(new FileInputStream(file));
+                    InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8);
                     JsonObject object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
                     reader.close();
 

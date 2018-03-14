@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.util;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,7 +24,7 @@ public final class ChangelogManager{
                 RockBottomAPI.logger().info("Grabbing the changelog...");
 
                 URL newestURL = new URL(Constants.UPDATE_LINK);
-                InputStreamReader reader = new InputStreamReader(newestURL.openStream());
+                InputStreamReader reader = new InputStreamReader(newestURL.openStream(), Charsets.UTF_8);
 
                 RockBottomAPI.logger().info("Parsing the changelog...");
 

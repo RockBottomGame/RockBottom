@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.util;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
@@ -208,7 +209,7 @@ public final class CrashManager{
     private static String getComment() throws Exception{
         List<String> lines = new ArrayList<>();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/comment/crash.txt")));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/comment/crash.txt"), Charsets.UTF_8));
         while(true){
             String line = reader.readLine();
             if(line != null){

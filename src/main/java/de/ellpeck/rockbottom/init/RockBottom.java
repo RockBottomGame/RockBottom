@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.init;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
@@ -157,7 +158,7 @@ public class RockBottom extends AbstractGame{
 
             List<String> lines = new ArrayList<>();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/comment/loading.txt")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/comment/loading.txt"), Charsets.UTF_8));
             while(true){
                 String line = reader.readLine();
                 if(line != null){

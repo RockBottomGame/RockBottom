@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.assets.loader;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -59,7 +60,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
     private Shader loadShader(String path, int type) throws Exception{
         String shader = "";
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream(path)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream(path), Charsets.UTF_8));
         while(true){
             String line = reader.readLine();
             if(line != null){

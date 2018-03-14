@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.data;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -274,7 +275,7 @@ public class DataManager implements IDataManager{
         File file = settings.getSettingsFile(this);
         if(file.exists() || (settings instanceof IPropSettings && ((IPropSettings)settings).getFile(this).exists())){
             try{
-                InputStreamReader reader = new InputStreamReader(new FileInputStream(file));
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8);
                 object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
                 reader.close();
 
@@ -339,7 +340,7 @@ public class DataManager implements IDataManager{
                 RockBottomAPI.logger().info("Creating file for "+settings.getName()+" at "+file);
             }
 
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file));
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8);
             Util.GSON.toJson(object, writer);
             writer.close();
         }
