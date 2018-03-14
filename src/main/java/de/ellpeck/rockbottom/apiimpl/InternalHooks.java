@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
@@ -34,6 +35,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
+import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -381,13 +383,19 @@ public class InternalHooks implements IInternalHooks{
                         if(!simulate){
                             tile.doPlace(player.world, x, y, layer, selected, player);
 
-                            if(removeItem){
-                                player.getInv().remove(player.getSelectedSlot(), 1);
-                            }
+                            if(!player.world.isClient()){
+                                IStatistics stats = player.getStatistics();
+                                stats.notify(StatisticList.TILES_PLACED);
+                                stats.notify(StatisticList.INDIVIDUAL_TILES_PLACED.get(tile));
 
-                            IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
-                            if(sound != null){
-                                player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+                                if(removeItem){
+                                    player.getInv().remove(player.getSelectedSlot(), 1);
+                                }
+
+                                IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
+                                if(sound != null){
+                                    player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+                                }
                             }
                         }
                         return true;

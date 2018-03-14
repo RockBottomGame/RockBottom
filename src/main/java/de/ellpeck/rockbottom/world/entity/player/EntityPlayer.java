@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
+import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -38,6 +39,8 @@ import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
+import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
+import de.ellpeck.rockbottom.world.entity.player.statistics.Statistics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,7 @@ import java.util.function.BiConsumer;
 public class EntityPlayer extends AbstractEntityPlayer{
 
     private final KnowledgeManager knowledge = new KnowledgeManager(this);
+    private final Statistics statistics = new Statistics(this);
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-0.415, -0.5, 0.415, 1.35);
@@ -120,7 +124,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
 
             this.currentContainer = event.container;
-
             if(this.currentContainer != null){
                 if(this.world.isClient()){
                     int id = this.currentContainer.getUnboundId();
@@ -128,8 +131,12 @@ public class EntityPlayer extends AbstractEntityPlayer{
                         RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
                     }
                 }
-                else if(this.world.isServer()){
-                    this.sendPacket(new PacketContainerData(this.currentContainer));
+                else{
+                    this.statistics.notify(StatisticList.CONTAINERS_OPENED);
+
+                    if(this.world.isServer()){
+                        this.sendPacket(new PacketContainerData(this.currentContainer));
+                    }
                 }
 
                 this.currentContainer.onOpened();
@@ -267,6 +274,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         super.save(set);
         this.inv.save(set);
         this.knowledge.save(set);
+        this.statistics.save(set);
     }
 
     @Override
@@ -274,6 +282,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         super.load(set);
         this.inv.load(set);
         this.knowledge.load(set);
+        this.statistics.load(set);
     }
 
     @Override
@@ -460,6 +469,11 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public IKnowledgeManager getKnowledge(){
         return this.knowledge;
+    }
+
+    @Override
+    public IStatistics getStatistics(){
+        return this.statistics;
     }
 
     @Override

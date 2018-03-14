@@ -34,6 +34,7 @@ import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 
 import java.io.File;
 import java.net.URLClassLoader;
@@ -209,6 +210,11 @@ public abstract class AbstractGame implements IGameInstance{
 
         this.chatLog = new ChatLog();
         TileLayer.init();
+    }
+
+    @Override
+    public void postPostInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        StatisticList.init();
     }
 
     @Override
