@@ -372,7 +372,12 @@ public class AssetManager implements IAssetManager, IDisposable{
 
     @Override
     public SimpleDateFormat getLocalizedDateFormat(){
-        return new SimpleDateFormat(this.localize(RockBottomAPI.createInternalRes("date_format")));
+        try{
+            return new SimpleDateFormat(this.localize(RockBottomAPI.createInternalRes("date_format")));
+        }
+        catch(IllegalArgumentException e){
+            return new SimpleDateFormat();
+        }
     }
 
     @Override
@@ -420,7 +425,8 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public boolean addAsset(IAssetLoader loader, IResourceName name, IAsset asset){
+    public boolean addAsset(IAssetLoader loader, IResourceName name, IAsset
+            asset){
         if(!this.isLocked){
             IResourceName id = loader.getAssetIdentifier();
             if(!this.assets.contains(id, name)){

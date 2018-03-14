@@ -70,7 +70,7 @@ public class GuiCompendium extends GuiContainer{
             game.getGuiManager().closeGui();
             this.player.openGuiContainer(new GuiInventory(this.player), this.player.getInvContainer());
             return true;
-        }, RockBottomAPI.createInternalRes("gui.construction.book_open"), "Close the Compendium"));
+        }, RockBottomAPI.createInternalRes("gui.construction.book_open"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.close_compendium"))));
 
         this.searchBar = new ComponentInputField(this, 145, 79, 70, 12, false, false, false, 64, false, strg -> {
             if(!strg.equals(this.searchText)){

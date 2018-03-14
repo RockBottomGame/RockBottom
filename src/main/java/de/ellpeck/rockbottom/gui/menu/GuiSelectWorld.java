@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.BoundBox;
@@ -25,6 +26,7 @@ public class GuiSelectWorld extends Gui{
     @Override
     public void init(IGameInstance game){
         super.init(game);
+        IAssetManager manager = game.getAssetManager();
 
         int menuX = this.width/2-(186+14+8)/2;
         BoundBox box = new BoundBox(0, 0, 186+14+8, 138).add(this.getX()+menuX, this.getY()+5);
@@ -34,7 +36,7 @@ public class GuiSelectWorld extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-82, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(new GuiCreateWorld(this));
             return true;
-        }, "Create World"));
+        }, manager.localize(RockBottomAPI.createInternalRes("button.create_world"))));
 
         this.components.add(new ComponentButton(this, this.width/2, this.height-30, 62, 16, () -> {
             game.getGuiManager().openGui(this.parent);
@@ -63,7 +65,7 @@ public class GuiSelectWorld extends Gui{
             ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, 0, 0, file);
             component.add(0, 0, button);
 
-            component.add(186+2, 0, new ComponentFancyButton(this, 0, 0, 12, 12, null, RockBottomAPI.createInternalRes("gui.delete"), "Delete World"){
+            component.add(186+2, 0, new ComponentFancyButton(this, 0, 0, 12, 12, null, RockBottomAPI.createInternalRes("gui.delete"), manager.localize(RockBottomAPI.createInternalRes("button.delete_world"))){
                 @Override
                 public boolean onPressed(IGameInstance game){
                     this.gui.getComponents().add(new ComponentConfirmationPopup(this.gui, this.x+this.width/2, this.y+this.height/2, aBoolean -> {
@@ -88,7 +90,7 @@ public class GuiSelectWorld extends Gui{
             component.add(186+2, 14, new ComponentFancyButton(this, 0, 0, 12, 12, () -> {
                 game.getGuiManager().openGui(new GuiRenameWorld(this, file));
                 return true;
-            }, RockBottomAPI.createInternalRes("gui.rename"), "Rename World"));
+            }, RockBottomAPI.createInternalRes("gui.rename"), manager.localize(RockBottomAPI.createInternalRes("button.rename_world"))));
 
             menu.add(component);
         }

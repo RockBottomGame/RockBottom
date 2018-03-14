@@ -24,6 +24,7 @@ public class GuiRenameWorld extends Gui{
     @Override
     public void init(IGameInstance game){
         super.init(game);
+        IAssetManager manager = game.getAssetManager();
 
         ComponentInputField field = new ComponentInputField(this, this.width/2-80, this.height/2-40, 160, 16, true, false, true, 128, false, strg -> this.name = GuiCreateWorld.makeNameSafe(game, strg));
         this.components.add(field);
@@ -40,12 +41,12 @@ public class GuiRenameWorld extends Gui{
 
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, "Rename boi"));
+        }, manager.localize(RockBottomAPI.createInternalRes("button.rename"))));
 
         this.components.add(new ComponentButton(this, this.width/2, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, manager.localize(RockBottomAPI.createInternalRes("button.back"))));
 
         this.name = GuiCreateWorld.makeNameSafe(game, "");
     }
@@ -55,7 +56,8 @@ public class GuiRenameWorld extends Gui{
         super.render(game, manager, g);
 
         if(this.name != null && !this.name.isEmpty()){
-            manager.getFont().drawString(this.x+this.width/2-80, this.height/2-40+18, "Final Name: "+this.name, 0.25F);
+            String s = manager.localize(RockBottomAPI.createInternalRes("info.final_name"), this.name);
+            manager.getFont().drawString(this.x+this.width/2-80, this.height/2-40+18, s, 0.25F);
         }
     }
 

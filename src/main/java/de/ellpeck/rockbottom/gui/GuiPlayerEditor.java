@@ -101,7 +101,7 @@ public class GuiPlayerEditor extends Gui{
             String data = Util.GSON.toJson(design);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(data), null);
             return true;
-        }, "Copy Design", "Copies the design to your clipboard so you can send it to friends or save it"));
+        },assetManager.localize(RockBottomAPI.createInternalRes("button.copy_design")), assetManager.localize(RockBottomAPI.createInternalRes("info.copy_design"))));
 
         this.components.add(new ComponentButton(this, x, this.height-34, 80, 14, () -> {
             this.components.add(new ComponentConfirmationPopup(this, x+40, this.height-38+7, aBoolean -> {
@@ -118,7 +118,7 @@ public class GuiPlayerEditor extends Gui{
             }));
             this.sortComponents();
             return true;
-        }, "Paste Design", "Paste a design from your clipboard"));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.paste_design")), assetManager.localize(RockBottomAPI.createInternalRes("info.paste_design"))));
 
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);

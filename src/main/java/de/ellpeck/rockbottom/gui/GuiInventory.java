@@ -25,7 +25,7 @@ public class GuiInventory extends GuiContainer{
             game.getGuiManager().closeGui();
             this.player.openGuiContainer(new GuiCompendium(this.player), this.player.getInvContainer());
             return true;
-        }, RockBottomAPI.createInternalRes("gui.construction.book_closed"), "Open the Compendium"));
+        }, RockBottomAPI.createInternalRes("gui.construction.book_closed"),game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.open_compendium"))));
     }
 
     @Override

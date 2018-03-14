@@ -38,6 +38,7 @@ public class GuiCreateWorld extends Gui{
     @Override
     public void init(IGameInstance game){
         super.init(game);
+        IAssetManager manager = game.getAssetManager();
 
         this.nameField = new ComponentInputField(this, this.width/2-75, 32, 150, 16, true, true, false, 40, true, string -> this.updateNameAndSeed(game));
         this.components.add(this.nameField);
@@ -62,7 +63,7 @@ public class GuiCreateWorld extends Gui{
             });
 
             return true;
-        }, "Create"));
+        }, manager.localize(RockBottomAPI.createInternalRes("button.create"))));
 
         this.components.add(new ComponentToggleButton(this, this.width/2-50, 112, 100, 16, this.storyMode, ()->{
             this.storyMode = !this.storyMode;
@@ -138,11 +139,11 @@ public class GuiCreateWorld extends Gui{
         IFont font = manager.getFont();
         int middle = this.width/2;
 
-        font.drawCenteredString(this.x+middle, this.y+20, "World Name", 0.5F, false);
-        font.drawString(this.x+middle-75, this.y+50, "Final Name: "+this.worldName, 0.25F);
+        font.drawCenteredString(this.x+middle, this.y+20, manager.localize(RockBottomAPI.createInternalRes("info.world_name")), 0.5F, false);
+        font.drawString(this.x+middle-75, this.y+50, manager.localize(RockBottomAPI.createInternalRes("info.final_name"), this.worldName), 0.25F);
 
-        font.drawCenteredString(this.x+middle, this.y+60, "Seed", 0.5F, false);
-        font.drawString(this.x+middle-75, this.y+90, "Final Seed: "+this.seed, 0.25F);
+        font.drawCenteredString(this.x+middle, this.y+60, manager.localize(RockBottomAPI.createInternalRes("info.seed")), 0.5F, false);
+        font.drawString(this.x+middle-75, this.y+90, manager.localize(RockBottomAPI.createInternalRes("info.final_seed"), this.seed), 0.25F);
     }
 
     @Override

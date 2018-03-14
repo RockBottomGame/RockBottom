@@ -42,7 +42,7 @@ public class GuiSettings extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-75, 80, 150, 16, ()->{
             guiManager.openGui(new GuiContentPacks(this));
             return true;
-        }, "Content Packs"));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.content_packs"))));
 
         this.components.add(new ComponentSlider(this, this.width/2-75, 105, 150, 16, settings.autosaveIntervalSeconds, 30, 1800, ((integer, aBoolean) -> settings.autosaveIntervalSeconds = integer), assetManager.localize(RockBottomAPI.createInternalRes("button.autosave_interval")), assetManager.localize(RockBottomAPI.createInternalRes("info.autosave_interval"))));
 
