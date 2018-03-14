@@ -14,6 +14,8 @@ import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
+import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
+import de.ellpeck.rockbottom.api.entity.player.statistics.TileStatistic;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
@@ -385,8 +387,8 @@ public class InternalHooks implements IInternalHooks{
 
                             if(!player.world.isClient()){
                                 IStatistics stats = player.getStatistics();
-                                stats.notify(StatisticList.TILES_PLACED);
-                                stats.notify(StatisticList.INDIVIDUAL_TILES_PLACED.get(tile));
+                                stats.getOrInit(StatisticList.TILES_PLACED_TOTAL, NumberStatistic.class).update();
+                                stats.getOrInit(StatisticList.TILES_PLACED_PER_TILE, TileStatistic.class).update(tile);
 
                                 if(removeItem){
                                     player.getInv().remove(player.getSelectedSlot(), 1);

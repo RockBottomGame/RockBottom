@@ -6,6 +6,8 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
+import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
+import de.ellpeck.rockbottom.api.entity.player.statistics.TileStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.AddBreakProgressEvent;
 import de.ellpeck.rockbottom.api.event.impl.BreakEvent;
@@ -107,11 +109,8 @@ public class InteractionManager implements IInteractionManager{
 
             if(!player.world.isClient()){
                 IStatistics stats = player.getStatistics();
-                stats.notify(StatisticList.TILES_BROKEN);
-                stats.notify(StatisticList.INDIVIDUAL_TILES_BROKEN.get(tile));
-
-                ItemInstance holding = player.getInv().get(player.getSelectedSlot());
-                stats.notify(holding != null ? StatisticList.ITEMS_USED_AS_TOOL.get(holding.getItem()) : StatisticList.NOTHING_USED_AS_TOOL);
+                stats.getOrInit(StatisticList.TILES_BROKEN_TOTAL, NumberStatistic.class).update();
+                stats.getOrInit(StatisticList.TILES_BROKEN_PER_TILE, TileStatistic.class).update(tile);
             }
         }
     }

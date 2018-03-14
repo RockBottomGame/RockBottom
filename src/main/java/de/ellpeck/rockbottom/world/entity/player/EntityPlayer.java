@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
+import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -132,7 +133,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                     }
                 }
                 else{
-                    this.statistics.notify(StatisticList.CONTAINERS_OPENED);
+                    this.statistics.getOrInit(StatisticList.CONTAINERS_OPENED, NumberStatistic.class).update();
 
                     if(this.world.isServer()){
                         this.sendPacket(new PacketContainerData(this.currentContainer));

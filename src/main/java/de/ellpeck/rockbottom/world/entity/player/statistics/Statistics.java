@@ -4,8 +4,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.Statistic;
-import de.ellpeck.rockbottom.api.event.EventResult;
-import de.ellpeck.rockbottom.api.event.impl.StatisticNotifyEvent;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
@@ -23,23 +21,28 @@ public class Statistics implements IStatistics{
     }
 
     @Override
-    public void notify(IResourceName name){
-        Statistic stat = this.getOrInit(name);
-        if(stat != null){
-            StatisticNotifyEvent event = new StatisticNotifyEvent(this.player, this, stat);
-            if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
-                event.statistic.notify(this.player);
+    public Statistic getOrInit(IResourceName name){
+        return this.statistics.computeIfAbsent(name, n -> {
+            Statistic s = RockBottomAPI.STATISTICS_REGISTRY.get(n);
+            if(s != null){
+                s.reset();
+                return s;
             }
-        }
+            else{
+                return null;
+            }
+        });
     }
 
     @Override
-    public Statistic getOrInit(IResourceName name){
-        return this.statistics.computeIfAbsent(name, n -> {
-            Statistic stat = RockBottomAPI.STATISTICS_REGISTRY.get(n);
-            stat.reset();
-            return stat;
-        });
+    public <T extends Statistic> T getOrInit(IResourceName name, Class<T> statClass){
+        Statistic stat = this.getOrInit(name);
+        if(stat != null && statClass.isAssignableFrom(stat.getClass())){
+            return (T)stat;
+        }
+        else{
+            return null;
+        }
     }
 
     public void save(DataSet set){
