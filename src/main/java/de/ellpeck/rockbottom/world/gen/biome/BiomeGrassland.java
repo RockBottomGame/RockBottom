@@ -18,7 +18,7 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
-        int height = this.getExpectedSurfaceHeight(world, chunk, x, layer, noise);
+        int height = this.getExpectedSurfaceHeight(world, chunk.getX()+x, layer, noise);
         int stoneHeight = height-Util.ceil(noise.make2dNoise((chunk.getX()+x)/5D, 0D)*3D)-2;
         return getState(layer, chunk.getY()+y, height, stoneHeight);
     }
@@ -51,8 +51,8 @@ public class BiomeGrassland extends BiomeBasic{
     }
 
     @Override
-    public int getExpectedSurfaceHeight(IWorld world, IChunk chunk, int x, TileLayer layer, INoiseGen noise){
-        return getHeight(layer, chunk.getX()+x, noise, 0, 10);
+    public int getExpectedSurfaceHeight(IWorld world, int x, TileLayer layer, INoiseGen noise){
+        return getHeight(layer, x, noise, 0, 10);
     }
 
     @Override

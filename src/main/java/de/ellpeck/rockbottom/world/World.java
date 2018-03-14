@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world;
 
+import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
@@ -35,6 +36,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketSound;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
 import io.netty.channel.Channel;
 
 import java.io.File;
@@ -58,6 +60,7 @@ public class World implements IWorld{
     protected File additionalDataFile;
     protected int saveTicksCounter;
     private ModBasedDataSet additionalData;
+    public final WorldGenBiomes biomeGen;
 
     public World(WorldInfo info, DynamicRegistryInfo regInfo){
         this.info = info;
@@ -66,9 +69,9 @@ public class World implements IWorld{
         List<IWorldGenerator> generators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
-        for(Class<? extends IWorldGenerator> genClass : RockBottomAPI.WORLD_GENERATORS.getUnmodifiable().values()){
+        for(Map.Entry<IResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.getUnmodifiable().entrySet()){
             try{
-                IWorldGenerator generator = genClass.getConstructor().newInstance();
+                IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
                 generator.initWorld(this);
 
                 if(generator.generatesRetroactively()){
@@ -77,7 +80,7 @@ public class World implements IWorld{
                 generators.add(generator);
             }
             catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class "+genClass, e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class "+entry.getValue(), e);
             }
         }
 
@@ -89,6 +92,8 @@ public class World implements IWorld{
         this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
 
         RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world ("+(this.retroactiveGenerators.size()+" of which can generate retroactively)"));
+
+        this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes)this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry! This is not allowed!");
 
         this.playersUnmodifiable = Collections.unmodifiableList(this.players);
     }
@@ -398,6 +403,17 @@ public class World implements IWorld{
     public int getLowestAirUpwards(TileLayer layer, int x, int y, boolean ignoreReplaceableTiles){
         IChunk chunk = this.getChunk(x, y);
         return chunk.getLowestAirUpwards(layer, x, y, ignoreReplaceableTiles);
+    }
+
+    @Override
+    public Biome getExpectedBiome(int x, int y){
+        return this.biomeGen.getBiome(x, y, this);
+    }
+
+    @Override
+    public int getExpectedSurfaceHeight(TileLayer layer, int x, int y){
+        Biome biome = this.getExpectedBiome(x, y);
+        return biome.getExpectedSurfaceHeight(this, x, layer, this.biomeGen.getBiomeNoise(this, biome));
     }
 
     @Override
@@ -727,6 +743,16 @@ public class World implements IWorld{
     @Override
     public List<IWorldGenerator> getSortedRetroactiveGenerators(){
         return this.retroactiveGenerators;
+    }
+
+    @Override
+    public IWorldGenerator getGenerator(IResourceName name){
+        for(IWorldGenerator gen : this.getSortedGenerators()){
+            if(name.equals(RockBottomAPI.WORLD_GENERATORS.getId(gen.getClass()))){
+                return gen;
+            }
+        }
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world;
 
+import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
@@ -299,9 +300,8 @@ public class Chunk implements IChunk{
 
     @Override
     public void setStateInner(TileLayer layer, int x, int y, TileState tile){
-        if(tile == null){
-            throw new IllegalArgumentException("Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
-        }
+        Preconditions.checkNotNull(tile, "Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
+        Preconditions.checkNotNull(layer, "Tried setting tile to null layer in chunk at "+this.gridX+", "+this.gridY+"!");
 
         Tile newTile = tile.getTile();
         if(!layer.canTileBeInLayer(this.world, this.x+x, this.y+y, newTile)){
@@ -603,6 +603,16 @@ public class Chunk implements IChunk{
         else{
             return -1;
         }
+    }
+
+    @Override
+    public Biome getExpectedBiome(int x, int y){
+        return this.world.getExpectedBiome(x, y);
+    }
+
+    @Override
+    public int getExpectedSurfaceHeight(TileLayer layer, int x, int y){
+        return this.world.getExpectedSurfaceHeight(layer, x, y);
     }
 
     @Override
@@ -976,9 +986,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void setBiomeInner(int x, int y, Biome biome){
-        if(biome == null){
-            throw new IllegalArgumentException("Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+"!");
-        }
+        Preconditions.checkNotNull(biome, "Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+"!");
 
         Biome oldBiome = this.getBiomeInner(x, y);
         if(biome != oldBiome){

@@ -73,7 +73,7 @@ public final class ContentRegistry{
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("sand"), EntitySand.class);
         RockBottomAPI.ENTITY_REGISTRY.register(RockBottomAPI.createInternalRes("firework"), EntityFirework.class);
 
-        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("biomes"), WorldGenBiomes.class);
+        RockBottomAPI.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("grass"), WorldGenGrass.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("trees"), WorldGenTrees.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("flowers"), WorldGenFlowers.class);

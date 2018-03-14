@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
@@ -16,6 +17,7 @@ import java.util.*;
 
 public class WorldGenBiomes implements IWorldGenerator{
 
+    public static final IResourceName ID = RockBottomAPI.createInternalRes("biomes");
     private static final int SIZE = 5;
     private static final int MAX_SIZE = 64;
     private final long[] layerSeeds = new long[MAX_SIZE];
@@ -43,8 +45,7 @@ public class WorldGenBiomes implements IWorldGenerator{
                 Biome biome = this.getBiome(chunk.getX()+x, chunk.getY()+y, world);
                 chunk.setBiomeInner(x, y, biome);
 
-                INoiseGen noise = this.biomeNoiseGens.computeIfAbsent(biome, b -> RockBottomAPI.getApiHandler().makeSimplexNoise(b.getBiomeSeed(world)));
-
+                INoiseGen noise = this.getBiomeNoise(world, biome);
                 for(TileLayer layer : TileLayer.getAllLayers()){
                     chunk.setStateInner(layer, x, y, biome.getState(world, chunk, x, y, layer, noise));
                 }
@@ -52,7 +53,7 @@ public class WorldGenBiomes implements IWorldGenerator{
         }
     }
 
-    private Biome getBiome(int x, int y, IWorld world){
+    public Biome getBiome(int x, int y, IWorld world){
         int size = Math.min(MAX_SIZE, SIZE);
         int twoToSize = (int)Math.pow(2, size);
 
@@ -89,6 +90,10 @@ public class WorldGenBiomes implements IWorldGenerator{
             offset = this.zoomFromPos(offset, this.layerSeeds[i], world);
         }
         return offset;
+    }
+
+    public INoiseGen getBiomeNoise(IWorld world, Biome biome){
+       return this.biomeNoiseGens.computeIfAbsent(biome, b -> RockBottomAPI.getApiHandler().makeSimplexNoise(b.getBiomeSeed(world)));
     }
 
     private Pos2 zoomFromPos(Pos2 pos, long seed, IWorld world){
