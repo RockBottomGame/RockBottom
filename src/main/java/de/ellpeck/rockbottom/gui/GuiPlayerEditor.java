@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.init.RockBottom;
-import de.ellpeck.rockbottom.render.PlayerDesign;
+import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 
 import java.awt.*;

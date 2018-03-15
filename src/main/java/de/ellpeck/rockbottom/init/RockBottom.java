@@ -41,8 +41,8 @@ import de.ellpeck.rockbottom.net.client.ClientWorld;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
-import de.ellpeck.rockbottom.render.PlayerDesign;
 import de.ellpeck.rockbottom.render.WorldRenderer;
+import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
@@ -70,7 +70,7 @@ public class RockBottom extends AbstractGame{
 
     protected Settings settings;
     private EntityPlayer player;
-    private PlayerDesign playerDesign;
+    private IPlayerDesign playerDesign;
     private GuiManager guiManager;
     private InteractionManager interactionManager;
     public AssetManager assetManager;
@@ -414,7 +414,7 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    public PlayerDesign getPlayerDesign(){
+    public IPlayerDesign getPlayerDesign(){
         return this.playerDesign;
     }
 

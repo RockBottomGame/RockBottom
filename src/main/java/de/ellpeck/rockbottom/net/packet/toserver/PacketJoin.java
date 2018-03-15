@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketReject;
-import de.ellpeck.rockbottom.render.PlayerDesign;
+import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

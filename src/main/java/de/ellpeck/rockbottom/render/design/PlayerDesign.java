@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.render;
+package de.ellpeck.rockbottom.render.design;
 
 import com.google.gson.annotations.SerializedName;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
