@@ -429,7 +429,7 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    public void shutdown(){
+    protected void shutdown(){
         super.shutdown();
 
         RockBottomAPI.logger().info("Disposing of resources");

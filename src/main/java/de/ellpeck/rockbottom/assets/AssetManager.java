@@ -84,6 +84,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.game = game;
     }
 
+    @Override
     public void load(){
         this.dispose();
         if(!this.assets.isEmpty()){

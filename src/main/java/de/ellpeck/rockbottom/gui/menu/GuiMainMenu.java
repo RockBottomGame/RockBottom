@@ -30,29 +30,26 @@ public class GuiMainMenu extends Gui{
         int start = (this.width-buttonWidth*buttonAmount-(buttonAmount-1)*(partWidth-buttonWidth))/2;
         int y = this.height-30;
 
-        this.components.add(new ComponentButton(this, start, y-20, buttonWidth, 16, () -> {
-            guiManager.openGui(new GuiPlayerEditor(this));
-            return true;
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.player_editor"))));
-        this.components.add(new ComponentButton(this, start, y, buttonWidth, 16, () -> {
+        ComponentButton modsButton = new ComponentButton(this, start, y-54, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiMods(this));
             return true;
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.mods"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.mods")));
+        this.components.add(modsButton);
+        modsButton.setActive(false);
 
-        this.components.add(new ComponentButton(this, start+partWidth-5, y-20, buttonWidth+10, 16, () -> {
-            guiManager.openGui(new GuiSelectWorld(this));
+        ComponentButton contentButton = new ComponentButton(this, start, y-37, buttonWidth, 16, () -> {
+            guiManager.openGui(new GuiContentPacks(this));
             return true;
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.play"))));
-        this.components.add(new ComponentButton(this, start+partWidth-5, y, buttonWidth+10, 16, () -> {
-            guiManager.openGui(new GuiJoinServer(this));
-            return true;
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.join"))));
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.content_packs")));
+        this.components.add(contentButton);
+        contentButton.setActive(false);
 
-        this.components.add(new ComponentButton(this, start+partWidth*2, y-20, buttonWidth, 16, () -> {
-            guiManager.openGui(new GuiSettings(this));
+        this.components.add(new ComponentButton(this, start, y-20, buttonWidth, 16, () -> {
+            modsButton.setActive(!modsButton.isActive());
+            contentButton.setActive(!contentButton.isActive());
             return true;
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.settings"))));
-        this.components.add(new ComponentButton(this, start+partWidth*2, y, buttonWidth, 16, () -> {
+        }, "Game Content"));
+        this.components.add(new ComponentButton(this, start, y, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiChangelog(this));
             return true;
         }, assetManager.localize(RockBottomAPI.createInternalRes("button.changelog"))){
@@ -70,6 +67,31 @@ public class GuiMainMenu extends Gui{
                 return super.getText();
             }
         });
+
+        this.components.add(new ComponentButton(this, start+partWidth-5, y-20, buttonWidth+10, 16, () -> {
+            guiManager.openGui(new GuiSelectWorld(this));
+            return true;
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.play"))));
+        this.components.add(new ComponentButton(this, start+partWidth-5, y, buttonWidth+10, 16, () -> {
+            guiManager.openGui(new GuiJoinServer(this));
+            return true;
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.join"))));
+
+        ComponentButton editorButton = new ComponentButton(this, start+partWidth*2, y-37, buttonWidth, 16, () -> {
+            guiManager.openGui(new GuiPlayerEditor(this));
+            return true;
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.player_editor")));
+        this.components.add(editorButton);
+        editorButton.setActive(false);
+
+        this.components.add(new ComponentButton(this, start+partWidth*2, y-20, buttonWidth, 16, ()->{
+            editorButton.setActive(!editorButton.isActive());
+            return true;
+        }, "The Player"));
+        this.components.add(new ComponentButton(this, start+partWidth*2, y, buttonWidth, 16, () -> {
+            guiManager.openGui(new GuiSettings(this));
+            return true;
+        }, assetManager.localize(RockBottomAPI.createInternalRes("button.settings"))));
 
         this.components.add(new ComponentButton(this, this.width-52, 2, 50, 10, () -> {
             guiManager.openGui(new GuiCredits(this));

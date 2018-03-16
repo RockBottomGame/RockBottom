@@ -13,7 +13,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.ToIntFunction;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -112,7 +111,7 @@ public class ContentPackLoader implements IContentPackLoader{
 
         RockBottomAPI.logger().info("Sorting content packs");
 
-        Comparator comp = Comparator.comparingInt((ToIntFunction<ContentPack>)value -> this.packSettings.getPriority(value.getId())).reversed();
+        Comparator comp = this.packSettings.getPriorityComparator();
         this.allPacks.sort(comp);
         this.activePacks.sort(comp);
         this.disabledPacks.sort(comp);

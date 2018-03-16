@@ -30,6 +30,7 @@ import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.content.pack.ContentPackLoader;
 import de.ellpeck.rockbottom.data.DataManager;
+import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
@@ -37,9 +38,11 @@ import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -133,7 +136,7 @@ public abstract class AbstractGame implements IGameInstance{
 
     public abstract int getAutosaveInterval();
 
-    public void shutdown(){
+    protected void shutdown(){
         this.quitWorld();
     }
 
@@ -367,6 +370,47 @@ public abstract class AbstractGame implements IGameInstance{
     public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition){
         synchronized(this.enqueuedActions){
             this.enqueuedActions.add(new EnqueuedAction(action, object, condition));
+        }
+    }
+
+    @Override
+    public void restart(){
+        try{
+            String args = "";
+            for(String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()){
+                if(!arg.toLowerCase(Locale.ROOT).contains("-agentlib")){
+                    args += arg+" ";
+                }
+            }
+
+            String cmd = "\""+System.getProperty("java.home")+"/bin/java"+"\" "+args;
+            String[] mainCommand = System.getProperty("sun.java.command").split(" ");
+
+            if(mainCommand[0].endsWith(".jar")){
+                cmd += "-jar "+new File(mainCommand[0]).getPath();
+            }
+            else{
+                cmd += "-cp \""+System.getProperty("java.class.path")+"\" "+mainCommand[0];
+            }
+
+            for(int i = 1; i < mainCommand.length; i++){
+                cmd += " "+mainCommand[i];
+            }
+
+            String finalCmd = cmd;
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try{
+                    Runtime.getRuntime().exec(finalCmd);
+                }
+                catch(Exception e){
+                    Logging.mainLogger.log(Level.WARNING, "There was an error while trying to restart the game", e);
+                }
+            }));
+
+            this.exit();
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.WARNING, "There was an error while trying to setup a game restart", e);
         }
     }
 
