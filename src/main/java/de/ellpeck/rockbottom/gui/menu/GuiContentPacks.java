@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.data.settings.ContentPackSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class GuiContentPacks extends Gui{
         this.components.add(this.rightMenu);
 
         this.organize();
+
+        this.components.add(new ComponentFancyButton(this, this.width/2+83, this.height-16, 16, 16, () -> Util.createAndOpen(game.getDataManager().getContentPacksDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), "Content Packs Folder"));
 
         this.components.add(new ComponentButton(this, this.width/2+1, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
