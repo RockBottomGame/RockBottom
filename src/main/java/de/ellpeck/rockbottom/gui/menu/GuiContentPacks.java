@@ -33,10 +33,10 @@ public class GuiContentPacks extends Gui{
         super.init(game);
         int halfWidth = this.width/2;
 
-        this.leftMenu = new ComponentMenu(this, halfWidth/2-63, 0, this.height-45, 1, 5, new BoundBox());
+        this.leftMenu = new ComponentMenu(this, halfWidth/2-63, 0, this.height-42, 1, 4, new BoundBox());
         this.components.add(this.leftMenu);
 
-        this.rightMenu = new ComponentMenu(this, halfWidth+halfWidth/2-63, 0, this.height-45, 1, 5, new BoundBox());
+        this.rightMenu = new ComponentMenu(this, halfWidth+halfWidth/2-63, 0, this.height-42, 1, 4, new BoundBox());
         this.components.add(this.rightMenu);
 
         this.organize();
