@@ -18,7 +18,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
-import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDropItem;
+import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDrop;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
@@ -61,7 +61,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(11, PacketInteract.class);
         RockBottomAPI.PACKET_REGISTRY.register(12, PacketHotbar.class);
         RockBottomAPI.PACKET_REGISTRY.register(13, PacketTileEntityData.class);
-        RockBottomAPI.PACKET_REGISTRY.register(14, PacketSlotModification.class);
+        RockBottomAPI.PACKET_REGISTRY.register(14, PacketShiftClick.class);
         RockBottomAPI.PACKET_REGISTRY.register(15, PacketOpenUnboundContainer.class);
         RockBottomAPI.PACKET_REGISTRY.register(16, PacketContainerData.class);
         RockBottomAPI.PACKET_REGISTRY.register(17, PacketContainerChange.class);
@@ -69,7 +69,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(19, PacketSendChat.class);
         RockBottomAPI.PACKET_REGISTRY.register(20, PacketHealth.class);
         RockBottomAPI.PACKET_REGISTRY.register(21, PacketRespawn.class);
-        RockBottomAPI.PACKET_REGISTRY.register(22, PacketDropItem.class);
+        RockBottomAPI.PACKET_REGISTRY.register(22, PacketDrop.class);
         RockBottomAPI.PACKET_REGISTRY.register(23, PacketChunkUnload.class);
         RockBottomAPI.PACKET_REGISTRY.register(24, PacketManualConstruction.class);
         RockBottomAPI.PACKET_REGISTRY.register(25, PacketDeath.class);
@@ -82,6 +82,7 @@ public class DataManager implements IDataManager{
         RockBottomAPI.PACKET_REGISTRY.register(32, PacketTime.class);
         RockBottomAPI.PACKET_REGISTRY.register(33, PacketAttack.class);
         RockBottomAPI.PACKET_REGISTRY.register(34, PacketEffect.class);
+        RockBottomAPI.PACKET_REGISTRY.register(35, PacketSetOrPickHolding.class);
 
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(0, ChatComponentText.class);
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(1, ChatComponentTranslation.class);

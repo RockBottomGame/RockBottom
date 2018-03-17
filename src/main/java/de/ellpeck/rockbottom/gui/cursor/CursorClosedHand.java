@@ -21,7 +21,7 @@ public class CursorClosedHand implements ISpecialCursor{
     @Override
     public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager){
         Gui gui = guiManager.getGui();
-        return gui instanceof GuiContainer && ((GuiContainer)gui).holdingInst != null;
+        return gui instanceof GuiContainer && ((GuiContainer)gui).getContainer().holdingInst != null;
     }
 
     @Override

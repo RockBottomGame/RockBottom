@@ -15,6 +15,7 @@ public class ClientChunk extends Chunk{
 
     public ClientChunk(World world, int gridX, int gridY){
         super(world, gridX, gridY);
+        this.isGenerating = true;
     }
 
     @Override

@@ -21,6 +21,8 @@ import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.gui.container.ContainerSlot;
+import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.internal.IInternalHooks;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -35,7 +37,8 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotModification;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import org.lwjgl.glfw.GLFW;
@@ -233,88 +236,92 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public boolean doDefaultSlotMovement(IGameInstance game, int button, float x, float y, ComponentSlot slot){
-        ItemInstance slotInst = slot.slot.get();
-        ItemInstance slotCopy = slotInst == null ? null : slotInst.copy();
+    public boolean doDefaultSlotMovement(IGameInstance game, int button, float x, float y, GuiContainer gui, ComponentSlot slot){
+        boolean isSecond = Settings.KEY_GUI_ACTION_2.isKey(button);
+        if(isSecond || Settings.KEY_GUI_ACTION_1.isKey(button)){
+            ItemContainer container = gui.getContainer();
+            return setOrPickUpHolding(gui.player, container, container.getIdForSlot(slot.slot), isSecond);
+        }
+        return false;
+    }
 
-        if(Settings.KEY_GUI_ACTION_1.isKey(button)){
-            if(slot.container.holdingInst == null){
-                if(slotCopy != null){
-                    if(this.setToInv(null, slot)){
-                        slot.container.holdingInst = slotCopy;
+    public static boolean setOrPickUpHolding(AbstractEntityPlayer player, ItemContainer container, int slotId, boolean half){
+        if(player.world.isClient()){
+            RockBottomAPI.getNet().sendToServer(new PacketSetOrPickHolding(player.getUniqueId(), slotId, half));
+        }
 
-                        return true;
-                    }
+        ContainerSlot slot = container.getSlot(slotId);
+        ItemInstance slotInst = slot.get();
+
+        if(half){
+            if(container.holdingInst == null){
+                if(slotInst != null){
+                    int halfAmount = Util.ceil(slot.get().getAmount()/2);
+                    container.holdingInst = slotInst.copy().setAmount(halfAmount);
+                    slot.set(slotInst.removeAmount(halfAmount));
+                    return true;
                 }
             }
             else{
-                if(slotCopy == null){
-                    if(this.setToInv(slot.container.holdingInst, slot)){
-                        slot.container.holdingInst = null;
+                boolean should = false;
 
+                if(slotInst != null){
+                    if(slotInst.isEffectivelyEqual(container.holdingInst) && slotInst.getAmount() < slotInst.getMaxAmount()){
+                        should = true;
+                        slot.set(slotInst.addAmount(1));
+                    }
+                }
+                else{
+                    should = true;
+                    slot.set(container.holdingInst.copy().setAmount(1));
+                }
+
+                if(should){
+                    container.holdingInst.removeAmount(1);
+                    if(container.holdingInst.getAmount() <= 0){
+                        container.holdingInst = null;
+                    }
+                    return true;
+                }
+            }
+        }
+        else{
+            if(container.holdingInst == null){
+                if(slotInst != null){
+                    container.holdingInst = slotInst;
+                    slot.set(null);
+                    return true;
+                }
+            }
+            else{
+                int removeAmount = 0;
+
+                if(slotInst != null){
+                    if(slotInst.isEffectivelyEqual(container.holdingInst)){
+                        int possibleAdd = Math.min(slotInst.getMaxAmount()-slotInst.getAmount(), container.holdingInst.getAmount());
+                        if(possibleAdd > 0){
+                            removeAmount = possibleAdd;
+                            slot.set(slotInst.copy().addAmount(possibleAdd));
+                        }
+                    }
+                    else{
+                        ItemInstance slotCopy = slotInst.copy();
+                        slot.set(container.holdingInst);
+                        container.holdingInst = slotCopy;
                         return true;
                     }
                 }
                 else{
-                    if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
-                        int possible = Math.min(slotCopy.getMaxAmount()-slotCopy.getAmount(), slot.container.holdingInst.getAmount());
-                        if(possible > 0){
-                            if(this.setToInv(slotCopy.addAmount(possible), slot)){
-                                slot.container.holdingInst.removeAmount(possible);
-                                if(slot.container.holdingInst.getAmount() <= 0){
-                                    slot.container.holdingInst = null;
-                                }
-
-                                return true;
-                            }
-                        }
-                    }
-                    else{
-                        ItemInstance copy = slot.container.holdingInst.copy();
-                        if(this.setToInv(copy, slot)){
-                            slot.container.holdingInst = slotCopy;
-
-                            return true;
-                        }
-                    }
+                    removeAmount = container.holdingInst.getAmount();
+                    slot.set(container.holdingInst.copy());
                 }
-            }
-        }
-        else if(Settings.KEY_GUI_ACTION_2.isKey(button)){
-            if(slot.container.holdingInst == null){
-                if(slotCopy != null){
-                    int half = Util.ceil((double)slotCopy.getAmount()/2);
-                    slotCopy.removeAmount(half);
 
-                    if(this.setToInv(slotCopy.getAmount() <= 0 ? null : slotCopy, slot)){
-                        slot.container.holdingInst = slotCopy.copy().setAmount(half);
-
-                        return true;
+                if(removeAmount > 0){
+                    container.holdingInst.removeAmount(removeAmount);
+                    if(container.holdingInst.getAmount() <= 0){
+                        container.holdingInst = null;
                     }
-                }
-            }
-            else{
-                if(slotCopy == null){
-                    if(this.setToInv(slot.container.holdingInst.copy().setAmount(1), slot)){
-                        slot.container.holdingInst.removeAmount(1);
-                        if(slot.container.holdingInst.getAmount() <= 0){
-                            slot.container.holdingInst = null;
-                        }
-
-                        return true;
-                    }
-                }
-                else if(slotCopy.isEffectivelyEqual(slot.container.holdingInst)){
-                    if(slotCopy.getAmount() < slotCopy.getMaxAmount()){
-                        if(this.setToInv(slotCopy.addAmount(1), slot)){
-                            slot.container.holdingInst.removeAmount(1);
-                            if(slot.container.holdingInst.getAmount() <= 0){
-                                slot.container.holdingInst = null;
-                            }
-
-                            return true;
-                        }
-                    }
+                    return true;
                 }
             }
         }
@@ -325,12 +332,11 @@ public class InternalHooks implements IInternalHooks{
     public boolean doDefaultShiftClicking(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot){
         if(Settings.KEY_GUI_ACTION_1.isKey(button)){
             if(slot.slot.canRemove()){
+                ItemContainer container = gui.getContainer();
                 ItemInstance remaining = slot.slot.get();
 
                 if(remaining != null){
                     boolean modified = false;
-                    ItemInstance remainingCopy = remaining.copy();
-
                     for(GuiContainer.ShiftClickBehavior behavior : gui.shiftClickBehaviors){
                         if(behavior.slots.contains(slot.componentId)){
                             for(int slotInto : behavior.slotsInto){
@@ -338,30 +344,13 @@ public class InternalHooks implements IInternalHooks{
                                 if(comp instanceof ComponentSlot){
                                     ComponentSlot intoSlot = (ComponentSlot)comp;
                                     if(behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)){
-                                        ItemInstance existing = intoSlot.slot.get();
+                                        int result = shiftClick(gui.player, container, container.getIdForSlot(slot.slot), container.getIdForSlot(intoSlot.slot));
 
-                                        if(existing == null){
-                                            if(this.setToInv(remainingCopy, intoSlot)){
-                                                this.setToInv(null, slot);
-                                                return true;
-                                            }
+                                        if(result == 1){
+                                            return true;
                                         }
-                                        else if(existing.isEffectivelyEqual(remainingCopy)){
-                                            int possible = Math.min(existing.getMaxAmount()-existing.getAmount(), remainingCopy.getAmount());
-                                            if(possible > 0){
-                                                if(this.setToInv(existing.copy().addAmount(possible), intoSlot)){
-                                                    modified = true;
-
-                                                    remainingCopy.removeAmount(possible);
-                                                    if(remainingCopy.getAmount() <= 0){
-                                                        this.setToInv(null, slot);
-                                                        return true;
-                                                    }
-                                                    else{
-                                                        this.setToInv(remainingCopy, slot);
-                                                    }
-                                                }
-                                            }
+                                        else if(result == 2){
+                                            modified = true;
                                         }
                                     }
                                 }
@@ -373,6 +362,48 @@ public class InternalHooks implements IInternalHooks{
             }
         }
         return false;
+    }
+
+    public static int shiftClick(AbstractEntityPlayer player, ItemContainer container, int from, int into){
+        if(player.world.isClient()){
+            RockBottomAPI.getNet().sendToServer(new PacketShiftClick(player.getUniqueId(), from, into));
+        }
+
+        ContainerSlot slotFrom = container.getSlot(from);
+        ContainerSlot slotInto = container.getSlot(into);
+
+        ItemInstance fromInst = slotFrom.get();
+        ItemInstance intoInst = slotInto.get();
+
+        if(slotFrom.canRemove()){
+            if(intoInst == null){
+                if(slotInto.canPlace(fromInst)){
+                    slotInto.set(fromInst);
+                    slotFrom.set(null);
+                    return 1;
+                }
+            }
+            else if(intoInst.isEffectivelyEqual(fromInst)){
+                int possible = Math.min(intoInst.getMaxAmount()-intoInst.getAmount(), fromInst.getAmount());
+                if(possible > 0){
+                    ItemInstance newInto = intoInst.copy().addAmount(possible);
+                    if(slotInto.canPlace(newInto)){
+                        slotInto.set(newInto);
+
+                        int remaining = fromInst.getAmount()-possible;
+                        if(remaining <= 0){
+                            slotFrom.set(null);
+                            return 1;
+                        }
+                        else{
+                            slotFrom.set(fromInst.copy().setAmount(remaining));
+                            return 2;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -837,20 +868,6 @@ public class InternalHooks implements IInternalHooks{
             }
         }
         return empty;
-    }
-
-    private boolean setToInv(ItemInstance inst, ComponentSlot slot){
-        if(inst == null ? slot.slot.canRemove() : slot.slot.canPlace(inst)){
-            slot.slot.set(inst);
-
-            if(RockBottomAPI.getNet().isClient()){
-                RockBottomAPI.getNet().sendToServer(new PacketSlotModification(RockBottomAPI.getGame().getPlayer().getUniqueId(), slot.componentId, inst));
-            }
-            return true;
-        }
-        else{
-            return false;
-        }
     }
 
     @Override
