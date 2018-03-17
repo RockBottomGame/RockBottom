@@ -211,7 +211,7 @@ public final class CrashManager{
     private static String getComment() throws Exception{
         List<String> lines = new ArrayList<>();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/comment/crash.txt"), Charsets.UTF_8));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream("assets/rockbottom/text/crash.txt"), Charsets.UTF_8));
         while(true){
             String line = reader.readLine();
             if(line != null){

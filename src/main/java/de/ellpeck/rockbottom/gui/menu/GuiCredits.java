@@ -24,7 +24,7 @@ public class GuiCredits extends Gui{
     public GuiCredits(Gui parent){
         super(parent);
 
-        String path = "assets/rockbottom/credits.txt";
+        String path = "assets/rockbottom/text/credits.txt";
         try{
             BufferedReader reader = new BufferedReader(new InputStreamReader(ContentManager.getResourceAsStream(path), Charsets.UTF_8));
 
