@@ -70,12 +70,18 @@ public class PacketJoin implements IPacket{
         IWorld world = game.getWorld();
         ChatComponentTranslation reject = null;
 
-        INetHandler net = RockBottomAPI.getNet();
-        if(net.isWhitelistEnabled() && !net.isWhitelisted(this.id)){
-            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"));
+        if(world != null && world.getAllPlayers().size() >= game.getPlayerCap()){
+            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.server_full"));
         }
-        else if(net.isBlacklisted(this.id)){
-            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"), net.getBlacklistReason(this.id));
+
+        if(reject == null){
+            INetHandler net = RockBottomAPI.getNet();
+            if(net.isWhitelistEnabled() && !net.isWhitelisted(this.id)){
+                reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"));
+            }
+            else if(net.isBlacklisted(this.id)){
+                reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"), net.getBlacklistReason(this.id));
+            }
         }
 
         if(reject == null){
@@ -87,7 +93,6 @@ public class PacketJoin implements IPacket{
                         player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getRegInfo()));
                         world.addEntity(player);
 
-                        reject = null;
                         RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
 
                         RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.connect"), player.getName()));

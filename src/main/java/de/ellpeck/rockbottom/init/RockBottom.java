@@ -335,6 +335,11 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
+    public int getPlayerCap(){
+        return 10;
+    }
+
+    @Override
     protected void update(){
         this.input.update();
 

@@ -113,6 +113,11 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public int getPlayerCap(){
+        return this.settings.maxPlayerAmount;
+    }
+
+    @Override
     public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo){
         throw new UnsupportedOperationException("Cannot join a world on a dedicated server");
     }
