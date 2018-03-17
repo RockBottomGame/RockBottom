@@ -35,6 +35,8 @@ public final class CrashManager{
         Main.memReserve = null;
         System.gc();
 
+        t = t.fillInStackTrace();
+
         File dir = new File(Main.gameDir, "crashes");
         if(!dir.exists()){
             dir.mkdirs();

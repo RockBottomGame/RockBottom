@@ -32,20 +32,20 @@ import java.util.logging.Level;
 public class DataManager implements IDataManager{
 
     static{
-        RockBottomAPI.PART_REGISTRY.register(0, PartInt.class);
-        RockBottomAPI.PART_REGISTRY.register(1, PartFloat.class);
-        RockBottomAPI.PART_REGISTRY.register(2, PartDouble.class);
-        RockBottomAPI.PART_REGISTRY.register(3, PartIntArray.class);
-        RockBottomAPI.PART_REGISTRY.register(4, PartShortArray.class);
-        RockBottomAPI.PART_REGISTRY.register(5, PartByteArray.class);
-        RockBottomAPI.PART_REGISTRY.register(6, PartDataSet.class);
-        RockBottomAPI.PART_REGISTRY.register(7, PartLong.class);
-        RockBottomAPI.PART_REGISTRY.register(8, PartUniqueId.class);
-        RockBottomAPI.PART_REGISTRY.register(9, PartByte.class);
-        RockBottomAPI.PART_REGISTRY.register(10, PartShort.class);
-        RockBottomAPI.PART_REGISTRY.register(11, PartBoolean.class);
-        RockBottomAPI.PART_REGISTRY.register(12, PartString.class);
-        RockBottomAPI.PART_REGISTRY.register(13, PartModBasedDataSet.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("int"), 0, PartInt.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("float"), 1, PartFloat.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("double"), 2, PartDouble.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("int_array"), 3, PartIntArray.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("short_array"), 4, PartShortArray.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("byte_array"), 5, PartByteArray.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("data_set"), 6, PartDataSet.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("long"), 7, PartLong.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("uuid"), 8, PartUniqueId.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("byte"), 9, PartByte.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("short"), 10, PartShort.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("boolean"), 11, PartBoolean.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("string"), 12, PartString.class);
+        RockBottomAPI.PART_REGISTRY.register(RockBottomAPI.createInternalRes("mod_data_set"), 13, PartModBasedDataSet.class);
 
         RockBottomAPI.PACKET_REGISTRY.register(0, PacketJoin.class);
         RockBottomAPI.PACKET_REGISTRY.register(1, PacketChunk.class);

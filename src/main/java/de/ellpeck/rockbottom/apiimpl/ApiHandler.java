@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -142,7 +143,7 @@ public class ApiHandler implements IApiHandler{
 
     private void writePart(JsonArray array, DataPart part) throws Exception{
         JsonObject object = new JsonObject();
-        object.addProperty("id", RockBottomAPI.PART_REGISTRY.getId(part.getClass()));
+        object.addProperty("type", RockBottomAPI.PART_REGISTRY.getName(part.getClass()).toString());
         object.addProperty("name", part.getName());
         object.add("data", part.write());
         array.add(object);
@@ -150,11 +151,11 @@ public class ApiHandler implements IApiHandler{
 
     private DataPart readPart(JsonArray array, int i) throws Exception{
         JsonObject object = array.get(i).getAsJsonObject();
-        Integer id = object.get("id").getAsInt();
+        IResourceName type = RockBottomAPI.createRes(object.get("type").getAsString());
         String name = object.get("name").getAsString();
         JsonElement data = object.get("data");
 
-        Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(id);
+        Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(type);
         DataPart part = partClass.getConstructor(String.class).newInstance(name);
         part.read(data);
 
