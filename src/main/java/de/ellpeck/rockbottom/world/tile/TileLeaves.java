@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -57,21 +59,31 @@ public class TileLeaves extends TileBasic{
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(!world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-                int rangeX = 2;
-                int rangeY = 4;
-
-                for(int addX = -rangeX; addX <= rangeX; addX++){
-                    for(int addY = -rangeY; addY <= rangeY; addY++){
-                        TileState state = world.getState(layer, x+addX, y+addY);
-                        if(state.getTile().doesSustainLeaves(world, x+addX, y+addY, layer)){
-                            return;
-                        }
-                    }
+                if(!this.recursiveLeavesCheck(world, x, y, layer,new ArrayList<>())){
+                    world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25)+5);
                 }
-
-                world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25)+5);
             }
         }
+    }
+
+    private boolean recursiveLeavesCheck(IWorld world, int x, int y, TileLayer layer, List<Pos2> alreadyChecked){
+        for(Direction direction : Direction.ADJACENT){
+            Pos2 pos = new Pos2(x+direction.x, y+direction.y);
+            if(!alreadyChecked.contains(pos)){
+                alreadyChecked.add(pos);
+
+                TileState state = world.getState(layer, pos.getX(), pos.getY());
+                if(state.getTile() == this && state.get(StaticTileProps.NATURAL)){
+                    if(this.recursiveLeavesCheck(world, pos.getX(), pos.getY(), layer, alreadyChecked)){
+                        return true;
+                    }
+                }
+                else if(state.getTile().doesSustainLeaves(world, pos.getX(), pos.getY(), layer)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

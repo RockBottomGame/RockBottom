@@ -44,8 +44,7 @@ public class TileLog extends TileBasic{
 
         if(destroyer != null && !world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT).isNatural()){
-                List<Pos2> alreadyChecked = new ArrayList<>();
-                this.recursiveTreeCheck(world, x, y, layer, y, alreadyChecked);
+                this.recursiveTreeCheck(world, x, y, layer, y, new ArrayList<>());
             }
         }
     }
