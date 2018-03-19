@@ -99,11 +99,15 @@ public class SoundEffect implements ISound{
 
     @Override
     public void stop(){
-        if(!this.currentIndices.isEmpty()){
-            for(int i : this.currentIndices){
-                SoundHandler.stopSoundEffect(i);
-            }
-            this.currentIndices.clear();
+        for(int i : this.currentIndices){
+            this.stopIndex(i);
+        }
+    }
+
+    public void stopIndex(int index){
+        if(this.currentIndices.contains(index)){
+            SoundHandler.stopSoundEffect(index);
+            this.currentIndices.remove(index);
         }
     }
 

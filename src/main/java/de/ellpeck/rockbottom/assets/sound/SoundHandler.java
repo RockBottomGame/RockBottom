@@ -86,7 +86,7 @@ public final class SoundHandler{
             if(index >= 0){
                 SoundEffect current = CURRENT_EFFECTS.get(index);
                 if(current != null){
-                    current.stop();
+                    current.stopIndex(index);
                 }
 
                 CURRENT_EFFECTS.put(index, effect);
