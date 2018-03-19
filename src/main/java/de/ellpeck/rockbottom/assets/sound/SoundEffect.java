@@ -14,13 +14,13 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SoundEffect implements ISound{
 
     private final int id;
-    private final List<Integer> currentIndices = new ArrayList<>();
+    private final Set<Integer> currentIndices = new HashSet<>();
 
     public SoundEffect(InputStream stream) throws Exception{
         this.id = AL10.alGenBuffers();
