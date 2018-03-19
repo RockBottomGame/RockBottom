@@ -27,7 +27,7 @@ public class ClientWorld extends World{
     }
 
     @Override
-    protected Chunk loadChunk(int gridX, int gridY){
+    protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue){
         Chunk chunk = new ClientChunk(this, gridX, gridY);
 
         this.loadedChunks.add(chunk);
@@ -64,7 +64,7 @@ public class ClientWorld extends World{
     }
 
     @Override
-    protected boolean saveChunk(IChunk chunk){
+    protected boolean saveChunk(IChunk chunk, boolean enqueue){
         throw new UnsupportedOperationException("Cannot save chunk in client world");
     }
 

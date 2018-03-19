@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.init;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.ServerSettings;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -11,9 +10,6 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
-import de.ellpeck.rockbottom.api.net.chat.IChatLog;
-import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
@@ -22,7 +18,6 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 
 import java.io.File;
-import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -37,44 +32,6 @@ public class RockBottomServer extends AbstractGame{
     @Override
     public void init(){
         super.init();
-
-        ICommandSender consoleCommandSender = new ICommandSender(){
-            @Override
-            public int getCommandLevel(){
-                return Constants.ADMIN_PERMISSION;
-            }
-
-            @Override
-            public String getName(){
-                return "Console";
-            }
-
-            @Override
-            public UUID getUniqueId(){
-                return UUID.randomUUID();
-            }
-
-            @Override
-            public String getChatColorFormat(){
-                return FormattingCode.RED.toString();
-            }
-
-            @Override
-            public void sendMessageTo(IChatLog chat, ChatComponent message){
-                RockBottomAPI.logger().info(message.getUnformattedWithChildren());
-            }
-        };
-
-        Thread consoleThread = new Thread(() -> {
-            Scanner scanner = new Scanner(System.in);
-            while(this.isRunning){
-                String input = scanner.nextLine();
-                this.enqueueAction((game, object) -> this.chatLog.sendCommandSenderMessage(input, consoleCommandSender), null);
-            }
-            scanner.close();
-        }, "ConsoleListener");
-        consoleThread.setDaemon(true);
-        consoleThread.start();
 
         boolean isNew;
         File file = new File(this.dataManager.getWorldsDir(), "world_server");
@@ -103,6 +60,8 @@ public class RockBottomServer extends AbstractGame{
 
     @Override
     public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        super.preInit(game, apiHandler, eventHandler);
+
         this.settings = new ServerSettings();
         this.settings.load();
     }

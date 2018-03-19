@@ -43,7 +43,7 @@ public final class DebugRenderer{
             if(!RockBottomAPI.getNet().isClient()){
                 list.add("Players: "+world.players.size());
             }
-            list.add("TileEntities: "+world.getAllTileEntities().size()+ ", Ticking: "+world.getAllTickingTileEntities().size());
+            list.add("TileEntities: "+world.getAllTileEntities().size()+", Ticking: "+world.getAllTickingTileEntities().size());
             list.add("Particles: "+game.getParticleManager().getAmount());
             int scheduledTileAmount = 0;
             for(IChunk chunk : world.loadedChunks){
@@ -67,7 +67,7 @@ public final class DebugRenderer{
             list.add("TilePos: "+x+", "+y);
             if(world.isPosLoaded(x, y)){
                 IChunk chunk = world.getChunk(x, y);
-                list.add("ChunkPos: "+chunk.getGridX()+", "+chunk.getGridY());
+                list.add("ChunkPos: "+chunk.getGridX()+", "+chunk.getGridY()+", Persistent: "+chunk.isPersistent());
                 if(!RockBottomAPI.getNet().isClient()){
                     list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
                 }
@@ -77,7 +77,7 @@ public final class DebugRenderer{
 
                 list.add("");
                 for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
-                    list.add(layer.getName()+": "+world.getState(layer, x, y).toString()+ ", Avg Height: "+chunk.getAverageHeight(layer));
+                    list.add(layer.getName()+": "+world.getState(layer, x, y).toString()+", Avg Height: "+chunk.getAverageHeight(layer));
                 }
                 list.add("");
 

@@ -34,6 +34,7 @@ import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
+import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 
@@ -115,12 +116,7 @@ public abstract class AbstractGame implements IGameInstance{
                     lastPollTime = time;
                 }
 
-                try{
-                    Thread.sleep(1);
-                }
-                catch(InterruptedException e){
-                    RockBottomAPI.logger().fine("Failed to sleep in main game loop");
-                }
+                Util.sleepSafe(1);
             }
         }
         finally{
@@ -198,6 +194,11 @@ public abstract class AbstractGame implements IGameInstance{
         if(this.world != null){
             this.world.update(this);
         }
+    }
+
+    @Override
+    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        ThreadHandler.init(this);
     }
 
     @Override

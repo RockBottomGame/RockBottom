@@ -60,7 +60,7 @@ public class Chunk implements IChunk{
     protected final List<Entity> entitiesUnmodifiable;
     protected final List<TileEntity> tileEntitiesUnmodifiable;
     protected final List<TileEntity> tickingTileEntitiesUnmodifiable;
-    public boolean isGenerating;
+    public boolean isGenerating = true;
     protected boolean needsSave;
     private int internalLoadingTimer;
     private ModBasedDataSet additionalData;
@@ -68,9 +68,15 @@ public class Chunk implements IChunk{
     private Biome mostProminentBiome = GameContent.BIOME_SKY;
     private final Map<TileLayer, int[]> heights = new HashMap<>();
     private final Map<TileLayer, Integer> averageHeights = new HashMap<>();
+    private final boolean isPersistent;
 
-    public Chunk(World world, int gridX, int gridY){
+    public Chunk(World world, int gridX, int gridY, boolean isPersistent){
         this.world = world;
+        this.isPersistent = isPersistent;
+
+        if(isPersistent){
+            RockBottomAPI.logger().config("Creating persistent chunk at "+gridX+", "+gridY);
+        }
 
         this.x = Util.toWorldPos(gridX);
         this.y = Util.toWorldPos(gridY);
@@ -269,6 +275,9 @@ public class Chunk implements IChunk{
         TileState[][] grid = this.getGrid(layer, false);
 
         if(grid != null){
+            if(grid[x][y] == null){
+                System.out.println("In chunk at "+gridX+" "+gridY+", position "+x+" "+y+" is null!?!?");
+            }
             return grid[x][y];
         }
         else{
@@ -616,6 +625,16 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public boolean isPersistent(){
+        return this.isPersistent;
+    }
+
+    @Override
+    public boolean isGenerating(){
+        return this.isGenerating;
+    }
+
+    @Override
     public Biome getBiome(int x, int y){
         return this.getBiomeInner(x-this.x, y-this.y);
     }
@@ -703,7 +722,7 @@ public class Chunk implements IChunk{
 
     @Override
     public boolean shouldUnload(){
-        return this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
+        return !this.isPersistent && this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
     }
 
     @Override
@@ -1051,13 +1070,12 @@ public class Chunk implements IChunk{
 
         if(grid == null && create){
             grid = new TileState[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
-            this.stateGrid.put(layer, grid);
-
             for(int x = 0; x < Constants.CHUNK_SIZE; x++){
                 for(int y = 0; y < Constants.CHUNK_SIZE; y++){
                     grid[x][y] = GameContent.TILE_AIR.getDefState();
                 }
             }
+            this.stateGrid.put(layer, grid);
         }
 
         return grid;

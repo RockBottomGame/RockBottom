@@ -241,6 +241,8 @@ public class RockBottom extends AbstractGame{
 
     @Override
     public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        super.preInit(game, apiHandler, eventHandler);
+
         this.settings = new Settings();
         RockBottomAPI.getEventHandler().fireEvent(new LoadSettingsEvent(this.settings));
         this.settings.load();

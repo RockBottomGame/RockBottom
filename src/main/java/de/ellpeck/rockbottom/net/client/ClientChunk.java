@@ -14,8 +14,7 @@ import java.util.Map;
 public class ClientChunk extends Chunk{
 
     public ClientChunk(World world, int gridX, int gridY){
-        super(world, gridX, gridY);
-        this.isGenerating = true;
+        super(world, gridX, gridY, true);
     }
 
     @Override
@@ -45,11 +44,6 @@ public class ClientChunk extends Chunk{
     @Override
     public int getScheduledUpdateAmount(){
         return 0;
-    }
-
-    @Override
-    public boolean shouldUnload(){
-        return false;
     }
 
     @Override

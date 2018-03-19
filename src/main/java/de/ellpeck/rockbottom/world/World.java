@@ -35,6 +35,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketSound;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
+import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
 import io.netty.channel.Channel;
@@ -96,6 +97,12 @@ public class World implements IWorld{
         this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes)this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry! This is not allowed!");
 
         this.playersUnmodifiable = Collections.unmodifiableList(this.players);
+
+        for(int x = -Constants.PERSISTENT_CHUNK_DISTANCE; x <= Constants.PERSISTENT_CHUNK_DISTANCE; x++){
+            for(int y = Constants.PERSISTENT_CHUNK_DISTANCE; y >= -Constants.PERSISTENT_CHUNK_DISTANCE; y--){
+                this.loadChunk(x, y, true, false);
+            }
+        }
     }
 
     public void initFiles(File worldDirectory){
@@ -367,12 +374,23 @@ public class World implements IWorld{
 
     @Override
     public boolean isChunkLoaded(int x, int y){
-        return this.chunkLookup.containsKey(new Pos2(x, y));
+        return this.isChunkLoaded(x, y, true);
+    }
+
+    @Override
+    public boolean isChunkLoaded(int x, int y, boolean checkGenerating){
+        IChunk chunk = this.chunkLookup.get(new Pos2(x, y));
+        return chunk != null && (!checkGenerating || !chunk.isGenerating());
     }
 
     @Override
     public boolean isPosLoaded(int x, int y){
-        return this.isChunkLoaded(Util.toGridPos(x), Util.toGridPos(y));
+        return this.isPosLoaded(x, y, true);
+    }
+
+    @Override
+    public boolean isPosLoaded(int x, int y, boolean checkGenerating){
+        return this.isChunkLoaded(Util.toGridPos(x), Util.toGridPos(y), checkGenerating);
     }
 
     @Override
@@ -525,27 +543,36 @@ public class World implements IWorld{
         IChunk chunk = this.chunkLookup.get(new Pos2(gridX, gridY));
 
         if(chunk == null){
-            chunk = this.loadChunk(gridX, gridY);
+            chunk = this.loadChunk(gridX, gridY, false, true);
         }
 
         return chunk;
     }
 
-    protected Chunk loadChunk(int gridX, int gridY){
-        Chunk chunk = new Chunk(this, gridX, gridY);
+    protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue){
+        Chunk chunk = new Chunk(this, gridX, gridY, isPersistent);
         this.loadedChunks.add(chunk);
         this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
 
-        DataSet set = new DataSet();
-        set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
-        chunk.loadOrCreate(set);
+        Runnable r = () -> {
+            DataSet set = new DataSet();
+            set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
+            chunk.loadOrCreate(set);
+        };
+
+        if(enqueue){
+            ThreadHandler.chunkGenThread.add(r);
+        }
+        else{
+            r.run();
+        }
 
         return chunk;
     }
 
     @Override
     public void unloadChunk(IChunk chunk){
-        this.saveChunk(chunk);
+        this.saveChunk(chunk, true);
 
         this.loadedChunks.remove(chunk);
         this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
@@ -591,35 +618,40 @@ public class World implements IWorld{
 
     @Override
     public void save(){
-        long timeStarted = Util.getTimeMillis();
-        int amount = 0;
+        ThreadHandler.chunkGenThread.add(() -> {
+            long timeStarted = Util.getTimeMillis();
+            int amount = 0;
 
-        RockBottomAPI.getEventHandler().fireEvent(new WorldSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
+            RockBottomAPI.getEventHandler().fireEvent(new WorldSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
 
-        for(IChunk chunk : this.loadedChunks){
-            if(this.saveChunk(chunk)){
-                amount++;
+            for(IChunk chunk : this.loadedChunks){
+                if(this.saveChunk(chunk, false)){
+                    amount++;
+                }
             }
-        }
 
-        this.info.save();
+            this.info.save();
 
-        for(AbstractEntityPlayer player : this.players){
-            this.savePlayer(player);
-        }
-
-        if(this.additionalData != null){
-            this.additionalData.write(this.additionalDataFile);
-        }
-
-        if(amount > 0){
-            long time = Util.getTimeMillis()-timeStarted;
-            RockBottomAPI.logger().info("Saved "+amount+" chunks, took "+time+"ms.");
-
-            if(!this.isDedicatedServer()){
-                RockBottomAPI.getGame().getToaster().displayToast(new Toast(RockBottomAPI.createInternalRes("gui.save_world"), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved")), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved_chunks"), String.valueOf(amount), String.valueOf((float)time/1000F)), 160));
+            for(AbstractEntityPlayer player : this.players){
+                this.savePlayer(player);
             }
-        }
+
+            if(this.additionalData != null){
+                this.additionalData.write(this.additionalDataFile);
+            }
+
+            if(amount > 0){
+                long time = Util.getTimeMillis()-timeStarted;
+                RockBottomAPI.logger().info("Saved "+amount+" chunks, took "+time+"ms.");
+
+                if(!this.isDedicatedServer()){
+                    IGameInstance game = RockBottomAPI.getGame();
+
+                    int finalAmount = amount;
+                    game.enqueueAction((g, o) -> game.getToaster().displayToast(new Toast(RockBottomAPI.createInternalRes("gui.save_world"), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved")), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved_chunks"), String.valueOf(finalAmount), String.valueOf((float)time/1000F)), 160)), null);
+                }
+            }
+        });
     }
 
     @Override
@@ -795,12 +827,21 @@ public class World implements IWorld{
         return null;
     }
 
-    protected boolean saveChunk(IChunk chunk){
+    protected boolean saveChunk(IChunk chunk, boolean enqueue){
         if(chunk.needsSave()){
-            DataSet set = new DataSet();
-            chunk.save(set);
+            Runnable r = () -> {
+                DataSet set = new DataSet();
+                chunk.save(set);
+                set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+"_"+chunk.getGridY()+".dat"));
+            };
 
-            set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+"_"+chunk.getGridY()+".dat"));
+            if(enqueue){
+                ThreadHandler.chunkGenThread.add(r);
+            }
+            else{
+                r.run();
+            }
+
             return true;
         }
         return false;
@@ -835,18 +876,20 @@ public class World implements IWorld{
 
     @Override
     public void causeLightUpdate(int x, int y){
-        Counter recurseCount = new Counter(0);
+        ThreadHandler.chunkGenThread.add(() -> {
+            Counter recurseCount = new Counter(0);
 
-        try{
-            this.causeLightUpdate(x, y, recurseCount);
+            try{
+                this.causeLightUpdate(x, y, recurseCount);
 
-            if(recurseCount.get() >= 100){
-                RockBottomAPI.logger().config("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
+                if(recurseCount.get() >= 100){
+                    RockBottomAPI.logger().config("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
+                }
             }
-        }
-        catch(StackOverflowError e){
-            RockBottomAPI.logger().severe("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls");
-        }
+            catch(StackOverflowError e){
+                RockBottomAPI.logger().severe("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls");
+            }
+        });
     }
 
     private void causeLightUpdate(int x, int y, Counter recurseCount){
@@ -858,14 +901,14 @@ public class World implements IWorld{
                 boolean change = false;
 
                 byte skylightThere = this.getSkyLight(dirX, dirY);
-                byte calcedSkylight = this.calcLight(dirX, dirY, true);
+                byte calcedSkylight = this.calcLight(dirX, dirY, true, true);
                 if(calcedSkylight != skylightThere){
                     this.setSkyLight(dirX, dirY, calcedSkylight);
                     change = true;
                 }
 
                 byte artLightThere = this.getArtificialLight(dirX, dirY);
-                byte calcedArtLight = this.calcLight(dirX, dirY, false);
+                byte calcedArtLight = this.calcLight(dirX, dirY, false, true);
                 if(calcedArtLight != artLightThere){
                     this.setArtificialLight(dirX, dirY, calcedArtLight);
                     change = true;
@@ -881,27 +924,27 @@ public class World implements IWorld{
     public void calcInitialSkylight(int x1, int y1, int x2, int y2){
         for(int x = x2; x >= x1; x--){
             for(int y = y2; y >= y1; y--){
-                byte light = this.calcLight(x, y, true);
+                byte light = this.calcLight(x, y, true, false);
                 this.setSkyLight(x, y, light);
             }
         }
 
         for(int x = x1; x <= x2; x++){
             for(int y = y1; y <= y2; y++){
-                byte light = this.calcLight(x, y, true);
+                byte light = this.calcLight(x, y, true, false);
                 this.setSkyLight(x, y, light);
             }
         }
     }
 
-    private byte calcLight(int x, int y, boolean isSky){
+    private byte calcLight(int x, int y, boolean isSky, boolean checkGenerating){
         byte maxLight = 0;
 
         for(Direction direction : Direction.SURROUNDING){
             int dirX = x+direction.x;
             int dirY = y+direction.y;
 
-            if(this.isPosLoaded(dirX, dirY)){
+            if(this.isPosLoaded(dirX, dirY, checkGenerating)){
                 byte light = isSky ? this.getSkyLight(dirX, dirY) : this.getArtificialLight(dirX, dirY);
                 if(light > maxLight){
                     maxLight = light;
