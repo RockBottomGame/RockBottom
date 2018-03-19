@@ -14,11 +14,13 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SoundEffect implements ISound{
 
     private final int id;
-    private int currentIndex;
+    private final List<Integer> currentIndices = new ArrayList<>();
 
     public SoundEffect(InputStream stream) throws Exception{
         this.id = AL10.alGenBuffers();
@@ -80,19 +82,28 @@ public class SoundEffect implements ISound{
 
     @Override
     public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
-        this.currentIndex = SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float)x, (float)y, (float)z);
+        this.currentIndices.add(SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float)x, (float)y, (float)z));
     }
 
     @Override
     public boolean isPlaying(){
-        return this.currentIndex >= 0 && SoundHandler.isPlaying(this.currentIndex);
+        if(!this.currentIndices.isEmpty()){
+            for(int i : this.currentIndices){
+                if(SoundHandler.isPlaying(i)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public void stop(){
-        if(this.currentIndex >= 0){
-            SoundHandler.stopSoundEffect(this.currentIndex);
-            this.currentIndex = -1;
+        if(!this.currentIndices.isEmpty()){
+            for(int i : this.currentIndices){
+                SoundHandler.stopSoundEffect(i);
+            }
+            this.currentIndices.clear();
         }
     }
 
