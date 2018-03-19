@@ -22,10 +22,13 @@ import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ConnectedPlayer extends EntityPlayer{
 
+    private final List<IChunk> chunksToSend = new ArrayList<>();
     private final Channel channel;
 
     private int lastHealth;
@@ -113,6 +116,16 @@ public class ConnectedPlayer extends EntityPlayer{
             this.fallCalcTicks++;
         }
 
+        if(!this.chunksToSend.isEmpty()){
+            for(int i = 0; i < this.chunksToSend.size(); i++){
+                IChunk chunk = this.chunksToSend.get(i);
+                if(this.sendChunk(chunk)){
+                    this.chunksToSend.remove(i);
+                    i--;
+                }
+            }
+        }
+
         if(this.lastX != this.x || this.lastY != this.y){
             net.sendToAllPlayersWithLoadedPosExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing), this.x, this.y, this);
 
@@ -151,24 +164,37 @@ public class ConnectedPlayer extends EntityPlayer{
 
     @Override
     public void onChunkLoaded(IChunk chunk){
-        RockBottomAPI.logger().config("Sending chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
-
-        this.sendPacket(new PacketChunk(chunk));
-
-        for(Entity entity : chunk.getAllEntities()){
-            if(entity != this){
-                this.sendPacket(new PacketEntityChange(entity, false));
-            }
+        if(!this.sendChunk(chunk)){
+            this.chunksToSend.add(chunk);
         }
+    }
 
-        for(TileEntity tile : chunk.getAllTileEntities()){
-            this.sendPacket(new PacketTileEntityData(tile.x, tile.y, tile.layer, tile));
+    private boolean sendChunk(IChunk chunk){
+        if(!chunk.isGenerating()){
+            RockBottomAPI.logger().finer("Sending chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
+
+            this.sendPacket(new PacketChunk(chunk));
+
+            for(Entity entity : chunk.getAllEntities()){
+                if(entity != this){
+                    this.sendPacket(new PacketEntityChange(entity, false));
+                }
+            }
+
+            for(TileEntity tile : chunk.getAllTileEntities()){
+                this.sendPacket(new PacketTileEntityData(tile.x, tile.y, tile.layer, tile));
+            }
+
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
     @Override
     public void onChunkUnloaded(IChunk chunk){
-        RockBottomAPI.logger().config("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
+        RockBottomAPI.logger().finer("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
     }

@@ -28,7 +28,7 @@ public class ClientWorld extends World{
 
     @Override
     protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue){
-        Chunk chunk = new ClientChunk(this, gridX, gridY);
+        Chunk chunk = new ClientChunk(this, gridX, gridY, isPersistent);
 
         this.loadedChunks.add(chunk);
         this.chunkLookup.put(new Pos2(gridX, gridY), chunk);

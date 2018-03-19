@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class ClientChunk extends Chunk{
 
-    public ClientChunk(World world, int gridX, int gridY){
-        super(world, gridX, gridY, true);
+    public ClientChunk(World world, int gridX, int gridY, boolean isPersistent){
+        super(world, gridX, gridY, isPersistent);
     }
 
     @Override
@@ -44,6 +44,11 @@ public class ClientChunk extends Chunk{
     @Override
     public int getScheduledUpdateAmount(){
         return 0;
+    }
+
+    @Override
+    public boolean shouldUnload(){
+        return false;
     }
 
     @Override

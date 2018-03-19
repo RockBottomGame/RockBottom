@@ -175,7 +175,7 @@ public class World implements IWorld{
             }
         }
 
-        if(this.isServer()){
+        if(!chunk.isGenerating() && this.isServer()){
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), entity.x, entity.y, entity);
         }
     }
