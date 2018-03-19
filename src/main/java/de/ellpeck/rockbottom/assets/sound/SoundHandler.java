@@ -111,8 +111,7 @@ public final class SoundHandler{
 
     private static int findFreeSourceIndex(){
         for(int i = 0; i < SOURCES.size(); i++){
-            int state = AL10.alGetSourcei(SOURCES.get(i), AL10.AL_SOURCE_STATE);
-            if(state != AL10.AL_PLAYING && state != AL10.AL_PAUSED){
+            if(!isPlaying(i)){
                 return i;
             }
         }
