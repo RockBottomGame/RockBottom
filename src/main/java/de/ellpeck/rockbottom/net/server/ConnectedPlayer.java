@@ -117,7 +117,7 @@ public class ConnectedPlayer extends EntityPlayer{
         }
 
         if(!this.chunksToSend.isEmpty()){
-            for(int i = 0; i < this.chunksToSend.size(); i++){
+            for(int i = this.chunksToSend.size()-1; i >= 0; i--){
                 IChunk chunk = this.chunksToSend.get(i);
                 if(this.sendChunk(chunk)){
                     this.chunksToSend.remove(i);

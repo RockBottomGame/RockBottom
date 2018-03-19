@@ -21,7 +21,7 @@ public class ParticleManager implements IParticleManager{
     private final List<Particle> particles = new ArrayList<>();
 
     public void update(IGameInstance game){
-        for(int i = 0; i < this.particles.size(); i++){
+        for(int i = this.particles.size()-1; i >= 0; i--){
             Particle particle = this.particles.get(i);
             particle.update(game);
 

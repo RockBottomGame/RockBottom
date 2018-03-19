@@ -145,7 +145,7 @@ public abstract class AbstractGame implements IGameInstance{
         this.totalTicks++;
 
         synchronized(this.enqueuedActions){
-            for(int i = 0; i < this.enqueuedActions.size(); i++){
+            for(int i = this.enqueuedActions.size()-1; i >= 0; i--){
                 EnqueuedAction action = this.enqueuedActions.get(i);
 
                 if(action.condition == null || action.condition.test(this)){

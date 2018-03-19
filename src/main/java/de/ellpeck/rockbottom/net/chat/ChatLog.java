@@ -182,7 +182,7 @@ public class ChatLog implements IChatLog{
 
     public void updateNewMessages(){
         if(!this.newMessageCounter.isEmpty()){
-            for(int i = 0; i < this.newMessageCounter.size(); i++){
+            for(int i = this.newMessageCounter.size()-1; i >= 0; i--){
                 Counter counter = this.newMessageCounter.get(i);
                 counter.add(-1);
 

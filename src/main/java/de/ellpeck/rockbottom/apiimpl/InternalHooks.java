@@ -93,7 +93,7 @@ public class InternalHooks implements IInternalHooks{
 
         entity.ticksExisted++;
 
-        for(int i = 0; i < effects.size(); i++){
+        for(int i = effects.size()-1; i >= 0; i--){
             ActiveEffect active = effects.get(i);
 
             IEffect effect = active.getEffect();

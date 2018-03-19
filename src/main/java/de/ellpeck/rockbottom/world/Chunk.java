@@ -204,7 +204,7 @@ public class Chunk implements IChunk{
             }
 
             if(!this.scheduledUpdates.isEmpty()){
-                for(int i = 0; i < this.scheduledUpdates.size(); i++){
+                for(int i = this.scheduledUpdates.size()-1; i >= 0; i--){
                     ScheduledUpdate update = this.scheduledUpdates.get(i);
                     update.time--;
 
@@ -232,7 +232,7 @@ public class Chunk implements IChunk{
             this.internalLoadingTimer--;
         }
 
-        for(int i = 0; i < this.playersOutOfRangeCached.size(); i++){
+        for(int i = this.playersOutOfRangeCached.size()-1; i >= 0; i--){
             AbstractEntityPlayer player = this.playersOutOfRangeCached.get(i);
 
             Counter time = this.playersOutOfRangeCachedTimers.get(player);

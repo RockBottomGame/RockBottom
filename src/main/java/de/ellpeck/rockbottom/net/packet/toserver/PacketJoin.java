@@ -121,7 +121,7 @@ public class PacketJoin implements IPacket{
     private ChatComponentTranslation checkMods(List<IMod> mods){
         RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" is connecting with mods "+this.modInfos);
 
-        for(int i = 0; i < mods.size(); i++){
+        for(int i = mods.size()-1; i >= 0; i--){
             IMod mod = mods.get(i);
             if(mod.isRequiredOnClient()){
                 for(ModInfo info : this.modInfos){
@@ -151,7 +151,7 @@ public class PacketJoin implements IPacket{
         if(!this.modInfos.isEmpty()){
             RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" is attempting to join with mods that aren't on the server: "+this.modInfos);
 
-            for(int i = 0; i < this.modInfos.size(); i++){
+            for(int i = this.modInfos.size()-1; i >= 0; i--){
                 if(!this.modInfos.get(i).requiredOnServer){
                     this.modInfos.remove(i);
                     i--;

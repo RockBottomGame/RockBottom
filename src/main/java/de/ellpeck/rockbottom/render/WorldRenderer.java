@@ -281,7 +281,7 @@ public class WorldRenderer{
     public void update(){
         int possibleAddAmount = 0;
 
-        for(int i = 0; i < this.clouds.size(); i++){
+        for(int i = this.clouds.size()-1; i >= 0; i--){
             Cloud cloud = this.clouds.get(i);
             cloud.x += cloud.speed;
 
