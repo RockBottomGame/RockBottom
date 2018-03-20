@@ -626,16 +626,16 @@ public class World implements IWorld{
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
 
-            for(IChunk chunk : this.loadedChunks){
-                if(this.saveChunk(chunk, false)){
+            for(int i = 0; i < this.loadedChunks.size(); i++){
+                if(this.saveChunk(this.loadedChunks.get(i), false)){
                     amount++;
                 }
             }
 
             this.info.save();
 
-            for(AbstractEntityPlayer player : this.players){
-                this.savePlayer(player);
+            for(int i = 0; i < this.players.size(); i++){
+                this.savePlayer(this.players.get(i));
             }
 
             if(this.additionalData != null){
