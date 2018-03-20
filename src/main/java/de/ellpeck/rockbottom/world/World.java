@@ -289,8 +289,10 @@ public class World implements IWorld{
         List<T> entities = new ArrayList<>();
         for(int x = minChunkX; x <= maxChunkX; x++){
             for(int y = minChunkY; y <= maxChunkY; y++){
-                IChunk chunk = this.getChunkFromGridCoords(x, y);
-                entities.addAll(chunk.getEntities(area, type, test));
+                if(this.isChunkLoaded(x, y)){
+                    IChunk chunk = this.getChunkFromGridCoords(x, y);
+                    entities.addAll(chunk.getEntities(area, type, test));
+                }
             }
         }
         return entities;
