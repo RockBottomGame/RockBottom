@@ -350,13 +350,11 @@ public class Chunk implements IChunk{
         if(heights[x] < newHeight){
             heights[x] = newHeight;
 
-            for(Map.Entry<TileLayer, int[]> entry : this.heights.entrySet()){
-                int totalHeight = 0;
-                for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
-                    totalHeight += entry.getValue()[checkX];
-                }
-                this.averageHeights.put(entry.getKey(), totalHeight/Constants.CHUNK_SIZE);
+            int totalHeight = 0;
+            for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
+                totalHeight += heights[checkX];
             }
+            this.averageHeights.put(layer, totalHeight/Constants.CHUNK_SIZE);
         }
 
         if(!this.isGenerating){
