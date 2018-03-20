@@ -96,9 +96,9 @@ public class GuiMods extends Gui{
     }
 
     private void updateButtons(){
-        //this.modGuiButton.setActive(this.selectedMod.getModGuiClass() != null);
+        this.modGuiButton.setActive(this.selectedMod.getModGuiClass() != null);
 
-        //this.disableButton.setActive(this.selectedMod.isDisableable());
+        this.disableButton.setActive(this.selectedMod.isDisableable());
         this.disableButton.setText(RockBottomAPI.getModLoader().getModSettings().isDisabled(this.selectedMod.getId()) ? "Enable" : "Disable");
     }
 
