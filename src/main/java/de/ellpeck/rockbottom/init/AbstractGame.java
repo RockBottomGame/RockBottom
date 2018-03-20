@@ -233,8 +233,7 @@ public abstract class AbstractGame implements IGameInstance{
 
         DynamicRegistryInfo regInfo = new DynamicRegistryInfo(tileRegInfo, biomeRegInfo);
 
-        this.world = new World(info, regInfo);
-        this.world.initFiles(worldFile);
+        this.world = new World(info, regInfo, worldFile);
 
         if(isNewlyCreated){
             RockBottomAPI.getEventHandler().fireEvent(new WorldCreationEvent(worldFile, this.world, info, regInfo));

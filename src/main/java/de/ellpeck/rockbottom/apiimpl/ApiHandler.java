@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
@@ -164,7 +165,11 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public int[] interpolateLight(IWorld world, int x, int y){
-        if(!RockBottomAPI.getGame().getSettings().smoothLighting){
+        if(false){
+            int light = Constants.MAX_LIGHT;
+            return new int[]{light, light, light, light};
+        }
+        else if(!RockBottomAPI.getGame().getSettings().smoothLighting){
             int light = world.getCombinedVisualLight(x, y);
             return new int[]{light, light, light, light};
         }

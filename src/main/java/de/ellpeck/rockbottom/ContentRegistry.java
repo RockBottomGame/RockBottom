@@ -63,6 +63,7 @@ public final class ContentRegistry{
         new ItemTool(RockBottomAPI.createInternalRes("stone_axe"), 3F, ToolType.AXE, 5).register();
         new ItemTool(RockBottomAPI.createInternalRes("stone_shovel"), 3F, ToolType.SHOVEL, 5).register();
         new ItemCopperCanister().register();
+        new ItemTool(RockBottomAPI.createInternalRes("super_pickaxe"), Float.MAX_VALUE, ToolType.PICKAXE, Integer.MAX_VALUE).register();
 
         new BiomeSky(RockBottomAPI.createInternalRes("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(RockBottomAPI.createInternalRes("grassland"), 60, -5, 1000).register();
@@ -81,6 +82,7 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("coal"), WorldGenCoal.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("start_hut"), WorldGenStartHut.class);
         RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("copper"), WorldGenCopper.class);
+        RockBottomAPI.WORLD_GENERATORS.register(RockBottomAPI.createInternalRes("caves"), WorldGenCaves.class);
 
         RockBottomAPI.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 

@@ -63,7 +63,7 @@ public class World implements IWorld{
     private ModBasedDataSet additionalData;
     public final WorldGenBiomes biomeGen;
 
-    public World(WorldInfo info, DynamicRegistryInfo regInfo){
+    public World(WorldInfo info, DynamicRegistryInfo regInfo, File worldDirectory){
         this.info = info;
         this.regInfo = regInfo;
 
@@ -98,22 +98,22 @@ public class World implements IWorld{
 
         this.playersUnmodifiable = Collections.unmodifiableList(this.players);
 
+        if(worldDirectory != null){
+            this.directory = worldDirectory;
+            this.chunksDirectory = new File(worldDirectory, "chunks");
+            this.playerDirectory = new File(worldDirectory, "players");
+
+            this.additionalDataFile = new File(worldDirectory, "additional_data.dat");
+            if(this.additionalDataFile.exists()){
+                this.additionalData = new ModBasedDataSet();
+                this.additionalData.read(this.additionalDataFile);
+            }
+        }
+
         for(int x = -Constants.PERSISTENT_CHUNK_DISTANCE; x <= Constants.PERSISTENT_CHUNK_DISTANCE; x++){
             for(int y = Constants.PERSISTENT_CHUNK_DISTANCE; y >= -Constants.PERSISTENT_CHUNK_DISTANCE; y--){
                 this.loadChunk(x, y, true, false);
             }
-        }
-    }
-
-    public void initFiles(File worldDirectory){
-        this.directory = worldDirectory;
-        this.chunksDirectory = new File(worldDirectory, "chunks");
-        this.playerDirectory = new File(worldDirectory, "players");
-
-        this.additionalDataFile = new File(worldDirectory, "additional_data.dat");
-        if(this.additionalDataFile.exists()){
-            this.additionalData = new ModBasedDataSet();
-            this.additionalData.read(this.additionalDataFile);
         }
     }
 

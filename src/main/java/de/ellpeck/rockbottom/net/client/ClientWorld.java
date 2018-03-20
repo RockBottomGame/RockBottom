@@ -23,7 +23,7 @@ import java.util.UUID;
 public class ClientWorld extends World{
 
     public ClientWorld(WorldInfo info, DynamicRegistryInfo regInfo){
-        super(info, regInfo);
+        super(info, regInfo, null);
     }
 
     @Override
