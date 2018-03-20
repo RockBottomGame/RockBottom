@@ -7,10 +7,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
-import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
-import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
-import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
+import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -32,7 +29,7 @@ public class GuiMods extends Gui{
     public void init(IGameInstance game){
         super.init(game);
 
-        int height = 142;
+        int height = 126;
         int y = this.height/2-height/2-10;
         ComponentMenu menu = new ComponentMenu(this, 10, y, height, 1, 8, new BoundBox(0, 0, 100, height).add(18, y));
         this.components.add(menu);
@@ -51,7 +48,7 @@ public class GuiMods extends Gui{
 
         menu.organize();
 
-        this.modGuiButton = new ComponentButton(this, 118+(this.width-118)/2-81, this.height-50, 80, 16, () -> {
+        this.modGuiButton = new ComponentButton(this, 118+(this.width-118)/2-81, this.height-55, 80, 16, () -> {
             Class<? extends Gui> guiClass = this.selectedMod.getModGuiClass();
             if(guiClass != null){
                 try{
@@ -67,7 +64,7 @@ public class GuiMods extends Gui{
         }, "Mod Gui");
         this.components.add(this.modGuiButton);
 
-        this.disableButton = new ComponentButton(this, 118+(this.width-118)/2+1, this.height-50, 80, 16, () -> {
+        this.disableButton = new ComponentButton(this, 118+(this.width-118)/2+1, this.height-55, 80, 16, () -> {
             ModSettings settings = RockBottomAPI.getModLoader().getModSettings();
             settings.setDisabled(this.selectedMod.getId(), !settings.isDisabled(this.selectedMod.getId()));
             settings.save();
@@ -79,18 +76,29 @@ public class GuiMods extends Gui{
 
         this.updateButtons();
 
-        this.components.add(new ComponentFancyButton(this, 18+(this.width-118)/2+42, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width/2+83, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
 
-        this.components.add(new ComponentButton(this, 118+(this.width-118)/2-40, this.height-30, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width/2+1, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+
+        this.components.add(new ComponentButton(this, this.width/2-81, this.height-30, 80, 16, () -> {
+            this.components.add(new ComponentConfirmationPopup(this, this.width/2-41, this.height-8, aBoolean -> {
+                if(aBoolean){
+                    game.restart();
+                }
+            }));
+            this.sortComponents();
+            return true;
+        }, "Restart Game"));
+
     }
 
     private void updateButtons(){
-        this.modGuiButton.setActive(this.selectedMod.getModGuiClass() != null);
+        //this.modGuiButton.setActive(this.selectedMod.getModGuiClass() != null);
 
-        this.disableButton.setActive(this.selectedMod.isDisableable());
+        //this.disableButton.setActive(this.selectedMod.isDisableable());
         this.disableButton.setText(RockBottomAPI.getModLoader().getModSettings().isDisabled(this.selectedMod.getId()) ? "Enable" : "Disable");
     }
 
