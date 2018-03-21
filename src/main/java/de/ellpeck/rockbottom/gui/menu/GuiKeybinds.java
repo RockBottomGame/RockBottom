@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -46,6 +47,10 @@ public class GuiKeybinds extends Gui{
                     .add(0, 0, new ComponentText(this, 0, 0, 100, 16, 0.35F, true, game.getAssetManager().localize(bind.getName().addPrefix("key."))+": "))
                     .add(102, 0, new ComponentKeybind(this, id, 0, 0, bind)));
             id++;
+        }
+
+        for(int i = GLFW.GLFW_KEY_SPACE; i < GLFW.GLFW_KEY_MENU; i++){
+            System.out.println(RockBottomAPI.getInternalHooks().getKeyOrMouseName(i));
         }
 
         menu.organize();

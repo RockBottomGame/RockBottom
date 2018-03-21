@@ -59,6 +59,7 @@ public class GuiSelectWorld extends Gui{
 
         if(validWorlds.isEmpty()){
             game.getGuiManager().openGui(new GuiCreateWorld(this.parent));
+            return;
         }
 
         validWorlds.sort(Comparator.comparingLong(WorldInfo:: lastModified).reversed());

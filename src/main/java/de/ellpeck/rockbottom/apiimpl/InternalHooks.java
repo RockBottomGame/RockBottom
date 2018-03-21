@@ -531,21 +531,21 @@ public class InternalHooks implements IInternalHooks{
     public String getKeyOrMouseName(int key){
         switch(key){
             case GLFW.GLFW_MOUSE_BUTTON_1:
-                return "LEFT MOUSE";
+                return this.localizeKey("mouse.left");
             case GLFW.GLFW_MOUSE_BUTTON_2:
-                return "RIGHT MOUSE";
+                return this.localizeKey("mouse.right");
             case GLFW.GLFW_MOUSE_BUTTON_3:
-                return "MIDDLE MOUSE";
+                return this.localizeKey("mouse.3");
             case GLFW.GLFW_MOUSE_BUTTON_4:
-                return "MOUSE 4";
+                return this.localizeKey("mouse.4");
             case GLFW.GLFW_MOUSE_BUTTON_5:
-                return "MOUSE 5";
+                return this.localizeKey("mouse.5");
             case GLFW.GLFW_MOUSE_BUTTON_6:
-                return "MOUSE 6";
+                return this.localizeKey("mouse.6");
             case GLFW.GLFW_MOUSE_BUTTON_7:
-                return "MOUSE 7";
+                return this.localizeKey("mouse.7");
             case GLFW.GLFW_MOUSE_BUTTON_8:
-                return "MOUSE 8";
+                return this.localizeKey("mouse.8");
 
             case GLFW.GLFW_KEY_A:
                 return "A";
@@ -620,36 +620,36 @@ public class InternalHooks implements IInternalHooks{
             case GLFW.GLFW_KEY_0:
                 return "0";
             case GLFW.GLFW_KEY_SPACE:
-                return "SPACE";
+                return this.localizeKey("space");
             case GLFW.GLFW_KEY_MINUS:
-                return "MINUS";
+                return this.localizeKey("minus");
             case GLFW.GLFW_KEY_EQUAL:
-                return "EQUAL";
+                return this.localizeKey("equals");
             case GLFW.GLFW_KEY_LEFT_BRACKET:
-                return "LEFT BRACKET";
+                return this.localizeKey("left_bracket");
             case GLFW.GLFW_KEY_RIGHT_BRACKET:
-                return "RIGHT BRACKET";
+                return this.localizeKey("right_bracket");
             case GLFW.GLFW_KEY_BACKSLASH:
-                return "BACKSLASH";
+                return this.localizeKey("backslash");
             case GLFW.GLFW_KEY_SEMICOLON:
-                return "SEMICOLON";
+                return this.localizeKey("semicolon");
             case GLFW.GLFW_KEY_APOSTROPHE:
-                return "APOSTROPHE";
+                return this.localizeKey("apostrophe");
             case GLFW.GLFW_KEY_GRAVE_ACCENT:
-                return "GRAVE ACCENT";
+                return this.localizeKey("grave");
             case GLFW.GLFW_KEY_COMMA:
-                return "COMMA";
+                return this.localizeKey("comma");
             case GLFW.GLFW_KEY_PERIOD:
-                return "PERIOD";
+                return this.localizeKey("period");
             case GLFW.GLFW_KEY_SLASH:
-                return "SLASH";
+                return this.localizeKey("slash");
             case GLFW.GLFW_KEY_WORLD_1:
-                return "WORLD 1";
+                return this.localizeKey("world_1");
             case GLFW.GLFW_KEY_WORLD_2:
-                return "WORLD 2";
+                return this.localizeKey("world_2");
 
             case GLFW.GLFW_KEY_ESCAPE:
-                return "ESCAPE";
+                return this.localizeKey("escape");
             case GLFW.GLFW_KEY_F1:
                 return "F1";
             case GLFW.GLFW_KEY_F2:
@@ -701,97 +701,101 @@ public class InternalHooks implements IInternalHooks{
             case GLFW.GLFW_KEY_F25:
                 return "F25";
             case GLFW.GLFW_KEY_UP:
-                return "UP";
+                return this.localizeKey("up");
             case GLFW.GLFW_KEY_DOWN:
-                return "DOWN";
+                return this.localizeKey("down");
             case GLFW.GLFW_KEY_LEFT:
-                return "LEFT";
+                return this.localizeKey("left");
             case GLFW.GLFW_KEY_RIGHT:
-                return "RIGHT";
+                return this.localizeKey("right");
             case GLFW.GLFW_KEY_LEFT_SHIFT:
-                return "LEFT SHIFT";
+                return this.localizeKey("left_shift");
             case GLFW.GLFW_KEY_RIGHT_SHIFT:
-                return "RIGHT SHIFT";
+                return this.localizeKey("right_shift");
             case GLFW.GLFW_KEY_LEFT_CONTROL:
-                return "LEFT CONTROL";
+                return this.localizeKey("left_control");
             case GLFW.GLFW_KEY_RIGHT_CONTROL:
-                return "RIGHT CONTROL";
+                return this.localizeKey("right_control");
             case GLFW.GLFW_KEY_LEFT_ALT:
-                return "LEFT ALT";
+                return this.localizeKey("left_alt");
             case GLFW.GLFW_KEY_RIGHT_ALT:
-                return "RIGHT ALT";
+                return this.localizeKey("right_alt");
             case GLFW.GLFW_KEY_TAB:
-                return "TAB";
+                return this.localizeKey("tab");
             case GLFW.GLFW_KEY_ENTER:
-                return "ENTER";
+                return this.localizeKey("enter");
             case GLFW.GLFW_KEY_BACKSPACE:
-                return "BACKSPACE";
+                return this.localizeKey("backspace");
             case GLFW.GLFW_KEY_INSERT:
-                return "INSERT";
+                return this.localizeKey("insert");
             case GLFW.GLFW_KEY_DELETE:
-                return "DELETE";
+                return this.localizeKey("delete");
             case GLFW.GLFW_KEY_PAGE_UP:
-                return "PAGE UP";
+                return this.localizeKey("page_up");
             case GLFW.GLFW_KEY_PAGE_DOWN:
-                return "PAGE DOWN";
+                return this.localizeKey("page_down");
             case GLFW.GLFW_KEY_HOME:
-                return "HOME";
+                return this.localizeKey("home");
             case GLFW.GLFW_KEY_END:
-                return "END";
+                return this.localizeKey("end");
             case GLFW.GLFW_KEY_KP_0:
-                return "KEYPAD 0";
+                return this.localizeKey("keypad.0");
             case GLFW.GLFW_KEY_KP_1:
-                return "KEYPAD 1";
+                return this.localizeKey("keypad.1");
             case GLFW.GLFW_KEY_KP_2:
-                return "KEYPAD 2";
+                return this.localizeKey("keypad.2");
             case GLFW.GLFW_KEY_KP_3:
-                return "KEYPAD 3";
+                return this.localizeKey("keypad.3");
             case GLFW.GLFW_KEY_KP_4:
-                return "KEYPAD 4";
+                return this.localizeKey("keypad.4");
             case GLFW.GLFW_KEY_KP_5:
-                return "KEYPAD 5";
+                return this.localizeKey("keypad.5");
             case GLFW.GLFW_KEY_KP_6:
-                return "KEYPAD 6";
+                return this.localizeKey("keypad.6");
             case GLFW.GLFW_KEY_KP_7:
-                return "KEYPAD 7";
+                return this.localizeKey("keypad.7");
             case GLFW.GLFW_KEY_KP_8:
-                return "KEYPAD 8";
+                return this.localizeKey("keypad.8");
             case GLFW.GLFW_KEY_KP_9:
-                return "KEYPAD 9";
+                return this.localizeKey("keypad.9");
             case GLFW.GLFW_KEY_KP_DIVIDE:
-                return "KEYPAD DIVIDE";
+                return this.localizeKey("keypad.divide");
             case GLFW.GLFW_KEY_KP_MULTIPLY:
-                return "KEYPAD MULTPLY";
+                return this.localizeKey("keypad.multiply");
             case GLFW.GLFW_KEY_KP_SUBTRACT:
-                return "KEYPAD SUBTRACT";
+                return this.localizeKey("keypad.subtract");
             case GLFW.GLFW_KEY_KP_ADD:
-                return "KEYPAD ADD";
+                return this.localizeKey("keypad.add");
             case GLFW.GLFW_KEY_KP_DECIMAL:
-                return "KEYPAD DECIMAL";
+                return this.localizeKey("keypad.decimal");
             case GLFW.GLFW_KEY_KP_EQUAL:
-                return "KEYPAD EQUAL";
+                return this.localizeKey("keypad.equals");
             case GLFW.GLFW_KEY_KP_ENTER:
-                return "KEYPAD ENTER";
+                return this.localizeKey("keypad.enter");
             case GLFW.GLFW_KEY_PRINT_SCREEN:
-                return "PRINT SCREEN";
+                return this.localizeKey("print");
             case GLFW.GLFW_KEY_NUM_LOCK:
-                return "NUM LOCK";
+                return this.localizeKey("num_lock");
             case GLFW.GLFW_KEY_CAPS_LOCK:
-                return "CAPS LOCK";
+                return this.localizeKey("caps_lock");
             case GLFW.GLFW_KEY_SCROLL_LOCK:
-                return "SCROLL LOCK";
+                return this.localizeKey("scroll_lock");
             case GLFW.GLFW_KEY_PAUSE:
-                return "PAUSE";
+                return this.localizeKey("pause");
             case GLFW.GLFW_KEY_LEFT_SUPER:
-                return "LEFT SUPER";
+                return this.localizeKey("left_super");
             case GLFW.GLFW_KEY_RIGHT_SUPER:
-                return "RIGHT SUPER";
+                return this.localizeKey("right_super");
             case GLFW.GLFW_KEY_MENU:
-                return "MENU";
+                return this.localizeKey("menu");
 
             default:
-                return "UNKNOWN";
+                return this.localizeKey("unknown");
         }
+    }
+
+    private String localizeKey(String name){
+        return RockBottomAPI.getGame().getAssetManager().localize(RockBottomAPI.createInternalRes("key_name."+name));
     }
 
     // Direction: 1 = right, -1 = left
