@@ -67,8 +67,6 @@ public final class SoundHandler{
         }
         else{
             AL10.alListener3f(AL10.AL_POSITION, playerX, playerY, playerZ);
-            AL10.alListener3f(AL10.AL_VELOCITY, 0F, 0F, 0F);
-            AL10.alListener3f(AL10.AL_ORIENTATION, 0F, 0F, -1F);
         }
     }
 
