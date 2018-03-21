@@ -84,7 +84,7 @@ public class GuiMods extends Gui{
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
         this.components.add(new ComponentButton(this, this.width/2-81, this.height-30, 80, 16, () -> {
-            this.components.add(new ComponentConfirmationPopup(this, this.width/2-41, this.height-8, aBoolean -> {
+            this.components.add(new ComponentConfirmationPopup(this, this.width/2-41, this.height-22, aBoolean -> {
                 if(aBoolean){
                     game.restart();
                 }
