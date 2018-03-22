@@ -19,7 +19,7 @@ public class TileStone extends TileBasic{
     public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop){
         super.onDestroyed(world, x, y, destroyer, layer, shouldDrop);
 
-        if(!world.isClient() && destroyer instanceof AbstractEntityPlayer){
+        if(!world.isClient() && shouldDrop && destroyer instanceof AbstractEntityPlayer){
             AbstractEntityPlayer player = (AbstractEntityPlayer)destroyer;
             for(IRecipe recipe : ConstructionRegistry.STONE_TOOLS){
                 if(recipe != null){
