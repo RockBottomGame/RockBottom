@@ -33,6 +33,7 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 public class Chunk implements IChunk{
 
@@ -275,10 +276,11 @@ public class Chunk implements IChunk{
         TileState[][] grid = this.getGrid(layer, false);
 
         if(grid != null){
-            if(grid[x][y] == null){
-                System.out.println("In chunk at "+gridX+" "+gridY+", position "+x+" "+y+" is null!?!?");
+            TileState state = grid[x][y];
+            if(state == null){
+                RockBottomAPI.logger().log(Level.WARNING, "In chunk at "+this.gridX+" "+this.gridY+", position "+x+" "+y+" is null!?", new NullPointerException());
             }
-            return grid[x][y];
+            return state;
         }
         else{
             return GameContent.TILE_AIR.getDefState();
