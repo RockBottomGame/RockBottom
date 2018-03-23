@@ -139,6 +139,7 @@ public class InputHandler implements IInputHandler{
             }
             else if(Settings.KEY_COMPENDIUM.isKey(key)){
                 player.openGuiContainer(new GuiCompendium(player), player.getInvContainer());
+                return true;
             }
             else if(Settings.KEY_CHAT.isKey(key)){
                 if(RockBottomAPI.getNet().isActive()){

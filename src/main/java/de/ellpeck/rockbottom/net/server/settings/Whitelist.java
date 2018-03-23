@@ -35,7 +35,7 @@ public class Whitelist implements IPropSettings, IJsonSettings{
 
     @Override
     public void load(JsonObject object){
-        this.isEnabled = object.get("enabled").getAsBoolean();
+        this.isEnabled = this.get(object, "enabled", false);
 
         this.whitelistedPlayers.clear();
         if(object.has("players")){
