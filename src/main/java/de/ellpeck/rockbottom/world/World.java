@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.world;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
@@ -49,7 +51,7 @@ public class World implements IWorld{
 
     public final List<IChunk> loadedChunks = new ArrayList<>();
     public final List<AbstractEntityPlayer> players = new ArrayList<>();
-    protected final Map<Pos2, IChunk> chunkLookup = new HashMap<>();
+    protected final Table<Integer, Integer, IChunk> chunkLookup = HashBasedTable.create();
     protected final WorldInfo info;
     private final DynamicRegistryInfo regInfo;
     private final List<IWorldGenerator> generators;
@@ -381,7 +383,7 @@ public class World implements IWorld{
 
     @Override
     public boolean isChunkLoaded(int x, int y, boolean checkGenerating){
-        IChunk chunk = this.chunkLookup.get(new Pos2(x, y));
+        IChunk chunk = this.chunkLookup.get(x, y);
         return chunk != null && (!checkGenerating || !chunk.isGenerating());
     }
 
@@ -542,7 +544,7 @@ public class World implements IWorld{
 
     @Override
     public IChunk getChunkFromGridCoords(int gridX, int gridY){
-        IChunk chunk = this.chunkLookup.get(new Pos2(gridX, gridY));
+        IChunk chunk = this.chunkLookup.get(gridX, gridY);
 
         if(chunk == null){
             chunk = this.loadChunk(gridX, gridY, false, true);
@@ -554,7 +556,7 @@ public class World implements IWorld{
     protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue){
         Chunk chunk = new Chunk(this, gridX, gridY, isPersistent);
         this.loadedChunks.add(chunk);
-        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
+        this.chunkLookup.put(gridX, gridY, chunk);
 
         Runnable r = () -> {
             DataSet set = new DataSet();
@@ -577,7 +579,7 @@ public class World implements IWorld{
         this.saveChunk(chunk, true);
 
         this.loadedChunks.remove(chunk);
-        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
+        this.chunkLookup.remove(chunk.getGridX(), chunk.getGridY());
     }
 
     @Override

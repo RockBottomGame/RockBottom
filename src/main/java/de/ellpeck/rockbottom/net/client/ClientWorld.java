@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -31,7 +30,7 @@ public class ClientWorld extends World{
         Chunk chunk = new ClientChunk(this, gridX, gridY, isPersistent);
 
         this.loadedChunks.add(chunk);
-        this.chunkLookup.put(new Pos2(gridX, gridY), chunk);
+        this.chunkLookup.put(gridX, gridY, chunk);
 
         return chunk;
     }
@@ -39,7 +38,7 @@ public class ClientWorld extends World{
     @Override
     public void unloadChunk(IChunk chunk){
         this.loadedChunks.remove(chunk);
-        this.chunkLookup.remove(new Pos2(chunk.getGridX(), chunk.getGridY()));
+        this.chunkLookup.remove(chunk.getGridX(), chunk.getGridY());
     }
 
     @Override
