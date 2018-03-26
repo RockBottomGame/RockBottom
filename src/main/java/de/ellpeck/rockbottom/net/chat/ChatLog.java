@@ -29,7 +29,11 @@ import java.util.UUID;
 
 public class ChatLog implements IChatLog{
 
-    static{
+    private final List<ChatComponent> messages = new ArrayList<>();
+    private final List<Counter> newMessageCounter = new ArrayList<>();
+    private final List<String> lastInputs = new ArrayList<>();
+
+    public static void initCommands(){
         new CommandHelp().register();
         new CommandStopServer().register();
         new CommandSpawnItem().register();
@@ -39,10 +43,6 @@ public class ChatLog implements IChatLog{
         new CommandTime().register();
         new CommandEffect().register();
     }
-
-    private final List<ChatComponent> messages = new ArrayList<>();
-    private final List<Counter> newMessageCounter = new ArrayList<>();
-    private final List<String> lastInputs = new ArrayList<>();
 
     @Override
     public void displayMessage(ChatComponent message){

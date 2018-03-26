@@ -219,6 +219,7 @@ public abstract class AbstractGame implements IGameInstance{
     @Override
     public void postPostInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         StatisticList.init();
+        ChatLog.initCommands();
     }
 
     @Override
