@@ -257,11 +257,11 @@ public class InternalHooks implements IInternalHooks{
             if(container.holdingInst == null){
                 if(slotInst != null){
                     int halfAmount = Util.ceil(slot.get().getAmount()/2D);
-                    container.holdingInst = slotInst.copy().setAmount(halfAmount);
-
-                    ItemInstance remaining = slotInst.removeAmount(halfAmount);
-                    slot.set(remaining.nullIfEmpty());
-                    return true;
+                    if(slot.canRemove(halfAmount)){
+                        container.holdingInst = slotInst.copy().setAmount(halfAmount);
+                        slot.set(slotInst.removeAmount(halfAmount).nullIfEmpty());
+                        return true;
+                    }
                 }
             }
             else{
@@ -270,12 +270,20 @@ public class InternalHooks implements IInternalHooks{
                 if(slotInst != null){
                     if(slotInst.isEffectivelyEqual(container.holdingInst) && slotInst.getAmount() < slotInst.getMaxAmount()){
                         should = true;
-                        slot.set(slotInst.addAmount(1));
+
+                        ItemInstance newInst = slotInst.addAmount(1);
+                        if(slot.canPlace(newInst)){
+                            slot.set(newInst);
+                        }
                     }
                 }
                 else{
                     should = true;
-                    slot.set(container.holdingInst.copy().setAmount(1));
+
+                    ItemInstance newInst = container.holdingInst.copy().setAmount(1);
+                    if(slot.canPlace(newInst)){
+                        slot.set(newInst);
+                    }
                 }
 
                 if(should){
@@ -286,7 +294,7 @@ public class InternalHooks implements IInternalHooks{
         }
         else{
             if(container.holdingInst == null){
-                if(slotInst != null){
+                if(slotInst != null && slot.canRemove(slotInst.getAmount())){
                     container.holdingInst = slotInst;
                     slot.set(null);
                     return true;
@@ -299,18 +307,15 @@ public class InternalHooks implements IInternalHooks{
                     if(slotInst.isEffectivelyEqual(container.holdingInst)){
                         int possibleAdd = Math.min(slotInst.getMaxAmount()-slotInst.getAmount(), container.holdingInst.getAmount());
                         if(possibleAdd > 0){
-                            removeAmount = possibleAdd;
-                            slot.set(slotInst.copy().addAmount(possibleAdd));
+                            ItemInstance newInst = slotInst.copy().addAmount(possibleAdd);
+                            if(slot.canPlace(newInst)){
+                                removeAmount = possibleAdd;
+                                slot.set(newInst);
+                            }
                         }
                     }
-                    else{
-                        ItemInstance slotCopy = slotInst.copy();
-                        slot.set(container.holdingInst);
-                        container.holdingInst = slotCopy;
-                        return true;
-                    }
                 }
-                else{
+                else if(slot.canPlace(container.holdingInst)){
                     removeAmount = container.holdingInst.getAmount();
                     slot.set(container.holdingInst.copy());
                 }
@@ -327,34 +332,32 @@ public class InternalHooks implements IInternalHooks{
     @Override
     public boolean doDefaultShiftClicking(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot){
         if(Settings.KEY_GUI_ACTION_1.isKey(button)){
-            if(slot.slot.canRemove()){
-                ItemContainer container = gui.getContainer();
-                ItemInstance remaining = slot.slot.get();
+            ItemContainer container = gui.getContainer();
+            ItemInstance remaining = slot.slot.get();
 
-                if(remaining != null){
-                    boolean modified = false;
-                    for(GuiContainer.ShiftClickBehavior behavior : gui.shiftClickBehaviors){
-                        if(behavior.slots.contains(slot.componentId)){
-                            for(int slotInto : behavior.slotsInto){
-                                GuiComponent comp = gui.getComponents().get(slotInto);
-                                if(comp instanceof ComponentSlot){
-                                    ComponentSlot intoSlot = (ComponentSlot)comp;
-                                    if(behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)){
-                                        int result = shiftClick(gui.player, container, container.getIdForSlot(slot.slot), container.getIdForSlot(intoSlot.slot));
+            if(remaining != null){
+                boolean modified = false;
+                for(GuiContainer.ShiftClickBehavior behavior : gui.shiftClickBehaviors){
+                    if(behavior.slots.contains(slot.componentId)){
+                        for(int slotInto : behavior.slotsInto){
+                            GuiComponent comp = gui.getComponents().get(slotInto);
+                            if(comp instanceof ComponentSlot){
+                                ComponentSlot intoSlot = (ComponentSlot)comp;
+                                if(behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)){
+                                    int result = shiftClick(gui.player, container, container.getIdForSlot(slot.slot), container.getIdForSlot(intoSlot.slot));
 
-                                        if(result == 1){
-                                            return true;
-                                        }
-                                        else if(result == 2){
-                                            modified = true;
-                                        }
+                                    if(result == 1){
+                                        return true;
+                                    }
+                                    else if(result == 2){
+                                        modified = true;
                                     }
                                 }
                             }
                         }
                     }
-                    return modified;
                 }
+                return modified;
             }
         }
         return false;
@@ -371,30 +374,27 @@ public class InternalHooks implements IInternalHooks{
         ItemInstance fromInst = slotFrom.get();
         ItemInstance intoInst = slotInto.get();
 
-        if(slotFrom.canRemove()){
-            if(intoInst == null){
-                if(slotInto.canPlace(fromInst)){
-                    slotInto.set(fromInst);
-                    slotFrom.set(null);
-                    return 1;
-                }
+        if(intoInst == null){
+            if(slotInto.canPlace(fromInst) && slotFrom.canRemove(fromInst.getAmount())){
+                slotInto.set(fromInst);
+                slotFrom.set(null);
+                return 1;
             }
-            else if(intoInst.isEffectivelyEqual(fromInst)){
-                int possible = Math.min(intoInst.getMaxAmount()-intoInst.getAmount(), fromInst.getAmount());
-                if(possible > 0){
-                    ItemInstance newInto = intoInst.copy().addAmount(possible);
-                    if(slotInto.canPlace(newInto)){
-                        slotInto.set(newInto);
-
-                        int remaining = fromInst.getAmount()-possible;
-                        if(remaining <= 0){
-                            slotFrom.set(null);
-                            return 1;
-                        }
-                        else{
-                            slotFrom.set(fromInst.copy().setAmount(remaining));
-                            return 2;
-                        }
+        }
+        else if(intoInst.isEffectivelyEqual(fromInst)){
+            int possible = Math.min(intoInst.getMaxAmount()-intoInst.getAmount(), fromInst.getAmount());
+            if(possible > 0 && slotFrom.canRemove(possible)){
+                ItemInstance newInto = intoInst.copy().addAmount(possible);
+                if(slotInto.canPlace(newInto)){
+                    int remaining = fromInst.getAmount()-possible;
+                    slotInto.set(newInto);
+                    if(remaining <= 0){
+                        slotFrom.set(null);
+                        return 1;
+                    }
+                    else{
+                        slotFrom.set(fromInst.copy().setAmount(remaining));
+                        return 2;
                     }
                 }
             }
