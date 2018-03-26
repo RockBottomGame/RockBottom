@@ -7,16 +7,16 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import org.lwjgl.openal.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 public final class SoundHandler{
 
     private static final int MAX_SOURCES = 64;
     private static final List<Integer> SOURCES = new ArrayList<>();
-    private static final Map<Integer, ISound> PLAYING_SOUNDS = new ConcurrentHashMap<>();
+    private static final Map<Integer, ISound> PLAYING_SOUNDS = new HashMap<>();
     private static final List<StreamSound> STREAM_SOUNDS = new ArrayList<>();
 
     public static final float ROLLOFF = 1F;
@@ -174,11 +174,9 @@ public final class SoundHandler{
     }
 
     public static void addPlayingSound(int index, ISound sound){
-        PLAYING_SOUNDS.put(index, sound);
-    }
-
-    public static void removePlayingSound(int index){
-        PLAYING_SOUNDS.remove(index);
+        synchronized(PLAYING_SOUNDS){
+            PLAYING_SOUNDS.put(index, sound);
+        }
     }
 
     public static void addStreamingSound(StreamSound sound){
@@ -190,13 +188,14 @@ public final class SoundHandler{
     }
 
     public static void updateSounds(AbstractGame game){
+        List<Map.Entry<Integer, ISound>> soundsToRemove = new ArrayList<>();
         long lastStreamTime = Util.getTimeMillis();
         long lastSoundTime = Util.getTimeMillis();
 
         while(game.isRunning){
             long currTime = Util.getTimeMillis();
 
-            if(currTime >= lastStreamTime+2000){
+            if(currTime >= lastStreamTime+5000){
                 lastStreamTime = currTime;
 
                 if(!STREAM_SOUNDS.isEmpty()){
@@ -214,17 +213,24 @@ public final class SoundHandler{
                 }
             }
 
-            if(currTime >= lastSoundTime+500){
+            if(currTime >= lastSoundTime+250){
                 lastSoundTime = currTime;
 
                 if(!PLAYING_SOUNDS.isEmpty()){
-                    for(Map.Entry<Integer, ISound> entry : PLAYING_SOUNDS.entrySet()){
-                        int id = entry.getKey();
-                        ISound sound = entry.getValue();
+                    synchronized(PLAYING_SOUNDS){
+                        for(Map.Entry<Integer, ISound> entry : PLAYING_SOUNDS.entrySet()){
+                            if(!entry.getValue().isIndexPlaying(entry.getKey())){
+                                soundsToRemove.add(entry);
+                            }
+                        }
 
-                        if(!sound.isPlaying()){
-                            sound.stopIndex(id);
-                            removePlayingSound(id);
+                        if(!soundsToRemove.isEmpty()){
+                            for(Map.Entry<Integer, ISound> entry : soundsToRemove){
+                                int id = entry.getKey();
+                                entry.getValue().stopIndex(id);
+                                PLAYING_SOUNDS.remove(id);
+                            }
+                            soundsToRemove.clear();
                         }
                     }
                 }

@@ -94,12 +94,15 @@ public class SoundEffect implements ISound{
     }
 
     @Override
+    public boolean isIndexPlaying(int index){
+        return this.currentIndices.contains(index) && SoundHandler.isPlaying(index);
+    }
+
+    @Override
     public boolean isPlaying(){
-        if(!this.currentIndices.isEmpty()){
-            for(int i : this.currentIndices){
-                if(SoundHandler.isPlaying(i)){
-                    return true;
-                }
+        for(int i : this.currentIndices){
+            if(this.isIndexPlaying(i)){
+                return true;
             }
         }
         return false;

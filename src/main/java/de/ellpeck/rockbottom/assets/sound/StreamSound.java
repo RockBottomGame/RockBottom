@@ -290,6 +290,11 @@ public class StreamSound implements ISound{
     }
 
     @Override
+    public boolean isIndexPlaying(int index){
+        return this.isPlaying();
+    }
+
+    @Override
     public boolean isPlaying(){
         return this.shouldPlay || (this.currentIndex >= 0 && SoundHandler.isPlaying(this.currentIndex));
     }

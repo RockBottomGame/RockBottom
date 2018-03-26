@@ -43,6 +43,11 @@ public class EmptySound implements ISound{
     }
 
     @Override
+    public boolean isIndexPlaying(int index){
+        return false;
+    }
+
+    @Override
     public boolean isPlaying(){
         return false;
     }
