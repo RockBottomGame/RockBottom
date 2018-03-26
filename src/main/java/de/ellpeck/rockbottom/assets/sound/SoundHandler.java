@@ -77,8 +77,7 @@ public final class SoundHandler{
     }
 
     public static int playAsSoundAt(SoundEffect effect, int id, float pitch, float volume, boolean loop, float x, float y, float z){
-        volume *= RockBottomAPI.getGame().getSettings().soundVolume;
-
+        volume = ensureVolume(volume);
         if(volume > 0F){
             int index = findFreeSourceIndex();
             if(index >= 0){
@@ -101,6 +100,10 @@ public final class SoundHandler{
             }
         }
         return -1;
+    }
+
+    private static float ensureVolume(float volume){
+        return Math.min(1F, volume*RockBottomAPI.getGame().getSettings().soundVolume);
     }
 
     public static boolean isPlaying(int index){
