@@ -103,7 +103,7 @@ public final class SoundHandler{
     }
 
     private static float ensureVolume(float volume){
-        return Math.min(1F, volume*RockBottomAPI.getGame().getSettings().soundVolume);
+        return volume*RockBottomAPI.getGame().getSettings().soundVolume;
     }
 
     public static boolean isPlaying(int index){
