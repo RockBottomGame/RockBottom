@@ -1,19 +1,27 @@
 package de.ellpeck.rockbottom.assets.sound;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.ISound;
+import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import org.lwjgl.openal.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 public final class SoundHandler{
 
     private static final int MAX_SOURCES = 64;
     private static final List<Integer> SOURCES = new ArrayList<>();
-    private static final Map<Integer, SoundEffect> CURRENT_EFFECTS = new HashMap<>();
+    private static final Map<Integer, ISound> PLAYING_SOUNDS = new ConcurrentHashMap<>();
+    private static final List<StreamSound> STREAM_SOUNDS = new ArrayList<>();
+
+    public static final float ROLLOFF = 1F;
+    public static final float REF_DIST = 3F;
+    public static final float MAX_DIST = 20F;
 
     private static long context;
     private static long device;
@@ -77,12 +85,7 @@ public final class SoundHandler{
         if(volume > 0F){
             int index = findFreeSourceIndex();
             if(index >= 0){
-                SoundEffect current = CURRENT_EFFECTS.get(index);
-                if(current != null){
-                    current.stopIndex(index);
-                }
-
-                CURRENT_EFFECTS.put(index, effect);
+                addPlayingSound(index, effect);
 
                 int source = getSource(index);
                 AL10.alSourcei(source, AL10.AL_BUFFER, id);
@@ -103,6 +106,30 @@ public final class SoundHandler{
         return -1;
     }
 
+    public static boolean playStreamSoundAt(StreamSound sound, int index, float pitch, float volume, float x, float y, float z, float rolloffFactor, float refDistance, float maxDistance){
+        volume = ensureVolume(volume);
+        if(volume > 0F){
+            addPlayingSound(index, sound);
+
+            int source = getSource(index);
+            AL10.alSourcef(source, AL10.AL_PITCH, pitch);
+            AL10.alSourcef(source, AL10.AL_GAIN, volume);
+            AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_FALSE);
+
+            AL10.alSource3f(source, AL10.AL_POSITION, x, y, z);
+            AL10.alSourcef(source, AL10.AL_ROLLOFF_FACTOR, rolloffFactor);
+            AL10.alSourcef(source, AL10.AL_REFERENCE_DISTANCE, refDistance);
+            AL10.alSourcef(source, AL10.AL_MAX_DISTANCE, maxDistance);
+
+            AL10.alSourcePlay(source);
+
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     private static float ensureVolume(float volume){
         return volume*RockBottomAPI.getGame().getSettings().soundVolume;
     }
@@ -115,17 +142,96 @@ public final class SoundHandler{
         return SOURCES.get(index);
     }
 
-    private static int findFreeSourceIndex(){
+    public static int findFreeSourceIndex(){
         for(int i = 0; i < SOURCES.size(); i++){
-            if(!isPlaying(i)){
+            if(!PLAYING_SOUNDS.containsKey(i)){
                 return i;
             }
         }
         return -1;
     }
 
+    public static int getFreeSources(){
+        int amount = 0;
+        for(int i = 0; i < SOURCES.size(); i++){
+            if(!isPlaying(i)){
+                amount++;
+            }
+        }
+        return amount;
+    }
+
+    public static int getStreamingSoundAmount(){
+        return STREAM_SOUNDS.size();
+    }
+
+    public static int getPlayingSoundAmount(){
+        return PLAYING_SOUNDS.size();
+    }
+
     public static void stopSoundEffect(int index){
         AL10.alSourceStop(getSource(index));
+    }
+
+    public static void addPlayingSound(int index, ISound sound){
+        PLAYING_SOUNDS.put(index, sound);
+    }
+
+    public static void removePlayingSound(int index){
+        PLAYING_SOUNDS.remove(index);
+    }
+
+    public static void addStreamingSound(StreamSound sound){
+        STREAM_SOUNDS.add(sound);
+    }
+
+    public static void removeStreamingSound(StreamSound sound){
+        STREAM_SOUNDS.remove(sound);
+    }
+
+    public static void updateSounds(AbstractGame game){
+        long lastStreamTime = Util.getTimeMillis();
+        long lastSoundTime = Util.getTimeMillis();
+
+        while(game.isRunning){
+            long currTime = Util.getTimeMillis();
+
+            if(currTime >= lastStreamTime+2000){
+                lastStreamTime = currTime;
+
+                if(!STREAM_SOUNDS.isEmpty()){
+                    for(int i = 0; i < STREAM_SOUNDS.size(); i++){
+                        StreamSound sound = STREAM_SOUNDS.get(i);
+                        if(sound.isPlaying()){
+                            try{
+                                sound.update();
+                            }
+                            catch(Exception e){
+                                RockBottomAPI.logger().log(Level.WARNING, "There was an error streaming a sound", e);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(currTime >= lastSoundTime+500){
+                lastSoundTime = currTime;
+
+                if(!PLAYING_SOUNDS.isEmpty()){
+                    for(Map.Entry<Integer, ISound> entry : PLAYING_SOUNDS.entrySet()){
+                        int id = entry.getKey();
+                        ISound sound = entry.getValue();
+
+                        if(!sound.isPlaying()){
+                            sound.stopIndex(id);
+                            removePlayingSound(id);
+                        }
+                    }
+                }
+            }
+
+            Util.sleepSafe(1);
+        }
     }
 
     public static void dispose(){

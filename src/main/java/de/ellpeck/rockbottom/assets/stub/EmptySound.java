@@ -2,6 +2,9 @@ package de.ellpeck.rockbottom.assets.stub;
 
 import de.ellpeck.rockbottom.api.assets.ISound;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class EmptySound implements ISound{
 
     @Override
@@ -47,6 +50,16 @@ public class EmptySound implements ISound{
     @Override
     public void stop(){
 
+    }
+
+    @Override
+    public void stopIndex(int index){
+
+    }
+
+    @Override
+    public Set<Integer> getPlayingSourceIds(){
+        return Collections.emptySet();
     }
 
     @Override

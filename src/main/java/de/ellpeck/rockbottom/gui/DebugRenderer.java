@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.World;
@@ -26,6 +27,10 @@ public final class DebugRenderer{
         list.add("Display Ratio: "+g.getDisplayRatio());
         list.add("Gui Scale: "+g.getGuiScale());
         list.add("World Scale: "+g.getWorldScale());
+        list.add("");
+        list.add("Free Sound Sources: "+SoundHandler.getFreeSources());
+        list.add("Playing Sounds: "+SoundHandler.getPlayingSoundAmount());
+        list.add("Streaming Sounds: "+SoundHandler.getStreamingSoundAmount());
         list.add("");
 
         list.add("Texture Binds: "+Texture.binds);

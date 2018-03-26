@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.Scanner;
@@ -17,6 +18,7 @@ public final class ThreadHandler{
     public static Thread mainThread;
     public static Thread consoleThread;
     public static ChunkThread chunkGenThread;
+    public static Thread soundThread;
 
     public static void init(AbstractGame game){
         mainThread = Thread.currentThread();
@@ -24,6 +26,10 @@ public final class ThreadHandler{
         chunkGenThread = new ChunkThread(game);
         chunkGenThread.setDaemon(true);
         chunkGenThread.start();
+
+        soundThread = new Thread(() -> SoundHandler.updateSounds(game), "SoundUpdater");
+        soundThread.setDaemon(true);
+        soundThread.start();
 
         if(game.isDedicatedServer()){
             ICommandSender consoleCommandSender = new ICommandSender(){

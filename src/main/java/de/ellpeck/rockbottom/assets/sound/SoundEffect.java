@@ -82,12 +82,15 @@ public class SoundEffect implements ISound{
 
     @Override
     public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
-        this.playAt(pitch, volume, x, y, z, loop, 1F, 3F, 20F);
+        this.playAt(pitch, volume, x, y, z, loop, SoundHandler.ROLLOFF, SoundHandler.REF_DIST, SoundHandler.MAX_DIST);
     }
 
     @Override
     public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance){
-        this.currentIndices.add(SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float)x, (float)y, (float)z, rolloffFactor, refDistance, maxDistance));
+        int index = SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float)x, (float)y, (float)z, rolloffFactor, refDistance, maxDistance);
+        if(index >= 0){
+            this.currentIndices.add(index);
+        }
     }
 
     @Override
@@ -105,10 +108,12 @@ public class SoundEffect implements ISound{
     @Override
     public void stop(){
         for(int i : this.currentIndices){
-            this.stopIndex(i);
+            SoundHandler.stopSoundEffect(i);
         }
+        this.currentIndices.clear();
     }
 
+    @Override
     public void stopIndex(int index){
         if(this.currentIndices.contains(index)){
             SoundHandler.stopSoundEffect(index);
@@ -117,7 +122,13 @@ public class SoundEffect implements ISound{
     }
 
     @Override
+    public Set<Integer> getPlayingSourceIds(){
+        return this.currentIndices;
+    }
+
+    @Override
     public void dispose(){
+        this.stop();
         AL10.alDeleteBuffers(this.id);
     }
 }

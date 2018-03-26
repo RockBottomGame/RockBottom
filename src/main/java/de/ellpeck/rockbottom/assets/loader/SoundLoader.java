@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.assets.loader;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -9,6 +10,7 @@ import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.assets.sound.SoundEffect;
+import de.ellpeck.rockbottom.assets.sound.StreamSound;
 import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.util.HashSet;
@@ -26,11 +28,29 @@ public class SoundLoader implements IAssetLoader<ISound>{
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
-            String resPath = path+element.getAsString();
+            String resPath;
+            boolean stream;
 
-            SoundEffect sound = new SoundEffect(ContentManager.getResourceAsStream(resPath));
+            if(element.isJsonObject()){
+                JsonObject object = element.getAsJsonObject();
+                resPath = path+object.get("path").getAsString();
+                stream = object.get("stream").getAsBoolean();
+            }
+            else{
+                resPath = path+element.getAsString();
+                stream = false;
+            }
+
+            ISound sound;
+            if(stream){
+                sound = new StreamSound(ContentManager.getResource(resPath));
+            }
+            else{
+                sound = new SoundEffect(ContentManager.getResourceAsStream(resPath));
+            }
+
             if(manager.addAsset(this, resourceName, sound)){
-                RockBottomAPI.logger().config("Loaded sound "+resourceName+" for mod "+loadingMod.getDisplayName());
+                RockBottomAPI.logger().config("Loaded "+(stream ? "streaming " : "")+"sound "+resourceName+" for mod "+loadingMod.getDisplayName());
             }
             else{
                 RockBottomAPI.logger().info("Sound "+resourceName+" already exists, not adding sound for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
