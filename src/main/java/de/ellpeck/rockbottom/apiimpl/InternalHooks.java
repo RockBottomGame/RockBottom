@@ -260,7 +260,7 @@ public class InternalHooks implements IInternalHooks{
                     container.holdingInst = slotInst.copy().setAmount(halfAmount);
 
                     ItemInstance remaining = slotInst.removeAmount(halfAmount);
-                    slot.set(remaining.getAmount() > 0 ? remaining : null);
+                    slot.set(remaining.nullIfEmpty());
                     return true;
                 }
             }
@@ -279,10 +279,7 @@ public class InternalHooks implements IInternalHooks{
                 }
 
                 if(should){
-                    container.holdingInst.removeAmount(1);
-                    if(container.holdingInst.getAmount() <= 0){
-                        container.holdingInst = null;
-                    }
+                    container.holdingInst = container.holdingInst.removeAmount(1).nullIfEmpty();
                     return true;
                 }
             }
@@ -319,10 +316,7 @@ public class InternalHooks implements IInternalHooks{
                 }
 
                 if(removeAmount > 0){
-                    container.holdingInst.removeAmount(removeAmount);
-                    if(container.holdingInst.getAmount() <= 0){
-                        container.holdingInst = null;
-                    }
+                    container.holdingInst = container.holdingInst.removeAmount(removeAmount).nullIfEmpty();
                     return true;
                 }
             }
