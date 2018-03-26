@@ -256,9 +256,11 @@ public class InternalHooks implements IInternalHooks{
         if(half){
             if(container.holdingInst == null){
                 if(slotInst != null){
-                    int halfAmount = Util.ceil(slot.get().getAmount()/2);
+                    int halfAmount = Util.ceil(slot.get().getAmount()/2D);
                     container.holdingInst = slotInst.copy().setAmount(halfAmount);
-                    slot.set(slotInst.removeAmount(halfAmount));
+
+                    ItemInstance remaining = slotInst.removeAmount(halfAmount);
+                    slot.set(remaining.getAmount() > 0 ? remaining : null);
                     return true;
                 }
             }
