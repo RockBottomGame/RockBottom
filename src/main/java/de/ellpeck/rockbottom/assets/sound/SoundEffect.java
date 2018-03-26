@@ -82,12 +82,12 @@ public class SoundEffect implements ISound{
 
     @Override
     public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
-        this.currentIndices.add(SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float)x, (float)y, (float)z, 1F, 3F, 20F));
+        this.playAt(pitch, volume, x, y, z, loop, 1F, 3F, 20F);
     }
 
     @Override
     public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance){
-
+        this.currentIndices.add(SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float)x, (float)y, (float)z, rolloffFactor, refDistance, maxDistance));
     }
 
     @Override
