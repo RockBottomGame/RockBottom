@@ -35,6 +35,11 @@ public class EmptySound implements ISound{
     }
 
     @Override
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance){
+
+    }
+
+    @Override
     public boolean isPlaying(){
         return false;
     }

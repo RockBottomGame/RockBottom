@@ -43,11 +43,7 @@ public final class SoundHandler{
                 int error = AL10.alGetError();
                 if(error == AL10.AL_NO_ERROR){
                     SOURCES.add(source);
-
                     AL10.alSource3f(source, AL10.AL_VELOCITY, 0F, 0F, 0F);
-                    AL10.alSourcef(source, AL10.AL_ROLLOFF_FACTOR, 1F);
-                    AL10.alSourcef(source, AL10.AL_REFERENCE_DISTANCE, 3F);
-                    AL10.alSourcef(source, AL10.AL_MAX_DISTANCE, 20F);
                 }
                 else{
                     RockBottomAPI.logger().warning("Couldn't initialize source:\n"+AL10.alGetString(error));
@@ -76,7 +72,7 @@ public final class SoundHandler{
         AL10.alListener3f(AL10.AL_POSITION, playerX, playerY, playerZ);
     }
 
-    public static int playAsSoundAt(SoundEffect effect, int id, float pitch, float volume, boolean loop, float x, float y, float z){
+    public static int playAsSoundAt(SoundEffect effect, int id, float pitch, float volume, boolean loop, float x, float y, float z, float rolloffFactor, float refDistance, float maxDistance){
         volume = ensureVolume(volume);
         if(volume > 0F){
             int index = findFreeSourceIndex();
@@ -88,12 +84,17 @@ public final class SoundHandler{
 
                 CURRENT_EFFECTS.put(index, effect);
 
-                int source = SOURCES.get(index);
+                int source = getSource(index);
                 AL10.alSourcei(source, AL10.AL_BUFFER, id);
                 AL10.alSourcef(source, AL10.AL_PITCH, pitch);
                 AL10.alSourcef(source, AL10.AL_GAIN, volume);
                 AL10.alSourcei(source, AL10.AL_LOOPING, loop ? AL10.AL_TRUE : AL10.AL_FALSE);
+
                 AL10.alSource3f(source, AL10.AL_POSITION, x, y, z);
+                AL10.alSourcef(source, AL10.AL_ROLLOFF_FACTOR, rolloffFactor);
+                AL10.alSourcef(source, AL10.AL_REFERENCE_DISTANCE, refDistance);
+                AL10.alSourcef(source, AL10.AL_MAX_DISTANCE, maxDistance);
+
                 AL10.alSourcePlay(source);
 
                 return index;
@@ -107,7 +108,11 @@ public final class SoundHandler{
     }
 
     public static boolean isPlaying(int index){
-        return AL10.alGetSourcei(SOURCES.get(index), AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING;
+        return AL10.alGetSourcei(getSource(index), AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING;
+    }
+
+    public static int getSource(int index){
+        return SOURCES.get(index);
     }
 
     private static int findFreeSourceIndex(){
@@ -120,7 +125,7 @@ public final class SoundHandler{
     }
 
     public static void stopSoundEffect(int index){
-        AL10.alSourceStop(SOURCES.get(index));
+        AL10.alSourceStop(getSource(index));
     }
 
     public static void dispose(){
