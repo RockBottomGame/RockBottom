@@ -7,16 +7,14 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import org.lwjgl.openal.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 public final class SoundHandler{
 
     private static final int MAX_SOURCES = 64;
     private static final List<Integer> SOURCES = new ArrayList<>();
-    private static final Map<Integer, ISound> PLAYING_SOUNDS = new HashMap<>();
+    private static final ISound[] PLAYING_SOUNDS = new ISound[MAX_SOURCES];
     private static final List<StreamSound> STREAM_SOUNDS = new ArrayList<>();
 
     public static final float ROLLOFF = 1F;
@@ -143,8 +141,8 @@ public final class SoundHandler{
     }
 
     public static int findFreeSourceIndex(){
-        for(int i = 0; i < SOURCES.size(); i++){
-            if(!PLAYING_SOUNDS.containsKey(i)){
+        for(int i = 0; i < MAX_SOURCES; i++){
+            if(PLAYING_SOUNDS[i] == null){
                 return i;
             }
         }
@@ -166,7 +164,13 @@ public final class SoundHandler{
     }
 
     public static int getPlayingSoundAmount(){
-        return PLAYING_SOUNDS.size();
+        int amount = 0;
+        for(int i = 0; i < MAX_SOURCES; i++){
+            if(PLAYING_SOUNDS[i] != null){
+                amount++;
+            }
+        }
+        return amount;
     }
 
     public static void stopSoundEffect(int index){
@@ -174,9 +178,7 @@ public final class SoundHandler{
     }
 
     public static void addPlayingSound(int index, ISound sound){
-        synchronized(PLAYING_SOUNDS){
-            PLAYING_SOUNDS.put(index, sound);
-        }
+        PLAYING_SOUNDS[index] = sound;
     }
 
     public static void addStreamingSound(StreamSound sound){
@@ -188,7 +190,6 @@ public final class SoundHandler{
     }
 
     public static void updateSounds(AbstractGame game){
-        List<Map.Entry<Integer, ISound>> soundsToRemove = new ArrayList<>();
         long lastStreamTime = Util.getTimeMillis();
         long lastSoundTime = Util.getTimeMillis();
 
@@ -216,22 +217,11 @@ public final class SoundHandler{
             if(currTime >= lastSoundTime+250){
                 lastSoundTime = currTime;
 
-                if(!PLAYING_SOUNDS.isEmpty()){
-                    synchronized(PLAYING_SOUNDS){
-                        for(Map.Entry<Integer, ISound> entry : PLAYING_SOUNDS.entrySet()){
-                            if(!entry.getValue().isIndexPlaying(entry.getKey())){
-                                soundsToRemove.add(entry);
-                            }
-                        }
-
-                        if(!soundsToRemove.isEmpty()){
-                            for(Map.Entry<Integer, ISound> entry : soundsToRemove){
-                                int id = entry.getKey();
-                                entry.getValue().stopIndex(id);
-                                PLAYING_SOUNDS.remove(id);
-                            }
-                            soundsToRemove.clear();
-                        }
+                for(int i = 0; i < MAX_SOURCES; i++){
+                    ISound sound = PLAYING_SOUNDS[i];
+                    if(sound != null && !sound.isIndexPlaying(i)){
+                        sound.stopIndex(i);
+                        PLAYING_SOUNDS[i] = null;
                     }
                 }
             }
