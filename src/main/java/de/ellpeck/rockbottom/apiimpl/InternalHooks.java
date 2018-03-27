@@ -314,6 +314,12 @@ public class InternalHooks implements IInternalHooks{
                             }
                         }
                     }
+                    else if(slot.canRemove(slotInst.getAmount()) && slot.canPlace(container.holdingInst)){
+                        ItemInstance slotCopy = slotInst.copy();
+                        slot.set(container.holdingInst);
+                        container.holdingInst = slotCopy;
+                        return true;
+                    }
                 }
                 else if(slot.canPlace(container.holdingInst)){
                     removeAmount = container.holdingInst.getAmount();
