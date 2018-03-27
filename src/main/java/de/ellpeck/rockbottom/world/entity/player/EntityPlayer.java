@@ -191,23 +191,26 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y).expand(1), EntityItem.class);
                 for(EntityItem entity : entities){
                     if(entity.canPickUp()){
-                        if(Util.distanceSq(entity.x, entity.y, this.x, this.y+0.5) <= 0.25){
-                            ItemInstance left = this.inv.addExistingFirst(entity.item, false);
+                        ItemInstance theoreticalLeft = this.inv.add(entity.item, true);
+                        if(theoreticalLeft == null || theoreticalLeft.getAmount() != entity.item.getAmount()){
+                            if(Util.distanceSq(entity.x, entity.y, this.x, this.y+0.5) <= 0.25){
+                                ItemInstance left = this.inv.addExistingFirst(entity.item, false);
 
-                            if(left == null){
-                                entity.kill();
+                                if(left == null){
+                                    entity.kill();
+                                }
+                                else{
+                                    entity.item = left;
+                                }
                             }
                             else{
-                                entity.item = left;
-                            }
-                        }
-                        else{
-                            double x = this.x-entity.x;
-                            double y = (this.y+0.5)-entity.y;
-                            double length = Util.distance(0, 0, x, y);
+                                double x = this.x-entity.x;
+                                double y = (this.y+0.5)-entity.y;
+                                double length = Util.distance(0, 0, x, y);
 
-                            entity.motionX = 0.3*(x/length);
-                            entity.motionY = 0.3*(y/length);
+                                entity.motionX = 0.3*(x/length);
+                                entity.motionY = 0.3*(y/length);
+                            }
                         }
                     }
                 }
