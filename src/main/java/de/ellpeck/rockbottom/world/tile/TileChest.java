@@ -52,16 +52,6 @@ public class TileChest extends TileBasic{
     }
 
     @Override
-    public void onRemoved(IWorld world, int x, int y, TileLayer layer){
-        if(!world.isClient()){
-            TileEntityChest tile = world.getTileEntity(x, y, TileEntityChest.class);
-            if(tile != null){
-                tile.dropInventory(tile.getTileInventory());
-            }
-        }
-    }
-
-    @Override
     protected ITileRenderer createRenderer(IResourceName name){
         return new TileChestRenderer(name);
     }

@@ -1,6 +1,9 @@
 package de.ellpeck.rockbottom;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
+import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.effect.BasicEffect;
 import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
@@ -51,6 +54,7 @@ public final class ContentRegistry{
         new TileRemainsGoo().register();
         new TileGrassTorch().register();
         new TileCopper().register();
+        new TileSimpleFurnace().register();
 
         new ItemTool(RockBottomAPI.createInternalRes("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
         new ItemTool(RockBottomAPI.createInternalRes("brittle_axe"), 2F, ToolType.AXE, 1).register();
@@ -88,5 +92,11 @@ public final class ContentRegistry{
 
         new BasicEffect(RockBottomAPI.createInternalRes("speed"), false, false, 36000).register();
         new BasicEffect(RockBottomAPI.createInternalRes("jump_height"), false, false, 36000).register();
+
+        new FuelInput(new ResUseInfo(GameContent.RES_COAL), 1000).register();
+        new FuelInput(new ResUseInfo(GameContent.RES_WOOD_RAW), 300).register();
+        new FuelInput(new ResUseInfo(GameContent.RES_WOOD_PROCESSED), 100).register();
+        new FuelInput(new ResUseInfo(GameContent.RES_PLANT_FIBER), 20).register();
+        new FuelInput(new ResUseInfo(GameContent.RES_STICK), 20).register();
     }
 }

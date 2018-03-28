@@ -25,6 +25,7 @@ public final class ContentManager{
 
     public static void init(IGameInstance game){
         new RecipeLoader().register();
+        new SmeltingLoader().register();
         new StructureLoader().register();
 
         List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
