@@ -33,6 +33,8 @@ import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.mod.ModLoader;
 import de.ellpeck.rockbottom.net.NetHandler;
+import de.ellpeck.rockbottom.net.PacketDecoder;
+import de.ellpeck.rockbottom.net.PacketEncoder;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
 import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 import de.ellpeck.rockbottom.world.World;
@@ -79,6 +81,7 @@ public abstract class AbstractGame implements IGameInstance{
         try{
             game.init();
 
+            int packetInfoTimer = 0;
             long lastPollTime = 0;
             int tpsAccumulator = 0;
             int fpsAccumulator = 0;
@@ -114,6 +117,15 @@ public abstract class AbstractGame implements IGameInstance{
                     fpsAccumulator = 0;
 
                     lastPollTime = time;
+
+                    packetInfoTimer++;
+                    if(packetInfoTimer >= 30){
+                        RockBottomAPI.logger().finer("Packets in the last 30 seconds: "+PacketDecoder.packetsReceived+" received, "+PacketEncoder.packetsSent+" sent");
+
+                        PacketDecoder.packetsReceived = 0;
+                        PacketEncoder.packetsSent = 0;
+                        packetInfoTimer = 0;
+                    }
                 }
 
                 Util.sleepSafe(1);

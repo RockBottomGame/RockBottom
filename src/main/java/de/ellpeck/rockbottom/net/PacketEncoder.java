@@ -10,6 +10,8 @@ import java.util.logging.Level;
 
 public class PacketEncoder extends MessageToByteEncoder<IPacket>{
 
+    public static int packetsSent;
+
     @Override
     protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf) throws Exception{
         int id = RockBottomAPI.PACKET_REGISTRY.getId(packet.getClass());
@@ -27,5 +29,7 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket>{
         else{
             RockBottomAPI.logger().warning("Found unregistered packet "+packet.getClass());
         }
+
+        packetsSent++;
     }
 }

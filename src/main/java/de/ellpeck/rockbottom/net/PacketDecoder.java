@@ -11,6 +11,8 @@ import java.util.logging.Level;
 
 public class PacketDecoder extends ByteToMessageDecoder{
 
+    public static int packetsReceived;
+
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> out) throws Exception{
         int id = buf.readByte();
@@ -23,8 +25,8 @@ public class PacketDecoder extends ByteToMessageDecoder{
                 packet.fromBuffer(buf);
 
                 if(buf.isReadable()){
-                   RockBottomAPI.logger().log(Level.WARNING, "Packet "+packetClass+" with id "+id+" read from buffer, but left "+buf.readableBytes()+" bytes behind!");
-                   buf.clear();
+                    RockBottomAPI.logger().log(Level.WARNING, "Packet "+packetClass+" with id "+id+" read from buffer, but left "+buf.readableBytes()+" bytes behind!");
+                    buf.clear();
                 }
             }
             catch(Exception e){
@@ -38,5 +40,7 @@ public class PacketDecoder extends ByteToMessageDecoder{
             RockBottomAPI.logger().log(Level.WARNING, "Found unknown packet with id "+id);
             buf.clear();
         }
+
+        packetsReceived++;
     }
 }
