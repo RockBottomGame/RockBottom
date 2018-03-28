@@ -1,35 +1,32 @@
 package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.IStructure;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class WorldGenTrees implements IWorldGenerator{
 
     private final Random treeRandom = new Random();
-    private final List<IStructure> treeDesigns = new ArrayList<>();
+    private List<IStructure> treeDesigns;
     private int widestTree;
 
     @Override
     public void initWorld(IWorld world){
-        for(Map.Entry<IResourceName, IStructure> entry : RockBottomAPI.STRUCTURE_REGISTRY.getUnmodifiable().entrySet()){
-            if(entry.getKey().getResourceName().contains("grassland_tree")){
-                IStructure structure = entry.getValue();
-                this.treeDesigns.add(structure);
-
-                if(this.widestTree < structure.getWidth()){
-                    this.widestTree = structure.getWidth();
-                }
+        this.treeDesigns = IStructure.forNamePart("grassland_tree");
+        for(IStructure structure : this.treeDesigns){
+            if(this.widestTree < structure.getWidth()){
+                this.widestTree = structure.getWidth();
             }
         }
     }

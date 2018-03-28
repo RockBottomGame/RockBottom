@@ -117,7 +117,7 @@ public class StructureLoader implements IContentLoader<IStructure>{
                 }
             }
 
-            if(RockBottomAPI.STRUCTURE_REGISTRY.get(resourceName) != null){
+            if(IStructure.forName(resourceName) != null){
                 RockBottomAPI.logger().info("Structure with name "+resourceName+" already exists, not adding structure for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
             }
             else{

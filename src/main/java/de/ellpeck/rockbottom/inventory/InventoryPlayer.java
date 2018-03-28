@@ -24,6 +24,7 @@ public class InventoryPlayer extends Inventory{
 
                             if(fullness >= inv.getSlotAmount()/2){
                                 player.getKnowledge().teachRecipe(ConstructionRegistry.chest, true);
+                                break;
                             }
                         }
                     }
