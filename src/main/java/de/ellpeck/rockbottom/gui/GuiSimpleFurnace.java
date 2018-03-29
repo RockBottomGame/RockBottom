@@ -16,6 +16,19 @@ public class GuiSimpleFurnace extends GuiContainer{
     public GuiSimpleFurnace(AbstractEntityPlayer player, TileEntitySimpleFurnace tile){
         super(player, 135, 130);
         this.tile = tile;
+
+        int playerSlots = player.getInv().getSlotAmount();
+
+        ShiftClickBehavior input = new ShiftClickBehavior(0, playerSlots-1, playerSlots, playerSlots);
+        this.shiftClickBehaviors.add(input);
+        this.shiftClickBehaviors.add(input.reversed());
+
+        ShiftClickBehavior output = new ShiftClickBehavior(0, playerSlots-1, playerSlots+2, playerSlots+2);
+        this.shiftClickBehaviors.add(output.reversed());
+
+        ShiftClickBehavior fuel = new ShiftClickBehavior(0, playerSlots-1, playerSlots+1, playerSlots+1);
+        this.shiftClickBehaviors.add(fuel);
+        this.shiftClickBehaviors.add(fuel.reversed());
     }
 
     @Override

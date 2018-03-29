@@ -14,6 +14,7 @@ public final class ConstructionRegistry{
     public static IRecipe ladder;
     public static IRecipe chest;
     public static IRecipe grassTorch;
+    public static IRecipe simpleFurnace;
 
     public static void init(){
 
@@ -23,7 +24,7 @@ public final class ConstructionRegistry{
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_PICKAXE));
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_AXE));
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_SHOVEL));
-        
+
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_PICKAXE));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_AXE));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_SHOVEL));
@@ -31,6 +32,7 @@ public final class ConstructionRegistry{
         ladder = getRecipe(GameContent.TILE_LADDER.getItem());
         chest = getRecipe(GameContent.TILE_CHEST.getItem());
         grassTorch = getRecipe(GameContent.TILE_GRASS_TORCH.getItem());
+        simpleFurnace = getRecipe(GameContent.TILE_SIMPLE_FURNACE.getItem());
     }
 
     private static IRecipe getRecipe(Item item){

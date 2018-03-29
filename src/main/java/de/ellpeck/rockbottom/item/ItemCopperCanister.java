@@ -5,9 +5,10 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 
 import java.util.List;
 
@@ -26,8 +27,14 @@ public class ItemCopperCanister extends ItemBasic{
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance){
         if(!world.isClient()){
-            player.sendMessageTo(RockBottomAPI.getGame().getChatLog(), new ChatComponentText("<This would give you the recipe for some basic machines but that's not implemented yet>"));
             player.getInv().remove(player.getSelectedSlot(), 1);
+
+            if(!player.getKnowledge().knowsRecipe(ConstructionRegistry.simpleFurnace)){
+                player.getKnowledge().teachRecipe(ConstructionRegistry.simpleFurnace);
+            }
+            else{
+                player.sendMessageTo(RockBottomAPI.getGame().getChatLog(), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.already_known")));
+            }
         }
         return true;
     }
