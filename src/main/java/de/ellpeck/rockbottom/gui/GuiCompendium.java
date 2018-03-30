@@ -48,6 +48,7 @@ public class GuiCompendium extends GuiContainer{
     private ComponentInputField searchBar;
     private BoundBox searchButtonBox;
     private String searchText = "";
+    private boolean keepContainerOpen;
 
     public IRecipe selectedRecipe;
 
@@ -67,8 +68,8 @@ public class GuiCompendium extends GuiContainer{
         this.components.add(this.menu);
 
         this.components.add(new ComponentFancyButton(this, 5-16, GuiCompendium.PAGE_HEIGHT+5, 14, 14, () -> {
-            game.getGuiManager().closeGui();
-            this.player.openGuiContainer(new GuiInventory(this.player), this.player.getInvContainer());
+            this.keepContainerOpen = true;
+            game.getGuiManager().openGui(new GuiInventory(this.player));
             return true;
         }, RockBottomAPI.createInternalRes("gui.construction.book_open"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.close_compendium"))));
 
@@ -127,6 +128,11 @@ public class GuiCompendium extends GuiContainer{
             this.stockIngredients(Collections.emptyList());
         }
         this.initConstructButton(this.selectedRecipe);
+    }
+
+    @Override
+    public boolean shouldCloseContainer(){
+        return !this.keepContainerOpen;
     }
 
     private boolean matchesSearch(List<ItemInstance> outputs){

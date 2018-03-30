@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 public class GuiInventory extends GuiContainer{
 
+    private boolean keepContainerOpen;
+
     public GuiInventory(AbstractEntityPlayer player){
         super(player, 135, 70);
 
@@ -22,10 +24,15 @@ public class GuiInventory extends GuiContainer{
         super.init(game);
 
         this.components.add(new ComponentFancyButton(this, -16, 0, 14, 14, () -> {
-            game.getGuiManager().closeGui();
-            this.player.openGuiContainer(new GuiCompendium(this.player), this.player.getInvContainer());
+            this.keepContainerOpen = true;
+            game.getGuiManager().openGui(new GuiCompendium(this.player));
             return true;
-        }, RockBottomAPI.createInternalRes("gui.construction.book_closed"),game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.open_compendium"))));
+        }, RockBottomAPI.createInternalRes("gui.construction.book_closed"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.open_compendium"))));
+    }
+
+    @Override
+    public boolean shouldCloseContainer(){
+        return !this.keepContainerOpen;
     }
 
     @Override

@@ -127,9 +127,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
             this.currentContainer = event.container;
             if(this.currentContainer != null){
                 if(this.world.isClient()){
-                    int id = this.currentContainer.getUnboundId();
-                    if(id >= 0){
-                        RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), id));
+                    if(this.currentContainer.getName().equals(ContainerInventory.NAME)){
+                        RockBottomAPI.getNet().sendToServer(new PacketOpenUnboundContainer(this.getUniqueId(), PacketOpenUnboundContainer.INV_ID));
                     }
                 }
                 else{

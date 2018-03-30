@@ -7,18 +7,15 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 public class ContainerInventory extends ItemContainer{
 
+    public static final IResourceName NAME = RockBottomAPI.createInternalRes("inventory");
+
     public ContainerInventory(EntityPlayer player){
         super(player);
         this.addPlayerInventory(player, 0, 0);
     }
 
     @Override
-    public int getUnboundId(){
-        return 0;
-    }
-
-    @Override
     public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("inventory");
+        return NAME;
     }
 }

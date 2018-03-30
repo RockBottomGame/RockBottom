@@ -11,7 +11,8 @@ import java.util.UUID;
 
 public class PacketOpenUnboundContainer implements IPacket{
 
-    public static final int CLOSE_ID = -2;
+    public static final int INV_ID = 0;
+    public static final int CLOSE_ID = -1;
 
     private UUID playerId;
     private int id;
