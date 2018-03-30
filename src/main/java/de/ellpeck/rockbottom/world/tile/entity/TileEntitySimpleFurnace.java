@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.SyncedInt;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.entity.TileInventory;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
@@ -81,7 +82,9 @@ public class TileEntitySimpleFurnace extends TileEntity{
                     }
                 }
                 else{
-                    this.smeltTime.add(1);
+                    if(Util.RANDOM.nextFloat() >= 0.45F){
+                        this.smeltTime.add(1);
+                    }
 
                     if(this.smeltTime.get() >= this.maxSmeltTime.get()){
                         ItemInstance currentOutput = this.inventory.get(2);
