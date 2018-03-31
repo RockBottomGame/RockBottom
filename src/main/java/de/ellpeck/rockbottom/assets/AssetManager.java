@@ -98,7 +98,7 @@ public class AssetManager implements IAssetManager, IDisposable{
             RockBottomAPI.logger().info("Loading resources...");
 
             List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
-            Set<IAssetLoader> loaders = RockBottomAPI.ASSET_LOADER_REGISTRY.getUnmodifiable().values();
+            Set<IAssetLoader> loaders = RockBottomAPI.ASSET_LOADER_REGISTRY.values();
 
             List<LoaderCallback> callbacks = new ArrayList<>();
             for(IAssetLoader loader : loaders){
@@ -224,7 +224,7 @@ public class AssetManager implements IAssetManager, IDisposable{
             this.sortedCursors.clear();
         }
 
-        this.sortedCursors.addAll(RockBottomAPI.SPECIAL_CURSORS.getUnmodifiable().values());
+        this.sortedCursors.addAll(RockBottomAPI.SPECIAL_CURSORS.values());
         this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor:: getPriority).reversed());
 
         for(ISpecialCursor cursor : this.sortedCursors){

@@ -26,7 +26,7 @@ public class CommandSpawnItem extends Command{
     public CommandSpawnItem(){
         super(RockBottomAPI.createInternalRes("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
 
-        for(IResourceName name : RockBottomAPI.ITEM_REGISTRY.getUnmodifiable().keySet()){
+        for(IResourceName name : RockBottomAPI.ITEM_REGISTRY.keySet()){
             this.itemAutocomplete.add(name.toString());
         }
     }

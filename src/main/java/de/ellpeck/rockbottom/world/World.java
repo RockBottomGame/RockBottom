@@ -72,7 +72,7 @@ public class World implements IWorld{
         List<IWorldGenerator> generators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
-        for(Map.Entry<IResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.getUnmodifiable().entrySet()){
+        for(Map.Entry<IResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.entrySet()){
             try{
                 IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
                 generator.initWorld(this);

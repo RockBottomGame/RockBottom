@@ -37,7 +37,7 @@ public class GuiKeybinds extends Gui{
             return true;
         }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
 
-        List<Keybind> binds = new ArrayList<>(RockBottomAPI.KEYBIND_REGISTRY.getUnmodifiable().values());
+        List<Keybind> binds = new ArrayList<>(RockBottomAPI.KEYBIND_REGISTRY.values());
         binds.sort(Comparator.comparing(Keybind:: getName));
 
         int id = 0;

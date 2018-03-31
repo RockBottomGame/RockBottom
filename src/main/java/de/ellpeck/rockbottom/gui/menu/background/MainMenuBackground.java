@@ -31,7 +31,7 @@ public class MainMenuBackground{
     private long hoverPauseTime;
 
     public MainMenuBackground(){
-        List<IMainMenuTheme> themes = new ArrayList<>(RockBottomAPI.MAIN_MENU_THEMES.getUnmodifiable().values());
+        List<IMainMenuTheme> themes = new ArrayList<>(RockBottomAPI.MAIN_MENU_THEMES.values());
         this.theme = themes.get(Util.RANDOM.nextInt(themes.size()));
     }
 

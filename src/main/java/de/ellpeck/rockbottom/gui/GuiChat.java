@@ -106,7 +106,7 @@ public class GuiChat extends Gui{
                     }
                 }
 
-                for(Command command : RockBottomAPI.COMMAND_REGISTRY.getUnmodifiable().values()){
+                for(Command command : RockBottomAPI.COMMAND_REGISTRY.values()){
                     for(String trigger : command.getTriggers()){
                         if(split.length <= 0 || trigger.startsWith(split[0])){
                             this.suggestions.add(trigger);

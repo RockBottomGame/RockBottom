@@ -92,7 +92,7 @@ public class GuiCompendium extends GuiContainer{
         this.polaroids.clear();
 
         boolean containsSelected = false;
-        for(BasicRecipe recipe : RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.getUnmodifiable().values()){
+        for(BasicRecipe recipe : RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.values()){
             if(recipe.isKnown(this.player)){
                 if(this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())){
                     ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(this.player.getInv()));

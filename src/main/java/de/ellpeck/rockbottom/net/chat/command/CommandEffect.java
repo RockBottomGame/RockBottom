@@ -27,7 +27,7 @@ public class CommandEffect extends Command{
     public CommandEffect(){
         super(RockBottomAPI.createInternalRes("effect"), "Gives the player an effect. Params: <'add'/'remove'> <mod_id/effect_name> [time]", 4);
 
-        for(IResourceName name : RockBottomAPI.EFFECT_REGISTRY.getUnmodifiable().keySet()){
+        for(IResourceName name : RockBottomAPI.EFFECT_REGISTRY.keySet()){
             this.effectAutocomplete.add(name.toString());
         }
     }

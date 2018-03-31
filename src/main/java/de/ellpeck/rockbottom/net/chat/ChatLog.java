@@ -100,7 +100,7 @@ public class ChatLog implements IChatLog{
             return RockBottomAPI.COMMAND_REGISTRY.get(RockBottomAPI.createRes(name));
         }
         else{
-            for(Command command : RockBottomAPI.COMMAND_REGISTRY.getUnmodifiable().values()){
+            for(Command command : RockBottomAPI.COMMAND_REGISTRY.values()){
                 for(String s : command.getTriggers()){
                     if(name.equals(s)){
                         return command;

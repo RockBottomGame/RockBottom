@@ -29,7 +29,7 @@ public final class ContentManager{
         new StructureLoader().register();
 
         List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
-        Set<IContentLoader> loaders = RockBottomAPI.CONTENT_LOADER_REGISTRY.getUnmodifiable().values();
+        Set<IContentLoader> loaders = RockBottomAPI.CONTENT_LOADER_REGISTRY.values();
 
         List<LoaderCallback> callbacks = new ArrayList<>();
         for(IContentLoader loader : loaders){

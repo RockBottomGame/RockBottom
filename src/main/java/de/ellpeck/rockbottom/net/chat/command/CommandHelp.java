@@ -21,7 +21,7 @@ public class CommandHelp extends Command{
     public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
         StringBuilder s = new StringBuilder(FormattingCode.GREEN+"All Commands: \n");
 
-        for(Command command : RockBottomAPI.COMMAND_REGISTRY.getUnmodifiable().values()){
+        for(Command command : RockBottomAPI.COMMAND_REGISTRY.values()){
             s.append(FormattingCode.ORANGE)
                     .append(Arrays.toString(command.getTriggers()))
                     .append(FormattingCode.RESET_COLOR)
