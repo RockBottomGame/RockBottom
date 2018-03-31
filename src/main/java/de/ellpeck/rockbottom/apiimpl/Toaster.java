@@ -80,7 +80,7 @@ public class Toaster implements IToaster{
     private static class ToastPosition{
 
         private final float y;
-        private int timer;
+        protected int timer;
 
         public ToastPosition(float y, int timer){
             this.y = y;

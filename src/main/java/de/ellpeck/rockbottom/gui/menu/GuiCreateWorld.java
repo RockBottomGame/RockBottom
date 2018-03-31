@@ -110,7 +110,7 @@ public class GuiCreateWorld extends Gui{
 
         for(String s : DISALLOWED_FILENAMES){
             if(name.equals(s)){
-                name = "-"+s+"-";
+                name = '-'+s+'-';
             }
         }
 

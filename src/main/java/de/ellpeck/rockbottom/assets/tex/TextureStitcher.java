@@ -60,7 +60,7 @@ public class TextureStitcher implements ITextureStitcher{
                 }
 
                 stitchPositions.add(new StitchPosition(tex, instruction, x+1, y+1));
-                RockBottomAPI.logger().finer("Found stitch position for "+instruction.refName+" at "+(x+1)+", "+(y+1)+" with dimensions "+tex.getTextureWidth()+"x"+tex.getTextureHeight());
+                RockBottomAPI.logger().finer("Found stitch position for "+instruction.refName+" at "+(x+1)+", "+(y+1)+" with dimensions "+tex.getTextureWidth()+'x'+tex.getTextureHeight());
 
                 highestWidth = Math.max(highestWidth, tex.getTextureWidth());
                 endX = Math.max(endX, x+tex.getTextureWidth());
@@ -110,7 +110,7 @@ public class TextureStitcher implements ITextureStitcher{
                 ITexture texture = textureMap.getSubTexture(position.x, position.y, position.texture.getTextureWidth(), position.texture.getTextureHeight());
                 position.instruction.callback.onStitched(position.x, position.y, texture);
 
-                RockBottomAPI.logger().finer("Finalized stitching of "+position.instruction.refName+" with final sub texture at "+position.x+", "+position.y+" with dimensions "+position.texture.getTextureWidth()+"x"+position.texture.getTextureHeight());
+                RockBottomAPI.logger().finer("Finalized stitching of "+position.instruction.refName+" with final sub texture at "+position.x+", "+position.y+" with dimensions "+position.texture.getTextureWidth()+'x'+position.texture.getTextureHeight());
             }
             catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "Couldn't finalize stitching of texture "+position.instruction.refName, e);
@@ -193,7 +193,7 @@ public class TextureStitcher implements ITextureStitcher{
         }
 
         @Override
-        protected Texture getTexture() throws Exception{
+        protected Texture getTexture(){
             return new Texture(this.data.getWidth(), this.data.getHeight(), this.data.getRGBA());
         }
     }

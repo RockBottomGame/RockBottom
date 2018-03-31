@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class PacketInteract implements IPacket{
@@ -30,7 +29,7 @@ public class PacketInteract implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeInt(this.layer.index());
@@ -39,7 +38,7 @@ public class PacketInteract implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.layer = TileLayer.getAllLayers().get(buf.readInt());
         this.x = buf.readDouble();

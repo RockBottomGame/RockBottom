@@ -85,10 +85,10 @@ public class ChatLog implements IChatLog{
                         this.sendMessageTo(sender, cmdFeedback);
                     }
 
-                    Logging.chatLogger.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback '"+cmdFeedback+"'");
+                    Logging.chatLogger.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback '"+cmdFeedback+'\'');
                 }
                 else{
-                    this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat()+"["+sender.getName()+"] &4"+message));
+                    this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat()+'['+sender.getName()+"] &4"+message));
                 }
             }
         }

@@ -9,8 +9,6 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketSound implements IPacket{
 
     private IResourceName soundName;
@@ -41,7 +39,7 @@ public class PacketSound implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         NetUtil.writeStringToBuffer(this.soundName.toString(), buf);
         buf.writeFloat(this.pitch);
         buf.writeFloat(this.volume);
@@ -54,7 +52,7 @@ public class PacketSound implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.soundName = RockBottomAPI.createRes(NetUtil.readStringFromBuffer(buf));
         this.pitch = buf.readFloat();
         this.volume = buf.readFloat();

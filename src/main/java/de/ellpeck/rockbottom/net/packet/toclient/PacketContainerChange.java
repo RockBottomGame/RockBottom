@@ -10,8 +10,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketContainerChange implements IPacket{
 
     private boolean isInv;
@@ -28,7 +26,7 @@ public class PacketContainerChange implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeBoolean(this.isInv);
         buf.writeInt(this.index);
 
@@ -40,7 +38,7 @@ public class PacketContainerChange implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.isInv = buf.readBoolean();
         this.index = buf.readInt();
 

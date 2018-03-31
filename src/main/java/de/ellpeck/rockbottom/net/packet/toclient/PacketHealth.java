@@ -5,8 +5,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketHealth implements IPacket{
 
     private int health;
@@ -19,12 +17,12 @@ public class PacketHealth implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.health);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.health = buf.readInt();
     }
 

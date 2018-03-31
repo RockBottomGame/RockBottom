@@ -460,7 +460,7 @@ public class Renderer implements IRenderer{
 
         if(this.isItemInfoDebug()){
             desc.add("");
-            desc.add(FormattingCode.GRAY+"Name: "+instance.getItem().getName().toString());
+            desc.add(FormattingCode.GRAY+"Name: "+instance.getItem().getName());
             desc.add(FormattingCode.GRAY+"Meta: "+instance.getMeta());
             desc.add(FormattingCode.GRAY+"Data: "+instance.getAdditionalData());
             desc.add(FormattingCode.GRAY+"Max Amount: "+instance.getMaxAmount());

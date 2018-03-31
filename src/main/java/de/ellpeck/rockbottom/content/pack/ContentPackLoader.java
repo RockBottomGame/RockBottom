@@ -118,7 +118,7 @@ public class ContentPackLoader implements IContentPackLoader{
 
         RockBottomAPI.logger().info("----- Loaded Content Packs ------");
         for(ContentPack pack : this.allPacks){
-            String s = pack.getName()+" @ "+pack.getVersion()+" ("+pack.getId()+")";
+            String s = pack.getName()+" @ "+pack.getVersion()+" ("+pack.getId()+')';
             if(this.packSettings.isDisabled(pack.getId())){
                 s += " [DISABLED]";
             }

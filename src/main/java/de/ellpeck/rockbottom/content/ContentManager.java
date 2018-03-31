@@ -47,8 +47,8 @@ public final class ContentManager{
     public static void loadContent(IMod mod, String path, String file, List<LoaderCallback> callbacks, List<ContentPack> contentPacks){
         if(path != null && !path.isEmpty()){
             for(ContentPack pack : contentPacks){
-                String pathPrefix = pack.isDefault() ? "" : pack.getId()+"/";
-                InputStream stream = getResourceAsStream(pathPrefix+path+"/"+file);
+                String pathPrefix = pack.isDefault() ? "" : pack.getId()+'/';
+                InputStream stream = getResourceAsStream(pathPrefix+path+'/'+file);
 
                 if(stream != null){
                     RockBottomAPI.logger().info("Loading "+file+" file for mod "+mod.getDisplayName()+" at path "+pathPrefix+path+" in content pack "+pack.getName());
@@ -168,7 +168,7 @@ public final class ContentManager{
         }
 
         @Override
-        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack){
             return this.loader.dealWithSpecialCases(this.game, resourceName, path, element, elementName, loadingMod, pack);
         }
 

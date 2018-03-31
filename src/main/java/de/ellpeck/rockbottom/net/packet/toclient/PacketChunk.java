@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
 import java.util.Set;
 
 public class PacketChunk implements IPacket{
@@ -28,7 +27,7 @@ public class PacketChunk implements IPacket{
 
         Set<TileLayer> layers = chunk.getLoadedLayers();
         this.tileData = new int[TOTAL*layers.size()];
-        this.layers = layers.toArray(new TileLayer[layers.size()]);
+        this.layers = layers.toArray(new TileLayer[0]);
 
         int index = 0;
         int lightIndex = 0;
@@ -56,7 +55,7 @@ public class PacketChunk implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.chunkX);
         buf.writeInt(this.chunkY);
 
@@ -77,7 +76,7 @@ public class PacketChunk implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.chunkX = buf.readInt();
         this.chunkY = buf.readInt();
 

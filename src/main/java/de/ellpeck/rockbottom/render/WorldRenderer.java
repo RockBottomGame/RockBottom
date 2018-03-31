@@ -317,7 +317,7 @@ public class WorldRenderer{
 
         private final double speed;
         private final double y;
-        private double x;
+        protected double x;
 
         private final int[] cloudParts;
         private final Pos2[] cloudOffsets;

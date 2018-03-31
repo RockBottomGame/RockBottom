@@ -66,7 +66,7 @@ public class Font implements IFont{
         }
 
         int height = rows.size();
-        RockBottomAPI.logger().config("Loaded font "+name+" with dimensions "+width+"x"+height+" and the following character map consisting of "+characters.size()+" characters: "+characters);
+        RockBottomAPI.logger().config("Loaded font "+name+" with dimensions "+width+'x'+height+" and the following character map consisting of "+characters.size()+" characters: "+characters);
 
         return new Font(name, texture, width, height, characters);
     }
@@ -253,7 +253,7 @@ public class Font implements IFont{
                 pos = new Pos2(-1, -1);
                 this.characters.put(character, pos);
 
-                RockBottomAPI.logger().warning("Character "+character+" is missing from font with name "+this.name+"!");
+                RockBottomAPI.logger().warning("Character "+character+" is missing from font with name "+this.name);
             }
 
             if(pos.getX() >= 0 && pos.getY() >= 0){
@@ -321,17 +321,17 @@ public class Font implements IFont{
 
     @Override
     public String removeFormatting(String s){
-        String newString = "";
+        StringBuilder newString = new StringBuilder();
         for(int i = 0; i < s.length(); i++){
             FormattingCode code = FormattingCode.getFormat(s, i);
             if(code != FormattingCode.NONE){
                 i += code.getLength()-1;
             }
             else{
-                newString += s.charAt(i);
+                newString.append(s.charAt(i));
             }
         }
-        return newString;
+        return newString.toString();
     }
 
     @Override
@@ -362,7 +362,7 @@ public class Font implements IFont{
     @Override
     public List<String> splitTextToLength(float scale, boolean wrapFormatting, List<String> lines, int... lengths){
         List<String> result = new ArrayList<>();
-        String accumulated = "";
+        StringBuilder accumulated = new StringBuilder();
 
         for(String line : lines){
             FormattingCode trailingColor = FormattingCode.NONE;
@@ -390,19 +390,19 @@ public class Font implements IFont{
                     int lenIndex = result.size();
                     int currLength = lengths[lenIndex >= lengths.length ? lengths.length-1 : lenIndex];
                     if(this.getWidth(accumulated+word, scale) >= currLength){
-                        result.add(accumulated.trim());
-                        accumulated = trailingColor.toString()+trailingProp+word+" ";
+                        result.add(accumulated.toString().trim());
+                        accumulated = new StringBuilder(trailingColor.toString()+trailingProp+word+' ');
                     }
                     else{
-                        accumulated += word+" ";
+                        accumulated.append(word).append(' ');
                     }
                 }
 
-                result.add(accumulated.trim());
-                accumulated = trailingColor.toString()+trailingProp;
+                result.add(accumulated.toString().trim());
+                accumulated = new StringBuilder(trailingColor.toString()+trailingProp);
             }
 
-            accumulated = "";
+            accumulated = new StringBuilder();
         }
 
         return result;

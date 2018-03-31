@@ -16,7 +16,7 @@ public class LogFormatter extends Formatter{
     public String format(LogRecord record){
         this.date.setTime(record.getMillis());
 
-        String format = "["+this.format.format(this.date)+"] ["+record.getLoggerName()+"] ["+record.getLevel()+"] "+record.getMessage()+System.lineSeparator();
+        String format = '['+this.format.format(this.date)+"] ["+record.getLoggerName()+"] ["+record.getLevel()+"] "+record.getMessage()+System.lineSeparator();
 
         Throwable t = record.getThrown();
         if(t != null){

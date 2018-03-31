@@ -9,8 +9,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketContainerData implements IPacket{
 
     private ItemInstance[] data;
@@ -29,7 +27,7 @@ public class PacketContainerData implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.data.length);
         for(ItemInstance inst : this.data){
             DataSet set = new DataSet();
@@ -43,7 +41,7 @@ public class PacketContainerData implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         int amount = buf.readInt();
         this.data = new ItemInstance[amount];
 

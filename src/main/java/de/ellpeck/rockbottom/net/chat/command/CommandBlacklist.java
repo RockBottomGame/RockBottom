@@ -31,14 +31,14 @@ public class CommandBlacklist extends Command{
                     try{
                         UUID id = chat.getPlayerIdFromString(args[1]);
 
-                        String reason = "";
+                        StringBuilder reason = new StringBuilder();
                         if(args.length > 2){
                             for(int i = 2; i < args.length; i++){
-                                reason += args[i]+" ";
+                                reason.append(args[i]).append(' ');
                             }
                         }
 
-                        net.blacklist(id, reason);
+                        net.blacklist(id, reason.toString());
                         net.saveServerSettings();
                         return new ChatComponentText(FormattingCode.GREEN+"Added player "+id+" to the blacklist!");
                     }

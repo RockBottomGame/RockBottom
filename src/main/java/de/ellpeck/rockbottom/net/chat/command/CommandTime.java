@@ -42,7 +42,7 @@ public class CommandTime extends Command{
 
                 RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(world.getCurrentTime(), world.getTotalTime()));
 
-                return new ChatComponentText(FormattingCode.GREEN+"Set time to "+world.getCurrentTime()+"!");
+                return new ChatComponentText(FormattingCode.GREEN+"Set time to "+world.getCurrentTime()+'!');
             }
             catch(NumberFormatException e){
                 return new ChatComponentText(FormattingCode.RED+"Couldn't parse time!");

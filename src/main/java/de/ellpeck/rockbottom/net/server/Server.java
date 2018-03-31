@@ -48,7 +48,7 @@ public class Server{
                 .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer(){
                     @Override
-                    protected void initChannel(Channel channel) throws Exception{
+                    protected void initChannel(Channel channel){
                         channel.config().setOption(ChannelOption.TCP_NODELAY, true);
 
                         channel.pipeline()

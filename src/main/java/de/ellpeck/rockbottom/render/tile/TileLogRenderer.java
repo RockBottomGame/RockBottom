@@ -25,7 +25,7 @@ public class TileLogRenderer extends DefaultTileRenderer<TileLog>{
         this.textures = new IResourceName[types.length];
         for(int i = 0; i < this.textures.length; i++){
             if(types[i] != LogType.PLACED){
-                this.textures[i] = this.texture.addSuffix("."+types[i].name().toLowerCase(Locale.ROOT));
+                this.textures[i] = this.texture.addSuffix('.'+types[i].name().toLowerCase(Locale.ROOT));
             }
             else{
                 this.textures[i] = this.texture;

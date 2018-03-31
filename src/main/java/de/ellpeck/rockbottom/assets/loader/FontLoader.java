@@ -25,7 +25,7 @@ public class FontLoader implements IAssetLoader<IFont>{
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack){
         if(!this.disabled.contains(resourceName)){
             JsonArray array = element.getAsJsonArray();
             String info = array.get(0).getAsString();

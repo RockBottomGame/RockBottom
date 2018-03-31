@@ -30,7 +30,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
 
-        manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix("."+(design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, 2F*scale, light);
+        manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.'+(design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, 2F*scale, light);
         manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getEyeColor()));
 
         IResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());
@@ -58,12 +58,12 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
             manager.getAnimation(shirt).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getShirtColor()));
         }
 
-        IAnimation armAnimation = manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix("."+arms));
+        IAnimation armAnimation = manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix('.'+arms));
         armAnimation.drawRow(row, x, y, scale, 2F*scale, light);
 
         IResourceName sleeves = IPlayerDesign.SLEEVES.get(design.getSleeves());
         if(sleeves != null){
-            manager.getAnimation(sleeves.addSuffix("."+arms)).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getSleevesColor()));
+            manager.getAnimation(sleeves.addSuffix('.'+arms)).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getSleevesColor()));
         }
 
         IResourceName footwear = IPlayerDesign.FOOTWEAR.get(design.getFootwear());

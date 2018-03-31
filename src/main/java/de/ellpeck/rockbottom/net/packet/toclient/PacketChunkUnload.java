@@ -8,8 +8,6 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketChunkUnload implements IPacket{
 
     private int gridX;
@@ -24,13 +22,13 @@ public class PacketChunkUnload implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.gridX);
         buf.writeInt(this.gridY);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.gridX = buf.readInt();
         this.gridY = buf.readInt();
     }

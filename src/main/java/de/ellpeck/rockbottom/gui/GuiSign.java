@@ -54,7 +54,7 @@ public class GuiSign extends Gui{
             return true;
         }, "button.edit"));
 
-        ComponentInputField[] fields = this.inputFields.toArray(new ComponentInputField[this.inputFields.size()]);
+        ComponentInputField[] fields = this.inputFields.toArray(new ComponentInputField[0]);
         this.selector = new ComponentFormatSelector(this, this.width/2+42, this.height-16, fields);
         this.components.add(this.selector);
 

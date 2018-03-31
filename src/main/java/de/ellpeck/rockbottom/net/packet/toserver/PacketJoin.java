@@ -17,7 +17,6 @@ import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +42,7 @@ public class PacketJoin implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeLong(this.id.getMostSignificantBits());
         buf.writeLong(this.id.getLeastSignificantBits());
         NetUtil.writeStringToBuffer(Util.GSON.toJson(this.design), buf);
@@ -55,7 +54,7 @@ public class PacketJoin implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.id = new UUID(buf.readLong(), buf.readLong());
         this.design = Util.GSON.fromJson(NetUtil.readStringFromBuffer(buf), PlayerDesign.class);
 
@@ -170,19 +169,19 @@ public class PacketJoin implements IPacket{
     private String listMods(List<IMod> mods){
         Iterator<IMod> it = mods.iterator();
 
-        String s = "[";
+        StringBuilder s = new StringBuilder("[");
         while(it.hasNext()){
             IMod mod = it.next();
-            s += mod.getDisplayName()+" @ "+mod.getVersion();
+            s.append(mod.getDisplayName()).append(" @ ").append(mod.getVersion());
 
             if(!it.hasNext()){
-                return s+"]";
+                return s.toString()+']';
             }
             else{
-                s += ", ";
+                s.append(", ");
             }
         }
-        return s;
+        return s.toString();
     }
 
     private static class ModInfo{

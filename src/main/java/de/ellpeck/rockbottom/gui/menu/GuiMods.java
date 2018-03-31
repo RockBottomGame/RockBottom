@@ -110,15 +110,15 @@ public class GuiMods extends Gui{
         font.drawCenteredString(118+(this.width-118)/2, 15, this.selectedMod.getDisplayName(), 0.75F, false);
         font.drawCenteredString(118+(this.width-118)/2, 32, "Version "+this.selectedMod.getVersion(), 0.35F, false);
 
-        String strg = "Authors: ";
+        StringBuilder strg = new StringBuilder("Authors: ");
         String[] authors = this.selectedMod.getAuthors();
         for(int i = 0; i < authors.length; i++){
-            strg += authors[i];
+            strg.append(authors[i]);
             if(i < authors.length-1){
-                strg += ", ";
+                strg.append(", ");
             }
         }
-        font.drawSplitString(125, 45, strg, 0.35F, this.width-135);
+        font.drawSplitString(125, 45, strg.toString(), 0.35F, this.width-135);
 
         font.drawSplitString(125, 65, this.selectedMod.getDescription(), 0.35F, this.width-135);
     }

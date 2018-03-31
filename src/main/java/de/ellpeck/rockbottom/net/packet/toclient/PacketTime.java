@@ -6,8 +6,6 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketTime implements IPacket{
 
     private int currentTime;
@@ -22,13 +20,13 @@ public class PacketTime implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.currentTime);
         buf.writeInt(this.totalTime);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.currentTime = buf.readInt();
         this.totalTime = buf.readInt();
     }

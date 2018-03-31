@@ -19,12 +19,22 @@ public class CommandHelp extends Command{
 
     @Override
     public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
-        String s = FormattingCode.GREEN+"All Commands: \n";
+        StringBuilder s = new StringBuilder(FormattingCode.GREEN+"All Commands: \n");
 
         for(Command command : RockBottomAPI.COMMAND_REGISTRY.getUnmodifiable().values()){
-            s += FormattingCode.ORANGE+Arrays.toString(command.getTriggers())+FormattingCode.RESET_COLOR+": "+FormattingCode.LIGHT_GRAY+command.getDescription()+" "+FormattingCode.GRAY+"(Level "+command.getLevel()+"+)\n";
+            s.append(FormattingCode.ORANGE)
+                    .append(Arrays.toString(command.getTriggers()))
+                    .append(FormattingCode.RESET_COLOR)
+                    .append(": ")
+                    .append(FormattingCode.LIGHT_GRAY)
+                    .append(command.getDescription())
+                    .append(' ')
+                    .append(FormattingCode.GRAY)
+                    .append("(Level ")
+                    .append(command.getLevel())
+                    .append("+)\n");
         }
 
-        return new ChatComponentText(s);
+        return new ChatComponentText(s.toString());
     }
 }

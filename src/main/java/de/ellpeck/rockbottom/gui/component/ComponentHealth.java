@@ -57,7 +57,7 @@ public class ComponentHealth extends GuiComponent{
     public void renderOverlay(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         if(game.getWorld() != null){
             if(this.isMouseOverPrioritized(game)){
-                g.drawHoverInfoAtMouse(game, manager, false, 0, manager.localize(LOC_HEALTH)+":", game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());
+                g.drawHoverInfoAtMouse(game, manager, false, 0, manager.localize(LOC_HEALTH)+':', game.getPlayer().getHealth()+"/"+game.getPlayer().getMaxHealth());
             }
         }
     }

@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
-import de.ellpeck.rockbottom.api.render.item.ItemToolRenderer;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;

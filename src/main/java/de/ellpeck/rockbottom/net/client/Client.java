@@ -21,7 +21,7 @@ public class Client{
     public final Channel channel;
     private final EventLoopGroup group;
 
-    public Client(String ip, int port) throws Exception{
+    public Client(String ip, int port){
         this.group = Epoll.isAvailable() ?
                 new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollClient", true)) :
                 new NioEventLoopGroup(0, new DefaultThreadFactory("NioClient", true));
@@ -31,7 +31,7 @@ public class Client{
                 .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
                 .handler(new ChannelInitializer(){
                     @Override
-                    protected void initChannel(Channel channel) throws Exception{
+                    protected void initChannel(Channel channel){
                         channel.config().setOption(ChannelOption.TCP_NODELAY, true);
 
                         channel.pipeline()

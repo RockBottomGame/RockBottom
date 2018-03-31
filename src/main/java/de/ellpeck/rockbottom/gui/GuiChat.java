@@ -261,7 +261,7 @@ public class GuiChat extends Gui{
                     this.inputField.setText(text.substring(0, lastIndex+1)+suggestion);
                 }
                 else{
-                    this.inputField.setText("/"+suggestion);
+                    this.inputField.setText('/'+suggestion);
                 }
 
                 return true;

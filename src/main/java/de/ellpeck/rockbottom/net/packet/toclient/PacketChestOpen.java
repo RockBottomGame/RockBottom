@@ -7,8 +7,6 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketChestOpen implements IPacket{
 
     private int x;
@@ -25,14 +23,14 @@ public class PacketChestOpen implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeBoolean(this.open);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.open = buf.readBoolean();

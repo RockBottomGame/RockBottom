@@ -64,7 +64,7 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
         while(true){
             String line = reader.readLine();
             if(line != null){
-                shader += line+"\n";
+                shader += line+'\n';
             }
             else{
                 break;

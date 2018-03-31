@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.EntityLiving;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;

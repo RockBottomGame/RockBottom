@@ -30,8 +30,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketEffect implements IPacket{
 
     private ActiveEffect effect;
@@ -46,7 +44,7 @@ public class PacketEffect implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         DataSet set = new DataSet();
         this.effect.save(set);
         NetUtil.writeSetToBuffer(set, buf);
@@ -54,7 +52,7 @@ public class PacketEffect implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         DataSet set = new DataSet();
         NetUtil.readSetFromBuffer(set, buf);
         this.effect = ActiveEffect.load(set);

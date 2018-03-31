@@ -12,8 +12,6 @@ import de.ellpeck.rockbottom.gui.GuiInformation;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketReject implements IPacket{
 
     private ChatComponent text;
@@ -26,14 +24,14 @@ public class PacketReject implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         DataSet set = new DataSet();
         this.text.save(set);
         NetUtil.writeSetToBuffer(set, buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         DataSet set = new DataSet();
         NetUtil.readSetFromBuffer(set, buf);
         this.text = ChatComponentText.createFromSet(set);

@@ -202,7 +202,7 @@ public class ModLoader implements IModLoader{
 
         RockBottomAPI.logger().info("---------- Loaded Mods ----------");
         for(IMod mod : this.allMods){
-            String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")";
+            String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+')';
             if(this.modSettings.isDisabled(mod.getId())){
                 s += " [DISABLED]";
             }

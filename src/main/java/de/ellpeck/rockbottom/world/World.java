@@ -560,7 +560,7 @@ public class World implements IWorld{
 
         Runnable r = () -> {
             DataSet set = new DataSet();
-            set.read(new File(this.chunksDirectory, "c_"+gridX+"_"+gridY+".dat"));
+            set.read(new File(this.chunksDirectory, "c_"+gridX+'_'+gridY+".dat"));
             chunk.loadOrCreate(set);
         };
 
@@ -766,7 +766,7 @@ public class World implements IWorld{
         DataSet playerSet = new DataSet();
         player.save(playerSet);
 
-        playerSet.write(new File(this.playerDirectory, player.getUniqueId().toString()+".dat"));
+        playerSet.write(new File(this.playerDirectory, player.getUniqueId()+".dat"));
     }
 
     @Override
@@ -799,7 +799,7 @@ public class World implements IWorld{
             set.read(file);
 
             player.load(set);
-            RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+"!");
+            RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+'!');
         }
         else{
             player.resetAndSpawn(RockBottomAPI.getGame());
@@ -836,7 +836,7 @@ public class World implements IWorld{
             Runnable r = () -> {
                 DataSet set = new DataSet();
                 chunk.save(set);
-                set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+"_"+chunk.getGridY()+".dat"));
+                set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+'_'+chunk.getGridY()+".dat"));
             };
 
             if(enqueue){
@@ -891,7 +891,7 @@ public class World implements IWorld{
                 }
             }
             catch(StackOverflowError e){
-                RockBottomAPI.logger().severe("Failed to update light at "+x+" "+y+" after too many ("+recurseCount.get()+") recursive calls");
+                RockBottomAPI.logger().severe("Failed to update light at "+x+' '+y+" after too many ("+recurseCount.get()+") recursive calls");
             }
         });
     }

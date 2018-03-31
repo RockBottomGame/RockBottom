@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class PacketRespawn implements IPacket{
@@ -22,13 +21,13 @@ public class PacketRespawn implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.playerId = new UUID(buf.readLong(), buf.readLong());
     }
 
@@ -36,7 +35,7 @@ public class PacketRespawn implements IPacket{
     public void handle(IGameInstance game, ChannelHandlerContext context){
         if(game.getWorld() != null){
             Entity entity = game.getWorld().getEntity(this.playerId);
-            if(entity != null && entity instanceof EntityPlayer){
+            if(entity instanceof EntityPlayer){
                 ((EntityPlayer)entity).resetAndSpawn(game);
             }
         }

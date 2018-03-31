@@ -25,7 +25,7 @@ public class TileSimpleFurnaceRenderer extends MultiTileRenderer<TileSimpleFurna
         for(int x = 0; x < tile.getWidth(); x++){
             for(int y = 0; y < tile.getHeight(); y++){
                 if(tile.isStructurePart(x, y)){
-                    this.texturesActive.put(new Pos2(x, y), this.texture.addSuffix(".active."+x+"."+y));
+                    this.texturesActive.put(new Pos2(x, y), this.texture.addSuffix(".active."+x+'.'+y));
                 }
             }
         }

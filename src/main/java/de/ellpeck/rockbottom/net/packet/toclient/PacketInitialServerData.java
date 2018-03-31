@@ -12,8 +12,6 @@ import de.ellpeck.rockbottom.api.world.WorldInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketInitialServerData implements IPacket{
 
     private final DataSet playerSet = new DataSet();
@@ -31,14 +29,14 @@ public class PacketInitialServerData implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         NetUtil.writeSetToBuffer(this.playerSet, buf);
         this.info.toBuffer(buf);
         this.regInfo.toBuffer(buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         NetUtil.readSetFromBuffer(this.playerSet, buf);
 
         this.info = new WorldInfo(null);

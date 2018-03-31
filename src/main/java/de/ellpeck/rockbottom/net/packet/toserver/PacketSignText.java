@@ -3,14 +3,10 @@ package de.ellpeck.rockbottom.net.packet.toserver;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.world.tile.TileSign;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.IOException;
 
 public class PacketSignText implements IPacket{
 
@@ -28,7 +24,7 @@ public class PacketSignText implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.x);
         buf.writeInt(this.y);
 
@@ -38,7 +34,7 @@ public class PacketSignText implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.x = buf.readInt();
         this.y = buf.readInt();
 

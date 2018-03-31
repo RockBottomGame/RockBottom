@@ -278,7 +278,7 @@ public class Chunk implements IChunk{
         if(grid != null){
             TileState state = grid[x][y];
             if(state == null){
-                RockBottomAPI.logger().log(Level.WARNING, "In chunk at "+this.gridX+" "+this.gridY+", position "+x+" "+y+" is null!?", new NullPointerException());
+                RockBottomAPI.logger().log(Level.WARNING, "In chunk at "+this.gridX+' '+this.gridY+", position "+x+' '+y+" is null!?", new NullPointerException());
             }
             return state;
         }
@@ -299,8 +299,8 @@ public class Chunk implements IChunk{
 
     @Override
     public void setStateInner(TileLayer layer, int x, int y, TileState tile){
-        Preconditions.checkNotNull(tile, "Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+"!");
-        Preconditions.checkNotNull(layer, "Tried setting tile to null layer in chunk at "+this.gridX+", "+this.gridY+"!");
+        Preconditions.checkNotNull(tile, "Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+'!');
+        Preconditions.checkNotNull(layer, "Tried setting tile to null layer in chunk at "+this.gridX+", "+this.gridY+'!');
 
         Tile newTile = tile.getTile();
         Preconditions.checkArgument(layer.canTileBeInLayer(this.world, this.x+x, this.y+y, newTile), "Tried setting tile "+tile+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
@@ -853,7 +853,7 @@ public class Chunk implements IChunk{
                                 this.setStateInner(layer, x, y, tile);
                             }
                             else{
-                                RockBottomAPI.logger().warning("Could not load tile at "+x+" "+y+" because id "+ids[counter]+" is missing!");
+                                RockBottomAPI.logger().warning("Could not load tile at "+x+' '+y+" because id "+ids[counter]+" is missing!");
                             }
                             counter++;
                         }
@@ -873,7 +873,7 @@ public class Chunk implements IChunk{
                         this.setBiomeInner(x, y, biome);
                     }
                     else{
-                        RockBottomAPI.logger().warning("Could not load biome at "+x+" "+y+" because id "+biomes[biomeCounter]+" is missing!");
+                        RockBottomAPI.logger().warning("Could not load biome at "+x+' '+y+" because id "+biomes[biomeCounter]+" is missing!");
                     }
                     biomeCounter++;
                 }
@@ -924,7 +924,7 @@ public class Chunk implements IChunk{
                     }
                 }
                 else{
-                    RockBottomAPI.logger().warning("Could not tile entity at "+x+" "+y+" because layer with name "+res+" is missing!");
+                    RockBottomAPI.logger().warning("Could not tile entity at "+x+' '+y+" because layer with name "+res+" is missing!");
                 }
             }
 
@@ -947,11 +947,11 @@ public class Chunk implements IChunk{
                         this.scheduleUpdate(x, y, layer, meta, time);
                     }
                     else{
-                        RockBottomAPI.logger().warning("Could not load scheduled update at "+x+" "+y+" with time "+time+" because layer with name "+res+" is missing!");
+                        RockBottomAPI.logger().warning("Could not load scheduled update at "+x+' '+y+" with time "+time+" because layer with name "+res+" is missing!");
                     }
                 }
                 else{
-                    RockBottomAPI.logger().warning("Could not load scheduled update at "+x+" "+y+" with time "+time+" because tile with id "+id+" is missing!");
+                    RockBottomAPI.logger().warning("Could not load scheduled update at "+x+' '+y+" with time "+time+" because tile with id "+id+" is missing!");
                 }
             }
 
@@ -991,7 +991,7 @@ public class Chunk implements IChunk{
 
     @Override
     public void setBiomeInner(int x, int y, Biome biome){
-        Preconditions.checkNotNull(biome, "Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+"!");
+        Preconditions.checkNotNull(biome, "Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+'!');
 
         Biome oldBiome = this.getBiomeInner(x, y);
         if(biome != oldBiome){

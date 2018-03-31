@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.util.Direction;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class PacketEntityUpdate implements IPacket{
@@ -33,7 +32,7 @@ public class PacketEntityUpdate implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeLong(this.uniqueId.getMostSignificantBits());
         buf.writeLong(this.uniqueId.getLeastSignificantBits());
         buf.writeDouble(this.x);
@@ -44,7 +43,7 @@ public class PacketEntityUpdate implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.uniqueId = new UUID(buf.readLong(), buf.readLong());
         this.x = buf.readDouble();
         this.y = buf.readDouble();

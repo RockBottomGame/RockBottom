@@ -13,7 +13,7 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket>{
     public static int packetsSent;
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf) throws Exception{
+    protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf){
         int id = RockBottomAPI.PACKET_REGISTRY.getId(packet.getClass());
 
         if(id >= 0){

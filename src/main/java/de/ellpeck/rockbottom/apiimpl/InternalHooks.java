@@ -955,7 +955,7 @@ public class InternalHooks implements IInternalHooks{
         if(field.displaxMaxLength){
             int space = this.getTextSpace(game, field);
             FormattingCode format = space <= 0 ? FormattingCode.RED : (space <= field.maxLength/8 ? FormattingCode.ORANGE : (space <= field.maxLength/4 ? FormattingCode.YELLOW : FormattingCode.NONE));
-            font.drawStringFromRight(x+field.getWidth()-1, y+field.getHeight()-font.getHeight(0.2F), format.toString()+(field.maxLength-space)+"/"+field.maxLength, 0.2F);
+            font.drawStringFromRight(x+field.getWidth()-1, y+field.getHeight()-font.getHeight(0.2F), format.toString()+(field.maxLength-space)+'/'+field.maxLength, 0.2F);
         }
     }
 
@@ -991,25 +991,25 @@ public class InternalHooks implements IInternalHooks{
     }
 
     public static IResourceName generateTileStateName(Tile tile, Map<String, Comparable> properties){
-        String suffix = "";
+        StringBuilder suffix = new StringBuilder();
 
         if(!properties.isEmpty()){
-            suffix += ";";
+            suffix.append(';');
 
             Iterator<Map.Entry<String, Comparable>> iterator = properties.entrySet().iterator();
             while(iterator.hasNext()){
                 Map.Entry<String, Comparable> entry = iterator.next();
 
-                String append = entry.getKey()+"@"+entry.getValue();
+                String append = entry.getKey()+'@'+entry.getValue();
                 if(iterator.hasNext()){
                     append += ",";
                 }
 
-                suffix += append;
+                suffix.append(append);
             }
         }
 
-        return tile.getName().addSuffix(suffix);
+        return tile.getName().addSuffix(suffix.toString());
     }
 
     @Override
@@ -1030,7 +1030,7 @@ public class InternalHooks implements IInternalHooks{
 
                     if(colors.length == 3){
                         try{
-                            return new FormattingCode(' ', Colors.rgb(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])), FontProp.NONE, code.length()+3, "&("+code+")");
+                            return new FormattingCode(' ', Colors.rgb(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])), FontProp.NONE, code.length()+3, "&("+code+')');
                         }
                         catch(Exception ignored){
                         }

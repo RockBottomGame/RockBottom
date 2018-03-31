@@ -7,8 +7,6 @@ import de.ellpeck.rockbottom.world.World;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketParticles implements IPacket{
 
     private int x;
@@ -32,7 +30,7 @@ public class PacketParticles implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.type);
@@ -44,7 +42,7 @@ public class PacketParticles implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.type = buf.readInt();

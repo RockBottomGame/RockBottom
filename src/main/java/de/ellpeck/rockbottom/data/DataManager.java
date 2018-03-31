@@ -134,7 +134,7 @@ public class DataManager implements IDataManager{
                 this.gameInfo.addUniqueId("game_id", game.getUniqueId());
                 this.gameInfo.write(this.gameDataFile);
 
-                RockBottomAPI.logger().info("Created new game unique id "+game.getUniqueId()+"!");
+                RockBottomAPI.logger().info("Created new game unique id "+game.getUniqueId()+'!');
             }
         }
     }

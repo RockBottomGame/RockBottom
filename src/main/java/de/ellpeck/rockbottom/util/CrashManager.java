@@ -61,7 +61,7 @@ public final class CrashManager{
         try{
             StringWriter writer = new StringWriter();
             writeInfo(new PrintWriter(writer), divider, name, date, "Find a file with this crash report at "+file, comment, t);
-            log(Level.SEVERE, "Crash Report:\n"+writer.toString(), null);
+            log(Level.SEVERE, "Crash Report:\n"+writer, null);
         }
         catch(Exception e){
             log(Level.WARNING, "Couldn't generate full crash report", e);
@@ -73,7 +73,7 @@ public final class CrashManager{
                 StringWriter writer = new StringWriter();
                 writeInfo(new PrintWriter(writer), divider, name, date, null, comment, t);
 
-                JsonObject object = paste(writer.toString(), name+" "+date);
+                JsonObject object = paste(writer.toString(), name+' '+date);
                 pasteLink = object.get("link").getAsString();
 
                 writer.close();
@@ -129,7 +129,7 @@ public final class CrashManager{
 
         Runtime runtime = Runtime.getRuntime();
         writer.println("Java Version: "+System.getProperty("java.version"));
-        writer.println("Operating System: "+System.getProperty("os.name")+" "+System.getProperty("os.version"));
+        writer.println("Operating System: "+System.getProperty("os.name")+' '+System.getProperty("os.version"));
         writer.println("Processors: "+runtime.availableProcessors());
         long free = runtime.freeMemory();
         writer.println("Free Memory: "+free+" bytes ("+free/1024+" megabytes)");
@@ -145,7 +145,7 @@ public final class CrashManager{
 
             IModLoader loader = RockBottomAPI.getModLoader();
             for(IMod mod : loader.getAllTheMods()){
-                String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+")";
+                String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+')';
                 if(loader.getModSettings().isDisabled(mod.getId())){
                     s += " [DISABLED]";
                 }
@@ -163,7 +163,7 @@ public final class CrashManager{
 
             IContentPackLoader loader = RockBottomAPI.getContentPackLoader();
             for(ContentPack pack : loader.getAllPacks()){
-                String s = pack.getName()+" @ "+pack.getVersion()+" ("+pack.getId()+")";
+                String s = pack.getName()+" @ "+pack.getVersion()+" ("+pack.getId()+')';
                 if(loader.getPackSettings().isDisabled(pack.getId())){
                     s += " [DISABLED]";
                 }

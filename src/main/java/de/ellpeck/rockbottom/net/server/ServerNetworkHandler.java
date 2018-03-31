@@ -17,22 +17,22 @@ public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket>{
     }
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception{
+    public void handlerAdded(ChannelHandlerContext ctx){
         this.server.connectedChannels.add(ctx.channel());
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception{
+    public void handlerRemoved(ChannelHandlerContext ctx){
         this.server.connectedChannels.remove(ctx.channel());
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) throws Exception{
+    protected void channelRead0(ChannelHandlerContext ctx, IPacket packet){
         packet.enqueueAsAction(RockBottomAPI.getGame(), ctx);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception{
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
         Logging.nettyLogger.log(Level.SEVERE, "The server network handler caught an exception", cause);
     }
 }

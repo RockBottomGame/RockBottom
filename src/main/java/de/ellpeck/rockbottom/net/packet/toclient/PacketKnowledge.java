@@ -13,8 +13,6 @@ import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketKnowledge implements IPacket{
 
     private final DataSet infoSet = new DataSet();
@@ -37,14 +35,14 @@ public class PacketKnowledge implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeBoolean(this.announce);
         buf.writeBoolean(this.forget);
         NetUtil.writeSetToBuffer(this.infoSet, buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.announce = buf.readBoolean();
         this.forget = buf.readBoolean();
         NetUtil.readSetFromBuffer(this.infoSet, buf);

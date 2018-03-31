@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class PacketDisconnect implements IPacket{
@@ -23,13 +22,13 @@ public class PacketDisconnect implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeLong(this.id.getMostSignificantBits());
         buf.writeLong(this.id.getLeastSignificantBits());
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.id = new UUID(buf.readLong(), buf.readLong());
     }
 

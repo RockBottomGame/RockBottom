@@ -7,8 +7,6 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketTileChange implements IPacket{
 
     private int x;
@@ -28,7 +26,7 @@ public class PacketTileChange implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.layer.index());
@@ -36,7 +34,7 @@ public class PacketTileChange implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.layer = TileLayer.getAllLayers().get(buf.readInt());

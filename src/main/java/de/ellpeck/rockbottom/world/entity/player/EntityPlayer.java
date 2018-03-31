@@ -51,7 +51,7 @@ import java.util.function.BiConsumer;
 public class EntityPlayer extends AbstractEntityPlayer{
 
     private final KnowledgeManager knowledge = new KnowledgeManager(this);
-    private final Statistics statistics = new Statistics(this);
+    private final Statistics statistics = new Statistics();
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
     private final BoundBox boundingBox = new BoundBox(-0.415, -0.5, 0.415, 1.35);
@@ -378,7 +378,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 net.setCommandLevel(this, level);
                 net.saveServerSettings();
 
-                RockBottomAPI.logger().info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+"!");
+                RockBottomAPI.logger().info("Setting command level for server host "+this.getName()+" with id "+this.getUniqueId()+" to "+level+'!');
             }
 
             return level;

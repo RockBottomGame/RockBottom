@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.Statistic;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +12,7 @@ import java.util.logging.Level;
 
 public class Statistics implements IStatistics{
 
-    private final EntityPlayer player;
     private final Map<IResourceName, Statistic> statistics = new HashMap<>();
-
-    public Statistics(EntityPlayer player){
-        this.player = player;
-    }
 
     @Override
     public Statistic getOrInit(IResourceName name){

@@ -8,8 +8,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
-
 public class PacketChatMessage implements IPacket{
 
     private ChatComponent message;
@@ -22,14 +20,14 @@ public class PacketChatMessage implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         DataSet set = new DataSet();
         this.message.save(set);
         NetUtil.writeSetToBuffer(set, buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         DataSet set = new DataSet();
         NetUtil.readSetFromBuffer(set, buf);
         this.message = ChatComponent.createFromSet(set);

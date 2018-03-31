@@ -13,7 +13,6 @@ import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class PacketEntityChange implements IPacket{
@@ -49,7 +48,7 @@ public class PacketEntityChange implements IPacket{
     }
 
     @Override
-    public void toBuffer(ByteBuf buf) throws IOException{
+    public void toBuffer(ByteBuf buf){
         buf.writeLong(this.uniqueId.getMostSignificantBits());
         buf.writeLong(this.uniqueId.getLeastSignificantBits());
         buf.writeBoolean(this.remove);
@@ -61,7 +60,7 @@ public class PacketEntityChange implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf) throws IOException{
+    public void fromBuffer(ByteBuf buf){
         this.uniqueId = new UUID(buf.readLong(), buf.readLong());
         this.remove = buf.readBoolean();
 

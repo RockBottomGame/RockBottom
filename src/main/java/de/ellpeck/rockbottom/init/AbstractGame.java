@@ -389,31 +389,30 @@ public abstract class AbstractGame implements IGameInstance{
     @Override
     public void restart(){
         try{
-            String args = "";
+            StringBuilder args = new StringBuilder();
             for(String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()){
                 if(!arg.toLowerCase(Locale.ROOT).contains("-agentlib")){
-                    args += arg+" ";
+                    args.append(arg).append(' ');
                 }
             }
 
-            String cmd = "\""+System.getProperty("java.home")+"/bin/java"+"\" "+args;
+            StringBuilder cmd = new StringBuilder('"'+System.getProperty("java.home")+"/bin/java"+"\" "+args);
             String[] mainCommand = System.getProperty("sun.java.command").split(" ");
 
             if(mainCommand[0].endsWith(".jar")){
-                cmd += "-jar "+new File(mainCommand[0]).getPath();
+                cmd.append("-jar ").append(new File(mainCommand[0]).getPath());
             }
             else{
-                cmd += "-cp \""+System.getProperty("java.class.path")+"\" "+mainCommand[0];
+                cmd.append("-cp \"").append(System.getProperty("java.class.path")).append("\" ").append(mainCommand[0]);
             }
 
             for(int i = 1; i < mainCommand.length; i++){
-                cmd += " "+mainCommand[i];
+                cmd.append(' ').append(mainCommand[i]);
             }
 
-            String finalCmd = cmd;
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try{
-                    Runtime.getRuntime().exec(finalCmd);
+                    Runtime.getRuntime().exec(cmd.toString());
                 }
                 catch(Exception e){
                     Logging.mainLogger.log(Level.WARNING, "There was an error while trying to restart the game", e);
