@@ -141,7 +141,12 @@ public class Font implements IFont{
 
     @Override
     public void drawSplitString(float x, float y, String s, float scale, int length){
-        List<String> split = this.splitTextToLength(length, scale, true, s);
+        this.drawSplitString(x, y, s, scale, new int[]{length});
+    }
+
+    @Override
+    public void drawSplitString(float x, float y, String s, float scale, int... lengths){
+        List<String> split = this.splitTextToLength(lengths, scale, true, s);
 
         for(String string : split){
             this.drawString(x, y, string, scale);
@@ -346,6 +351,16 @@ public class Font implements IFont{
 
     @Override
     public List<String> splitTextToLength(int length, float scale, boolean wrapFormatting, List<String> lines){
+        return this.splitTextToLength(scale, wrapFormatting, lines, length);
+    }
+
+    @Override
+    public List<String> splitTextToLength(int[] lengths, float scale, boolean wrapFormatting, String... lines){
+        return this.splitTextToLength(scale, wrapFormatting, Arrays.asList(lines), lengths);
+    }
+
+    @Override
+    public List<String> splitTextToLength(float scale, boolean wrapFormatting, List<String> lines, int... lengths){
         List<String> result = new ArrayList<>();
         String accumulated = "";
 
@@ -372,7 +387,9 @@ public class Font implements IFont{
                         }
                     }
 
-                    if(this.getWidth(accumulated+word, scale) >= length){
+                    int lenIndex = result.size();
+                    int currLength = lengths[lenIndex >= lengths.length ? lengths.length-1 : lenIndex];
+                    if(this.getWidth(accumulated+word, scale) >= currLength){
                         result.add(accumulated.trim());
                         accumulated = trailingColor.toString()+trailingProp+word+" ";
                     }

@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class GuiStartNote extends Gui{
@@ -18,10 +19,15 @@ public class GuiStartNote extends Gui{
     private static final IResourceName DAY_RES = RockBottomAPI.createInternalRes("lore.start_note.day");
 
     private final int variation;
+    private final int[] maxLengths;
 
     public GuiStartNote(int variation){
         super(36*3, 48*3);
         this.variation = variation;
+
+        this.maxLengths = new int[25];
+        Arrays.fill(this.maxLengths, 0, 17, this.width-17);
+        Arrays.fill(this.maxLengths, 17, 25, this.width/2);
     }
 
     @Override
@@ -37,7 +43,7 @@ public class GuiStartNote extends Gui{
         font.drawString(this.x+this.width/2-font.getWidth(day, 0.4F)/2, this.y+5, day, 0, day.length(), 0.4F, Colors.BLACK, Colors.NO_COLOR);
 
         String text = manager.localize(RockBottomAPI.createInternalRes("lore.start_note."+(this.variation+1)));
-        List<String> split = font.splitTextToLength(this.width-14, 0.2F, true, text);
+        List<String> split = font.splitTextToLength(this.maxLengths, 0.2F, true, text);
 
         int y = 0;
         for(String s : split){
