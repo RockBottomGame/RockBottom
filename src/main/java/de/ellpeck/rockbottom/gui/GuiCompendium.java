@@ -64,7 +64,7 @@ public class GuiCompendium extends GuiContainer{
     public void init(IGameInstance game){
         super.init(game);
 
-        this.menu = new ComponentMenu(this, 2, 2, PAGE_HEIGHT-4, 3, 4, new BoundBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y));
+        this.menu = new ComponentMenu(this, -12, 2, 12, PAGE_HEIGHT-4, 3, 4, 11, 0, new BoundBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), RockBottomAPI.createInternalRes("gui.construction.scroll_bar"));
         this.components.add(this.menu);
 
         this.components.add(new ComponentFancyButton(this, 5-16, GuiCompendium.PAGE_HEIGHT+5, 14, 14, () -> {
