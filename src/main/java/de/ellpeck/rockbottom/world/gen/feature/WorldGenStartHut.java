@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.world.gen.feature;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -11,6 +10,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.gen.IStructure;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.item.ItemStartNote;
@@ -23,8 +23,6 @@ import java.util.Random;
 public class WorldGenStartHut implements IWorldGenerator{
 
     private static final IResourceName HOUSE_CREATED = RockBottomAPI.createInternalRes("start_house_created");
-    private static final int WIDTH = 9;
-    private static final int HEIGHT = 4;
 
     private final Random generatorRandom = new Random();
     private int chunkX;
@@ -42,34 +40,34 @@ public class WorldGenStartHut implements IWorldGenerator{
 
     @Override
     public void generate(IWorld world, IChunk chunk){
-        this.generatorRandom.setSeed(Util.scrambleSeed(chunk.getGridX(), chunk.getGridY(), world.getSeed()));
+        IStructure structure = IStructure.forName(RockBottomAPI.createInternalRes("start_hut"));
+        if(structure != null){
+            this.generatorRandom.setSeed(Util.scrambleSeed(chunk.getGridX(), chunk.getGridY(), world.getSeed()));
 
-        for(int i = 0; i < 50; i++){
-            int x = this.generatorRandom.nextInt(Constants.CHUNK_SIZE-WIDTH);
+            for(int i = 0; i < 50; i++){
+                int x = this.generatorRandom.nextInt(Constants.CHUNK_SIZE-structure.getWidth());
 
-            int y = chunk.getHeightInner(TileLayer.MAIN, x);
-            if(y < Constants.CHUNK_SIZE && y < Constants.CHUNK_SIZE-HEIGHT){
-                if(chunk.getStateInner(x, y-1).getTile().isFullTile()){
-                    this.genStartHouse(chunk, x, y-1);
+                int y = chunk.getHeightInner(TileLayer.MAIN, x);
+                if(y < Constants.CHUNK_SIZE && y < Constants.CHUNK_SIZE-structure.getHeight()){
+                    if(chunk.getStateInner(x, y-1).getTile().isFullTile()){
+                        this.genStartHouse(structure, chunk, x, y-1);
 
-                    world.getOrCreateAdditionalData().addBoolean(HOUSE_CREATED, true);
-                    chunk.setDirty();
+                        world.getOrCreateAdditionalData().addBoolean(HOUSE_CREATED, true);
+                        chunk.setDirty();
 
-                    break;
+                        break;
+                    }
                 }
             }
         }
     }
 
-    private void genStartHouse(IChunk chunk, int startX, int startY){
+    private void genStartHouse(IStructure structure, IChunk chunk, int startX, int startY){
         this.generatorRandom.setSeed(Util.scrambleSeed(chunk.getX()+startX, chunk.getY()+startY, chunk.getSeed()));
 
-        TileState board = GameContent.WOOD_BOARDS.getDefState();
-        TileState oldBoard = board.prop(GameContent.WOOD_BOARDS.metaProp, 1);
-
         //Prepare area
-        for(int x = 0; x < WIDTH; x++){
-            for(int y = 0; y < HEIGHT; y++){
+        for(int x = 0; x < structure.getWidth(); x++){
+            for(int y = 0; y < structure.getHeight(); y++){
                 for(TileLayer layer : TileLayer.getAllLayers()){
                     chunk.setStateInner(layer, startX+x, startY+y, GameContent.TILE_AIR.getDefState());
                 }
@@ -82,53 +80,17 @@ public class WorldGenStartHut implements IWorldGenerator{
             }
         }
 
-        //Set background
-        for(int y = 0; y < HEIGHT; y++){
-            for(int x = 1; x < WIDTH; x++){
-                TileState tile;
-                if(this.generatorRandom.nextFloat() >= 0.25F){
-                    tile = this.generatorRandom.nextFloat() >= 0.75F ? board : oldBoard;
-                }
-                else{
-                    tile = chunk.getBiomeInner(startX+x, startY+y).getFillerTile(chunk.getWorld(), chunk, startX+x, startY+y);
-                }
-
-                chunk.setStateInner(TileLayer.BACKGROUND, startX+x, startY+y, tile);
-
-                if(y >= HEIGHT-1 && x >= 4){
-                    break;
+        for(TileLayer layer : structure.getInvolvedLayers()){
+            for(int x = 0; x < structure.getWidth(); x++){
+                for(int y = 0; y < structure.getHeight(); y++){
+                    TileState state = structure.getTile(layer, x, y);
+                    if(state.getTile() == GameContent.TILE_SOIL){
+                        state = chunk.getBiomeInner(startX+x, startY+y).getFillerTile(chunk.getWorld(), chunk, startX+x, startY);
+                    }
+                    chunk.setStateInner(layer, startX+x, startY+y, state);
                 }
             }
         }
-
-        //Set walls
-        int[][] wallPositions = new int[][]{
-                {0, 1},
-                {1, 0}, {1, 3},
-                {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0},
-                {8, 1}, {8, 2}
-        };
-        for(int[] pos : wallPositions){
-            chunk.setStateInner(startX+pos[0], startY+pos[1], this.generatorRandom.nextFloat() >= 0.75F ? board : oldBoard);
-        }
-
-        //Set door
-        TileState state = GameContent.TILE_WOOD_DOOR_OLD.getDefState();
-        chunk.setStateInner(startX+1, startY+1, state.prop(StaticTileProps.TOP_HALF, false));
-        chunk.setStateInner(startX+1, startY+2, state.prop(StaticTileProps.TOP_HALF, true));
-
-        //Set dirt piles
-        int[][] dirtPositions = new int[][]{
-                {2, 1}, {2, 2},
-                {3, 1},
-                {6, 1}, {7, 1}
-        };
-        for(int[] pos : dirtPositions){
-            chunk.setStateInner(startX+pos[0], startY+pos[1], chunk.getBiomeInner(startX+pos[0], startY+pos[1]).getFillerTile(chunk.getWorld(), chunk, startX+pos[0], startY+pos[1]));
-        }
-
-        //Set chest
-        chunk.setStateInner(startX+5, startY+1, GameContent.TILE_CHEST.getDefState());
 
         //Fill chest
         TileEntityChest chest = chunk.getTileEntity(chunk.getX()+startX+5, chunk.getY()+startY+1, TileEntityChest.class);
@@ -150,9 +112,6 @@ public class WorldGenStartHut implements IWorldGenerator{
 
             Inventory.fillRandomly(chest.getTileInventory(), this.generatorRandom, items);
         }
-
-        //Goo
-        chunk.setStateInner(TileLayer.LIQUIDS, startX+4, startY+1, GameContent.TILE_REMAINS_GOO.getDefState());
     }
 
     @Override

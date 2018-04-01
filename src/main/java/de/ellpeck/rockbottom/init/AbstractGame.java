@@ -221,11 +221,11 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+        TileLayer.init();
         ContentManager.init(this);
         ConstructionRegistry.postInit();
 
         this.chatLog = new ChatLog();
-        TileLayer.init();
     }
 
     @Override

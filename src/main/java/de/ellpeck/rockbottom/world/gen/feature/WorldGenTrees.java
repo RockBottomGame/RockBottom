@@ -89,21 +89,17 @@ public class WorldGenTrees implements IWorldGenerator{
         this.treeRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
 
         IStructure structure = this.treeDesigns.get(this.treeRandom.nextInt(this.treeDesigns.size()));
-        for(int subY = structure.getHeight()-1; subY >= 0; subY--){
+        for(int subY = 0; subY < structure.getHeight(); subY++){
             for(int subX = 0; subX < structure.getWidth(); subX++){
                 TileState state = structure.getTile(subX, subY);
                 if(!state.getTile().isAir()){
                     int theX = x+subX-structure.getWidth()/2;
-                    int innerY = (structure.getHeight()-1-subY);
-                    int theY = y+innerY;
+                    int theY = y+subY;
 
-                    if(((theX == x && theY == y) || world.getState(theX, theY).getTile().canReplace(world, theX, theY, TileLayer.MAIN)) && (innerY > 0 || !world.getState(theX, theY-1).getTile().canReplace(world, theX, theY-1, TileLayer.MAIN))){
+                    if(((theX == x && theY == y) || world.getState(theX, theY).getTile().canReplace(world, theX, theY, TileLayer.MAIN)) && (subY > 0 || !world.getState(theX, theY-1).getTile().canReplace(world, theX, theY-1, TileLayer.MAIN))){
                         if(!simulate){
                             world.setState(theX, theY, state);
                         }
-                    }
-                    else if(subY < structure.getHeight()-1){
-                        return false;
                     }
                 }
             }
