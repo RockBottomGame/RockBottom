@@ -26,7 +26,6 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
@@ -223,19 +222,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
         if(this.isLocalPlayer()){
             SoundHandler.setPlayerPos(this.x, this.y);
-
-            int range = 24;
-            int layers = TileLayer.getAllLayers().size();
-            for(int i = 0; i < Constants.RANDOM_TILE_RENDER_UPDATES*layers; i++){
-                TileLayer layer = TileLayer.getAllLayers().get(Util.RANDOM.nextInt(layers));
-                int x = Util.floor(this.x)+Util.RANDOM.nextInt(range*2+1)-range;
-                int y = Util.floor(this.y)+Util.RANDOM.nextInt(range*2+1)-range;
-
-                if(this.world.isPosLoaded(x, y)){
-                    Tile tile = this.world.getState(layer, x, y).getTile();
-                    tile.updateRandomlyForRendering(this.world, x, y, layer, this);
-                }
-            }
         }
     }
 
