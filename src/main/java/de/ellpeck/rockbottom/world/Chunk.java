@@ -338,9 +338,10 @@ public class Chunk implements IChunk{
 
         int newHeight = 0;
         if(!newTile.factorsIntoHeightMap(this.world, this.x+x, this.y+y, layer)){
-            for(int checkY = y; checkY >= 0; checkY--){
+            for(int checkY = y-1; checkY >= 0; checkY--){
                 if(this.getStateInner(layer, x, checkY).getTile().factorsIntoHeightMap(this.world, this.x+x, this.y+checkY, layer)){
                     newHeight = checkY+1;
+                    break;
                 }
             }
         }
@@ -349,7 +350,7 @@ public class Chunk implements IChunk{
         }
 
         int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
-        if(heights[x] < newHeight){
+        if(heights[x] < newHeight || heights[x] == y+1){
             heights[x] = newHeight;
 
             int totalHeight = 0;

@@ -102,7 +102,7 @@ public final class DebugRenderer{
 
                 list.add("");
                 for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
-                    list.add(layer.getName()+": "+world.getState(layer, x, y)+", Avg Height: "+chunk.getAverageHeight(layer));
+                    list.add(layer.getName()+": "+world.getState(layer, x, y)+", Avg Height: "+chunk.getAverageHeight(layer)+", Height: "+chunk.getHeight(layer, x));
                 }
             }
         }
