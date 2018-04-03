@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
-import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -222,7 +222,7 @@ public class ApiHandler implements IApiHandler{
                 for(ItemInstance output : outputGetter.apply(usedInputs)){
                     ItemInstance left = inventory.addExistingFirst(output, false);
                     if(left != null){
-                        EntityItem.spawn(world, left, x, y, 0F, 0F);
+                        AbstractEntityItem.spawn(world, left, x, y, 0F, 0F);
                     }
                 }
             }

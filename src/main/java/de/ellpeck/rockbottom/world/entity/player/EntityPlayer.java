@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.entity.EntityItem;
+import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
@@ -187,19 +187,20 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
             }
             else{
-                List<EntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y).expand(1), EntityItem.class);
-                for(EntityItem entity : entities){
+                List<AbstractEntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y).expand(1), AbstractEntityItem.class);
+                for(AbstractEntityItem entity : entities){
                     if(entity.canPickUp()){
-                        ItemInstance theoreticalLeft = this.inv.add(entity.item, true);
-                        if(theoreticalLeft == null || theoreticalLeft.getAmount() != entity.item.getAmount()){
+                        ItemInstance instance = entity.getItem();
+                        ItemInstance theoreticalLeft = this.inv.add(instance, true);
+                        if(theoreticalLeft == null || theoreticalLeft.getAmount() != instance.getAmount()){
                             if(Util.distanceSq(entity.x, entity.y, this.x, this.y+0.5) <= 0.25){
-                                ItemInstance left = this.inv.addExistingFirst(entity.item, false);
+                                ItemInstance left = this.inv.addExistingFirst(instance, false);
 
                                 if(left == null){
                                     entity.kill();
                                 }
                                 else{
-                                    entity.item = left;
+                                    entity.setItem(left);
                                 }
                             }
                             else{

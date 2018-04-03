@@ -2,8 +2,8 @@ package de.ellpeck.rockbottom.world.entity;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.EntityItem;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -42,7 +42,7 @@ public class EntitySand extends Entity{
                     this.world.setState(x, y, GameContent.TILE_SAND.getDefState());
                 }
                 else{
-                    EntityItem.spawn(this.world, new ItemInstance(GameContent.TILE_SAND), this.x, this.y, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
+                    AbstractEntityItem.spawn(this.world, new ItemInstance(GameContent.TILE_SAND), this.x, this.y, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
                 }
 
                 this.kill();
