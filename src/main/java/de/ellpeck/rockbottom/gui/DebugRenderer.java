@@ -34,9 +34,9 @@ public final class DebugRenderer{
 
         Runtime runtime = Runtime.getRuntime();
         long total = runtime.totalMemory();
-        list.add("Used: "+CrashManager.displayByteCount(total-runtime.freeMemory()));
-        list.add("Reserved: "+CrashManager.displayByteCount(total));
-        list.add("Allocated: "+CrashManager.displayByteCount(runtime.maxMemory()));
+        list.add("Used Memory: "+CrashManager.displayByteCount(total-runtime.freeMemory()));
+        list.add("Reserved Memory: "+CrashManager.displayByteCount(total));
+        list.add("Allocated Memory: "+CrashManager.displayByteCount(runtime.maxMemory()));
 
         list.add("");
 
