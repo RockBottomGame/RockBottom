@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.Statistic;
+import de.ellpeck.rockbottom.api.entity.player.statistics.StatisticInitializer;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 
 import java.util.HashMap;
@@ -17,21 +18,15 @@ public class Statistics implements IStatistics{
     @Override
     public Statistic getOrInit(IResourceName name){
         return this.statistics.computeIfAbsent(name, n -> {
-            Statistic s = RockBottomAPI.STATISTICS_REGISTRY.get(n);
-            if(s != null){
-                s.reset();
-                return s;
-            }
-            else{
-                return null;
-            }
+            StatisticInitializer s = RockBottomAPI.STATISTICS_REGISTRY.get(n);
+            return s != null ? s.makeStatistic(this) : null;
         });
     }
 
     @Override
-    public <T extends Statistic> T getOrInit(IResourceName name, Class<T> statClass){
+    public <T extends Statistic> T getOrInit(IResourceName name, Class<? extends StatisticInitializer<T>> initClass){
         Statistic stat = this.getOrInit(name);
-        if(stat != null && statClass.isAssignableFrom(stat.getClass())){
+        if(stat != null && initClass.isAssignableFrom(stat.getInitializer().getClass())){
             return (T)stat;
         }
         else{
