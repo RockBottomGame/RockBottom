@@ -286,11 +286,6 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
-        super.init(game, apiHandler, eventHandler);
-    }
-
-    @Override
     public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         super.postInit(game, apiHandler, eventHandler);
 

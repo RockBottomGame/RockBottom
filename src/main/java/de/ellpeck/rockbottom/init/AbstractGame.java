@@ -216,7 +216,6 @@ public abstract class AbstractGame implements IGameInstance{
     @Override
     public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
         ContentRegistry.init();
-        ConstructionRegistry.init();
     }
 
     @Override

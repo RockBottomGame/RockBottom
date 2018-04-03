@@ -16,10 +16,6 @@ public final class ConstructionRegistry{
     public static IRecipe grassTorch;
     public static IRecipe simpleFurnace;
 
-    public static void init(){
-
-    }
-
     public static void postInit(){
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_PICKAXE));
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_AXE));
