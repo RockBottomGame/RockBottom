@@ -28,7 +28,7 @@ import de.ellpeck.rockbottom.apiimpl.InternalHooks;
 import de.ellpeck.rockbottom.apiimpl.ResourceRegistry;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.content.ContentManager;
-import de.ellpeck.rockbottom.content.pack.ContentPackLoader;
+import de.ellpeck.rockbottom.content.ContentPackLoader;
 import de.ellpeck.rockbottom.data.DataManager;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.mod.ModLoader;

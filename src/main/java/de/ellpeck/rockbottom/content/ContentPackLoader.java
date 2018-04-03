@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.content.pack;
+package de.ellpeck.rockbottom.content;
 
 import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
@@ -26,7 +26,7 @@ public class ContentPackLoader implements IContentPackLoader{
     private final ContentPackSettings packSettings = new ContentPackSettings();
 
     public ContentPackLoader(){
-        ContentPack defaultPack = new DefaultContentPack();
+        ContentPack defaultPack = new ContentPack(ContentPack.DEFAULT_PACK_ID, "Default", "~", new String[0], "The default content of the game and all installed mods");
         this.allPacks.add(defaultPack);
         this.activePacks.add(defaultPack);
     }
