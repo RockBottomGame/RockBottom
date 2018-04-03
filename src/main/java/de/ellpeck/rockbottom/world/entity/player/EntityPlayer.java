@@ -233,8 +233,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public void onGroundHit(double fallDistance){
         if(!this.world.isClient()){
-            if(fallDistance > 5){
-                this.takeDamage(Util.ceil((fallDistance-5D)*2D));
+            if(fallDistance > 4){
+                this.takeDamage(Util.ceil((fallDistance-4D)*4.5D));
             }
         }
     }
