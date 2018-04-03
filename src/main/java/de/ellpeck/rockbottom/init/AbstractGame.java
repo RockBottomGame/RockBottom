@@ -131,6 +131,10 @@ public abstract class AbstractGame implements IGameInstance{
                 Util.sleepSafe(1);
             }
         }
+        catch(Exception e){
+            game.onCrash();
+            throw e;
+        }
         finally{
             try{
                 RockBottomAPI.logger().info("Game shutting down");
@@ -146,6 +150,10 @@ public abstract class AbstractGame implements IGameInstance{
 
     protected void shutdown(){
         this.quitWorld();
+    }
+
+    protected void onCrash(){
+
     }
 
     @Override

@@ -44,6 +44,7 @@ import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.util.ChangelogManager;
+import de.ellpeck.rockbottom.util.CrashManager;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import joptsimple.internal.Strings;
@@ -454,6 +455,19 @@ public class RockBottom extends AbstractGame{
         this.errorCallback.free();
 
         RockBottomAPI.logger().info("Successfully disposed of resources.");
+    }
+
+    @Override
+    protected void onCrash(){
+        try{
+            CrashManager.addInfo("Debug Info:");
+            for(String s : DebugRenderer.getInfo(this, this.world, this.player, this.renderer)){
+                CrashManager.addInfo("    "+s);
+            }
+        }
+        catch(Exception e){
+            CrashManager.addInfo("Debug information couldn't be gathered");
+        }
     }
 
     @Override

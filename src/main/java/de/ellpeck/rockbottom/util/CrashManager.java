@@ -31,6 +31,16 @@ import java.util.logging.Level;
 
 public final class CrashManager{
 
+    private static List<String> additionalInfo;
+
+    public static void addInfo(String s){
+        if(additionalInfo == null){
+            additionalInfo = new ArrayList<>();
+        }
+
+        additionalInfo.add(s);
+    }
+
     public static void makeCrashReport(Throwable t){
         Main.memReserve = null;
         System.gc();
@@ -128,13 +138,13 @@ public final class CrashManager{
         writer.println(divider);
 
         Runtime runtime = Runtime.getRuntime();
-        writer.println("Java Version: "+System.getProperty("java.version"));
+        writer.println("Java Version: "+System.getProperty("java.version")+' '+System.getProperty("sun.arch.data.model")+"bit");
         writer.println("Operating System: "+System.getProperty("os.name")+' '+System.getProperty("os.version"));
         writer.println("Processors: "+runtime.availableProcessors());
-        long free = runtime.freeMemory();
-        writer.println("Free Memory: "+free+" bytes ("+free/1024+" megabytes)");
-        long max = runtime.maxMemory();
-        writer.println("Max Memory: "+(max >= Long.MAX_VALUE ? "None" : max+" bytes ("+max/1024+" megabytes"));
+        long total = runtime.totalMemory();
+        writer.println("Used Memory: "+displayByteCount(total-runtime.freeMemory()));
+        writer.println("Reserved Memory: "+displayByteCount(total));
+        writer.println("Allocated Memory: "+displayByteCount(runtime.maxMemory()));
 
         writer.println(divider);
         t.printStackTrace(writer);
@@ -174,7 +184,27 @@ public final class CrashManager{
             writer.println("Content pack information unavailable");
         }
 
+        if(additionalInfo != null && !additionalInfo.isEmpty()){
+            writer.println(divider);
+            writer.println("ADDITIONAL CRASH INFO:");
+
+            for(String s : additionalInfo){
+                writer.println(s);
+            }
+        }
+
         writer.print(divider);
+    }
+
+    public static String displayByteCount(long bytes){
+        if(bytes < 1024){
+            return bytes+" B";
+        }
+        else{
+            int exp = (int)(Math.log(bytes)/Math.log(1024));
+            char pre = "KMGTPE".charAt(exp-1);
+            return String.format("%.1f %sB", bytes/Math.pow(1024, exp), pre);
+        }
     }
 
     private static JsonObject paste(String code, String name) throws

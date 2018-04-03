@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.init.RockBottom;
+import de.ellpeck.rockbottom.util.CrashManager;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
@@ -19,7 +20,25 @@ import java.util.Locale;
 public final class DebugRenderer{
 
     public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, IRenderer g){
+        List<String> list = getInfo(game, world, player, g);
+        for(int i = 0; i < list.size(); i++){
+            String s = list.get(i);
+            if(!s.isEmpty()){
+                manager.getFont().drawString(10F, 10F+i*20, s, 0.8F);
+            }
+        }
+    }
+
+    public static List<String> getInfo(RockBottom game, World world, EntityPlayer player, IRenderer g){
         List<String> list = new ArrayList<>();
+
+        Runtime runtime = Runtime.getRuntime();
+        long total = runtime.totalMemory();
+        list.add("Used: "+CrashManager.displayByteCount(total-runtime.freeMemory()));
+        list.add("Reserved: "+CrashManager.displayByteCount(total));
+        list.add("Allocated: "+CrashManager.displayByteCount(runtime.maxMemory()));
+
+        list.add("");
 
         list.add("Avg FPS: "+game.getFpsAverage());
         list.add("Avg TPS: "+game.getTpsAverage());
@@ -35,9 +54,10 @@ public final class DebugRenderer{
 
         list.add("Texture Binds: "+Texture.binds);
         list.add("Renderer Flushes: "+g.getFlushes());
-        list.add("");
 
         if(world != null && player != null){
+            list.add("");
+
             String chunks = "Loaded Chunks: "+world.loadedChunks.size();
             if(!RockBottomAPI.getNet().isClient()){
                 chunks += ", PlayerChunks: "+player.getChunksInRange().size();
@@ -84,16 +104,9 @@ public final class DebugRenderer{
                 for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
                     list.add(layer.getName()+": "+world.getState(layer, x, y)+", Avg Height: "+chunk.getAverageHeight(layer));
                 }
-                list.add("");
-
             }
         }
 
-        for(int i = 0; i < list.size(); i++){
-            String s = list.get(i);
-            if(!s.isEmpty()){
-                manager.getFont().drawString(10F, 10F+i*20, s, 0.8F);
-            }
-        }
+        return list;
     }
 }
