@@ -84,6 +84,8 @@ if (proguardEnabled) {
     shadowJar {
         from file("${buildDir}/obf")
         from file("${buildDir}/temp/libs/lib")
+        exclude '*.sha1'
+        exclude '*.git'
     }.dependsOn.clear()
     shadowJar.dependsOn(deleteFiles)
 
