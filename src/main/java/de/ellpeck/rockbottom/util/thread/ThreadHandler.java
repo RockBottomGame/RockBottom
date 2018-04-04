@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public final class ThreadHandler{
 
@@ -62,9 +63,14 @@ public final class ThreadHandler{
             consoleThread = new Thread(() -> {
                 Scanner scanner = new Scanner(System.in);
                 while(game.isRunning){
-                    if(scanner.hasNextLine()){
-                        String input = scanner.nextLine();
-                        game.enqueueAction((g, object) -> g.getChatLog().sendCommandSenderMessage(input, consoleCommandSender), null);
+                    try{
+                        if(scanner.hasNextLine()){
+                            String input = scanner.nextLine();
+                            game.enqueueAction((g, object) -> g.getChatLog().sendCommandSenderMessage(input, consoleCommandSender), null);
+                        }
+                    }
+                    catch(Exception e){
+                        RockBottomAPI.logger().log(Level.WARNING, "There was an exception in the console thread, but it will attempt to keep running", e);
                     }
                     Util.sleepSafe(1);
                 }

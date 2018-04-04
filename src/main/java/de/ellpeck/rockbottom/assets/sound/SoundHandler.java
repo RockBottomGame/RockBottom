@@ -194,36 +194,41 @@ public final class SoundHandler{
         long lastSoundTime = Util.getTimeMillis();
 
         while(game.isRunning){
-            long currTime = Util.getTimeMillis();
+            try{
+                long currTime = Util.getTimeMillis();
 
-            if(currTime >= lastStreamTime+5000){
-                lastStreamTime = currTime;
+                if(currTime >= lastStreamTime+5000){
+                    lastStreamTime = currTime;
 
-                if(!STREAM_SOUNDS.isEmpty()){
-                    for(int i = 0; i < STREAM_SOUNDS.size(); i++){
-                        StreamSound sound = STREAM_SOUNDS.get(i);
-                        if(sound.isPlaying()){
-                            try{
-                                sound.update();
-                            }
-                            catch(Exception e){
-                                RockBottomAPI.logger().log(Level.WARNING, "There was an error streaming a sound", e);
+                    if(!STREAM_SOUNDS.isEmpty()){
+                        for(int i = 0; i < STREAM_SOUNDS.size(); i++){
+                            StreamSound sound = STREAM_SOUNDS.get(i);
+                            if(sound.isPlaying()){
+                                try{
+                                    sound.update();
+                                }
+                                catch(Exception e){
+                                    RockBottomAPI.logger().log(Level.WARNING, "There was an error streaming a sound", e);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            if(currTime >= lastSoundTime+250){
-                lastSoundTime = currTime;
+                if(currTime >= lastSoundTime+250){
+                    lastSoundTime = currTime;
 
-                for(int i = 0; i < MAX_SOURCES; i++){
-                    ISound sound = PLAYING_SOUNDS[i];
-                    if(sound != null && !sound.isIndexPlaying(i)){
-                        sound.stopIndex(i);
-                        PLAYING_SOUNDS[i] = null;
+                    for(int i = 0; i < MAX_SOURCES; i++){
+                        ISound sound = PLAYING_SOUNDS[i];
+                        if(sound != null && !sound.isIndexPlaying(i)){
+                            sound.stopIndex(i);
+                            PLAYING_SOUNDS[i] = null;
+                        }
                     }
                 }
+            }
+            catch(Exception e){
+                RockBottomAPI.logger().log(Level.WARNING, "There was an exception in the sound handling thread, but it will attempt to keep running", e);
             }
 
             Util.sleepSafe(1);

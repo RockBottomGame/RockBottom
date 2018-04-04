@@ -1,11 +1,12 @@
 package de.ellpeck.rockbottom.util.thread;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 public class ChunkThread extends Thread{
 
@@ -20,14 +21,15 @@ public class ChunkThread extends Thread{
     @Override
     public void run(){
         while(this.game.isRunning){
-            synchronized(this.queue){
-                if(!this.queue.isEmpty()){
-                    Iterator<Runnable> iterator = this.queue.iterator();
-                    while(iterator.hasNext()){
-                        iterator.next().run();
-                        iterator.remove();
+            try{
+                synchronized(this.queue){
+                    while(!this.queue.isEmpty()){
+                        this.queue.remove(0).run();
                     }
                 }
+            }
+            catch(Exception e){
+                RockBottomAPI.logger().log(Level.WARNING, "There was an exception in the chunk gen thread, however it will attempt to keep running", e);
             }
 
             Util.sleepSafe(1);
