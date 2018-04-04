@@ -16,14 +16,11 @@ import java.util.logging.Level;
 
 public final class ThreadHandler{
 
-    public static Thread mainThread;
     public static Thread consoleThread;
     public static ChunkThread chunkGenThread;
     public static Thread soundThread;
 
     public static void init(AbstractGame game){
-        mainThread = Thread.currentThread();
-
         chunkGenThread = new ChunkThread(game);
         chunkGenThread.setDaemon(true);
         chunkGenThread.start();

@@ -20,6 +20,7 @@ public final class Main{
 
     public static byte[] memReserve = new byte[10*1024*1024];
     public static CustomClassLoader classLoader;
+    public static Thread mainThread;
 
     public static File gameDir;
     public static File unpackedModsDir;
@@ -86,6 +87,9 @@ public final class Main{
             saveTextureSheet = options.has(optionSaveTextureSheet);
             suppressCrashPaste = options.has(optionSuppressPaste);
 
+            Thread.setDefaultUncaughtExceptionHandler((t, e) -> Logging.mainLogger.log(Level.SEVERE, "There was an unhandled exception in thread "+t.getName(), e));
+            mainThread = Thread.currentThread();
+
             try{
                 ClassLoader loader = Main.class.getClassLoader();
 
@@ -99,7 +103,7 @@ public final class Main{
                 }
 
                 classLoader = new CustomClassLoader(urls, loader);
-                Thread.currentThread().setContextClassLoader(classLoader);
+                mainThread.setContextClassLoader(classLoader);
 
                 Logging.mainLogger.info("Replacing class loader "+loader+" with new loader "+classLoader);
             }
