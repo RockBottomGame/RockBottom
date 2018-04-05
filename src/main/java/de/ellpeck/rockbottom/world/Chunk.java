@@ -575,14 +575,13 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public int getHeight(TileLayer layer, int x, int bottomY){
-        int result = this.getHeightInner(layer, x-this.x);
-        return result-bottomY-this.y;
+    public int getChunkHeight(TileLayer layer, int x, int bottomY){
+        return this.getHeight(layer, x);
     }
 
     @Override
     public int getHeight(TileLayer layer, int x){
-        return this.getHeight(layer, x, 0);
+        return this.getHeightInner(layer, x-this.x);
     }
 
     @Override

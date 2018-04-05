@@ -21,7 +21,10 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.toast.Toast;
-import de.ellpeck.rockbottom.api.util.*;
+import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Counter;
+import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
@@ -87,7 +90,7 @@ public class World implements IWorld{
             }
         }
 
-        Comparator comp = Comparator.comparingInt(IWorldGenerator:: getPriority).reversed();
+        Comparator comp = Comparator.comparingInt(IWorldGenerator :: getPriority).reversed();
         generators.sort(comp);
         retroactiveGenerators.sort(comp);
 
@@ -409,9 +412,9 @@ public class World implements IWorld{
     }
 
     @Override
-    public int getHeight(TileLayer layer, int x, int bottomY){
+    public int getChunkHeight(TileLayer layer, int x, int bottomY){
         IChunk chunk = this.getChunk(x, bottomY);
-        return chunk.getHeight(layer, x, bottomY);
+        return chunk.getChunkHeight(layer, x, bottomY);
     }
 
     @Override
