@@ -38,49 +38,48 @@ public class RecipeLoader implements IContentLoader<IRecipe>{
     @Override
     public void loadContent(IGameInstance game, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
-            String resPath = path+element.getAsString();
-
-            InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
-            JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
-            reader.close();
-
-            JsonObject object = recipeElement.getAsJsonObject();
-            String type = object.get("type").getAsString();
-
-            List<IUseInfo> inputList = new ArrayList<>();
-            List<ItemInstance> outputList = new ArrayList<>();
-
-            JsonArray outputs = object.get("outputs").getAsJsonArray();
-            for(JsonElement output : outputs){
-                JsonObject out = output.getAsJsonObject();
-
-                Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(out.get("name").getAsString()));
-                int amount = out.has("amount") ? out.get("amount").getAsInt() : 1;
-                int meta = out.has("meta") ? out.get("meta").getAsInt() : 0;
-
-                outputList.add(new ItemInstance(item, amount, meta));
-            }
-
-            JsonArray inputs = object.get("inputs").getAsJsonArray();
-            for(JsonElement input : inputs){
-                JsonObject in = input.getAsJsonObject();
-
-                String name = in.get("name").getAsString();
-                int amount = in.has("amount") ? in.get("amount").getAsInt() : 1;
-
-                if(Util.isResourceName(name)){
-                    int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                    inputList.add(new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(name)), amount, meta));
-                }
-                else{
-                    inputList.add(new ResUseInfo(name, amount));
-                }
-            }
-
             if(IRecipe.forName(resourceName) != null){
                 RockBottomAPI.logger().info("Recipe with name "+resourceName+" already exists, not adding recipe for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
             }
             else{
+                String resPath = path+element.getAsString();
+
+                InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
+                JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
+                reader.close();
+
+                JsonObject object = recipeElement.getAsJsonObject();
+                String type = object.get("type").getAsString();
+
+                List<IUseInfo> inputList = new ArrayList<>();
+                List<ItemInstance> outputList = new ArrayList<>();
+
+                JsonArray outputs = object.get("outputs").getAsJsonArray();
+                for(JsonElement output : outputs){
+                    JsonObject out = output.getAsJsonObject();
+
+                    Item item = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(out.get("name").getAsString()));
+                    int amount = out.has("amount") ? out.get("amount").getAsInt() : 1;
+                    int meta = out.has("meta") ? out.get("meta").getAsInt() : 0;
+
+                    outputList.add(new ItemInstance(item, amount, meta));
+                }
+
+                JsonArray inputs = object.get("inputs").getAsJsonArray();
+                for(JsonElement input : inputs){
+                    JsonObject in = input.getAsJsonObject();
+
+                    String name = in.get("name").getAsString();
+                    int amount = in.has("amount") ? in.get("amount").getAsInt() : 1;
+
+                    if(Util.isResourceName(name)){
+                        int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
+                        inputList.add(new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(name)), amount, meta));
+                    }
+                    else{
+                        inputList.add(new ResUseInfo(name, amount));
+                    }
+                }
                 if("manual".equals(type)){
                     new BasicRecipe(resourceName, inputList, outputList).registerManual();
                 }

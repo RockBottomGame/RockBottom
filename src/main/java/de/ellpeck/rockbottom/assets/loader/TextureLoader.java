@@ -32,14 +32,15 @@ public class TextureLoader implements IAssetLoader<ITexture>{
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
-            this.makeTexture(manager, resourceName.toString(), element, path, (stitchX, stitchY, stitchedTexture) -> {
-                if(manager.addAsset(this, resourceName, stitchedTexture)){
+            if(manager.hasAsset(ITexture.ID, resourceName)){
+                RockBottomAPI.logger().info("Texture "+resourceName+" already exists, not adding texture for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+            }
+            else{
+                this.makeTexture(manager, resourceName.toString(), element, path, (stitchX, stitchY, stitchedTexture) -> {
+                    manager.addAsset(this, resourceName, stitchedTexture);
                     RockBottomAPI.logger().config("Loaded texture "+resourceName+" for mod "+loadingMod.getDisplayName());
-                }
-                else{
-                    RockBottomAPI.logger().info("Texture "+resourceName+" already exists, not adding texture for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
-                }
-            });
+                });
+            }
         }
         else{
             RockBottomAPI.logger().info("Texture "+resourceName+" will not be loaded for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName()+" because it was disabled by another content pack!");

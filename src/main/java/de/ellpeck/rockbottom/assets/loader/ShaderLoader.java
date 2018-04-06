@@ -32,19 +32,20 @@ public class ShaderLoader implements IAssetLoader<IShaderProgram>{
     @Override
     public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
-            JsonObject object = element.getAsJsonObject();
-            String vertexPath = object.get("vertex").getAsString();
-            String fragmentPath = object.get("fragment").getAsString();
-
-            Shader vertex = this.loadShader(path+vertexPath, GL20.GL_VERTEX_SHADER);
-            Shader fragment = this.loadShader(path+fragmentPath, GL20.GL_FRAGMENT_SHADER);
-
-            ShaderProgram shader = new ShaderProgram(vertex, fragment);
-            if(manager.addAsset(this, resourceName, shader)){
-                RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
+            if(manager.hasAsset(IShaderProgram.ID, resourceName)){
+                RockBottomAPI.logger().info("Shader "+resourceName+" already exists, not adding shader for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
             }
             else{
-                RockBottomAPI.logger().info("Shader "+resourceName+" already exists, not adding shader for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
+                JsonObject object = element.getAsJsonObject();
+                String vertexPath = object.get("vertex").getAsString();
+                String fragmentPath = object.get("fragment").getAsString();
+
+                Shader vertex = this.loadShader(path+vertexPath, GL20.GL_VERTEX_SHADER);
+                Shader fragment = this.loadShader(path+fragmentPath, GL20.GL_FRAGMENT_SHADER);
+
+                ShaderProgram shader = new ShaderProgram(vertex, fragment);
+                manager.addAsset(this, resourceName, shader);
+                RockBottomAPI.logger().config("Loaded shader "+resourceName+" for mod "+loadingMod.getDisplayName());
             }
         }
         else{

@@ -34,38 +34,38 @@ public class SmeltingLoader implements IContentLoader<IRecipe>{
     @Override
     public void loadContent(IGameInstance game, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
-            String resPath = path+element.getAsString();
-
-            InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
-            JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
-            reader.close();
-
-            JsonObject object = recipeElement.getAsJsonObject();
-            int time = object.get("time").getAsInt();
-
-            JsonObject out = object.get("output").getAsJsonObject();
-            Item outItem = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(out.get("name").getAsString()));
-            int outAmount = out.has("amount") ? out.get("amount").getAsInt() : 1;
-            int outMeta = out.has("meta") ? out.get("meta").getAsInt() : 0;
-            ItemInstance output = new ItemInstance(outItem, outAmount, outMeta);
-
-            JsonObject in = object.get("input").getAsJsonObject();
-            String name = in.get("name").getAsString();
-            int amount = in.has("amount") ? in.get("amount").getAsInt() : 1;
-
-            IUseInfo input;
-            if(Util.isResourceName(name)){
-                int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                input = new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(name)), amount, meta);
-            }
-            else{
-                input = new ResUseInfo(name, amount);
-            }
-
             if(IRecipe.forName(resourceName) != null){
                 RockBottomAPI.logger().info("Smelting recipe with name "+resourceName+" already exists, not adding recipe for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
             }
             else{
+                String resPath = path+element.getAsString();
+
+                InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
+                JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
+                reader.close();
+
+                JsonObject object = recipeElement.getAsJsonObject();
+                int time = object.get("time").getAsInt();
+
+                JsonObject out = object.get("output").getAsJsonObject();
+                Item outItem = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(out.get("name").getAsString()));
+                int outAmount = out.has("amount") ? out.get("amount").getAsInt() : 1;
+                int outMeta = out.has("meta") ? out.get("meta").getAsInt() : 0;
+                ItemInstance output = new ItemInstance(outItem, outAmount, outMeta);
+
+                JsonObject in = object.get("input").getAsJsonObject();
+                String name = in.get("name").getAsString();
+                int amount = in.has("amount") ? in.get("amount").getAsInt() : 1;
+
+                IUseInfo input;
+                if(Util.isResourceName(name)){
+                    int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
+                    input = new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(name)), amount, meta);
+                }
+                else{
+                    input = new ResUseInfo(name, amount);
+                }
+
                 new SmeltingRecipe(resourceName, input, output, time).register();
 
                 RockBottomAPI.logger().config("Loaded smelting recipe "+resourceName+" for mod "+loadingMod.getDisplayName()+" with time "+time+", input "+input+" and output "+output+" with content pack "+pack.getName());

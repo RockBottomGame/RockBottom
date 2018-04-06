@@ -225,7 +225,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         }
 
         this.sortedCursors.addAll(RockBottomAPI.SPECIAL_CURSORS.values());
-        this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor:: getPriority).reversed());
+        this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor :: getPriority).reversed());
 
         for(ISpecialCursor cursor : this.sortedCursors){
             try{
@@ -426,11 +426,10 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public boolean addAsset(IAssetLoader loader, IResourceName name, IAsset
-            asset){
+    public boolean addAsset(IAssetLoader loader, IResourceName name, IAsset asset){
         if(!this.isLocked){
             IResourceName id = loader.getAssetIdentifier();
-            if(!this.assets.contains(id, name)){
+            if(!this.hasAsset(id, name)){
                 this.assets.put(loader.getAssetIdentifier(), name, asset);
                 return true;
             }
