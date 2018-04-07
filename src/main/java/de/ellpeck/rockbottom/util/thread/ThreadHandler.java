@@ -16,6 +16,13 @@ import java.util.logging.Level;
 
 public final class ThreadHandler{
 
+    public static final String CONSOLE_LISTENER = "ConsoleListener";
+    public static final String SOUND_UPDATER = "SoundUpdater";
+    public static final String SERVER_JOIN = "ServerJoin";
+    public static final String CHANGELOG_GRABBER = "ChangelogGrabber";
+    public static final String CHUNK_GEN = "ChunkGen";
+    public static final String SHUTDOWN_HOOK = "ShutdownHook";
+
     public static Thread consoleThread;
     public static ChunkThread chunkGenThread;
     public static Thread soundThread;
@@ -25,7 +32,7 @@ public final class ThreadHandler{
         chunkGenThread.setDaemon(true);
         chunkGenThread.start();
 
-        soundThread = new Thread(() -> SoundHandler.updateSounds(game), "SoundUpdater");
+        soundThread = new Thread(() -> SoundHandler.updateSounds(game), SOUND_UPDATER);
         soundThread.setDaemon(true);
         soundThread.start();
 
@@ -72,7 +79,7 @@ public final class ThreadHandler{
                     Util.sleepSafe(1);
                 }
                 scanner.close();
-            }, "ConsoleListener");
+            }, CONSOLE_LISTENER);
             consoleThread.setDaemon(true);
             consoleThread.start();
         }

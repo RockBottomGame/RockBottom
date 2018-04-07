@@ -14,7 +14,7 @@ public class ChunkThread extends Thread{
     private final AbstractGame game;
 
     public ChunkThread(AbstractGame game){
-        super("ChunkGen");
+        super(ThreadHandler.CHUNK_GEN);
         this.game = game;
     }
 

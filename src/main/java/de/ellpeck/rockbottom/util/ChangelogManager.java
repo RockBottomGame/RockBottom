@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -60,7 +61,7 @@ public final class ChangelogManager{
                 RockBottomAPI.logger().log(Level.WARNING, "There was an error trying to grab and parse the changelog", e);
                 changelogGrabError = true;
             }
-        }, "ChangelogGrabber");
+        }, ThreadHandler.CHANGELOG_GRABBER);
         loaderThread.setDaemon(true);
         loaderThread.start();
     }

@@ -424,7 +424,7 @@ public abstract class AbstractGame implements IGameInstance{
                 catch(Exception e){
                     Logging.mainLogger.log(Level.WARNING, "There was an error while trying to restart the game", e);
                 }
-            }));
+            }, ThreadHandler.SHUTDOWN_HOOK));
 
             this.exit();
         }

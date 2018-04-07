@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.gui.GuiInformation;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketJoin;
+import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 
 import java.util.logging.Level;
 
@@ -50,7 +51,7 @@ public class GuiJoinServer extends Gui{
                         game.getGuiManager().openGui(new GuiInformation(this.parent, 0.5F, game.getAssetManager().localize(RockBottomAPI.createInternalRes("info.reject.connection"), e.getMessage())));
                     }
                     this.joinThread = null;
-                }, "ServerJoin");
+                }, ThreadHandler.SERVER_JOIN);
                 this.joinThread.start();
 
                 return true;
