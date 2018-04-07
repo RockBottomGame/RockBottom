@@ -87,7 +87,9 @@ public final class Main{
             saveTextureSheet = options.has(optionSaveTextureSheet);
             suppressCrashPaste = options.has(optionSuppressPaste);
 
-            Thread.setDefaultUncaughtExceptionHandler((t, e) -> Logging.mainLogger.log(Level.SEVERE, "There was an unhandled exception in thread "+t.getName(), e));
+            Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+                throw new RuntimeException("There was an unhandled exception in thread "+t.getName());
+            });
             mainThread = Thread.currentThread();
 
             try{
