@@ -88,7 +88,7 @@ public final class Main{
             suppressCrashPaste = options.has(optionSuppressPaste);
 
             Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                throw new RuntimeException("There was an unhandled exception in thread "+t.getName());
+                throw new RuntimeException("There was an unhandled exception in thread "+t.getName(), e);
             });
             mainThread = Thread.currentThread();
 
