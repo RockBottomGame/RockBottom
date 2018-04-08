@@ -4,35 +4,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
-import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
-public class CommandPermissions implements IPropSettings, IJsonSettings{
+public class CommandPermissions implements IJsonSettings{
 
     private final Map<UUID, Integer> commandLevels = new HashMap<>();
-
-    @Override
-    public void load(Properties props){
-        this.commandLevels.clear();
-
-        for(String key : props.stringPropertyNames()){
-            int level = Integer.parseInt(props.getProperty(key));
-            UUID id = UUID.fromString(key);
-
-            this.commandLevels.put(id, level);
-        }
-    }
-
-    @Override
-    public File getFile(IDataManager manager){
-        return new File(manager.getGameDir(), "command_permissions.properties");
-    }
 
     @Override
     public void load(JsonObject object){

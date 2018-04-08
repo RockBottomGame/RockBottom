@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortArray;
 import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
-import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
@@ -26,7 +25,6 @@ import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 
 import java.io.*;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -221,61 +219,12 @@ public class DataManager implements IDataManager{
     }
 
     @Override
-    public void loadPropSettings(IPropSettings settings){
-        Properties props = new Properties();
-        boolean loaded = false;
-
-        File file = settings.getFile(this);
-        if(file.exists()){
-            try{
-                FileInputStream stream = new FileInputStream(file);
-                props.load(stream);
-                stream.close();
-                loaded = true;
-            }
-            catch(Exception e){
-                RockBottomAPI.logger().log(Level.SEVERE, "Couldn't load "+settings.getName(), e);
-            }
-        }
-
-        settings.load(props);
-
-        if(!loaded){
-            RockBottomAPI.logger().info("Creating "+settings.getName()+" from default");
-            this.savePropSettings(settings);
-        }
-        else{
-            RockBottomAPI.logger().info("Loaded "+settings.getName());
-        }
-    }
-
-    @Override
-    public void savePropSettings(IPropSettings settings){
-        Properties props = new Properties();
-        settings.save(props);
-
-        try{
-            File file = settings.getFile(this);
-
-            if(!file.exists()){
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-
-            props.store(new FileOutputStream(file), null);
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't save "+settings.getName(), e);
-        }
-    }
-
-    @Override
     public void loadSettings(IJsonSettings settings){
         JsonObject object = null;
         boolean loaded = false;
 
         File file = settings.getSettingsFile(this);
-        if(file.exists() || (settings instanceof IPropSettings && ((IPropSettings)settings).getFile(this).exists())){
+        if(file.exists()){
             try{
                 InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8);
                 object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
@@ -284,24 +233,7 @@ public class DataManager implements IDataManager{
                 loaded = true;
             }
             catch(Exception e){
-                if(settings instanceof IPropSettings){
-                    RockBottomAPI.logger().info("Couldn't load "+settings.getName()+" as json settings, trying to load them as property settings for compatibility...");
-
-                    try{
-                        this.loadPropSettings((IPropSettings)settings);
-                        ((IPropSettings)settings).getFile(this).delete();
-
-                        settings.save();
-
-                        return;
-                    }
-                    catch(Exception e2){
-                        RockBottomAPI.logger().log(Level.SEVERE, "Failed loading "+settings.getName()+" as property settings", e);
-                    }
-                }
-                else{
-                    RockBottomAPI.logger().log(Level.SEVERE, "Couldn't load "+settings.getName(), e);
-                }
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't load "+settings.getName(), e);
             }
         }
 
@@ -347,7 +279,7 @@ public class DataManager implements IDataManager{
             writer.close();
         }
         catch(Exception e){
-            RockBottomAPI.logger().log(Level.SEVERE, "Couldn't save "+settings.getName(), e);
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't save "+settings.getName(), e);
         }
     }
 }

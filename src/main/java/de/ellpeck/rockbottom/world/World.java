@@ -418,17 +418,6 @@ public class World implements IWorld{
     }
 
     @Override
-    public int getLowestAirUpwards(TileLayer layer, int x, int y){
-        return this.getLowestAirUpwards(layer, x, y, false);
-    }
-
-    @Override
-    public int getLowestAirUpwards(TileLayer layer, int x, int y, boolean ignoreReplaceableTiles){
-        IChunk chunk = this.getChunk(x, y);
-        return chunk.getLowestAirUpwards(layer, x, y, ignoreReplaceableTiles);
-    }
-
-    @Override
     public Biome getExpectedBiome(int x, int y){
         return this.biomeGen.getBiome(x, y, this);
     }

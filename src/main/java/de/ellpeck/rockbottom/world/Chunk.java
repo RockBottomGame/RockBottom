@@ -585,22 +585,6 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public int getLowestAirUpwards(TileLayer layer, int x, int y){
-        return this.getLowestAirUpwards(layer, x, y, false);
-    }
-
-    @Override
-    public int getLowestAirUpwards(TileLayer layer, int x, int y, boolean ignoreReplaceableTiles){
-        int result = this.getLowestAirUpwardsInner(layer, x-this.x, y-this.y, ignoreReplaceableTiles);
-        if(result >= 0){
-            return this.y+result;
-        }
-        else{
-            return -1;
-        }
-    }
-
-    @Override
     public Biome getExpectedBiome(int x, int y){
         return this.world.getExpectedBiome(x, y);
     }
@@ -608,22 +592,6 @@ public class Chunk implements IChunk{
     @Override
     public int getExpectedSurfaceHeight(TileLayer layer, int x, int y){
         return this.world.getExpectedSurfaceHeight(layer, x, y);
-    }
-
-    @Override
-    public int getLowestAirUpwardsInner(TileLayer layer, int x, int y){
-        return this.getLowestAirUpwardsInner(layer, x, y, false);
-    }
-
-    @Override
-    public int getLowestAirUpwardsInner(TileLayer layer, int x, int y, boolean ignoreReplaceableTiles){
-        for(int yCount = y; yCount < Constants.CHUNK_SIZE-yCount; yCount++){
-            Tile tile = this.getStateInner(layer, x, yCount).getTile();
-            if(tile.isAir() || (ignoreReplaceableTiles && tile.canReplace(this.world, this.x+x, this.y+y, layer))){
-                return yCount;
-            }
-        }
-        return -1;
     }
 
     @Override

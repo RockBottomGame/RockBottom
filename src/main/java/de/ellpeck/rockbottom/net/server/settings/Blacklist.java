@@ -4,31 +4,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
-import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
-public class Blacklist implements IPropSettings, IJsonSettings{
+public class Blacklist implements IJsonSettings{
 
     private final Map<UUID, String> blacklistedPlayers = new HashMap<>();
-
-    @Override
-    public void load(Properties props){
-        this.blacklistedPlayers.clear();
-
-        for(String s : props.stringPropertyNames()){
-            this.blacklistedPlayers.put(UUID.fromString(s), props.getProperty(s));
-        }
-    }
-
-    @Override
-    public File getFile(IDataManager manager){
-        return new File(manager.getGameDir(), "blacklist.properties");
-    }
 
     @Override
     public void load(JsonObject object){

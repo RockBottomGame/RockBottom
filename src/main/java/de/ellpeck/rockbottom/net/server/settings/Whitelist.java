@@ -4,34 +4,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
-import de.ellpeck.rockbottom.api.data.settings.IPropSettings;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
-public class Whitelist implements IPropSettings, IJsonSettings{
+public class Whitelist implements IJsonSettings{
 
     private final Set<UUID> whitelistedPlayers = new HashSet<>();
     private boolean isEnabled = false;
-
-    @Override
-    public void load(Properties props){
-        this.whitelistedPlayers.clear();
-
-        for(String s : props.stringPropertyNames()){
-            if(s.equals("enabled")){
-                this.isEnabled = Objects.equals(props.getProperty(s), "true");
-            }
-            else{
-                this.whitelistedPlayers.add(UUID.fromString(s));
-            }
-        }
-    }
-
-    @Override
-    public File getFile(IDataManager manager){
-        return new File(manager.getGameDir(), "whitelist.properties");
-    }
 
     @Override
     public void load(JsonObject object){
