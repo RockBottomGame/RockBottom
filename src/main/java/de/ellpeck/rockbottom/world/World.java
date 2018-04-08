@@ -810,15 +810,17 @@ public class World implements IWorld{
                         loaded = true;
                     }
                 }
-
-                this.info.lastPlayerId = id;
-                this.info.save();
             }
 
             if(!loaded){
                 player.resetAndSpawn(RockBottomAPI.getGame());
                 RockBottomAPI.logger().info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
             }
+        }
+
+        if(loadOrSwapLast){
+            this.info.lastPlayerId = id;
+            this.info.save();
         }
 
         RockBottomAPI.getEventHandler().fireEvent(new PlayerJoinWorldEvent(player, channel != null));
