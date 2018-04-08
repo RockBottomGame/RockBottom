@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.settings.ModConfig;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
@@ -221,6 +222,11 @@ public class ModLoader implements IModLoader{
     public void preInit(){
         IGameInstance game = RockBottomAPI.getGame();
         for(IMod mod : this.activeMods){
+            ModConfig config = mod.getModConfig();
+            if(config != null){
+                config.load();
+            }
+
             mod.preInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
