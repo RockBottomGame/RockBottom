@@ -8,14 +8,14 @@ import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileTorchRenderer;
 
 public class TileTorch extends TileBasic{
 
-    public TileTorch(IResourceName name){
+    public TileTorch(ResourceName name){
         super(name);
         this.addProps(StaticTileProps.TORCH_FACING, StaticTileProps.TORCH_TIMER);
     }
@@ -124,7 +124,7 @@ public class TileTorch extends TileBasic{
     }
 
     @Override
-    protected ITileRenderer createRenderer(IResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name){
         return new TileTorchRenderer(name);
     }
 }

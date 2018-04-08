@@ -18,7 +18,7 @@ import de.ellpeck.rockbottom.api.render.engine.IDisposable;
 import de.ellpeck.rockbottom.api.render.engine.VertexProcessor;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.loader.*;
@@ -67,7 +67,7 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     private final TextureStitcher stitcher = new TextureStitcher();
-    private final Table<IResourceName, IResourceName, IAsset> assets = HashBasedTable.create();
+    private final Table<ResourceName, ResourceName, IAsset> assets = HashBasedTable.create();
     private final List<ISpecialCursor> sortedCursors = new ArrayList<>();
     private final Map<ISpecialCursor, Long> cursors = new HashMap<>();
     private ISound missingSound;
@@ -144,10 +144,10 @@ public class AssetManager implements IAssetManager, IDisposable{
         RockBottomAPI.logger().info("Loaded "+this.getAllOfType(IAnimation.ID).size()+" animations!");
         RockBottomAPI.logger().info("Possible language settings: "+this.getAllOfType(Locale.ID).keySet());
 
-        this.defaultLocale = this.getLocale(RockBottomAPI.createInternalRes("us_english"));
+        this.defaultLocale = this.getLocale(ResourceName.intern("us_english"));
 
-        this.currentFont = this.getFont(RockBottomAPI.createInternalRes("default"));
-        this.currentLocale = this.getLocale(RockBottomAPI.createRes(this.game.getSettings().currentLocale));
+        this.currentFont = this.getFont(ResourceName.intern("default"));
+        this.currentLocale = this.getLocale(new ResourceName(this.game.getSettings().currentLocale));
 
         RockBottomAPI.getEventHandler().fireEvent(new LoadAssetsEvent(this.game, this, this.game.getRenderer()));
         this.initInternalShaders(this.game.getWidth(), this.game.getHeight());
@@ -171,7 +171,7 @@ public class AssetManager implements IAssetManager, IDisposable{
             public void addVertex(IRenderer renderer, float x, float y, int color, float u, float v){
                 super.addVertex(renderer, x, y, color, u, v);
 
-                ITexture tex = AssetManager.this.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(RockBottomAPI.getGame().getInteractionManager().getBreakProgress()*8F)));
+                ITexture tex = AssetManager.this.getTexture(ResourceName.intern("break."+Util.ceil(RockBottomAPI.getGame().getInteractionManager().getBreakProgress()*8F)));
 
                 float breakU;
                 float breakV;
@@ -278,12 +278,12 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public <T extends IAsset> Map<IResourceName, T> getAllOfType(IResourceName identifier){
-        return (Map<IResourceName, T>)this.assets.row(identifier);
+    public <T extends IAsset> Map<ResourceName, T> getAllOfType(ResourceName identifier){
+        return (Map<ResourceName, T>)this.assets.row(identifier);
     }
 
     @Override
-    public <T extends IAsset> T getAssetWithFallback(IResourceName identifier, IResourceName path, T fallback){
+    public <T extends IAsset> T getAssetWithFallback(ResourceName identifier, ResourceName path, T fallback){
         IAsset asset = this.assets.get(identifier, path);
 
         if(asset == null){
@@ -297,42 +297,42 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public boolean hasAsset(IResourceName identifier, IResourceName path){
+    public boolean hasAsset(ResourceName identifier, ResourceName path){
         return this.assets.contains(identifier, path);
     }
 
     @Override
-    public ITexture getTexture(IResourceName path){
+    public ITexture getTexture(ResourceName path){
         return this.getAssetWithFallback(ITexture.ID, path, this.missingTexture);
     }
 
     @Override
-    public IAnimation getAnimation(IResourceName path){
+    public IAnimation getAnimation(ResourceName path){
         return this.getAssetWithFallback(IAnimation.ID, path, this.missingAnimation);
     }
 
     @Override
-    public ISound getSound(IResourceName path){
+    public ISound getSound(ResourceName path){
         return this.getAssetWithFallback(ISound.ID, path, this.missingSound);
     }
 
     @Override
-    public IShaderProgram getShaderProgram(IResourceName path){
+    public IShaderProgram getShaderProgram(ResourceName path){
         return this.getAssetWithFallback(IShaderProgram.ID, path, this.game.renderer.simpleProgram);
     }
 
     @Override
-    public Locale getLocale(IResourceName path){
+    public Locale getLocale(ResourceName path){
         return this.getAssetWithFallback(Locale.ID, path, this.missingLocale);
     }
 
     @Override
-    public IFont getFont(IResourceName path){
+    public IFont getFont(ResourceName path){
         return this.getAssetWithFallback(IFont.ID, path, this.game.renderer.simpleFont);
     }
 
     @Override
-    public String localize(IResourceName unloc, Object... format){
+    public String localize(ResourceName unloc, Object... format){
         return this.currentLocale.localize(this.defaultLocale, unloc, format);
     }
 
@@ -374,7 +374,7 @@ public class AssetManager implements IAssetManager, IDisposable{
     @Override
     public SimpleDateFormat getLocalizedDateFormat(){
         try{
-            return new SimpleDateFormat(this.localize(RockBottomAPI.createInternalRes("date_format")));
+            return new SimpleDateFormat(this.localize(ResourceName.intern("date_format")));
         }
         catch(IllegalArgumentException e){
             return new SimpleDateFormat();
@@ -426,9 +426,9 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public boolean addAsset(IAssetLoader loader, IResourceName name, IAsset asset){
+    public boolean addAsset(IAssetLoader loader, ResourceName name, IAsset asset){
         if(!this.isLocked){
-            IResourceName id = loader.getAssetIdentifier();
+            ResourceName id = loader.getAssetIdentifier();
             if(!this.hasAsset(id, name)){
                 this.assets.put(loader.getAssetIdentifier(), name, asset);
                 return true;
@@ -451,12 +451,12 @@ public class AssetManager implements IAssetManager, IDisposable{
         }
 
         @Override
-        public IResourceName getIdentifier(){
+        public ResourceName getIdentifier(){
             return this.loader.getAssetIdentifier();
         }
 
         @Override
-        public void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+        public void load(ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
             this.loader.loadAsset(AssetManager.this, resourceName, path, element, elementName, loadingMod, pack);
         }
 
@@ -466,7 +466,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         }
 
         @Override
-        public void disable(IResourceName resourceName){
+        public void disable(ResourceName resourceName){
             this.loader.disableAsset(AssetManager.this, resourceName);
         }
     }

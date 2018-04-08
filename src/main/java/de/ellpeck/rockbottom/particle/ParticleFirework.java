@@ -2,18 +2,17 @@ package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 
 public class ParticleFirework extends Particle{
 
-    private static final IResourceName TEXTURE = RockBottomAPI.createInternalRes("particle.firework");
+    private static final ResourceName TEXTURE = ResourceName.intern("particle.firework");
     private final BoundBox boundingBox = new BoundBox(-0.075, -0.075, 0.075, 0.075);
     private final int particleColor;
 

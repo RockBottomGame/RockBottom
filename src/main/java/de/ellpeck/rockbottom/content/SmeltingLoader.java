@@ -16,7 +16,7 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.io.InputStreamReader;
 import java.util.HashSet;
@@ -24,15 +24,15 @@ import java.util.Set;
 
 public class SmeltingLoader implements IContentLoader<IRecipe>{
 
-    private final Set<IResourceName> disabled = new HashSet<>();
+    private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public IResourceName getContentIdentifier(){
+    public ResourceName getContentIdentifier(){
         return SmeltingRecipe.ID;
     }
 
     @Override
-    public void loadContent(IGameInstance game, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+    public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
             if(IRecipe.forName(resourceName) != null){
                 RockBottomAPI.logger().info("Smelting recipe with name "+resourceName+" already exists, not adding recipe for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
@@ -48,7 +48,7 @@ public class SmeltingLoader implements IContentLoader<IRecipe>{
                 int time = object.get("time").getAsInt();
 
                 JsonObject out = object.get("output").getAsJsonObject();
-                Item outItem = RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(out.get("name").getAsString()));
+                Item outItem = RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
                 int outAmount = out.has("amount") ? out.get("amount").getAsInt() : 1;
                 int outMeta = out.has("meta") ? out.get("meta").getAsInt() : 0;
                 ItemInstance output = new ItemInstance(outItem, outAmount, outMeta);
@@ -60,7 +60,7 @@ public class SmeltingLoader implements IContentLoader<IRecipe>{
                 IUseInfo input;
                 if(Util.isResourceName(name)){
                     int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                    input = new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(RockBottomAPI.createRes(name)), amount, meta);
+                    input = new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(name)), amount, meta);
                 }
                 else{
                     input = new ResUseInfo(name, amount);
@@ -78,7 +78,7 @@ public class SmeltingLoader implements IContentLoader<IRecipe>{
 
 
     @Override
-    public void disableContent(IGameInstance game, IResourceName resourceName){
+    public void disableContent(IGameInstance game, ResourceName resourceName){
         this.disabled.add(resourceName);
     }
 }

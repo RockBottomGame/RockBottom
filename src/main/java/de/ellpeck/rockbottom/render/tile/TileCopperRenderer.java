@@ -6,16 +6,16 @@ import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileCopper;
 
 public class TileCopperRenderer extends DefaultTileRenderer<TileCopper>{
 
-    private final IResourceName canister;
+    private final ResourceName canister;
 
-    public TileCopperRenderer(IResourceName texture){
+    public TileCopperRenderer(ResourceName texture){
         super(texture);
         this.canister = this.texture.addSuffix(".canister");
     }

@@ -8,13 +8,14 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Arrays;
 
 public class CommandHelp extends Command{
 
     public CommandHelp(){
-        super(RockBottomAPI.createInternalRes("help"), "Shows a list of possible commands", 0, "help", "?");
+        super(ResourceName.intern("help"), "Shows a list of possible commands", 0, "help", "?");
     }
 
     @Override

@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.io.InputStream;
@@ -22,15 +22,15 @@ import java.util.Set;
 
 public class LocaleLoader implements IAssetLoader<Locale>{
 
-    private final Set<IResourceName> disabled = new HashSet<>();
+    private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public IResourceName getAssetIdentifier(){
+    public ResourceName getAssetIdentifier(){
         return Locale.ID;
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+    public void loadAsset(IAssetManager manager, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
             String resPath = path+element.getAsString();
             Locale locale = this.fromStream(ContentManager.getResourceAsStream(resPath), elementName);
@@ -50,7 +50,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
     }
 
     @Override
-    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+    public void disableAsset(IAssetManager manager, ResourceName resourceName){
         this.disabled.add(resourceName);
     }
 
@@ -58,7 +58,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
         JsonElement main = Util.JSON_PARSER.parse(new InputStreamReader(stream, Charsets.UTF_8));
         stream.close();
 
-        Map<IResourceName, String> locale = new HashMap<>();
+        Map<ResourceName, String> locale = new HashMap<>();
         for(Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){
             this.recurseLoad(locale, name, entry.getKey(), "", entry.getValue());
         }
@@ -66,12 +66,12 @@ public class LocaleLoader implements IAssetLoader<Locale>{
         return new Locale(name, locale);
     }
 
-    private void recurseLoad(Map<IResourceName, String> locale, String localeName, String domain, String name, JsonElement element){
+    private void recurseLoad(Map<ResourceName, String> locale, String localeName, String domain, String name, JsonElement element){
         if(element.isJsonPrimitive()){
             String key = domain+Constants.RESOURCE_SEPARATOR+name;
             String value = element.getAsJsonPrimitive().getAsString();
 
-            locale.put(RockBottomAPI.createRes(key), value);
+            locale.put(new ResourceName(key), value);
             RockBottomAPI.logger().config("Added localization "+key+" -> "+value+" to locale with name "+localeName);
         }
         else{
@@ -102,7 +102,7 @@ public class LocaleLoader implements IAssetLoader<Locale>{
     private boolean merge(Locale locale, Locale otherLocale){
         String name = locale.getName();
         if(name.equals(otherLocale.getName())){
-            Map<IResourceName, String> other = otherLocale.getLocalization();
+            Map<ResourceName, String> other = otherLocale.getLocalization();
             locale.override(other);
 
             RockBottomAPI.logger().config("Merged locale "+name+" with "+other.size()+" bits of additional localization information");

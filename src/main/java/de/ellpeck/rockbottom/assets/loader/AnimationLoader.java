@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.anim.Animation;
 import de.ellpeck.rockbottom.assets.anim.AnimationRow;
 import de.ellpeck.rockbottom.assets.tex.Texture;
@@ -25,15 +25,15 @@ import java.util.*;
 public class AnimationLoader implements IAssetLoader<Animation>{
 
     private final Map<String, CachedAnimInfo> rowCache = new HashMap<>();
-    private final Set<IResourceName> disabled = new HashSet<>();
+    private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public IResourceName getAssetIdentifier(){
+    public ResourceName getAssetIdentifier(){
         return IAnimation.ID;
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+    public void loadAsset(IAssetManager manager, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
             if(manager.hasAsset(IAnimation.ID, resourceName)){
                 RockBottomAPI.logger().info("Animation "+resourceName+" already exists, not adding animation for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
@@ -129,7 +129,7 @@ public class AnimationLoader implements IAssetLoader<Animation>{
     }
 
     @Override
-    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+    public void disableAsset(IAssetManager manager, ResourceName resourceName){
         this.disabled.add(resourceName);
     }
 

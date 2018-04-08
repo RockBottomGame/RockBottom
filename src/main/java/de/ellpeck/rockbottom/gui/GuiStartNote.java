@@ -2,21 +2,20 @@ package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class GuiStartNote extends Gui{
 
-    private static final IResourceName RES = RockBottomAPI.createInternalRes("gui.start_note");
-    private static final IResourceName DAY_RES = RockBottomAPI.createInternalRes("lore.start_note.day");
+    private static final ResourceName RES = ResourceName.intern("gui.start_note");
+    private static final ResourceName DAY_RES = ResourceName.intern("lore.start_note.day");
 
     private final int variation;
     private final int[] maxLengths;
@@ -42,7 +41,7 @@ public class GuiStartNote extends Gui{
         String day = manager.localize(DAY_RES);
         font.drawString(this.x+this.width/2-font.getWidth(day, 0.4F)/2, this.y+5, day, 0, day.length(), 0.4F, Colors.BLACK, Colors.NO_COLOR);
 
-        String text = manager.localize(RockBottomAPI.createInternalRes("lore.start_note."+(this.variation+1)));
+        String text = manager.localize(ResourceName.intern("lore.start_note."+(this.variation+1)));
         List<String> split = font.splitTextToLength(this.maxLengths, 0.2F, true, text);
 
         int y = 0;
@@ -53,8 +52,8 @@ public class GuiStartNote extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("start_note");
+    public ResourceName getName(){
+        return ResourceName.intern("start_note");
     }
 
     @Override

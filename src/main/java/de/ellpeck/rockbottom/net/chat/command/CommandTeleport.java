@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.net.chat.command;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.chat.Command;
@@ -9,6 +8,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,7 @@ public class CommandTeleport extends Command{
     private static final int TELEPORT_LIMIT = 10000000;
 
     public CommandTeleport(){
-        super(RockBottomAPI.createInternalRes("teleport"), "Teleports a player. Params: <x> <y> [player]", 3, "tp", "tele", "teleport");
+        super(ResourceName.intern("teleport"), "Teleports a player. Params: <x> <y> [player]", 3, "tp", "tele", "teleport");
     }
 
     @Override

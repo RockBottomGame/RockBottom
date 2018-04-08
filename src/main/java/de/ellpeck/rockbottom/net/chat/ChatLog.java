@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -97,7 +98,7 @@ public class ChatLog implements IChatLog{
     @Override
     public Command getCommand(String name){
         if(Util.isResourceName(name)){
-            return RockBottomAPI.COMMAND_REGISTRY.get(RockBottomAPI.createRes(name));
+            return RockBottomAPI.COMMAND_REGISTRY.get(new ResourceName(name));
         }
         else{
             for(Command command : RockBottomAPI.COMMAND_REGISTRY.values()){

@@ -1,9 +1,9 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.entity.EntitySand;
@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.world.entity.EntitySand;
 public class TileSand extends TileBasic{
 
     public TileSand(){
-        super(RockBottomAPI.createInternalRes("sand"));
+        super(ResourceName.intern("sand"));
     }
 
     @Override

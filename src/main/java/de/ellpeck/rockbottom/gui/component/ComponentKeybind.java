@@ -1,10 +1,9 @@
 package de.ellpeck.rockbottom.gui.component;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Keybind;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiKeybinds;
 
 public class ComponentKeybind extends ComponentButton{
@@ -65,7 +64,7 @@ public class ComponentKeybind extends ComponentButton{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("keybind");
+    public ResourceName getName(){
+        return ResourceName.intern("keybind");
     }
 }

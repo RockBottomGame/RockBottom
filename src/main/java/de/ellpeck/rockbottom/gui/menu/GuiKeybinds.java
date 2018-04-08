@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
 import de.ellpeck.rockbottom.api.gui.component.ComponentText;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class GuiKeybinds extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
         List<Keybind> binds = new ArrayList<>(RockBottomAPI.KEYBIND_REGISTRY.values());
         binds.sort(Comparator.comparing(Keybind:: getName));
@@ -52,8 +52,8 @@ public class GuiKeybinds extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("keybinds");
+    public ResourceName getName(){
+        return ResourceName.intern("keybinds");
     }
 
     @Override

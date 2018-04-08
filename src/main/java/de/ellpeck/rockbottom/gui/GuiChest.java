@@ -1,10 +1,9 @@
 package de.ellpeck.rockbottom.gui;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 public class GuiChest extends GuiContainer{
 
@@ -18,7 +17,7 @@ public class GuiChest extends GuiContainer{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("chest");
+    public ResourceName getName(){
+        return ResourceName.intern("chest");
     }
 }

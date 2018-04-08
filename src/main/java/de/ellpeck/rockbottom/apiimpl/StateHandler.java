@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.*;
 
@@ -35,7 +35,7 @@ public final class StateHandler implements IStateHandler{
             defMap.put(prop.getName(), def);
         }
 
-        IResourceName defName = InternalHooks.generateTileStateName(this.tile, defMap);
+        ResourceName defName = InternalHooks.generateTileStateName(this.tile, defMap);
         Preconditions.checkState(this.tile.hasState(defName, defMap), "Tile "+this.tile+" is disallowing its default state from being generated! This is disallowed!");
         this.defaultState = new TileState(defName, this.tile, defMap);
 

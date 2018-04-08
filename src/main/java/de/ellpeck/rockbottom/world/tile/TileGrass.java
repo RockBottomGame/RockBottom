@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class TileGrass extends TileBasic{
 
     public TileGrass(){
-        super(RockBottomAPI.createInternalRes("grass"));
+        super(ResourceName.intern("grass"));
     }
 
     @Override

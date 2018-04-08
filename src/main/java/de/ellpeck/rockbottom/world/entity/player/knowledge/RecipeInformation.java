@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.entity.player.knowledge;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
@@ -10,13 +9,13 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.toast.Toast;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.List;
 
 public class RecipeInformation extends Information{
 
-    public static final IResourceName REG_NAME = RockBottomAPI.createInternalRes("recipe");
+    public static final ResourceName REG_NAME = ResourceName.intern("recipe");
 
     private IRecipe recipe;
 
@@ -25,18 +24,18 @@ public class RecipeInformation extends Information{
         this.recipe = recipe;
     }
 
-    public RecipeInformation(IResourceName name){
+    public RecipeInformation(ResourceName name){
         super(name);
     }
 
     @Override
     public Toast announceForget(){
-        return new Toast(RockBottomAPI.createInternalRes("gui.construction.book_closed"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
+        return new Toast(ResourceName.intern("gui.construction.book_closed"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
     }
 
     @Override
     public Toast announceTeach(){
-        return new Toast(RockBottomAPI.createInternalRes("gui.construction.book_open"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
+        return new Toast(ResourceName.intern("gui.construction.book_open"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
     }
 
     private ChatComponent getOutputName(){
@@ -59,12 +58,12 @@ public class RecipeInformation extends Information{
 
     @Override
     public void load(DataSet set, IKnowledgeManager manager){
-        IResourceName recName = RockBottomAPI.createRes(set.getString("recipe_name"));
+        ResourceName recName = new ResourceName(set.getString("recipe_name"));
         this.recipe = IRecipe.forName(recName);
     }
 
     @Override
-    public IResourceName getRegistryName(){
+    public ResourceName getRegistryName(){
         return REG_NAME;
     }
 }

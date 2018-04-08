@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.content.ContentManager;
 
@@ -17,15 +17,15 @@ import java.util.Set;
 
 public class FontLoader implements IAssetLoader<IFont>{
 
-    private final Set<IResourceName> disabled = new HashSet<>();
+    private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public IResourceName getAssetIdentifier(){
+    public ResourceName getAssetIdentifier(){
         return IFont.ID;
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack){
+    public void loadAsset(IAssetManager manager, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack){
         if(!this.disabled.contains(resourceName)){
             if(manager.hasAsset(IFont.ID, resourceName)){
                 RockBottomAPI.logger().info("Font "+resourceName+" already exists, not adding font for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
@@ -48,7 +48,7 @@ public class FontLoader implements IAssetLoader<IFont>{
     }
 
     @Override
-    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+    public void disableAsset(IAssetManager manager, ResourceName resourceName){
         this.disabled.add(resourceName);
     }
 }

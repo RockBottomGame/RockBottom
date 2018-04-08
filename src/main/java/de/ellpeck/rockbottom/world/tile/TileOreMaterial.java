@@ -5,13 +5,13 @@ import de.ellpeck.rockbottom.api.item.ItemTile;
 import de.ellpeck.rockbottom.api.render.item.DefaultItemRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class TileOreMaterial extends TileBasic{
 
-    public TileOreMaterial(IResourceName name){
+    public TileOreMaterial(ResourceName name){
         super(name);
     }
 
@@ -19,7 +19,7 @@ public class TileOreMaterial extends TileBasic{
     protected ItemTile createItemTile(){
         return new ItemTile(this.getName()){
             @Override
-            protected IItemRenderer createRenderer(IResourceName name){
+            protected IItemRenderer createRenderer(ResourceName name){
                 return new DefaultItemRenderer(name);
             }
         };

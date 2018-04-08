@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.io.BufferedReader;
@@ -56,7 +56,7 @@ public class GuiCredits extends Gui{
         this.components.add(new ComponentButton(this, this.width-47, 2, 45, 10, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
         this.renderY = this.height;
     }
@@ -84,7 +84,7 @@ public class GuiCredits extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("credits");
+    public ResourceName getName(){
+        return ResourceName.intern("credits");
     }
 }

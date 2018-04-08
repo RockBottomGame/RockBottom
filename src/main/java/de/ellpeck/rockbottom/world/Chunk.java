@@ -20,7 +20,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.Pos3;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
@@ -840,7 +840,7 @@ public class Chunk implements IChunk{
             int layerAmount = set.getInt("l_a");
 
             for(int i = 0; i < layerAmount; i++){
-                IResourceName res = RockBottomAPI.createRes(set.getString("ln_"+i));
+                ResourceName res = new ResourceName(set.getString("ln_"+i));
                 TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
                 if(layer != null){
                     int[] ids = set.getIntArray("l_"+i, Constants.CHUNK_SIZE*Constants.CHUNK_SIZE);
@@ -895,7 +895,7 @@ public class Chunk implements IChunk{
                 DataSet entitySet = set.getDataSet("e_"+i);
 
                 String name = entitySet.getString("name");
-                Entity entity = Util.createEntity(RockBottomAPI.createRes(name), this.world);
+                Entity entity = Util.createEntity(new ResourceName(name), this.world);
 
                 if(entity != null){
                     entity.load(entitySet);
@@ -912,7 +912,7 @@ public class Chunk implements IChunk{
                 int x = tileSet.getInt("x");
                 int y = tileSet.getInt("y");
 
-                IResourceName res = RockBottomAPI.createRes(tileSet.getString("layer"));
+                ResourceName res = new ResourceName(tileSet.getString("layer"));
                 TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
                 if(layer != null){
                     TileEntity tile = this.getTileEntity(layer, x, y);
@@ -941,7 +941,7 @@ public class Chunk implements IChunk{
                 TileState tile = this.world.getStateForId(id);
 
                 if(tile != null){
-                    IResourceName res = RockBottomAPI.createRes(updateSet.getString("l_"+i));
+                    ResourceName res = new ResourceName(updateSet.getString("l_"+i));
                     TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
                     if(layer != null){
                         this.scheduleUpdate(x, y, layer, meta, time);

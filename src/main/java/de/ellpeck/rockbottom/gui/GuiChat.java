@@ -14,7 +14,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
 import org.lwjgl.glfw.GLFW;
 
@@ -276,7 +276,7 @@ public class GuiChat extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("chat");
+    public ResourceName getName(){
+        return ResourceName.intern("chat");
     }
 }

@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.io.File;
 
@@ -41,12 +41,12 @@ public class GuiRenameWorld extends Gui{
 
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, manager.localize(RockBottomAPI.createInternalRes("button.rename"))));
+        }, manager.localize(ResourceName.intern("button.rename"))));
 
         this.components.add(new ComponentButton(this, this.width/2, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, manager.localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, manager.localize(ResourceName.intern("button.back"))));
 
         this.name = GuiCreateWorld.makeNameSafe(game, "");
     }
@@ -56,13 +56,13 @@ public class GuiRenameWorld extends Gui{
         super.render(game, manager, g);
 
         if(this.name != null && !this.name.isEmpty()){
-            String s = manager.localize(RockBottomAPI.createInternalRes("info.final_name"), this.name);
+            String s = manager.localize(ResourceName.intern("info.final_name"), this.name);
             manager.getFont().drawString(this.x+this.width/2-80, this.height/2-40+18, s, 0.25F);
         }
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("rename_world");
+    public ResourceName getName(){
+        return ResourceName.intern("rename_world");
     }
 }

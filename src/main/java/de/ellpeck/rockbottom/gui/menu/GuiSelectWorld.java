@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.gui.component.ComponentSelectWorldButton;
 
@@ -36,14 +36,14 @@ public class GuiSelectWorld extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-82, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(new GuiCreateWorld(this));
             return true;
-        }, manager.localize(RockBottomAPI.createInternalRes("button.create_world"))));
+        }, manager.localize(ResourceName.intern("button.create_world"))));
 
         this.components.add(new ComponentButton(this, this.width/2, this.height-30, 62, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
-        this.components.add(new ComponentFancyButton(this, this.width/2+64, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getWorldsDir()), RockBottomAPI.createInternalRes("gui.worlds_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.worlds_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width/2+64, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getWorldsDir()), ResourceName.intern("gui.worlds_folder"), game.getAssetManager().localize(ResourceName.intern("button.worlds_folder"))));
 
         File worldFolder = game.getDataManager().getWorldsDir();
         File[] worlds = worldFolder.listFiles();
@@ -70,7 +70,7 @@ public class GuiSelectWorld extends Gui{
             ComponentSelectWorldButton button = new ComponentSelectWorldButton(this, 0, 0, file);
             component.add(0, 0, button);
 
-            component.add(186+2, 0, new ComponentFancyButton(this, 0, 0, 12, 12, null, RockBottomAPI.createInternalRes("gui.delete"), manager.localize(RockBottomAPI.createInternalRes("button.delete_world"))){
+            component.add(186+2, 0, new ComponentFancyButton(this, 0, 0, 12, 12, null, ResourceName.intern("gui.delete"), manager.localize(ResourceName.intern("button.delete_world"))){
                 @Override
                 public boolean onPressed(IGameInstance game){
                     this.gui.getComponents().add(new ComponentConfirmationPopup(this.gui, this.x+this.width/2, this.y+this.height/2, aBoolean -> {
@@ -95,7 +95,7 @@ public class GuiSelectWorld extends Gui{
             component.add(186+2, 14, new ComponentFancyButton(this, 0, 0, 12, 12, () -> {
                 game.getGuiManager().openGui(new GuiRenameWorld(this, file));
                 return true;
-            }, RockBottomAPI.createInternalRes("gui.rename"), manager.localize(RockBottomAPI.createInternalRes("button.rename_world"))));
+            }, ResourceName.intern("gui.rename"), manager.localize(ResourceName.intern("button.rename_world"))));
 
             menu.add(component);
         }
@@ -104,7 +104,7 @@ public class GuiSelectWorld extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("select_world");
+    public ResourceName getName(){
+        return ResourceName.intern("select_world");
     }
 }

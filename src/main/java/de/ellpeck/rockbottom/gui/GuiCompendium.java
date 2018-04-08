@@ -20,7 +20,7 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 
 import java.util.ArrayList;
@@ -31,10 +31,10 @@ import java.util.function.BiConsumer;
 
 public class GuiCompendium extends GuiContainer{
 
-    private static final IResourceName LEFT_PAGE = RockBottomAPI.createInternalRes("gui.construction.page_items");
-    private static final IResourceName RIGHT_PAGE = RockBottomAPI.createInternalRes("gui.construction.page_recipes");
-    private static final IResourceName SEARCH_ICON = RockBottomAPI.createInternalRes("gui.construction.search_bar");
-    private static final IResourceName SEARCH_BAR = RockBottomAPI.createInternalRes("gui.construction.search_bar_extended");
+    private static final ResourceName LEFT_PAGE = ResourceName.intern("gui.construction.page_items");
+    private static final ResourceName RIGHT_PAGE = ResourceName.intern("gui.construction.page_recipes");
+    private static final ResourceName SEARCH_ICON = ResourceName.intern("gui.construction.search_bar");
+    private static final ResourceName SEARCH_BAR = ResourceName.intern("gui.construction.search_bar_extended");
 
     public static final int PAGE_WIDTH = 72;
     public static final int PAGE_HEIGHT = 94;
@@ -64,14 +64,14 @@ public class GuiCompendium extends GuiContainer{
     public void init(IGameInstance game){
         super.init(game);
 
-        this.menu = new ComponentMenu(this, -12, 2, 12, PAGE_HEIGHT-4, 3, 4, 11, 0, new BoundBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), RockBottomAPI.createInternalRes("gui.construction.scroll_bar"));
+        this.menu = new ComponentMenu(this, -12, 2, 12, PAGE_HEIGHT-4, 3, 4, 11, 0, new BoundBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction.scroll_bar"));
         this.components.add(this.menu);
 
         this.components.add(new ComponentFancyButton(this, 5-16, GuiCompendium.PAGE_HEIGHT+5, 14, 14, () -> {
             this.keepContainerOpen = true;
             game.getGuiManager().openGui(new GuiInventory(this.player));
             return true;
-        }, RockBottomAPI.createInternalRes("gui.construction.book_open"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.close_compendium"))));
+        }, ResourceName.intern("gui.construction.book_open"), game.getAssetManager().localize(ResourceName.intern("button.close_compendium"))));
 
         this.searchBar = new ComponentInputField(this, 145, 79, 70, 12, false, false, false, 64, false, strg -> {
             if(!strg.equals(this.searchText)){
@@ -210,8 +210,8 @@ public class GuiCompendium extends GuiContainer{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("compendium");
+    public ResourceName getName(){
+        return ResourceName.intern("compendium");
     }
 
     @Override

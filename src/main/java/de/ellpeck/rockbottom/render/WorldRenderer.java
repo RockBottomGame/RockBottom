@@ -14,7 +14,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -29,9 +29,9 @@ import java.util.List;
 
 public class WorldRenderer{
 
-    private static final IResourceName SUN_RES = RockBottomAPI.createInternalRes("sky.sun");
-    private static final IResourceName MOON_RES = RockBottomAPI.createInternalRes("sky.moon");
-    private static final IResourceName[] CLOUD_TEXTURES = new IResourceName[12];
+    private static final ResourceName SUN_RES = ResourceName.intern("sky.sun");
+    private static final ResourceName MOON_RES = ResourceName.intern("sky.moon");
+    private static final ResourceName[] CLOUD_TEXTURES = new ResourceName[12];
     public static final int[] SKY_COLORS = new int[256];
     public static final int[] MAIN_COLORS = new int[Constants.MAX_LIGHT+1];
     private final List<Pos2> starMap = new ArrayList<>();
@@ -51,7 +51,7 @@ public class WorldRenderer{
         }
 
         for(int i = 0; i < CLOUD_TEXTURES.length; i++){
-            CLOUD_TEXTURES[i] = RockBottomAPI.createInternalRes("sky.cloud."+i);
+            CLOUD_TEXTURES[i] = ResourceName.intern("sky.cloud."+i);
         }
 
         this.addClouds(Util.RANDOM.nextInt(5)+3, true);
@@ -110,7 +110,7 @@ public class WorldRenderer{
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
-                    IResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
+                    ResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
                     g.setProgram(program == null ? null : manager.getShaderProgram(program));
 
                     int light = world.getCombinedVisualLight(Util.floor(entity.x), Util.floor(entity.y));
@@ -218,14 +218,14 @@ public class WorldRenderer{
             g.setProgram(program);
         }
         else{
-            IResourceName program = renderer.getRenderShader(game, manager, g, world, tile, state, x, y, layer);
+            ResourceName program = renderer.getRenderShader(game, manager, g, world, tile, state, x, y, layer);
             g.setProgram(program == null ? null : manager.getShaderProgram(program));
         }
 
         renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
 
         if(isBreakTile){
-            ITexture tex = manager.getTexture(RockBottomAPI.createInternalRes("break."+Util.ceil(input.breakProgress*8F)));
+            ITexture tex = manager.getTexture(ResourceName.intern("break."+Util.ceil(input.breakProgress*8F)));
             tex.bind(TextureBank.BANK_2, true);
         }
     }

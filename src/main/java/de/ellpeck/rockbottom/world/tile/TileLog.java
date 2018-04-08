@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.StaticTileProps.LogType;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -12,7 +11,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Pos2;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileLogRenderer;
@@ -23,7 +22,7 @@ import java.util.List;
 public class TileLog extends TileBasic{
 
     public TileLog(){
-        super(RockBottomAPI.createInternalRes("log"));
+        super(ResourceName.intern("log"));
         this.addProps(StaticTileProps.LOG_VARIANT);
     }
 
@@ -81,7 +80,7 @@ public class TileLog extends TileBasic{
     }
 
     @Override
-    protected ITileRenderer createRenderer(IResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name){
         return new TileLogRenderer(name);
     }
 

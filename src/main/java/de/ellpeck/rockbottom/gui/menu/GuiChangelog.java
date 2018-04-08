@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
@@ -10,7 +9,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollBar;
 import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.util.ChangelogManager.Changelog;
 import de.ellpeck.rockbottom.util.ChangelogManager.VersionInfo;
@@ -37,7 +36,7 @@ public class GuiChangelog extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-20, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, assetManager.localize(ResourceName.intern("button.back"))));
 
         int height = this.height/3*2-10;
         int max = (this.drawAndGetHeight(this.changelog, assetManager.getFont(), 20, 5, Integer.MAX_VALUE, false)-height)/10;
@@ -51,7 +50,7 @@ public class GuiChangelog extends Gui{
 
         IFont font = manager.getFont();
         if(this.changelog == null || this.failed){
-            IResourceName res = RockBottomAPI.createInternalRes("info.changelog."+(this.failed ? "error" : "grabbing"));
+            ResourceName res = ResourceName.intern("info.changelog."+(this.failed ? "error" : "grabbing"));
             font.drawCenteredString(this.width/2, 50, manager.localize(res), 0.5F, false);
         }
         else{
@@ -60,9 +59,9 @@ public class GuiChangelog extends Gui{
             int maxY = this.height/3*2-10;
             this.drawAndGetHeight(this.changelog, font, x, y, maxY, true);
 
-            font.drawString(x, maxY+10F, FormattingCode.ORANGE+manager.localize(RockBottomAPI.createInternalRes("info.changelog.stable"))+": "+this.changelog.stable+this.drawInfo(manager, this.changelog.isStableNewer), 0.4F);
-            font.drawString(x, maxY+20F, FormattingCode.YELLOW+manager.localize(RockBottomAPI.createInternalRes("info.changelog.latest"))+": "+this.changelog.latest+this.drawInfo(manager, this.changelog.isLatestNewer), 0.4F);
-            font.drawString(x, maxY+30F, FormattingCode.GREEN+manager.localize(RockBottomAPI.createInternalRes("info.changelog.current"))+": "+game.getVersion(), 0.4F);
+            font.drawString(x, maxY+10F, FormattingCode.ORANGE+manager.localize(ResourceName.intern("info.changelog.stable"))+": "+this.changelog.stable+this.drawInfo(manager, this.changelog.isStableNewer), 0.4F);
+            font.drawString(x, maxY+20F, FormattingCode.YELLOW+manager.localize(ResourceName.intern("info.changelog.latest"))+": "+this.changelog.latest+this.drawInfo(manager, this.changelog.isLatestNewer), 0.4F);
+            font.drawString(x, maxY+30F, FormattingCode.GREEN+manager.localize(ResourceName.intern("info.changelog.current"))+": "+game.getVersion(), 0.4F);
         }
     }
 
@@ -100,11 +99,11 @@ public class GuiChangelog extends Gui{
     }
 
     private String drawInfo(IAssetManager manager, boolean should){
-        return should ? FormattingCode.RED+" "+manager.localize(RockBottomAPI.createInternalRes("info.changelog.update")) : "";
+        return should ? FormattingCode.RED+" "+manager.localize(ResourceName.intern("info.changelog.update")) : "";
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("changelog");
+    public ResourceName getName(){
+        return ResourceName.intern("changelog");
     }
 }

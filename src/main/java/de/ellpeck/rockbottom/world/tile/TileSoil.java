@@ -1,15 +1,15 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class TileSoil extends TileBasic{
 
     public TileSoil(){
-        super(RockBottomAPI.createInternalRes("soil"));
+        super(ResourceName.intern("soil"));
     }
 
     @Override

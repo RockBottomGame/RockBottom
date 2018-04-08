@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileDoorRenderer;
@@ -23,13 +23,13 @@ public class TileWoodDoor extends TileBasic{
     private final BoundBox boxLeft = new BoundBox(0D, 0D, 2D/12D, 1D);
     private final BoundBox boxRight = new BoundBox(1D-2D/12D, 0D, 1D, 1D);
 
-    public TileWoodDoor(IResourceName name){
+    public TileWoodDoor(ResourceName name){
         super(name);
         this.addProps(StaticTileProps.TOP_HALF, StaticTileProps.OPEN, StaticTileProps.FACING_RIGHT);
     }
 
     @Override
-    protected ITileRenderer createRenderer(IResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name){
         return new TileDoorRenderer(name);
     }
 

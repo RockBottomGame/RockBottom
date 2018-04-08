@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.GuiSign;
@@ -16,7 +15,7 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
 public class TileSign extends TileBasic{
 
     public TileSign(){
-        super(RockBottomAPI.createInternalRes("sign"));
+        super(ResourceName.intern("sign"));
     }
 
     @Override
@@ -61,7 +60,7 @@ public class TileSign extends TileBasic{
     }
 
     @Override
-    protected ITileRenderer createRenderer(IResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name){
         return new TileSignRenderer(name);
     }
 }

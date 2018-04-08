@@ -33,7 +33,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
@@ -428,7 +428,7 @@ public class InternalHooks implements IInternalHooks{
                                     player.getInv().remove(player.getSelectedSlot(), 1);
                                 }
 
-                                IResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
+                                ResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
                                 if(sound != null){
                                     player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
                                 }
@@ -798,7 +798,7 @@ public class InternalHooks implements IInternalHooks{
     }
 
     private String localizeKey(String name){
-        return RockBottomAPI.getGame().getAssetManager().localize(RockBottomAPI.createInternalRes("key_name."+name));
+        return RockBottomAPI.getGame().getAssetManager().localize(ResourceName.intern("key_name."+name));
     }
 
     // Direction: 1 = right, -1 = left
@@ -965,7 +965,7 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public void doTileStateInit(TileState thisState, IResourceName name, Tile tile, Map<String, Comparable> properties, Table<String, Comparable, TileState> subStates){
+    public void doTileStateInit(TileState thisState, ResourceName name, Tile tile, Map<String, Comparable> properties, Table<String, Comparable, TileState> subStates){
         RockBottomAPI.TILE_STATE_REGISTRY.register(name, thisState);
 
         for(TileProp prop : tile.getProps()){
@@ -976,7 +976,7 @@ public class InternalHooks implements IInternalHooks{
                     Map<String, Comparable> subProps = new TreeMap<>(properties);
                     subProps.put(propName, value);
 
-                    IResourceName subName = generateTileStateName(tile, subProps);
+                    ResourceName subName = generateTileStateName(tile, subProps);
                     if(tile.hasState(subName, subProps)){
                         TileState state = RockBottomAPI.TILE_STATE_REGISTRY.get(subName);
 
@@ -991,7 +991,7 @@ public class InternalHooks implements IInternalHooks{
         }
     }
 
-    public static IResourceName generateTileStateName(Tile tile, Map<String, Comparable> properties){
+    public static ResourceName generateTileStateName(Tile tile, Map<String, Comparable> properties){
         StringBuilder suffix = new StringBuilder();
 
         if(!properties.isEmpty()){

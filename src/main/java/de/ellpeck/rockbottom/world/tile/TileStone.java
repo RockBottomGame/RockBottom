@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 public class TileStone extends TileBasic{
 
     public TileStone(){
-        super(RockBottomAPI.createInternalRes("stone"));
+        super(ResourceName.intern("stone"));
     }
 
     @Override

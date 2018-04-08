@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentProgressBar;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySimpleFurnace;
 
 public class GuiSimpleFurnace extends GuiContainer{
@@ -40,7 +39,7 @@ public class GuiSimpleFurnace extends GuiContainer{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("simple_furnace");
+    public ResourceName getName(){
+        return ResourceName.intern("simple_furnace");
     }
 }

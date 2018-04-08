@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public class CommandTime extends Command{
 
     public CommandTime(){
-        super(RockBottomAPI.createInternalRes("time"), "Changes the world's time. Params: <set/advance> <amount>", 4);
+        super(ResourceName.intern("time"), "Changes the world's time. Params: <set/advance> <amount>", 4);
     }
 
     @Override

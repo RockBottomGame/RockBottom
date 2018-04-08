@@ -25,8 +25,8 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -75,7 +75,7 @@ public class World implements IWorld{
         List<IWorldGenerator> generators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
-        for(Map.Entry<IResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.entrySet()){
+        for(Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.entrySet()){
             try{
                 IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
                 generator.initWorld(this);
@@ -305,7 +305,7 @@ public class World implements IWorld{
 
     @Override
     public int getIdForState(TileState state){
-        IResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
+        ResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
         if(name != null){
             return this.getTileRegInfo().getId(name);
         }
@@ -316,7 +316,7 @@ public class World implements IWorld{
 
     @Override
     public TileState getStateForId(int id){
-        IResourceName name = this.getTileRegInfo().get(id);
+        ResourceName name = this.getTileRegInfo().get(id);
         return RockBottomAPI.TILE_STATE_REGISTRY.get(name);
     }
 
@@ -495,7 +495,7 @@ public class World implements IWorld{
 
     @Override
     public int getIdForBiome(Biome biome){
-        IResourceName name = RockBottomAPI.BIOME_REGISTRY.getId(biome);
+        ResourceName name = RockBottomAPI.BIOME_REGISTRY.getId(biome);
         if(name != null){
             return this.getBiomeRegInfo().getId(name);
         }
@@ -506,7 +506,7 @@ public class World implements IWorld{
 
     @Override
     public Biome getBiomeForId(int id){
-        IResourceName name = this.getBiomeRegInfo().get(id);
+        ResourceName name = this.getBiomeRegInfo().get(id);
         return RockBottomAPI.BIOME_REGISTRY.get(name);
     }
 
@@ -655,7 +655,7 @@ public class World implements IWorld{
                     IGameInstance game = RockBottomAPI.getGame();
 
                     int finalAmount = amount;
-                    game.enqueueAction((g, o) -> game.getToaster().displayToast(new Toast(RockBottomAPI.createInternalRes("gui.save_world"), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved")), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.saved_chunks"), String.valueOf(finalAmount), String.valueOf((float)time/1000F)), 160)), null);
+                    game.enqueueAction((g, o) -> game.getToaster().displayToast(new Toast(ResourceName.intern("gui.save_world"), new ChatComponentTranslation(ResourceName.intern("info.saved")), new ChatComponentTranslation(ResourceName.intern("info.saved_chunks"), String.valueOf(finalAmount), String.valueOf((float)time/1000F)), 160)), null);
                 }
             }
         });
@@ -713,7 +713,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public void playSound(AbstractEntityPlayer player, IResourceName name, double x, double y, double z, float pitch, float volume){
+    public void playSound(AbstractEntityPlayer player, ResourceName name, double x, double y, double z, float pitch, float volume){
         if(this.isLocalPlayer(player)){
             RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x, y, z);
         }
@@ -723,7 +723,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public void broadcastSound(AbstractEntityPlayer player, IResourceName name, float pitch, float volume){
+    public void broadcastSound(AbstractEntityPlayer player, ResourceName name, float pitch, float volume){
         if(this.isLocalPlayer(player)){
             RockBottomAPI.getGame().getAssetManager().getSound(name).play(pitch, volume);
         }
@@ -733,7 +733,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public void playSound(IResourceName name, double x, double y, double z, float pitch, float volume, AbstractEntityPlayer except){
+    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume, AbstractEntityPlayer except){
         if(this.isServer()){
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketSound(name, x, y, z, pitch, volume), x, y, except);
         }
@@ -744,7 +744,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public void broadcastSound(IResourceName name, float pitch, float volume, AbstractEntityPlayer except){
+    public void broadcastSound(ResourceName name, float pitch, float volume, AbstractEntityPlayer except){
         if(this.isServer()){
             RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, pitch, volume), except);
         }
@@ -755,12 +755,12 @@ public class World implements IWorld{
     }
 
     @Override
-    public void playSound(IResourceName name, double x, double y, double z, float pitch, float volume){
+    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume){
         this.playSound(name, x, y, z, pitch, volume, null);
     }
 
     @Override
-    public void broadcastSound(IResourceName name, float pitch, float volume){
+    public void broadcastSound(ResourceName name, float pitch, float volume){
         this.broadcastSound(name, pitch, volume, null);
     }
 
@@ -783,7 +783,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public IWorldGenerator getGenerator(IResourceName name){
+    public IWorldGenerator getGenerator(ResourceName name){
         for(IWorldGenerator gen : this.getSortedGenerators()){
             if(name.equals(RockBottomAPI.WORLD_GENERATORS.getId(gen.getClass()))){
                 return gen;
@@ -868,7 +868,7 @@ public class World implements IWorld{
             RockBottomAPI.getGame().getParticleManager().addTileParticles(this, x, y, state);
         }
 
-        IResourceName sound = state.getTile().getBreakSound(this, x, y, layer, destroyer);
+        ResourceName sound = state.getTile().getBreakSound(this, x, y, layer, destroyer);
         if(sound != null){
             this.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
         }

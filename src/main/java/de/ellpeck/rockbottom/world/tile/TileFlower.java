@@ -1,24 +1,24 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class TileFlower extends TileMeta{
 
     public TileFlower(){
-        super(RockBottomAPI.createInternalRes("flower"), false);
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_gray"));
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_orange"));
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_pink"));
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_red"));
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_white"));
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_yellow"));
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_blue"));
-        this.addSubTile(RockBottomAPI.createInternalRes("flower_purple"));
+        super(ResourceName.intern("flower"), false);
+        this.addSubTile(ResourceName.intern("flower_gray"));
+        this.addSubTile(ResourceName.intern("flower_orange"));
+        this.addSubTile(ResourceName.intern("flower_pink"));
+        this.addSubTile(ResourceName.intern("flower_red"));
+        this.addSubTile(ResourceName.intern("flower_white"));
+        this.addSubTile(ResourceName.intern("flower_yellow"));
+        this.addSubTile(ResourceName.intern("flower_blue"));
+        this.addSubTile(ResourceName.intern("flower_purple"));
     }
 
     @Override

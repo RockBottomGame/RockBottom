@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Pos2;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileSimpleFurnace;
@@ -17,9 +17,9 @@ import java.util.Map;
 
 public class TileSimpleFurnaceRenderer extends MultiTileRenderer<TileSimpleFurnace>{
 
-    protected final Map<Pos2, IResourceName> texturesActive = new HashMap<>();
+    protected final Map<Pos2, ResourceName> texturesActive = new HashMap<>();
 
-    public TileSimpleFurnaceRenderer(IResourceName texture, TileSimpleFurnace tile){
+    public TileSimpleFurnaceRenderer(ResourceName texture, TileSimpleFurnace tile){
         super(texture, tile);
 
         for(int x = 0; x < tile.getWidth(); x++){

@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
@@ -15,13 +16,13 @@ import java.util.List;
 public class ItemCopperCanister extends ItemBasic{
 
     public ItemCopperCanister(){
-        super(RockBottomAPI.createInternalRes("copper_canister"));
+        super(ResourceName.intern("copper_canister"));
     }
 
     @Override
     public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
         super.describeItem(manager, instance, desc, isAdvanced);
-        desc.add(manager.localize(RockBottomAPI.createInternalRes("info.copper_canister")));
+        desc.add(manager.localize(ResourceName.intern("info.copper_canister")));
     }
 
     @Override
@@ -33,7 +34,7 @@ public class ItemCopperCanister extends ItemBasic{
                 player.getKnowledge().teachRecipe(ConstructionRegistry.simpleFurnace);
             }
             else{
-                player.sendMessageTo(RockBottomAPI.getGame().getChatLog(), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.already_known")));
+                player.sendMessageTo(RockBottomAPI.getGame().getChatLog(), new ChatComponentTranslation(ResourceName.intern("info.already_known")));
             }
         }
         return true;

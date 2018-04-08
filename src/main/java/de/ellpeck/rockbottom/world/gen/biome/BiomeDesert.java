@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.world.gen.biome;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class BiomeDesert extends BiomeBasic{
 
-    public BiomeDesert(IResourceName name, int highestY, int lowestY, int weight){
+    public BiomeDesert(ResourceName name, int highestY, int lowestY, int weight){
         super(name, highestY, lowestY, weight);
     }
 

@@ -1,13 +1,12 @@
 package de.ellpeck.rockbottom.gui.container;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 public class ContainerInventory extends ItemContainer{
 
-    public static final IResourceName NAME = RockBottomAPI.createInternalRes("inventory");
+    public static final ResourceName NAME = ResourceName.intern("inventory");
 
     public ContainerInventory(EntityPlayer player){
         super(player);
@@ -15,7 +14,7 @@ public class ContainerInventory extends ItemContainer{
     }
 
     @Override
-    public IResourceName getName(){
+    public ResourceName getName(){
         return NAME;
     }
 }

@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class CommandWhitelist extends Command{
 
     public CommandWhitelist(){
-        super(RockBottomAPI.createInternalRes("whitelist"), "Modifies whitelisted players or enables/disables it. Params: <'add'/'remove'/'enable'/'disable'> [uuid]", 7);
+        super(ResourceName.intern("whitelist"), "Modifies whitelisted players or enables/disables it. Params: <'add'/'remove'/'enable'/'disable'> [uuid]", 7);
     }
 
     @Override

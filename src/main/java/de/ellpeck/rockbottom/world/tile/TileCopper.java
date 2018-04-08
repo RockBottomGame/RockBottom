@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileCopperRenderer;
@@ -16,12 +15,12 @@ import java.util.List;
 public class TileCopper extends TileOreMaterial{
 
     public TileCopper(){
-        super(RockBottomAPI.createInternalRes("copper"));
+        super(ResourceName.intern("copper"));
         this.addProps(StaticTileProps.HAS_CANISTER);
     }
 
     @Override
-    protected ITileRenderer createRenderer(IResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name){
         return new TileCopperRenderer(name);
     }
 

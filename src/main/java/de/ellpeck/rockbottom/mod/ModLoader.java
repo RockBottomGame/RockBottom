@@ -8,8 +8,6 @@ import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.Counter;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
-import de.ellpeck.rockbottom.apiimpl.ResourceName;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -195,7 +193,7 @@ public class ModLoader implements IModLoader{
     public void sortMods(){
         RockBottomAPI.logger().info("Sorting mods");
 
-        Comparator comp = Comparator.comparingInt(IMod:: getSortingPriority).reversed();
+        Comparator comp = Comparator.comparingInt(IMod :: getSortingPriority).reversed();
         this.allMods.sort(comp);
         this.activeMods.sort(comp);
         this.disabledMods.sort(comp);
@@ -283,16 +281,6 @@ public class ModLoader implements IModLoader{
             }
         }
         return null;
-    }
-
-    @Override
-    public IResourceName createResourceName(IMod mod, String resource){
-        return new ResourceName(mod.getId(), resource);
-    }
-
-    @Override
-    public IResourceName createResourceName(String combined){
-        return new ResourceName(combined);
     }
 
     @Override

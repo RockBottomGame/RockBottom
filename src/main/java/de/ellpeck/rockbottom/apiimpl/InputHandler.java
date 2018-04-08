@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiCompendium;
 import de.ellpeck.rockbottom.gui.GuiInventory;
@@ -146,7 +147,7 @@ public class InputHandler implements IInputHandler{
                     this.game.getGuiManager().openGui(new GuiChat());
                 }
                 else{
-                    this.game.getChatLog().displayMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.no_server")));
+                    this.game.getChatLog().displayMessage(new ChatComponentTranslation(ResourceName.intern("info.no_server")));
                 }
                 return true;
             }

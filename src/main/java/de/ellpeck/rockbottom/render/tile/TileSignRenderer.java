@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.GuiSign;
@@ -15,7 +15,7 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
 
 public class TileSignRenderer extends DefaultTileRenderer<TileSign>{
 
-    public TileSignRenderer(IResourceName texture){
+    public TileSignRenderer(ResourceName texture){
         super(texture);
     }
 

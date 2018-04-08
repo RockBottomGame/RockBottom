@@ -21,6 +21,7 @@ import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.InputHandler;
@@ -355,7 +356,7 @@ public class RockBottom extends AbstractGame{
         if(RockBottomAPI.getNet().isClient()){
             if(!RockBottomAPI.getNet().isConnectedToServer()){
                 this.quitWorld();
-                this.guiManager.openGui(new GuiInformation(this.guiManager.getGui(), 0.5F, this.assetManager.localize(RockBottomAPI.createInternalRes("info.reject.server_down"))));
+                this.guiManager.openGui(new GuiInformation(this.guiManager.getGui(), 0.5F, this.assetManager.localize(ResourceName.intern("info.reject.server_down"))));
             }
         }
 
@@ -620,7 +621,7 @@ public class RockBottom extends AbstractGame{
             ImageIO.write(image, "png", file);
 
             RockBottomAPI.logger().info("Saved screenshot to "+file);
-            this.toaster.displayToast(new Toast(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.screenshot.title")), new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.screenshot"), file.getName()), 350));
+            this.toaster.displayToast(new Toast(new ChatComponentTranslation(ResourceName.intern("info.screenshot.title")), new ChatComponentTranslation(ResourceName.intern("info.screenshot"), file.getName()), 350));
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't take screenshot", e);

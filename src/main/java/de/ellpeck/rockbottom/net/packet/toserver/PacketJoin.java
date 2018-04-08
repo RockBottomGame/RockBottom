@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketReject;
@@ -70,16 +71,16 @@ public class PacketJoin implements IPacket{
         ChatComponentTranslation reject = null;
 
         if(world != null && world.getAllPlayers().size() >= game.getPlayerCap()){
-            reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.server_full"));
+            reject = new ChatComponentTranslation(ResourceName.intern("info.reject.server_full"));
         }
 
         if(reject == null){
             INetHandler net = RockBottomAPI.getNet();
             if(net.isWhitelistEnabled() && !net.isWhitelisted(this.id)){
-                reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"));
+                reject = new ChatComponentTranslation(ResourceName.intern("info.reject.whitelist"));
             }
             else if(net.isBlacklisted(this.id)){
-                reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"), net.getBlacklistReason(this.id));
+                reject = new ChatComponentTranslation(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.id));
             }
         }
 
@@ -94,15 +95,15 @@ public class PacketJoin implements IPacket{
 
                         RockBottomAPI.logger().info("Player "+this.design.getName()+" with id "+this.id+" joined, sending initial server data");
 
-                        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.connect"), player.getName()));
+                        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(ResourceName.intern("info.connect"), player.getName()));
                     }
                     else{
                         RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining while already connected!");
-                        reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.connected_already"));
+                        reject = new ChatComponentTranslation(ResourceName.intern("info.reject.connected_already"));
                     }
                 }
                 else{
-                    reject = new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.starting_up"));
+                    reject = new ChatComponentTranslation(ResourceName.intern("info.reject.starting_up"));
                 }
             }
             else{
@@ -127,7 +128,7 @@ public class PacketJoin implements IPacket{
                     if(mod.getId().equals(info.id)){
                         if(!mod.isCompatibleWithModVersion(info.version)){
                             RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining with incompatible version "+info.version+" of mod "+mod.getDisplayName()+", expected was "+mod.getVersion());
-                            return new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.incompatible_version"), mod.getDisplayName(), info.version, mod.getVersion());
+                            return new ChatComponentTranslation(ResourceName.intern("info.reject.incompatible_version"), mod.getDisplayName(), info.version, mod.getVersion());
                         }
                         else{
                             mods.remove(i);
@@ -144,7 +145,7 @@ public class PacketJoin implements IPacket{
         if(!mods.isEmpty()){
             String modList = this.listMods(mods);
             RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining with missing required mods "+modList);
-            return new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.missing_mods"), modList);
+            return new ChatComponentTranslation(ResourceName.intern("info.reject.missing_mods"), modList);
         }
 
         if(!this.modInfos.isEmpty()){
@@ -159,7 +160,7 @@ public class PacketJoin implements IPacket{
 
             if(!this.modInfos.isEmpty()){
                 RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining with serverside required mods that aren't on the server: "+this.modInfos);
-                return new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.too_many_mods"), this.modInfos.toString());
+                return new ChatComponentTranslation(ResourceName.intern("info.reject.too_many_mods"), this.modInfos.toString());
             }
         }
 

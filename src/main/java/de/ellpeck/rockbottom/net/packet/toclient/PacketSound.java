@@ -1,17 +1,16 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 public class PacketSound implements IPacket{
 
-    private IResourceName soundName;
+    private ResourceName soundName;
     private float pitch;
     private float volume;
     private boolean isBroadcast;
@@ -19,14 +18,14 @@ public class PacketSound implements IPacket{
     private double y;
     private double z;
 
-    public PacketSound(IResourceName soundName, float pitch, float volume){
+    public PacketSound(ResourceName soundName, float pitch, float volume){
         this.soundName = soundName;
         this.pitch = pitch;
         this.volume = volume;
         this.isBroadcast = true;
     }
 
-    public PacketSound(IResourceName soundName, double x, double y, double z, float pitch, float volume){
+    public PacketSound(ResourceName soundName, double x, double y, double z, float pitch, float volume){
         this.soundName = soundName;
         this.pitch = pitch;
         this.volume = volume;
@@ -53,7 +52,7 @@ public class PacketSound implements IPacket{
 
     @Override
     public void fromBuffer(ByteBuf buf){
-        this.soundName = RockBottomAPI.createRes(NetUtil.readStringFromBuffer(buf));
+        this.soundName = new ResourceName(NetUtil.readStringFromBuffer(buf));
         this.pitch = buf.readFloat();
         this.volume = buf.readFloat();
         this.isBroadcast = buf.readBoolean();

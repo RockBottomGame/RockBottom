@@ -22,7 +22,7 @@ import de.ellpeck.rockbottom.api.render.engine.IVBO;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.assets.font.SimpleFont;
 import de.ellpeck.rockbottom.assets.shader.ShaderProgram;
@@ -41,7 +41,7 @@ import java.util.List;
 
 public class Renderer implements IRenderer{
 
-    private static final IResourceName SLOT_NAME = RockBottomAPI.createInternalRes("gui.slot");
+    private static final ResourceName SLOT_NAME = ResourceName.intern("gui.slot");
 
     public ShaderProgram simpleProgram;
     public Font simpleFont;

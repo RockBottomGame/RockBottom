@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -11,7 +10,7 @@ import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
@@ -22,14 +21,14 @@ import java.util.List;
 public class TilePebbles extends TileBasic{
 
     public TilePebbles(){
-        super(RockBottomAPI.createInternalRes("pebbles"));
+        super(ResourceName.intern("pebbles"));
     }
 
     @Override
     protected ItemTile createItemTile(){
         return new ItemTile(this.getName()){
             @Override
-            protected IItemRenderer createRenderer(IResourceName name){
+            protected IItemRenderer createRenderer(ResourceName name){
                 return new DefaultItemRenderer(name);
             }
 

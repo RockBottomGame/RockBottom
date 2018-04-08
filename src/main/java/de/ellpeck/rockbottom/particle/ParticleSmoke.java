@@ -2,17 +2,16 @@ package de.ellpeck.rockbottom.particle;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 
 public class ParticleSmoke extends Particle{
 
-    private static final IResourceName SMOKE_NAME = RockBottomAPI.createInternalRes("particle.smoke");
+    private static final ResourceName SMOKE_NAME = ResourceName.intern("particle.smoke");
     private final float scale;
 
     public ParticleSmoke(IWorld world, double x, double y, double motionX, double motionY, float scale){

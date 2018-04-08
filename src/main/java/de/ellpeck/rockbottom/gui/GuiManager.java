@@ -25,7 +25,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
@@ -40,8 +40,8 @@ import java.util.Random;
 public class GuiManager implements IGuiManager{
 
     public static boolean rainbowMode;
-    private static final IResourceName LOC_DEAD = RockBottomAPI.createInternalRes("info.dead");
-    private static final IResourceName LOC_DEAD_INFO = RockBottomAPI.createInternalRes("info.dead.wait");
+    private static final ResourceName LOC_DEAD = ResourceName.intern("info.dead");
+    private static final ResourceName LOC_DEAD_INFO = ResourceName.intern("info.dead.wait");
     private final List<GuiComponent> onScreenComponents = new ArrayList<>();
     private MainMenuBackground background;
     private Gui gui;
@@ -169,7 +169,7 @@ public class GuiManager implements IGuiManager{
                 float y = height-3F-26F;
 
                 for(ActiveEffect effect : player.getActiveEffects()){
-                    IResourceName icon = effect.getEffect().getIcon(effect, player);
+                    ResourceName icon = effect.getEffect().getIcon(effect, player);
                     if(icon != null){
                         if(manager.hasAsset(ITexture.ID, icon)){
                             ITexture tex = manager.getTexture(icon);

@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +25,9 @@ public class CommandEffect extends Command{
     private final List<String> effectAutocomplete = new ArrayList<>();
 
     public CommandEffect(){
-        super(RockBottomAPI.createInternalRes("effect"), "Gives the player an effect. Params: <'add'/'remove'> <mod_id/effect_name> [time]", 4);
+        super(ResourceName.intern("effect"), "Gives the player an effect. Params: <'add'/'remove'> <mod_id/effect_name> [time]", 4);
 
-        for(IResourceName name : RockBottomAPI.EFFECT_REGISTRY.keySet()){
+        for(ResourceName name : RockBottomAPI.EFFECT_REGISTRY.keySet()){
             this.effectAutocomplete.add(name.toString());
         }
     }
@@ -51,7 +51,7 @@ public class CommandEffect extends Command{
             IEffect effect;
             if(args.length > 1){
                 try{
-                    IResourceName name = RockBottomAPI.createRes(args[1]);
+                    ResourceName name = new ResourceName(args[1]);
                     effect = RockBottomAPI.EFFECT_REGISTRY.get(name);
                 }
                 catch(Exception e){

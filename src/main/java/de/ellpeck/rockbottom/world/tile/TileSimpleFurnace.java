@@ -1,13 +1,12 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Pos2;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.GuiSimpleFurnace;
@@ -18,7 +17,7 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySimpleFurnace;
 public class TileSimpleFurnace extends MultiTile{
 
     public TileSimpleFurnace(){
-        super(RockBottomAPI.createInternalRes("simple_furnace"));
+        super(ResourceName.intern("simple_furnace"));
     }
 
     @Override
@@ -61,7 +60,7 @@ public class TileSimpleFurnace extends MultiTile{
     }
 
     @Override
-    protected ITileRenderer createRenderer(IResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name){
         return new TileSimpleFurnaceRenderer(name, this);
     }
 

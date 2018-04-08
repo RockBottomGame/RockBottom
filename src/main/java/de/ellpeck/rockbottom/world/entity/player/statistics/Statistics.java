@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.Statistic;
 import de.ellpeck.rockbottom.api.entity.player.statistics.StatisticInitializer;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +13,10 @@ import java.util.logging.Level;
 
 public class Statistics implements IStatistics{
 
-    private final Map<IResourceName, Statistic> statistics = new HashMap<>();
+    private final Map<ResourceName, Statistic> statistics = new HashMap<>();
 
     @Override
-    public Statistic getOrInit(IResourceName name){
+    public Statistic getOrInit(ResourceName name){
         return this.statistics.computeIfAbsent(name, n -> {
             StatisticInitializer s = RockBottomAPI.STATISTICS_REGISTRY.get(n);
             return s != null ? s.makeStatistic(this) : null;
@@ -24,7 +24,7 @@ public class Statistics implements IStatistics{
     }
 
     @Override
-    public <T extends Statistic> T getOrInit(IResourceName name, Class<? extends StatisticInitializer<T>> initClass){
+    public <T extends Statistic> T getOrInit(ResourceName name, Class<? extends StatisticInitializer<T>> initClass){
         Statistic stat = this.getOrInit(name);
         if(stat != null && initClass.isAssignableFrom(stat.getInitializer().getClass())){
             return (T)stat;
@@ -36,7 +36,7 @@ public class Statistics implements IStatistics{
 
     public void save(DataSet set){
         int counter = 0;
-        for(Map.Entry<IResourceName, Statistic> entry : this.statistics.entrySet()){
+        for(Map.Entry<ResourceName, Statistic> entry : this.statistics.entrySet()){
             DataSet sub = new DataSet();
             sub.addString("name", entry.getKey().toString());
             entry.getValue().save(sub);
@@ -54,7 +54,7 @@ public class Statistics implements IStatistics{
         for(int i = 0; i < amount; i++){
             DataSet sub = set.getDataSet("stat_"+i);
             if(!sub.isEmpty()){
-                IResourceName name = RockBottomAPI.createRes(sub.getString("name"));
+                ResourceName name = new ResourceName(sub.getString("name"));
                 Statistic stat = this.getOrInit(name);
                 if(stat != null){
                     stat.load(sub);

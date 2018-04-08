@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.item;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.item.FireworkItemRenderer;
@@ -15,7 +14,7 @@ import de.ellpeck.rockbottom.world.entity.EntityFirework;
 public class ItemFirework extends ItemBasic{
 
     public ItemFirework(){
-        super(RockBottomAPI.createInternalRes("firework"));
+        super(ResourceName.intern("firework"));
     }
 
     @Override
@@ -37,7 +36,7 @@ public class ItemFirework extends ItemBasic{
     }
 
     @Override
-    protected IItemRenderer createRenderer(IResourceName name){
+    protected IItemRenderer createRenderer(ResourceName name){
         return new FireworkItemRenderer(name);
     }
 }

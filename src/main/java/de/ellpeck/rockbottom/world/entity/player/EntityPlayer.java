@@ -28,6 +28,7 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -381,7 +382,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
         if(!this.world.isClient() && dead){
             int id = Util.RANDOM.nextInt(25)+1;
-            RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(RockBottomAPI.createInternalRes("death.flavor."+id), this.getName())));
+            RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(ResourceName.intern("death.flavor."+id), this.getName())));
         }
     }
 

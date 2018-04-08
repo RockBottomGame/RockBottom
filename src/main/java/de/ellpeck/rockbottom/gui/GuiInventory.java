@@ -1,11 +1,10 @@
 package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 public class GuiInventory extends GuiContainer{
 
@@ -27,7 +26,7 @@ public class GuiInventory extends GuiContainer{
             this.keepContainerOpen = true;
             game.getGuiManager().openGui(new GuiCompendium(this.player));
             return true;
-        }, RockBottomAPI.createInternalRes("gui.construction.book_closed"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.open_compendium"))));
+        }, ResourceName.intern("gui.construction.book_closed"), game.getAssetManager().localize(ResourceName.intern("button.open_compendium"))));
     }
 
     @Override
@@ -36,7 +35,7 @@ public class GuiInventory extends GuiContainer{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("inventory");
+    public ResourceName getName(){
+        return ResourceName.intern("inventory");
     }
 }

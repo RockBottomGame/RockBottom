@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.assets.texture.stitcher.IStitchCallback;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.content.ContentManager;
 
@@ -22,15 +22,15 @@ import java.util.*;
 public class TextureLoader implements IAssetLoader<ITexture>{
 
     private final Map<String, Map<String, JsonElement>> additionalDataCache = new HashMap<>();
-    private final Set<IResourceName> disabled = new HashSet<>();
+    private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public IResourceName getAssetIdentifier(){
+    public ResourceName getAssetIdentifier(){
         return ITexture.ID;
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+    public void loadAsset(IAssetManager manager, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
             if(manager.hasAsset(ITexture.ID, resourceName)){
                 RockBottomAPI.logger().info("Texture "+resourceName+" already exists, not adding texture for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
@@ -48,7 +48,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
     }
 
     @Override
-    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+    public void disableAsset(IAssetManager manager, ResourceName resourceName){
         this.disabled.add(resourceName);
     }
 
@@ -154,7 +154,7 @@ public class TextureLoader implements IAssetLoader<ITexture>{
                             resName = resourceName+key;
                         }
 
-                        IResourceName res = RockBottomAPI.createRes(loadingMod, resName);
+                        ResourceName res = new ResourceName(loadingMod, resName);
                         if(!this.disabled.contains(res)){
                             ITexture texture = stitchedTexture.getSubTexture(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt(), array.get(3).getAsInt());
 

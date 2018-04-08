@@ -1,12 +1,11 @@
 package de.ellpeck.rockbottom.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -15,10 +14,10 @@ import java.util.UUID;
 public class PacketManualConstruction implements IPacket{
 
     private UUID playerId;
-    private IResourceName recipeName;
+    private ResourceName recipeName;
     private int amount;
 
-    public PacketManualConstruction(UUID playerId, IResourceName recipeName, int amount){
+    public PacketManualConstruction(UUID playerId, ResourceName recipeName, int amount){
         this.playerId = playerId;
         this.recipeName = recipeName;
         this.amount = amount;
@@ -38,7 +37,7 @@ public class PacketManualConstruction implements IPacket{
     @Override
     public void fromBuffer(ByteBuf buf){
         this.playerId = new UUID(buf.readLong(), buf.readLong());
-        this.recipeName = RockBottomAPI.createRes(NetUtil.readStringFromBuffer(buf));
+        this.recipeName = new ResourceName(NetUtil.readStringFromBuffer(buf));
         this.amount = buf.readInt();
     }
 

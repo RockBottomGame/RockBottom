@@ -5,12 +5,12 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.DefaultItemRenderer;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.item.ItemFirework;
 
 public class FireworkItemRenderer extends DefaultItemRenderer<ItemFirework>{
 
-    public FireworkItemRenderer(IResourceName texture){
+    public FireworkItemRenderer(ResourceName texture){
         super(texture);
     }
 

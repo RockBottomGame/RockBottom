@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
@@ -17,10 +17,10 @@ import java.util.List;
 public class TileGrassTuft extends TileMeta{
 
     public TileGrassTuft(){
-        super(RockBottomAPI.createInternalRes("grass_tuft"));
-        this.addSubTile(RockBottomAPI.createInternalRes("grass_short"));
-        this.addSubTile(RockBottomAPI.createInternalRes("grass_tall"));
-        this.addSubTile(RockBottomAPI.createInternalRes("bush"));
+        super(ResourceName.intern("grass_tuft"));
+        this.addSubTile(ResourceName.intern("grass_short"));
+        this.addSubTile(ResourceName.intern("grass_tall"));
+        this.addSubTile(ResourceName.intern("bush"));
     }
 
     @Override

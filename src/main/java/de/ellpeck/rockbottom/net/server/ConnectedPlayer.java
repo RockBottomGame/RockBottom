@@ -16,6 +16,7 @@ import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.world.World;
@@ -51,7 +52,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
         RockBottomAPI.logger().info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
 
-        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.disconnect"), player.getName()));
+        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(ResourceName.intern("info.disconnect"), player.getName()));
     }
 
     @Override
@@ -97,13 +98,13 @@ public class ConnectedPlayer extends EntityPlayer{
         }
 
         if(net.isWhitelistEnabled() && !net.isWhitelisted(this.getUniqueId())){
-            this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.whitelist"))));
+            this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.whitelist"))));
 
             this.channel.disconnect();
             disconnectPlayer(game, this);
         }
         else if(net.isBlacklisted(this.getUniqueId())){
-            this.sendPacket(new PacketReject(new ChatComponentTranslation(RockBottomAPI.createInternalRes("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
+            this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
 
             this.channel.disconnect();
             disconnectPlayer(game, this);

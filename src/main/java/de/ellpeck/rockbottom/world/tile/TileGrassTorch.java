@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 public class TileGrassTorch extends TileTorch{
 
     public TileGrassTorch(){
-        super(RockBottomAPI.createInternalRes("torch_grass"));
+        super(ResourceName.intern("torch_grass"));
     }
 
     @Override

@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.content.IContentLoader;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,7 +61,7 @@ public final class ContentManager{
                         for(Map.Entry<String, JsonElement> resType : main.entrySet()){
                             String type = resType.getKey();
                             for(LoaderCallback callback : callbacks){
-                                IResourceName identifier = callback.getIdentifier().addSuffix(".");
+                                ResourceName identifier = callback.getIdentifier().addSuffix(".");
                                 if(identifier.getResourceName().equals(type) || identifier.toString().equals(type)){
                                     JsonObject resources = resType.getValue().getAsJsonObject();
                                     for(Map.Entry<String, JsonElement> resource : resources.entrySet()){
@@ -106,7 +106,7 @@ public final class ContentManager{
                 }
 
                 if(!elementName.endsWith(".")){
-                    IResourceName resourceName = RockBottomAPI.createRes(mod, name);
+                    ResourceName resourceName = new ResourceName(mod, name);
 
                     if(element.isJsonPrimitive() && "none".equals(element.getAsString())){
                         loader.disable(resourceName);
@@ -138,13 +138,13 @@ public final class ContentManager{
 
     public interface LoaderCallback{
 
-        IResourceName getIdentifier();
+        ResourceName getIdentifier();
 
-        void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception;
+        void load(ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception;
 
         boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception;
 
-        void disable(IResourceName resourceName);
+        void disable(ResourceName resourceName);
     }
 
     private static class ContentCallback implements LoaderCallback{
@@ -158,12 +158,12 @@ public final class ContentManager{
         }
 
         @Override
-        public IResourceName getIdentifier(){
+        public ResourceName getIdentifier(){
             return this.loader.getContentIdentifier();
         }
 
         @Override
-        public void load(IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+        public void load(ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
             this.loader.loadContent(this.game, resourceName, path, element, elementName, loadingMod, pack);
         }
 
@@ -173,7 +173,7 @@ public final class ContentManager{
         }
 
         @Override
-        public void disable(IResourceName resourceName){
+        public void disable(ResourceName resourceName){
             this.loader.disableContent(this.game, resourceName);
         }
     }

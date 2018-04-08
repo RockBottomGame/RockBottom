@@ -2,12 +2,11 @@ package de.ellpeck.rockbottom.world.gen.feature;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.IStructure;
@@ -22,7 +21,7 @@ import java.util.Random;
 
 public class WorldGenStartHut implements IWorldGenerator{
 
-    private static final IResourceName HOUSE_CREATED = RockBottomAPI.createInternalRes("start_house_created");
+    private static final ResourceName HOUSE_CREATED = ResourceName.intern("start_house_created");
 
     private final Random generatorRandom = new Random();
     private int chunkX;
@@ -40,7 +39,7 @@ public class WorldGenStartHut implements IWorldGenerator{
 
     @Override
     public void generate(IWorld world, IChunk chunk){
-        IStructure structure = IStructure.forName(RockBottomAPI.createInternalRes("start_hut"));
+        IStructure structure = IStructure.forName(ResourceName.intern("start_hut"));
         if(structure != null){
             this.generatorRandom.setSeed(Util.scrambleSeed(chunk.getGridX(), chunk.getGridY(), world.getSeed()));
 

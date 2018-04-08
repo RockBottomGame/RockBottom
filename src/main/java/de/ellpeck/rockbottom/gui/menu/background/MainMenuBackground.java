@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
 import de.ellpeck.rockbottom.init.RockBottom;
 
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class MainMenuBackground{
 
-    private static final IResourceName RES_LOGO = RockBottomAPI.createInternalRes("logo");
+    private static final ResourceName RES_LOGO = ResourceName.intern("logo");
 
     private final IMainMenuTheme theme;
     private final TileState[][] tiles = new TileState[IMainMenuTheme.TILE_AMOUNT][IMainMenuTheme.TILE_AMOUNT];

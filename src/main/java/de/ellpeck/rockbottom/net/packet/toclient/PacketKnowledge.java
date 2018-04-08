@@ -1,13 +1,13 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import io.netty.buffer.ByteBuf;
@@ -54,7 +54,7 @@ public class PacketKnowledge implements IPacket{
         if(player != null){
             IKnowledgeManager manager = player.getKnowledge();
             if(this.forget){
-                manager.forgetInformation(RockBottomAPI.createRes(this.infoSet.getString("name")), this.announce);
+                manager.forgetInformation(new ResourceName(this.infoSet.getString("name")), this.announce);
             }
             else{
                 Information information = KnowledgeManager.loadInformation(this.infoSet, manager);

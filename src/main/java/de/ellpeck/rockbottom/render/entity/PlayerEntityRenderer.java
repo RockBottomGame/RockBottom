@@ -16,14 +16,14 @@ import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
 
-    private static final IResourceName SPECIAL_BASE = RockBottomAPI.createInternalRes("player.base.s");
-    private static final IResourceName SPECIAL_ARMS = RockBottomAPI.createInternalRes("player.arm.skin_s");
+    private static final ResourceName SPECIAL_BASE = ResourceName.intern("player.base.s");
+    private static final ResourceName SPECIAL_ARMS = ResourceName.intern("player.arm.skin_s");
 
     public static void renderPlayer(EntityPlayer player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light){
         ItemInstance holding = player != null ? player.getInv().get(player.getSelectedSlot()) : null;
@@ -33,27 +33,27 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.'+(design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, 2F*scale, light);
         manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getEyeColor()));
 
-        IResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());
+        ResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());
         if(eyebrows != null){
             manager.getAnimation(eyebrows).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getEyebrowsColor()));
         }
 
-        IResourceName mouth = IPlayerDesign.MOUTH.get(design.getMouth());
+        ResourceName mouth = IPlayerDesign.MOUTH.get(design.getMouth());
         if(mouth != null){
             manager.getAnimation(mouth).drawRow(row, x, y, scale, 2F*scale, light);
         }
 
-        IResourceName beard = IPlayerDesign.BEARD.get(design.getBeard());
+        ResourceName beard = IPlayerDesign.BEARD.get(design.getBeard());
         if(beard != null){
             manager.getAnimation(beard).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getBeardColor()));
         }
 
-        IResourceName pants = IPlayerDesign.PANTS.get(design.getPants());
+        ResourceName pants = IPlayerDesign.PANTS.get(design.getPants());
         if(pants != null){
             manager.getAnimation(pants).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getPantsColor()));
         }
 
-        IResourceName shirt = IPlayerDesign.SHIRT.get(design.getShirt());
+        ResourceName shirt = IPlayerDesign.SHIRT.get(design.getShirt());
         if(shirt != null){
             manager.getAnimation(shirt).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getShirtColor()));
         }
@@ -61,22 +61,22 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         IAnimation armAnimation = manager.getAnimation((base == -1 ? SPECIAL_ARMS : IPlayerDesign.ARMS.get(base)).addSuffix('.'+arms));
         armAnimation.drawRow(row, x, y, scale, 2F*scale, light);
 
-        IResourceName sleeves = IPlayerDesign.SLEEVES.get(design.getSleeves());
+        ResourceName sleeves = IPlayerDesign.SLEEVES.get(design.getSleeves());
         if(sleeves != null){
             manager.getAnimation(sleeves.addSuffix('.'+arms)).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getSleevesColor()));
         }
 
-        IResourceName footwear = IPlayerDesign.FOOTWEAR.get(design.getFootwear());
+        ResourceName footwear = IPlayerDesign.FOOTWEAR.get(design.getFootwear());
         if(footwear != null){
             manager.getAnimation(footwear).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getFootwearColor()));
         }
 
-        IResourceName hair = IPlayerDesign.HAIR.get(design.getHair());
+        ResourceName hair = IPlayerDesign.HAIR.get(design.getHair());
         if(hair != null){
             manager.getAnimation(hair).drawRow(row, x, y, scale, 2F*scale, Colors.multiply(light, design.getHairColor()));
         }
 
-        IResourceName accessory = IPlayerDesign.ACCESSORIES.get(design.getAccessory());
+        ResourceName accessory = IPlayerDesign.ACCESSORIES.get(design.getAccessory());
         if(accessory != null){
             manager.getAnimation(accessory).drawRow(row, x, y, scale, 2F*scale, light);
         }

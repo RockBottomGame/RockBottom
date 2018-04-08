@@ -8,12 +8,12 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
 
 public class ComponentHotbarSlot extends GuiComponent{
 
-    private static final IResourceName TEX_ARROW = RockBottomAPI.createInternalRes("gui.selection_arrow");
+    private static final ResourceName TEX_ARROW = ResourceName.intern("gui.selection_arrow");
 
     private final AbstractEntityPlayer player;
     private final Inventory inv;
@@ -62,7 +62,7 @@ public class ComponentHotbarSlot extends GuiComponent{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("hotbar_slot");
+    public ResourceName getName(){
+        return ResourceName.intern("hotbar_slot");
     }
 }

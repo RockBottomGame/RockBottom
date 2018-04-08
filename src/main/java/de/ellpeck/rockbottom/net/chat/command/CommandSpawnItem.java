@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,9 +24,9 @@ public class CommandSpawnItem extends Command{
     private final List<String> itemAutocomplete = new ArrayList<>();
 
     public CommandSpawnItem(){
-        super(RockBottomAPI.createInternalRes("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
+        super(ResourceName.intern("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
 
-        for(IResourceName name : RockBottomAPI.ITEM_REGISTRY.keySet()){
+        for(ResourceName name : RockBottomAPI.ITEM_REGISTRY.keySet()){
             this.itemAutocomplete.add(name.toString());
         }
     }
@@ -39,7 +39,7 @@ public class CommandSpawnItem extends Command{
             Item item;
             if(args.length > 0){
                 try{
-                    IResourceName name = RockBottomAPI.createRes(args[0]);
+                    ResourceName name = new ResourceName(args[0]);
                     item = RockBottomAPI.ITEM_REGISTRY.get(name);
                 }
                 catch(Exception e){

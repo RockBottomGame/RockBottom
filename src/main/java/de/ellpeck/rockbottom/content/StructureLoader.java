@@ -15,7 +15,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.IStructure;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.gen.Structure;
@@ -28,16 +28,16 @@ import java.util.Set;
 
 public class StructureLoader implements IContentLoader<IStructure>{
 
-    private final Set<IResourceName> disabled = new HashSet<>();
+    private final Set<ResourceName> disabled = new HashSet<>();
     private final Map<String, Map<Character, TileState>> tileCache = new HashMap<>();
 
     @Override
-    public IResourceName getContentIdentifier(){
+    public ResourceName getContentIdentifier(){
         return IStructure.ID;
     }
 
     @Override
-    public void loadContent(IGameInstance game, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+    public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
             if(IStructure.forName(resourceName) != null){
                 RockBottomAPI.logger().info("Structure with name "+resourceName+" already exists, not adding structure for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
@@ -71,7 +71,7 @@ public class StructureLoader implements IContentLoader<IStructure>{
                         JsonObject object = entry.getValue().getAsJsonObject();
 
                         String tileName = object.get("tile").getAsString();
-                        Tile tile = RockBottomAPI.TILE_REGISTRY.get(RockBottomAPI.createRes(tileName));
+                        Tile tile = RockBottomAPI.TILE_REGISTRY.get(new ResourceName(tileName));
                         Preconditions.checkNotNull(tile, "Tile with name "+tileName+" doesn't exist!");
 
                         TileState state = tile.getDefState();
@@ -115,7 +115,7 @@ public class StructureLoader implements IContentLoader<IStructure>{
                 for(Map.Entry<String, JsonElement> entry : structure.entrySet()){
                     String name = entry.getKey();
                     if(!"tiles".equals(name)){
-                        TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(RockBottomAPI.createRes(name));
+                        TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(new ResourceName(name));
                         Preconditions.checkArgument(layer != null, "A tile layer with name "+name+" doesn't exist!");
 
                         JsonArray layerGrid = entry.getValue().getAsJsonArray();
@@ -163,7 +163,7 @@ public class StructureLoader implements IContentLoader<IStructure>{
     }
 
     @Override
-    public void disableContent(IGameInstance game, IResourceName resourceName){
+    public void disableContent(IGameInstance game, ResourceName resourceName){
         this.disabled.add(resourceName);
     }
 

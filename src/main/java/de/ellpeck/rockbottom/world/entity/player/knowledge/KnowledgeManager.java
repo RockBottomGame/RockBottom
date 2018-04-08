@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.toast.Toast;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
@@ -16,7 +16,7 @@ import java.util.logging.Level;
 
 public class KnowledgeManager implements IKnowledgeManager{
 
-    private final Map<IResourceName, Information> information = new HashMap<>();
+    private final Map<ResourceName, Information> information = new HashMap<>();
     private final EntityPlayer player;
 
     public KnowledgeManager(EntityPlayer player){
@@ -61,8 +61,8 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     public static Information loadInformation(DataSet set, IKnowledgeManager manager){
-        IResourceName regName = RockBottomAPI.createRes(set.getString("reg_name"));
-        IResourceName name = RockBottomAPI.createRes(set.getString("name"));
+        ResourceName regName = new ResourceName(set.getString("reg_name"));
+        ResourceName name = new ResourceName(set.getString("name"));
 
         Information information = loadInformation(regName, name);
         if(information != null){
@@ -74,11 +74,11 @@ public class KnowledgeManager implements IKnowledgeManager{
         return information;
     }
 
-    private static Information loadInformation(IResourceName regName, IResourceName name){
+    private static Information loadInformation(ResourceName regName, ResourceName name){
         Class<? extends Information> infoClass = RockBottomAPI.INFORMATION_REGISTRY.get(regName);
 
         try{
-            return infoClass.getConstructor(IResourceName.class).newInstance(name);
+            return infoClass.getConstructor(ResourceName.class).newInstance(name);
         }
         catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize information with registry name "+regName+" and name "+name, e);
@@ -92,17 +92,17 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     @Override
-    public boolean knowsInformation(IResourceName name){
+    public boolean knowsInformation(ResourceName name){
         return this.information.containsKey(name);
     }
 
     @Override
-    public Information getInformation(IResourceName name){
+    public Information getInformation(ResourceName name){
         return this.information.get(name);
     }
 
     @Override
-    public <T extends Information> T getInformation(IResourceName name, Class<T> infoClass){
+    public <T extends Information> T getInformation(ResourceName name, Class<T> infoClass){
         Information info = this.getInformation(name);
         if(info != null && infoClass.isAssignableFrom(info.getClass())){
             return (T)info;
@@ -158,7 +158,7 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     @Override
-    public void forgetInformation(IResourceName name, boolean announce){
+    public void forgetInformation(ResourceName name, boolean announce){
         Information info = this.information.get(name);
         if(info != null){
             this.information.remove(name);
@@ -176,7 +176,7 @@ public class KnowledgeManager implements IKnowledgeManager{
     }
 
     @Override
-    public void forgetInformation(IResourceName name){
+    public void forgetInformation(ResourceName name){
         this.forgetInformation(name, true);
     }
 }

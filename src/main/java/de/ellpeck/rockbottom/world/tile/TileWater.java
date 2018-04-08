@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class TileWater extends TileLiquid{
 
     public TileWater(){
-        super(RockBottomAPI.createInternalRes("water"));
+        super(ResourceName.intern("water"));
     }
 
     @Override

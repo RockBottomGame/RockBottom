@@ -18,7 +18,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -152,7 +152,7 @@ public class ApiHandler implements IApiHandler{
 
     private DataPart readPart(JsonArray array, int i) throws Exception{
         JsonObject object = array.get(i).getAsJsonObject();
-        IResourceName type = RockBottomAPI.createRes(object.get("type").getAsString());
+        ResourceName type = new ResourceName(object.get("type").getAsString());
         String name = object.get("name").getAsString();
         JsonElement data = object.get("data");
 

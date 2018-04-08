@@ -2,12 +2,11 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiManager;
 
 public class GuiGraphics extends Gui{
@@ -29,17 +28,17 @@ public class GuiGraphics extends Gui{
             settings.hardwareCursor = !settings.hardwareCursor;
             game.getAssetManager().setCursor(game.getGuiManager().getCursor());
             return true;
-        }, "button.hardware_cursor", assetManager.localize(RockBottomAPI.createInternalRes("info.hardware_cursor"))));
+        }, "button.hardware_cursor", assetManager.localize(ResourceName.intern("info.hardware_cursor"))));
         this.components.add(new ComponentToggleButton(this, 0, 20, 150, 16, settings.cursorInfos, () -> {
             settings.cursorInfos = !settings.cursorInfos;
             return true;
-        }, "button.cursor_infos", assetManager.localize(RockBottomAPI.createInternalRes("info.cursor_infos"))));
-        this.components.add(new ComponentSlider(this, 0, 40, 150, 16, (int)(settings.textSpeed*10F), 1, 100, ((integer, aBoolean) -> settings.textSpeed = (float)integer/10F), assetManager.localize(RockBottomAPI.createInternalRes("button.text_speed"))));
+        }, "button.cursor_infos", assetManager.localize(ResourceName.intern("info.cursor_infos"))));
+        this.components.add(new ComponentSlider(this, 0, 40, 150, 16, (int)(settings.textSpeed*10F), 1, 100, ((integer, aBoolean) -> settings.textSpeed = (float)integer/10F), assetManager.localize(ResourceName.intern("button.text_speed"))));
 
         this.components.add(new ComponentSlider(this, 154, 0, 150, 16, (int)(settings.renderScale*100F), 50, 150, (integer, aBoolean) -> {
             settings.renderScale = (float)integer/100F;
             game.getRenderer().calcScales();
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.render_scale"))));
+        }, assetManager.localize(ResourceName.intern("button.render_scale"))));
         this.components.add(new ComponentSlider(this, 154, 20, 150, 16, (int)(settings.guiScale*100F), 50, 100, (integer, aBoolean) -> {
             if(aBoolean){
                 settings.guiScale = (float)integer/100F;
@@ -47,7 +46,7 @@ public class GuiGraphics extends Gui{
                 game.getRenderer().calcScales();
                 game.getGuiManager().updateDimensions();
             }
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.gui_scale"))));
+        }, assetManager.localize(ResourceName.intern("button.gui_scale"))));
         this.components.add(new ComponentToggleButton(this, 154, 40, 150, 16, !settings.fullscreen, () -> {
             settings.fullscreen = !settings.fullscreen;
             settings.save();
@@ -69,12 +68,12 @@ public class GuiGraphics extends Gui{
             }));
             this.sortComponents();
             return true;
-        }, RockBottomAPI.createInternalRes("gui.reset"), assetManager.localize(RockBottomAPI.createInternalRes("info.reset"))));
+        }, ResourceName.intern("gui.reset"), assetManager.localize(ResourceName.intern("info.reset"))));
 
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, assetManager.localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, assetManager.localize(ResourceName.intern("button.back"))));
     }
 
     @Override
@@ -102,13 +101,13 @@ public class GuiGraphics extends Gui{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g){
-        manager.getFont().drawCenteredString(this.x+75, this.y+62, manager.localize(RockBottomAPI.createInternalRes("info.gui_color")), 0.35F, false);
+        manager.getFont().drawCenteredString(this.x+75, this.y+62, manager.localize(ResourceName.intern("info.gui_color")), 0.35F, false);
 
         super.render(game, manager, g);
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("graphics");
+    public ResourceName getName(){
+        return ResourceName.intern("graphics");
     }
 }

@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 
 import java.io.File;
@@ -17,8 +17,8 @@ import java.util.Date;
 
 public class ComponentSelectWorldButton extends ComponentButton{
 
-    private static final IResourceName RES_LAST_MODIFIED = RockBottomAPI.createInternalRes("info.last_modified");
-    private static final IResourceName RES_SEED = RockBottomAPI.createInternalRes("info.seed");
+    private static final ResourceName RES_LAST_MODIFIED = ResourceName.intern("info.last_modified");
+    private static final ResourceName RES_SEED = ResourceName.intern("info.seed");
 
     public final File worldFile;
     private final WorldInfo info;
@@ -42,7 +42,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
         font.drawString(x+2F, y+12F, FormattingCode.GRAY+manager.localize(RES_LAST_MODIFIED)+": "+this.lastModified, 0.25F);
         font.drawString(x+2F, y+18F, FormattingCode.GRAY+manager.localize(RES_SEED)+": "+this.info.seed, 0.25F);
 
-        String s = manager.localize(RockBottomAPI.createInternalRes("info.mode."+(this.info.storyMode ? "story" : "free")));
+        String s = manager.localize(ResourceName.intern("info.mode."+(this.info.storyMode ? "story" : "free")));
         font.drawStringFromRight(x+this.width-2F, y+2F, s, 0.3F);
     }
 
@@ -57,7 +57,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("select_world_button");
+    public ResourceName getName(){
+        return ResourceName.intern("select_world_button");
     }
 }

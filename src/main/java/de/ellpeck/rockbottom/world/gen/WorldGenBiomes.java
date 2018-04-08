@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
@@ -17,7 +17,7 @@ import java.util.*;
 
 public class WorldGenBiomes implements IWorldGenerator{
 
-    public static final IResourceName ID = RockBottomAPI.createInternalRes("biomes");
+    public static final ResourceName ID = ResourceName.intern("biomes");
     private static final int SIZE = 5;
     private static final int MAX_SIZE = 64;
     private final long[] layerSeeds = new long[MAX_SIZE];

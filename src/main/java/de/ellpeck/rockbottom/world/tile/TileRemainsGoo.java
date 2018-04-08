@@ -1,16 +1,16 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class TileRemainsGoo extends TileBasic{
 
     public TileRemainsGoo(){
-        super(RockBottomAPI.createInternalRes("remains_goo"));
+        super(ResourceName.intern("remains_goo"));
     }
 
     @Override

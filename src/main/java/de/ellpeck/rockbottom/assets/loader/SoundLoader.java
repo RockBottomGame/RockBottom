@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.ISound;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.sound.SoundEffect;
 import de.ellpeck.rockbottom.assets.sound.StreamSound;
 import de.ellpeck.rockbottom.content.ContentManager;
@@ -18,15 +18,15 @@ import java.util.Set;
 
 public class SoundLoader implements IAssetLoader<ISound>{
 
-    private final Set<IResourceName> disabled = new HashSet<>();
+    private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public IResourceName getAssetIdentifier(){
+    public ResourceName getAssetIdentifier(){
         return ISound.ID;
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, IResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+    public void loadAsset(IAssetManager manager, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
         if(!this.disabled.contains(resourceName)){
             if(manager.hasAsset(ISound.ID, resourceName)){
                 RockBottomAPI.logger().info("Sound "+resourceName+" already exists, not adding sound for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
@@ -63,7 +63,7 @@ public class SoundLoader implements IAssetLoader<ISound>{
     }
 
     @Override
-    public void disableAsset(IAssetManager manager, IResourceName resourceName){
+    public void disableAsset(IAssetManager manager, ResourceName resourceName){
         this.disabled.add(resourceName);
     }
 }

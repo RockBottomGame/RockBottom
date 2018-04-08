@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -11,7 +10,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 
 import java.io.File;
@@ -63,7 +62,7 @@ public class GuiCreateWorld extends Gui{
             });
 
             return true;
-        }, manager.localize(RockBottomAPI.createInternalRes("button.create"))));
+        }, manager.localize(ResourceName.intern("button.create"))));
 
         this.components.add(new ComponentToggleButton(this, this.width/2-50, 112, 100, 16, this.storyMode, ()->{
             this.storyMode = !this.storyMode;
@@ -73,7 +72,7 @@ public class GuiCreateWorld extends Gui{
         this.components.add(new ComponentButton(this, this.width/2, bottomY-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
         this.updateNameAndSeed(game);
     }
@@ -139,15 +138,15 @@ public class GuiCreateWorld extends Gui{
         IFont font = manager.getFont();
         int middle = this.width/2;
 
-        font.drawCenteredString(this.x+middle, this.y+20, manager.localize(RockBottomAPI.createInternalRes("info.world_name")), 0.5F, false);
-        font.drawString(this.x+middle-75, this.y+50, manager.localize(RockBottomAPI.createInternalRes("info.final_name"), this.worldName), 0.25F);
+        font.drawCenteredString(this.x+middle, this.y+20, manager.localize(ResourceName.intern("info.world_name")), 0.5F, false);
+        font.drawString(this.x+middle-75, this.y+50, manager.localize(ResourceName.intern("info.final_name"), this.worldName), 0.25F);
 
-        font.drawCenteredString(this.x+middle, this.y+60, manager.localize(RockBottomAPI.createInternalRes("info.seed")), 0.5F, false);
-        font.drawString(this.x+middle-75, this.y+90, manager.localize(RockBottomAPI.createInternalRes("info.final_seed"), this.seed), 0.25F);
+        font.drawCenteredString(this.x+middle, this.y+60, manager.localize(ResourceName.intern("info.seed")), 0.5F, false);
+        font.drawString(this.x+middle-75, this.y+90, manager.localize(ResourceName.intern("info.final_seed"), this.seed), 0.25F);
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("create_world");
+    public ResourceName getName(){
+        return ResourceName.intern("create_world");
     }
 }

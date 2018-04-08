@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentFormatSelector;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSignText;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
 import org.lwjgl.glfw.GLFW;
@@ -31,8 +31,8 @@ public class GuiSign extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("sign");
+    public ResourceName getName(){
+        return ResourceName.intern("sign");
     }
 
     @Override
@@ -116,7 +116,7 @@ public class GuiSign extends Gui{
     }
 
     public static void drawSign(IAssetManager manager, String[] text, boolean drawText, float x, float y){
-        manager.getTexture(RockBottomAPI.createInternalRes("gui.sign")).draw(x, y, 210, 78);
+        manager.getTexture(ResourceName.intern("gui.sign")).draw(x, y, 210, 78);
 
         if(drawText){
             IFont font = manager.getFont();

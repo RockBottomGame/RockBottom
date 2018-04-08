@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.Locale;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -9,7 +8,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Map;
 
@@ -28,8 +27,8 @@ public class GuiLanguage extends Gui{
         this.components.add(menu);
 
         IAssetManager manager = game.getAssetManager();
-        for(Map.Entry<IResourceName, Locale> entry : manager.<Locale>getAllOfType(Locale.ID).entrySet()){
-            IResourceName res = entry.getKey();
+        for(Map.Entry<ResourceName, Locale> entry : manager.<Locale>getAllOfType(Locale.ID).entrySet()){
+            ResourceName res = entry.getKey();
             Locale loc = entry.getValue();
 
             menu.add(new MenuComponent(150, 16).add(0, 0, new ComponentButton(this, 0, 0, 150, 16, () -> {
@@ -50,11 +49,11 @@ public class GuiLanguage extends Gui{
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("language");
+    public ResourceName getName(){
+        return ResourceName.intern("language");
     }
 }

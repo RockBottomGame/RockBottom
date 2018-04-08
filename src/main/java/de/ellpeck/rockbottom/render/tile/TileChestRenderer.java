@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileChest;
@@ -13,9 +13,9 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
 public class TileChestRenderer extends DefaultTileRenderer<TileChest>{
 
-    private final IResourceName texOpen;
+    private final ResourceName texOpen;
 
-    public TileChestRenderer(IResourceName texture){
+    public TileChestRenderer(ResourceName texture){
         super(texture);
         this.texOpen = this.texture.addSuffix(".open");
     }

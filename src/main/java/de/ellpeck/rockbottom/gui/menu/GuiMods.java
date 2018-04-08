@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.logging.Level;
 
@@ -76,12 +76,12 @@ public class GuiMods extends Gui{
 
         this.updateButtons();
 
-        this.components.add(new ComponentFancyButton(this, this.width/2+83, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), RockBottomAPI.createInternalRes("gui.mods_folder"), game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.mods_folder"))));
+        this.components.add(new ComponentFancyButton(this, this.width/2+83, this.height-30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), ResourceName.intern("gui.mods_folder"), game.getAssetManager().localize(ResourceName.intern("button.mods_folder"))));
 
         this.components.add(new ComponentButton(this, this.width/2+1, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
         this.components.add(new ComponentButton(this, this.width/2-81, this.height-30, 80, 16, () -> {
             this.components.add(new ComponentConfirmationPopup(this, this.width/2-41, this.height-22, aBoolean -> {
@@ -124,7 +124,7 @@ public class GuiMods extends Gui{
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("mods");
+    public ResourceName getName(){
+        return ResourceName.intern("mods");
     }
 }

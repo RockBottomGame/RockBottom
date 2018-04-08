@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
-import de.ellpeck.rockbottom.api.util.reg.IResourceName;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiInformation;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketJoin;
 import de.ellpeck.rockbottom.util.thread.ThreadHandler;
@@ -48,7 +48,7 @@ public class GuiJoinServer extends Gui{
                     }
                     catch(Exception e){
                         RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
-                        game.getGuiManager().openGui(new GuiInformation(this.parent, 0.5F, game.getAssetManager().localize(RockBottomAPI.createInternalRes("info.reject.connection"), e.getMessage())));
+                        game.getGuiManager().openGui(new GuiInformation(this.parent, 0.5F, game.getAssetManager().localize(ResourceName.intern("info.reject.connection"), e.getMessage())));
                     }
                     this.joinThread = null;
                 }, ThreadHandler.SERVER_JOIN);
@@ -59,16 +59,16 @@ public class GuiJoinServer extends Gui{
             else{
                 return false;
             }
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.connect"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.connect"))));
         this.components.add(new ComponentButton(this, this.width/2-40, this.height-30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
-        }, game.getAssetManager().localize(RockBottomAPI.createInternalRes("button.back"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
     }
 
     @Override
-    public IResourceName getName(){
-        return RockBottomAPI.createInternalRes("join_server");
+    public ResourceName getName(){
+        return ResourceName.intern("join_server");
     }
 
     @Override
