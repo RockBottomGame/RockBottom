@@ -751,6 +751,7 @@ public class Chunk implements IChunk{
         for(Entity entity : this.entities){
             if(entity.doesSave() && !(entity instanceof EntityPlayer)){
                 DataSet entitySet = new DataSet();
+                entitySet.addUniqueId("uuid", entity.getUniqueId());
                 entitySet.addString("name", RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString());
                 entity.save(entitySet);
 
@@ -862,11 +863,13 @@ public class Chunk implements IChunk{
             for(int i = 0; i < entityAmount; i++){
                 DataSet entitySet = set.getDataSet("e_"+i);
 
+                UUID id = entitySet.getUniqueId("uuid");
                 String name = entitySet.getString("name");
                 Entity entity = Util.createEntity(new ResourceName(name), this.world);
 
                 if(entity != null){
                     entity.load(entitySet);
+                    entity.setUniqueId(id);
                     this.addEntity(entity);
                 }
                 else{

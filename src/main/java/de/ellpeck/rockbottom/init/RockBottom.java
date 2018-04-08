@@ -70,6 +70,7 @@ import java.util.logging.Level;
 
 public class RockBottom extends AbstractGame{
 
+    private static final UUID DEFAULT_UUID = UUID.fromString("0DD5A1AD-CA11-ADD5-1CED-C0FFEEEFFEC7");
     protected Settings settings;
     private EntityPlayer player;
     private IPlayerDesign playerDesign;
@@ -78,7 +79,7 @@ public class RockBottom extends AbstractGame{
     public AssetManager assetManager;
     private ParticleManager particleManager;
     private Toaster toaster;
-    private UUID uniqueId;
+    public UUID uniqueId;
     private WorldRenderer worldRenderer;
     private int windowedWidth;
     private int windowedHeight;
@@ -368,7 +369,7 @@ public class RockBottom extends AbstractGame{
     public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated){
         super.startWorld(worldFile, info, isNewlyCreated);
 
-        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
+        this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, true);
         this.world.addEntity(this.player);
 
         this.guiManager.closeGui();
@@ -383,7 +384,7 @@ public class RockBottom extends AbstractGame{
         this.world = new ClientWorld(info, regInfo);
         RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
 
-        this.player = this.world.createPlayer(this.uniqueId, this.playerDesign, null);
+        this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, false);
         this.player.load(playerSet);
         this.world.addEntity(this.player);
 
@@ -553,11 +554,6 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    public void setUniqueId(UUID uniqueId){
-        this.uniqueId = uniqueId;
-    }
-
-    @Override
     public IInputHandler getInput(){
         return this.input;
     }
@@ -584,7 +580,17 @@ public class RockBottom extends AbstractGame{
 
     @Override
     public UUID getUniqueId(){
-        return this.uniqueId;
+        if(this.uniqueId != null){
+            return this.uniqueId;
+        }
+        else{
+            return this.getDefaultUniqueId();
+        }
+    }
+
+    @Override
+    public UUID getDefaultUniqueId(){
+        return DEFAULT_UUID;
     }
 
     public void takeScreenshot(){

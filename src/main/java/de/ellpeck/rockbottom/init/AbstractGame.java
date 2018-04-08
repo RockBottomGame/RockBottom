@@ -181,7 +181,7 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     public void init(){
-        this.dataManager = new DataManager(this);
+        this.dataManager = new DataManager();
 
         IModLoader modLoader = RockBottomAPI.getModLoader();
         modLoader.loadJarMods(this.dataManager.getModsDir());

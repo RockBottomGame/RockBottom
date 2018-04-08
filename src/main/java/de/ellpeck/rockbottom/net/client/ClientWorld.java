@@ -83,11 +83,13 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel){
+    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast){
         if(channel != null){
             throw new UnsupportedOperationException("Cannot create a connected player in a client world");
         }
-        return new EntityPlayer(this, id, design);
+        else{
+            return new EntityPlayer(this, id, design);
+        }
     }
 
     @Override

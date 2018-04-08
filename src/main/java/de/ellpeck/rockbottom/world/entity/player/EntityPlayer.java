@@ -80,8 +80,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design){
         super(world);
+        this.setUniqueId(uniqueId);
         this.facing = Direction.RIGHT;
-        this.uniqueId = uniqueId;
         this.design = design;
         this.inv.addChangeCallback(this.invCallback);
     }

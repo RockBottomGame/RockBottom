@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
-import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.*;
 import de.ellpeck.rockbottom.api.data.set.part.num.*;
 import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
@@ -20,12 +19,10 @@ import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDrop;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
 
 import java.io.*;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class DataManager implements IDataManager{
@@ -103,9 +100,8 @@ public class DataManager implements IDataManager{
     private final File modSettingsFile;
     private final File contentPackSettingsFile;
     private final File playerDesignFile;
-    private final DataSet gameInfo = new DataSet();
 
-    public DataManager(AbstractGame game){
+    public DataManager(){
         this.gameDirectory = Main.gameDir;
         this.modsDirectory = new File(this.gameDirectory, "mods");
         this.contentPacksDirectory = new File(this.gameDirectory, "contentpacks");
@@ -122,20 +118,6 @@ public class DataManager implements IDataManager{
         this.blacklistFile = new File(this.gameDirectory, "blacklist.json");
         this.modSettingsFile = new File(this.gameDirectory, "mod_settings.json");
         this.contentPackSettingsFile = new File(this.gameDirectory, "content_pack_settings.json");
-
-        if(!game.isDedicatedServer()){
-            this.gameInfo.read(this.gameDataFile);
-
-            game.setUniqueId(this.gameInfo.getUniqueId("game_id"));
-            if(game.getUniqueId() == null){
-                game.setUniqueId(UUID.randomUUID());
-
-                this.gameInfo.addUniqueId("game_id", game.getUniqueId());
-                this.gameInfo.write(this.gameDataFile);
-
-                RockBottomAPI.logger().info("Created new game unique id "+game.getUniqueId()+'!');
-            }
-        }
     }
 
     @Override
@@ -211,11 +193,6 @@ public class DataManager implements IDataManager{
     @Override
     public File getModConfigFolder(){
         return this.modConfigDirectory;
-    }
-
-    @Override
-    public DataSet getGameInfo(){
-        return this.gameInfo;
     }
 
     @Override

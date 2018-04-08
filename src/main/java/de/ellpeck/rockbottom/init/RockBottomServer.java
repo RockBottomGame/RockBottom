@@ -122,6 +122,11 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
+    public UUID getDefaultUniqueId(){
+        throw new UnsupportedOperationException("Cannot get the default unique id on a dedicated server");
+    }
+
+    @Override
     public void setFullscreen(boolean fullscreen){
         throw new UnsupportedOperationException("Cannot set fullscreen on a dedicated server");
     }
@@ -139,11 +144,6 @@ public class RockBottomServer extends AbstractGame{
     @Override
     public boolean isDedicatedServer(){
         return true;
-    }
-
-    @Override
-    public void setUniqueId(UUID id){
-        throw new UnsupportedOperationException("Cannot set unique id on a dedicated server");
     }
 
     @Override

@@ -95,6 +95,7 @@ public class PacketEntityChange implements IPacket{
 
                     if(entity != null){
                         entity.load(this.entitySet);
+                        entity.setUniqueId(this.uniqueId);
                         world.addEntity(entity);
                     }
                 }

@@ -782,7 +782,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel){
+    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast){
         EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, design, channel) : new EntityPlayer(this, id, design);
 
         File file = new File(this.playerDirectory, id+".dat");
@@ -794,8 +794,31 @@ public class World implements IWorld{
             RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+'!');
         }
         else{
-            player.resetAndSpawn(RockBottomAPI.getGame());
-            RockBottomAPI.logger().info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
+            boolean loaded = false;
+
+            if(loadOrSwapLast){
+                if(this.info.lastPlayerId != null){
+                    File lastFile = new File(this.playerDirectory, this.info.lastPlayerId+".dat");
+                    if(lastFile.exists()){
+                        DataSet set = new DataSet();
+                        set.read(lastFile);
+
+                        player.load(set);
+                        RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+" from last player file "+lastFile+'!');
+
+                        lastFile.delete();
+                        loaded = true;
+                    }
+                }
+
+                this.info.lastPlayerId = id;
+                this.info.save();
+            }
+
+            if(!loaded){
+                player.resetAndSpawn(RockBottomAPI.getGame());
+                RockBottomAPI.logger().info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
+            }
         }
 
         RockBottomAPI.getEventHandler().fireEvent(new PlayerJoinWorldEvent(player, channel != null));
