@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
@@ -25,7 +27,7 @@ public class GuiLogin extends Gui{
         IGuiManager guiManager = game.getGuiManager();
         IAssetManager assetManager = game.getAssetManager();
 
-        this.nameField = new ComponentInputField(this, this.width/2-75, 35, 150, 16, true, true, false, 256, false);
+        this.nameField = new ComponentInputField(this, this.width/2-75, 25, 150, 16, true, true, false, 256, false);
         this.components.add(this.nameField);
 
         this.passField = new ComponentInputField(this, this.width/2-75, 55, 150, 16, true, true, false, 256, false);
@@ -48,6 +50,15 @@ public class GuiLogin extends Gui{
             guiManager.openGui(this.parent);
             return true;
         }, assetManager.localize(ResourceName.intern("button.back"))));
+    }
+
+    @Override
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g){
+        super.render(game, manager, g);
+
+        IFont font = manager.getFont();
+        font.drawCenteredString(this.width/2, 15, manager.localize(ResourceName.intern("info.username")), 0.35F, false);
+        font.drawCenteredString(this.width/2, 45, manager.localize(ResourceName.intern("info.password")), 0.35F, false);
     }
 
     private void updateButtons(){

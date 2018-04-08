@@ -77,6 +77,13 @@ public class GuiMainMenu extends Gui{
             return true;
         }, assetManager.localize(ResourceName.intern("button.join"))));
 
+        ComponentButton loginButton = new ComponentButton(this, start+partWidth*2, y-54, buttonWidth, 16, () -> {
+            guiManager.openGui(new GuiLogin(this));
+            return true;
+        }, assetManager.localize(ResourceName.intern("button.account_settings")));
+        this.components.add(loginButton);
+        loginButton.setActive(false);
+
         ComponentButton editorButton = new ComponentButton(this, start+partWidth*2, y-37, buttonWidth, 16, () -> {
             guiManager.openGui(new GuiPlayerEditor(this));
             return true;
@@ -84,7 +91,8 @@ public class GuiMainMenu extends Gui{
         this.components.add(editorButton);
         editorButton.setActive(false);
 
-        this.components.add(new ComponentButton(this, start+partWidth*2, y-20, buttonWidth, 16, ()->{
+        this.components.add(new ComponentButton(this, start+partWidth*2, y-20, buttonWidth, 16, () -> {
+            loginButton.setActive(!loginButton.isActive());
             editorButton.setActive(!editorButton.isActive());
             return true;
         }, "The Player"));
