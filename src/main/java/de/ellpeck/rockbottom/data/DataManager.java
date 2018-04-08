@@ -91,7 +91,6 @@ public class DataManager implements IDataManager{
     private final File saveDirectory;
     private final File screenshotDirectory;
     private final File modConfigDirectory;
-    private final File gameDataFile;
     private final File settingsFile;
     private final File serverSettingsFile;
     private final File commandPermissionFile;
@@ -109,7 +108,6 @@ public class DataManager implements IDataManager{
         this.screenshotDirectory = new File(this.gameDirectory, "screenshot");
         this.modConfigDirectory = new File(this.modsDirectory, "config");
 
-        this.gameDataFile = new File(this.gameDirectory, "game_info.dat");
         this.playerDesignFile = new File(this.gameDirectory, "player_design.dat");
         this.settingsFile = new File(this.gameDirectory, "settings.json");
         this.serverSettingsFile = new File(this.gameDirectory, "server_settings.json");
@@ -143,11 +141,6 @@ public class DataManager implements IDataManager{
     @Override
     public File getScreenshotDir(){
         return this.screenshotDirectory;
-    }
-
-    @Override
-    public File getGameDataFile(){
-        return this.gameDataFile;
     }
 
     @Override
