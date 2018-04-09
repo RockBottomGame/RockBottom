@@ -16,6 +16,8 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
 import de.ellpeck.rockbottom.api.entity.player.statistics.TileStatistic;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.PlaceTileEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
@@ -417,20 +419,29 @@ public class InternalHooks implements IInternalHooks{
                 if(tileThere != tile && tileThere.canReplace(player.world, x, y, layer)){
                     if(InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer, player)){
                         if(!simulate){
-                            tile.doPlace(player.world, x, y, layer, selected, player);
+                            PlaceTileEvent event = new PlaceTileEvent(player, selected, removeItem, layer, x, y);
+                            if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                                selected = event.instance;
+                                layer = event.layer;
+                                removeItem = event.removeItem;
+                                x = event.x;
+                                y = event.y;
 
-                            if(!player.world.isClient()){
-                                IStatistics stats = player.getStatistics();
-                                stats.getOrInit(StatisticList.TILES_PLACED_TOTAL, NumberStatistic.class).update();
-                                stats.getOrInit(StatisticList.TILES_PLACED_PER_TILE, TileStatistic.class).update(tile);
+                                tile.doPlace(player.world, x, y, layer, selected, player);
 
-                                if(removeItem){
-                                    player.getInv().remove(player.getSelectedSlot(), 1);
-                                }
+                                if(!player.world.isClient()){
+                                    IStatistics stats = player.getStatistics();
+                                    stats.getOrInit(StatisticList.TILES_PLACED_TOTAL, NumberStatistic.class).update();
+                                    stats.getOrInit(StatisticList.TILES_PLACED_PER_TILE, TileStatistic.class).update(tile);
 
-                                ResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
-                                if(sound != null){
-                                    player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+                                    if(removeItem){
+                                        player.getInv().set(player.getSelectedSlot(), selected.removeAmount(1).nullIfEmpty());
+                                    }
+
+                                    ResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
+                                    if(sound != null){
+                                        player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+                                    }
                                 }
                             }
                         }

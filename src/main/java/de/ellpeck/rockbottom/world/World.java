@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.AddEntityToWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerJoinWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldSaveEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
@@ -166,22 +167,27 @@ public class World implements IWorld{
 
     @Override
     public void addEntity(Entity entity){
-        IChunk chunk = this.getChunk(entity.x, entity.y);
-        chunk.addEntity(entity);
+        AddEntityToWorldEvent event = new AddEntityToWorldEvent(this, entity);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            entity = event.entity;
 
-        if(entity instanceof EntityPlayer){
-            EntityPlayer player = (EntityPlayer)entity;
+            IChunk chunk = this.getChunk(entity.x, entity.y);
+            chunk.addEntity(entity);
 
-            if(this.getPlayer(player.getUniqueId()) == null){
-                this.players.add(player);
+            if(entity instanceof EntityPlayer){
+                EntityPlayer player = (EntityPlayer)entity;
+
+                if(this.getPlayer(player.getUniqueId()) == null){
+                    this.players.add(player);
+                }
+                else{
+                    RockBottomAPI.logger().warning("Tried adding player "+player.getName()+" with id "+player.getUniqueId()+" to world that already contained it!");
+                }
             }
-            else{
-                RockBottomAPI.logger().warning("Tried adding player "+player.getName()+" with id "+player.getUniqueId()+" to world that already contained it!");
-            }
-        }
 
-        if(!chunk.isGenerating() && this.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), entity.x, entity.y, entity);
+            if(!chunk.isGenerating() && this.isServer()){
+                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), entity.x, entity.y, entity);
+            }
         }
     }
 

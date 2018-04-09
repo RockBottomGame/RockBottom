@@ -10,9 +10,7 @@ import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
-import de.ellpeck.rockbottom.api.event.impl.ChunkSaveEvent;
-import de.ellpeck.rockbottom.api.event.impl.EntityTickEvent;
-import de.ellpeck.rockbottom.api.event.impl.TileEntityTickEvent;
+import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -105,8 +103,11 @@ public class Chunk implements IChunk{
         isGeneratingChunk = true;
 
         for(IWorldGenerator generator : gens){
-            if(this.canGenerate(generator) && generator.shouldGenerate(this.world, this)){
-                generator.generate(this.world, this);
+            if(this.canGenerate(generator)){
+                EventResult result = RockBottomAPI.getEventHandler().fireEvent(new WorldGenEvent(this.world, this, generator));
+                if(result != EventResult.CANCELLED && (result == EventResult.MODIFIED || generator.shouldGenerate(this.world, this))){
+                    generator.generate(this.world, this);
+                }
             }
         }
 
@@ -298,73 +299,84 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public void setStateInner(TileLayer layer, int x, int y, TileState tile){
-        Preconditions.checkNotNull(tile, "Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+'!');
-        Preconditions.checkNotNull(layer, "Tried setting tile to null layer in chunk at "+this.gridX+", "+this.gridY+'!');
+    public void setStateInner(TileLayer layer, int x, int y, TileState state){
+        SetStateEvent event = new SetStateEvent(this, state, layer, x, y);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            state = event.state;
+            layer = event.layer;
+            x = event.x;
+            y = event.y;
 
-        Tile newTile = tile.getTile();
-        Preconditions.checkArgument(layer.canTileBeInLayer(this.world, this.x+x, this.y+y, newTile), "Tried setting tile "+tile+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
+            Preconditions.checkNotNull(state, "Tried setting null tile in chunk at "+this.gridX+", "+this.gridY+'!');
+            Preconditions.checkNotNull(layer, "Tried setting tile to null layer in chunk at "+this.gridX+", "+this.gridY+'!');
 
-        Tile lastTile = this.getStateInner(layer, x, y).getTile();
-        if(newTile != lastTile){
-            lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
+            TileState lastState = this.getStateInner(layer, x, y);
+            if(state != lastState){
+                Tile tile = state.getTile();
+                Preconditions.checkArgument(layer.canTileBeInLayer(this.world, this.x+x, this.y+y, tile), "Tried setting tile "+state+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
 
-            if(layer.canHoldTileEntities() && lastTile.canProvideTileEntity()){
-                this.removeTileEntity(layer, this.x+x, this.y+y);
-            }
-        }
+                Tile lastTile = lastState.getTile();
+                if(tile != lastTile){
+                    lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
-        TileState[][] grid = this.getGrid(layer, !newTile.isAir());
-        if(grid != null){
-            grid[x][y] = tile;
-        }
+                    if(layer.canHoldTileEntities() && lastTile.canProvideTileEntity()){
+                        this.removeTileEntity(layer, this.x+x, this.y+y);
+                    }
+                }
 
-        if(!this.isGenerating){
-            if(this.world.isServer()){
-                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(tile)), this.x+x, this.y+y);
-            }
-        }
+                TileState[][] grid = this.getGrid(layer, !tile.isAir());
+                if(grid != null){
+                    grid[x][y] = state;
+                }
 
-        if(newTile != lastTile){
-            if(layer.canHoldTileEntities() && newTile.canProvideTileEntity()){
-                TileEntity tileEntity = newTile.provideTileEntity(this.world, this.x+x, this.y+y, layer);
-                if(tileEntity != null){
-                    this.addTileEntity(tileEntity);
+                if(!this.isGenerating){
+                    if(this.world.isServer()){
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x+x, this.y+y, layer, this.world.getIdForState(state)), this.x+x, this.y+y);
+                    }
+                }
+
+                if(tile != lastTile){
+                    if(layer.canHoldTileEntities() && tile.canProvideTileEntity()){
+                        TileEntity tileEntity = tile.provideTileEntity(this.world, this.x+x, this.y+y, layer);
+                        if(tileEntity != null){
+                            this.addTileEntity(tileEntity);
+                        }
+                    }
+
+                    tile.onAdded(this.world, this.x+x, this.y+y, layer);
+                }
+
+                int newHeight = 0;
+                if(!tile.factorsIntoHeightMap(this.world, this.x+x, this.y+y, layer)){
+                    for(int checkY = y-1; checkY >= 0; checkY--){
+                        if(this.getStateInner(layer, x, checkY).getTile().factorsIntoHeightMap(this.world, this.x+x, this.y+checkY, layer)){
+                            newHeight = checkY+1;
+                            break;
+                        }
+                    }
+                }
+                else{
+                    newHeight = y+1;
+                }
+
+                int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
+                if(heights[x] < newHeight || heights[x] == y+1){
+                    heights[x] = newHeight;
+
+                    int totalHeight = 0;
+                    for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
+                        totalHeight += heights[checkX];
+                    }
+                    this.averageHeights.put(layer, totalHeight/Constants.CHUNK_SIZE);
+                }
+
+                if(!this.isGenerating){
+                    this.world.causeLightUpdate(this.x+x, this.y+y);
+
+                    this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
+                    this.setDirty();
                 }
             }
-
-            newTile.onAdded(this.world, this.x+x, this.y+y, layer);
-        }
-
-        int newHeight = 0;
-        if(!newTile.factorsIntoHeightMap(this.world, this.x+x, this.y+y, layer)){
-            for(int checkY = y-1; checkY >= 0; checkY--){
-                if(this.getStateInner(layer, x, checkY).getTile().factorsIntoHeightMap(this.world, this.x+x, this.y+checkY, layer)){
-                    newHeight = checkY+1;
-                    break;
-                }
-            }
-        }
-        else{
-            newHeight = y+1;
-        }
-
-        int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
-        if(heights[x] < newHeight || heights[x] == y+1){
-            heights[x] = newHeight;
-
-            int totalHeight = 0;
-            for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
-                totalHeight += heights[checkX];
-            }
-            this.averageHeights.put(layer, totalHeight/Constants.CHUNK_SIZE);
-        }
-
-        if(!this.isGenerating){
-            this.world.causeLightUpdate(this.x+x, this.y+y);
-
-            this.world.notifyNeighborsOfChange(this.x+x, this.y+y, layer);
-            this.setDirty();
         }
     }
 
@@ -964,27 +976,34 @@ public class Chunk implements IChunk{
     public void setBiomeInner(int x, int y, Biome biome){
         Preconditions.checkNotNull(biome, "Tried setting null biome in chunk at "+this.gridX+", "+this.gridY+'!');
 
-        Biome oldBiome = this.getBiomeInner(x, y);
-        if(biome != oldBiome){
-            Counter oldCounter = this.biomeAmounts.get(oldBiome);
-            if(oldCounter != null && oldCounter.get() > 0){
-                oldCounter.add(-1);
-            }
+        SetBiomeEvent event = new SetBiomeEvent(this, biome, x, y);
+        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            biome = event.biome;
+            x = event.x;
+            y = event.y;
 
-            Counter newCounter = this.biomeAmounts.computeIfAbsent(biome, b -> new Counter(0));
-            newCounter.add(1);
+            Biome oldBiome = this.getBiomeInner(x, y);
+            if(biome != oldBiome){
+                Counter oldCounter = this.biomeAmounts.get(oldBiome);
+                if(oldCounter != null && oldCounter.get() > 0){
+                    oldCounter.add(-1);
+                }
 
-            int highestAmount = 0;
-            for(Map.Entry<Biome, Counter> entry : this.biomeAmounts.entrySet()){
-                Counter counter = entry.getValue();
-                if(counter.get() > highestAmount){
-                    highestAmount = counter.get();
-                    this.mostProminentBiome = entry.getKey();
+                Counter newCounter = this.biomeAmounts.computeIfAbsent(biome, b -> new Counter(0));
+                newCounter.add(1);
+
+                int highestAmount = 0;
+                for(Map.Entry<Biome, Counter> entry : this.biomeAmounts.entrySet()){
+                    Counter counter = entry.getValue();
+                    if(counter.get() > highestAmount){
+                        highestAmount = counter.get();
+                        this.mostProminentBiome = entry.getKey();
+                    }
                 }
             }
-        }
 
-        this.biomeGrid[x][y] = biome;
+            this.biomeGrid[x][y] = biome;
+        }
     }
 
     @Override

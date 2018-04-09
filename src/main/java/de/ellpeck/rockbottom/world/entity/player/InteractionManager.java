@@ -9,16 +9,14 @@ import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
 import de.ellpeck.rockbottom.api.entity.player.statistics.TileStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
-import de.ellpeck.rockbottom.api.event.impl.AddBreakProgressEvent;
-import de.ellpeck.rockbottom.api.event.impl.BreakEvent;
-import de.ellpeck.rockbottom.api.event.impl.InteractionEvent;
-import de.ellpeck.rockbottom.api.event.impl.LayerActionEvent;
+import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.event.impl.LayerActionEvent.Type;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -57,24 +55,25 @@ public class InteractionManager implements IInteractionManager{
 
             for(Entity entity : entities){
                 if(player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player))){
-                    interactions.add(new InteractionInfo(() -> entity.onInteractWith(player, mouseX, mouseY), entity.getInteractionPriority(player, mouseX, mouseY)));
+                    interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new EntityInteractEvent(player, entity, mouseX, mouseY)) != EventResult.CANCELLED && entity.onInteractWith(player, mouseX, mouseY), entity.getInteractionPriority(player, mouseX, mouseY)));
                 }
             }
 
-            Tile tile = player.world.getState(layer, x, y).getTile();
+            TileState state = player.world.getState(layer, x, y);
+            Tile tile = state.getTile();
             if(player.isInRange(mouseX, mouseY, tile.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
-                interactions.add(new InteractionInfo(() -> tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player), tile.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player)));
+                interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new TileInteractEvent(player, state, layer, x, y, mouseX, mouseY)) != EventResult.CANCELLED && tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player), tile.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player)));
             }
 
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
             if(selected != null){
                 Item item = selected.getItem();
                 if(player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))){
-                    interactions.add(new InteractionInfo(() -> item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected), item.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player, selected)));
+                    interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new ItemInteractEvent(player, selected, mouseX, mouseY)) != EventResult.CANCELLED && item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected), item.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player, selected)));
                 }
             }
 
-            interactions.sort(Comparator.comparingInt(InteractionInfo:: getPriority).reversed());
+            interactions.sort(Comparator.comparingInt(InteractionInfo :: getPriority).reversed());
             for(InteractionInfo info : interactions){
                 if(info.interaction.get()){
                     return true;

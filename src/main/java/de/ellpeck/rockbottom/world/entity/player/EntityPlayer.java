@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
+import de.ellpeck.rockbottom.api.event.impl.ItemPickupEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
@@ -191,25 +192,31 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 for(AbstractEntityItem entity : entities){
                     if(entity.canPickUp()){
                         ItemInstance instance = entity.getItem();
-                        ItemInstance theoreticalLeft = this.inv.add(instance, true);
-                        if(theoreticalLeft == null || theoreticalLeft.getAmount() != instance.getAmount()){
-                            if(Util.distanceSq(entity.x, entity.y, this.x, this.y+0.5) <= 0.25){
-                                ItemInstance left = this.inv.addExistingFirst(instance, false);
 
-                                if(left == null){
-                                    entity.kill();
+                        ItemPickupEvent event = new ItemPickupEvent(this, entity, instance);
+                        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                             instance = event.instance;
+
+                            ItemInstance theoreticalLeft = this.inv.add(instance, true);
+                            if(theoreticalLeft == null || theoreticalLeft.getAmount() != instance.getAmount()){
+                                if(Util.distanceSq(entity.x, entity.y, this.x, this.y+0.5) <= 0.25){
+                                    ItemInstance left = this.inv.addExistingFirst(instance, false);
+
+                                    if(left == null){
+                                        entity.kill();
+                                    }
+                                    else{
+                                        entity.setItem(left);
+                                    }
                                 }
                                 else{
-                                    entity.setItem(left);
-                                }
-                            }
-                            else{
-                                double x = this.x-entity.x;
-                                double y = (this.y+0.5)-entity.y;
-                                double length = Util.distance(0, 0, x, y);
+                                    double x = this.x-entity.x;
+                                    double y = (this.y+0.5)-entity.y;
+                                    double length = Util.distance(0, 0, x, y);
 
-                                entity.motionX = 0.3*(x/length);
-                                entity.motionY = 0.3*(y/length);
+                                    entity.motionX = 0.3*(x/length);
+                                    entity.motionY = 0.3*(y/length);
+                                }
                             }
                         }
                     }
