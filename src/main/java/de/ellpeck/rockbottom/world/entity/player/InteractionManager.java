@@ -279,7 +279,7 @@ public class InteractionManager implements IInteractionManager{
                                 }
                             }
 
-                            EventResult placeResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.BREAK, player.world, layer, mousedTileX, mousedTileY));
+                            EventResult placeResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.INTERACT, player.world, layer, mousedTileX, mousedTileY));
                             if(placeResult != EventResult.CANCELLED && (placeResult == EventResult.MODIFIED || layer.canEditLayer(game, player))){
                                 if(this.placeCooldown <= 0){
                                     if(Settings.KEY_PLACE.isDown()){
