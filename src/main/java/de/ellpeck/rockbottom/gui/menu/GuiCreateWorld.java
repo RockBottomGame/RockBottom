@@ -29,6 +29,7 @@ public class GuiCreateWorld extends Gui{
     private final long defaultSeed = Util.RANDOM.nextLong();
     private long seed;
     private boolean storyMode = true;
+    private boolean created;
 
     public GuiCreateWorld(Gui parent){
         super(parent);
@@ -47,24 +48,32 @@ public class GuiCreateWorld extends Gui{
 
         int bottomY = this.height;
         this.components.add(new ComponentButton(this, this.width/2-82, bottomY-30, 80, 16, () -> {
-            this.updateNameAndSeed(game);
+            if(!this.created){
+                this.created = true;
 
-            File file = makeWorldFile(game, this.worldName);
-            WorldInfo info = new WorldInfo(file);
-            info.seed = this.seed;
-            info.storyMode = this.storyMode;
-            info.save();
+                this.updateNameAndSeed(game);
 
-            IGuiManager gui = game.getGuiManager();
-            gui.fadeOut(20, () -> {
-                game.startWorld(file, info, true);
-                gui.fadeIn(20, null);
-            });
+                File file = makeWorldFile(game, this.worldName);
+                WorldInfo info = new WorldInfo(file);
+                info.seed = this.seed;
+                info.storyMode = this.storyMode;
+                info.save();
 
-            return true;
+
+                IGuiManager gui = game.getGuiManager();
+                gui.fadeOut(20, () -> {
+                    game.startWorld(file, info, true);
+                    gui.fadeIn(20, null);
+                });
+
+                return true;
+            }
+            else{
+                return false;
+            }
         }, manager.localize(ResourceName.intern("button.create"))));
 
-        this.components.add(new ComponentToggleButton(this, this.width/2-50, 112, 100, 16, this.storyMode, ()->{
+        this.components.add(new ComponentToggleButton(this, this.width/2-50, 112, 100, 16, this.storyMode, () -> {
             this.storyMode = !this.storyMode;
             return true;
         }, "button.story_mode"));
