@@ -76,10 +76,8 @@ public class GuiCredits extends Gui{
     public void update(IGameInstance game){
         super.update(game);
 
-        this.renderY -= 0.65F;
-
-        if(this.renderY <= -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))){
-            this.renderY = this.height;
+        if(this.renderY > -(this.credits.size()*game.getAssetManager().getFont().getHeight(0.45F))+this.height-5){
+            this.renderY -= 0.6F;
         }
     }
 
