@@ -290,7 +290,7 @@ public class AssetManager implements IAssetManager, IDisposable{
             this.assets.put(identifier, path, fallback);
             asset = fallback;
 
-            RockBottomAPI.logger().warning("Resource with name "+path+" is missing!");
+            RockBottomAPI.logger().warning("Resource with name "+path+" is missing for identifier "+identifier);
         }
 
         return (T)asset;

@@ -61,10 +61,12 @@ public class CommandWhitelist extends Command{
             }
             else if("enable".equals(args[0])){
                 net.enableWhitelist(true);
+                net.saveServerSettings();
                 return new ChatComponentText(FormattingCode.GREEN+"Enabled whitelist!");
             }
             else if("disable".equals(args[0])){
                 net.enableWhitelist(false);
+                net.saveServerSettings();
                 return new ChatComponentText(FormattingCode.GREEN+"Disabled whitelist!");
             }
         }

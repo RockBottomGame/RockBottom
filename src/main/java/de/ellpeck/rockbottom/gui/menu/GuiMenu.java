@@ -24,13 +24,13 @@ public class GuiMenu extends Gui{
     @Override
     public void init(IGameInstance game){
         super.init(game);
-
         this.components.add(new ComponentButton(this, 0, 0, this.width, 16, () -> {
-            game.getGuiManager().openGui(new GuiSettings(this));
+            game.getGuiManager().openGui(new GuiStatistics(this));
             return true;
-        }, game.getAssetManager().localize(ResourceName.intern("button.settings"))));
+        }, game.getAssetManager().localize(ResourceName.intern("button.stats"))));
+
         if(!RockBottomAPI.getNet().isClient()){
-            this.components.add(new ComponentButton(this, 0, 20, this.width, 16, () -> {
+            this.components.add(new ComponentButton(this, 0, 18, this.width, 16, () -> {
                 if(RockBottomAPI.getNet().isServer()){
                     RockBottomAPI.getNet().shutdown();
 
@@ -60,7 +60,12 @@ public class GuiMenu extends Gui{
             });
         }
 
-        this.components.add(new ComponentButton(this, 10, this.height-36, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, 10, this.height-52, 80, 16, () -> {
+            game.getGuiManager().openGui(new GuiSettings(this));
+            return true;
+        }, game.getAssetManager().localize(ResourceName.intern("button.settings"))));
+
+        this.components.add(new ComponentButton(this, 10, this.height-34, 80, 16, () -> {
             game.getGuiManager().fadeOut(20, () -> {
                 game.quitWorld();
                 game.getGuiManager().fadeIn(20, null);

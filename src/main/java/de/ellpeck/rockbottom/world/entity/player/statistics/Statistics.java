@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.entity.player.statistics.Statistic;
 import de.ellpeck.rockbottom.api.entity.player.statistics.StatisticInitializer;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 public class Statistics implements IStatistics{
 
     private final Map<ResourceName, Statistic> statistics = new HashMap<>();
+    private final Map<ResourceName, Statistic> statisticsUnmodifiable = Collections.unmodifiableMap(this.statistics);
 
     @Override
     public Statistic getOrInit(ResourceName name){
@@ -34,6 +36,12 @@ public class Statistics implements IStatistics{
         }
     }
 
+    @Override
+    public Map<ResourceName, Statistic> getActiveStats(){
+        return this.statisticsUnmodifiable;
+    }
+
+    @Override
     public void save(DataSet set){
         int counter = 0;
         for(Map.Entry<ResourceName, Statistic> entry : this.statistics.entrySet()){
@@ -47,6 +55,7 @@ public class Statistics implements IStatistics{
         set.addInt("stat_amount", counter);
     }
 
+    @Override
     public void load(DataSet set){
         this.statistics.clear();
 
