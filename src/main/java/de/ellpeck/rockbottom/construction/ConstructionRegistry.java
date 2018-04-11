@@ -11,6 +11,7 @@ public final class ConstructionRegistry{
 
     public static final List<IRecipe> BRITTLE_TOOLS = new ArrayList<>();
     public static final List<IRecipe> STONE_TOOLS = new ArrayList<>();
+    public static final List<IRecipe> COPPER_TOOLS = new ArrayList<>();
     public static IRecipe ladder;
     public static IRecipe chest;
     public static IRecipe grassTorch;
@@ -24,6 +25,10 @@ public final class ConstructionRegistry{
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_PICKAXE));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_AXE));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_SHOVEL));
+
+        COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_PICKAXE));
+        COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_AXE));
+        COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_SHOVEL));
 
         ladder = getRecipe(GameContent.TILE_LADDER.getItem());
         chest = getRecipe(GameContent.TILE_CHEST.getItem());

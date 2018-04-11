@@ -57,18 +57,22 @@ public final class ContentRegistry{
         new TileCopper().register();
         new TileSimpleFurnace().register();
 
-        new ItemTool(ResourceName.intern("brittle_pickaxe"), 2F, ToolType.PICKAXE, 1).register();
-        new ItemTool(ResourceName.intern("brittle_axe"), 2F, ToolType.AXE, 1).register();
-        new ItemTool(ResourceName.intern("brittle_shovel"), 2F, ToolType.SHOVEL, 1).register();
+        new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, ToolType.PICKAXE, 1).register();
+        new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, ToolType.AXE, 1).register();
+        new ItemTool(ResourceName.intern("brittle_shovel"), 1.25F, ToolType.SHOVEL, 1).register();
         new ItemFirework().register();
         new ItemStartNote().register();
         new ItemBasic(ResourceName.intern("plant_fiber")).register();
         new ItemTwig().register();
-        new ItemTool(ResourceName.intern("stone_pickaxe"), 4F, ToolType.PICKAXE, 5).register();
-        new ItemTool(ResourceName.intern("stone_axe"), 3F, ToolType.AXE, 5).register();
-        new ItemTool(ResourceName.intern("stone_shovel"), 3F, ToolType.SHOVEL, 5).register();
+        new ItemTool(ResourceName.intern("stone_pickaxe"), 2.5F, ToolType.PICKAXE, 5).register();
+        new ItemTool(ResourceName.intern("stone_axe"), 1.5F, ToolType.AXE, 5).register();
+        new ItemTool(ResourceName.intern("stone_shovel"), 1.5F, ToolType.SHOVEL, 5).register();
         new ItemCopperCanister().register();
         new ItemTool(ResourceName.intern("super_pickaxe"), Float.MAX_VALUE, ToolType.PICKAXE, Integer.MAX_VALUE).addToolType(ToolType.AXE, Integer.MAX_VALUE).addToolType(ToolType.SHOVEL, Integer.MAX_VALUE).register();
+        new ItemBasic(ResourceName.intern("copper_ingot")).register();
+        new ItemTool(ResourceName.intern("copper_pickaxe"), 4F, ToolType.PICKAXE, 10).register();
+        new ItemTool(ResourceName.intern("copper_axe"), 2F, ToolType.AXE, 10).register();
+        new ItemTool(ResourceName.intern("copper_shovel"), 2F, ToolType.SHOVEL, 10).register();
 
         new BiomeSky(ResourceName.intern("sky"), Integer.MAX_VALUE, 40, 100).register();
         new BiomeGrassland(ResourceName.intern("grassland"), 60, -5, 1000).register();

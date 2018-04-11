@@ -86,6 +86,11 @@ public class ResourceRegistry implements IResourceRegistry{
     }
 
     @Override
+    public List<String> getNames(ItemInstance instance){
+        return this.getNames(new ResInfo(instance));
+    }
+
+    @Override
     public List<String> getNames(ResInfo resource){
         List<String> names = this.resourceNames.get(resource);
         return names == null ? Collections.emptyList() : Collections.unmodifiableList(names);

@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.tile.entity;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.construction.smelting.SmeltingRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -50,13 +51,16 @@ public class TileEntitySimpleFurnace extends TileEntity{
                 if(input != null){
                     SmeltingRecipe recipe = SmeltingRecipe.forInput(input);
                     if(recipe != null){
-                        ItemInstance output = recipe.getOutput();
-                        ItemInstance currentOutput = this.inventory.get(2);
+                        IUseInfo recipeInput = recipe.getInput();
+                        if(input.getAmount() >= recipeInput.getAmount()){
+                            ItemInstance output = recipe.getOutput();
+                            ItemInstance currentOutput = this.inventory.get(2);
 
-                        if(currentOutput == null || (currentOutput.isEffectivelyEqual(output) && currentOutput.fitsAmount(output.getAmount()))){
-                            this.maxSmeltTime.set(recipe.getTime());
-                            this.scheduledOutput = output.copy();
-                            this.inventory.remove(0, 1);
+                            if(currentOutput == null || (currentOutput.isEffectivelyEqual(output) && currentOutput.fitsAmount(output.getAmount()))){
+                                this.maxSmeltTime.set(recipe.getTime());
+                                this.scheduledOutput = output.copy();
+                                this.inventory.remove(0, recipeInput.getAmount());
+                            }
                         }
                     }
                 }

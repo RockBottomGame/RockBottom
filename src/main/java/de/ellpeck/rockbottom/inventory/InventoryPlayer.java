@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.inventory;
 
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -23,7 +25,7 @@ public class InventoryPlayer extends Inventory{
                             fullness++;
 
                             if(fullness >= inv.getSlotAmount()/2){
-                                player.getKnowledge().teachRecipe(ConstructionRegistry.chest, true);
+                                player.getKnowledge().teachRecipe(ConstructionRegistry.chest);
                                 break;
                             }
                         }
@@ -35,7 +37,18 @@ public class InventoryPlayer extends Inventory{
                 if(ConstructionRegistry.grassTorch != null && !ConstructionRegistry.grassTorch.isKnown(player)){
                     ItemInstance instance = inv.get(slot);
                     if(instance != null && instance.getItem() == GameContent.TILE_GRASS_TORCH.getItem()){
-                        player.getKnowledge().teachRecipe(ConstructionRegistry.grassTorch, true);
+                        player.getKnowledge().teachRecipe(ConstructionRegistry.grassTorch);
+                    }
+                }
+            });
+
+            this.addChangeCallback((inv, slot) -> {
+                ItemInstance instance = inv.get(slot);
+                if(instance != null && RockBottomAPI.getResourceRegistry().getNames(instance).contains(GameContent.RES_COPPER_PROCESSED)){
+                    for(IRecipe recipe : ConstructionRegistry.COPPER_TOOLS){
+                        if(recipe != null){
+                            player.getKnowledge().teachRecipe(recipe);
+                        }
                     }
                 }
             });
