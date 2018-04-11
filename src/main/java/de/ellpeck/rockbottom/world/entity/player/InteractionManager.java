@@ -5,9 +5,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
-import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
-import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
-import de.ellpeck.rockbottom.api.entity.player.statistics.TileStatistic;
+import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.event.impl.LayerActionEvent.Type;
@@ -107,9 +105,10 @@ public class InteractionManager implements IInteractionManager{
             tile.doBreak(player.world, x, y, layer, player, effective, true);
 
             if(!player.world.isClient()){
-                IStatistics stats = player.getStatistics();
-                stats.getOrInit(StatisticList.TILES_BROKEN_TOTAL, NumberStatistic.class).update();
-                stats.getOrInit(StatisticList.TILES_BROKEN_PER_TILE, TileStatistic.class).update(tile);
+                Item item = tile.getItem();
+                if(item != null){
+                    player.getStatistics().getOrInit(StatisticList.TILES_BROKEN, ItemStatistic.class).update(item);
+                }
             }
         }
     }

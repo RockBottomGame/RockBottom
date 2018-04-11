@@ -13,20 +13,19 @@ import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
-import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
-import de.ellpeck.rockbottom.api.entity.player.statistics.TileStatistic;
+import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlaceTileEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
+import de.ellpeck.rockbottom.api.gui.AbstractStatGui;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
-import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
-import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
-import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
+import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.gui.container.ContainerSlot;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.internal.IInternalHooks;
+import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
@@ -34,6 +33,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -430,9 +430,10 @@ public class InternalHooks implements IInternalHooks{
                                 tile.doPlace(player.world, x, y, layer, selected, player);
 
                                 if(!player.world.isClient()){
-                                    IStatistics stats = player.getStatistics();
-                                    stats.getOrInit(StatisticList.TILES_PLACED_TOTAL, NumberStatistic.class).update();
-                                    stats.getOrInit(StatisticList.TILES_PLACED_PER_TILE, TileStatistic.class).update(tile);
+                                    Item item = tile.getItem();
+                                    if(item != null){
+                                        player.getStatistics().getOrInit(StatisticList.TILES_PLACED, ItemStatistic.class).update(item);
+                                    }
 
                                     if(removeItem){
                                         player.getInv().set(player.getSelectedSlot(), selected.removeAmount(1).nullIfEmpty());
@@ -1065,5 +1066,42 @@ public class InternalHooks implements IInternalHooks{
     @Override
     public AbstractEntityItem makeItem(IWorld world, ItemInstance inst, double x, double y, double motionX, double motionY){
         return new EntityItem(world, inst);
+    }
+
+    @Override
+    public List<ComponentStatistic> makeItemStatComponents(IGameInstance game, ItemStatistic.Stat stat, Map<Item, Counter> statMap, AbstractStatGui gui, ComponentMenu menu, ResourceName textureLocation){
+        return Collections.singletonList(new ComponentStatistic(gui, () -> game.getAssetManager().localize(stat.getInitializer().getName().addPrefix("stat.")), () -> String.valueOf(stat.getTotal()), stat.getTotal(), () -> {
+            List<ComponentStatistic> list = new ArrayList<>();
+
+            for(Map.Entry<Item, Counter> entry : statMap.entrySet()){
+                Item item = entry.getKey();
+                Counter value = entry.getValue();
+
+                ItemInstance instance = new ItemInstance(item);
+                String statName = game.getAssetManager().localize(stat.getInitializer().getName().addPrefix("stat.").addSuffix("_per_tile"));
+
+                list.add(new ComponentStatistic(gui, () -> {
+                    instance.setMeta((game.getTotalTicks()/Constants.TARGET_TPS)%(item.getHighestPossibleMeta()+1));
+                    return String.format(statName, instance.getDisplayName());
+                }, value :: toString, value.get(), null){
+                    @Override
+                    public void renderStatGraphic(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
+                        IItemRenderer renderer = item.getRenderer();
+                        if(renderer != null){
+                            renderer.render(game, manager, g, item, instance, x+1, y+1, 12F, Colors.WHITE);
+                        }
+                    }
+                });
+            }
+
+            game.getGuiManager().openGui(gui.makeSubGui(list));
+
+            return true;
+        }){
+            @Override
+            public void renderStatGraphic(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
+                manager.getTexture(textureLocation).draw(x+1, y+1, 12F, 12F);
+            }
+        });
     }
 }

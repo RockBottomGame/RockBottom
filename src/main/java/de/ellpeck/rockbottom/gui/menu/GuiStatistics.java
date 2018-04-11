@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.statistics.Statistic;
+import de.ellpeck.rockbottom.api.gui.AbstractStatGui;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
@@ -20,13 +21,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class GuiStatistics extends Gui{
+public class GuiStatistics extends AbstractStatGui{
 
     public boolean statsReceived = false;
     private boolean hasData;
 
     public GuiStatistics(Gui parent){
-        super(158, 162, parent);
+        super(parent);
+    }
+
+    @Override
+    public AbstractStatGui makeSubGui(List<ComponentStatistic> subComponents){
+        return new GuiStatistics(this){
+            @Override
+            protected List<ComponentStatistic> getComponents(IGameInstance game, AbstractEntityPlayer player, ComponentMenu menu){
+                return subComponents;
+            }
+        };
     }
 
     @Override
@@ -39,10 +50,7 @@ public class GuiStatistics extends Gui{
             ComponentMenu menu = new ComponentMenu(this, 0, 0, this.height-24, 1, 7, new BoundBox(0, 0, 150, this.height-24).add(this.x+8, this.y));
             this.components.add(menu);
 
-            List<ComponentStatistic> components = new ArrayList<>();
-            for(Statistic stat : player.getStatistics().getActiveStats().values()){
-                components.addAll(stat.getInitializer().getDisplayComponents(game, stat, this, menu));
-            }
+            List<ComponentStatistic> components = this.getComponents(game, player, menu);
             components.sort(Comparator.comparingInt(ComponentStatistic :: getPriority).reversed());
 
             for(ComponentStatistic comp : components){
@@ -58,6 +66,14 @@ public class GuiStatistics extends Gui{
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
+    }
+
+    protected List<ComponentStatistic> getComponents(IGameInstance game, AbstractEntityPlayer player, ComponentMenu menu){
+        List<ComponentStatistic> components = new ArrayList<>();
+        for(Statistic stat : player.getStatistics().getActiveStats().values()){
+            components.addAll(stat.getInitializer().getDisplayComponents(game, stat, this, menu));
+        }
+        return components;
     }
 
     @Override
