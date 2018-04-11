@@ -273,7 +273,7 @@ public class Font implements IFont{
                 }
 
                 if(prop == FontProp.ITALICS){
-                    float italicness = 3F;
+                    float italicness = 2F;
 
                     if(shadow){
                         this.texture.draw(x+italicness+shadowOffset, y+shadowOffset, x+shadowOffset, y2+shadowOffset, x2+shadowOffset, y2+shadowOffset, x2+italicness+shadowOffset, y+shadowOffset, srcX, srcY, srcX+this.charWidth, srcY+this.charHeight, null, shadowColor);
