@@ -211,13 +211,13 @@ public class InternalHooks implements IInternalHooks{
                                     if(motionX > 0 && tempBox.getMaxX() <= box.getMinX()){
                                         double diff = box.getMinX()-tempBox.getMaxX();
                                         if(diff < motionX){
-                                            motionX = diff;
+                                            motionX = Math.round(diff);
                                         }
                                     }
                                     else if(motionX < 0 && tempBox.getMinX() >= box.getMaxX()){
                                         double diff = box.getMaxX()-tempBox.getMinX();
                                         if(diff > motionX){
-                                            motionX = diff;
+                                            motionX = Math.round(diff);
                                         }
                                     }
                                 }
