@@ -1,8 +1,6 @@
 package de.ellpeck.rockbottom.util;
 
 import com.google.common.base.Charsets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
@@ -13,16 +11,9 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.log.Logging;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 import java.awt.*;
 import java.io.*;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,8 +57,6 @@ public final class CrashManager{
             comment = "Comment unavailable for some reason :(";
         }
 
-        String pasteLink = null;
-
         try{
             StringWriter writer = new StringWriter();
             writeInfo(new PrintWriter(writer), divider, name, date, "Find a file with this crash report at "+file, comment, t);
@@ -78,44 +67,13 @@ public final class CrashManager{
             log(Level.SEVERE, "The game crashed for the following reason", t);
         }
 
-        if(!Main.suppressCrashPaste){
-            try{
-                StringWriter writer = new StringWriter();
-                writeInfo(new PrintWriter(writer), divider, name, date, null, comment, t);
-
-                JsonObject object = paste(writer.toString(), name+' '+date);
-                pasteLink = object.get("link").getAsString();
-
-                writer.close();
-            }
-            catch(Exception e){
-                log(Level.WARNING, "Couldn't paste crash report online", e);
-            }
-        }
-
         try{
             PrintWriter writer = new PrintWriter(file);
-            writeInfo(writer, divider, name, date, "Find an online version of this crash report at "+pasteLink, comment, t);
+            writeInfo(writer, divider, name, date, null, comment, t);
             writer.flush();
         }
         catch(Exception e){
             log(Level.WARNING, "Couldn't save crash report to "+file, e);
-        }
-
-        log(Level.INFO, divider, null);
-        if(pasteLink != null){
-            log(Level.INFO, "Uploaded crash report to "+pasteLink, null);
-        }
-        log(Level.INFO, "Saved crash report to "+file, null);
-        log(Level.INFO, divider, null);
-
-        if(!Main.isDedicatedServer && pasteLink != null){
-            try{
-                Desktop.getDesktop().browse(new URI(pasteLink));
-            }
-            catch(Exception e){
-                log(Level.WARNING, "Couldn't open paste link", e);
-            }
         }
     }
 
@@ -205,35 +163,6 @@ public final class CrashManager{
             char pre = "KMGTPE".charAt(exp-1);
             return String.format("%.1f %sB", bytes/Math.pow(1024, exp), pre);
         }
-    }
-
-    private static JsonObject paste(String code, String name) throws
-            Exception{
-        HttpClient client = HttpClients.createDefault();
-
-        String url = "https://api.paste.ee/v1/pastes";
-        HttpPost post = new HttpPost(url);
-
-        JsonObject json = new JsonObject();
-        JsonArray array = new JsonArray();
-
-        JsonObject section = new JsonObject();
-        section.addProperty("name", name);
-        section.addProperty("contents", code);
-
-        array.add(section);
-        json.add("sections", array);
-
-        StringEntity entity = new StringEntity(json.toString());
-        entity.setContentType("application/json");
-        post.setEntity(entity);
-
-        post.addHeader("X-Auth-Token", "uf9VO0VLbW4F0iyvqLRjfBQMJJB8GuCAg06gOCENS");
-
-        HttpResponse response = client.execute(post);
-        String resString = EntityUtils.toString(response.getEntity());
-
-        return Util.JSON_PARSER.parse(resString).getAsJsonObject();
     }
 
     private static String getComment() throws Exception{

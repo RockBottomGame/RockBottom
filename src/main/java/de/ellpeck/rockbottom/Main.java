@@ -32,7 +32,6 @@ public final class Main{
     public static boolean fullscreen;
     public static int vertexCache;
     public static boolean saveTextureSheet;
-    public static boolean suppressCrashPaste;
 
     public static boolean isDedicatedServer;
     public static int port;
@@ -53,7 +52,6 @@ public final class Main{
             OptionSpec optionSkipIntro = parser.accepts("skipIntro");
             OptionSpec optionFullscreen = parser.accepts("fullscreen");
             OptionSpec optionSaveTextureSheet = parser.accepts("saveTextureSheet");
-            OptionSpec optionSuppressPaste = parser.accepts("suppressCrashPaste");
             OptionSpec optionServer = parser.accepts("server");
             OptionSpec optionIgnored = parser.nonOptions();
 
@@ -85,7 +83,6 @@ public final class Main{
             vertexCache = options.valueOf(optionVertexCache);
             fullscreen = options.has(optionFullscreen);
             saveTextureSheet = options.has(optionSaveTextureSheet);
-            suppressCrashPaste = options.has(optionSuppressPaste);
 
             Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
                 throw new RuntimeException("There was an unhandled exception in thread "+t.getName(), e);
