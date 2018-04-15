@@ -32,6 +32,7 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -434,6 +435,11 @@ public class World implements IWorld{
     @Override
     public int getExpectedSurfaceHeight(TileLayer layer, int x){
         return this.heightGen.getHeight(layer, x);
+    }
+
+    @Override
+    public INoiseGen getNoiseGenForBiome(Biome biome){
+        return this.biomeGen.getBiomeNoise(this, biome);
     }
 
     @Override
