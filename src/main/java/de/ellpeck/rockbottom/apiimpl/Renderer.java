@@ -417,11 +417,15 @@ public class Renderer implements IRenderer{
     }
 
     @Override
-    public void renderSlotInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, boolean hovered){
+    public void renderSlotInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, boolean hovered, boolean canPlaceInto){
         ITexture texture = manager.getTexture(SLOT_NAME);
 
         int color = game.getSettings().guiColor;
-        if(!hovered){
+
+        if(!canPlaceInto){
+            color = Colors.multiply(color, 0.5F);
+        }
+        else if(!hovered){
             color = Colors.multiply(color, 0.75F);
         }
 
