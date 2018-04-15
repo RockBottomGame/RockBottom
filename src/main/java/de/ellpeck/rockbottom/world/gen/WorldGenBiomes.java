@@ -66,9 +66,11 @@ public class WorldGenBiomes implements IWorldGenerator{
         int totalWeight = 0;
 
         for(Biome biome : RockBottomAPI.BIOME_REGISTRY.values()){
-            if(perfectBlobPos.getY() >= biome.getLowestY() && perfectBlobPos.getY() <= biome.getHighestY()){
-                possibleBiomes.add(biome);
-                totalWeight += biome.getWeight();
+            if(biome.canGenerateNaturally()){
+                if(perfectBlobPos.getY() >= biome.getLowestY() && perfectBlobPos.getY() <= biome.getHighestY()){
+                    possibleBiomes.add(biome);
+                    totalWeight += biome.getWeight();
+                }
             }
         }
 
