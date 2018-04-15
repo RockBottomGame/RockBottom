@@ -17,17 +17,16 @@ public class BiomeDesert extends BiomeBasic{
     }
 
     @Override
-    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
+    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight){
         if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
             double worldX = chunk.getX()+x;
-            int height = this.getExpectedSurfaceHeight(world,chunk.getX()+x, layer, noise);
 
             if(layer == TileLayer.BACKGROUND){
-                height -= Util.ceil(noise.make2dNoise(worldX/10D, 0D)*3D);
+                surfaceHeight -= Util.ceil(noise.make2dNoise(worldX/10D, 0D)*3D);
             }
 
-            if(chunk.getY()+y <= height){
-                if(chunk.getY()+y >= height-Util.ceil(noise.make2dNoise(worldX/5D, 0D)*3D)){
+            if(chunk.getY()+y <= surfaceHeight){
+                if(chunk.getY()+y >= surfaceHeight-Util.ceil(noise.make2dNoise(worldX/5D, 0D)*3D)){
                     return GameContent.TILE_SAND.getDefState();
                 }
                 else{
@@ -36,11 +35,6 @@ public class BiomeDesert extends BiomeBasic{
             }
         }
         return GameContent.TILE_AIR.getDefState();
-    }
-
-    @Override
-    public int getExpectedSurfaceHeight(IWorld world, int x, TileLayer layer, INoiseGen noise){
-        return (int)(((noise.make2dNoise(x/100D, 0D)+noise.make2dNoise(x/20D, 0D)*2D)/3D)*10D);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class BiomeUnderground extends BiomeBasic{
     }
 
     @Override
-    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
+    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight){
         if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
             return GameContent.TILE_STONE.getDefState();
         }

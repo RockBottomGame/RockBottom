@@ -602,8 +602,8 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public int getExpectedSurfaceHeight(TileLayer layer, int x, int y){
-        return this.world.getExpectedSurfaceHeight(layer, x, y);
+    public int getExpectedSurfaceHeight(TileLayer layer, int x){
+        return this.world.getExpectedSurfaceHeight(layer, x);
     }
 
     @Override

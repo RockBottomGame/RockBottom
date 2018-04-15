@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.WorldRenderer;
+import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeGrassland;
 
 public class NatureTheme implements IMainMenuTheme{
@@ -17,7 +18,7 @@ public class NatureTheme implements IMainMenuTheme{
 
     @Override
     public TileState getState(int x, int y, TileState[][] grid){
-        TileState state = BiomeGrassland.getState(TileLayer.MAIN, y, BiomeGrassland.getHeight(TileLayer.MAIN, x, this.noiseGen, 2, 5), -Integer.MAX_VALUE);
+        TileState state = BiomeGrassland.getState(TileLayer.MAIN, y, WorldGenHeights.getHeight(TileLayer.MAIN, x, this.noiseGen, 2, 5), -Integer.MAX_VALUE);
         if(state.getTile().isAir()){
             if(Util.RANDOM.nextFloat() >= 0.45F){
                 if(grid[x][y-1].getTile().isFullTile()){

@@ -19,6 +19,7 @@ import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.EntitySand;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
+import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeDesert;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeGrassland;
 import de.ellpeck.rockbottom.world.gen.biome.BiomeSky;
@@ -84,6 +85,7 @@ public final class ContentRegistry{
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("firework"), EntityFirework.class);
 
         RockBottomAPI.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);
+        RockBottomAPI.WORLD_GENERATORS.register(WorldGenHeights.ID, WorldGenHeights.class);
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("grass"), WorldGenGrass.class);
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("trees"), WorldGenTrees.class);
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("flowers"), WorldGenFlowers.class);

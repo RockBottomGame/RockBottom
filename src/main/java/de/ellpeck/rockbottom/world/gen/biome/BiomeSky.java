@@ -16,7 +16,7 @@ public class BiomeSky extends BiomeBasic{
     }
 
     @Override
-    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise){
+    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight){
         return GameContent.TILE_AIR.getDefState();
     }
 }

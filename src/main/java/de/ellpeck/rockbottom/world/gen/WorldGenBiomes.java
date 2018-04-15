@@ -40,20 +40,22 @@ public class WorldGenBiomes implements IWorldGenerator{
 
     @Override
     public void generate(IWorld world, IChunk chunk){
-        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                Biome biome = this.getBiome(chunk.getX()+x, chunk.getY()+y, world);
-                chunk.setBiomeInner(x, y, biome);
+        for(TileLayer layer : TileLayer.getAllLayers()){
+            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                int height = world.getExpectedSurfaceHeight(layer, chunk.getX()+x);
 
-                INoiseGen noise = this.getBiomeNoise(world, biome);
-                for(TileLayer layer : TileLayer.getAllLayers()){
-                    chunk.setStateInner(layer, x, y, biome.getState(world, chunk, x, y, layer, noise));
+                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                    Biome biome = this.getBiome(world, chunk.getX()+x, chunk.getY()+y);
+                    chunk.setBiomeInner(x, y, biome);
+
+                    INoiseGen noise = this.getBiomeNoise(world, biome);
+                    chunk.setStateInner(layer, x, y, biome.getState(world, chunk, x, y, layer, noise, height));
                 }
             }
         }
     }
 
-    public Biome getBiome(int x, int y, IWorld world){
+    public Biome getBiome(IWorld world, int x, int y){
         int size = Math.min(MAX_SIZE, SIZE);
         int twoToSize = (int)Math.pow(2, size);
 
@@ -73,15 +75,18 @@ public class WorldGenBiomes implements IWorldGenerator{
         this.biomeRandom.setSeed(Util.scrambleSeed(blobPos.getX(), blobPos.getY(), world.getSeed())+world.getSeed());
         int chosenWeight = Util.floor(this.biomeRandom.nextDouble()*(double)totalWeight);
 
+        Biome retBiome = GameContent.BIOME_SKY;
+
         int weight = 0;
         for(Biome biome : possibleBiomes){
             weight += biome.getWeight();
             if(weight >= chosenWeight){
-                return biome;
+                retBiome = biome;
+                break;
             }
         }
 
-        return GameContent.BIOME_SKY;
+        return retBiome.getVariationToGenerate(world, x, y);
     }
 
     private Pos2 getBlobPos(int x, int y, int size, IWorld world){
@@ -93,7 +98,7 @@ public class WorldGenBiomes implements IWorldGenerator{
     }
 
     public INoiseGen getBiomeNoise(IWorld world, Biome biome){
-       return this.biomeNoiseGens.computeIfAbsent(biome, b -> RockBottomAPI.getApiHandler().makeSimplexNoise(b.getBiomeSeed(world)));
+        return this.biomeNoiseGens.computeIfAbsent(biome, b -> RockBottomAPI.getApiHandler().makeSimplexNoise(b.getBiomeSeed(world)));
     }
 
     private Pos2 zoomFromPos(Pos2 pos, long seed, IWorld world){
