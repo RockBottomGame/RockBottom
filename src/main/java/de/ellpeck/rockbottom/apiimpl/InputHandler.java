@@ -130,26 +130,28 @@ public class InputHandler implements IInputHandler{
     protected boolean keyPressed(int key){
         if(this.game.getGuiManager().getGui() == null){
             AbstractEntityPlayer player = this.game.getPlayer();
-            if(Settings.KEY_MENU.isKey(key)){
-                this.game.openIngameMenu();
-                return true;
-            }
-            else if(Settings.KEY_INVENTORY.isKey(key)){
-                player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
-                return true;
-            }
-            else if(Settings.KEY_COMPENDIUM.isKey(key)){
-                player.openGuiContainer(new GuiCompendium(player), player.getInvContainer());
-                return true;
-            }
-            else if(Settings.KEY_CHAT.isKey(key)){
-                if(RockBottomAPI.getNet().isActive()){
-                    this.game.getGuiManager().openGui(new GuiChat());
+            if(!player.isDead()){
+                if(Settings.KEY_MENU.isKey(key)){
+                    this.game.openIngameMenu();
+                    return true;
                 }
-                else{
-                    this.game.getChatLog().displayMessage(new ChatComponentTranslation(ResourceName.intern("info.no_server")));
+                else if(Settings.KEY_INVENTORY.isKey(key)){
+                    player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
+                    return true;
                 }
-                return true;
+                else if(Settings.KEY_COMPENDIUM.isKey(key)){
+                    player.openGuiContainer(new GuiCompendium(player), player.getInvContainer());
+                    return true;
+                }
+                else if(Settings.KEY_CHAT.isKey(key)){
+                    if(RockBottomAPI.getNet().isActive()){
+                        this.game.getGuiManager().openGui(new GuiChat());
+                    }
+                    else{
+                        this.game.getChatLog().displayMessage(new ChatComponentTranslation(ResourceName.intern("info.no_server")));
+                    }
+                    return true;
+                }
             }
         }
 
