@@ -49,6 +49,7 @@ public class Chunk implements IChunk{
     protected final World world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final Map<TileLayer, TileState[][]> stateGrid = new HashMap<>();
+    protected final List<TileLayer> layersByRenderPrio = new ArrayList<>();
     protected final byte[][][] lightGrid = new byte[2][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final List<Entity> entities = new ArrayList<>();
     protected final Map<UUID, Entity> entityLookup = new HashMap<>();
@@ -135,6 +136,7 @@ public class Chunk implements IChunk{
         Preconditions.checkState(this.tickingTileEntities.size() <= this.tileEntities.size(), "There are more ticking TileEntities than there are normal ones!");
         Preconditions.checkState(this.scheduledUpdates.size() == this.scheduledUpdateLookup.size(), "ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
         Preconditions.checkState(this.playersOutOfRangeCached.size() == this.playersOutOfRangeCachedTimers.size(), "PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
+        Preconditions.checkState(this.stateGrid.size() == this.layersByRenderPrio.size(), "StateGrid and LayerList are out of sync!");
     }
 
     protected void updateEntities(IGameInstance game){
@@ -1013,8 +1015,8 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public Set<TileLayer> getLoadedLayers(){
-        return this.stateGrid.keySet();
+    public List<TileLayer> getLoadedLayers(){
+        return this.layersByRenderPrio;
     }
 
     @Override
@@ -1074,6 +1076,11 @@ public class Chunk implements IChunk{
                 }
             }
             this.stateGrid.put(layer, grid);
+
+            this.layersByRenderPrio.add(layer);
+            this.layersByRenderPrio.sort(Comparator.comparingInt(TileLayer :: getRenderPriority).reversed());
+
+            RockBottomAPI.logger().fine("Adding new tile layer "+layer+" to chunk at "+this.gridX+", "+this.gridY);
         }
 
         return grid;

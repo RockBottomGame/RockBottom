@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.Set;
+import java.util.List;
 
 public class PacketChunk implements IPacket{
 
@@ -25,7 +25,7 @@ public class PacketChunk implements IPacket{
         this.chunkX = chunk.getGridX();
         this.chunkY = chunk.getGridY();
 
-        Set<TileLayer> layers = chunk.getLoadedLayers();
+        List<TileLayer> layers = chunk.getLoadedLayers();
         this.tileData = new int[TOTAL*layers.size()];
         this.layers = layers.toArray(new TileLayer[0]);
 

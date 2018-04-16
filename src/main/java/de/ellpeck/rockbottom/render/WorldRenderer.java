@@ -82,7 +82,6 @@ public class WorldRenderer{
         int maxX = Math.max(topLeftX, bottomRightX);
         int maxY = Math.max(topLeftY, bottomRightY);
 
-        List<TileLayer> layers = TileLayer.getLayersByRenderPrio();
         List<Entity> entities = new ArrayList<>();
         List<EntityPlayer> players = new ArrayList<>();
 
@@ -90,7 +89,7 @@ public class WorldRenderer{
             for(int gridX = minX; gridX <= maxX; gridX++){
                 if(world.isChunkLoaded(gridX, gridY)){
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
-                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, layers, false);
+                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, chunk.getLoadedLayers(), false);
 
                     for(Entity entity : chunk.getAllEntities()){
                         entities.add(entity);
@@ -150,7 +149,7 @@ public class WorldRenderer{
             for(int gridX = minX; gridX <= maxX; gridX++){
                 if(world.isChunkLoaded(gridX, gridY)){
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
-                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, layers, true);
+                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, chunk.getLoadedLayers(), true);
                 }
             }
         }
