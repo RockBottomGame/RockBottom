@@ -156,24 +156,34 @@ public class InputHandler implements IInputHandler{
         }
 
         if(Main.debugMode){
+            Renderer renderer = this.game.renderer;
+
             if(key == GLFW.GLFW_KEY_F1){
-                this.game.renderer.isDebug = !this.game.renderer.isDebug;
+                renderer.isDebug = !renderer.isDebug;
                 return true;
             }
             else if(key == GLFW.GLFW_KEY_F2){
-                this.game.renderer.isLineDebug = !this.game.renderer.isLineDebug;
-                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, this.game.renderer.isLineDebug ? GL11.GL_LINE : GL11.GL_FILL);
+                renderer.isLineDebug = !renderer.isLineDebug;
+                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, renderer.isLineDebug ? GL11.GL_LINE : GL11.GL_FILL);
             }
             else if(key == GLFW.GLFW_KEY_F4){
-                this.game.renderer.isGuiDebug = !this.game.renderer.isGuiDebug;
+                renderer.isGuiDebug = !renderer.isGuiDebug;
                 return true;
             }
             else if(key == GLFW.GLFW_KEY_F5){
-                this.game.renderer.isItemInfoDebug = !this.game.renderer.isItemInfoDebug;
+                renderer.isItemInfoDebug = !renderer.isItemInfoDebug;
                 return true;
             }
             else if(key == GLFW.GLFW_KEY_F6){
-                this.game.renderer.isChunkBorderDebug = !this.game.renderer.isChunkBorderDebug;
+                renderer.isChunkBorderDebug = !renderer.isChunkBorderDebug;
+                return true;
+            }
+            else if(key == GLFW.GLFW_KEY_F7){
+                renderer.isBiomeDebug = !renderer.isBiomeDebug;
+                return true;
+            }
+            else if(key == GLFW.GLFW_KEY_F8){
+                renderer.isHeightDebug = !renderer.isHeightDebug;
                 return true;
             }
         }

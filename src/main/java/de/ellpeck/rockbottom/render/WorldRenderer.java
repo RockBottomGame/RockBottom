@@ -26,6 +26,7 @@ import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class WorldRenderer{
 
@@ -36,6 +37,7 @@ public class WorldRenderer{
     public static final int[] MAIN_COLORS = new int[Constants.MAX_LIGHT+1];
     private final List<Pos2> starMap = new ArrayList<>();
     private final List<Cloud> clouds = new ArrayList<>();
+    private final Random random = new Random();
 
     public WorldRenderer(){
         float step = 1F/Constants.MAX_LIGHT;
@@ -105,7 +107,7 @@ public class WorldRenderer{
 
         g.setScale(scale, scale);
 
-        entities.stream().sorted(Comparator.comparingInt(Entity:: getRenderPriority)).forEach(entity -> {
+        entities.stream().sorted(Comparator.comparingInt(Entity :: getRenderPriority)).forEach(entity -> {
             if(entity.shouldRender()){
                 IEntityRenderer renderer = entity.getRenderer();
                 if(renderer != null){
@@ -130,14 +132,39 @@ public class WorldRenderer{
             }
         });
 
-        if(g.isChunkBorderDebug()){
+        boolean chunkDebug = g.isChunkBorderDebug();
+        boolean heightDebug = g.isHeightDebug();
+        boolean biomeDebug = g.isBiomeDebug();
+
+        if(chunkDebug || heightDebug || biomeDebug){
             for(int gridX = minX; gridX <= maxX; gridX++){
                 for(int gridY = minY; gridY <= maxY; gridY++){
                     if(world.isChunkLoaded(gridX, gridY)){
-                        int x = Util.toWorldPos(gridX);
-                        int y = Util.toWorldPos(gridY);
+                        int worldX = Util.toWorldPos(gridX);
+                        int worldY = Util.toWorldPos(gridY);
 
-                        g.addEmptyRect(x-transX, -y-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 0.1F, Colors.GREEN);
+                        if(chunkDebug){
+                            g.addEmptyRect(worldX-transX, -worldY-transY+1F-Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 0.1F, Colors.GREEN);
+                        }
+
+                        if(heightDebug || biomeDebug){
+                            IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
+                            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+                                if(heightDebug){
+                                    for(TileLayer layer : TileLayer.getLayersByRenderPrio()){
+                                        this.random.setSeed(layer.getName().hashCode());
+                                        g.addFilledRect(worldX-transX+x, -worldY-transY+1F-chunk.getHeightInner(layer, x), 1F, 0.1F, Colors.random(this.random));
+                                    }
+                                }
+
+                                if(biomeDebug){
+                                    for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                                        this.random.setSeed(chunk.getBiomeInner(x, y).getName().hashCode());
+                                        g.addFilledRect(worldX-transX+x+0.45F, -worldY-transY-y+0.45F, 0.1F, 0.1F, Colors.random(this.random));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

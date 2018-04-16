@@ -64,6 +64,9 @@ public class Renderer implements IRenderer{
     public boolean isChunkBorderDebug;
     public boolean isGuiDebug;
     public boolean isLineDebug;
+    public boolean isHeightDebug;
+    public boolean isBiomeDebug;
+
     private float displayRatio;
     private float guiScale;
     private float worldScale;
@@ -684,6 +687,16 @@ public class Renderer implements IRenderer{
     @Override
     public boolean isLineDebug(){
         return this.isLineDebug;
+    }
+
+    @Override
+    public boolean isBiomeDebug(){
+        return this.isBiomeDebug;
+    }
+
+    @Override
+    public boolean isHeightDebug(){
+        return this.isHeightDebug;
     }
 
     @Override
