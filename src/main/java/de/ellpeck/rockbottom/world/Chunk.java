@@ -99,7 +99,7 @@ public class Chunk implements IChunk{
 
     private void generate(List<? extends IWorldGenerator> gens){
         if(isGeneratingChunk){
-            RockBottomAPI.logger().warning("CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT "+this.gridX+", "+this.gridY+"! THIS SHOULD NOT HAPPEN!");
+            RockBottomAPI.logger().log(Level.WARNING, "CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT "+this.gridX+", "+this.gridY+"! THIS SHOULD NOT HAPPEN!", new IllegalStateException());
         }
 
         isGeneratingChunk = true;
@@ -953,7 +953,7 @@ public class Chunk implements IChunk{
             this.callRetroactiveGeneration();
         }
         else{
-            this.generate(this.world.getSortedGenerators());
+            this.generate(this.world.getSortedLoopingGenerators());
             this.world.calcInitialSkylight(this.x, this.y, this.x+Constants.CHUNK_SIZE-1, this.y+Constants.CHUNK_SIZE-1);
         }
 

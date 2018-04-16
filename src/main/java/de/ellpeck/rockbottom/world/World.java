@@ -61,6 +61,7 @@ public class World implements IWorld{
     protected final WorldInfo info;
     private final DynamicRegistryInfo regInfo;
     private final List<IWorldGenerator> generators;
+    private final List<IWorldGenerator> loopingGenerators;
     private final List<IWorldGenerator> retroactiveGenerators;
     protected final List<AbstractEntityPlayer> playersUnmodifiable;
     protected File directory;
@@ -77,6 +78,7 @@ public class World implements IWorld{
         this.regInfo = regInfo;
 
         List<IWorldGenerator> generators = new ArrayList<>();
+        List<IWorldGenerator> loopingGenerators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
         for(Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.entrySet()){
@@ -84,9 +86,14 @@ public class World implements IWorld{
                 IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
                 generator.initWorld(this);
 
-                if(generator.generatesRetroactively()){
-                    retroactiveGenerators.add(generator);
+                if(generator.generatesPerChunk()){
+                    loopingGenerators.add(generator);
+
+                    if(generator.generatesRetroactively()){
+                        retroactiveGenerators.add(generator);
+                    }
                 }
+
                 generators.add(generator);
             }
             catch(Exception e){
@@ -96,12 +103,14 @@ public class World implements IWorld{
 
         Comparator comp = Comparator.comparingInt(IWorldGenerator :: getPriority).reversed();
         generators.sort(comp);
+        loopingGenerators.sort(comp);
         retroactiveGenerators.sort(comp);
 
         this.generators = Collections.unmodifiableList(generators);
+        this.loopingGenerators = Collections.unmodifiableList(loopingGenerators);
         this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
 
-        RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world ("+(this.retroactiveGenerators.size()+" of which can generate retroactively)"));
+        RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world ("+this.loopingGenerators.size()+" per chunk, "+this.retroactiveGenerators.size()+" retroactive)");
 
         this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes)this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry!");
         this.heightGen = Preconditions.checkNotNull((WorldGenHeights)this.getGenerator(WorldGenHeights.ID), "The default heights generator has been removed from the registry!");
@@ -778,6 +787,11 @@ public class World implements IWorld{
     @Override
     public List<IWorldGenerator> getSortedGenerators(){
         return this.generators;
+    }
+
+    @Override
+    public List<IWorldGenerator> getSortedLoopingGenerators(){
+        return this.loopingGenerators;
     }
 
     @Override

@@ -30,6 +30,11 @@ public class WorldGenHeights implements IWorldGenerator{
     }
 
     @Override
+    public boolean generatesPerChunk(){
+        return false;
+    }
+
+    @Override
     public int getPriority(){
         return 15000;
     }
