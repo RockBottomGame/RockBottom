@@ -60,7 +60,7 @@ public class World implements IWorld{
     protected final Table<Integer, Integer, IChunk> chunkLookup = HashBasedTable.create();
     protected final WorldInfo info;
     private final DynamicRegistryInfo regInfo;
-    private final List<IWorldGenerator> generators;
+    private final Map<ResourceName, IWorldGenerator> generators;
     private final List<IWorldGenerator> loopingGenerators;
     private final List<IWorldGenerator> retroactiveGenerators;
     protected final List<AbstractEntityPlayer> playersUnmodifiable;
@@ -77,7 +77,7 @@ public class World implements IWorld{
         this.info = info;
         this.regInfo = regInfo;
 
-        List<IWorldGenerator> generators = new ArrayList<>();
+        Map<ResourceName, IWorldGenerator> generators = new HashMap<>();
         List<IWorldGenerator> loopingGenerators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
@@ -94,7 +94,7 @@ public class World implements IWorld{
                     }
                 }
 
-                generators.add(generator);
+                generators.put(entry.getKey(), generator);
             }
             catch(Exception e){
                 RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class "+entry.getValue(), e);
@@ -102,11 +102,10 @@ public class World implements IWorld{
         }
 
         Comparator comp = Comparator.comparingInt(IWorldGenerator :: getPriority).reversed();
-        generators.sort(comp);
         loopingGenerators.sort(comp);
         retroactiveGenerators.sort(comp);
 
-        this.generators = Collections.unmodifiableList(generators);
+        this.generators = Collections.unmodifiableMap(generators);
         this.loopingGenerators = Collections.unmodifiableList(loopingGenerators);
         this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
 
@@ -785,7 +784,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public List<IWorldGenerator> getSortedGenerators(){
+    public Map<ResourceName, IWorldGenerator> getAllGenerators(){
         return this.generators;
     }
 
@@ -801,12 +800,7 @@ public class World implements IWorld{
 
     @Override
     public IWorldGenerator getGenerator(ResourceName name){
-        for(IWorldGenerator gen : this.getSortedGenerators()){
-            if(name.equals(RockBottomAPI.WORLD_GENERATORS.getId(gen.getClass()))){
-                return gen;
-            }
-        }
-        return null;
+        return this.generators.get(name);
     }
 
     @Override
