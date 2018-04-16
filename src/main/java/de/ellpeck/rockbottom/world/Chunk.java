@@ -319,6 +319,8 @@ public class Chunk implements IChunk{
                 Preconditions.checkArgument(layer.canTileBeInLayer(this.world, this.x+x, this.y+y, tile), "Tried setting tile "+state+" at "+(this.x+x)+", "+(this.y+y)+" on layer "+layer+" that doesn't allow it!");
 
                 Tile lastTile = lastState.getTile();
+                boolean oldHeightMap = lastTile.factorsIntoHeightMap(this.world, this.x+x, this.y+y, layer);
+
                 if(tile != lastTile){
                     lastTile.onRemoved(this.world, this.x+x, this.y+y, layer);
 
@@ -349,28 +351,32 @@ public class Chunk implements IChunk{
                     tile.onAdded(this.world, this.x+x, this.y+y, layer);
                 }
 
-                int newHeight = 0;
-                if(!tile.factorsIntoHeightMap(this.world, this.x+x, this.y+y, layer)){
-                    for(int checkY = y-1; checkY >= 0; checkY--){
-                        if(this.getStateInner(layer, x, checkY).getTile().factorsIntoHeightMap(this.world, this.x+x, this.y+checkY, layer)){
-                            newHeight = checkY+1;
-                            break;
+                boolean newHeightMap = tile.factorsIntoHeightMap(this.world, this.x+x, this.y+y, layer);
+                if(newHeightMap != oldHeightMap){
+                    int newHeight = 0;
+
+                    if(!newHeightMap){
+                        for(int checkY = y-1; checkY >= 0; checkY--){
+                            if(this.getStateInner(layer, x, checkY).getTile().factorsIntoHeightMap(this.world, this.x+x, this.y+checkY, layer)){
+                                newHeight = checkY+1;
+                                break;
+                            }
                         }
                     }
-                }
-                else{
-                    newHeight = y+1;
-                }
-
-                int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
-                if(heights[x] < newHeight || heights[x] == y+1){
-                    heights[x] = newHeight;
-
-                    int totalHeight = 0;
-                    for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
-                        totalHeight += heights[checkX];
+                    else{
+                        newHeight = y+1;
                     }
-                    this.averageHeights.put(layer, totalHeight/Constants.CHUNK_SIZE);
+
+                    int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
+                    if(heights[x] < newHeight || heights[x] == y+1){
+                        heights[x] = newHeight;
+
+                        int totalHeight = 0;
+                        for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
+                            totalHeight += heights[checkX];
+                        }
+                        this.averageHeights.put(layer, totalHeight/Constants.CHUNK_SIZE);
+                    }
                 }
 
                 if(!this.isGenerating){
