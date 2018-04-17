@@ -14,16 +14,13 @@ import de.ellpeck.rockbottom.item.ItemCopperCanister;
 import de.ellpeck.rockbottom.item.ItemFirework;
 import de.ellpeck.rockbottom.item.ItemStartNote;
 import de.ellpeck.rockbottom.item.ItemTwig;
+import de.ellpeck.rockbottom.world.entity.EntityFalling;
 import de.ellpeck.rockbottom.world.entity.EntityFirework;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
-import de.ellpeck.rockbottom.world.entity.EntitySand;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
 import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
-import de.ellpeck.rockbottom.world.gen.biome.BiomeDesert;
-import de.ellpeck.rockbottom.world.gen.biome.BiomeGrassland;
-import de.ellpeck.rockbottom.world.gen.biome.BiomeSky;
-import de.ellpeck.rockbottom.world.gen.biome.BiomeUnderground;
+import de.ellpeck.rockbottom.world.gen.biome.*;
 import de.ellpeck.rockbottom.world.gen.feature.*;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
@@ -41,10 +38,11 @@ public final class ContentRegistry{
         new TileLeaves().register();
         new TileFlower().register();
         new TilePebbles().register();
-        new TileSand().register();
+        new TileFalling(ResourceName.intern("sand")).register();
         new TileBasic(ResourceName.intern("sandstone")).register();
         new TileOreMaterial(ResourceName.intern("coal")).register();
         new TileTorch(ResourceName.intern("torch")).register();
+        new TileSnow().register();
         new TileLadder().register();
         new TileChest().register();
         new TileSign().register();
@@ -79,9 +77,10 @@ public final class ContentRegistry{
         new BiomeGrassland(ResourceName.intern("grassland"), 60, -5, 1000).register();
         new BiomeDesert(ResourceName.intern("desert"), 60, -5, 500).register();
         new BiomeUnderground(ResourceName.intern("underground"), -5, Integer.MIN_VALUE, 1000).register();
+        new BiomeTaiga(ResourceName.intern("taiga"), 60, -5, 350).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("item"), EntityItem.class);
-        RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("sand"), EntitySand.class);
+        RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("falling"), EntityFalling.class);
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("firework"), EntityFirework.class);
 
         RockBottomAPI.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);

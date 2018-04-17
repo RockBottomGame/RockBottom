@@ -47,7 +47,7 @@ public class WorldGenStartHut implements IWorldGenerator{
                 int x = this.generatorRandom.nextInt(Constants.CHUNK_SIZE-structure.getWidth());
 
                 int y = chunk.getHeightInner(TileLayer.MAIN, x);
-                if(y < Constants.CHUNK_SIZE && y < Constants.CHUNK_SIZE-structure.getHeight()){
+                if(y > 0 && y < Constants.CHUNK_SIZE-structure.getHeight()){
                     if(chunk.getStateInner(x, y-1).getTile().isFullTile()){
                         this.genStartHouse(structure, chunk, x, y-1);
 

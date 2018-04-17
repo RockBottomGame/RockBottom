@@ -68,6 +68,11 @@ public class ParticleManager implements IParticleManager{
     }
 
     @Override
+    public void addSnowParticle(IWorld world, double x, double y, double motionX, double motionY, int maxLife){
+        this.addParticle(new ParticleSnow(world, x, y, motionX, motionY, maxLife));
+    }
+
+    @Override
     public int getAmount(){
         return this.particles.size();
     }

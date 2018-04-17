@@ -223,20 +223,16 @@ public class WorldRenderer{
 
             if(renderer != null){
                 if(foreground){
-                    if(forcesForeground){
-                        this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light);
-                    }
-
-                    renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light, forcesForeground, true);
                 }
                 else if(!forcesForeground){
-                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light);
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light, true, false);
                 }
             }
         }
     }
 
-    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, IApiHandler api, int x, int y, float transX, float transY, float scale, int[] light){
+    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, IApiHandler api, int x, int y, float transX, float transY, float scale, int[] light, boolean renderNormal, boolean renderForeground){
         boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
 
         if(isBreakTile){
@@ -248,7 +244,13 @@ public class WorldRenderer{
             g.setProgram(program == null ? null : manager.getShaderProgram(program));
         }
 
-        renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+        if(renderNormal){
+            renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+        }
+
+        if(renderForeground){
+            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+        }
 
         if(isBreakTile){
             ITexture tex = manager.getTexture(ResourceName.intern("break."+Util.ceil(input.breakProgress*8F)));
