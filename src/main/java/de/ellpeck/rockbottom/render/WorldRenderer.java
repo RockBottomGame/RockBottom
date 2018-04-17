@@ -132,11 +132,25 @@ public class WorldRenderer{
             }
         });
 
+        g.setScale(1F, 1F);
+
+        for(int gridY = minY; gridY <= maxY; gridY++){
+            for(int gridX = minX; gridX <= maxX; gridX++){
+                if(world.isChunkLoaded(gridX, gridY)){
+                    IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
+                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, chunk.getLoadedLayers(), true);
+                }
+            }
+        }
+        g.setProgram(null);
+
         boolean chunkDebug = g.isChunkBorderDebug();
         boolean heightDebug = g.isHeightDebug();
         boolean biomeDebug = g.isBiomeDebug();
 
         if(chunkDebug || heightDebug || biomeDebug){
+            g.setScale(scale, scale);
+
             for(int gridX = minX; gridX <= maxX; gridX++){
                 for(int gridY = minY; gridY <= maxY; gridY++){
                     if(world.isChunkLoaded(gridX, gridY)){
@@ -168,19 +182,9 @@ public class WorldRenderer{
                     }
                 }
             }
-        }
 
-        g.setScale(1F, 1F);
-
-        for(int gridY = minY; gridY <= maxY; gridY++){
-            for(int gridX = minX; gridX <= maxX; gridX++){
-                if(world.isChunkLoaded(gridX, gridY)){
-                    IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
-                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, chunk.getLoadedLayers(), true);
-                }
-            }
+            g.setScale(1F, 1F);
         }
-        g.setProgram(null);
     }
 
     private void renderChunk(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, float transX, float transY, float scale, List<TileLayer> layers, boolean foreground){
