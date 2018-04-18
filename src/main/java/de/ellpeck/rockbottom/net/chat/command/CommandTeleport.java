@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class CommandTeleport extends Command{
 
@@ -42,7 +43,8 @@ public class CommandTeleport extends Command{
         }
 
         if(args.length > 2){
-            player = game.getWorld().getPlayer(chat.getPlayerIdFromString(args[2]));
+            UUID id = chat.getPlayerIdFromString(args[2]);
+            player = id != null ? game.getWorld().getPlayer(id) : null;
 
             if(player == null){
                 return new ChatComponentText(FormattingCode.RED+"Player "+args[2]+" not found!");

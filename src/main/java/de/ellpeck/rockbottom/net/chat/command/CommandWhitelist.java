@@ -29,13 +29,13 @@ public class CommandWhitelist extends Command{
 
             if("add".equals(args[0])){
                 if(args.length > 1){
-                    try{
-                        UUID id = chat.getPlayerIdFromString(args[1]);
+                    UUID id = chat.getPlayerIdFromString(args[1]);
+                    if(id != null){
                         net.whitelist(id);
                         net.saveServerSettings();
                         return new ChatComponentText(FormattingCode.GREEN+"Added player "+id+" to the whitelist!");
                     }
-                    catch(Exception e){
+                    else{
                         return new ChatComponentText(FormattingCode.RED+"Couldn't parse player id!");
                     }
                 }
@@ -45,13 +45,13 @@ public class CommandWhitelist extends Command{
             }
             else if("remove".equals(args[0])){
                 if(args.length > 1){
-                    try{
-                        UUID id = chat.getPlayerIdFromString(args[1]);
+                    UUID id = chat.getPlayerIdFromString(args[1]);
+                    if(id != null){
                         net.removeWhitelist(id);
                         net.saveServerSettings();
                         return new ChatComponentText(FormattingCode.GREEN+"Removed player "+id+" from the whitelist!");
                     }
-                    catch(Exception e){
+                    else{
                         return new ChatComponentText(FormattingCode.RED+"Couldn't parse player id!");
                     }
                 }
