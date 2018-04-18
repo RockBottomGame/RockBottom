@@ -22,6 +22,6 @@ public class BiomeSky extends BiomeBasic{
 
     @Override
     public int getLowestY(IWorld world, int x, int y){
-        return world.getExpectedSurfaceHeight(TileLayer.MAIN, x)+45;
+        return world.getExpectedSurfaceHeight(TileLayer.MAIN, x)+30;
     }
 }
