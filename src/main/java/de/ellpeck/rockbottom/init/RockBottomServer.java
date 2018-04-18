@@ -34,7 +34,7 @@ public class RockBottomServer extends AbstractGame{
         super.init();
 
         boolean isNew;
-        File file = new File(this.dataManager.getWorldsDir(), "world_server");
+        File file = new File(this.dataManager.getWorldsDir(), this.settings.worldName);
 
         WorldInfo info = new WorldInfo(file);
         if(WorldInfo.exists(file)){

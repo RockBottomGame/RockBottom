@@ -93,6 +93,7 @@ public class DataManager implements IDataManager{
     private final File saveDirectory;
     private final File screenshotDirectory;
     private final File modConfigDirectory;
+    private final File settingsDirectory;
     private final File settingsFile;
     private final File serverSettingsFile;
     private final File commandPermissionFile;
@@ -109,15 +110,16 @@ public class DataManager implements IDataManager{
         this.saveDirectory = new File(this.gameDirectory, "save");
         this.screenshotDirectory = new File(this.gameDirectory, "screenshot");
         this.modConfigDirectory = new File(this.modsDirectory, "config");
+        this.settingsDirectory = new File(this.gameDirectory, "settings");
 
         this.playerDesignFile = new File(this.gameDirectory, "player_design.dat");
-        this.settingsFile = new File(this.gameDirectory, "settings.json");
-        this.serverSettingsFile = new File(this.gameDirectory, "server_settings.json");
-        this.commandPermissionFile = new File(this.gameDirectory, "command_permissions.json");
-        this.whitelistFile = new File(this.gameDirectory, "whitelist.json");
-        this.blacklistFile = new File(this.gameDirectory, "blacklist.json");
-        this.modSettingsFile = new File(this.gameDirectory, "mod_settings.json");
-        this.contentPackSettingsFile = new File(this.gameDirectory, "content_pack_settings.json");
+        this.settingsFile = new File(this.settingsDirectory, "settings.json");
+        this.serverSettingsFile = new File(this.settingsDirectory, "server_settings.json");
+        this.commandPermissionFile = new File(this.settingsDirectory, "command_permissions.json");
+        this.whitelistFile = new File(this.settingsDirectory, "whitelist.json");
+        this.blacklistFile = new File(this.settingsDirectory, "blacklist.json");
+        this.modSettingsFile = new File(this.settingsDirectory, "mod_settings.json");
+        this.contentPackSettingsFile = new File(this.settingsDirectory, "content_pack_settings.json");
     }
 
     @Override
@@ -188,6 +190,11 @@ public class DataManager implements IDataManager{
     @Override
     public File getModConfigFolder(){
         return this.modConfigDirectory;
+    }
+
+    @Override
+    public File getSettingsFolder(){
+        return this.settingsDirectory;
     }
 
     @Override
