@@ -436,6 +436,18 @@ public class World implements IWorld{
     }
 
     @Override
+    public int getAverageChunkHeight(TileLayer layer, int x, int bottomY){
+        IChunk chunk = this.getChunk(x, bottomY);
+        return chunk.getAverageChunkHeight(layer, x, bottomY);
+    }
+
+    @Override
+    public float getChunkFlatness(TileLayer layer, int x, int y){
+        IChunk chunk = this.getChunk(x, y);
+        return chunk.getChunkFlatness(layer, x, y);
+    }
+
+    @Override
     public Biome getExpectedBiome(int x, int y){
         return this.biomeGen.getBiome(this, x, y);
     }

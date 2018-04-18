@@ -24,11 +24,6 @@ public class TileFalling extends TileBasic{
         tryFall(world, x, y, layer);
     }
 
-    @Override
-    public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
-        tryFall(world, x, y, layer);
-    }
-
     private static void tryFall(IWorld world, int x, int y, TileLayer layer){
         if(!world.isClient() && layer == TileLayer.MAIN){
             if(world.isPosLoaded(x, y-1)){

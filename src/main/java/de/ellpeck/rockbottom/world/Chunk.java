@@ -70,6 +70,7 @@ public class Chunk implements IChunk{
     private final Map<TileLayer, int[]> heights = new HashMap<>();
     private final Map<TileLayer, Integer> averageHeights = new HashMap<>();
     private final boolean isPersistent;
+    private final Map<TileLayer, Float> flatness = new HashMap<>();
 
     public Chunk(World world, int gridX, int gridY, boolean isPersistent){
         this.world = world;
@@ -371,10 +372,15 @@ public class Chunk implements IChunk{
                     if(heights[x] < newHeight || heights[x] == y+1){
                         heights[x] = newHeight;
 
+                        Set<Integer> uniqueHeights = new HashSet<>();
                         int totalHeight = 0;
+
                         for(int checkX = 0; checkX < Constants.CHUNK_SIZE; checkX++){
+                            uniqueHeights.add(heights[checkX]);
                             totalHeight += heights[checkX];
                         }
+
+                        this.flatness.put(layer, 1F-(uniqueHeights.size()-1F)/(Constants.CHUNK_SIZE-1F));
                         this.averageHeights.put(layer, totalHeight/Constants.CHUNK_SIZE);
                     }
                 }
@@ -598,6 +604,16 @@ public class Chunk implements IChunk{
     @Override
     public int getChunkHeight(TileLayer layer, int x, int bottomY){
         return this.getHeight(layer, x);
+    }
+
+    @Override
+    public int getAverageChunkHeight(TileLayer layer, int x, int bottomY){
+        return this.getAverageHeight(layer);
+    }
+
+    @Override
+    public float getChunkFlatness(TileLayer layer, int x, int y){
+        return this.getFlatness(layer);
     }
 
     @Override
@@ -984,6 +1000,11 @@ public class Chunk implements IChunk{
     @Override
     public int getAverageHeight(TileLayer layer){
         return this.averageHeights.getOrDefault(layer, 0);
+    }
+
+    @Override
+    public float getFlatness(TileLayer layer){
+        return this.flatness.getOrDefault(layer, 1F);
     }
 
     @Override

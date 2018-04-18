@@ -73,11 +73,11 @@ public final class ContentRegistry{
         new ItemTool(ResourceName.intern("copper_axe"), 2F, ToolType.AXE, 10).register();
         new ItemTool(ResourceName.intern("copper_shovel"), 2F, ToolType.SHOVEL, 10).register();
 
-        new BiomeSky(ResourceName.intern("sky"), Integer.MAX_VALUE, 40, 100).register();
+        new BiomeSky(ResourceName.intern("sky"), Integer.MAX_VALUE, 100).register();
         new BiomeGrassland(ResourceName.intern("grassland"), 60, -5, 1000).register();
         new BiomeDesert(ResourceName.intern("desert"), 60, -5, 500).register();
         new BiomeUnderground(ResourceName.intern("underground"), -5, Integer.MIN_VALUE, 1000).register();
-        new BiomeTaiga(ResourceName.intern("taiga"), 60, -5, 350).register();
+        new BiomeColdGrassland(ResourceName.intern("cold_grassland")).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("item"), EntityItem.class);
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("falling"), EntityFalling.class);

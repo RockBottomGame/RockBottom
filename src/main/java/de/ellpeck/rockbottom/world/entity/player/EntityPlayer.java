@@ -492,10 +492,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public double getJumpHeight(){
-        double height = 0.28D;
+        double height = 0.29D;
 
         if(this.hasEffect(GameContent.EFFECT_JUMP_HEIGHT)){
-            height += 0.1D;
+            height += 0.125D;
         }
 
         return height;

@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
+import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
@@ -57,5 +58,11 @@ public class BiomeGrassland extends BiomeBasic{
     @Override
     public boolean canTreeGrow(IWorld world, IChunk chunk, int x, int y){
         return y > 0 && chunk.getStateInner(x, y-1).getTile().canKeepPlants(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN);
+    }
+
+    @Override
+    public Biome getVariationToGenerate(IWorld world, int x, int y){
+        int height = world.getExpectedSurfaceHeight(TileLayer.MAIN, x);
+        return height > 25 && Math.abs(y-height) <= 30 ? GameContent.BIOME_COLD_GRASSLAND : super.getVariationToGenerate(world, x, y);
     }
 }

@@ -40,15 +40,14 @@ public class WorldGenBiomes implements IWorldGenerator{
 
     @Override
     public void generate(IWorld world, IChunk chunk){
-        for(TileLayer layer : TileLayer.getAllLayers()){
-            for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-                int height = world.getExpectedSurfaceHeight(layer, chunk.getX()+x);
+        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                Biome biome = this.getBiome(world, chunk.getX()+x, chunk.getY()+y);
+                chunk.setBiomeInner(x, y, biome);
 
-                for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                    Biome biome = this.getBiome(world, chunk.getX()+x, chunk.getY()+y);
-                    chunk.setBiomeInner(x, y, biome);
-
-                    INoiseGen noise = this.getBiomeNoise(world, biome);
+                INoiseGen noise = this.getBiomeNoise(world, biome);
+                for(TileLayer layer : TileLayer.getAllLayers()){
+                    int height = world.getExpectedSurfaceHeight(layer, chunk.getX()+x);
                     chunk.setStateInner(layer, x, y, biome.getState(world, chunk, x, y, layer, noise, height));
                 }
             }
@@ -67,9 +66,9 @@ public class WorldGenBiomes implements IWorldGenerator{
 
         for(Biome biome : RockBottomAPI.BIOME_REGISTRY.values()){
             if(biome.canGenerateNaturally()){
-                if(perfectBlobPos.getY() >= biome.getLowestY() && perfectBlobPos.getY() <= biome.getHighestY()){
+                if(perfectBlobPos.getY() >= biome.getLowestY(world, x, y) && perfectBlobPos.getY() <= biome.getHighestY(world, x, y)){
                     possibleBiomes.add(biome);
-                    totalWeight += biome.getWeight();
+                    totalWeight += biome.getWeight(world, x, y);
                 }
             }
         }
@@ -81,7 +80,7 @@ public class WorldGenBiomes implements IWorldGenerator{
 
         int weight = 0;
         for(Biome biome : possibleBiomes){
-            weight += biome.getWeight();
+            weight += biome.getWeight(world, x, y);
             if(weight >= chosenWeight){
                 retBiome = biome;
                 break;

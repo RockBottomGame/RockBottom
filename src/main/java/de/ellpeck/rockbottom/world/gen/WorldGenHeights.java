@@ -40,14 +40,22 @@ public class WorldGenHeights implements IWorldGenerator{
     }
 
     public int getHeight(TileLayer layer, int x){
-        return getHeight(layer, x, this.noiseGen, 0, 10);
+        return getHeight(layer, x, this.noiseGen, 0, 10, 45);
     }
 
-    public static int getHeight(TileLayer layer, int x, INoiseGen noiseGen, int minHeight, int maxHeight){
-        double noise = noiseGen.make2dNoise(x/100D, 0D);
-        noise += noiseGen.make2dNoise(x/20D, 0D)*2D;
+    public static int getHeight(TileLayer layer, int x, INoiseGen noiseGen, int minHeight, int maxHeight, int maxMountainHeight){
+        double z = x/3125D;
 
-        int height = (int)(noise/3.5D*(double)(maxHeight-minHeight))+minHeight;
+        double noise = 0.23D*noiseGen.make2dNoise(2D*z, 0D);
+        noise += 0.17D*noiseGen.make2dNoise(4D*z, 0D);
+        noise += 1D*noiseGen.make2dNoise(16D*z, 0D);
+        noise /= 1.4D;
+        noise = 1.8D*noise*noise*noise*noise*noise*noise;
+
+        int height = (int)(noise*maxMountainHeight);
+        noise = noiseGen.make2dNoise(x/100D, 0D);
+        noise += noiseGen.make2dNoise(x/20D, 0D)*2D;
+        height = Math.min(maxMountainHeight, Math.max(minHeight, height+(int)(noise/3.5D*(double)(maxHeight-minHeight))+minHeight));
 
         if(layer == TileLayer.BACKGROUND){
             height -= Util.ceil(noiseGen.make2dNoise(x/10D, 0D)*3D);

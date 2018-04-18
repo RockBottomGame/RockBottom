@@ -7,22 +7,22 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
-import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasicVariation;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class BiomeTaiga extends BiomeBasic{
+public class BiomeColdGrassland extends BiomeBasicVariation{
 
-    public BiomeTaiga(ResourceName name, int highestY, int lowestY, int weight){
-        super(name, highestY, lowestY, weight);
+    public BiomeColdGrassland(ResourceName name){
+        super(name);
     }
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight){
         int theX = chunk.getX()+x;
         int theY = chunk.getY()+y;
-        int snowHeight = surfaceHeight+Util.ceil(noise.make2dNoise(theX/30D, 0D)*3D);
+        int snowHeight = surfaceHeight+Util.ceil(noise.make2dNoise(theX/50D, 0D)*2.5D);
 
-        if(theY <= snowHeight && theY > surfaceHeight && (layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND) && world.getExpectedBiome(theX, theY-1) == this){
+        if(theY <= snowHeight && theY > surfaceHeight && (layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND) && world.getExpectedBiome(theX, surfaceHeight+1) == this){
             return GameContent.TILE_SNOW.getDefState();
         }
         else{
