@@ -632,6 +632,16 @@ public class Chunk implements IChunk{
     }
 
     @Override
+    public int getExpectedAverageHeight(TileLayer layer, int startX, int endX){
+        return this.world.getExpectedAverageHeight(layer, startX, endX);
+    }
+
+    @Override
+    public float getExpectedSurfaceFlatness(TileLayer layer, int startX, int endX){
+        return this.world.getExpectedSurfaceFlatness(layer, startX, endX);
+    }
+
+    @Override
     public INoiseGen getNoiseGenForBiome(Biome biome){
         return this.world.getNoiseGenForBiome(biome);
     }

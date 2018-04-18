@@ -458,6 +458,24 @@ public class World implements IWorld{
     }
 
     @Override
+    public int getExpectedAverageHeight(TileLayer layer, int startX, int endX){
+        int totalHeight = 0;
+        for(int checkX = startX; checkX < endX; checkX++){
+            totalHeight += this.getExpectedSurfaceHeight(layer, checkX);
+        }
+        return totalHeight/Constants.CHUNK_SIZE;
+    }
+
+    @Override
+    public float getExpectedSurfaceFlatness(TileLayer layer, int startX, int endX){
+        Set<Integer> uniqueHeights = new HashSet<>();
+        for(int checkX = startX; checkX < endX; checkX++){
+            uniqueHeights.add(this.getExpectedSurfaceHeight(layer, checkX));
+        }
+        return 1F-(uniqueHeights.size()-1F)/(Constants.CHUNK_SIZE-1F);
+    }
+
+    @Override
     public INoiseGen getNoiseGenForBiome(Biome biome){
         return this.biomeGen.getBiomeNoise(this, biome);
     }
