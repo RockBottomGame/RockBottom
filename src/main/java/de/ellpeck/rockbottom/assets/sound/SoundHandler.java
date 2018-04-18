@@ -193,7 +193,7 @@ public final class SoundHandler{
         long lastStreamTime = Util.getTimeMillis();
         long lastSoundTime = Util.getTimeMillis();
 
-        while(game.isRunning){
+        while(game.isRunning()){
             try{
                 long currTime = Util.getTimeMillis();
 

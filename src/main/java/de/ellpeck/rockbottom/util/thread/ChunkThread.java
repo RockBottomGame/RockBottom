@@ -20,7 +20,7 @@ public class ChunkThread extends Thread{
 
     @Override
     public void run(){
-        while(this.game.isRunning){
+        while(this.game.isRunning()){
             try{
                 synchronized(this.queue){
                     while(!this.queue.isEmpty()){

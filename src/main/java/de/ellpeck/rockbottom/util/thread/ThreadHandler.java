@@ -66,7 +66,7 @@ public final class ThreadHandler{
 
             consoleThread = new Thread(() -> {
                 Scanner scanner = new Scanner(System.in);
-                while(game.isRunning){
+                while(game.isRunning()){
                     try{
                         if(scanner.hasNextLine()){
                             String input = scanner.nextLine();

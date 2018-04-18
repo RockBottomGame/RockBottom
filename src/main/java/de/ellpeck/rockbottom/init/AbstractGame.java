@@ -57,7 +57,7 @@ public abstract class AbstractGame implements IGameInstance{
     public static final String ID = "rockbottom";
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
     private final List<EnqueuedAction> enqueuedActions = new ArrayList<>();
-    public boolean isRunning = true;
+    private boolean isRunning = true;
     protected DataManager dataManager;
     protected ChatLog chatLog;
     protected World world;
@@ -431,6 +431,11 @@ public abstract class AbstractGame implements IGameInstance{
         catch(Exception e){
             RockBottomAPI.logger().log(Level.WARNING, "There was an error while trying to setup a game restart", e);
         }
+    }
+
+    @Override
+    public boolean isRunning(){
+        return this.isRunning;
     }
 
     private static class EnqueuedAction<T>{
