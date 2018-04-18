@@ -43,7 +43,7 @@ public class WorldGenHeights implements IWorldGenerator{
         return getHeight(layer, x, this.noiseGen, 0, 10, 45);
     }
 
-    public static int getHeight(TileLayer layer, int x, INoiseGen noiseGen, int minHeight, int maxHeight, int maxMountainHeight){
+    private static int getHeight(TileLayer layer, int x, INoiseGen noiseGen, int minHeight, int maxHeight, int maxMountainHeight){
         double z = x/3125D;
 
         double noise = 0.23D*noiseGen.make2dNoise(2D*z, 0D);
