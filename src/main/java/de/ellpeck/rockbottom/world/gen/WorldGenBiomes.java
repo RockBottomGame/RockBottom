@@ -59,14 +59,14 @@ public class WorldGenBiomes implements IWorldGenerator{
         int twoToSize = (int)Math.pow(2, size);
 
         Pos2 blobPos = this.getBlobPos(x, y, size, world);
-        Pos2 perfectBlobPos = new Pos2(blobPos.getX()*twoToSize, blobPos.getY()*twoToSize);
+        int perfectY = blobPos.getY()*twoToSize;
 
         List<Biome> possibleBiomes = new ArrayList<>();
         int totalWeight = 0;
 
         for(Biome biome : RockBottomAPI.BIOME_REGISTRY.values()){
             if(biome.canGenerateNaturally()){
-                if(perfectBlobPos.getY() >= biome.getLowestY(world, x, y) && perfectBlobPos.getY() <= biome.getHighestY(world, x, y)){
+                if(perfectY >= biome.getLowestY(world, x, y) && perfectY <= biome.getHighestY(world, x, y)){
                     possibleBiomes.add(biome);
                     totalWeight += biome.getWeight(world, x, y);
                 }
@@ -76,7 +76,7 @@ public class WorldGenBiomes implements IWorldGenerator{
         this.biomeRandom.setSeed(Util.scrambleSeed(blobPos.getX(), blobPos.getY(), world.getSeed())+world.getSeed());
         int chosenWeight = Util.floor(this.biomeRandom.nextDouble()*(double)totalWeight);
 
-        Biome retBiome = GameContent.BIOME_SKY;
+        Biome retBiome = null;
 
         int weight = 0;
         for(Biome biome : possibleBiomes){
@@ -85,6 +85,11 @@ public class WorldGenBiomes implements IWorldGenerator{
                 retBiome = biome;
                 break;
             }
+        }
+
+        if(retBiome == null){
+            retBiome = GameContent.BIOME_SKY;
+            RockBottomAPI.logger().warning("Couldn't find a biome to generate for "+x+' '+y);
         }
 
         return retBiome.getVariationToGenerate(world, x, y);
