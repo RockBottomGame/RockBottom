@@ -35,6 +35,7 @@ import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
@@ -449,7 +450,12 @@ public class World implements IWorld{
 
     @Override
     public Biome getExpectedBiome(int x, int y){
-        return this.biomeGen.getBiome(this, x, y);
+        return this.biomeGen.getBiome(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
+    }
+
+    @Override
+    public BiomeLevel getExpectedBiomeLevel(int x, int y){
+        return this.biomeGen.getSmoothedLevelForPos(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
     }
 
     @Override

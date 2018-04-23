@@ -97,7 +97,7 @@ public final class DebugRenderer{
                     list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
                 }
                 list.add("Light: Sky "+world.getSkyLight(x, y)+" / Art "+world.getArtificialLight(x, y)+" -> "+world.getCombinedVisualLight(x, y));
-                list.add("Biome: "+world.getBiome(x, y).getName());
+                list.add("Biome: "+world.getBiome(x, y).getName()+", Level: "+world.getExpectedBiomeLevel(x, y).getName());
                 list.add("Most Prominent Biome: "+chunk.getMostProminentBiome().getName());
 
                 list.add("");

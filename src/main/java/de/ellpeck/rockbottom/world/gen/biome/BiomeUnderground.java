@@ -7,12 +7,13 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class BiomeUnderground extends BiomeBasic{
 
-    public BiomeUnderground(ResourceName name, int highestY, int lowestY, int weight){
-        super(name, highestY, lowestY, weight);
+    public BiomeUnderground(ResourceName name, BiomeLevel... levels){
+        super(name, levels);
     }
 
     @Override

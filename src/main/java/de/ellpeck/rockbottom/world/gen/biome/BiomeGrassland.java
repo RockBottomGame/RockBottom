@@ -9,12 +9,13 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class BiomeGrassland extends BiomeBasic{
 
-    public BiomeGrassland(ResourceName name, int highestY, int lowestY, int weight){
-        super(name, highestY, lowestY, weight);
+    public BiomeGrassland(ResourceName name, BiomeLevel... levels){
+        super(name, levels);
     }
 
     @Override
@@ -61,8 +62,7 @@ public class BiomeGrassland extends BiomeBasic{
     }
 
     @Override
-    public Biome getVariationToGenerate(IWorld world, int x, int y){
-        int height = world.getExpectedSurfaceHeight(TileLayer.MAIN, x);
-        return height > 25 && Math.abs(y-height) <= 30 ? GameContent.BIOME_COLD_GRASSLAND : super.getVariationToGenerate(world, x, y);
+    public Biome getVariationToGenerate(IWorld world, int x, int y, int surfaceHeight){
+        return surfaceHeight > 25 && Math.abs(y-surfaceHeight) <= 30 ? GameContent.BIOME_COLD_GRASSLAND : super.getVariationToGenerate(world, x, y, surfaceHeight);
     }
 }

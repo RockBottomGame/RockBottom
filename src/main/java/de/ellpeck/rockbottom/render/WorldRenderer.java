@@ -173,8 +173,11 @@ public class WorldRenderer{
 
                                 if(biomeDebug){
                                     for(int y = 0; y < Constants.CHUNK_SIZE; y++){
+                                        this.random.setSeed(chunk.getExpectedBiomeLevel(worldX+x, worldY+y).getName().hashCode());
+                                        g.addFilledRect(worldX-transX+x+0.35F, -worldY-transY-y+0.35F, 0.3F, 0.3F, Colors.random(this.random));
+
                                         this.random.setSeed(chunk.getBiomeInner(x, y).getName().hashCode());
-                                        g.addFilledRect(worldX-transX+x+0.45F, -worldY-transY-y+0.45F, 0.1F, 0.1F, Colors.random(this.random));
+                                        //g.addEmptyRect(worldX-transX+x+0.25F, -worldY-transY-y+0.25F, 0.5F, 0.5F, 0.1F, Colors.random(this.random));
                                     }
                                 }
                             }

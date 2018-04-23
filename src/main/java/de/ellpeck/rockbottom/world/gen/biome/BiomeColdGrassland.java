@@ -7,13 +7,14 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
-import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasicVariation;
+import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class BiomeColdGrassland extends BiomeBasicVariation{
+public class BiomeColdGrassland extends BiomeBasic{
 
-    public BiomeColdGrassland(ResourceName name){
-        super(name);
+    public BiomeColdGrassland(ResourceName name, BiomeLevel... levels){
+        super(name, levels);
     }
 
     @Override

@@ -10,6 +10,8 @@ import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
 import de.ellpeck.rockbottom.item.ItemCopperCanister;
 import de.ellpeck.rockbottom.item.ItemFirework;
 import de.ellpeck.rockbottom.item.ItemStartNote;
@@ -73,10 +75,14 @@ public final class ContentRegistry{
         new ItemTool(ResourceName.intern("copper_axe"), 2F, ToolType.AXE, 10).register();
         new ItemTool(ResourceName.intern("copper_shovel"), 2F, ToolType.SHOVEL, 10).register();
 
-        new BiomeSky(ResourceName.intern("sky"), Integer.MAX_VALUE, 100).register();
-        new BiomeGrassland(ResourceName.intern("grassland"), 80, -5, 1000).register();
-        new BiomeDesert(ResourceName.intern("desert"), 80, -5, 500).register();
-        new BiomeUnderground(ResourceName.intern("underground"), -5, Integer.MIN_VALUE, 1000).register();
+        BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 10, Integer.MAX_VALUE, false, 0).register();
+        BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 10, true, 1000).register();
+        BiomeLevel underground = new BiomeLevelBasic(ResourceName.intern("underground"), Integer.MIN_VALUE, -10, false, 500).register();
+
+        new BiomeSky(ResourceName.intern("sky"), sky).register();
+        new BiomeGrassland(ResourceName.intern("grassland"), surface).register();
+        new BiomeDesert(ResourceName.intern("desert"), surface).register();
+        new BiomeUnderground(ResourceName.intern("underground"), underground).register();
         new BiomeColdGrassland(ResourceName.intern("cold_grassland")).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("item"), EntityItem.class);

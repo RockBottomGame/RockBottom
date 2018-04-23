@@ -24,6 +24,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketScheduledUpdate;
@@ -624,6 +625,11 @@ public class Chunk implements IChunk{
     @Override
     public Biome getExpectedBiome(int x, int y){
         return this.world.getExpectedBiome(x, y);
+    }
+
+    @Override
+    public BiomeLevel getExpectedBiomeLevel(int x, int y){
+        return this.world.getExpectedBiomeLevel(x, y);
     }
 
     @Override
