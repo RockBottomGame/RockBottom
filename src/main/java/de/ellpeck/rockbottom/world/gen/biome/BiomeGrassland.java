@@ -14,8 +14,8 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class BiomeGrassland extends BiomeBasic{
 
-    public BiomeGrassland(ResourceName name, BiomeLevel... levels){
-        super(name, levels);
+    public BiomeGrassland(ResourceName name, int weight, BiomeLevel... levels){
+        super(name, weight, levels);
     }
 
     @Override
@@ -63,6 +63,6 @@ public class BiomeGrassland extends BiomeBasic{
 
     @Override
     public Biome getVariationToGenerate(IWorld world, int x, int y, int surfaceHeight){
-        return surfaceHeight > 25 && Math.abs(y-surfaceHeight) <= 30 ? GameContent.BIOME_COLD_GRASSLAND : super.getVariationToGenerate(world, x, y, surfaceHeight);
+        return surfaceHeight > 25 ? GameContent.BIOME_COLD_GRASSLAND : super.getVariationToGenerate(world, x, y, surfaceHeight);
     }
 }

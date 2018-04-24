@@ -12,8 +12,8 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class BiomeSky extends BiomeBasic{
 
-    public BiomeSky(ResourceName name, BiomeLevel... levels){
-        super(name, levels);
+    public BiomeSky(ResourceName name, int weight, BiomeLevel... levels){
+        super(name, weight, levels);
     }
 
     @Override

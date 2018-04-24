@@ -14,7 +14,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 public class BiomeColdGrassland extends BiomeBasic{
 
     public BiomeColdGrassland(ResourceName name, BiomeLevel... levels){
-        super(name, levels);
+        super(name, 0, levels);
     }
 
     @Override

@@ -12,8 +12,8 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class BiomeUnderground extends BiomeBasic{
 
-    public BiomeUnderground(ResourceName name, BiomeLevel... levels){
-        super(name, levels);
+    public BiomeUnderground(ResourceName name, int weight, BiomeLevel... levels){
+        super(name, weight, levels);
     }
 
     @Override

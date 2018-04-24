@@ -75,14 +75,14 @@ public final class ContentRegistry{
         new ItemTool(ResourceName.intern("copper_axe"), 2F, ToolType.AXE, 10).register();
         new ItemTool(ResourceName.intern("copper_shovel"), 2F, ToolType.SHOVEL, 10).register();
 
-        BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 10, Integer.MAX_VALUE, false, 0).register();
-        BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 10, true, 1000).register();
+        BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
+        BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 15, true, 1000).register();
         BiomeLevel underground = new BiomeLevelBasic(ResourceName.intern("underground"), Integer.MIN_VALUE, -10, false, 500).register();
 
-        new BiomeSky(ResourceName.intern("sky"), sky).register();
-        new BiomeGrassland(ResourceName.intern("grassland"), surface).register();
-        new BiomeDesert(ResourceName.intern("desert"), surface).register();
-        new BiomeUnderground(ResourceName.intern("underground"), underground).register();
+        new BiomeSky(ResourceName.intern("sky"), 0, sky).register();
+        new BiomeGrassland(ResourceName.intern("grassland"), 1000, surface).register();
+        new BiomeDesert(ResourceName.intern("desert"), 800, surface).register();
+        new BiomeUnderground(ResourceName.intern("underground"), 1000, underground).register();
         new BiomeColdGrassland(ResourceName.intern("cold_grassland")).register();
 
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("item"), EntityItem.class);
