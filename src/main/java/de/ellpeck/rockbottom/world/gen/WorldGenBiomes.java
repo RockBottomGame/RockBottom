@@ -124,7 +124,7 @@ public class WorldGenBiomes implements IWorldGenerator{
             chosen = GameContent.BIOME_SKY;
         }
 
-        return chosen.getVariationToGenerate(world, x, y, height);
+        return chosen.getVariationToGenerate(world, x, y, height, this.biomeRandom);
     }
 
     public BiomeLevel getSmoothedLevelForPos(IWorld world, int x, int y, int height){

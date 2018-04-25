@@ -12,6 +12,8 @@ import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
+import java.util.Random;
+
 public class BiomeGrassland extends BiomeBasic{
 
     public BiomeGrassland(ResourceName name, int weight, BiomeLevel... levels){
@@ -62,7 +64,9 @@ public class BiomeGrassland extends BiomeBasic{
     }
 
     @Override
-    public Biome getVariationToGenerate(IWorld world, int x, int y, int surfaceHeight){
-        return surfaceHeight > 25 ? GameContent.BIOME_COLD_GRASSLAND : super.getVariationToGenerate(world, x, y, surfaceHeight);
+    public Biome getVariationToGenerate(IWorld world, int x, int y, int surfaceHeight, Random random){
+        double chance = Math.max(0, Math.min(1, (surfaceHeight-20)/5D));
+        random.setSeed(Util.scrambleSeed(x, y, world.getSeed())+12382342);
+        return random.nextDouble() < chance ? GameContent.BIOME_COLD_GRASSLAND : this;
     }
 }
