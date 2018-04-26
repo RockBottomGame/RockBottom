@@ -24,7 +24,7 @@ import java.util.Random;
 public class WorldGenBiomes implements IWorldGenerator{
 
     public static final ResourceName ID = ResourceName.intern("biomes");
-    private static final int LEVEL_TRANSITION = 5;
+    private static final int LEVEL_TRANSITION = 7;
     private static final int BIOME_TRANSITION = 5;
     private static final int BIOME_BLOB_SIZE = 6;
 

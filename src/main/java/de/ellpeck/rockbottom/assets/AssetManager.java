@@ -31,6 +31,7 @@ import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
 import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
 import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
+import de.ellpeck.rockbottom.gui.menu.background.DesertTheme;
 import de.ellpeck.rockbottom.gui.menu.background.NatureTheme;
 import de.ellpeck.rockbottom.gui.menu.background.StoneTheme;
 import de.ellpeck.rockbottom.init.RockBottom;
@@ -64,6 +65,7 @@ public class AssetManager implements IAssetManager, IDisposable{
 
         RockBottomAPI.MAIN_MENU_THEMES.register(0, new StoneTheme());
         RockBottomAPI.MAIN_MENU_THEMES.register(1, new NatureTheme());
+        RockBottomAPI.MAIN_MENU_THEMES.register(2, new DesertTheme());
     }
 
     private final TextureStitcher stitcher = new TextureStitcher();
