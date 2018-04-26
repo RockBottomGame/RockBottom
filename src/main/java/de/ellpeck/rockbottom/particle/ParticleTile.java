@@ -33,13 +33,13 @@ public class ParticleTile extends Particle{
 
                     int pixelX = Util.RANDOM.nextInt(width);
                     int pixelY = Util.RANDOM.nextInt(height);
-                    this.renderPixel = Colors.multiply(texture.getTextureColor(pixelX, pixelY), filter);
+                    this.renderPixel = texture.getTextureColor(pixelX, pixelY);
                 }
             }
         }
 
         if(this.renderPixel != -1){
-            g.addFilledRect(x, y, 0.12F, 0.12F, this.renderPixel);
+            g.addFilledRect(x, y, 0.12F, 0.12F, Colors.multiply(this.renderPixel, filter));
         }
     }
 }
