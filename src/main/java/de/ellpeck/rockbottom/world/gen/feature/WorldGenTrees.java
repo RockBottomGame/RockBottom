@@ -64,7 +64,7 @@ public class WorldGenTrees implements IWorldGenerator{
             }
             while(this.alreadyHasTree(alreadyGeneratedPositions, pos));
 
-            if(pos.getY() < Constants.CHUNK_SIZE && chunk.getBiomeInner(pos.getX(), pos.getY()).canTreeGrow(world, chunk, pos.getX(), pos.getY())){
+            if(pos.getY() < Constants.CHUNK_SIZE && chunk.getBiomeInner(pos.getX(), pos.getY()).canTreeGrow(world, chunk, pos.getX(), pos.getY()) && chunk.getY()+pos.getY() >= world.getExpectedSurfaceHeight(TileLayer.MAIN, chunk.getX()+pos.getX())){
                 alreadyGeneratedPositions.add(pos);
 
                 int x = chunk.getX()+pos.getX();

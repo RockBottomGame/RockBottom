@@ -24,13 +24,15 @@ public class WorldGenGrass implements IWorldGenerator{
     public void generate(IWorld world, IChunk chunk){
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             int y = chunk.getHeightInner(TileLayer.MAIN, x);
-            if(y < Constants.CHUNK_SIZE && chunk.getBiomeInner(x, y).hasGrasslandDecoration() && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
-                this.grassRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
-                if(this.grassRandom.nextFloat() >= 0.5F){
-                    TileMeta tile = GameContent.TILE_GRASS_TUFT;
-                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
-                        int type = Util.floor(this.grassRandom.nextDouble()*(double)tile.metaProp.getVariants());
-                        chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
+            if(chunk.getY()+y >= world.getExpectedSurfaceHeight(TileLayer.MAIN, chunk.getX()+x)){
+                if(y < Constants.CHUNK_SIZE && chunk.getBiomeInner(x, y).hasGrasslandDecoration() && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
+                    this.grassRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
+                    if(this.grassRandom.nextFloat() >= 0.5F){
+                        TileMeta tile = GameContent.TILE_GRASS_TUFT;
+                        if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
+                            int type = Util.floor(this.grassRandom.nextDouble()*(double)tile.metaProp.getVariants());
+                            chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
+                        }
                     }
                 }
             }

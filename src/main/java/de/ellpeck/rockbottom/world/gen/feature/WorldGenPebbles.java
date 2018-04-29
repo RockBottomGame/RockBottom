@@ -24,14 +24,16 @@ public class WorldGenPebbles implements IWorldGenerator{
     public void generate(IWorld world, IChunk chunk){
         for(int x = 0; x < Constants.CHUNK_SIZE; x++){
             int y = chunk.getHeightInner(TileLayer.MAIN, x);
-            if(y < Constants.CHUNK_SIZE && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
-                float chance = chunk.getBiomeInner(x, y).getPebbleChance();
+            if(chunk.getY()+y >= world.getExpectedSurfaceHeight(TileLayer.MAIN, chunk.getX()+x)){
+                if(y < Constants.CHUNK_SIZE && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
+                    float chance = chunk.getBiomeInner(x, y).getPebbleChance();
 
-                this.pebbleRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
-                if(chance > 0F && this.pebbleRandom.nextFloat() <= chance){
-                    Tile tile = GameContent.TILE_PEBBLES;
-                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
-                        chunk.setStateInner(x, y, tile.getDefState());
+                    this.pebbleRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
+                    if(chance > 0F && this.pebbleRandom.nextFloat() <= chance){
+                        Tile tile = GameContent.TILE_PEBBLES;
+                        if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
+                            chunk.setStateInner(x, y, tile.getDefState());
+                        }
                     }
                 }
             }
