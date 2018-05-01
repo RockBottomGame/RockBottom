@@ -1,28 +1,167 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import com.google.common.base.Charsets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
+import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
+import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ApiHandler implements IApiHandler{
+
+    @Override
+    public void writeDataSet(AbstractDataSet set, File file, boolean asJson){
+        try{
+            if(!file.exists()){
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+
+            if(asJson){
+                JsonObject object = new JsonObject();
+                this.writeDataSet(object, set);
+
+                OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8);
+                Util.GSON.toJson(object, writer);
+                writer.close();
+            }
+            else{
+                DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
+                this.writeDataSet(stream, set);
+                stream.close();
+            }
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.SEVERE, "Exception saving a data set to disk!", e);
+        }
+    }
+
+    @Override
+    public void readDataSet(AbstractDataSet set, File file, boolean asJson){
+        if(!set.isEmpty()){
+            set.clear();
+        }
+
+        try{
+            if(file.exists()){
+                if(asJson){
+                    InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8);
+                    JsonObject object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                    reader.close();
+
+                    this.readDataSet(object, set);
+                }
+                else{
+                    DataInputStream stream = new DataInputStream(new FileInputStream(file));
+                    this.readDataSet(stream, set);
+                    stream.close();
+                }
+            }
+        }
+        catch(Exception e){
+            RockBottomAPI.logger().log(Level.SEVERE, "Exception loading a data set from disk!", e);
+        }
+    }
+
+    @Override
+    public void writeDataSet(DataOutput stream, AbstractDataSet set) throws Exception{
+        stream.writeInt(set.size());
+
+        for(DataPart part : set.getData().values()){
+            this.writePart(stream, part);
+        }
+    }
+
+    @Override
+    public void readDataSet(DataInput stream, AbstractDataSet set) throws Exception{
+        int amount = stream.readInt();
+
+        for(int i = 0; i < amount; i++){
+            DataPart part = this.readPart(stream);
+            set.addPart(part);
+        }
+    }
+
+    @Override
+    public void writeDataSet(JsonObject main, AbstractDataSet set) throws Exception{
+        JsonArray data = new JsonArray();
+        for(DataPart part : set.getData().values()){
+            this.writePart(data, part);
+        }
+        main.add("data", data);
+    }
+
+    @Override
+    public void readDataSet(JsonObject main, AbstractDataSet set) throws Exception{
+        JsonArray data = main.get("data").getAsJsonArray();
+        for(int i = 0; i < data.size(); i++){
+            DataPart part = this.readPart(data, i);
+            set.addPart(part);
+        }
+    }
+
+    private void writePart(DataOutput stream, DataPart part) throws Exception{
+        stream.writeByte(RockBottomAPI.PART_REGISTRY.getId(part.getClass()));
+        stream.writeUTF(part.getName());
+        part.write(stream);
+    }
+
+    private DataPart readPart(DataInput stream) throws Exception{
+        int id = stream.readByte();
+        String name = stream.readUTF();
+
+        Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(id);
+        DataPart part = partClass.getConstructor(String.class).newInstance(name);
+        part.read(stream);
+
+        return part;
+    }
+
+    private void writePart(JsonArray array, DataPart part) throws Exception{
+        JsonObject object = new JsonObject();
+        object.addProperty("type", RockBottomAPI.PART_REGISTRY.getName(part.getClass()).toString());
+        object.addProperty("name", part.getName());
+        object.add("data", part.write());
+        array.add(object);
+    }
+
+    private DataPart readPart(JsonArray array, int i) throws Exception{
+        JsonObject object = array.get(i).getAsJsonObject();
+        ResourceName type = new ResourceName(object.get("type").getAsString());
+        String name = object.get("name").getAsString();
+        JsonElement data = object.get("data");
+
+        Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(type);
+        DataPart part = partClass.getConstructor(String.class).newInstance(name);
+        part.read(data);
+
+        return part;
+    }
 
     @Override
     public int[] interpolateLight(IWorld world, int x, int y){

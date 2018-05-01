@@ -14,7 +14,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 public class ParticleTile extends Particle{
 
     private final TileState state;
-    private int renderPixel = Colors.NO_COLOR;
+    private int renderPixel = -1;
 
     public ParticleTile(IWorld world, double x, double y, double motionX, double motionY, TileState state){
         super(world, x, y, motionX, motionY, Util.RANDOM.nextInt(30)+10);
@@ -23,7 +23,7 @@ public class ParticleTile extends Particle{
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, float x, float y, int filter){
-        if(this.renderPixel == Colors.NO_COLOR){
+        if(this.renderPixel == -1){
             ITileRenderer renderer = this.state.getTile().getRenderer();
             if(renderer != null){
                 ITexture texture = renderer.getParticleTexture(game, manager, g, this.state.getTile(), this.state);
@@ -38,7 +38,7 @@ public class ParticleTile extends Particle{
             }
         }
 
-        if(this.renderPixel != Colors.NO_COLOR){
+        if(this.renderPixel != -1){
             g.addFilledRect(x, y, 0.12F, 0.12F, Colors.multiply(this.renderPixel, filter));
         }
     }
