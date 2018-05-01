@@ -5,6 +5,11 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.set.part.*;
+import de.ellpeck.rockbottom.api.data.set.part.num.*;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
+import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortArray;
 import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
@@ -13,6 +18,7 @@ import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDrop;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.backandforth.PacketStats;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;
@@ -23,6 +29,21 @@ import java.util.logging.Level;
 public class DataManager implements IDataManager{
 
     static{
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("int"), 0, PartInt.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("float"), 1, PartFloat.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("double"), 2, PartDouble.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("int_array"), 3, PartIntArray.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("short_array"), 4, PartShortArray.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("byte_array"), 5, PartByteArray.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("data_set"), 6, PartDataSet.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("long"), 7, PartLong.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("uuid"), 8, PartUniqueId.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("byte"), 9, PartByte.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("short"), 10, PartShort.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("boolean"), 11, PartBoolean.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("string"), 12, PartString.class);
+        RockBottomAPI.PART_REGISTRY.register(ResourceName.intern("mod_data_set"), 13, PartModBasedDataSet.class);
+
         RockBottomAPI.PACKET_REGISTRY.register(0, PacketJoin.class);
         RockBottomAPI.PACKET_REGISTRY.register(1, PacketChunk.class);
         RockBottomAPI.PACKET_REGISTRY.register(2, PacketInitialServerData.class);
