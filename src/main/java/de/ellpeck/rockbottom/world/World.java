@@ -125,7 +125,7 @@ public class World implements IWorld{
             this.additionalDataFile = new File(worldDirectory, "additional_data.dat");
             if(this.additionalDataFile.exists()){
                 this.additionalData = new ModBasedDataSet();
-                this.additionalData.readSafe(this.additionalDataFile, false);
+                this.additionalData.read(this.additionalDataFile, false);
             }
         }
 
@@ -610,7 +610,7 @@ public class World implements IWorld{
 
         Runnable r = () -> {
             DataSet set = new DataSet();
-            set.readSafe(new File(this.chunksDirectory, "c_"+gridX+'_'+gridY+".dat"), false);
+            set.read(new File(this.chunksDirectory, "c_"+gridX+'_'+gridY+".dat"), false);
             chunk.loadOrCreate(set);
         };
 
@@ -691,7 +691,7 @@ public class World implements IWorld{
             }
 
             if(this.additionalData != null){
-                this.additionalData.writeSafe(this.additionalDataFile, false);
+                this.additionalData.write(this.additionalDataFile, false);
             }
 
             if(amount > 0){
@@ -816,7 +816,7 @@ public class World implements IWorld{
         DataSet playerSet = new DataSet();
         player.save(playerSet);
 
-        playerSet.writeSafe(new File(this.playerDirectory, player.getUniqueId()+".dat"), false);
+        playerSet.write(new File(this.playerDirectory, player.getUniqueId()+".dat"), false);
     }
 
     @Override
@@ -846,7 +846,7 @@ public class World implements IWorld{
         File file = new File(this.playerDirectory, id+".dat");
         if(file.exists()){
             DataSet set = new DataSet();
-            set.readSafe(file, false);
+            set.read(file, false);
 
             player.load(set);
             RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+'!');
@@ -859,7 +859,7 @@ public class World implements IWorld{
                     File lastFile = new File(this.playerDirectory, this.info.lastPlayerId+".dat");
                     if(lastFile.exists()){
                         DataSet set = new DataSet();
-                        set.readSafe(lastFile, false);
+                        set.read(lastFile, false);
 
                         player.load(set);
                         RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+" from last player file "+lastFile+'!');
@@ -911,7 +911,7 @@ public class World implements IWorld{
             Runnable r = () -> {
                 DataSet set = new DataSet();
                 chunk.save(set);
-                set.writeSafe(new File(this.chunksDirectory, "c_"+chunk.getGridX()+'_'+chunk.getGridY()+".dat"), false);
+                set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+'_'+chunk.getGridY()+".dat"), false);
             };
 
             if(enqueue){
