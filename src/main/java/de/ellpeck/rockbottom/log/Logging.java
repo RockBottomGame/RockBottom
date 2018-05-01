@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.log;
 
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.api.Constants;
 
 import java.io.File;
 import java.util.Locale;
@@ -19,7 +19,7 @@ public final class Logging{
 
     public static void init(String levelName){
         Level level = getLogLevel(levelName);
-        mainLogger = Logger.getLogger(AbstractGame.NAME);
+        mainLogger = Logger.getLogger(Constants.GAME_NAME);
         mainLogger.setLevel(level);
         mainLogger.setUseParentHandlers(false);
 
