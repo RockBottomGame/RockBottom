@@ -138,7 +138,9 @@ public class Chunk implements IChunk{
         Preconditions.checkState(this.tickingTileEntities.size() <= this.tileEntities.size(), "There are more ticking TileEntities than there are normal ones!");
         Preconditions.checkState(this.scheduledUpdates.size() == this.scheduledUpdateLookup.size(), "ScheduledUpdates and ScheduledUpdateLookup are out of sync!");
         Preconditions.checkState(this.playersOutOfRangeCached.size() == this.playersOutOfRangeCachedTimers.size(), "PlayersOutOfRangeCached and PlayersOutOfRangeCachedTimers are out of sync!");
-        Preconditions.checkState(this.stateGrid.size() == this.layersByRenderPrio.size(), "StateGrid and LayerList are out of sync!");
+        synchronized(this.stateGrid){
+            Preconditions.checkState(this.stateGrid.size() == this.layersByRenderPrio.size(), "StateGrid and LayerList are out of sync!");
+        }
     }
 
     protected void updateEntities(IGameInstance game){
@@ -1118,10 +1120,13 @@ public class Chunk implements IChunk{
                     grid[x][y] = GameContent.TILE_AIR.getDefState();
                 }
             }
-            this.stateGrid.put(layer, grid);
 
-            this.layersByRenderPrio.add(layer);
-            this.layersByRenderPrio.sort(Comparator.comparingInt(TileLayer :: getRenderPriority).reversed());
+            synchronized(this.stateGrid){
+                this.stateGrid.put(layer, grid);
+
+                this.layersByRenderPrio.add(layer);
+                this.layersByRenderPrio.sort(Comparator.comparingInt(TileLayer :: getRenderPriority).reversed());
+            }
 
             RockBottomAPI.logger().fine("Adding new tile layer "+layer+" to chunk at "+this.gridX+", "+this.gridY);
         }
