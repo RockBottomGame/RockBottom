@@ -117,7 +117,7 @@ public class RockBottom extends AbstractGame{
 
         RockBottomAPI.logger().info("Initializing window");
 
-        this.windowId = GLFW.glfwCreateWindow(Main.width, Main.height, Constants.GAME_NAME+' '+Constants.GAME_VERSION, MemoryUtil.NULL, MemoryUtil.NULL);
+        this.windowId = GLFW.glfwCreateWindow(Main.width, Main.height, AbstractGame.NAME+' '+AbstractGame.VERSION, MemoryUtil.NULL, MemoryUtil.NULL);
         if(this.windowId == MemoryUtil.NULL){
             GLFW.glfwTerminate();
             throw new IllegalStateException("Unable to create window");

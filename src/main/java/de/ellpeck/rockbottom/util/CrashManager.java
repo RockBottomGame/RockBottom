@@ -2,7 +2,6 @@ package de.ellpeck.rockbottom.util;
 
 import com.google.common.base.Charsets;
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.content.pack.IContentPackLoader;
@@ -10,6 +9,7 @@ import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.content.ContentManager;
+import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.log.Logging;
 
 import java.io.*;
@@ -45,7 +45,7 @@ public final class CrashManager{
         String date = new SimpleDateFormat("dd.MM.yy_HH.mm.ss").format(new Date());
         File file = new File(dir, date+".txt");
 
-        String name = Constants.GAME_NAME.toUpperCase()+" CRASH REPORT";
+        String name = AbstractGame.NAME.toUpperCase()+" CRASH REPORT";
         String divider = "------------------------------------------------------------";
 
         String comment;
@@ -89,7 +89,7 @@ public final class CrashManager{
         writer.println("//TODO "+comment);
         writer.println(divider);
 
-        writer.println("Game Version: "+Constants.GAME_VERSION);
+        writer.println("Game Version: "+AbstractGame.VERSION);
         writer.println("API Version: "+RockBottomAPI.VERSION);
 
         writer.println(divider);

@@ -52,6 +52,9 @@ import java.util.logging.Level;
 
 public abstract class AbstractGame implements IGameInstance{
 
+    public static final String VERSION = "0.2.3.1";
+    public static final String NAME = "Rock Bottom";
+    public static final String ID = "rockbottom";
     private static final int INTERVAL = 1000/Constants.TARGET_TPS;
     private final List<EnqueuedAction> enqueuedActions = new ArrayList<>();
     private boolean isRunning = true;
@@ -320,17 +323,17 @@ public abstract class AbstractGame implements IGameInstance{
 
     @Override
     public String getDisplayName(){
-        return Constants.GAME_NAME;
+        return NAME;
     }
 
     @Override
     public String getId(){
-        return Constants.GAME_ID;
+        return ID;
     }
 
     @Override
     public String getVersion(){
-        return Constants.GAME_VERSION;
+        return VERSION;
     }
 
     @Override
