@@ -83,15 +83,29 @@ public class InteractionManager implements IInteractionManager{
     }
 
     public static boolean attackEntity(AbstractEntityPlayer player, double mouseX, double mouseY){
-        List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
-        for(Entity entity : entities){
-            if(player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player))){
-                if(entity.onAttack(player, mouseX, mouseY)){
-                    return true;
+        ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+
+        List<Entity> entities = getAttackableEntities(player, mouseX, mouseY, selected);
+        if(!entities.isEmpty()){
+            for(Entity entity : entities){
+                if(selected == null || selected.getItem().attackEntity(player.world, entity, mouseX, mouseY, player)){
+                    if(entity.onAttack(player, mouseX, mouseY)){
+                        return true;
+                    }
                 }
             }
         }
         return false;
+    }
+
+    private static List<Entity> getAttackableEntities(AbstractEntityPlayer player, double mouseX, double mouseY, ItemInstance selected){
+        if(selected != null){
+            List<Entity> entities = selected.getItem().getCustomAttackableEntities(player.world, mouseX, mouseY, player);
+            if(entities != null){
+                return entities;
+            }
+        }
+        return player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F), entity -> player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player)));
     }
 
     public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective){
@@ -220,13 +234,15 @@ public class InteractionManager implements IInteractionManager{
                         this.breakProgress = 0;
                     }
 
-                    if(Settings.KEY_DESTROY.isDown()){
+                    ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+
+                    if(selected == null || selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()){
                         if(this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)){
                             if(RockBottomAPI.getNet().isClient()){
                                 RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
                             }
 
-                            this.attackCooldown = 40;
+                            this.attackCooldown = selected == null ? 40 : selected.getItem().getAttackCooldown(player.world, mousedTileX, mousedTileY, player);
                             attacked = true;
                         }
                     }
@@ -238,7 +254,6 @@ public class InteractionManager implements IInteractionManager{
                                 if(Settings.KEY_DESTROY.isDown()){
                                     Tile tile = player.world.getState(layer, x, y).getTile();
 
-                                    ItemInstance selected = player.getInv().get(player.getSelectedSlot());
                                     boolean effective = isToolEffective(player, selected, tile, layer, x, y);
 
                                     if(defaultTileBreakingCheck(player.world, x, y, layer, mousedTileX, mousedTileY, player) && tile.canBreak(player.world, x, y, layer, player, effective)){
