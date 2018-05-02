@@ -9,6 +9,8 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.toast.Toast;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -64,6 +66,19 @@ public class GuiCreateWorld extends Gui{
                 gui.fadeOut(20, () -> {
                     game.startWorld(file, info, true);
                     gui.fadeIn(20, null);
+
+                    Toast toast = new Toast(ResourceName.intern("gui.info"), new ChatComponentTranslation(ResourceName.intern("info.new_world.title")), new ChatComponentTranslation(ResourceName.intern("info.new_world")), 600){
+                        @Override
+                        public float getWidth(){
+                            return 150F;
+                        }
+
+                        @Override
+                        public float getHeight(){
+                            return 26F;
+                        }
+                    };
+                    game.getToaster().displayToast(toast);
                 });
 
                 return true;
