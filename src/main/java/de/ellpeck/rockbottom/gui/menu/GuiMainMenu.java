@@ -2,14 +2,17 @@ package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentClickableText;
 import de.ellpeck.rockbottom.api.gui.component.ComponentConfirmationPopup;
+import de.ellpeck.rockbottom.api.gui.component.ComponentMessageBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiPlayerEditor;
@@ -23,6 +26,34 @@ public class GuiMainMenu extends Gui{
         super.init(game);
         IAssetManager assetManager = game.getAssetManager();
         IGuiManager guiManager = game.getGuiManager();
+        Settings settings = game.getSettings();
+
+        if(!settings.betaTextDisplayed){
+            guiManager.openGui(new Gui(){
+                @Override
+                public ResourceName getName(){
+                    return ResourceName.intern("beta");
+                }
+
+                @Override
+                public void init(IGameInstance game){
+                    super.init(game);
+                    this.components.add(new ComponentMessageBox(this, this.width/2-95, this.height/2-50, 190, 100, "Welcome to the beta of "+FormattingCode.ORANGE+"Rock Bottom"+FormattingCode.RESET_COLOR+"! Thanks for being part of this adventure!\nKeep in mind that a lot of features are still incomplete and there is little playable content in general. However, you should post any requests and questions that you have in Ellpeck's Discord server, along with any bug reports or problems you find.\nIf you want to play the multiplayer or change your player design, then you will have to log in with your account first. You should've gotten one with this beta release, but if you have not, just ping Ellpeck on his Discord server to get your details. \nThat's about it, so"+FormattingCode.RED+" have a lot of fun playing! <3", 0.25F, true, true, () -> {
+                        settings.betaTextDisplayed = true;
+                        settings.save();
+                        guiManager.openGui(GuiMainMenu.this);
+                        return true;
+                    }));
+                }
+
+                @Override
+                public void render(IGameInstance game, IAssetManager manager, IRenderer g){
+                    g.addFilledRect(0, 0, this.width, this.height, 0xFF519FFF);
+                    super.render(game, manager, g);
+                }
+            });
+            return;
+        }
 
         int buttonAmount = 3;
         int partWidth = this.width/buttonAmount;

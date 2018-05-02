@@ -203,7 +203,7 @@ public class GuiManager implements IGuiManager{
                 }
             }
 
-            if(game.getWorld() == null){
+            if(this.background != null){
                 this.background.render(game, manager, g);
             }
         }

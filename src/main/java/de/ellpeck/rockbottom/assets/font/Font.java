@@ -372,6 +372,16 @@ public class Font implements IFont{
                 String[] words = subLine.split(" ");
 
                 for(String word : words){
+                    int lenIndex = result.size();
+                    int currLength = lengths[lenIndex >= lengths.length ? lengths.length-1 : lenIndex];
+                    if(this.getWidth(accumulated+word, scale) >= currLength){
+                        result.add(accumulated.toString().trim());
+                        accumulated = new StringBuilder(trailingColor.toString()+trailingProp+word+' ');
+                    }
+                    else{
+                        accumulated.append(word).append(' ');
+                    }
+
                     if(wrapFormatting){
                         for(int i = 0; i < word.length()-1; i++){
                             FormattingCode format = FormattingCode.getFormat(word, i);
@@ -385,16 +395,6 @@ public class Font implements IFont{
                                 }
                             }
                         }
-                    }
-
-                    int lenIndex = result.size();
-                    int currLength = lengths[lenIndex >= lengths.length ? lengths.length-1 : lenIndex];
-                    if(this.getWidth(accumulated+word, scale) >= currLength){
-                        result.add(accumulated.toString().trim());
-                        accumulated = new StringBuilder(trailingColor.toString()+trailingProp+word+' ');
-                    }
-                    else{
-                        accumulated.append(word).append(' ');
                     }
                 }
 
