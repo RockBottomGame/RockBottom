@@ -21,10 +21,25 @@ public final class DebugRenderer{
 
     public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, IRenderer g){
         List<String> list = getInfo(game, world, player, g);
+
+        int y = 0;
+        boolean right = false;
+
         for(int i = 0; i < list.size(); i++){
             String s = list.get(i);
             if(!s.isEmpty()){
-                manager.getFont().drawString(10F, 10F+i*20, s, 0.8F);
+                if(right){
+                    manager.getFont().drawStringFromRight(game.getWidth()-10F, 10F+y, s, 0.8F);
+                }
+                else{
+                    manager.getFont().drawString(10F, 10F+y, s, 0.8F);
+                }
+            }
+
+            y += 20;
+            if(y >= game.getHeight()-20){
+                y = 0;
+                right = true;
             }
         }
     }
@@ -102,7 +117,10 @@ public final class DebugRenderer{
 
                 list.add("");
                 for(TileLayer layer : TileLayer.getLayersByInteractionPrio()){
-                    list.add(layer.getName()+": "+world.getState(layer, x, y)+", Avg Height: "+chunk.getAverageHeight(layer)+", Height: "+chunk.getHeight(layer, x)+", Flatness: "+chunk.getFlatness(layer));
+                    list.add(layer.getName()+": "+world.getState(layer, x, y));
+                    list.add("Avg Height: "+chunk.getAverageHeight(layer)+", Height: "+chunk.getHeight(layer, x));
+                    list.add("Flatness: "+chunk.getFlatness(layer));
+                    list.add("");
                 }
             }
         }

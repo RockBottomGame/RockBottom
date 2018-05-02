@@ -88,8 +88,9 @@ public class InteractionManager implements IInteractionManager{
         List<Entity> entities = getAttackableEntities(player, mouseX, mouseY, selected);
         if(!entities.isEmpty()){
             for(Entity entity : entities){
-                if(selected == null || selected.getItem().attackEntity(player.world, entity, mouseX, mouseY, player)){
-                    if(entity.onAttack(player, mouseX, mouseY)){
+                int damage = selected == null ? 5 : selected.getItem().getAttackDamage(player.world, entity, mouseX, mouseY, player);
+                if(damage > 0){
+                    if(entity.onAttack(player, mouseX, mouseY, damage)){
                         return true;
                     }
                 }
