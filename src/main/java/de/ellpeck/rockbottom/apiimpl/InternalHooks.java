@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.effect.IEffect;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
+import de.ellpeck.rockbottom.api.entity.ai.AITask;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -54,7 +55,7 @@ import java.util.List;
 public class InternalHooks implements IInternalHooks{
 
     @Override
-    public void doDefaultEntityUpdate(Entity entity, List<ActiveEffect> effects){
+    public void doDefaultEntityUpdate(IGameInstance game, Entity entity, List<ActiveEffect> effects, List<AITask> aiTasks){
         if(!entity.isDead()){
             entity.applyMotion();
 
@@ -110,6 +111,36 @@ public class InternalHooks implements IInternalHooks{
                 effect.onRemovedOrEnded(active, entity, true);
 
                 i--;
+            }
+        }
+
+        boolean findNewTask = true;
+        AITask currTask = entity.currentAiTask;
+
+        if(currTask != null){
+            currTask.execute(game, entity);
+
+            if(!currTask.shouldEndExecution(entity)){
+                findNewTask = false;
+            }
+        }
+
+        if(findNewTask){
+            AITask newTask = null;
+
+            for(AITask task : aiTasks){
+                if(task.shouldStartExecution(entity)){
+                    newTask = task;
+                    break;
+                }
+            }
+
+            if(currTask != null){
+                currTask.onExecutionEnded(newTask, entity);
+            }
+            entity.currentAiTask = newTask;
+            if(newTask != null){
+                newTask.onExecutionStarted(currTask, entity);
             }
         }
 
