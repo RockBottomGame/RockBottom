@@ -136,6 +136,7 @@ public class InternalHooks implements IInternalHooks{
             }
 
             if(currTask != null){
+                newTask = currTask.getNextTask(newTask, entity);
                 currTask.onExecutionEnded(newTask, entity);
             }
             entity.currentAiTask = newTask;
