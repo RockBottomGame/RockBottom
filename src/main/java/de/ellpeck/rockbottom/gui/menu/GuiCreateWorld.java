@@ -67,18 +67,20 @@ public class GuiCreateWorld extends Gui{
                     game.startWorld(file, info, true);
                     gui.fadeIn(20, null);
 
-                    Toast toast = new Toast(ResourceName.intern("gui.info"), new ChatComponentTranslation(ResourceName.intern("info.new_world.title")), new ChatComponentTranslation(ResourceName.intern("info.new_world")), 600){
-                        @Override
-                        public float getWidth(){
-                            return 150F;
-                        }
+                    if(info.storyMode){
+                        Toast toast = new Toast(ResourceName.intern("gui.info"), new ChatComponentTranslation(ResourceName.intern("info.new_world.title")), new ChatComponentTranslation(ResourceName.intern("info.new_world")), 600){
+                            @Override
+                            public float getWidth(){
+                                return 150F;
+                            }
 
-                        @Override
-                        public float getHeight(){
-                            return 26F;
-                        }
-                    };
-                    game.getToaster().displayToast(toast);
+                            @Override
+                            public float getHeight(){
+                                return 26F;
+                            }
+                        };
+                        game.getToaster().displayToast(toast);
+                    }
                 });
 
                 return true;
