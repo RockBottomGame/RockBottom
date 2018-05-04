@@ -114,27 +114,29 @@ public class InternalHooks implements IInternalHooks{
             }
         }
 
-        boolean findNewTask = true;
+        boolean quitCurrentTask = true;
+        int lowestFindPrio = Integer.MIN_VALUE;
         AITask currTask = entity.currentAiTask;
 
         if(currTask != null){
             currTask.execute(game, entity);
 
             if(!currTask.shouldEndExecution(entity)){
-                findNewTask = false;
+                quitCurrentTask = false;
+                lowestFindPrio = currTask.getPriority()+1;
             }
         }
 
-        if(findNewTask){
-            AITask newTask = null;
+        AITask newTask = null;
 
-            for(AITask task : aiTasks){
-                if(task.shouldStartExecution(entity)){
-                    newTask = task;
-                    break;
-                }
+        for(AITask task : aiTasks){
+            if(task.getPriority() >= lowestFindPrio && task.shouldStartExecution(entity)){
+                newTask = task;
+                break;
             }
+        }
 
+        if(quitCurrentTask || newTask != null){
             if(currTask != null){
                 newTask = currTask.getNextTask(newTask, entity);
                 currTask.onExecutionEnded(newTask, entity);
