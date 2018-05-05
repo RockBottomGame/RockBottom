@@ -42,7 +42,7 @@ public final class ContentRegistry{
         new TilePebbles().register();
         new TileFalling(ResourceName.intern("sand")).register();
         new TileBasic(ResourceName.intern("sandstone")).register();
-        new TileOreMaterial(ResourceName.intern("coal")).register();
+        new TileCoal().register();
         new TileTorch(ResourceName.intern("torch")).register();
         new TileSnow().register();
         new TileLadder().register();
