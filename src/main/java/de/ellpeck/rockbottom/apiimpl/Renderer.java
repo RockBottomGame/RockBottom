@@ -66,6 +66,7 @@ public class Renderer implements IRenderer{
     public boolean isLineDebug;
     public boolean isHeightDebug;
     public boolean isBiomeDebug;
+    public boolean isBoundBoxDebug;
 
     private float displayRatio;
     private float guiScale;
@@ -697,6 +698,11 @@ public class Renderer implements IRenderer{
     @Override
     public boolean isHeightDebug(){
         return this.isHeightDebug;
+    }
+
+    @Override
+    public boolean isBoundBoxDebug(){
+        return this.isBoundBoxDebug;
     }
 
     @Override

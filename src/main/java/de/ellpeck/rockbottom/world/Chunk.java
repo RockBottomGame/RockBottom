@@ -544,7 +544,7 @@ public class Chunk implements IChunk{
             if(!entity.isDead() && (type == null || type.isAssignableFrom(entity.getClass()))){
                 T castEntity = (T)entity;
                 if(test == null || test.test(castEntity)){
-                    if(entity.getBoundingBox().copy().add(entity.x, entity.y).intersects(area)){
+                    if(entity.currentBounds.intersects(area)){
                         entities.add(castEntity);
                     }
                 }

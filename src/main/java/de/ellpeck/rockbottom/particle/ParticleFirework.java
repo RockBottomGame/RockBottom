@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
-import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -13,7 +12,6 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 public class ParticleFirework extends Particle{
 
     private static final ResourceName TEXTURE = ResourceName.intern("particle.firework");
-    private final BoundBox boundingBox = new BoundBox(-0.075, -0.075, 0.075, 0.075);
     private final int particleColor;
 
     public ParticleFirework(IWorld world, double x, double y, double motionX, double motionY, int maxLife, int color){
@@ -28,12 +26,17 @@ public class ParticleFirework extends Particle{
     }
 
     @Override
-    public BoundBox getBoundingBox(){
-        return this.boundingBox;
+    protected void applyMotion(){
+
     }
 
     @Override
-    protected void applyMotion(){
+    public float getWidth(){
+        return 0.15F;
+    }
 
+    @Override
+    public float getHeight(){
+        return 0.15F;
     }
 }

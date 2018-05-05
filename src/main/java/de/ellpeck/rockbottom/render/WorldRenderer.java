@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -116,6 +117,16 @@ public class WorldRenderer{
 
                     int light = world.getCombinedVisualLight(Util.floor(entity.x), Util.floor(entity.y));
                     renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
+
+                    if(g.isBoundBoxDebug()){
+                        g.addFilledRect((float)entity.x-transX-0.1F, (float)-entity.y-transY+0.9F, 0.2F, 0.2F, Colors.GREEN);
+
+                        BoundBox box = entity.currentBounds;
+                        g.addEmptyRect((float)box.getMinX()-transX, (float)-box.getMaxY()-transY+1F, (float)box.getWidth(), (float)box.getHeight(), 0.1F, Colors.RED);
+
+                        BoundBox boxMotion = entity.currentBoundsWithMotion;
+                        g.addEmptyRect((float)boxMotion.getMinX()-transX, (float)-boxMotion.getMaxY()-transY+1F, (float)boxMotion.getWidth(), (float)boxMotion.getHeight(), 0.05F, Colors.YELLOW);
+                    }
                 }
             }
         });

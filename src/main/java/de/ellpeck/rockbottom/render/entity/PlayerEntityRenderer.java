@@ -162,7 +162,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer>{
         else{
             row = isRight ? 2 : 3;
         }
-        renderPlayer(entity, game, manager, g, design, x-0.5F, y-1.5F, 1F, row, light);
+        renderPlayer(entity, game, manager, g, design, x-0.5F, y+entity.getHeight()/2F-2F, 1F, row, light);
 
         RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent(game, manager, g, entity, x, y));
     }

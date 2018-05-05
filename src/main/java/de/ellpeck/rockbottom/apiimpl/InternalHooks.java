@@ -164,44 +164,43 @@ public class InternalHooks implements IInternalHooks{
     @Override
     public void doWorldObjectMovement(MovableWorldObject object){
         if(object.motionX != 0 || object.motionY != 0){
-            BoundBox ownBox = object.getBoundingBox();
-            BoundBox tempBox = ownBox.copy().add(object.x, object.y);
-            BoundBox tempBoxMotion = tempBox.copy().add(object.motionX, object.motionY);
+            BoundBox ownBox = object.currentBounds;
+            BoundBox ownBoxMotion = object.currentBoundsWithMotion.set(ownBox).add(object.motionX, object.motionY);
 
             List<BoundBox> boxes = new ArrayList<>();
 
-            for(int x = Util.floor(tempBoxMotion.getMinX()); x < Util.ceil(tempBoxMotion.getMaxX()); x++){
-                for(int y = Util.floor(tempBoxMotion.getMinY()); y < Util.ceil(tempBoxMotion.getMaxY()); y++){
+            for(int x = Util.floor(ownBoxMotion.getMinX()); x < Util.ceil(ownBoxMotion.getMaxX()); x++){
+                for(int y = Util.floor(ownBoxMotion.getMinY()); y < Util.ceil(ownBoxMotion.getMaxY()); y++){
                     if(object.world.isPosLoaded(x, y)){
                         for(TileLayer layer : TileLayer.getAllLayers()){
                             TileState state = object.world.getState(layer, x, y);
-                            List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, tempBox, tempBoxMotion);
+                            List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, ownBox, ownBoxMotion);
 
                             if(layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)){
-                                object.onTileCollision(x, y, layer, state, tempBox, tempBoxMotion, tileBoxes);
+                                object.onTileCollision(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
                                 boxes.addAll(tileBoxes);
                             }
 
-                            object.onTileIntersection(x, y, layer, state, tempBox, tempBoxMotion, tileBoxes);
+                            object.onTileIntersection(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
                         }
                     }
                 }
             }
 
-            List<Entity> entities = object.world.getEntities(tempBoxMotion);
+            List<Entity> entities = object.world.getEntities(ownBoxMotion);
             for(Entity entity : entities){
-                BoundBox entityTempBox = entity.getBoundingBox().copy().add(entity.x, entity.y);
-                BoundBox entityTempBoxMotion = entityTempBox.copy().add(entity.motionX, entity.motionY);
+                BoundBox entityBox = entity.currentBounds;
+                BoundBox entityBoxMotion = entity.currentBoundsWithMotion;
 
-                if(entity.canCollideWith(object, tempBox, tempBoxMotion)){
-                    object.onEntityCollision(entity, tempBox, tempBoxMotion, entityTempBox, entityTempBoxMotion);
-                    boxes.add(entityTempBox);
+                if(entity.canCollideWith(object, ownBox, ownBoxMotion)){
+                    object.onEntityCollision(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
+                    boxes.add(entityBox);
                 }
 
-                object.onEntityIntersection(entity, tempBox, tempBoxMotion, entityTempBox, entityTempBoxMotion);
+                object.onEntityIntersection(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
             }
 
-            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, tempBoxMotion, boxes));
+            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBoxMotion, boxes));
 
             double motionY = object.motionY;
             if(motionY != 0){
@@ -209,15 +208,15 @@ public class InternalHooks implements IInternalHooks{
                     for(BoundBox box : boxes){
                         if(motionY != 0){
                             if(!box.isEmpty()){
-                                if(tempBox.getMaxX() > box.getMinX() && tempBox.getMinX() < box.getMaxX()){
-                                    if(motionY > 0 && tempBox.getMaxY() <= box.getMinY()){
-                                        double diff = box.getMinY()-tempBox.getMaxY();
+                                if(ownBox.getMaxX() > box.getMinX() && ownBox.getMinX() < box.getMaxX()){
+                                    if(motionY > 0 && ownBox.getMaxY() <= box.getMinY()){
+                                        double diff = box.getMinY()-ownBox.getMaxY();
                                         if(diff < motionY){
                                             motionY = diff;
                                         }
                                     }
-                                    else if(motionY < 0 && tempBox.getMinY() >= box.getMaxY()){
-                                        double diff = box.getMaxY()-tempBox.getMinY();
+                                    else if(motionY < 0 && ownBox.getMinY() >= box.getMaxY()){
+                                        double diff = box.getMaxY()-ownBox.getMinY();
                                         if(diff > motionY){
                                             motionY = diff;
                                         }
@@ -231,27 +230,26 @@ public class InternalHooks implements IInternalHooks{
                     }
                 }
 
-                object.y += motionY;
+                ownBox.add(0D, motionY);
             }
 
             double motionX = object.motionX;
             if(motionX != 0){
                 if(!boxes.isEmpty()){
-                    tempBox.set(ownBox).add(object.x, object.y);
                     for(BoundBox box : boxes){
                         if(motionX != 0){
                             if(!box.isEmpty()){
-                                if(tempBox.getMaxY() > box.getMinY() && tempBox.getMinY() < box.getMaxY()){
-                                    if(motionX > 0 && tempBox.getMaxX() <= box.getMinX()){
-                                        double diff = box.getMinX()-tempBox.getMaxX();
+                                if(ownBox.getMaxY() > box.getMinY() && ownBox.getMinY() < box.getMaxY()){
+                                    if(motionX > 0 && ownBox.getMaxX() <= box.getMinX()){
+                                        double diff = box.getMinX()-ownBox.getMaxX();
                                         if(diff < motionX){
-                                            motionX = Util.floor(diff*1000)/1000;
+                                            motionX = diff;
                                         }
                                     }
-                                    else if(motionX < 0 && tempBox.getMinX() >= box.getMaxX()){
-                                        double diff = box.getMaxX()-tempBox.getMinX();
+                                    else if(motionX < 0 && ownBox.getMinX() >= box.getMaxX()){
+                                        double diff = box.getMaxX()-ownBox.getMinX();
                                         if(diff > motionX){
-                                            motionX = Util.floor(diff*1000)/1000;
+                                            motionX = diff;
                                         }
                                     }
                                 }
@@ -263,12 +261,15 @@ public class InternalHooks implements IInternalHooks{
                     }
                 }
 
-                object.x += motionX;
+                ownBox.add(motionX, 0D);
             }
 
             object.collidedHor = motionX != object.motionX;
             object.collidedVert = motionY != object.motionY;
             object.onGround = object.collidedVert && object.motionY < 0;
+
+            object.x = (ownBox.getMinX()+ownBox.getMaxX())/2D;
+            object.y = (ownBox.getMinY()+ownBox.getMaxY())/2D;
         }
     }
 

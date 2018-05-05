@@ -27,14 +27,12 @@ import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.ApiInternal;
-import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.ItemEntityRenderer;
 
 @ApiInternal
 public class EntityItem extends AbstractEntityItem{
 
-    private final BoundBox boundingBox = new BoundBox(-0.25, -0.25, 0.25, 0.25);
     private final IEntityRenderer renderer;
     private ItemInstance item;
 
@@ -88,11 +86,6 @@ public class EntityItem extends AbstractEntityItem{
     @Override
     public boolean canPickUp(){
         return this.pickupDelay <= 0;
-    }
-
-    @Override
-    public BoundBox getBoundingBox(){
-        return this.boundingBox;
     }
 
     @Override

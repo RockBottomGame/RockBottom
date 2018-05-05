@@ -55,7 +55,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
     private final Statistics statistics = new Statistics();
     private final InventoryPlayer inv = new InventoryPlayer(this);
     private final ItemContainer inventoryContainer = new ContainerInventory(this);
-    private final BoundBox boundingBox = new BoundBox(-0.415, -0.5, 0.415, 1.35);
     private final IEntityRenderer renderer = new PlayerEntityRenderer();
     private final List<IChunk> chunksInRange = new ArrayList<>();
     private final IPlayerDesign design;
@@ -188,7 +187,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
             }
             else{
-                List<AbstractEntityItem> entities = this.world.getEntities(this.getBoundingBox().copy().add(this.x, this.y).expand(1), AbstractEntityItem.class);
+                List<AbstractEntityItem> entities = this.world.getEntities(this.currentBounds.copy().expand(1), AbstractEntityItem.class);
                 for(AbstractEntityItem entity : entities){
                     if(entity.canPickUp()){
                         ItemInstance instance = entity.getItem();
@@ -260,11 +259,6 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public int getRegenRate(){
         return 10;
-    }
-
-    @Override
-    public BoundBox getBoundingBox(){
-        return this.boundingBox;
     }
 
     @Override
@@ -565,5 +559,15 @@ public class EntityPlayer extends AbstractEntityPlayer{
     @Override
     public boolean shouldStartClimbing(int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes){
         return true;
+    }
+
+    @Override
+    public float getWidth(){
+        return 0.83F;
+    }
+
+    @Override
+    public float getHeight(){
+        return 1.85F;
     }
 }

@@ -43,7 +43,7 @@ public class ItemEntityRenderer implements IEntityRenderer<EntityItem>{
             IItemRenderer renderer = item.getRenderer();
             if(renderer != null){
                 float bob = (float)Math.sin(entity.ticksExisted/20D%(2*Math.PI))*0.1F;
-                renderer.render(game, manager, g, item, instance, x-0.25F, y+bob-0.45F, 0.5F, light);
+                renderer.render(game, manager, g, item, instance, x-0.25F, y+bob-0.25F, 0.5F, light);
             }
         }
     }

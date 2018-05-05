@@ -186,6 +186,10 @@ public class InputHandler implements IInputHandler{
                 renderer.isHeightDebug = !renderer.isHeightDebug;
                 return true;
             }
+            else if(key == GLFW.GLFW_KEY_F9){
+                renderer.isBoundBoxDebug = !renderer.isBoundBoxDebug;
+                return true;
+            }
         }
 
         if(key == GLFW.GLFW_KEY_F3){

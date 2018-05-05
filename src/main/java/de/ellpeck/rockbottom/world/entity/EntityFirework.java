@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
-import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -14,18 +13,12 @@ import de.ellpeck.rockbottom.render.entity.FireworkEntityRenderer;
 
 public class EntityFirework extends Entity{
 
-    private final BoundBox boundingBox = new BoundBox(-0.25, -0.25, 0.25, 0.25);
     private final IEntityRenderer renderer = new FireworkEntityRenderer();
     private int lifetime;
 
     public EntityFirework(IWorld world){
         super(world);
         this.lifetime = Util.RANDOM.nextInt(30)+20;
-    }
-
-    @Override
-    public BoundBox getBoundingBox(){
-        return this.boundingBox;
     }
 
     @Override
