@@ -39,6 +39,7 @@ import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketOpenUnboundContainer;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketPlayerMovement;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
@@ -194,7 +195,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
                         ItemPickupEvent event = new ItemPickupEvent(this, entity, instance);
                         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
-                             instance = event.instance;
+                            instance = event.instance;
 
                             ItemInstance theoreticalLeft = this.inv.add(instance, true);
                             if(theoreticalLeft == null || theoreticalLeft.getAmount() != instance.getAmount()){
@@ -229,12 +230,20 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
         if(this.isLocalPlayer()){
             SoundHandler.setPlayerPos(this.x, this.y);
+
+            if(this.world.isClient() && this.world.getTotalTime()%this.getSyncFrequency() == 0){
+                if(this.lastX != this.x || this.lastY != this.y){
+                    RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
+                    this.lastX = this.x;
+                    this.lastY = this.y;
+                }
+            }
         }
     }
 
     @Override
     public int getSyncFrequency(){
-        return 1;
+        return 2;
     }
 
     @Override

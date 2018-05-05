@@ -21,7 +21,10 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.RockBottom;
-import de.ellpeck.rockbottom.net.packet.toserver.*;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketAttack;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketBreakTile;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketInteract;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 
 import java.util.ArrayList;
@@ -128,14 +131,6 @@ public class InteractionManager implements IInteractionManager{
         }
     }
 
-    private static void moveAndSend(EntityPlayer player, int type){
-        if(player.move(type)){
-            if(RockBottomAPI.getNet().isClient()){
-                RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(player.getUniqueId(), player.x, player.y, player.motionX, player.motionY, player.facing));
-            }
-        }
-    }
-
     public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
         if(player.isInRange(mouseX, mouseY, world.getState(layer, x, y).getTile().getMaxInteractionDistance(world, x, y, layer, mouseX, mouseY, player))){
             if(layer == TileLayer.MAIN){
@@ -204,21 +199,21 @@ public class InteractionManager implements IInteractionManager{
                 }
 
                 if(Settings.KEY_LEFT.isDown()){
-                    moveAndSend(player, 0);
+                    player.move(0);
                 }
                 else if(Settings.KEY_RIGHT.isDown()){
-                    moveAndSend(player, 1);
+                    player.move(1);
                 }
 
                 if(Settings.KEY_UP.isDown()){
-                    moveAndSend(player, 3);
+                    player.move(3);
                 }
                 else if(Settings.KEY_DOWN.isDown()){
-                    moveAndSend(player, 4);
+                    player.move(4);
                 }
 
                 if(Settings.KEY_JUMP.isDown()){
-                    moveAndSend(player, 2);
+                    player.move(2);
                 }
 
                 double mousedTileX = game.getRenderer().getMousedTileX();

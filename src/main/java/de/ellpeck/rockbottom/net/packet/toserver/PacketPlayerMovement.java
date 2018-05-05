@@ -61,6 +61,7 @@ public class PacketPlayerMovement implements IPacket{
                 player.motionX = this.motionX;
                 player.motionY = this.motionY;
                 player.facing = this.facing;
+                player.updateBounds();
             }
         }
     }

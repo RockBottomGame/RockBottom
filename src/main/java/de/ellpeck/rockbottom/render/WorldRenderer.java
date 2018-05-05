@@ -124,7 +124,7 @@ public class WorldRenderer{
                         BoundBox box = entity.currentBounds;
                         g.addEmptyRect((float)box.getMinX()-transX, (float)-box.getMaxY()-transY+1F, (float)box.getWidth(), (float)box.getHeight(), 0.1F, Colors.RED);
 
-                        BoundBox boxMotion = entity.currentBoundsWithMotion;
+                        BoundBox boxMotion = box.copy().add(entity.motionX, entity.motionY);
                         g.addEmptyRect((float)boxMotion.getMinX()-transX, (float)-boxMotion.getMaxY()-transY+1F, (float)boxMotion.getWidth(), (float)boxMotion.getHeight(), 0.05F, Colors.YELLOW);
                     }
                 }

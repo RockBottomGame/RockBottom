@@ -35,7 +35,9 @@ public class PacketActiveItem implements IPacket{
         buf.writeInt(this.slot);
 
         DataSet set = new DataSet();
-        this.newSlotItem.save(set);
+        if(this.newSlotItem != null){
+            this.newSlotItem.save(set);
+        }
         NetUtil.writeSetToBuffer(set, buf);
     }
 
@@ -46,7 +48,9 @@ public class PacketActiveItem implements IPacket{
 
         DataSet set = new DataSet();
         NetUtil.readSetFromBuffer(set, buf);
-        this.newSlotItem = ItemInstance.load(set);
+        if(!set.isEmpty()){
+            this.newSlotItem = ItemInstance.load(set);
+        }
     }
 
     @Override

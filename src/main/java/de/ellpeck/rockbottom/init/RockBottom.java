@@ -102,6 +102,8 @@ public class RockBottom extends AbstractGame{
 
     @Override
     public void init(){
+        this.uniqueId = UUID.randomUUID();
+
         RockBottomAPI.logger().info("Initializing GLFW");
 
         GLFW.glfwSetErrorCallback(this.errorCallback);
@@ -473,7 +475,7 @@ public class RockBottom extends AbstractGame{
     }
 
     @Override
-    protected void updateTickless(int delta){
+    protected void updateTickless(){
         if(GLFW.glfwWindowShouldClose(this.windowId)){
             this.exit();
         }

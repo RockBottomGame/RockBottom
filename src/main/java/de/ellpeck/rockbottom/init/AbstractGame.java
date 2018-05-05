@@ -64,6 +64,7 @@ public abstract class AbstractGame implements IGameInstance{
     private int tpsAverage;
     private int fpsAverage;
     private int totalTicks;
+    private float tickDelta;
 
     public static void doInit(AbstractGame game){
         Internals internals = new Internals();
@@ -93,6 +94,7 @@ public abstract class AbstractGame implements IGameInstance{
                 long time = Util.getTimeMillis();
 
                 int delta = (int)(time-lastDeltaTime);
+                game.tickDelta = delta/(float)INTERVAL;
                 lastDeltaTime = time;
 
                 deltaAccumulator += delta;
@@ -106,7 +108,7 @@ public abstract class AbstractGame implements IGameInstance{
                     }
                 }
 
-                game.updateTickless(delta);
+                game.updateTickless();
                 fpsAccumulator++;
 
                 if(time-lastPollTime >= 1000){
@@ -144,6 +146,11 @@ public abstract class AbstractGame implements IGameInstance{
                 RockBottomAPI.logger().log(Level.SEVERE, "There was an error while shutting down the game and disposing of resources", e);
             }
         }
+    }
+
+    @Override
+    public float getTickDelta(){
+        return this.tickDelta;
     }
 
     public abstract int getAutosaveInterval();
@@ -287,7 +294,7 @@ public abstract class AbstractGame implements IGameInstance{
         }
     }
 
-    protected void updateTickless(int delta){
+    protected void updateTickless(){
 
     }
 

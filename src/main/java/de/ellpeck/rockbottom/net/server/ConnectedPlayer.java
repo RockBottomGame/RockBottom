@@ -77,15 +77,12 @@ public class ConnectedPlayer extends EntityPlayer{
             maxDist = event.allowedDefaultDistance;
 
             if(!cancelled && distanceSq > maxDist*maxDist){
-                this.x = this.lastCalcX;
-                this.y = this.lastCalcY;
-
                 this.motionX = 0;
                 this.motionY = 0;
                 this.isFalling = false;
                 this.fallStartY = 0;
+                this.setPos(this.lastCalcX, this.lastCalcY);
 
-                this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
                 RockBottomAPI.logger().warning("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
             }
             else{
@@ -127,13 +124,6 @@ public class ConnectedPlayer extends EntityPlayer{
             }
         }
 
-        if(this.lastX != this.x || this.lastY != this.y){
-            net.sendToAllPlayersWithLoadedPosExcept(this.world, new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing), this.x, this.y, this);
-
-            this.lastX = this.x;
-            this.lastY = this.y;
-        }
-
         if(this.getHealth() != this.lastHealth && this.world.getTotalTime()%10 == 0){
             this.lastHealth = this.getHealth();
             this.sendPacket(new PacketHealth(this.getHealth()));
@@ -149,11 +139,6 @@ public class ConnectedPlayer extends EntityPlayer{
         this.fallCalcTicks = 0;
 
         this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
-    }
-
-    @Override
-    public boolean doesSync(){
-        return false;
     }
 
     @Override

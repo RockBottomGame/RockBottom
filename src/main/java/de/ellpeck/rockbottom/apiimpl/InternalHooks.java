@@ -165,7 +165,7 @@ public class InternalHooks implements IInternalHooks{
     public void doWorldObjectMovement(MovableWorldObject object){
         if(object.motionX != 0 || object.motionY != 0){
             BoundBox ownBox = object.currentBounds;
-            BoundBox ownBoxMotion = object.currentBoundsWithMotion.set(ownBox).add(object.motionX, object.motionY);
+            BoundBox ownBoxMotion = ownBox.copy().add(object.motionX, object.motionY);
 
             List<BoundBox> boxes = new ArrayList<>();
 
@@ -190,7 +190,7 @@ public class InternalHooks implements IInternalHooks{
             List<Entity> entities = object.world.getEntities(ownBoxMotion);
             for(Entity entity : entities){
                 BoundBox entityBox = entity.currentBounds;
-                BoundBox entityBoxMotion = entity.currentBoundsWithMotion;
+                BoundBox entityBoxMotion = entityBox.copy().add(entity.motionX, entity.motionY);
 
                 if(entity.canCollideWith(object, ownBox, ownBoxMotion)){
                     object.onEntityCollision(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
