@@ -43,7 +43,6 @@ public class PacketChestOpen implements IPacket{
             TileEntityChest chest = world.getTileEntity(this.x, this.y, TileEntityChest.class);
             if(chest != null){
                 chest.setOpenCount(this.open ? 1 : 0);
-                System.out.println("Chest is "+this.open);
             }
         }
     }

@@ -1,5 +1,5 @@
 group 'de.ellpeck.rockbottom'
-version '0.2.3.1'
+version '0.2.3.2'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -48,9 +48,9 @@ dependencies {
     compile project(":Assets")
 
     //JOPT Simple for launch arg parsing
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.9'
+    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '5.0.4'
     //Auth System by Blur
-    compile group: 'co.pemery.auth', name: 'RockBottomAuth', version: '0.2-PRE'
+    compile group: 'co.pemery.auth', name: 'RockBottomAuth', version: '0.2.1-PRE'
 }
 
 jar {
