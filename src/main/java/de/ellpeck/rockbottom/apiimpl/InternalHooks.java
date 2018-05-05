@@ -70,10 +70,7 @@ public class InternalHooks implements IInternalHooks{
                 }
 
                 if(entity.isFalling){
-                    double dist = entity.fallStartY-entity.y;
-                    if(dist > 0){
-                        entity.onGroundHit(dist);
-                    }
+                    entity.onGroundHit(Math.max(0D, entity.fallStartY-entity.y));
 
                     entity.isFalling = false;
                     entity.fallStartY = 0;
