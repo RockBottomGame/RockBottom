@@ -231,7 +231,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         if(this.isLocalPlayer()){
             SoundHandler.setPlayerPos(this.x, this.y);
 
-            if(this.world.isClient() && this.world.getTotalTime()%this.getSyncFrequency() == 0){
+            if(this.world.isClient() && this.ticksExisted%this.getSyncFrequency() == 0){
                 if(this.lastX != this.x || this.lastY != this.y){
                     RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
                     this.lastX = this.x;

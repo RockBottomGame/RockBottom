@@ -71,7 +71,7 @@ public class ConnectedPlayer extends EntityPlayer{
                     +this.getMoveSpeed()*(80-this.fallCalcTicks-this.climbingCalcTicks)
                     +3;
 
-            ResetMovedPlayerEvent event = new ResetMovedPlayerEvent(this, this.lastCalcX, this.lastY, this.fallCalcTicks, this.climbingCalcTicks, distanceSq, maxDist);
+            ResetMovedPlayerEvent event = new ResetMovedPlayerEvent(this, this.lastCalcX, this.lastCalcY, this.fallCalcTicks, this.climbingCalcTicks, distanceSq, maxDist);
             boolean cancelled = RockBottomAPI.getEventHandler().fireEvent(event) == EventResult.CANCELLED;
             distanceSq = event.distanceSqMoved;
             maxDist = event.allowedDefaultDistance;
