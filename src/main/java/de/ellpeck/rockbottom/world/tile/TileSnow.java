@@ -42,7 +42,7 @@ public class TileSnow extends TileFalling{
         if(layer == TileLayer.MAIN && entity instanceof AbstractEntityPlayer){
             entity.motionX *= 0.9D;
 
-            if(!world.isDedicatedServer() && Math.abs(entity.motionX) > 0.1D && world.getTotalTime()%15 == 0){
+            if(!world.isDedicatedServer() && Math.abs(entity.motionX) > 0.01D && world.getTotalTime()%15 == 0){
                 for(int i = Util.RANDOM.nextInt(5); i >= 0; i--){
                     RockBottomAPI.getGame().getParticleManager().addSnowParticle(world, entity.x+Util.RANDOM.nextGaussian()*0.1D, y+0.9D+Util.RANDOM.nextFloat()*0.2D, -entity.motionX*Util.RANDOM.nextFloat()*0.2D, Util.RANDOM.nextFloat()*0.2D, 25);
                 }

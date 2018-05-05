@@ -64,4 +64,9 @@ public class PacketEntityUpdate implements IPacket{
             }
         }
     }
+
+    @Override
+    public void enqueueAsAction(IGameInstance game, ChannelHandlerContext context){
+        this.handle(game, context);
+    }
 }
