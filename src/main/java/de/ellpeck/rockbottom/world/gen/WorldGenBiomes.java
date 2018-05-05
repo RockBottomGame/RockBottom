@@ -18,6 +18,7 @@ import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -45,8 +46,11 @@ public class WorldGenBiomes implements IWorldGenerator{
         }
 
         for(Biome biome : RockBottomAPI.BIOME_REGISTRY.values()){
-            for(BiomeLevel level : biome.getGenerationLevels(world)){
-                this.biomesPerLevel.put(level, biome);
+            List<BiomeLevel> levels = biome.getGenerationLevels(world);
+            for(BiomeLevel level : RockBottomAPI.BIOME_LEVEL_REGISTRY.values()){
+                if(levels.contains(level) || level.getAdditionalGenBiomes(world).contains(biome)){
+                    this.biomesPerLevel.put(level, biome);
+                }
             }
         }
 
@@ -151,7 +155,7 @@ public class WorldGenBiomes implements IWorldGenerator{
 
     private BiomeLevel getLevelForPos(IWorld world, int x, int y, int height){
         BiomeLevel chosen = null;
-        for(BiomeLevel level : RockBottomAPI.BIOME_LEVEL_REGISTRY.values()){
+        for(BiomeLevel level : this.biomesPerLevel.keySet()){
             if(y >= level.getMinY(world, x, y, height) && y <= level.getMaxY(world, x, y, height)){
                 if(chosen == null || level.getPriority() >= chosen.getPriority()){
                     chosen = level;
