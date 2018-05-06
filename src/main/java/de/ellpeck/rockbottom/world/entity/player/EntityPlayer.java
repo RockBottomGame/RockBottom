@@ -233,7 +233,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
             if(this.world.isClient() && this.ticksExisted%this.getSyncFrequency() == 0){
                 if(this.lastX != this.x || this.lastY != this.y){
-                    RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing));
+                    RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
                     this.lastX = this.x;
                     this.lastY = this.y;
                 }
