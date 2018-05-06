@@ -27,7 +27,6 @@ public class ParticleManager implements IParticleManager{
 
             if(particle.isDead()){
                 this.particles.remove(i);
-                i--;
             }
         }
     }

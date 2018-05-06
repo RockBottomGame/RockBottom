@@ -144,7 +144,7 @@ public class Chunk implements IChunk{
     }
 
     protected void updateEntities(IGameInstance game){
-        for(int i = 0; i < this.entities.size(); i++){
+        for(int i = this.entities.size()-1; i >= 0; i--){
             Entity entity = this.entities.get(i);
 
             if(RockBottomAPI.getEventHandler().fireEvent(new EntityTickEvent(entity)) != EventResult.CANCELLED){
@@ -153,7 +153,6 @@ public class Chunk implements IChunk{
 
             if(entity.shouldBeRemoved()){
                 this.world.removeEntity(entity, this);
-                i--;
             }
             else{
                 int newChunkX = Util.toGridPos(entity.x);
@@ -161,7 +160,6 @@ public class Chunk implements IChunk{
 
                 if(newChunkX != this.gridX || newChunkY != this.gridY){
                     this.removeEntity(entity);
-                    i--;
 
                     IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
                     chunk.addEntity(entity);
@@ -179,7 +177,7 @@ public class Chunk implements IChunk{
             }
         }
 
-        for(int i = 0; i < this.tickingTileEntities.size(); i++){
+        for(int i = this.tickingTileEntities.size()-1; i >= 0; i--){
             TileEntity tile = this.tickingTileEntities.get(i);
 
             Preconditions.checkState(this.getTileEntity(tile.layer, tile.x, tile.y) == tile, "There is a ticking tile entity at "+tile.x+", "+tile.y+" that shouldn't exist there as there is no tile entity registered for that position!");
@@ -190,7 +188,6 @@ public class Chunk implements IChunk{
 
             if(tile.shouldRemove()){
                 this.removeTileEntity(tile.layer, tile.x, tile.y);
-                i--;
             }
         }
     }
@@ -230,7 +227,6 @@ public class Chunk implements IChunk{
                             }
                         }
 
-                        i--;
                         this.setDirty();
                     }
                 }
@@ -253,8 +249,6 @@ public class Chunk implements IChunk{
 
                 this.playersOutOfRangeCached.remove(i);
                 this.playersOutOfRangeCachedTimers.remove(player);
-
-                i--;
             }
         }
     }

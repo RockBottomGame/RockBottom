@@ -119,7 +119,6 @@ public class ConnectedPlayer extends EntityPlayer{
                 IChunk chunk = this.chunksToSend.get(i);
                 if(this.sendChunk(chunk)){
                     this.chunksToSend.remove(i);
-                    i--;
                 }
             }
         }

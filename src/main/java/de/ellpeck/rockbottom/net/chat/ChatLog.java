@@ -189,7 +189,6 @@ public class ChatLog implements IChatLog{
 
                 if(counter.get() <= 0){
                     this.newMessageCounter.remove(i);
-                    i--;
                 }
             }
         }

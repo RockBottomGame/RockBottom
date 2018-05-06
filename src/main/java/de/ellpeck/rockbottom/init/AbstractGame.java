@@ -179,7 +179,6 @@ public abstract class AbstractGame implements IGameInstance{
                     action.action.accept(this, action.object);
 
                     this.enqueuedActions.remove(i);
-                    i--;
                 }
             }
         }

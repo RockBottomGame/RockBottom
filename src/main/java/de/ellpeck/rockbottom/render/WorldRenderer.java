@@ -333,8 +333,6 @@ public class WorldRenderer{
 
             if(cloud.x >= 1.5D){
                 this.clouds.remove(i);
-                i--;
-
                 possibleAddAmount += 2;
             }
         }

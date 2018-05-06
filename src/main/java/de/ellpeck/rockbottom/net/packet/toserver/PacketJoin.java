@@ -127,12 +127,11 @@ public class PacketJoin implements IPacket{
                 for(ModInfo info : this.modInfos){
                     if(mod.getId().equals(info.id)){
                         if(!mod.isCompatibleWithModVersion(info.version)){
-                            RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining with incompatible version "+info.version+" of mod "+mod.getDisplayName()+", expected was "+mod.getVersion());
-                            return new ChatComponentTranslation(ResourceName.intern("info.reject.incompatible_version"), mod.getDisplayName(), info.version, mod.getVersion());
+                            RockBottomAPI.logger().warning("Player "+this.design.getName()+" with id "+this.id+" tried joining with incompatible version "+info.version+" of mod "+mod.getId()+", expected was "+mod.getVersion());
+                            return new ChatComponentTranslation(ResourceName.intern("info.reject.incompatible_version"), mod.getId(), info.version, mod.getVersion());
                         }
                         else{
                             mods.remove(i);
-                            i--;
 
                             this.modInfos.remove(info);
                             break;
@@ -154,7 +153,6 @@ public class PacketJoin implements IPacket{
             for(int i = this.modInfos.size()-1; i >= 0; i--){
                 if(!this.modInfos.get(i).requiredOnServer){
                     this.modInfos.remove(i);
-                    i--;
                 }
             }
 
@@ -173,7 +171,7 @@ public class PacketJoin implements IPacket{
         StringBuilder s = new StringBuilder("[");
         while(it.hasNext()){
             IMod mod = it.next();
-            s.append(mod.getDisplayName()).append(" @ ").append(mod.getVersion());
+            s.append(mod.getId()).append(" @ ").append(mod.getVersion());
 
             if(!it.hasNext()){
                 return s.toString()+']';

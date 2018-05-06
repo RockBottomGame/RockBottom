@@ -106,8 +106,6 @@ public class InternalHooks implements IInternalHooks{
             if(active.getTime() <= 0){
                 effects.remove(i);
                 effect.onRemovedOrEnded(active, entity, true);
-
-                i--;
             }
         }
 

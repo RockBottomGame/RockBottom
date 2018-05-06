@@ -141,13 +141,12 @@ public class World implements IWorld{
     }
 
     protected void updateChunks(IGameInstance game){
-        for(int i = 0; i < this.loadedChunks.size(); i++){
+        for(int i = this.loadedChunks.size()-1; i >= 0; i--){
             IChunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
 
             if(chunk.shouldUnload()){
                 this.unloadChunk(chunk);
-                i--;
             }
         }
     }
