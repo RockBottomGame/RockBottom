@@ -4,12 +4,14 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.render.tile.TileGrassTuftRenderer;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +23,11 @@ public class TileGrassTuft extends TileMeta{
         this.addSubTile(ResourceName.intern("grass_short"));
         this.addSubTile(ResourceName.intern("grass_tall"));
         this.addSubTile(ResourceName.intern("bush"));
+    }
+
+    @Override
+    protected ITileRenderer createRenderer(ResourceName name){
+        return new TileGrassTuftRenderer();
     }
 
     @Override

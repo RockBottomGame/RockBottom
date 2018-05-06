@@ -59,7 +59,7 @@ public class TileLeaves extends TileBasic{
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
         if(!world.isClient()){
             if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-                if(!this.recursiveLeavesCheck(world, x, y, layer,new ArrayList<>())){
+                if(!this.recursiveLeavesCheck(world, x, y, layer, new ArrayList<>())){
                     world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25)+5);
                 }
             }
