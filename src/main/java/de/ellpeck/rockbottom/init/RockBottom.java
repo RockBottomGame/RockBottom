@@ -70,7 +70,7 @@ import java.util.logging.Level;
 
 public class RockBottom extends AbstractGame{
 
-    private static final UUID DEFAULT_UUID = UUID.fromString("0DD5A1AD-CA11-ADD5-1CED-C0FFEEEFFEC7");
+    private static final UUID DEFAULT_UUID = new UUID(0, 0);
     protected Settings settings;
     private EntityPlayer player;
     private IPlayerDesign playerDesign;
