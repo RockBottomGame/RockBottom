@@ -22,10 +22,7 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.toast.Toast;
-import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.Counter;
-import de.ellpeck.rockbottom.api.util.Direction;
-import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
@@ -69,6 +66,7 @@ public class World implements IWorld{
     protected File chunksDirectory;
     protected File playerDirectory;
     protected File additionalDataFile;
+    protected File persistentChunksFile;
     protected int saveTicksCounter;
     private ModBasedDataSet additionalData;
     private final WorldGenBiomes biomeGen;
@@ -127,11 +125,43 @@ public class World implements IWorld{
                 this.additionalData = new ModBasedDataSet();
                 this.additionalData.read(this.additionalDataFile);
             }
+
+            this.persistentChunksFile = new File(worldDirectory, "persistent_chunks.dat");
+        }
+
+        this.loadPersistentChunks();
+    }
+
+    private void loadPersistentChunks(){
+        Map<Pos2, Boolean> persistentChunks = new HashMap<>();
+
+        if(this.persistentChunksFile != null && this.persistentChunksFile.exists()){
+            DataSet set = new DataSet();
+            set.read(this.persistentChunksFile);
+
+            int amount = set.getInt("amount");
+            for(int i = 0; i < amount; i++){
+                persistentChunks.put(new Pos2(set.getInt("x_"+i), set.getInt("y_"+i)), false);
+            }
         }
 
         for(int x = -Constants.PERSISTENT_CHUNK_DISTANCE; x <= Constants.PERSISTENT_CHUNK_DISTANCE; x++){
             for(int y = Constants.PERSISTENT_CHUNK_DISTANCE; y >= -Constants.PERSISTENT_CHUNK_DISTANCE; y--){
-                this.loadChunk(x, y, true, false);
+                persistentChunks.put(new Pos2(x, y), true);
+            }
+        }
+
+        for(Map.Entry<Pos2, Boolean> entry : persistentChunks.entrySet()){
+            Pos2 pos = entry.getKey();
+            boolean constantPersist = entry.getValue();
+
+            this.loadChunk(pos.getX(), pos.getY(), constantPersist, !constantPersist);
+
+            if(constantPersist){
+                RockBottomAPI.logger().config("Creating constantly persistent chunk at "+pos.getX()+", "+pos.getY());
+            }
+            else{
+                RockBottomAPI.logger().config("Loading persisting chunk at "+pos.getX()+", "+pos.getY());
             }
         }
     }
@@ -677,11 +707,32 @@ public class World implements IWorld{
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
 
+            List<Pos2> persistentChunks = new ArrayList<>();
+
             for(int i = 0; i < this.loadedChunks.size(); i++){
-                if(this.saveChunk(this.loadedChunks.get(i), false)){
+                IChunk chunk = this.loadedChunks.get(i);
+
+                if(this.saveChunk(chunk, false)){
                     amount++;
                 }
+
+                if(chunk.doesEntityForcePersistence()){
+                    persistentChunks.add(new Pos2(chunk.getGridX(), chunk.getGridY()));
+                }
             }
+
+            DataSet set = new DataSet();
+            if(!persistentChunks.isEmpty()){
+                set.addInt("amount", persistentChunks.size());
+
+                int counter = 0;
+                for(Pos2 pos : persistentChunks){
+                    set.addInt("x_"+counter, pos.getX());
+                    set.addInt("y_"+counter, pos.getY());
+                    counter++;
+                }
+            }
+            set.write(this.persistentChunksFile);
 
             this.info.save();
 

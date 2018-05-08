@@ -107,7 +107,7 @@ public final class DebugRenderer{
             list.add("TilePos: "+x+", "+y);
             if(world.isPosLoaded(x, y)){
                 IChunk chunk = world.getChunk(x, y);
-                list.add("ChunkPos: "+chunk.getGridX()+", "+chunk.getGridY()+", Persistent: "+chunk.isPersistent());
+                list.add("ChunkPos: "+chunk.getGridX()+", "+chunk.getGridY()+", Persistent: "+chunk.isConstantlyPersistent());
                 if(!RockBottomAPI.getNet().isClient()){
                     list.add("ChunkPlayers: "+chunk.getPlayersInRange().size()+", PlayersCached: "+chunk.getPlayersLeftRange().size());
                 }

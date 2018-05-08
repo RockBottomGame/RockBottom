@@ -70,16 +70,12 @@ public class Chunk implements IChunk{
     private Biome mostProminentBiome = GameContent.BIOME_SKY;
     private final Map<TileLayer, int[]> heights = new HashMap<>();
     private final Map<TileLayer, Integer> averageHeights = new HashMap<>();
-    private final boolean isPersistent;
+    private final boolean constantlyPersistent;
     private final Map<TileLayer, Float> flatness = new HashMap<>();
 
-    public Chunk(World world, int gridX, int gridY, boolean isPersistent){
+    public Chunk(World world, int gridX, int gridY, boolean constantlyPersistent){
         this.world = world;
-        this.isPersistent = isPersistent;
-
-        if(isPersistent){
-            RockBottomAPI.logger().config("Creating persistent chunk at "+gridX+", "+gridY);
-        }
+        this.constantlyPersistent = constantlyPersistent;
 
         this.x = Util.toWorldPos(gridX);
         this.y = Util.toWorldPos(gridY);
@@ -647,8 +643,8 @@ public class Chunk implements IChunk{
     }
 
     @Override
-    public boolean isPersistent(){
-        return this.isPersistent;
+    public boolean isConstantlyPersistent(){
+        return this.constantlyPersistent;
     }
 
     @Override
@@ -744,7 +740,32 @@ public class Chunk implements IChunk{
 
     @Override
     public boolean shouldUnload(){
-        return !this.isPersistent && this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty();
+        if(!this.constantlyPersistent && this.internalLoadingTimer <= 0 && this.playersInRange.isEmpty() && this.playersOutOfRangeCached.isEmpty()){
+            if(this.doesEntityForcePersistence()){
+                this.internalLoadingTimer = Constants.CHUNK_LOAD_TIME;
+
+                RockBottomAPI.logger().fine("Persisting chunk at "+this.gridX+", "+this.gridY);
+            }
+            else{
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean doesEntityForcePersistence(){
+        for(TileEntity tile : this.tileEntities){
+            if(tile.shouldMakeChunkPersist(this)){
+                return true;
+            }
+        }
+        for(Entity entity : this.entities){
+            if(entity.shouldMakeChunkPersist(this)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
