@@ -29,7 +29,6 @@ public final class ThreadHandler{
 
     public static void init(AbstractGame game){
         chunkGenThread = new ChunkThread(game);
-        chunkGenThread.setDaemon(true);
         chunkGenThread.start();
 
         soundThread = new Thread(() -> SoundHandler.updateSounds(game), SOUND_UPDATER);
