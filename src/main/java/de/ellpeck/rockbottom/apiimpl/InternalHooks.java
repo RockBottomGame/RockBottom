@@ -39,6 +39,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
@@ -51,6 +52,7 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class InternalHooks implements IInternalHooks{
 
@@ -146,7 +148,7 @@ public class InternalHooks implements IInternalHooks{
             if(entity.doesSync()){
                 if(entity.ticksExisted%entity.getSyncFrequency() == 0){
                     if(entity.lastX != entity.x || entity.lastY != entity.y){
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.x, entity.y, entity.motionX, entity.motionY, entity.facing,entity.collidedHor, entity.collidedVert, entity.onGround), entity.x, entity.y, entity);
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.x, entity.y, entity.motionX, entity.motionY, entity.facing, entity.collidedHor, entity.collidedVert, entity.onGround), entity.x, entity.y, entity);
 
                         entity.lastX = entity.x;
                         entity.lastY = entity.y;
@@ -1133,5 +1135,10 @@ public class InternalHooks implements IInternalHooks{
                 manager.getTexture(textureLocation).draw(x+1, y+1, 12F, 12F);
             }
         });
+    }
+
+    @Override
+    public Logger logger(){
+        return Logging.mainLogger;
     }
 }

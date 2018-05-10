@@ -246,9 +246,4 @@ public class ApiHandler implements IApiHandler{
     public Logger createLogger(String name){
         return Logging.createLogger(name);
     }
-
-    @Override
-    public Logger logger(){
-        return Logging.mainLogger;
-    }
 }
