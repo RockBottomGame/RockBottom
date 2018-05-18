@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
+import de.ellpeck.rockbottom.api.event.impl.MakeCameraCoordsEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -479,6 +480,17 @@ public class RockBottom extends AbstractGame{
         }
         else{
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+            if(this.player != null){
+                MakeCameraCoordsEvent event = new MakeCameraCoordsEvent(this.player, this.player.x, this.player.y-0.5D);
+                RockBottomAPI.getEventHandler().fireEvent(event);
+                this.renderer.cameraX = event.cameraX;
+                this.renderer.cameraY = event.cameraY;
+            }
+            else{
+                this.renderer.cameraX = 0D;
+                this.renderer.cameraY = 0D;
+            }
 
             this.render();
 

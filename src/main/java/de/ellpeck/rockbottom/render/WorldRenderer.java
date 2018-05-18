@@ -70,8 +70,8 @@ public class WorldRenderer{
 
         double width = g.getWidthInWorld();
         double height = g.getHeightInWorld();
-        float transX = (float)(player.x-width/2);
-        float transY = (float)(-player.y-height/2);
+        float transX = (float)(g.getCameraX()-width/2);
+        float transY = (float)(-g.getCameraY()-height/2);
 
         this.renderSky(game, manager, g, world, skylightMod, width, height);
 

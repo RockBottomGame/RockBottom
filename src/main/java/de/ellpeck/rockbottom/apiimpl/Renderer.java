@@ -93,6 +93,9 @@ public class Renderer implements IRenderer{
     private int lastFlushes;
     private int flushCounter;
 
+    public double cameraX;
+    public double cameraY;
+
     public Renderer(IGameInstance game){
         this.game = game;
 
@@ -708,14 +711,14 @@ public class Renderer implements IRenderer{
     @Override
     public double getMousedTileX(){
         double mouseX = this.game.getInput().getMouseX();
-        double worldAtScreenX = this.game.getPlayer().x-this.getWidthInWorld()/2;
+        double worldAtScreenX = this.cameraX-this.getWidthInWorld()/2;
         return worldAtScreenX+mouseX/(double)this.getWorldScale();
     }
 
     @Override
     public double getMousedTileY(){
         double mouseY = this.game.getInput().getMouseY();
-        double worldAtScreenY = -this.game.getPlayer().y-this.getHeightInWorld()/2;
+        double worldAtScreenY = -this.cameraY-this.getHeightInWorld()/2;
         return -(worldAtScreenY+mouseY/(double)this.getWorldScale())+1;
     }
 
@@ -744,5 +747,15 @@ public class Renderer implements IRenderer{
     @Override
     public int getVertexAmount(){
         return this.vertexAmount;
+    }
+
+    @Override
+    public double getCameraX(){
+        return this.cameraX;
+    }
+
+    @Override
+    public double getCameraY(){
+        return this.cameraY;
     }
 }
