@@ -84,10 +84,6 @@ public class InternalHooks implements IInternalHooks{
                     entity.fallStartY = entity.y;
                 }
             }
-
-            if(entity.collidedHor){
-                entity.motionX = 0;
-            }
         }
         else{
             entity.motionX = 0;

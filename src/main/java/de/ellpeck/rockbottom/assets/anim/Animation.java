@@ -56,27 +56,27 @@ public class Animation implements IAnimation{
 
     @Override
     public void drawRow(int row, float x, float y, float width, float height, int filter){
-        this.drawRow(-1L, row, x, y, width, height, null, filter);
+        this.drawRow(0L, row, x, y, width, height, null, filter);
     }
 
     @Override
     public void drawRow(int row, float x, float y, float width, float height, int[] light, int filter){
-        this.drawRow(-1L, row, x, y, x+width, y+height, 0, 0, this.frameWidth, this.frameHeight, light, filter);
+        this.drawRow(0L, row, x, y, x+width, y+height, 0, 0, this.frameWidth, this.frameHeight, light, filter);
     }
 
     @Override
     public void drawRow(int row, float x, float y, float scale, int filter){
-        this.drawRow(-1L, row, x, y, scale, null, filter);
+        this.drawRow(0L, row, x, y, scale, null, filter);
     }
 
     @Override
     public void drawRow(int row, float x, float y, float scale, int[] light, int filter){
-        this.drawRow(-1L, row, x, y, this.frameWidth*scale, this.frameHeight*scale, light, filter);
+        this.drawRow(0L, row, x, y, this.frameWidth*scale, this.frameHeight*scale, light, filter);
     }
 
     @Override
     public void drawRow(int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
-        this.drawRow(-1L, row, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
+        this.drawRow(0L, row, x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
     }
 
     @Override
@@ -101,8 +101,7 @@ public class Animation implements IAnimation{
 
     @Override
     public void drawRow(long startTimeMillis, int row, float x1, float y1, float x2, float y2, float srcX1, float srcY1, float srcX2, float srcY2, int[] light, int filter){
-        long time = startTimeMillis > 0 ? Util.getTimeMillis()-startTimeMillis : Util.getTimeMillis();
-        this.drawFrame(row, this.getFrameByTime(row, time), x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
+        this.drawFrame(row, this.getFrameByTime(row, Util.getTimeMillis()-startTimeMillis), x1, y1, x2, y2, srcX1, srcY1, srcX2, srcY2, light, filter);
     }
 
     @Override

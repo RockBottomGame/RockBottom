@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.init;
 
+import co.pemery.auth.RockBottomAuthenticator;
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.Constants;
@@ -67,6 +68,8 @@ public abstract class AbstractGame implements IGameInstance{
     private float tickDelta;
 
     public static void doInit(AbstractGame game){
+        RockBottomAuthenticator.setMainServer("https://rockbottom.ellpeck.de/auth/");
+
         Internals internals = new Internals();
         RockBottomAPI.setInternals(internals);
 

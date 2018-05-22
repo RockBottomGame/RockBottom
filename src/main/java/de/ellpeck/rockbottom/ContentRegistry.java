@@ -19,6 +19,7 @@ import de.ellpeck.rockbottom.item.ItemTwig;
 import de.ellpeck.rockbottom.world.entity.EntityFalling;
 import de.ellpeck.rockbottom.world.entity.EntityFirework;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
+import de.ellpeck.rockbottom.world.entity.EntitySlime;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
 import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
@@ -88,6 +89,7 @@ public final class ContentRegistry{
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("item"), EntityItem.class);
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("falling"), EntityFalling.class);
         RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("firework"), EntityFirework.class);
+        RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("slime"), EntitySlime.class);
 
         RockBottomAPI.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);
         RockBottomAPI.WORLD_GENERATORS.register(WorldGenHeights.ID, WorldGenHeights.class);

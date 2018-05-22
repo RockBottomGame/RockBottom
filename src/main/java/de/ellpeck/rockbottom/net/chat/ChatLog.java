@@ -38,6 +38,7 @@ public class ChatLog implements IChatLog{
         new CommandHelp().register();
         new CommandStopServer().register();
         new CommandSpawnItem().register();
+        new CommandSpawnEntity().register();
         new CommandTeleport().register();
         new CommandWhitelist().register();
         new CommandBlacklist().register();
