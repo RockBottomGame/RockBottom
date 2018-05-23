@@ -26,8 +26,6 @@ public class TaskSlimeJump extends AITask<EntitySlime>{
 
     @Override
     public void onExecutionStarted(AITask<EntitySlime> previousTask, EntitySlime entity){
-        //TODO Somehow sync the start of the execution with the client rather than making the client execute the same AI code
-        //Maybe have a method in AITask called isSynced, making a packet be sent every time a new AI task starts?
         this.chargeTime = 20;
         this.jumpStartTime = Util.getTimeMillis();
     }

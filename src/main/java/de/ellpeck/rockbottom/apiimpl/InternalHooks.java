@@ -40,6 +40,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.log.Logging;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketAITask;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
@@ -107,36 +108,45 @@ public class InternalHooks implements IInternalHooks{
             }
         }
 
-        boolean quitCurrentTask = true;
-        int lowestFindPrio = Integer.MIN_VALUE;
         AITask currTask = entity.currentAiTask;
+        if(!entity.world.isClient()){
+            boolean quitCurrentTask = true;
+            int lowestFindPrio = Integer.MIN_VALUE;
 
-        if(currTask != null){
-            currTask.execute(game, entity);
-
-            if(!currTask.shouldEndExecution(entity)){
-                quitCurrentTask = false;
-                lowestFindPrio = currTask.getPriority()+1;
-            }
-        }
-
-        AITask newTask = null;
-
-        for(AITask task : aiTasks){
-            if(task.getPriority() >= lowestFindPrio && task.shouldStartExecution(entity)){
-                newTask = task;
-                break;
-            }
-        }
-
-        if(quitCurrentTask || newTask != null){
             if(currTask != null){
-                newTask = currTask.getNextTask(newTask, entity);
-                currTask.onExecutionEnded(newTask, entity);
+                currTask.execute(game, entity);
+
+                if(!currTask.shouldEndExecution(entity)){
+                    quitCurrentTask = false;
+                    lowestFindPrio = currTask.getPriority()+1;
+                }
             }
-            entity.currentAiTask = newTask;
-            if(newTask != null){
-                newTask.onExecutionStarted(currTask, entity);
+
+            int newTaskId = -1;
+
+            for(int i = 0; i < aiTasks.size(); i++){
+                AITask task = aiTasks.get(i);
+                if(task.getPriority() >= lowestFindPrio && task.shouldStartExecution(entity)){
+                    newTaskId = i;
+                    break;
+                }
+            }
+
+            if(quitCurrentTask || newTaskId >= 0){
+                if(entity.world.isServer()){
+                    RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketAITask(entity.getUniqueId(), newTaskId), entity.x, entity.y);
+                }
+
+                PacketAITask.setNewTask(entity, currTask, entity.getTask(newTaskId));
+            }
+        }
+        else{
+            if(currTask != null){
+                currTask.execute(game, entity);
+
+                if(currTask.shouldEndExecution(entity)){
+                    entity.currentAiTask = null;
+                }
             }
         }
 
