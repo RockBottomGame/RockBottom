@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
 import com.google.common.base.Charsets;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.Constants;
@@ -12,13 +11,13 @@ import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
+import de.ellpeck.rockbottom.api.data.set.part.IPartFactory;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -28,6 +27,7 @@ import de.ellpeck.rockbottom.render.WorldRenderer;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,24 +109,21 @@ public class ApiHandler implements IApiHandler{
 
     @Override
     public void writeDataSet(JsonObject main, AbstractDataSet set) throws Exception{
-        JsonArray data = new JsonArray();
         for(DataPart part : set.getData().values()){
-            this.writePart(data, part);
+            this.writePart(main, part);
         }
-        main.add("data", data);
     }
 
     @Override
     public void readDataSet(JsonObject main, AbstractDataSet set) throws Exception{
-        JsonArray data = main.get("data").getAsJsonArray();
-        for(int i = 0; i < data.size(); i++){
-            DataPart part = this.readPart(data, i);
+        for(Map.Entry<String, JsonElement> entry : main.entrySet()){
+            DataPart part = this.readPart(entry);
             set.addPart(part);
         }
     }
 
     private void writePart(DataOutput stream, DataPart part) throws Exception{
-        stream.writeByte(RockBottomAPI.PART_REGISTRY.getId(part.getClass()));
+        stream.writeByte(RockBottomAPI.PART_REGISTRY.getId(part.getFactory()));
         stream.writeUTF(part.getName());
         part.write(stream);
     }
@@ -135,32 +132,22 @@ public class ApiHandler implements IApiHandler{
         int id = stream.readByte();
         String name = stream.readUTF();
 
-        Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(id);
-        DataPart part = partClass.getConstructor(String.class).newInstance(name);
-        part.read(stream);
-
-        return part;
+        IPartFactory factory = RockBottomAPI.PART_REGISTRY.get(id);
+        return factory.parse(name, stream);
     }
 
-    private void writePart(JsonArray array, DataPart part) throws Exception{
-        JsonObject object = new JsonObject();
-        object.addProperty("type", RockBottomAPI.PART_REGISTRY.getName(part.getClass()).toString());
-        object.addProperty("name", part.getName());
-        object.add("data", part.write());
-        array.add(object);
+    private void writePart(JsonObject object, DataPart part) throws Exception{
+        object.add(part.getName(), part.write());
     }
 
-    private DataPart readPart(JsonArray array, int i) throws Exception{
-        JsonObject object = array.get(i).getAsJsonObject();
-        ResourceName type = new ResourceName(object.get("type").getAsString());
-        String name = object.get("name").getAsString();
-        JsonElement data = object.get("data");
-
-        Class<? extends DataPart> partClass = RockBottomAPI.PART_REGISTRY.get(type);
-        DataPart part = partClass.getConstructor(String.class).newInstance(name);
-        part.read(data);
-
-        return part;
+    private DataPart readPart(Map.Entry<String, JsonElement> entry) throws Exception{
+        for(IPartFactory factory : RockBottomAPI.PART_REGISTRY.values()){
+            DataPart part = factory.parse(entry.getKey(), entry.getValue());
+            if(part != null){
+                return part;
+            }
+        }
+        return null;
     }
 
     @Override
