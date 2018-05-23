@@ -26,13 +26,17 @@ import de.ellpeck.rockbottom.render.WorldRenderer;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ApiHandler implements IApiHandler{
+
+    private final List<IPartFactory> sortedPartFactories = new ArrayList<>();
 
     @Override
     public void writeDataSet(AbstractDataSet set, File file, boolean asJson){
@@ -141,7 +145,12 @@ public class ApiHandler implements IApiHandler{
     }
 
     private DataPart readPart(Map.Entry<String, JsonElement> entry) throws Exception{
-        for(IPartFactory factory : RockBottomAPI.PART_REGISTRY.values()){
+        if(this.sortedPartFactories.isEmpty()){
+            this.sortedPartFactories.addAll(RockBottomAPI.PART_REGISTRY.values());
+            this.sortedPartFactories.sort(Comparator.comparingInt((ToIntFunction<IPartFactory>)IPartFactory :: getPriority).reversed());
+        }
+
+        for(IPartFactory factory : this.sortedPartFactories){
             DataPart part = factory.parse(entry.getKey(), entry.getValue());
             if(part != null){
                 return part;
