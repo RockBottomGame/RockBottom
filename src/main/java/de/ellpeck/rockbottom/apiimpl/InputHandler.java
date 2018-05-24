@@ -6,6 +6,8 @@ import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiChat;
@@ -45,36 +47,51 @@ public class InputHandler implements IInputHandler{
         GLFW.glfwSetCursorPosCallback(game.getWindow(), new GLFWCursorPosCallback(){
             @Override
             public void invoke(long window, double x, double y){
-                InputHandler.this.mouseX = (int)x;
-                InputHandler.this.mouseY = (int)y;
+                CursorPosEvent event = new CursorPosEvent(window, x, y);
+                if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                    InputHandler.this.mouseX = (int)event.x;
+                    InputHandler.this.mouseY = (int)event.y;
+                }
             }
         });
         GLFW.glfwSetScrollCallback(game.getWindow(), new GLFWScrollCallback(){
             @Override
             public void invoke(long window, double xOffset, double yOffset){
-                InputHandler.this.nextMouseWheelDelta[0] = (int)xOffset;
-                InputHandler.this.nextMouseWheelDelta[1] = (int)yOffset;
+                ScrollEvent event = new ScrollEvent(window, xOffset, yOffset);
+                if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                    InputHandler.this.nextMouseWheelDelta[0] = (int)event.xOffset;
+                    InputHandler.this.nextMouseWheelDelta[1] = (int)event.yOffset;
+                }
             }
         });
         GLFW.glfwSetKeyCallback(game.getWindow(), new GLFWKeyCallback(){
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods){
-                if(action == GLFW.GLFW_PRESS || (action == GLFW.GLFW_REPEAT && InputHandler.this.allowKeyboardRepeats)){
-                    InputHandler.this.keysToProcess.add(key);
+                KeyEvent event = new KeyEvent(window, scancode, mods, action, key);
+                if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                    if(event.action == GLFW.GLFW_PRESS || (event.action == GLFW.GLFW_REPEAT && InputHandler.this.allowKeyboardRepeats)){
+                        InputHandler.this.keysToProcess.add(event.key);
+                    }
                 }
             }
         });
         GLFW.glfwSetCharCallback(game.getWindow(), new GLFWCharCallback(){
             @Override
             public void invoke(long window, int codepoint){
-                InputHandler.this.charsToProcess.add(codepoint);
+                CharEvent event = new CharEvent(window, codepoint);
+                if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                    InputHandler.this.charsToProcess.add(event.codepoint);
+                }
             }
         });
         GLFW.glfwSetMouseButtonCallback(game.getWindow(), new GLFWMouseButtonCallback(){
             @Override
             public void invoke(long window, int button, int action, int mods){
-                if(action == GLFW.GLFW_PRESS){
-                    InputHandler.this.mouseInputsToProcess.add(button);
+                MouseEvent event = new MouseEvent(window, mods, action, button);
+                if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                    if(event.action == GLFW.GLFW_PRESS){
+                        InputHandler.this.mouseInputsToProcess.add(event.button);
+                    }
                 }
             }
         });
