@@ -14,12 +14,22 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class TileEntitySimpleFurnace extends TileEntity{
 
-    private final TileInventory inventory = new TileInventory(this, 3, Arrays.asList(0, 1), Collections.singletonList(2));
+    private final TileInventory inventory = new TileInventory(this, 3, inst -> {
+        List<Integer> list = new ArrayList<>();
+        if(SmeltingRecipe.forInput(inst) != null){
+            list.add(0);
+        }
+        if(FuelInput.getFuelTime(inst) > 0){
+            list.add(1);
+        }
+        return list;
+    }, Collections.singletonList(2));
     private final SyncedInt smeltTime = new SyncedInt("smelt_time");
     private final SyncedInt maxSmeltTime = new SyncedInt("max_smelt_time");
     private final SyncedInt fuelTime = new SyncedInt("fuel_time");
