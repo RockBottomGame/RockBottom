@@ -21,7 +21,7 @@ import java.util.List;
 public class TileEntitySimpleFurnace extends TileEntity{
 
     private final TileInventory inventory = new TileInventory(this, 3, inst -> {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<>(2);
         if(SmeltingRecipe.forInput(inst) != null){
             list.add(0);
         }

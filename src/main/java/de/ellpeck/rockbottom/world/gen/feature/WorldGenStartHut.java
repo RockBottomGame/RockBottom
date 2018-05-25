@@ -109,7 +109,7 @@ public class WorldGenStartHut implements IWorldGenerator{
                 items.add(twig);
             }
 
-            Inventory.fillRandomly(chest.getTileInventory(), this.generatorRandom, items);
+            chest.getTileInventory().fillRandomly(this.generatorRandom, items);
         }
     }
 
