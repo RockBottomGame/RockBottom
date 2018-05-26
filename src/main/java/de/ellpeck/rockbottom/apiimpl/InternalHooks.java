@@ -386,18 +386,22 @@ public class InternalHooks implements IInternalHooks{
                 boolean modified = false;
                 for(GuiContainer.ShiftClickBehavior behavior : gui.shiftClickBehaviors){
                     if(behavior.slots.contains(slot.componentId)){
-                        for(int slotInto : behavior.slotsInto){
-                            GuiComponent comp = gui.getComponents().get(slotInto);
-                            if(comp instanceof ComponentSlot){
-                                ComponentSlot intoSlot = (ComponentSlot)comp;
-                                if(behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)){
-                                    int result = shiftClick(gui.player, container, container.getIdForSlot(slot.slot), container.getIdForSlot(intoSlot.slot));
+                        for(int i = 0; i < 2; i++){
+                            for(int slotInto : behavior.slotsInto){
+                                GuiComponent comp = gui.getComponents().get(slotInto);
+                                if(comp instanceof ComponentSlot){
+                                    ComponentSlot intoSlot = (ComponentSlot)comp;
+                                    if(i == 1 || (intoSlot.slot.get() != null && intoSlot.slot.get().isEffectivelyEqual(remaining))){
+                                        if(behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)){
+                                            int result = shiftClick(gui.player, container, container.getIdForSlot(slot.slot), container.getIdForSlot(intoSlot.slot));
 
-                                    if(result == 1){
-                                        return true;
-                                    }
-                                    else if(result == 2){
-                                        modified = true;
+                                            if(result == 1){
+                                                return true;
+                                            }
+                                            else if(result == 2){
+                                                modified = true;
+                                            }
+                                        }
                                     }
                                 }
                             }
