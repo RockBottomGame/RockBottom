@@ -38,6 +38,7 @@ import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.InputStream;
@@ -229,18 +230,27 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.sortedCursors.addAll(RockBottomAPI.SPECIAL_CURSORS.values());
         this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor :: getPriority).reversed());
 
+        GLFWVidMode mode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+        float scale = Math.min(mode.width(), mode.height())/1080F;
+
+        RockBottomAPI.logger().config("Using cursor scale "+scale);
+
         for(ISpecialCursor cursor : this.sortedCursors){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
-                int width = texture.getRenderWidth();
-                int height = texture.getRenderHeight();
+                float width = texture.getRenderWidth();
+                float height = texture.getRenderHeight();
+                int newWidth = Util.floor(width*scale);
+                int newHeight = Util.floor(height*scale);
 
                 GLFWImage image = GLFWImage.malloc();
-                ByteBuffer buf = BufferUtils.createByteBuffer(width*height*4);
+                ByteBuffer buf = BufferUtils.createByteBuffer(newWidth*newHeight*4);
 
-                for(int y = 0; y < height; y++){
-                    for(int x = 0; x < width; x++){
-                        int color = texture.getTextureColor(x, y);
+                for(int y = 0; y < newHeight; y++){
+                    for(int x = 0; x < newWidth; x++){
+                        float newPercentX = x/(float)newWidth;
+                        float newPercentY = y/(float)newHeight;
+                        int color = texture.getTextureColor(Util.floor(newPercentX*width), Util.floor(newPercentY*height));
 
                         buf.put((byte)Colors.getBInt(color));
                         buf.put((byte)Colors.getGInt(color));
@@ -250,7 +260,7 @@ public class AssetManager implements IAssetManager, IDisposable{
                 }
 
                 ((Buffer)buf).flip();
-                image.set(width, height, buf);
+                image.set(newWidth, newHeight, buf);
 
                 this.cursors.put(cursor, GLFW.glfwCreateCursor(image, cursor.getHotspotX(), cursor.getHotspotY()));
 
