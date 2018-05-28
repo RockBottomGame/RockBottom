@@ -175,13 +175,14 @@ public abstract class AbstractGame implements IGameInstance{
         this.totalTicks++;
 
         synchronized(this.enqueuedActions){
-            for(int i = this.enqueuedActions.size()-1; i >= 0; i--){
+            for(int i = 0; i < this.enqueuedActions.size(); i++){
                 EnqueuedAction action = this.enqueuedActions.get(i);
 
                 if(action.condition == null || action.condition.test(this)){
                     action.action.accept(this, action.object);
 
                     this.enqueuedActions.remove(i);
+                    i--;
                 }
             }
         }

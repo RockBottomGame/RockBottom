@@ -439,12 +439,12 @@ public class World implements IWorld{
     }
 
     @Override
-    public boolean isPosLoaded(int x, int y){
+    public boolean isPosLoaded(double x, double y){
         return this.isPosLoaded(x, y, true);
     }
 
     @Override
-    public boolean isPosLoaded(int x, int y, boolean checkGenerating){
+    public boolean isPosLoaded(double x, double y, boolean checkGenerating){
         return this.isChunkLoaded(Util.toGridPos(x), Util.toGridPos(y), checkGenerating);
     }
 
