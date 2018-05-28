@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.world.entity.ai;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.ai.AITask;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -28,11 +29,14 @@ public class TaskSlimeJump extends AITask<EntitySlime>{
 
     @Override
     public void onExecutionStarted(AITask<EntitySlime> previousTask, EntitySlime entity){
-        this.chargeTime = 20;
-        this.jumpStartTime = Util.getTimeMillis();
+        if(!entity.world.isClient()){
+            this.chargeTime = 20;
 
-        this.jumpRight = Util.RANDOM.nextBoolean();
-        entity.facing = this.jumpRight ? Direction.RIGHT : Direction.LEFT;
+            this.jumpRight = Util.RANDOM.nextBoolean();
+            entity.facing = this.jumpRight ? Direction.RIGHT : Direction.LEFT;
+        }
+
+        this.jumpStartTime = Util.getTimeMillis();
     }
 
     @Override
@@ -48,5 +52,17 @@ public class TaskSlimeJump extends AITask<EntitySlime>{
                 }
             }
         }
+    }
+
+    @Override
+    public void save(DataSet set, boolean forSync){
+        set.addInt("charge", this.chargeTime);
+        set.addBoolean("right", this.jumpRight);
+    }
+
+    @Override
+    public void load(DataSet set, boolean forSync){
+        this.chargeTime = set.getInt("charge");
+        this.jumpRight = set.getBoolean("right");
     }
 }

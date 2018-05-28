@@ -71,4 +71,9 @@ public class EntitySlime extends AbstractEntitySlime{
         super.load(set);
         this.variation = set.getInt("variation");
     }
+
+    @Override
+    public int getSyncFrequency(){
+        return 15;
+    }
 }

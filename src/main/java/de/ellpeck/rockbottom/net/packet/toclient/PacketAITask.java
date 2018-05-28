@@ -1,8 +1,10 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.ai.AITask;
+import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
@@ -13,10 +15,12 @@ import java.util.UUID;
 public class PacketAITask implements IPacket{
 
     private UUID entityId;
+    private DataSet data;
     private int taskId;
 
-    public PacketAITask(UUID entityId, int taskId){
+    public PacketAITask(UUID entityId, DataSet data, int taskId){
         this.entityId = entityId;
+        this.data = data;
         this.taskId = taskId;
     }
 
@@ -28,12 +32,15 @@ public class PacketAITask implements IPacket{
         buf.writeLong(this.entityId.getMostSignificantBits());
         buf.writeLong(this.entityId.getLeastSignificantBits());
         buf.writeInt(this.taskId);
+        NetUtil.writeSetToBuffer(this.data, buf);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf){
         this.entityId = new UUID(buf.readLong(), buf.readLong());
         this.taskId = buf.readInt();
+        this.data = new DataSet();
+        NetUtil.readSetFromBuffer(this.data, buf);
     }
 
     @Override
@@ -43,6 +50,10 @@ public class PacketAITask implements IPacket{
             Entity entity = world.getEntity(this.entityId);
             if(entity != null){
                 AITask task = entity.getTask(this.taskId);
+                if(task != null){
+                    task.load(this.data, true);
+                }
+
                 if(task == null || task.shouldStartExecution(entity)){
                     setNewTask(entity, entity.currentAiTask, task);
                 }
@@ -52,7 +63,6 @@ public class PacketAITask implements IPacket{
 
     public static void setNewTask(Entity entity, AITask currTask, AITask newTask){
         if(currTask != null){
-            newTask = currTask.getNextTask(newTask, entity);
             currTask.onExecutionEnded(newTask, entity);
         }
         entity.currentAiTask = newTask;

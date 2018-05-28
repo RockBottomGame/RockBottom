@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.effect.IEffect;
@@ -133,11 +134,20 @@ public class InternalHooks implements IInternalHooks{
             }
 
             if(quitCurrentTask || newTaskId >= 0){
-                if(entity.world.isServer()){
-                    RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketAITask(entity.getUniqueId(), newTaskId), entity.x, entity.y);
+                AITask newTask = entity.getTask(newTaskId);
+                if(currTask != null){
+                    newTask = currTask.getNextTask(newTask, entity);
                 }
 
-                PacketAITask.setNewTask(entity, currTask, entity.getTask(newTaskId));
+                PacketAITask.setNewTask(entity, currTask, newTask);
+
+                if(entity.world.isServer()){
+                    DataSet data = new DataSet();
+                    if(newTask != null){
+                        newTask.save(data, true);
+                    }
+                    RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketAITask(entity.getUniqueId(), data, newTaskId), entity.x, entity.y);
+                }
             }
         }
         else{
