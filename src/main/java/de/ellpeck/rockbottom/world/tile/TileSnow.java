@@ -43,8 +43,10 @@ public class TileSnow extends TileFalling{
             entity.motionX *= 0.9D;
 
             if(!world.isDedicatedServer() && Math.abs(entity.motionX) > 0.01D && world.getTotalTime()%15 == 0){
-                for(int i = Util.RANDOM.nextInt(5); i >= 0; i--){
-                    RockBottomAPI.getGame().getParticleManager().addSnowParticle(world, entity.x+Util.RANDOM.nextGaussian()*0.1D, y+0.9D+Util.RANDOM.nextFloat()*0.2D, -entity.motionX*Util.RANDOM.nextFloat()*0.2D, Util.RANDOM.nextFloat()*0.2D, 25);
+                if(entityBox.intersects(new BoundBox(0D, 0D, 1D, 1D).add(x, y))){
+                    for(int i = Util.RANDOM.nextInt(5); i >= 0; i--){
+                        RockBottomAPI.getGame().getParticleManager().addSnowParticle(world, entity.x+Util.RANDOM.nextGaussian()*0.1D, y+0.9D+Util.RANDOM.nextFloat()*0.2D, -entity.motionX*Util.RANDOM.nextFloat()*0.2D, Util.RANDOM.nextFloat()*0.2D, 25);
+                    }
                 }
             }
         }
