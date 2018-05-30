@@ -213,7 +213,10 @@ public class World implements IWorld{
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
             entity = event.entity;
 
-            IChunk chunk = this.getChunk(entity.x, entity.y);
+            double x = entity.getX();
+            double y = entity.getY();
+
+            IChunk chunk = this.getChunk(x, y);
             chunk.addEntity(entity);
 
             if(entity instanceof EntityPlayer){
@@ -228,7 +231,7 @@ public class World implements IWorld{
             }
 
             if(!chunk.isGenerating() && this.isServer()){
-                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), entity.x, entity.y, entity);
+                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), x, y, entity);
             }
         }
     }
@@ -241,7 +244,7 @@ public class World implements IWorld{
 
     @Override
     public void removeEntity(Entity entity){
-        IChunk chunk = this.getChunk(entity.x, entity.y);
+        IChunk chunk = this.getChunk(entity.getX(), entity.getY());
         this.removeEntity(entity, chunk);
     }
 
@@ -380,7 +383,7 @@ public class World implements IWorld{
 
         if(!this.isDedicatedServer()){
             AbstractEntityPlayer player = RockBottomAPI.getGame().getPlayer();
-            double dist = Util.distanceSq(x+0.5D, y, player.x, player.y);
+            double dist = Util.distanceSq(x+0.5D, y, player.getX(), player.getY());
             if(dist <= 20D){
                 byte newLight = (byte)(0.35D*(20D-dist));
                 if(light < newLight){

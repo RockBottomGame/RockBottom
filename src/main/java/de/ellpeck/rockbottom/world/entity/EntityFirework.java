@@ -45,7 +45,7 @@ public class EntityFirework extends Entity{
 
         if(!game.isDedicatedServer()){
             if(Util.RANDOM.nextBoolean()){
-                game.getParticleManager().addSmokeParticle(this.world, this.x, this.y, Util.RANDOM.nextGaussian()*0.05F, -0.1F, 0.15F);
+                game.getParticleManager().addSmokeParticle(this.world, this.getX(), this.getY(), Util.RANDOM.nextGaussian()*0.05F, -0.1F, 0.15F);
             }
         }
     }
@@ -65,7 +65,7 @@ public class EntityFirework extends Entity{
                     double motionY = Util.RANDOM.nextGaussian()*0.05D;
                     int maxLife = Util.RANDOM.nextInt(50)+10;
 
-                    game.getParticleManager().addParticle(new ParticleFirework(this.world, this.x, this.y, motionX, motionY, maxLife, color));
+                    game.getParticleManager().addParticle(new ParticleFirework(this.world, this.getX(), this.getY(), motionX, motionY, maxLife, color));
                 }
             }
         }

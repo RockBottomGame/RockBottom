@@ -252,7 +252,7 @@ public class GuiCompendium extends GuiContainer{
                     }
                     else{
                         if(this.selectedRecipe.isKnown(this.player)){
-                            this.selectedRecipe.construct(this.player.world, this.player.x, this.player.y, this.player.getInv(), 1);
+                            this.selectedRecipe.construct(this.player.world, this.player.getX(), this.player.getY(), this.player.getInv(), 1);
                         }
                     }
                     return true;

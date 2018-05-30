@@ -49,8 +49,8 @@ public class CommandSpawnEntity extends Command{
                 return new ChatComponentText(FormattingCode.RED+"Specify an entity!");
             }
 
-            double x = player.x;
-            double y = player.y;
+            double x = player.getX();
+            double y = player.getY();
             if(args.length > 2){
                 try{
                     x = Double.parseDouble(args[1]);

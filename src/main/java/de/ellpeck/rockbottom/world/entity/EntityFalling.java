@@ -43,15 +43,18 @@ public class EntityFalling extends Entity{
         if(this.onGround){
             if(!this.world.isClient()){
                 if(this.state != null){
-                    int x = Util.floor(this.x);
-                    int y = Util.floor(this.y);
-                    TileState state = this.world.getState(x, y);
+                    double x = this.getX();
+                    double y = this.getY();
 
-                    if(state.getTile().canReplace(this.world, x, y, TileLayer.MAIN)){
-                        this.world.setState(x, y, this.state);
+                    int tileX = Util.floor(x);
+                    int tileY = Util.floor(y);
+                    TileState state = this.world.getState(tileX, tileY);
+
+                    if(state.getTile().canReplace(this.world, tileX, tileY, TileLayer.MAIN)){
+                        this.world.setState(tileX, tileY, this.state);
                     }
                     else if(this.stateInstance != null){
-                        AbstractEntityItem.spawn(this.world, this.stateInstance.copy(), this.x, this.y, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
+                        AbstractEntityItem.spawn(this.world, this.stateInstance.copy(), x, y, Util.RANDOM.nextGaussian()*0.1, Util.RANDOM.nextGaussian()*0.1);
                     }
                 }
 

@@ -21,7 +21,7 @@ public class TileLadder extends TileBasic{
 
     @Override
     public boolean canClimb(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity){
-        return Util.floor(entity.y) == y;
+        return Util.floor(entity.getY()) == y;
     }
 
     @Override

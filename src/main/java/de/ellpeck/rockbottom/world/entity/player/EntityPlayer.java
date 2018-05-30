@@ -72,7 +72,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 }
 
                 if(isInv && slot == this.getSelectedSlot()){
-                    RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this.x, this.y, this);
+                    RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this.getX(), this.getY(), this);
                 }
             }
         }
@@ -179,6 +179,9 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void update(IGameInstance game){
         super.update(game);
 
+        double x = this.getX();
+        double y = this.getY();
+
         if(!this.world.isClient()){
             if(this.isDead()){
                 this.respawnTimer++;
@@ -191,6 +194,9 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 List<AbstractEntityItem> entities = this.world.getEntities(this.currentBounds.copy().expand(1), AbstractEntityItem.class);
                 for(AbstractEntityItem entity : entities){
                     if(entity.canPickUp()){
+                        double entityX = entity.getX();
+                        double entityY = entity.getY();
+
                         ItemInstance instance = entity.getItem();
 
                         ItemPickupEvent event = new ItemPickupEvent(this, entity, instance);
@@ -199,7 +205,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
                             ItemInstance theoreticalLeft = this.inv.add(instance, true);
                             if(theoreticalLeft == null || theoreticalLeft.getAmount() != instance.getAmount()){
-                                if(Util.distanceSq(entity.x, entity.y, this.x, this.y+0.5) <= 0.25){
+                                if(Util.distanceSq(entityX, entityY, x, y+0.5) <= 0.25){
                                     ItemInstance left = this.inv.addExistingFirst(instance, false);
 
                                     if(left == null){
@@ -210,32 +216,32 @@ public class EntityPlayer extends AbstractEntityPlayer{
                                     }
                                 }
                                 else{
-                                    double x = this.x-entity.x;
-                                    double y = (this.y+0.5)-entity.y;
-                                    double length = Util.distance(0, 0, x, y);
+                                    double moveX = x-entityX;
+                                    double moveY = (y+0.5)-entityY;
+                                    double length = Util.distance(0, 0, moveX, moveY);
 
-                                    entity.motionX = 0.3*(x/length);
-                                    entity.motionY = 0.3*(y/length);
+                                    entity.motionX = 0.3*(moveX/length);
+                                    entity.motionY = 0.3*(moveY/length);
                                 }
                             }
                         }
                     }
                 }
 
-                if(this.y <= 0 && ConstructionRegistry.ladder != null){
+                if(y <= 0 && ConstructionRegistry.ladder != null){
                     this.getKnowledge().teachRecipe(ConstructionRegistry.ladder, true);
                 }
             }
         }
 
         if(this.isLocalPlayer()){
-            SoundHandler.setPlayerPos(this.x, this.y);
+            SoundHandler.setPlayerPos(x, y);
 
             if(this.world.isClient() && this.ticksExisted%this.getSyncFrequency() == 0){
-                if(this.lastX != this.x || this.lastY != this.y){
-                    RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
-                    this.lastX = this.x;
-                    this.lastY = this.y;
+                if(this.lastX != x || this.lastY != y){
+                    RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), x, y, this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
+                    this.lastX = x;
+                    this.lastY = y;
                 }
             }
         }
@@ -464,7 +470,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
 
     @Override
     public boolean isInRange(double x, double y, double maxDistance){
-        return Util.distanceSq(this.x, this.y+1, x, y) <= maxDistance*maxDistance;
+        return Util.distanceSq(this.getX(), this.getY()+1, x, y) <= maxDistance*maxDistance;
     }
 
     @Override

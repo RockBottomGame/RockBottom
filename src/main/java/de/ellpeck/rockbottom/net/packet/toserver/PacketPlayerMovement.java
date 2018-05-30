@@ -68,15 +68,13 @@ public class PacketPlayerMovement implements IPacket{
         if(game.getWorld() != null){
             AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
             if(player != null){
-                player.x = this.x;
-                player.y = this.y;
                 player.motionX = this.motionX;
                 player.motionY = this.motionY;
                 player.facing = this.facing;
                 player.collidedHor = this.collidedHor;
                 player.collidedVert = this.collidedVert;
                 player.onGround = this.onGround;
-                player.updateBounds();
+                player.currentBounds.set(this.x, this.y, this.x, this.y).expand(player.getWidth()/2D, player.getHeight()/2D);
             }
         }
     }

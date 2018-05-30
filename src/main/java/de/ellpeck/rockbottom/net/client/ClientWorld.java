@@ -94,13 +94,13 @@ public class ClientWorld extends World{
 
     @Override
     public void addEntity(Entity entity){
-        IChunk chunk = this.getChunk(entity.x, entity.y);
+        IChunk chunk = this.getChunk(entity.getX(), entity.getY());
         chunk.addEntity(entity);
     }
 
     @Override
     public void removeEntity(Entity entity){
-        IChunk chunk = this.getChunk(entity.x, entity.y);
+        IChunk chunk = this.getChunk(entity.getX(), entity.getY());
         chunk.removeEntity(entity);
 
         entity.onRemoveFromWorld();

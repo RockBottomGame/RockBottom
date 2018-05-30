@@ -115,11 +115,14 @@ public class WorldRenderer{
                     ResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
                     g.setProgram(program == null ? null : manager.getShaderProgram(program));
 
-                    int light = world.getCombinedVisualLight(Util.floor(entity.x), Util.floor(entity.y));
-                    renderer.render(game, manager, g, world, entity, (float)entity.x-transX, (float)-entity.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
+                    double x = entity.getX();
+                    double y = entity.getY();
+
+                    int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
+                    renderer.render(game, manager, g, world, entity, (float)x-transX, (float)-y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
 
                     if(g.isBoundBoxDebug()){
-                        g.addFilledRect((float)entity.x-transX-0.1F, (float)-entity.y-transY+0.9F, 0.2F, 0.2F, Colors.GREEN);
+                        g.addFilledRect((float)x-transX-0.1F, (float)-y-transY+0.9F, 0.2F, 0.2F, Colors.GREEN);
 
                         BoundBox box = entity.currentBounds;
                         g.addEmptyRect((float)box.getMinX()-transX, (float)-box.getMaxY()-transY+1F, (float)box.getWidth(), (float)box.getHeight(), 0.1F, Colors.RED);
@@ -139,7 +142,7 @@ public class WorldRenderer{
 
         players.forEach(entity -> {
             if(entity.shouldRender() && !entity.isLocalPlayer()){
-                manager.getFont().drawCenteredString((float)entity.x-transX, (float)-entity.y-transY-0.75F, entity.getChatColorFormat()+entity.getName(), 0.015F, false);
+                manager.getFont().drawCenteredString((float)entity.getX()-transX, (float)-entity.getY()-transY-0.75F, entity.getChatColorFormat()+entity.getName(), 0.015F, false);
             }
         });
 

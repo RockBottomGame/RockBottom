@@ -60,12 +60,15 @@ public class ConnectedPlayer extends EntityPlayer{
         super.update(game);
         INetHandler net = RockBottomAPI.getNet();
 
+        double x = this.getX();
+        double y = this.getY();
+
         if(this.ticksExisted%80 == 0){
             if(!net.getConnectedClients().contains(this.channel)){
                 game.enqueueAction((inst, object) -> disconnectPlayer(inst, this), null);
             }
 
-            double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, this.x, this.y);
+            double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, x, y);
             double maxDist = 1.25*this.fallCalcTicks
                     +this.getClimbSpeed()*this.climbingCalcTicks
                     +this.getMoveSpeed()*(80-this.fallCalcTicks-this.climbingCalcTicks)
@@ -86,8 +89,8 @@ public class ConnectedPlayer extends EntityPlayer{
                 RockBottomAPI.logger().warning("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
             }
             else{
-                this.lastCalcX = this.x;
-                this.lastCalcY = this.y;
+                this.lastCalcX = x;
+                this.lastCalcY = y;
             }
 
             this.fallCalcTicks = 0;
@@ -110,7 +113,7 @@ public class ConnectedPlayer extends EntityPlayer{
         if(this.isClimbing){
             this.climbingCalcTicks++;
         }
-        else if(this.isFalling && this.fallStartY-this.y >= 5){
+        else if(this.isFalling && this.fallStartY-y >= 5){
             this.fallCalcTicks++;
         }
 
@@ -137,7 +140,7 @@ public class ConnectedPlayer extends EntityPlayer{
         this.lastCalcY = y;
         this.fallCalcTicks = 0;
 
-        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.x, this.y, this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
+        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.getX(), this.getY(), this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
     }
 
     @Override

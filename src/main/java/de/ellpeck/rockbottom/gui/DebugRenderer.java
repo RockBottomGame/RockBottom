@@ -96,7 +96,7 @@ public final class DebugRenderer{
 
             list.add("Player:");
             list.add("Chunk: "+player.chunkX+", "+player.chunkY);
-            list.add("Pos: "+String.format(Locale.ROOT, "%.3f, %.3f", player.x, player.y));
+            list.add("Pos: "+String.format(Locale.ROOT, "%.3f, %.3f", player.getX(), player.getY()));
             list.add("Motion: "+String.format(Locale.ROOT, "%.3f, %.3f", player.motionX, player.motionY));
             list.add("");
 

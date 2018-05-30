@@ -151,8 +151,8 @@ public class Chunk implements IChunk{
                 this.world.removeEntity(entity, this);
             }
             else{
-                int newChunkX = Util.toGridPos(entity.x);
-                int newChunkY = Util.toGridPos(entity.y);
+                int newChunkX = Util.toGridPos(entity.getX());
+                int newChunkY = Util.toGridPos(entity.getY());
 
                 if(newChunkX != this.gridX || newChunkY != this.gridY){
                     this.removeEntity(entity);

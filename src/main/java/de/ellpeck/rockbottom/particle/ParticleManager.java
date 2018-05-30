@@ -36,8 +36,11 @@ public class ParticleManager implements IParticleManager{
             ResourceName program = particle.getRenderShader(game, manager, g);
             g.setProgram(program == null ? null : manager.getShaderProgram(program));
 
-            int light = world.getCombinedVisualLight(Util.floor(particle.x), Util.floor(particle.y));
-            particle.render(game, manager, g, (float)particle.x-transX, (float)-particle.y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
+            double x = particle.getX();
+            double y = particle.getY();
+
+            int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
+            particle.render(game, manager, g, (float)x-transX, (float)-y-transY+1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
         });
     }
 
