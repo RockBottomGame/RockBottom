@@ -22,10 +22,12 @@ public class ChunkThread extends Thread{
     public void run(){
         while(this.game.isRunning()){
             try{
-                synchronized(this.queue){
-                    while(!this.queue.isEmpty()){
-                        this.queue.remove(0).run();
+                while(!this.queue.isEmpty()){
+                    Runnable runnable;
+                    synchronized(this.queue){
+                        runnable = this.queue.remove(0);
                     }
+                    runnable.run();
                 }
             }
             catch(Exception e){
