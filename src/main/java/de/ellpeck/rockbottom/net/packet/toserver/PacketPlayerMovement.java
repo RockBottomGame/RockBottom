@@ -74,7 +74,7 @@ public class PacketPlayerMovement implements IPacket{
                 player.collidedHor = this.collidedHor;
                 player.collidedVert = this.collidedVert;
                 player.onGround = this.onGround;
-                player.currentBounds.set(this.x, this.y, this.x, this.y).expand(player.getWidth()/2D, player.getHeight()/2D);
+                player.setBoundsOrigin(this.x, this.y);
             }
         }
     }

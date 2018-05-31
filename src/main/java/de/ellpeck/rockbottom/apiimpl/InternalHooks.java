@@ -169,7 +169,7 @@ public class InternalHooks implements IInternalHooks{
                     double x = entity.getX();
                     double y = entity.getY();
                     if(entity.lastX != x || entity.lastY != y){
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), x, y, entity.motionX, entity.motionY, entity.facing, entity.collidedHor, entity.collidedVert, entity.onGround), x, y, entity);
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.collidedHor, entity.collidedVert, entity.onGround), x, y, entity);
 
                         entity.lastX = x;
                         entity.lastY = y;

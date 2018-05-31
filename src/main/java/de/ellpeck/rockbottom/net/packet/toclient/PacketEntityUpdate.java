@@ -12,10 +12,10 @@ import java.util.UUID;
 public class PacketEntityUpdate implements IPacket{
 
     private UUID uniqueId;
-    private float x;
-    private float y;
-    private float motionX;
-    private float motionY;
+    private double x;
+    private double y;
+    private double motionX;
+    private double motionY;
     private Direction facing;
     private boolean collidedHor;
     private boolean collidedVert;
@@ -41,10 +41,10 @@ public class PacketEntityUpdate implements IPacket{
     public void toBuffer(ByteBuf buf){
         buf.writeLong(this.uniqueId.getMostSignificantBits());
         buf.writeLong(this.uniqueId.getLeastSignificantBits());
-        buf.writeFloat(this.x);
-        buf.writeFloat(this.y);
-        buf.writeFloat(this.motionX);
-        buf.writeFloat(this.motionY);
+        buf.writeDouble(this.x);
+        buf.writeDouble(this.y);
+        buf.writeDouble(this.motionX);
+        buf.writeDouble(this.motionY);
         buf.writeInt(this.facing.ordinal());
         buf.writeBoolean(this.collidedHor);
         buf.writeBoolean(this.collidedVert);
@@ -54,10 +54,10 @@ public class PacketEntityUpdate implements IPacket{
     @Override
     public void fromBuffer(ByteBuf buf){
         this.uniqueId = new UUID(buf.readLong(), buf.readLong());
-        this.x = buf.readFloat();
-        this.y = buf.readFloat();
-        this.motionX = buf.readFloat();
-        this.motionY = buf.readFloat();
+        this.x = buf.readDouble();
+        this.y = buf.readDouble();
+        this.motionX = buf.readDouble();
+        this.motionY = buf.readDouble();
         this.facing = Direction.DIRECTIONS[buf.readInt()];
         this.collidedHor = buf.readBoolean();
         this.collidedVert = buf.readBoolean();
@@ -75,7 +75,7 @@ public class PacketEntityUpdate implements IPacket{
                 entity.collidedHor = this.collidedHor;
                 entity.collidedVert = this.collidedVert;
                 entity.onGround = this.onGround;
-                entity.setPos(this.x, this.y);
+                entity.setBoundsOrigin(this.x, this.y);
             }
         }
     }
