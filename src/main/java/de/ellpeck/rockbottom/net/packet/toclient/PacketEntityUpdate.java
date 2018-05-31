@@ -23,10 +23,10 @@ public class PacketEntityUpdate implements IPacket{
 
     public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY, Direction facing, boolean collidedHor, boolean collidedVert, boolean onGround){
         this.uniqueId = uniqueId;
-        this.x = (float)x;
-        this.y = (float)y;
-        this.motionX = (float)motionX;
-        this.motionY = (float)motionY;
+        this.x = x;
+        this.y = y;
+        this.motionX = motionX;
+        this.motionY = motionY;
         this.facing = facing;
         this.collidedHor = collidedHor;
         this.collidedVert = collidedVert;
