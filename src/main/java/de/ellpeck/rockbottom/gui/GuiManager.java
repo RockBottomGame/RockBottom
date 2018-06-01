@@ -292,7 +292,9 @@ public class GuiManager implements IGuiManager{
                                 IItemRenderer renderer = item.getRenderer();
                                 if(renderer != null){
                                     boolean inRange = player.isInRange(tileX, tileY, item.getMaxInteractionDistance(player.world, x, y, layer, tileX, tileY, player));
-                                    renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F/g.getGuiScale(), mouseY, 36F/g.getGuiScale(), Colors.WHITE, inRange);
+                                    float scale = manager.getCursorScale()/g.getGuiScale();
+
+                                    renderer.renderOnMouseCursor(game, manager, g, item, holding, mouseX+24F*scale, mouseY+12F*scale, 36F*scale, Colors.WHITE, inRange);
                                 }
                             }
 

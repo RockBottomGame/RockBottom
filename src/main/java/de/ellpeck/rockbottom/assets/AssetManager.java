@@ -82,6 +82,7 @@ public class AssetManager implements IAssetManager, IDisposable{
     private IFont currentFont;
     private boolean isLocked = true;
     private final RockBottom game;
+    private float cursorScale;
 
     public AssetManager(RockBottom game){
         this.game = game;
@@ -231,17 +232,17 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor :: getPriority).reversed());
 
         GLFWVidMode mode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-        float scale = Math.min(mode.width(), mode.height())/1080F;
+        this.cursorScale = Math.min(mode.width(), mode.height())/1080F;
 
-        RockBottomAPI.logger().config("Using cursor scale "+scale);
+        RockBottomAPI.logger().config("Using cursor scale "+this.cursorScale);
 
         for(ISpecialCursor cursor : this.sortedCursors){
             try{
                 ITexture texture = this.getTexture(cursor.getTexture());
                 float width = texture.getRenderWidth();
                 float height = texture.getRenderHeight();
-                int newWidth = Util.floor(width*scale);
-                int newHeight = Util.floor(height*scale);
+                int newWidth = Util.floor(width*cursorScale);
+                int newHeight = Util.floor(height*cursorScale);
 
                 GLFWImage image = GLFWImage.malloc();
                 ByteBuffer buf = BufferUtils.createByteBuffer(newWidth*newHeight*4);
@@ -452,6 +453,11 @@ public class AssetManager implements IAssetManager, IDisposable{
         else{
             throw new UnsupportedOperationException("Cannot add assets to the asset manager while it's locked! Add assets during loading!");
         }
+    }
+
+    @Override
+    public float getCursorScale(){
+        return this.cursorScale;
     }
 
     private class AssetCallback implements LoaderCallback{
