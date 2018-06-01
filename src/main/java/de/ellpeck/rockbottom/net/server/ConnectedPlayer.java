@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.server;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.effect.IEffect;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -207,5 +208,12 @@ public class ConnectedPlayer extends EntityPlayer{
         else{
             return false;
         }
+    }
+
+    @Override
+    public void load(DataSet set){
+        super.load(set);
+        this.lastCalcX = this.getX();
+        this.lastCalcY = this.getY();
     }
 }

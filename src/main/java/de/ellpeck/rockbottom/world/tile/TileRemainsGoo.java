@@ -46,13 +46,15 @@ public class TileRemainsGoo extends TileBasic{
     }
 
     private boolean fall(IWorld world, int x, int y, TileLayer layer, boolean simulate){
-        if(!world.getState(x, y-1).getTile().isFullTile()){
-            if(world.getState(layer, x, y-1).getTile().canReplace(world, x, y-1, layer)){
-                if(!simulate){
-                    world.setState(layer, x, y-1, world.getState(layer, x, y));
-                    world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+        if(!world.isClient()){
+            if(!world.getState(x, y-1).getTile().isFullTile()){
+                if(world.getState(layer, x, y-1).getTile().canReplace(world, x, y-1, layer)){
+                    if(!simulate){
+                        world.setState(layer, x, y-1, world.getState(layer, x, y));
+                        world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                    }
+                    return true;
                 }
-                return true;
             }
         }
         return false;
