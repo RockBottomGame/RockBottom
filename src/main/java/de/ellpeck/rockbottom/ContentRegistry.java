@@ -58,6 +58,7 @@ public final class ContentRegistry{
         new TileGrassTorch().register();
         new TileCopper().register();
         new TileSimpleFurnace().register();
+        new TileCaveMushroom().register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, ToolType.PICKAXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, ToolType.AXE, 1).register();
@@ -101,6 +102,7 @@ public final class ContentRegistry{
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("start_hut"), WorldGenStartHut.class);
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("copper"), WorldGenCopper.class);
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("caves"), WorldGenCaves.class);
+        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("cave_mushrooms"), WorldGenCaveMushrooms.class);
 
         RockBottomAPI.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 
