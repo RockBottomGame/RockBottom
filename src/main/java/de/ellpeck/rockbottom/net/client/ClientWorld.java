@@ -43,8 +43,6 @@ public class ClientWorld extends World{
 
     @Override
     public void update(AbstractGame game){
-        this.checkListSync();
-
         if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
             this.updateChunks(game);
 

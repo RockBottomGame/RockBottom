@@ -166,10 +166,6 @@ public class World implements IWorld{
         }
     }
 
-    protected void checkListSync(){
-        Preconditions.checkState(this.loadedChunks.size() == this.chunkLookup.size(), "LoadedChunks and ChunkLookup are out of sync!");
-    }
-
     protected void updateChunks(IGameInstance game){
         for(int i = this.loadedChunks.size()-1; i >= 0; i--){
             IChunk chunk = this.loadedChunks.get(i);
@@ -182,8 +178,6 @@ public class World implements IWorld{
     }
 
     public void update(AbstractGame game){
-        this.checkListSync();
-
         if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
             this.updateChunks(game);
 

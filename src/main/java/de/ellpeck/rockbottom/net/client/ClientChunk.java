@@ -29,8 +29,6 @@ public class ClientChunk extends Chunk{
 
     @Override
     public void update(IGameInstance game){
-        this.checkListSync();
-
         if(!this.isGenerating){
             this.updateEntities(game);
         }
