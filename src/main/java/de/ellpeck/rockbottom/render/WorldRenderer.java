@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
@@ -73,7 +74,7 @@ public class WorldRenderer{
         float transX = (float)(g.getCameraX()-width/2);
         float transY = (float)(-g.getCameraY()-height/2);
 
-        this.renderSky(game, manager, g, world, skylightMod, width, height);
+        this.renderSky(game, manager, g, world, player, skylightMod, width, height);
 
         int topLeftX = Util.toGridPos(transX);
         int topLeftY = Util.toGridPos(-transY+1);
@@ -279,7 +280,7 @@ public class WorldRenderer{
         }
     }
 
-    private void renderSky(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, float skylightMod, double width, double height){
+    private void renderSky(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, AbstractEntityPlayer player, float skylightMod, double width, double height){
         float scale = g.getWorldScale();
         g.setScale(scale, scale);
 
@@ -301,7 +302,10 @@ public class WorldRenderer{
 
             int starColor = Colors.multiplyA(Colors.WHITE, starAlpha);
             for(Pos2 pos : this.starMap){
-                g.addFilledRect((float)((pos.getX()/100D)*width), (float)((pos.getY()/100D)*height), 0.1F, 0.1F, starColor);
+                this.random.setSeed(Util.scrambleSeed(pos.getX(), pos.getY()));
+                float mod = ((float)Math.sin((world.getTotalTime()+this.random.nextFloat()*500)/80D%(2*Math.PI))+1F)/2F;
+
+                g.addFilledRect((float)((pos.getX()/100D)*width), (float)((pos.getY()/100D)*height), 0.1F, 0.1F, Colors.multiplyA(starColor, mod));
             }
         }
 
@@ -320,8 +324,9 @@ public class WorldRenderer{
         float moonY = (float)(height+Math.sin(moonRads)*radiusY);
         manager.getTexture(MOON_RES).draw(moonX-2F, moonY-2F, 4F, 4F);
 
+        float yOff = (float)player.getY()*0.025F;
         for(Cloud cloud : this.clouds){
-            cloud.render(manager, width, height, skylightMod);
+            cloud.render(manager, width, height, skylightMod, yOff);
         }
 
         g.setScale(1F, 1F);
@@ -383,12 +388,12 @@ public class WorldRenderer{
             }
         }
 
-        private void render(IAssetManager manager, double width, double height, float lightModifier){
+        private void render(IAssetManager manager, double width, double height, float lightModifier, float yOffset){
             for(int i = 0; i < this.cloudParts.length; i++){
                 int part = this.cloudParts[i];
                 Pos2 offset = this.cloudOffsets[i];
 
-                manager.getTexture(CLOUD_TEXTURES[part]).draw((float)(this.x*width)+offset.getX()*0.1F, (float)(this.y*height)+offset.getY()*0.1F, 1F, 1F, Colors.multiplyA(Colors.multiply(Colors.WHITE, lightModifier), 0.75F));
+                manager.getTexture(CLOUD_TEXTURES[part]).draw((float)(this.x*width)+offset.getX()*0.1F, (float)(this.y*height)+offset.getY()*0.1F+yOffset, 1F, 1F, Colors.multiplyA(Colors.multiply(Colors.WHITE, lightModifier), 0.75F));
             }
         }
     }
