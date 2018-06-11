@@ -76,4 +76,14 @@ public class EntitySlime extends AbstractEntitySlime{
     public int getSyncFrequency(){
         return 15;
     }
+
+    @Override
+    public float getWidth(){
+        return 0.65F;
+    }
+
+    @Override
+    public float getHeight(){
+        return 0.65F;
+    }
 }

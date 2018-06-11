@@ -31,6 +31,6 @@ public class SlimeEntityRenderer implements IEntityRenderer<EntitySlime>{
         }
 
         IAnimation animation = manager.getAnimation(this.animation);
-        animation.drawRow(startTime, row, x-0.5F, y-0.5F, 1F, 1F, light);
+        animation.drawRow(startTime, row, x-0.5F, y+entity.getHeight()/2F-1F, 1F, 1F, light);
     }
 }

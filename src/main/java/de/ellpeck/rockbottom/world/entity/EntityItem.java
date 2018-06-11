@@ -106,4 +106,14 @@ public class EntityItem extends AbstractEntityItem{
     public void setItem(ItemInstance instance){
         this.item = instance;
     }
+
+    @Override
+    public float getWidth(){
+        return 0.5F;
+    }
+
+    @Override
+    public float getHeight(){
+        return 0.5F;
+    }
 }

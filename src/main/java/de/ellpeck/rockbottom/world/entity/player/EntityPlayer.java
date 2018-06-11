@@ -179,6 +179,10 @@ public class EntityPlayer extends AbstractEntityPlayer{
     public void update(IGameInstance game){
         super.update(game);
 
+        if(this.collidedHor){
+            this.motionX = 0;
+        }
+
         double x = this.getX();
         double y = this.getY();
 
