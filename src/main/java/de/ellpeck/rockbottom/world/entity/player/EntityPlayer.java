@@ -78,6 +78,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
         }
     };
     private int respawnTimer;
+    private double lastStatX;
+    private double lastStatY;
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design){
         super(world);
@@ -235,6 +237,16 @@ public class EntityPlayer extends AbstractEntityPlayer{
                 if(y <= 0 && ConstructionRegistry.ladder != null){
                     this.getKnowledge().teachRecipe(ConstructionRegistry.ladder, true);
                 }
+            }
+
+            if(this.world.getTotalTime()%Constants.TARGET_TPS == 0){
+                this.statistics.getOrInit(StatisticList.SECONDS_PLAYED, NumberStatistic.class).update();
+            }
+
+            if(Util.distanceSq(this.lastStatX, this.lastStatY, x, y) >= 1F){
+                this.lastStatX = x;
+                this.lastStatY = y;
+                this.statistics.getOrInit(StatisticList.TILES_WALKED, NumberStatistic.class).update();
             }
         }
 
@@ -403,6 +415,8 @@ public class EntityPlayer extends AbstractEntityPlayer{
         if(!this.world.isClient() && dead){
             int id = Util.RANDOM.nextInt(25)+1;
             RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentText(FormattingCode.RED.toString()).append(new ChatComponentTranslation(ResourceName.intern("death.flavor."+id), this.getName())));
+
+            this.statistics.getOrInit(StatisticList.DEATHS, NumberStatistic.class).update();
         }
     }
 

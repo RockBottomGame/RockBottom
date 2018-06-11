@@ -68,7 +68,7 @@ public abstract class AbstractGame implements IGameInstance{
     private float tickDelta;
 
     public static void doInit(AbstractGame game){
-        RockBottomAuthenticator.setMainServer("https://rockbottom.ellpeck.de/auth/");
+        RockBottomAuthenticator.setMainServer("https://rockbottom.ellpeck.de/authentication/");
 
         Internals internals = new Internals();
         RockBottomAPI.setInternals(internals);

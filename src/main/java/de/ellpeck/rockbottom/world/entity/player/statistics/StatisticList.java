@@ -9,10 +9,16 @@ public final class StatisticList{
     public static final ResourceName CONTAINERS_OPENED = ResourceName.intern("containers_opened");
     public static final ResourceName TILES_BROKEN = ResourceName.intern("tiles_broken");
     public static final ResourceName TILES_PLACED = ResourceName.intern("tiles_placed");
+    public static final ResourceName SECONDS_PLAYED = ResourceName.intern("seconds_played");
+    public static final ResourceName DEATHS = ResourceName.intern("deaths");
+    public static final ResourceName TILES_WALKED = ResourceName.intern("tiles_walked");
 
     public static void init(){
-        new NumberStatistic(CONTAINERS_OPENED, ResourceName.intern("stats.containers_opened")).register();
-        new ItemStatistic(TILES_BROKEN, ResourceName.intern("stats.tiles_broken")).register();
-        new ItemStatistic(TILES_PLACED, ResourceName.intern("stats.tiles_placed")).register();
+        new NumberStatistic(CONTAINERS_OPENED, CONTAINERS_OPENED.addPrefix("stats.")).register();
+        new ItemStatistic(TILES_BROKEN, TILES_BROKEN.addPrefix("stats.")).register();
+        new ItemStatistic(TILES_PLACED, TILES_PLACED.addPrefix("stats.")).register();
+        new TimeStatistic(SECONDS_PLAYED, SECONDS_PLAYED.addPrefix("stats.")).register();
+        new NumberStatistic(DEATHS, DEATHS.addPrefix("stats.")).register();
+        new NumberStatistic(TILES_WALKED, TILES_WALKED.addPrefix("stats.")).register();
     }
 }
