@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.tile;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -15,6 +16,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileStardropRenderer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TileStardrop extends TileBasic{
@@ -47,12 +49,10 @@ public class TileStardrop extends TileBasic{
 
     @Override
     public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
-        if(Util.RANDOM.nextDouble() >= 0.75){
-            if(world.isDaytime() && world.getSkyLight(x, y) >= 25){
-                TileState state = world.getState(layer, x, y);
-                if(state.get(StaticTileProps.STARDROP_GROWTH) < 4){
-                    world.setState(layer, x, y, state.cycleProp(StaticTileProps.STARDROP_GROWTH));
-                }
+        if(Util.RANDOM.nextInt(200) <= 0){
+            TileState state = world.getState(layer, x, y);
+            if(state.get(StaticTileProps.STARDROP_GROWTH) < 2){
+                world.setState(layer, x, y, state.cycleProp(StaticTileProps.STARDROP_GROWTH));
             }
         }
     }
@@ -65,5 +65,20 @@ public class TileStardrop extends TileBasic{
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
         return false;
+    }
+
+    @Override
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+        return world.getState(x, y+1).getTile().isFullTile();
+    }
+
+    @Override
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
+        if(world.getState(layer, x, y).get(StaticTileProps.STARDROP_GROWTH) < 2){
+            return new ArrayList<>();
+        }
+        else{
+            return super.getDrops(world, x, y, layer, destroyer);
+        }
     }
 }
