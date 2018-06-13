@@ -4,9 +4,9 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
-import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
@@ -23,31 +23,45 @@ public class ComponentHealth extends GuiComponent{
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
         if(game.getWorld() != null){
-            int healthParts = Util.floor(game.getPlayer().getHealth()/20);
-            int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
-
             ITexture heart = manager.getTexture(TEX_HEART);
             ITexture heartEmpty = manager.getTexture(TEX_HEART_EMPTY);
 
-            int currX = 0;
-            for(int i = 0; i < maxHealthParts; i++){
-                float alpha = 1F;
+            AbstractEntityPlayer player = game.getPlayer();
+            int health = player.getHealth();
+            int max = player.getMaxHealth();
 
-                ITexture toUse;
-                if(healthParts >= i){
-                    toUse = heart;
+            float healthParts = health/20F;
+            float maxParts = max/20F;
 
-                    if(healthParts == i){
-                        alpha = ((float)game.getPlayer().getHealth()%20)/20F;
-                        heartEmpty.draw(x+currX, y, heartEmpty.getRenderWidth(), heartEmpty.getRenderHeight());
-                    }
+            int fullHealthParts = Util.ceil(healthParts);
+            int fullMaxParts = Util.ceil(maxParts);
+
+            float healthPercentage = fullHealthParts-healthParts;
+            float maxPercentage = fullMaxParts-maxParts;
+
+            int currX = this.width-13;
+            for(int i = 0; i < fullMaxParts; i++){
+                if(i == fullMaxParts-1 && maxPercentage > 0F){
+                    float width = heartEmpty.getRenderWidth();
+                    float height = heartEmpty.getRenderHeight();
+
+                    heartEmpty.draw(x+currX+width*maxPercentage, y, x+currX+width, y+height, maxPercentage*width, 0, width, height);
                 }
                 else{
-                    toUse = heartEmpty;
+                    heartEmpty.draw(x+currX, y);
                 }
 
-                toUse.draw(x+currX, y, toUse.getRenderWidth(), toUse.getRenderHeight(), Colors.setA(Colors.WHITE, alpha));
-                currX += 13;
+                if(i == fullHealthParts-1 && healthPercentage > 0F){
+                    float width = heart.getRenderWidth();
+                    float height = heart.getRenderHeight();
+
+                    heart.draw(x+currX+width*healthPercentage, y, x+currX+width, y+height, width*healthPercentage, 0, width, height);
+                }
+                else if(fullHealthParts > i){
+                    heart.draw(x+currX, y);
+                }
+
+                currX -= 13;
             }
         }
     }

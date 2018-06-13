@@ -36,7 +36,7 @@ public class EntitySlime extends AbstractEntitySlime{
     }
 
     @Override
-    public int getMaxHealth(){
+    public int getInitialMaxHealth(){
         return 20;
     }
 

@@ -5,7 +5,10 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.gui.GuiMessageBox;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ItemTile;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -80,5 +83,27 @@ public class TileStardrop extends TileBasic{
         else{
             return super.getDrops(world, x, y, layer, destroyer);
         }
+    }
+
+    @Override
+    protected ItemTile createItemTile(){
+        return new ItemTile(this.getName()){
+            @Override
+            public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance){
+                if(!world.isClient()){
+                    player.setMaxHealth(player.getMaxHealth()+10);
+                    player.getInv().remove(player.getSelectedSlot(), 1);
+                }
+
+                player.openGui(new GuiMessageBox(null, 0.25F, 200, 18, new ChatComponentTranslation(ResourceName.intern("info.stardrop.consume"))));
+
+                return true;
+            }
+
+            @Override
+            public double getMaxInteractionDistance(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+                return Double.MAX_VALUE;
+            }
+        };
     }
 }
