@@ -229,15 +229,24 @@ public class WorldRenderer{
                 }
 
                 for(int i = obscuringLayer >= 0 ? obscuringLayer : layers.size()-1; i >= 0; i--){
-                    this.renderLayer(game, manager, g, input, world, chunk, layers.get(i), x, y, transX, transY, scale, light, foreground);
+                    TileLayer layer = layers.get(i);
+                    int[] color = RockBottomAPI.getApiHandler().interpolateWorldColor(light, layer);
+
+                    float fade = chunk.getFadePercentage();
+                    if(fade < 1F){
+                        for(int c = 0; c < color.length; c++){
+                            color[c] = Colors.multiplyA(color[c], fade);
+                        }
+                    }
+
+                    this.renderLayer(game, manager, g, input, world, chunk, layer, x, y, transX, transY, scale, color, foreground);
                 }
             }
         }
     }
 
-    private void renderLayer(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float transX, float transY, float scale, int[] light, boolean foreground){
+    private void renderLayer(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float transX, float transY, float scale, int[] color, boolean foreground){
         if(layer.isVisible(game, game.getPlayer(), chunk, x, y, foreground)){
-            IApiHandler api = RockBottomAPI.getApiHandler();
             TileState state = chunk.getState(layer, x, y);
             Tile tile = state.getTile();
             ITileRenderer renderer = tile.getRenderer();
@@ -245,16 +254,16 @@ public class WorldRenderer{
 
             if(renderer != null){
                 if(foreground){
-                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light, forcesForeground, true);
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, transX, transY, scale, color, forcesForeground, true);
                 }
                 else if(!forcesForeground){
-                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, api, x, y, transX, transY, scale, light, true, false);
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, transX, transY, scale, color, true, false);
                 }
             }
         }
     }
 
-    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, IApiHandler api, int x, int y, float transX, float transY, float scale, int[] light, boolean renderNormal, boolean renderForeground){
+    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, int x, int y, float transX, float transY, float scale, int[] color, boolean renderNormal, boolean renderForeground){
         boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
 
         if(isBreakTile){
@@ -267,11 +276,11 @@ public class WorldRenderer{
         }
 
         if(renderNormal){
-            renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+            renderer.render(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, color);
         }
 
         if(renderForeground){
-            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, api.interpolateWorldColor(light, layer));
+            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x-transX)*scale, (-y-transY)*scale, scale, color);
         }
 
         if(isBreakTile){

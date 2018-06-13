@@ -72,6 +72,7 @@ public class Chunk implements IChunk{
     private final Map<TileLayer, Integer> averageHeights = new HashMap<>();
     private final boolean constantlyPersistent;
     private final Map<TileLayer, Float> flatness = new HashMap<>();
+    private float fadePercentage;
 
     public Chunk(World world, int gridX, int gridY, boolean constantlyPersistent){
         this.world = world;
@@ -180,6 +181,10 @@ public class Chunk implements IChunk{
     @Override
     public void update(IGameInstance game){
         if(!this.isGenerating){
+            if(this.fadePercentage < 1F){
+                this.fadePercentage += 0.02F;
+            }
+
             this.updateEntities(game);
 
             int layers = TileLayer.getAllLayers().size();
@@ -637,6 +642,11 @@ public class Chunk implements IChunk{
     @Override
     public boolean isGenerating(){
         return this.isGenerating;
+    }
+
+    @Override
+    public float getFadePercentage(){
+        return this.fadePercentage;
     }
 
     @Override
