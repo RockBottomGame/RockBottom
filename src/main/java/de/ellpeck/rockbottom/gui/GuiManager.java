@@ -63,12 +63,7 @@ public class GuiManager implements IGuiManager{
             this.initAndSortGui(game);
         }
 
-        if(!this.onScreenComponents.isEmpty()){
-            this.onScreenComponents.clear();
-        }
-
         if(game.getWorld() != null){
-            this.initOnScreenComponents(game, game.getPlayer());
             this.background = null;
         }
         else{
@@ -77,7 +72,33 @@ public class GuiManager implements IGuiManager{
             }
         }
 
+        this.initOnScreenComponents();
+
         RockBottomAPI.logger().config("Successfully re-initialized Gui Manager");
+    }
+
+    @Override
+    public void initOnScreenComponents(){
+        IGameInstance game = RockBottomAPI.getGame();
+        AbstractEntityPlayer player = game.getPlayer();
+
+        if(!this.onScreenComponents.isEmpty()){
+            this.onScreenComponents.clear();
+        }
+
+        if(game.getWorld() != null){
+            IRenderer renderer = game.getRenderer();
+            double width = renderer.getWidthInGui();
+            double height = renderer.getHeightInGui();
+
+            for(int i = 0; i < 8; i++){
+                int x = (int)(width/2-4*13+1+i*13);
+                this.onScreenComponents.add(new ComponentHotbarSlot(player, player.getInv(), i, x, 3));
+            }
+
+            int maxHealthParts = Util.ceil(game.getPlayer().getMaxHealth()/20D);
+            this.onScreenComponents.add(new ComponentHealth(null, (int)width-3-maxHealthParts*13, (int)height-3-12, 13*maxHealthParts-1, 12));
+        }
     }
 
     private void initAndSortGui(IGameInstance game){
@@ -85,18 +106,6 @@ public class GuiManager implements IGuiManager{
         RockBottomAPI.getEventHandler().fireEvent(new GuiInitEvent(this.gui));
 
         this.gui.sortComponents();
-    }
-
-    private void initOnScreenComponents(IGameInstance game, AbstractEntityPlayer player){
-        double width = game.getRenderer().getWidthInGui();
-
-        for(int i = 0; i < 8; i++){
-            int x = (int)(width/2-4*13+1+i*13);
-            this.onScreenComponents.add(new ComponentHotbarSlot(player, player.getInv(), i, x, 3));
-        }
-
-        int maxHealthParts = Util.floor(game.getPlayer().getMaxHealth()/20);
-        this.onScreenComponents.add(new ComponentHealth(null, (int)game.getRenderer().getWidthInGui()-3-maxHealthParts*13, (int)game.getRenderer().getHeightInGui()-3-12, 13*maxHealthParts-1, 12));
     }
 
     public void update(RockBottom game){

@@ -283,13 +283,22 @@ public class EntityPlayer extends AbstractEntityPlayer{
     }
 
     @Override
-    public int getMaxHealth(){
+    public int getInitialMaxHealth(){
         return 100;
     }
 
     @Override
     public int getRegenRate(){
         return 10;
+    }
+
+    @Override
+    public void setMaxHealth(int maxHealth){
+        super.setMaxHealth(maxHealth);
+
+        if(!this.world.isDedicatedServer()){
+            RockBottomAPI.getGame().getGuiManager().initOnScreenComponents();
+        }
     }
 
     @Override

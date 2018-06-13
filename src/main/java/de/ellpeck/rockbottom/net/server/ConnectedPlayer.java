@@ -129,7 +129,7 @@ public class ConnectedPlayer extends EntityPlayer{
 
         if(this.getHealth() != this.lastHealth && this.world.getTotalTime()%10 == 0){
             this.lastHealth = this.getHealth();
-            this.sendPacket(new PacketHealth(this.getHealth()));
+            this.sendPacket(new PacketHealth(this.getHealth(), false));
         }
     }
 
@@ -215,5 +215,12 @@ public class ConnectedPlayer extends EntityPlayer{
         super.load(set);
         this.lastCalcX = this.getX();
         this.lastCalcY = this.getY();
+    }
+
+    @Override
+    public void setMaxHealth(int maxHealth){
+        super.setMaxHealth(maxHealth);
+
+        this.sendPacket(new PacketHealth(this.getMaxHealth(), true));
     }
 }

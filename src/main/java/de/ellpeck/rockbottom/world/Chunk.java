@@ -130,6 +130,10 @@ public class Chunk implements IChunk{
     }
 
     protected void updateEntities(IGameInstance game){
+        if(this.fadePercentage < 1F){
+            this.fadePercentage += 0.02F;
+        }
+
         for(int i = this.entities.size()-1; i >= 0; i--){
             Entity entity = this.entities.get(i);
 
@@ -181,10 +185,6 @@ public class Chunk implements IChunk{
     @Override
     public void update(IGameInstance game){
         if(!this.isGenerating){
-            if(this.fadePercentage < 1F){
-                this.fadePercentage += 0.02F;
-            }
-
             this.updateEntities(game);
 
             int layers = TileLayer.getAllLayers().size();
