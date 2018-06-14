@@ -446,14 +446,14 @@ public class Renderer implements IRenderer{
 
     @Override
     public void renderItemInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, int color){
-        this.renderItemInGui(game, manager, slot, x, y, scale, color, true);
+        this.renderItemInGui(game, manager, slot, x, y, scale, color, true, true);
     }
 
     @Override
-    public void renderItemInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, int color, boolean displayAmount){
+    public void renderItemInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, int color, boolean displayAmount, boolean displayDurability){
         Item item = slot.getItem();
 
-        if(displayAmount){
+        if(displayDurability){
             if(item.useMetaAsDurability(slot)){
                 int meta = slot.getMeta();
                 int max = item.getHighestPossibleMeta();
