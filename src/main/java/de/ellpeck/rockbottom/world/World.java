@@ -911,6 +911,7 @@ public class World implements IWorld{
                         player.load(set);
                         RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+" from last player file "+lastFile+'!');
 
+                        this.savePlayer(player);
                         lastFile.delete();
                         loaded = true;
                     }
