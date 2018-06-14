@@ -533,8 +533,7 @@ public class EntityPlayer extends AbstractEntityPlayer{
         return this.world.isLocalPlayer(this);
     }
 
-    @Override
-    public void resetAndSpawn(IGameInstance game){
+    public void resetAndSpawn(IGameInstance game, double x, double y){
         this.respawnTimer = 0;
         this.dead = false;
         this.motionX = 0;
@@ -549,11 +548,32 @@ public class EntityPlayer extends AbstractEntityPlayer{
             }
         }
 
-        this.setPos(this.world.getSpawnX()+0.5, this.world.getChunkHeight(TileLayer.MAIN, this.world.getSpawnX(), 0)+1);
+        this.setPos(x, y);
 
         if(this.world.isServer()){
-            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketRespawn(this.getUniqueId()));
+            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketRespawn(this.getUniqueId(), x, y));
         }
+    }
+
+    @Override
+    public void resetAndSpawn(IGameInstance game){
+        int tries = 0;
+        double x;
+        double y;
+
+        do{
+            x = this.world.getSpawnX()+Util.RANDOM.nextInt(33)-16+0.5;
+            y = this.world.getChunkHeight(TileLayer.MAIN, Util.floor(x), 0)+1;
+
+            tries++;
+            if(tries >= 50){
+                RockBottomAPI.logger().warning("Couldn't spawn the player at a valid position, spawning them at "+x+", "+y+" instead - Is there any space at spawn?");
+                break;
+            }
+        }
+        while(y <= 1);
+
+        this.resetAndSpawn(game, x, y);
     }
 
     @Override

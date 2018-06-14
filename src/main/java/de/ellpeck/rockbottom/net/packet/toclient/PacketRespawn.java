@@ -12,9 +12,13 @@ import java.util.UUID;
 public class PacketRespawn implements IPacket{
 
     private UUID playerId;
+    private double x;
+    private double y;
 
-    public PacketRespawn(UUID playerId){
+    public PacketRespawn(UUID playerId, double x, double y){
         this.playerId = playerId;
+        this.x = x;
+        this.y = y;
     }
 
     public PacketRespawn(){
@@ -24,11 +28,15 @@ public class PacketRespawn implements IPacket{
     public void toBuffer(ByteBuf buf){
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
+        buf.writeDouble(this.x);
+        buf.writeDouble(this.y);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf){
         this.playerId = new UUID(buf.readLong(), buf.readLong());
+        this.x = buf.readDouble();
+        this.y = buf.readDouble();
     }
 
     @Override
@@ -36,7 +44,7 @@ public class PacketRespawn implements IPacket{
         if(game.getWorld() != null){
             Entity entity = game.getWorld().getEntity(this.playerId);
             if(entity instanceof EntityPlayer){
-                ((EntityPlayer)entity).resetAndSpawn(game);
+                ((EntityPlayer)entity).resetAndSpawn(game, this.x, this.y);
             }
         }
     }
