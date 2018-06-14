@@ -452,13 +452,29 @@ public class Renderer implements IRenderer{
     @Override
     public void renderItemInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, int color, boolean displayAmount){
         Item item = slot.getItem();
+
+        if(displayAmount){
+            if(item.useMetaAsDurability(slot)){
+                int meta = slot.getMeta();
+                int max = item.getHighestPossibleMeta();
+                float percentage = 1F-meta/(float)max;
+
+                float r = 1F-percentage;
+                float g = percentage*0.75F;
+
+                this.addFilledRect(x-2F*scale, y+12F*scale-14F*scale*percentage, 14F*scale, 14F*scale*percentage, Colors.rgb(r, g, 0F, 0.45F));
+            }
+        }
+
         IItemRenderer renderer = item.getRenderer();
         if(renderer != null){
             renderer.render(game, manager, this, item, slot, x, y, 10F*scale, color);
         }
 
-        if(displayAmount && slot.getAmount() > 1){
-            manager.getFont().drawStringFromRight(x+12F*scale, y+6F*scale, String.valueOf(slot.getAmount()), 0.3F*scale);
+        if(displayAmount){
+            if(slot.getAmount() > 1){
+                manager.getFont().drawStringFromRight(x+12F*scale, y+6F*scale, String.valueOf(slot.getAmount()), 0.3F*scale);
+            }
         }
     }
 

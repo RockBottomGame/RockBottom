@@ -112,7 +112,7 @@ public class InteractionManager implements IInteractionManager{
         return player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F), entity -> player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player)));
     }
 
-    public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective){
+    public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective, ItemInstance instance){
         BreakEvent event = new BreakEvent(player, layer, x, y, effective);
         if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
             layer = event.layer;
@@ -121,6 +121,10 @@ public class InteractionManager implements IInteractionManager{
             effective = event.effective;
 
             tile.doBreak(player.world, x, y, layer, player, effective, true);
+
+            if(instance != null){
+                instance.getItem().onTileBroken(player.world, x, y, layer, player, tile, instance);
+            }
 
             if(!player.world.isClient()){
                 Item item = tile.getItem();
@@ -275,7 +279,7 @@ public class InteractionManager implements IInteractionManager{
                                                 RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, mousedTileX, mousedTileY));
                                             }
                                             else{
-                                                breakTile(tile, player, x, y, layer, effective);
+                                                breakTile(tile, player, x, y, layer, effective, selected);
                                             }
                                         }
                                         else{

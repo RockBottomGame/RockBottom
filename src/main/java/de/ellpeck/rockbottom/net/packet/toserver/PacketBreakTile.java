@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -58,9 +59,12 @@ public class PacketBreakTile implements IPacket{
                 int y = Util.floor(this.y);
 
                 Tile tile = world.getState(this.layer, x, y).getTile();
-                boolean isRightTool = InteractionManager.isToolEffective(player, player.getInv().get(player.getSelectedSlot()), tile, this.layer, x, y);
+                ItemInstance instance = player.getInv().get(player.getSelectedSlot());
+
+                boolean isRightTool = InteractionManager.isToolEffective(player, instance, tile, this.layer, x, y);
+
                 if(InteractionManager.defaultTileBreakingCheck(world, x, y, this.layer, this.x, this.y, player) && tile.canBreak(world, x, y, this.layer, player, isRightTool)){
-                    InteractionManager.breakTile(tile, player, x, y, this.layer, isRightTool);
+                    InteractionManager.breakTile(tile, player, x, y, this.layer, isRightTool, instance);
                 }
             }
         }
