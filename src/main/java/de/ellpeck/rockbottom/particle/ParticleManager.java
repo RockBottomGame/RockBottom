@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.particle.Particle;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -60,8 +61,7 @@ public class ParticleManager implements IParticleManager{
 
     @Override
     public void addSingleTileParticle(IWorld world, double x, double y, double motionX, double motionY, TileState state){
-        Particle particle = new ParticleTile(world, x, y, motionX, motionY, state);
-        this.addParticle(particle);
+        this.addParticle(new ParticleTile(world, x, y, motionX, motionY, state));
     }
 
     @Override
@@ -72,6 +72,20 @@ public class ParticleManager implements IParticleManager{
     @Override
     public void addSnowParticle(IWorld world, double x, double y, double motionX, double motionY, int maxLife){
         this.addParticle(new ParticleSnow(world, x, y, motionX, motionY, maxLife));
+    }
+
+    @Override
+    public void addItemParticles(IWorld world, double x, double y, ItemInstance instance){
+        for(int i = 0; i < Util.RANDOM.nextInt(40)+30; i++){
+            double motionX = Util.RANDOM.nextGaussian()*0.1F;
+            double motionY = Util.RANDOM.nextGaussian()*0.1F;
+            this.addSingleItemParticle(world, x, y, motionX, motionY, instance);
+        }
+    }
+
+    @Override
+    public void addSingleItemParticle(IWorld world, double x, double y, double motionX, double motionY, ItemInstance instance){
+        this.addParticle(new ParticleItem(world, x, y, motionX, motionY, instance));
     }
 
     @Override

@@ -16,6 +16,7 @@ import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.ai.AITask;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
+import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlaceTileEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
@@ -43,6 +44,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketAITask;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketToolBreak;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
@@ -1164,5 +1166,18 @@ public class InternalHooks implements IInternalHooks{
     @Override
     public Logger logger(){
         return Logging.mainLogger;
+    }
+
+    @Override
+    public void onToolBroken(IWorld world, AbstractEntityPlayer player, ItemInstance instance){
+        if(world.isServer()){
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new PacketToolBreak(player.getUniqueId(), instance), player.getX(), player.getY());
+        }
+
+        if(!world.isDedicatedServer()){
+            RockBottomAPI.getGame().getParticleManager().addItemParticles(world, player.getX(), player.getY(), instance);
+        }
+
+        player.getStatistics().getOrInit(StatisticList.TOOLS_BROKEN, NumberStatistic.class).update();
     }
 }

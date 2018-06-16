@@ -12,6 +12,7 @@ public final class StatisticList{
     public static final ResourceName SECONDS_PLAYED = ResourceName.intern("seconds_played");
     public static final ResourceName DEATHS = ResourceName.intern("deaths");
     public static final ResourceName TILES_WALKED = ResourceName.intern("tiles_walked");
+    public static final ResourceName TOOLS_BROKEN = ResourceName.intern("tools_broken");
 
     public static void init(){
         new NumberStatistic(CONTAINERS_OPENED, CONTAINERS_OPENED.addPrefix("stats.")).register();
@@ -20,5 +21,6 @@ public final class StatisticList{
         new TimeStatistic(SECONDS_PLAYED, SECONDS_PLAYED.addPrefix("stats.")).register();
         new NumberStatistic(DEATHS, DEATHS.addPrefix("stats.")).register();
         new NumberStatistic(TILES_WALKED, TILES_WALKED.addPrefix("stats.")).register();
+        new NumberStatistic(TOOLS_BROKEN, TOOLS_BROKEN.addPrefix("stats.")).register();
     }
 }
