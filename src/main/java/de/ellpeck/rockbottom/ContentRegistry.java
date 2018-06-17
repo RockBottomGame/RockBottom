@@ -72,7 +72,7 @@ public final class ContentRegistry{
         new ItemTool(ResourceName.intern("stone_axe"), 1.5F, 120, ToolType.AXE, 5).register();
         new ItemTool(ResourceName.intern("stone_shovel"), 1.5F, 120, ToolType.SHOVEL, 5).register();
         new ItemCopperCanister().register();
-        new ItemTool(ResourceName.intern("super_pickaxe"), Float.MAX_VALUE, Integer.MAX_VALUE, ToolType.PICKAXE, Integer.MAX_VALUE).addToolType(ToolType.AXE, Integer.MAX_VALUE).addToolType(ToolType.SHOVEL, Integer.MAX_VALUE).register();
+        new ItemTool(ResourceName.intern("super_pickaxe"), Float.MAX_VALUE, Short.MAX_VALUE, ToolType.PICKAXE, Integer.MAX_VALUE).addToolType(ToolType.AXE, Integer.MAX_VALUE).addToolType(ToolType.SHOVEL, Integer.MAX_VALUE).register();
         new ItemBasic(ResourceName.intern("copper_ingot")).register();
         new ItemTool(ResourceName.intern("copper_pickaxe"), 4F, 350, ToolType.PICKAXE, 10).register();
         new ItemTool(ResourceName.intern("copper_axe"), 2F, 350, ToolType.AXE, 10).register();
