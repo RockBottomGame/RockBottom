@@ -18,6 +18,7 @@ import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDrop;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.net.packet.backandforth.PacketOpenUnboundContainer;
 import de.ellpeck.rockbottom.net.packet.backandforth.PacketStats;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.*;

@@ -454,7 +454,7 @@ public class Renderer implements IRenderer{
         Item item = slot.getItem();
 
         if(displayDurability){
-            if(item.useMetaAsDurability(slot)){
+            if(item.useMetaAsDurability()){
                 int meta = slot.getMeta();
                 int max = item.getHighestPossibleMeta();
                 float percentage = 1F-meta/(float)max;
@@ -472,7 +472,7 @@ public class Renderer implements IRenderer{
         }
 
         if(displayAmount){
-            if(slot.getAmount() > 1){
+            if(slot.getAmount() != 1){
                 manager.getFont().drawStringFromRight(x+12F*scale, y+6F*scale, String.valueOf(slot.getAmount()), 0.3F*scale);
             }
         }

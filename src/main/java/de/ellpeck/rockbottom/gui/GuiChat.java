@@ -205,7 +205,10 @@ public class GuiChat extends Gui{
                 game.getChatLog().getLastInputs().add(0, text);
 
                 this.inputField.setText("");
-                game.getGuiManager().closeGui();
+
+                if(game.getGuiManager().getGui() == this){
+                    game.getGuiManager().closeGui();
+                }
                 return true;
             }
             else{

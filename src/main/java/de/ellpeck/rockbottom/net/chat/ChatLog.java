@@ -44,6 +44,7 @@ public class ChatLog implements IChatLog{
         new CommandBlacklist().register();
         new CommandTime().register();
         new CommandEffect().register();
+        new CommandItemList().register();
     }
 
     @Override
