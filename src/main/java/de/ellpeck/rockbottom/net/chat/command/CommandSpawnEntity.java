@@ -18,76 +18,69 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-public class CommandSpawnEntity extends Command{
+public class CommandSpawnEntity extends Command {
 
     private final List<String> entityAutocomplete = new ArrayList<>();
 
-    public CommandSpawnEntity(){
+    public CommandSpawnEntity() {
         super(ResourceName.intern("spawn_entity"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_entity", "spawn");
 
-        for(ResourceName name : RockBottomAPI.ENTITY_REGISTRY.keySet()){
+        for (ResourceName name : RockBottomAPI.ENTITY_REGISTRY.keySet()) {
             this.entityAutocomplete.add(name.toString());
         }
     }
 
     @Override
-    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
-        if(sender instanceof AbstractEntityPlayer){
-            AbstractEntityPlayer player = (AbstractEntityPlayer)sender;
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
+        if (sender instanceof AbstractEntityPlayer) {
+            AbstractEntityPlayer player = (AbstractEntityPlayer) sender;
 
             Class<? extends Entity> entityClass;
-            if(args.length > 0){
-                try{
+            if (args.length > 0) {
+                try {
                     ResourceName name = new ResourceName(args[0]);
                     entityClass = RockBottomAPI.ENTITY_REGISTRY.get(name);
+                } catch (Exception e) {
+                    return new ChatComponentText(FormattingCode.RED + "'" + args[0] + "' isn't a valid entity name!");
                 }
-                catch(Exception e){
-                    return new ChatComponentText(FormattingCode.RED+"'"+args[0]+"' isn't a valid entity name!");
-                }
-            }
-            else{
-                return new ChatComponentText(FormattingCode.RED+"Specify an entity!");
+            } else {
+                return new ChatComponentText(FormattingCode.RED + "Specify an entity!");
             }
 
             double x = player.getX();
             double y = player.getY();
-            if(args.length > 2){
-                try{
+            if (args.length > 2) {
+                try {
                     x = Double.parseDouble(args[1]);
                     y = Double.parseDouble(args[2]);
-                }
-                catch(Exception ignored){
+                } catch (Exception ignored) {
                 }
             }
 
-            if(entityClass != null){
-                try{
+            if (entityClass != null) {
+                try {
                     Entity entity = entityClass.getConstructor(IWorld.class).newInstance(player.world);
                     entity.setPos(x, y);
                     player.world.addEntity(entity);
 
-                    return new ChatComponentText(FormattingCode.GREEN+"Spawned entity at "+x+", "+y+'!');
+                    return new ChatComponentText(FormattingCode.GREEN + "Spawned entity at " + x + ", " + y + '!');
+                } catch (Exception e) {
+                    RockBottomAPI.logger().log(Level.WARNING, "Trying to spawn entity " + args[0] + " using default constructor failed!", e);
+                    return new ChatComponentText(FormattingCode.RED + "The entity '" + args[0] + "' cannot be spawned!");
                 }
-                catch(Exception e){
-                    RockBottomAPI.logger().log(Level.WARNING, "Trying to spawn entity "+args[0]+" using default constructor failed!", e);
-                    return new ChatComponentText(FormattingCode.RED+"The entity '"+args[0]+"' cannot be spawned!");
-                }
+            } else {
+                return new ChatComponentText(FormattingCode.RED + "An entity with the name '" + args[0] + "' doesn't exist!");
             }
-            else{
-                return new ChatComponentText(FormattingCode.RED+"An entity with the name '"+args[0]+"' doesn't exist!");
-            }
-        }
-        else{
-            return new ChatComponentText(FormattingCode.RED+"Only players can spawn entities!");
+        } else {
+            return new ChatComponentText(FormattingCode.RED + "Only players can spawn entities!");
         }
     }
 
     @Override
-    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
-        if(argNumber == 0){
+    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat) {
+        if (argNumber == 0) {
             return this.entityAutocomplete;
-        }
-        else{
+        } else {
             return Collections.emptyList();
         }
     }

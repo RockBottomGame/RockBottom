@@ -11,27 +11,27 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.Random;
 
-public class WorldGenFlowers implements IWorldGenerator{
+public class WorldGenFlowers implements IWorldGenerator {
 
     private final Random flowerRandom = new Random();
 
     @Override
-    public boolean shouldGenerate(IWorld world, IChunk chunk){
+    public boolean shouldGenerate(IWorld world, IChunk chunk) {
         return true;
     }
 
     @Override
-    public void generate(IWorld world, IChunk chunk){
-        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+    public void generate(IWorld world, IChunk chunk) {
+        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             int y = chunk.getHeightInner(TileLayer.MAIN, x);
-            if(y < Constants.CHUNK_SIZE && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
+            if (y < Constants.CHUNK_SIZE && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX() + x, chunk.getY() + y, TileLayer.MAIN)) {
                 float chance = chunk.getBiomeInner(x, y).getFlowerChance();
 
                 this.flowerRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
-                if(chance > 0F && this.flowerRandom.nextFloat() <= chance){
+                if (chance > 0F && this.flowerRandom.nextFloat() <= chance) {
                     TileMeta tile = GameContent.TILE_FLOWER;
-                    if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
-                        int type = Util.floor(this.flowerRandom.nextDouble()*(double)tile.metaProp.getVariants());
+                    if (tile.canPlace(world, chunk.getX() + x, chunk.getY() + y, TileLayer.MAIN, null)) {
+                        int type = Util.floor(this.flowerRandom.nextDouble() * (double) tile.metaProp.getVariants());
                         chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, type));
                     }
                 }
@@ -40,7 +40,7 @@ public class WorldGenFlowers implements IWorldGenerator{
     }
 
     @Override
-    public int getPriority(){
+    public int getPriority() {
         return -110;
     }
 }

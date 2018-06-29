@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class Statistics implements IStatistics{
+public class Statistics implements IStatistics {
 
     private final Map<ResourceName, Statistic> statistics = new HashMap<>();
     private final Map<ResourceName, Statistic> statisticsUnmodifiable = Collections.unmodifiableMap(this.statistics);
 
     @Override
-    public Statistic getOrInit(ResourceName name){
+    public Statistic getOrInit(ResourceName name) {
         return this.statistics.computeIfAbsent(name, n -> {
             StatisticInitializer s = RockBottomAPI.STATISTICS_REGISTRY.get(n);
             return s != null ? s.makeStatistic(this) : null;
@@ -26,50 +26,48 @@ public class Statistics implements IStatistics{
     }
 
     @Override
-    public <T extends Statistic> T getOrInit(ResourceName name, Class<? extends StatisticInitializer<T>> initClass){
+    public <T extends Statistic> T getOrInit(ResourceName name, Class<? extends StatisticInitializer<T>> initClass) {
         Statistic stat = this.getOrInit(name);
-        if(stat != null && initClass.isAssignableFrom(stat.getInitializer().getClass())){
-            return (T)stat;
-        }
-        else{
+        if (stat != null && initClass.isAssignableFrom(stat.getInitializer().getClass())) {
+            return (T) stat;
+        } else {
             return null;
         }
     }
 
     @Override
-    public Map<ResourceName, Statistic> getActiveStats(){
+    public Map<ResourceName, Statistic> getActiveStats() {
         return this.statisticsUnmodifiable;
     }
 
     @Override
-    public void save(DataSet set){
+    public void save(DataSet set) {
         int counter = 0;
-        for(Map.Entry<ResourceName, Statistic> entry : this.statistics.entrySet()){
+        for (Map.Entry<ResourceName, Statistic> entry : this.statistics.entrySet()) {
             DataSet sub = new DataSet();
             sub.addString("name", entry.getKey().toString());
             entry.getValue().save(sub);
 
-            set.addDataSet("stat_"+counter, sub);
+            set.addDataSet("stat_" + counter, sub);
             counter++;
         }
         set.addInt("stat_amount", counter);
     }
 
     @Override
-    public void load(DataSet set){
+    public void load(DataSet set) {
         this.statistics.clear();
 
         int amount = set.getInt("stat_amount");
-        for(int i = 0; i < amount; i++){
-            DataSet sub = set.getDataSet("stat_"+i);
-            if(!sub.isEmpty()){
+        for (int i = 0; i < amount; i++) {
+            DataSet sub = set.getDataSet("stat_" + i);
+            if (!sub.isEmpty()) {
                 ResourceName name = new ResourceName(sub.getString("name"));
                 Statistic stat = this.getOrInit(name);
-                if(stat != null){
+                if (stat != null) {
                     stat.load(sub);
-                }
-                else{
-                    RockBottomAPI.logger().log(Level.WARNING, "Statistic that was saved with name "+name+" doesn't exist anymore");
+                } else {
+                    RockBottomAPI.logger().log(Level.WARNING, "Statistic that was saved with name " + name + " doesn't exist anymore");
                 }
             }
         }

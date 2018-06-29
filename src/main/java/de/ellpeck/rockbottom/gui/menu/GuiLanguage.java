@@ -12,14 +12,14 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Map;
 
-public class GuiLanguage extends Gui{
+public class GuiLanguage extends Gui {
 
-    public GuiLanguage(Gui parent){
+    public GuiLanguage(Gui parent) {
         super(150, 150, parent);
     }
 
     @Override
-    public void init(IGameInstance game){
+    public void init(IGameInstance game) {
         super.init(game);
 
         BoundBox area = new BoundBox(0, 0, 150, 106).add(this.getX(), this.getY());
@@ -27,12 +27,12 @@ public class GuiLanguage extends Gui{
         this.components.add(menu);
 
         IAssetManager manager = game.getAssetManager();
-        for(Map.Entry<ResourceName, Locale> entry : manager.<Locale>getAllOfType(Locale.ID).entrySet()){
+        for (Map.Entry<ResourceName, Locale> entry : manager.<Locale>getAllOfType(Locale.ID).entrySet()) {
             ResourceName res = entry.getKey();
             Locale loc = entry.getValue();
 
             menu.add(new MenuComponent(150, 16).add(0, 0, new ComponentButton(this, 0, 0, 150, 16, () -> {
-                if(manager.getLocale() != loc){
+                if (manager.getLocale() != loc) {
                     game.getSettings().currentLocale = res.toString();
                     game.getSettings().save();
 
@@ -46,14 +46,14 @@ public class GuiLanguage extends Gui{
 
         menu.organize();
 
-        this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width / 2 - 40, this.height - 16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("language");
     }
 }

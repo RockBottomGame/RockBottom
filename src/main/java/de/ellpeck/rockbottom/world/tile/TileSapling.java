@@ -11,36 +11,35 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.gen.feature.WorldGenTrees;
 
-public class TileSapling extends TileBasic{
+public class TileSapling extends TileBasic {
 
     private static final WorldGenTrees GEN = new WorldGenTrees();
 
-    public TileSapling(){
+    public TileSapling() {
         super(ResourceName.intern("sapling"));
         this.addProps(StaticTileProps.SAPLING_GROWTH);
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return null;
     }
 
     @Override
-    public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
-        if(Util.RANDOM.nextDouble() >= 0.75){
-            if(world.isDaytime() && world.getSkyLight(x, y) >= 25){
+    public void updateRandomly(IWorld world, int x, int y, TileLayer layer) {
+        if (Util.RANDOM.nextDouble() >= 0.75) {
+            if (world.isDaytime() && world.getSkyLight(x, y) >= 25) {
                 TileState state = world.getState(layer, x, y);
-                if(state.get(StaticTileProps.SAPLING_GROWTH) >= 4){
-                    if(GEN.makeTree(world, x, y, true)){
+                if (state.get(StaticTileProps.SAPLING_GROWTH) >= 4) {
+                    if (GEN.makeTree(world, x, y, true)) {
                         GEN.makeTree(world, x, y, false);
                     }
-                }
-                else{
+                } else {
                     world.setState(layer, x, y, state.cycleProp(StaticTileProps.SAPLING_GROWTH));
                 }
             }
@@ -48,12 +47,12 @@ public class TileSapling extends TileBasic{
     }
 
     @Override
-    public boolean canPlaceInLayer(TileLayer layer){
+    public boolean canPlaceInLayer(TileLayer layer) {
         return layer == TileLayer.MAIN;
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
-        return world.getState(x, y-1).getTile().canKeepPlants(world, x, y-1, layer);
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
+        return world.getState(x, y - 1).getTile().canKeepPlants(world, x, y - 1, layer);
     }
 }

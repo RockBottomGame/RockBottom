@@ -7,41 +7,41 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketChestOpen implements IPacket{
+public class PacketChestOpen implements IPacket {
 
     private int x;
     private int y;
     private boolean open;
 
-    public PacketChestOpen(int x, int y, boolean open){
+    public PacketChestOpen(int x, int y, boolean open) {
         this.x = x;
         this.y = y;
         this.open = open;
     }
 
-    public PacketChestOpen(){
+    public PacketChestOpen() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeBoolean(this.open);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.open = buf.readBoolean();
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
-        if(world != null){
+        if (world != null) {
             TileEntityChest chest = world.getTileEntity(this.x, this.y, TileEntityChest.class);
-            if(chest != null){
+            if (chest != null) {
                 chest.setOpenCount(this.open ? 1 : 0);
             }
         }

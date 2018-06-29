@@ -15,7 +15,7 @@ import de.ellpeck.rockbottom.api.world.WorldInfo;
 import java.io.File;
 import java.util.Date;
 
-public class ComponentSelectWorldButton extends ComponentButton{
+public class ComponentSelectWorldButton extends ComponentButton {
 
     private static final ResourceName RES_LAST_MODIFIED = ResourceName.intern("info.last_modified");
     private static final ResourceName RES_SEED = ResourceName.intern("info.seed");
@@ -24,7 +24,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     private final WorldInfo info;
     private final String lastModified;
 
-    public ComponentSelectWorldButton(Gui gui, int x, int y, File file){
+    public ComponentSelectWorldButton(Gui gui, int x, int y, File file) {
         super(gui, x, y, 186, 26, null, null);
         this.worldFile = file;
 
@@ -35,19 +35,19 @@ public class ComponentSelectWorldButton extends ComponentButton{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
         super.render(game, manager, g, x, y);
         IFont font = manager.getFont();
-        font.drawCutOffString(x+2F, y+1F, this.worldFile.getName(), 0.45F, this.width-4, false, false);
-        font.drawString(x+2F, y+12F, FormattingCode.GRAY+manager.localize(RES_LAST_MODIFIED)+": "+this.lastModified, 0.25F);
-        font.drawString(x+2F, y+18F, FormattingCode.GRAY+manager.localize(RES_SEED)+": "+this.info.seed, 0.25F);
+        font.drawCutOffString(x + 2F, y + 1F, this.worldFile.getName(), 0.45F, this.width - 4, false, false);
+        font.drawString(x + 2F, y + 12F, FormattingCode.GRAY + manager.localize(RES_LAST_MODIFIED) + ": " + this.lastModified, 0.25F);
+        font.drawString(x + 2F, y + 18F, FormattingCode.GRAY + manager.localize(RES_SEED) + ": " + this.info.seed, 0.25F);
 
-        String s = manager.localize(ResourceName.intern("info.mode."+(this.info.storyMode ? "story" : "free")));
-        font.drawStringFromRight(x+this.width-2F, y+2F, s, 0.3F);
+        String s = manager.localize(ResourceName.intern("info.mode." + (this.info.storyMode ? "story" : "free")));
+        font.drawStringFromRight(x + this.width - 2F, y + 2F, s, 0.3F);
     }
 
     @Override
-    public boolean onPressed(IGameInstance game){
+    public boolean onPressed(IGameInstance game) {
         IGuiManager gui = game.getGuiManager();
         gui.fadeOut(20, () -> {
             game.startWorld(this.worldFile, this.info, false);
@@ -57,7 +57,7 @@ public class ComponentSelectWorldButton extends ComponentButton{
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("select_world_button");
     }
 }

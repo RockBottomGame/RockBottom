@@ -51,23 +51,23 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
-public abstract class AbstractGame implements IGameInstance{
+public abstract class AbstractGame implements IGameInstance {
 
     public static final String VERSION = "0.2.3.3";
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
-    private static final int INTERVAL = 1000/Constants.TARGET_TPS;
+    private static final int INTERVAL = 1000 / Constants.TARGET_TPS;
     private final List<EnqueuedAction> enqueuedActions = new ArrayList<>();
-    private boolean isRunning = true;
     protected DataManager dataManager;
     protected ChatLog chatLog;
     protected World world;
+    private boolean isRunning = true;
     private int tpsAverage;
     private int fpsAverage;
     private int totalTicks;
     private float tickDelta;
 
-    public static void doInit(AbstractGame game){
+    public static void doInit(AbstractGame game) {
         RockBottomAuthenticator.setMainServer("https://rockbottom.ellpeck.de/authentication/");
 
         Internals internals = new Internals();
@@ -82,7 +82,7 @@ public abstract class AbstractGame implements IGameInstance{
         internals.setNet(new NetHandler());
         internals.setResource(new ResourceRegistry());
 
-        try{
+        try {
             game.init();
 
             int packetInfoTimer = 0;
@@ -93,17 +93,17 @@ public abstract class AbstractGame implements IGameInstance{
             long lastDeltaTime = Util.getTimeMillis();
             int deltaAccumulator = 0;
 
-            while(game.isRunning){
+            while (game.isRunning) {
                 long time = Util.getTimeMillis();
 
-                int delta = (int)(time-lastDeltaTime);
-                game.tickDelta = delta/(float)INTERVAL;
+                int delta = (int) (time - lastDeltaTime);
+                game.tickDelta = delta / (float) INTERVAL;
                 lastDeltaTime = time;
 
                 deltaAccumulator += delta;
-                if(deltaAccumulator >= INTERVAL){
-                    long updates = deltaAccumulator/INTERVAL;
-                    for(int i = 0; i < updates; i++){
+                if (deltaAccumulator >= INTERVAL) {
+                    long updates = deltaAccumulator / INTERVAL;
+                    for (int i = 0; i < updates; i++) {
                         game.updateTicked();
                         tpsAccumulator++;
 
@@ -114,7 +114,7 @@ public abstract class AbstractGame implements IGameInstance{
                 game.updateTickless();
                 fpsAccumulator++;
 
-                if(time-lastPollTime >= 1000){
+                if (time - lastPollTime >= 1000) {
                     game.tpsAverage = tpsAccumulator;
                     game.fpsAverage = fpsAccumulator;
 
@@ -124,8 +124,8 @@ public abstract class AbstractGame implements IGameInstance{
                     lastPollTime = time;
 
                     packetInfoTimer++;
-                    if(packetInfoTimer >= 30){
-                        RockBottomAPI.logger().finer("Packets in the last 30 seconds: "+PacketDecoder.packetsReceived+" received, "+PacketEncoder.packetsSent+" sent");
+                    if (packetInfoTimer >= 30) {
+                        RockBottomAPI.logger().finer("Packets in the last 30 seconds: " + PacketDecoder.packetsReceived + " received, " + PacketEncoder.packetsSent + " sent");
 
                         PacketDecoder.packetsReceived = 0;
                         PacketEncoder.packetsSent = 0;
@@ -135,50 +135,47 @@ public abstract class AbstractGame implements IGameInstance{
 
                 Util.sleepSafe(1);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             game.onCrash();
             throw e;
-        }
-        finally{
-            try{
+        } finally {
+            try {
                 RockBottomAPI.logger().info("Game shutting down");
                 game.shutdown();
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 RockBottomAPI.logger().log(Level.SEVERE, "There was an error while shutting down the game and disposing of resources", e);
             }
         }
     }
 
     @Override
-    public float getTickDelta(){
+    public float getTickDelta() {
         return this.tickDelta;
     }
 
     public abstract int getAutosaveInterval();
 
-    protected void shutdown(){
+    protected void shutdown() {
         this.quitWorld();
     }
 
-    protected void onCrash(){
+    protected void onCrash() {
 
     }
 
     @Override
-    public int getTotalTicks(){
+    public int getTotalTicks() {
         return this.totalTicks;
     }
 
-    private void updateTicked(){
+    private void updateTicked() {
         this.totalTicks++;
 
-        synchronized(this.enqueuedActions){
-            for(int i = 0; i < this.enqueuedActions.size(); i++){
+        synchronized (this.enqueuedActions) {
+            for (int i = 0; i < this.enqueuedActions.size(); i++) {
                 EnqueuedAction action = this.enqueuedActions.get(i);
 
-                if(action.condition == null || action.condition.test(this)){
+                if (action.condition == null || action.condition.test(this)) {
                     action.action.accept(this, action.object);
 
                     this.enqueuedActions.remove(i);
@@ -190,12 +187,12 @@ public abstract class AbstractGame implements IGameInstance{
         this.update();
     }
 
-    public void init(){
+    public void init() {
         this.dataManager = new DataManager();
 
         IModLoader modLoader = RockBottomAPI.getModLoader();
         modLoader.loadJarMods(this.dataManager.getModsDir());
-        if(Main.unpackedModsDir != null){
+        if (Main.unpackedModsDir != null) {
             modLoader.loadUnpackedMods(Main.unpackedModsDir);
         }
         modLoader.sortMods();
@@ -210,34 +207,34 @@ public abstract class AbstractGame implements IGameInstance{
 
         RockBottomAPI.logger().info("--------- Registry Info ---------");
 
-        for(IRegistry registry : RockBottomAPI.getAllRegistries()){
-            RockBottomAPI.logger().info(registry+": "+registry.getSize()+" entries");
+        for (IRegistry registry : RockBottomAPI.getAllRegistries()) {
+            RockBottomAPI.logger().info(registry + ": " + registry.getSize() + " entries");
         }
 
         IResourceRegistry res = RockBottomAPI.getResourceRegistry();
-        RockBottomAPI.logger().info("resource_registry: "+res.getAllResourceNames().size()+" names, "+res.getAllResources().size()+" resources");
+        RockBottomAPI.logger().info("resource_registry: " + res.getAllResourceNames().size() + " names, " + res.getAllResources().size() + " resources");
 
         RockBottomAPI.logger().info("---------------------------------");
     }
 
-    protected void update(){
-        if(this.world != null){
+    protected void update() {
+        if (this.world != null) {
             this.world.update(this);
         }
     }
 
     @Override
-    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler) {
         ThreadHandler.init(this);
     }
 
     @Override
-    public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+    public void init(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler) {
         ContentRegistry.init();
     }
 
     @Override
-    public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+    public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler) {
         TileLayer.init();
         ContentManager.init(this);
         ConstructionRegistry.postInit();
@@ -246,14 +243,14 @@ public abstract class AbstractGame implements IGameInstance{
     }
 
     @Override
-    public void postPostInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+    public void postPostInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler) {
         StatisticList.init();
         ChatLog.initCommands();
     }
 
     @Override
-    public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated){
-        RockBottomAPI.logger().info("Starting world with file "+worldFile);
+    public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated) {
+        RockBottomAPI.logger().info("Starting world with file " + worldFile);
 
         NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), new File(worldFile, "tile_reg_info.json"), Integer.MAX_VALUE);
         this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_STATE_REGISTRY);
@@ -265,196 +262,193 @@ public abstract class AbstractGame implements IGameInstance{
 
         this.world = new World(info, regInfo, worldFile);
 
-        if(isNewlyCreated){
+        if (isNewlyCreated) {
             RockBottomAPI.getEventHandler().fireEvent(new WorldCreationEvent(worldFile, this.world, info, regInfo));
         }
 
         RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
     }
 
-    private void populateIndexInfo(NameToIndexInfo info, NameRegistry reg){
+    private void populateIndexInfo(NameToIndexInfo info, NameRegistry reg) {
         info.load();
         info.populate(reg);
 
-        if(info.needsSave()){
+        if (info.needsSave()) {
             info.save();
         }
     }
 
     @Override
-    public void quitWorld(){
+    public void quitWorld() {
         RockBottomAPI.getNet().shutdown();
 
-        if(this.world != null){
+        if (this.world != null) {
             RockBottomAPI.logger().info("Quitting current world");
 
             RockBottomAPI.getEventHandler().fireEvent(new WorldUnloadEvent(this.world));
             this.world = null;
         }
 
-        if(this.chatLog != null){
+        if (this.chatLog != null) {
             this.chatLog.clear();
         }
     }
 
-    protected void updateTickless(){
+    protected void updateTickless() {
 
     }
 
     @Override
-    public IDataManager getDataManager(){
+    public IDataManager getDataManager() {
         return this.dataManager;
     }
 
     @Override
-    public ChatLog getChatLog(){
+    public ChatLog getChatLog() {
         return this.chatLog;
     }
 
     @Override
-    public IWorld getWorld(){
+    public IWorld getWorld() {
         return this.world;
     }
 
     @Override
-    public int getTpsAverage(){
+    public int getTpsAverage() {
         return this.tpsAverage;
     }
 
     @Override
-    public int getFpsAverage(){
+    public int getFpsAverage() {
         return this.fpsAverage;
     }
 
     @Override
-    public URLClassLoader getClassLoader(){
+    public URLClassLoader getClassLoader() {
         return Main.classLoader;
     }
 
     @Override
-    public String getDisplayName(){
+    public String getDisplayName() {
         return NAME;
     }
 
     @Override
-    public String getId(){
+    public String getId() {
         return ID;
     }
 
     @Override
-    public String getVersion(){
+    public String getVersion() {
         return VERSION;
     }
 
     @Override
-    public String getResourceLocation(){
+    public String getResourceLocation() {
         return "assets/rockbottom";
     }
 
     @Override
-    public String getContentLocation(){
+    public String getContentLocation() {
         return "assets/rockbottom/content";
     }
 
     @Override
-    public int getSortingPriority(){
+    public int getSortingPriority() {
         return Integer.MAX_VALUE;
     }
 
     @Override
-    public String getDescription(){
+    public String getDescription() {
         return "Rock Bottom is a 2-dimensional sidescrolling game in which you collect resources and build different tools and machines in order to try to figure out why you're on this planet and what the people that were here before you did!";
     }
 
     @Override
-    public String[] getAuthors(){
+    public String[] getAuthors() {
         return new String[]{"Ellpeck", "wiiv"};
     }
 
     @Override
-    public boolean isDisableable(){
+    public boolean isDisableable() {
         return false;
     }
 
     @Override
-    public boolean isRequiredOnClient(){
+    public boolean isRequiredOnClient() {
         return true;
     }
 
     @Override
-    public boolean isRequiredOnServer(){
+    public boolean isRequiredOnServer() {
         return true;
     }
 
     @Override
-    public void exit(){
+    public void exit() {
         this.isRunning = false;
     }
 
     @Override
-    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object){
+    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object) {
         this.enqueueAction(action, object, null);
     }
 
     @Override
-    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition){
-        synchronized(this.enqueuedActions){
+    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition) {
+        synchronized (this.enqueuedActions) {
             this.enqueuedActions.add(new EnqueuedAction(action, object, condition));
         }
     }
 
     @Override
-    public void restart(){
-        try{
+    public void restart() {
+        try {
             StringBuilder args = new StringBuilder();
-            for(String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()){
-                if(!arg.toLowerCase(Locale.ROOT).contains("-agentlib")){
+            for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+                if (!arg.toLowerCase(Locale.ROOT).contains("-agentlib")) {
                     args.append(arg).append(' ');
                 }
             }
 
-            StringBuilder cmd = new StringBuilder('"'+System.getProperty("java.home")+"/bin/java"+"\" "+args);
+            StringBuilder cmd = new StringBuilder('"' + System.getProperty("java.home") + "/bin/java" + "\" " + args);
             String[] mainCommand = System.getProperty("sun.java.command").split(" ");
 
-            if(mainCommand[0].endsWith(".jar")){
+            if (mainCommand[0].endsWith(".jar")) {
                 cmd.append("-jar ").append(new File(mainCommand[0]).getPath());
-            }
-            else{
+            } else {
                 cmd.append("-cp \"").append(System.getProperty("java.class.path")).append("\" ").append(mainCommand[0]);
             }
 
-            for(int i = 1; i < mainCommand.length; i++){
+            for (int i = 1; i < mainCommand.length; i++) {
                 cmd.append(' ').append(mainCommand[i]);
             }
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try{
+                try {
                     Runtime.getRuntime().exec(cmd.toString());
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     Logging.mainLogger.log(Level.WARNING, "There was an error while trying to restart the game", e);
                 }
             }, ThreadHandler.SHUTDOWN_HOOK));
 
             this.exit();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             RockBottomAPI.logger().log(Level.WARNING, "There was an error while trying to setup a game restart", e);
         }
     }
 
     @Override
-    public boolean isRunning(){
+    public boolean isRunning() {
         return this.isRunning;
     }
 
-    private static class EnqueuedAction<T>{
+    private static class EnqueuedAction<T> {
 
         public final BiConsumer<IGameInstance, T> action;
         public final T object;
         public final Predicate<IGameInstance> condition;
 
-        public EnqueuedAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition){
+        public EnqueuedAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition) {
             this.action = action;
             this.object = object;
             this.condition = condition;

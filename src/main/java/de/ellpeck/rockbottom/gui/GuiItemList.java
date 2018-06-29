@@ -11,30 +11,30 @@ import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-public class GuiItemList extends GuiContainer{
+public class GuiItemList extends GuiContainer {
 
-    public GuiItemList(AbstractEntityPlayer player){
+    public GuiItemList(AbstractEntityPlayer player) {
         super(player, 150, 163);
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("item_list");
     }
 
     @Override
-    public void init(IGameInstance game){
+    public void init(IGameInstance game) {
         super.init(game);
 
         BoundBox box = new BoundBox(0, 0, 150, 88).add(this.x, this.y);
         ComponentMenu menu = new ComponentMenu(this, 0, 0, 88, 8, 5, box);
 
         ItemContainer container = this.getContainer();
-        for(int i = this.player.getInv().getSlotAmount()+1; i < container.getSlotAmount(); i++){
+        for (int i = this.player.getInv().getSlotAmount() + 1; i < container.getSlotAmount(); i++) {
             GuiComponent comp = this.components.get(i);
-            menu.add(new MenuComponent(comp.getWidth(), comp.getHeight()){
+            menu.add(new MenuComponent(comp.getWidth(), comp.getHeight()) {
                 @Override
-                public void init(Gui gui){
+                public void init(Gui gui) {
 
                 }
             }.add(0, 0, comp));

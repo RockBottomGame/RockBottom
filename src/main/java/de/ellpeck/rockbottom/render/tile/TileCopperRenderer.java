@@ -11,21 +11,20 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileCopper;
 
-public class TileCopperRenderer extends DefaultTileRenderer<TileCopper>{
+public class TileCopperRenderer extends DefaultTileRenderer<TileCopper> {
 
     private final ResourceName canister;
 
-    public TileCopperRenderer(ResourceName texture){
+    public TileCopperRenderer(ResourceName texture) {
         super(texture);
         this.canister = this.texture.addSuffix(".canister");
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileCopper tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
-        if(state.get(StaticTileProps.HAS_CANISTER)){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileCopper tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+        if (state.get(StaticTileProps.HAS_CANISTER)) {
             manager.getTexture(this.canister).draw(renderX, renderY, scale, scale, light);
-        }
-        else{
+        } else {
             super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
         }
     }

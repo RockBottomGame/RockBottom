@@ -4,7 +4,7 @@ import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-public final class StatisticList{
+public final class StatisticList {
 
     public static final ResourceName CONTAINERS_OPENED = ResourceName.intern("containers_opened");
     public static final ResourceName TILES_BROKEN = ResourceName.intern("tiles_broken");
@@ -14,7 +14,7 @@ public final class StatisticList{
     public static final ResourceName TILES_WALKED = ResourceName.intern("tiles_walked");
     public static final ResourceName TOOLS_BROKEN = ResourceName.intern("tools_broken");
 
-    public static void init(){
+    public static void init() {
         new NumberStatistic(CONTAINERS_OPENED, CONTAINERS_OPENED.addPrefix("stats.")).register();
         new ItemStatistic(TILES_BROKEN, TILES_BROKEN.addPrefix("stats.")).register();
         new ItemStatistic(TILES_PLACED, TILES_PLACED.addPrefix("stats.")).register();

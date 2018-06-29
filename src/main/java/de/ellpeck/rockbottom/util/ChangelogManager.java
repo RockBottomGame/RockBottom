@@ -14,14 +14,14 @@ import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
 
-public final class ChangelogManager{
+public final class ChangelogManager {
 
     private static Changelog changelog;
     private static boolean changelogGrabError;
 
-    public static void loadChangelog(){
+    public static void loadChangelog() {
         Thread loaderThread = new Thread(() -> {
-            try{
+            try {
                 RockBottomAPI.logger().info("Grabbing the changelog...");
 
                 URL newestURL = new URL(Constants.UPDATE_LINK);
@@ -39,11 +39,11 @@ public final class ChangelogManager{
                 VersionInfo[] infos = new VersionInfo[changes.size()];
 
                 int counter = 0;
-                for(Map.Entry<String, JsonElement> change : changes.entrySet()){
+                for (Map.Entry<String, JsonElement> change : changes.entrySet()) {
                     JsonArray changelog = change.getValue().getAsJsonArray();
 
                     String[] changelogArray = new String[changelog.size()];
-                    for(int i = 0; i < changelog.size(); i++){
+                    for (int i = 0; i < changelog.size(); i++) {
                         changelogArray[i] = changelog.get(i).getAsString();
                     }
 
@@ -56,8 +56,7 @@ public final class ChangelogManager{
                 RockBottomAPI.logger().info("Successfully grabbed and parsed the changelog.");
 
                 reader.close();
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 RockBottomAPI.logger().log(Level.WARNING, "There was an error trying to grab and parse the changelog", e);
                 changelogGrabError = true;
             }
@@ -66,39 +65,37 @@ public final class ChangelogManager{
         loaderThread.start();
     }
 
-    private static boolean isHigher(String newVersion, String oldVersion){
-        try{
+    private static boolean isHigher(String newVersion, String oldVersion) {
+        try {
             String[] newParts = newVersion.split("\\.");
             String[] oldParts = oldVersion.split("\\.");
 
             int maxLength = Math.max(newParts.length, oldParts.length);
-            for(int i = 0; i < maxLength; i++){
+            for (int i = 0; i < maxLength; i++) {
                 int newInt = newParts.length > i ? Integer.parseInt(newParts[i]) : 0;
                 int oldInt = oldParts.length > i ? Integer.parseInt(oldParts[i]) : 0;
 
-                if(newInt > oldInt){
+                if (newInt > oldInt) {
                     return true;
-                }
-                else if(newInt < oldInt){
+                } else if (newInt < oldInt) {
                     return false;
                 }
             }
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't compare version string "+newVersion+" to old version string "+oldVersion, e);
+        } catch (Exception e) {
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't compare version string " + newVersion + " to old version string " + oldVersion, e);
         }
         return false;
     }
 
-    public static Changelog getChangelog(){
+    public static Changelog getChangelog() {
         return changelog;
     }
 
-    public static boolean isChangelogGrabError(){
+    public static boolean isChangelogGrabError() {
         return changelogGrabError;
     }
 
-    public static class Changelog{
+    public static class Changelog {
 
         public final String latest;
         public final String stable;
@@ -106,7 +103,7 @@ public final class ChangelogManager{
         public final boolean isStableNewer;
         public final VersionInfo[] versionInfo;
 
-        public Changelog(String latest, String stable, boolean isLatestNewer, boolean isStableNewer, VersionInfo[] versionInfo){
+        public Changelog(String latest, String stable, boolean isLatestNewer, boolean isStableNewer, VersionInfo[] versionInfo) {
             this.latest = latest;
             this.stable = stable;
             this.isLatestNewer = isLatestNewer;
@@ -115,12 +112,12 @@ public final class ChangelogManager{
         }
     }
 
-    public static class VersionInfo{
+    public static class VersionInfo {
 
         public final String versionName;
         public final String[] info;
 
-        public VersionInfo(String versionName, String[] info){
+        public VersionInfo(String versionName, String[] info) {
             this.versionName = versionName;
             this.info = info;
         }

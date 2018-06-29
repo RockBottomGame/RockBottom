@@ -12,55 +12,55 @@ import de.ellpeck.rockbottom.gui.GuiSign;
 import de.ellpeck.rockbottom.render.tile.TileSignRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySign;
 
-public class TileSign extends TileBasic{
+public class TileSign extends TileBasic {
 
-    public TileSign(){
+    public TileSign() {
         super(ResourceName.intern("sign"));
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return null;
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
         return world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile();
     }
 
     @Override
-    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
         return this.canPlace(world, x, y, layer, null);
     }
 
     @Override
-    public boolean canPlaceInLayer(TileLayer layer){
+    public boolean canPlaceInLayer(TileLayer layer) {
         return layer == TileLayer.MAIN;
     }
 
     @Override
-    public boolean canProvideTileEntity(){
+    public boolean canProvideTileEntity() {
         return true;
     }
 
     @Override
-    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer){
+    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer) {
         return new TileEntitySign(world, x, y, layer);
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
         TileEntitySign tile = world.getTileEntity(layer, x, y, TileEntitySign.class);
         return tile != null && player.openGui(new GuiSign(tile));
     }
 
     @Override
-    protected ITileRenderer createRenderer(ResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name) {
         return new TileSignRenderer(name);
     }
 }

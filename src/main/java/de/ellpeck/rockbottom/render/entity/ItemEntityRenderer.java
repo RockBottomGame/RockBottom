@@ -33,17 +33,17 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 
 @ApiInternal
-public class ItemEntityRenderer implements IEntityRenderer<EntityItem>{
+public class ItemEntityRenderer implements IEntityRenderer<EntityItem> {
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityItem entity, float x, float y, int light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityItem entity, float x, float y, int light) {
         ItemInstance instance = entity.getItem();
-        if(instance != null){
+        if (instance != null) {
             Item item = instance.getItem();
             IItemRenderer renderer = item.getRenderer();
-            if(renderer != null){
-                float bob = (float)Math.sin(entity.ticksExisted/20D%(2*Math.PI))*0.1F;
-                renderer.render(game, manager, g, item, instance, x-0.25F, y+bob-0.5F, 0.5F, light);
+            if (renderer != null) {
+                float bob = (float) Math.sin(entity.ticksExisted / 20D % (2 * Math.PI)) * 0.1F;
+                renderer.render(game, manager, g, item, instance, x - 0.25F, y + bob - 0.5F, 0.5F, light);
             }
         }
     }

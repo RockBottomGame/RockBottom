@@ -8,31 +8,31 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.logging.Level;
 
-public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket>{
+public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket> {
 
     private final Server server;
 
-    public ServerNetworkHandler(Server server){
+    public ServerNetworkHandler(Server server) {
         this.server = server;
     }
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx){
+    public void handlerAdded(ChannelHandlerContext ctx) {
         this.server.connectedChannels.add(ctx.channel());
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx){
+    public void handlerRemoved(ChannelHandlerContext ctx) {
         this.server.connectedChannels.remove(ctx.channel());
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, IPacket packet){
+    protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) {
         packet.enqueueAsAction(RockBottomAPI.getGame(), ctx);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         Logging.nettyLogger.log(Level.SEVERE, "The server network handler caught an exception", cause);
     }
 }

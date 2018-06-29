@@ -12,17 +12,17 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Arrays;
 
-public class CommandHelp extends Command{
+public class CommandHelp extends Command {
 
-    public CommandHelp(){
+    public CommandHelp() {
         super(ResourceName.intern("help"), "Shows a list of possible commands", 0, "help", "?");
     }
 
     @Override
-    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
-        StringBuilder s = new StringBuilder(FormattingCode.GREEN+"All Commands: \n");
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
+        StringBuilder s = new StringBuilder(FormattingCode.GREEN + "All Commands: \n");
 
-        for(Command command : RockBottomAPI.COMMAND_REGISTRY.values()){
+        for (Command command : RockBottomAPI.COMMAND_REGISTRY.values()) {
             s.append(FormattingCode.ORANGE)
                     .append(Arrays.toString(command.getTriggers()))
                     .append(FormattingCode.RESET_COLOR)

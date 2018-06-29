@@ -8,29 +8,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class ChunkThread extends Thread{
+public class ChunkThread extends Thread {
 
     private final List<Runnable> queue = new ArrayList<>();
     private final AbstractGame game;
 
-    public ChunkThread(AbstractGame game){
+    public ChunkThread(AbstractGame game) {
         super(ThreadHandler.CHUNK_GEN);
         this.game = game;
     }
 
     @Override
-    public void run(){
-        while(this.game.isRunning()){
-            try{
-                while(!this.queue.isEmpty()){
+    public void run() {
+        while (this.game.isRunning()) {
+            try {
+                while (!this.queue.isEmpty()) {
                     Runnable runnable;
-                    synchronized(this.queue){
+                    synchronized (this.queue) {
                         runnable = this.queue.remove(0);
                     }
                     runnable.run();
                 }
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 RockBottomAPI.logger().log(Level.WARNING, "There was an exception in the chunk gen thread, however it will attempt to keep running", e);
             }
 
@@ -38,8 +37,8 @@ public class ChunkThread extends Thread{
         }
     }
 
-    public void add(Runnable runnable){
-        synchronized(this.queue){
+    public void add(Runnable runnable) {
+        synchronized (this.queue) {
             this.queue.add(runnable);
         }
     }

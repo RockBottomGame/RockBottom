@@ -10,24 +10,23 @@ import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class BiomeUnderground extends BiomeBasic{
+public class BiomeUnderground extends BiomeBasic {
 
-    public BiomeUnderground(ResourceName name, int weight, BiomeLevel... levels){
+    public BiomeUnderground(ResourceName name, int weight, BiomeLevel... levels) {
         super(name, weight, levels);
     }
 
     @Override
-    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight){
-        if(layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND){
+    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight) {
+        if (layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND) {
             return GameContent.TILE_STONE.getDefState();
-        }
-        else{
+        } else {
             return GameContent.TILE_AIR.getDefState();
         }
     }
 
     @Override
-    public boolean hasUndergroundFeatures(IWorld world, IChunk chunk){
+    public boolean hasUndergroundFeatures(IWorld world, IChunk chunk) {
         return true;
     }
 }

@@ -18,32 +18,32 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileLeaves extends TileBasic{
+public class TileLeaves extends TileBasic {
 
-    public TileLeaves(){
+    public TileLeaves() {
         super(ResourceName.intern("leaves"));
         this.addProps(StaticTileProps.NATURAL);
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return world.getState(layer, x, y).get(StaticTileProps.NATURAL) ? null : super.getBoundBox(world, x, y, layer);
     }
 
     @Override
-    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
+    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer) {
         return super.getPlacementState(world, x, y, layer, instance, placer).prop(StaticTileProps.NATURAL, false);
     }
 
     @Override
-    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
         List<ItemInstance> drops = new ArrayList<>();
 
-        if(Util.RANDOM.nextDouble() >= 0.85){
+        if (Util.RANDOM.nextDouble() >= 0.85) {
             drops.add(new ItemInstance(GameContent.TILE_SAPLING));
         }
 
-        if(destroyer != null && Util.RANDOM.nextDouble() >= 0.65){
+        if (destroyer != null && Util.RANDOM.nextDouble() >= 0.65) {
             drops.add(new ItemInstance(GameContent.ITEM_TWIG));
         }
 
@@ -51,34 +51,33 @@ public class TileLeaves extends TileBasic{
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        if(!world.isClient()){
-            if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
-                if(!this.recursiveLeavesCheck(world, x, y, layer, new ArrayList<>())){
-                    world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25)+5);
+    public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
+        if (!world.isClient()) {
+            if (world.getState(layer, x, y).get(StaticTileProps.NATURAL)) {
+                if (!this.recursiveLeavesCheck(world, x, y, layer, new ArrayList<>())) {
+                    world.scheduleUpdate(x, y, layer, Util.RANDOM.nextInt(25) + 5);
                 }
             }
         }
     }
 
-    private boolean recursiveLeavesCheck(IWorld world, int x, int y, TileLayer layer, List<Pos2> alreadyChecked){
-        for(Direction direction : Direction.ADJACENT){
-            Pos2 pos = new Pos2(x+direction.x, y+direction.y);
-            if(!alreadyChecked.contains(pos)){
+    private boolean recursiveLeavesCheck(IWorld world, int x, int y, TileLayer layer, List<Pos2> alreadyChecked) {
+        for (Direction direction : Direction.ADJACENT) {
+            Pos2 pos = new Pos2(x + direction.x, y + direction.y);
+            if (!alreadyChecked.contains(pos)) {
                 alreadyChecked.add(pos);
 
                 TileState state = world.getState(layer, pos.getX(), pos.getY());
-                if(state.getTile() == this && state.get(StaticTileProps.NATURAL)){
-                    if(this.recursiveLeavesCheck(world, pos.getX(), pos.getY(), layer, alreadyChecked)){
+                if (state.getTile() == this && state.get(StaticTileProps.NATURAL)) {
+                    if (this.recursiveLeavesCheck(world, pos.getX(), pos.getY(), layer, alreadyChecked)) {
                         return true;
                     }
-                }
-                else if(state.getTile().doesSustainLeaves(world, pos.getX(), pos.getY(), layer)){
+                } else if (state.getTile().doesSustainLeaves(world, pos.getX(), pos.getY(), layer)) {
                     return true;
                 }
             }
@@ -87,9 +86,9 @@ public class TileLeaves extends TileBasic{
     }
 
     @Override
-    public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer, int scheduledMeta){
-        if(!world.isClient()){
-            if(world.getState(layer, x, y).get(StaticTileProps.NATURAL)){
+    public void onScheduledUpdate(IWorld world, int x, int y, TileLayer layer, int scheduledMeta) {
+        if (!world.isClient()) {
+            if (world.getState(layer, x, y).get(StaticTileProps.NATURAL)) {
                 world.destroyTile(x, y, layer, null, true);
             }
         }

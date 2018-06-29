@@ -9,22 +9,21 @@ import de.ellpeck.rockbottom.content.ContentManager;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SimpleFont extends Font{
+public class SimpleFont extends Font {
 
-    public SimpleFont(){
+    public SimpleFont() {
         super("simple_en", getTex(), 23, 3, getChars());
     }
 
-    private static ITexture getTex(){
-        try{
+    private static ITexture getTex() {
+        try {
             return new Texture(ContentManager.getResourceAsStream("assets/rockbottom/font/simple.png"));
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return RockBottomAPI.getGame().getAssetManager().getMissingTexture();
         }
     }
 
-    private static Map<Character, Pos2> getChars(){
+    private static Map<Character, Pos2> getChars() {
         String[] chars = new String[]{
                 "!?,./0123456789:-ABCDEF",
                 "GHIJKLMNOPQRSTUVWXYZabc",
@@ -32,9 +31,9 @@ public class SimpleFont extends Font{
         };
 
         Map<Character, Pos2> map = new HashMap<>();
-        for(int y = 0; y < 3; y++){
+        for (int y = 0; y < 3; y++) {
             String row = chars[y];
-            for(int x = 0; x < 23; x++){
+            for (int x = 0; x < 23; x++) {
                 map.put(row.charAt(x), new Pos2(x, y));
             }
         }

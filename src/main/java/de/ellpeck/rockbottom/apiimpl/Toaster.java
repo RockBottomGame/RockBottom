@@ -11,24 +11,24 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Toaster implements IToaster{
+public class Toaster implements IToaster {
 
     private final Map<Toast, ToastPosition> toasts = new LinkedHashMap<>();
 
-    public void update(){
+    public void update() {
         Iterator<ToastPosition> iterator = this.toasts.values().iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             ToastPosition pos = iterator.next();
             pos.timer--;
 
-            if(pos.timer <= 0){
+            if (pos.timer <= 0) {
                 iterator.remove();
             }
         }
     }
 
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g){
-        for(Entry<Toast, ToastPosition> entry : this.toasts.entrySet()){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g) {
+        for (Entry<Toast, ToastPosition> entry : this.toasts.entrySet()) {
             Toast toast = entry.getKey();
             ToastPosition pos = entry.getValue();
 
@@ -37,13 +37,11 @@ public class Toaster implements IToaster{
             float movementTime = toast.getMovementTime();
 
             float x;
-            if(pos.timer <= movementTime){
-                x = -width+((pos.timer/movementTime)*(width+2));
-            }
-            else if(pos.timer >= time-movementTime){
-                x = -width+(((time-pos.timer)/movementTime)*(width+2));
-            }
-            else{
+            if (pos.timer <= movementTime) {
+                x = -width + ((pos.timer / movementTime) * (width + 2));
+            } else if (pos.timer >= time - movementTime) {
+                x = -width + (((time - pos.timer) / movementTime) * (width + 2));
+            } else {
                 x = 2;
             }
 
@@ -52,12 +50,12 @@ public class Toaster implements IToaster{
     }
 
     @Override
-    public void displayToast(Toast toast){
+    public void displayToast(Toast toast) {
         float lowestY = 2;
 
-        for(Map.Entry<Toast, ToastPosition> entry : this.toasts.entrySet()){
-            float y = entry.getValue().y+entry.getKey().getHeight()+2;
-            if(lowestY < y){
+        for (Map.Entry<Toast, ToastPosition> entry : this.toasts.entrySet()) {
+            float y = entry.getValue().y + entry.getKey().getHeight() + 2;
+            if (lowestY < y) {
                 lowestY = y;
             }
         }
@@ -66,23 +64,23 @@ public class Toaster implements IToaster{
     }
 
     @Override
-    public void cancelToast(Toast toast){
+    public void cancelToast(Toast toast) {
         this.toasts.remove(toast);
     }
 
     @Override
-    public void cancelAllToasts(){
-        if(!this.toasts.isEmpty()){
+    public void cancelAllToasts() {
+        if (!this.toasts.isEmpty()) {
             this.toasts.clear();
         }
     }
 
-    private static class ToastPosition{
+    private static class ToastPosition {
 
         private final float y;
         protected int timer;
 
-        public ToastPosition(float y, int timer){
+        public ToastPosition(float y, int timer) {
             this.y = y;
             this.timer = timer;
         }

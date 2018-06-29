@@ -7,9 +7,9 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class TileFlower extends TileMeta{
+public class TileFlower extends TileMeta {
 
-    public TileFlower(){
+    public TileFlower() {
         super(ResourceName.intern("flower"), false);
         this.addSubTile(ResourceName.intern("flower_gray"));
         this.addSubTile(ResourceName.intern("flower_orange"));
@@ -22,27 +22,27 @@ public class TileFlower extends TileMeta{
     }
 
     @Override
-    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
+        return world.getState(layer, x, y - 1).getTile().canKeepPlants(world, x, y, layer);
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
-        return world.isPosLoaded(x, y-1, false) && world.getState(layer, x, y-1).getTile().canKeepPlants(world, x, y, layer);
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
+        return world.isPosLoaded(x, y - 1, false) && world.getState(layer, x, y - 1).getTile().canKeepPlants(world, x, y, layer);
     }
 
     @Override
-    public boolean canReplace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canReplace(IWorld world, int x, int y, TileLayer layer) {
         return true;
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return null;
     }
 }

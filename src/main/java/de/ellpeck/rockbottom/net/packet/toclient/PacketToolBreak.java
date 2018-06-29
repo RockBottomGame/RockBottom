@@ -33,21 +33,21 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public final class PacketToolBreak implements IPacket{
+public final class PacketToolBreak implements IPacket {
 
     private UUID playerId;
     private ItemInstance instance;
 
-    public PacketToolBreak(UUID playerId, ItemInstance instance){
+    public PacketToolBreak(UUID playerId, ItemInstance instance) {
         this.playerId = playerId;
         this.instance = instance;
     }
 
-    public PacketToolBreak(){
+    public PacketToolBreak() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
 
@@ -57,7 +57,7 @@ public final class PacketToolBreak implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.playerId = new UUID(buf.readLong(), buf.readLong());
 
         DataSet set = new DataSet();
@@ -66,11 +66,11 @@ public final class PacketToolBreak implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
-        if(world != null){
+        if (world != null) {
             Entity entity = world.getEntity(this.playerId);
-            if(entity != null){
+            if (entity != null) {
                 game.getParticleManager().addItemParticles(world, entity.getX(), entity.getY(), this.instance);
             }
         }

@@ -11,41 +11,38 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileTorch;
 
-public class TileTorchRenderer extends DefaultTileRenderer<TileTorch>{
+public class TileTorchRenderer extends DefaultTileRenderer<TileTorch> {
 
     private final ResourceName[] texNormal = new ResourceName[2];
     private final ResourceName[] texLeft = new ResourceName[2];
     private final ResourceName[] texRight = new ResourceName[2];
     private final ResourceName[] texBack = new ResourceName[2];
 
-    public TileTorchRenderer(ResourceName texture){
+    public TileTorchRenderer(ResourceName texture) {
         super(texture.addSuffix(".off"));
 
         ResourceName tileTexture = texture.addPrefix("tiles.");
-        for(int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             String suffix = i == 0 ? ".on" : ".off";
             this.texNormal[i] = tileTexture.addSuffix(suffix);
-            this.texLeft[i] = tileTexture.addSuffix(".left"+suffix);
-            this.texRight[i] = tileTexture.addSuffix(".right"+suffix);
-            this.texBack[i] = tileTexture.addSuffix(".back"+suffix);
+            this.texLeft[i] = tileTexture.addSuffix(".left" + suffix);
+            this.texRight[i] = tileTexture.addSuffix(".right" + suffix);
+            this.texBack[i] = tileTexture.addSuffix(".back" + suffix);
         }
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileTorch tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileTorch tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         int meta = state.get(StaticTileProps.TORCH_FACING);
 
         ResourceName[] tex;
-        if(meta == 0){
+        if (meta == 0) {
             tex = this.texNormal;
-        }
-        else if(meta == 1){
+        } else if (meta == 1) {
             tex = this.texRight;
-        }
-        else if(meta == 2){
+        } else if (meta == 2) {
             tex = this.texLeft;
-        }
-        else{
+        } else {
             tex = this.texBack;
         }
 

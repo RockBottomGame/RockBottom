@@ -9,22 +9,22 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
-public class InventoryPlayer extends Inventory{
+public class InventoryPlayer extends Inventory {
 
     public int selectedSlot;
 
-    public InventoryPlayer(EntityPlayer player){
+    public InventoryPlayer(EntityPlayer player) {
         super(32);
 
-        if(!player.world.isClient()){
+        if (!player.world.isClient()) {
             this.addChangeCallback((inv, slot) -> {
-                if(ConstructionRegistry.chest != null && !ConstructionRegistry.chest.isKnown(player)){
+                if (ConstructionRegistry.chest != null && !ConstructionRegistry.chest.isKnown(player)) {
                     int fullness = 0;
-                    for(int i = 0; i < inv.getSlotAmount(); i++){
-                        if(inv.get(i) != null){
+                    for (int i = 0; i < inv.getSlotAmount(); i++) {
+                        if (inv.get(i) != null) {
                             fullness++;
 
-                            if(fullness >= inv.getSlotAmount()/2){
+                            if (fullness >= inv.getSlotAmount() / 2) {
                                 player.getKnowledge().teachRecipe(ConstructionRegistry.chest);
                                 break;
                             }
@@ -34,9 +34,9 @@ public class InventoryPlayer extends Inventory{
             });
 
             this.addChangeCallback((inv, slot) -> {
-                if(ConstructionRegistry.grassTorch != null && !ConstructionRegistry.grassTorch.isKnown(player)){
+                if (ConstructionRegistry.grassTorch != null && !ConstructionRegistry.grassTorch.isKnown(player)) {
                     ItemInstance instance = inv.get(slot);
-                    if(instance != null && instance.getItem() == GameContent.TILE_GRASS_TORCH.getItem()){
+                    if (instance != null && instance.getItem() == GameContent.TILE_GRASS_TORCH.getItem()) {
                         player.getKnowledge().teachRecipe(ConstructionRegistry.grassTorch);
                     }
                 }
@@ -44,9 +44,9 @@ public class InventoryPlayer extends Inventory{
 
             this.addChangeCallback((inv, slot) -> {
                 ItemInstance instance = inv.get(slot);
-                if(instance != null && RockBottomAPI.getResourceRegistry().getNames(instance).contains(GameContent.RES_COPPER_PROCESSED)){
-                    for(IRecipe recipe : ConstructionRegistry.COPPER_TOOLS){
-                        if(recipe != null){
+                if (instance != null && RockBottomAPI.getResourceRegistry().getNames(instance).contains(GameContent.RES_COPPER_PROCESSED)) {
+                    for (IRecipe recipe : ConstructionRegistry.COPPER_TOOLS) {
+                        if (recipe != null) {
                             player.getKnowledge().teachRecipe(recipe);
                         }
                     }
@@ -56,14 +56,14 @@ public class InventoryPlayer extends Inventory{
     }
 
     @Override
-    public void save(DataSet set){
+    public void save(DataSet set) {
         super.save(set);
 
         set.addInt("selected_slot", this.selectedSlot);
     }
 
     @Override
-    public void load(DataSet set){
+    public void load(DataSet set) {
         super.load(set);
 
         this.selectedSlot = set.getInt("selected_slot");

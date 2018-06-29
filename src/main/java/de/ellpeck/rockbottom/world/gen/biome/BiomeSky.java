@@ -10,14 +10,14 @@ import de.ellpeck.rockbottom.api.world.gen.biome.BiomeBasic;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class BiomeSky extends BiomeBasic{
+public class BiomeSky extends BiomeBasic {
 
-    public BiomeSky(ResourceName name, int weight, BiomeLevel... levels){
+    public BiomeSky(ResourceName name, int weight, BiomeLevel... levels) {
         super(name, weight, levels);
     }
 
     @Override
-    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight){
+    public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight) {
         return GameContent.TILE_AIR.getDefState();
     }
 }

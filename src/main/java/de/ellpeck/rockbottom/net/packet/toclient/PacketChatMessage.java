@@ -8,33 +8,33 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketChatMessage implements IPacket{
+public class PacketChatMessage implements IPacket {
 
     private ChatComponent message;
 
-    public PacketChatMessage(ChatComponent message){
+    public PacketChatMessage(ChatComponent message) {
         this.message = message;
     }
 
-    public PacketChatMessage(){
+    public PacketChatMessage() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         DataSet set = new DataSet();
         this.message.save(set);
         NetUtil.writeSetToBuffer(set, buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         DataSet set = new DataSet();
         NetUtil.readSetFromBuffer(set, buf);
         this.message = ChatComponent.createFromSet(set);
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         game.getChatLog().displayMessage(this.message);
     }
 }

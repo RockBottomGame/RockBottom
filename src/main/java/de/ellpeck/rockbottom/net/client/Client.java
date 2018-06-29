@@ -16,12 +16,12 @@ import io.netty.handler.codec.compression.FastLzFrameDecoder;
 import io.netty.handler.codec.compression.FastLzFrameEncoder;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
-public class Client{
+public class Client {
 
     public final Channel channel;
     private final EventLoopGroup group;
 
-    public Client(String ip, int port){
+    public Client(String ip, int port) {
         this.group = Epoll.isAvailable() ?
                 new EpollEventLoopGroup(0, new DefaultThreadFactory("EpollClient", true)) :
                 new NioEventLoopGroup(0, new DefaultThreadFactory("NioClient", true));
@@ -29,9 +29,9 @@ public class Client{
         this.channel = new Bootstrap()
                 .group(this.group)
                 .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
-                .handler(new ChannelInitializer(){
+                .handler(new ChannelInitializer() {
                     @Override
-                    protected void initChannel(Channel channel){
+                    protected void initChannel(Channel channel) {
                         channel.config().setOption(ChannelOption.TCP_NODELAY, true);
 
                         channel.pipeline()
@@ -44,7 +44,7 @@ public class Client{
                 }).connect(ip, port).syncUninterruptibly().channel();
     }
 
-    public void shutdown(){
+    public void shutdown() {
         this.group.shutdownGracefully();
     }
 }

@@ -11,20 +11,20 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentSlot;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-public class CursorOpenHand implements ISpecialCursor{
+public class CursorOpenHand implements ISpecialCursor {
 
     @Override
-    public ResourceName getTexture(){
+    public ResourceName getTexture() {
         return ResourceName.intern("gui.cursor.open_hand");
     }
 
     @Override
-    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager){
+    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager) {
         Gui gui = guiManager.getGui();
-        if(gui != null){
-            for(GuiComponent component : gui.getComponents()){
-                if(component.isMouseOverPrioritized(game)){
-                    return component instanceof ComponentSlot && ((ComponentSlot)component).slot.get() != null;
+        if (gui != null) {
+            for (GuiComponent component : gui.getComponents()) {
+                if (component.isMouseOverPrioritized(game)) {
+                    return component instanceof ComponentSlot && ((ComponentSlot) component).slot.get() != null;
                 }
             }
         }
@@ -32,7 +32,7 @@ public class CursorOpenHand implements ISpecialCursor{
     }
 
     @Override
-    public int getPriority(){
+    public int getPriority() {
         return 1000;
     }
 }

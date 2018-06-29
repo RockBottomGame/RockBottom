@@ -4,49 +4,49 @@ import de.ellpeck.rockbottom.api.render.engine.IVAO;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-public class VertexArrayObject implements IVAO{
+public class VertexArrayObject implements IVAO {
 
     private static int boundVAO;
 
     private final int id;
 
-    public VertexArrayObject(){
+    public VertexArrayObject() {
         this.id = GL30.glGenVertexArrays();
     }
 
+    public static void unbindAll() {
+        GL30.glBindVertexArray(0);
+        boundVAO = -1;
+    }
+
     @Override
-    public void bind(){
-        if(boundVAO != this.id){
+    public void bind() {
+        if (boundVAO != this.id) {
             GL30.glBindVertexArray(this.id);
             boundVAO = this.id;
         }
     }
 
     @Override
-    public void draw(int amount){
+    public void draw(int amount) {
         this.bind();
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, amount);
     }
 
     @Override
-    public void unbind(){
-        if(boundVAO == this.id){
+    public void unbind() {
+        if (boundVAO == this.id) {
             unbindAll();
         }
     }
 
-    public static void unbindAll(){
-        GL30.glBindVertexArray(0);
-        boundVAO = -1;
-    }
-
     @Override
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         this.unbind();
         GL30.glDeleteVertexArrays(this.id);
     }

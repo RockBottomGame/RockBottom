@@ -16,34 +16,34 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class GuiKeybinds extends Gui{
+public class GuiKeybinds extends Gui {
 
     public int selectedKeybind = -1;
 
-    public GuiKeybinds(Gui parent){
+    public GuiKeybinds(Gui parent) {
         super(304, 150, parent);
     }
 
     @Override
-    public void init(IGameInstance game){
+    public void init(IGameInstance game) {
         super.init(game);
 
-        BoundBox box = new BoundBox(this.width/2-104, 0, this.width/2+98, this.height-26).add(this.getX(), this.getY());
-        ComponentMenu menu = new ComponentMenu(this, this.width/2-112, 0, this.height-26, 1, 7, box);
+        BoundBox box = new BoundBox(this.width / 2 - 104, 0, this.width / 2 + 98, this.height - 26).add(this.getX(), this.getY());
+        ComponentMenu menu = new ComponentMenu(this, this.width / 2 - 112, 0, this.height - 26, 1, 7, box);
         this.components.add(menu);
 
-        this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width / 2 - 40, this.height - 16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
         List<Keybind> binds = new ArrayList<>(RockBottomAPI.KEYBIND_REGISTRY.values());
-        binds.sort(Comparator.comparing(Keybind:: getName));
+        binds.sort(Comparator.comparing(Keybind::getName));
 
         int id = 0;
-        for(Keybind bind : binds){
+        for (Keybind bind : binds) {
             menu.add(new MenuComponent(202, 16)
-                    .add(0, 0, new ComponentText(this, 0, 0, 100, 16, 0.35F, true, game.getAssetManager().localize(bind.getName().addPrefix("key."))+": "))
+                    .add(0, 0, new ComponentText(this, 0, 0, 100, 16, 0.35F, true, game.getAssetManager().localize(bind.getName().addPrefix("key.")) + ": "))
                     .add(102, 0, new ComponentKeybind(this, id, 0, 0, bind)));
             id++;
         }
@@ -52,13 +52,13 @@ public class GuiKeybinds extends Gui{
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("keybinds");
     }
 
     @Override
-    public boolean onMouseAction(IGameInstance game, int button, float x, float y){
-        if(!super.onMouseAction(game, button, x, y)){
+    public boolean onMouseAction(IGameInstance game, int button, float x, float y) {
+        if (!super.onMouseAction(game, button, x, y)) {
             this.selectedKeybind = -1;
         }
         return true;

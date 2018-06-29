@@ -7,19 +7,19 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 
-public class TileCoal extends TileOreMaterial{
+public class TileCoal extends TileOreMaterial {
 
-    public TileCoal(){
+    public TileCoal() {
         super(ResourceName.intern("coal"));
     }
 
     @Override
-    public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop){
+    public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop) {
         super.onDestroyed(world, x, y, destroyer, layer, shouldDrop);
 
-        if(ConstructionRegistry.torch != null){
-            if(!world.isClient() && shouldDrop && destroyer instanceof AbstractEntityPlayer){
-                ((AbstractEntityPlayer)destroyer).getKnowledge().teachRecipe(ConstructionRegistry.torch, true);
+        if (ConstructionRegistry.torch != null) {
+            if (!world.isClient() && shouldDrop && destroyer instanceof AbstractEntityPlayer) {
+                ((AbstractEntityPlayer) destroyer).getKnowledge().teachRecipe(ConstructionRegistry.torch, true);
             }
         }
     }

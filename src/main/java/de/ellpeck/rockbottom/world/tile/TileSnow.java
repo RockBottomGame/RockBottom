@@ -14,38 +14,38 @@ import de.ellpeck.rockbottom.render.tile.TileSnowRenderer;
 
 import java.util.List;
 
-public class TileSnow extends TileFalling{
+public class TileSnow extends TileFalling {
 
     private final BoundBox boundBox = new BoundBox(0D, 0D, 1D, 0.75D);
 
-    public TileSnow(){
+    public TileSnow() {
         super(ResourceName.intern("snow"));
     }
 
     @Override
-    protected ITileRenderer createRenderer(ResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name) {
         return new TileSnowRenderer(name);
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return this.boundBox;
     }
 
     @Override
-    public boolean makesGrassSnowy(IWorld world, int x, int y, TileLayer layer){
+    public boolean makesGrassSnowy(IWorld world, int x, int y, TileLayer layer) {
         return true;
     }
 
     @Override
-    public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity){
-        if(layer == TileLayer.MAIN && entity instanceof AbstractEntityPlayer){
+    public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity) {
+        if (layer == TileLayer.MAIN && entity instanceof AbstractEntityPlayer) {
             entity.motionX *= 0.9D;
 
-            if(!world.isDedicatedServer() && Math.abs(entity.motionX) > 0.01D && world.getTotalTime()%15 == 0){
-                if(entityBox.intersects(new BoundBox(0D, 0D, 1D, 1D).add(x, y))){
-                    for(int i = Util.RANDOM.nextInt(5); i >= 0; i--){
-                        RockBottomAPI.getGame().getParticleManager().addSnowParticle(world, entity.getX()+Util.RANDOM.nextGaussian()*0.1D, y+0.9D+Util.RANDOM.nextFloat()*0.2D, -entity.motionX*Util.RANDOM.nextFloat()*0.2D, Util.RANDOM.nextFloat()*0.2D, 25);
+            if (!world.isDedicatedServer() && Math.abs(entity.motionX) > 0.01D && world.getTotalTime() % 15 == 0) {
+                if (entityBox.intersects(new BoundBox(0D, 0D, 1D, 1D).add(x, y))) {
+                    for (int i = Util.RANDOM.nextInt(5); i >= 0; i--) {
+                        RockBottomAPI.getGame().getParticleManager().addSnowParticle(world, entity.getX() + Util.RANDOM.nextGaussian() * 0.1D, y + 0.9D + Util.RANDOM.nextFloat() * 0.2D, -entity.motionX * Util.RANDOM.nextFloat() * 0.2D, Util.RANDOM.nextFloat() * 0.2D, 25);
                     }
                 }
             }

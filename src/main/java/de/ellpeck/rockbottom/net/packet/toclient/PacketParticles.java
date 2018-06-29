@@ -7,56 +7,56 @@ import de.ellpeck.rockbottom.world.World;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketParticles implements IPacket{
+public class PacketParticles implements IPacket {
 
     private int x;
     private int y;
     private int type;
     private int[] args;
 
-    public PacketParticles(int x, int y, int type, int... args){
+    public PacketParticles(int x, int y, int type, int... args) {
         this.x = x;
         this.y = y;
         this.type = type;
         this.args = args;
     }
 
-    public PacketParticles(){
+    public PacketParticles() {
 
     }
 
-    public static PacketParticles tile(World world, int x, int y, TileState state){
+    public static PacketParticles tile(World world, int x, int y, TileState state) {
         return new PacketParticles(x, y, 0, world.getIdForState(state));
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.type);
 
         buf.writeInt(this.args.length);
-        for(int arg : this.args){
+        for (int arg : this.args) {
             buf.writeInt(arg);
         }
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.type = buf.readInt();
 
         this.args = new int[buf.readInt()];
-        for(int i = 0; i < this.args.length; i++){
+        for (int i = 0; i < this.args.length; i++) {
             this.args[i] = buf.readInt();
         }
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
-        if(game.getWorld() != null){
-            if(this.type == 0){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
+        if (game.getWorld() != null) {
+            if (this.type == 0) {
                 TileState tile = game.getWorld().getStateForId(this.args[0]);
                 game.getParticleManager().addTileParticles(game.getWorld(), this.x, this.y, tile);
             }

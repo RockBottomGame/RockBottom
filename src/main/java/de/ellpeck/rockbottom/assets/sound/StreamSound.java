@@ -18,7 +18,7 @@ import java.nio.ShortBuffer;
 import java.util.Collections;
 import java.util.Set;
 
-public class StreamSound implements ISound{
+public class StreamSound implements ISound {
 
     public static final int COMPRESSED_BUFFER_SIZE = 4096;
     public static final int UNCOMPRESSED_BUFFER_SECONDS = 10;
@@ -29,15 +29,15 @@ public class StreamSound implements ISound{
     private final IntBuffer ids;
     private final IntBuffer processedBuffer;
     private final byte[] buffer = new byte[COMPRESSED_BUFFER_SIZE];
-    private InputStream stream;
-    private int limit;
-    private long vorbis;
     private final int firstUsed;
     private final ByteBuffer compressedBuffer;
     private final PointerBuffer uncompressedBuffer;
     private final ShortBuffer preAlBuffer;
     private final int channels;
     private final int sampleRate;
+    private InputStream stream;
+    private int limit;
+    private long vorbis;
     private int currentIndex = -1;
     private boolean loading = true;
     private boolean shouldPlay = false;
@@ -52,7 +52,7 @@ public class StreamSound implements ISound{
     private float refDist;
     private float maxDist;
 
-    public StreamSound(URL url) throws Exception{
+    public StreamSound(URL url) throws Exception {
         this.url = url;
         this.stream = url.openStream();
 
@@ -73,24 +73,22 @@ public class StreamSound implements ISound{
         IntBuffer error = stack.mallocInt(1);
         IntBuffer used = stack.mallocInt(1);
 
-        while(true){
+        while (true) {
             this.vorbis = STBVorbis.stb_vorbis_open_pushdata(buf, used, error, null);
-            if(this.vorbis == MemoryUtil.NULL){
+            if (this.vorbis == MemoryUtil.NULL) {
                 int err = error.get(0);
-                if(err == STBVorbis.VORBIS_need_more_data){
-                    buf = MemoryUtil.memRealloc(buf, buf.capacity()+NEED_MORE_DATA_INCREMENT);
+                if (err == STBVorbis.VORBIS_need_more_data) {
+                    buf = MemoryUtil.memRealloc(buf, buf.capacity() + NEED_MORE_DATA_INCREMENT);
                     buf.position(this.limit);
 
                     int read = this.stream.read(this.buffer, 0, buf.remaining());
                     buf.put(this.buffer, 0, read);
                     this.limit = buf.position();
                     buf.position(0);
+                } else {
+                    throw new IllegalStateException("Failed to create vorbis stream: " + err);
                 }
-                else{
-                    throw new IllegalStateException("Failed to create vorbis stream: "+err);
-                }
-            }
-            else{
+            } else {
                 break;
             }
         }
@@ -111,28 +109,27 @@ public class StreamSound implements ISound{
         this.sampleRate = info.sample_rate();
         STBVorbis.stb_vorbis_flush_pushdata(this.vorbis);
 
-        this.uncompressedBuffer = MemoryUtil.memAllocPointer(this.channels*this.sampleRate*UNCOMPRESSED_BUFFER_SECONDS);
-        this.preAlBuffer = MemoryUtil.memAllocShort(this.channels*this.sampleRate*UNCOMPRESSED_BUFFER_SECONDS);
+        this.uncompressedBuffer = MemoryUtil.memAllocPointer(this.channels * this.sampleRate * UNCOMPRESSED_BUFFER_SECONDS);
+        this.preAlBuffer = MemoryUtil.memAllocShort(this.channels * this.sampleRate * UNCOMPRESSED_BUFFER_SECONDS);
     }
 
-    public void update() throws Exception{
+    public void update() throws Exception {
         int index = this.currentIndex >= 0 ? this.currentIndex : SoundHandler.findFreeSourceIndex();
         int source = SoundHandler.getSource(index);
 
-        if(this.shouldPlay){
+        if (this.shouldPlay) {
             int processed = AL10.alGetSourcei(source, AL10.AL_BUFFERS_PROCESSED);
-            if(this.loading){
+            if (this.loading) {
                 processed = AL_BUFFERS;
             }
 
-            while(processed > 0){
+            while (processed > 0) {
                 processed--;
 
                 this.processedBuffer.clear();
-                if(this.loading){
+                if (this.loading) {
                     this.processedBuffer.put(this.ids.get(processed));
-                }
-                else{
+                } else {
                     AL10.alSourceUnqueueBuffers(source, this.processedBuffer);
                 }
 
@@ -140,19 +137,18 @@ public class StreamSound implements ISound{
                 this.buffer(buf);
                 AL10.alSourceQueueBuffers(source, buf);
 
-                if(!this.shouldPlay){
+                if (!this.shouldPlay) {
                     return;
                 }
             }
             this.loading = false;
 
-            if(!SoundHandler.isPlaying(index)){
-                if(SoundHandler.playStreamSoundAt(this, index, this.pitch, this.volume, this.x, this.y, this.z, this.rolloff, this.refDist, this.maxDist)){
+            if (!SoundHandler.isPlaying(index)) {
+                if (SoundHandler.playStreamSoundAt(this, index, this.pitch, this.volume, this.x, this.y, this.z, this.rolloff, this.refDist, this.maxDist)) {
                     this.currentIndex = index;
                 }
             }
-        }
-        else if(this.loop){
+        } else if (this.loop) {
             this.stream.close();
             this.stream = this.url.openStream();
             this.stream.skip(this.firstUsed);
@@ -162,11 +158,11 @@ public class StreamSound implements ISound{
         }
     }
 
-    private void buffer(int id) throws Exception{
+    private void buffer(int id) throws Exception {
         this.preAlBuffer.clear();
-        while(true){
+        while (true) {
             int remaining = this.compressedBuffer.remaining();
-            if(remaining < 1024){
+            if (remaining < 1024) {
                 this.compressedBuffer.get(this.buffer, 0, remaining);
                 this.compressedBuffer.clear();
                 this.compressedBuffer.put(this.buffer, 0, remaining);
@@ -179,13 +175,12 @@ public class StreamSound implements ISound{
             remaining = this.compressedBuffer.remaining();
 
             int read = this.stream.read(this.buffer, 0, remaining);
-            if(read != -1 && (read != 0 || remaining == 0)){
+            if (read != -1 && (read != 0 || remaining == 0)) {
                 this.compressedBuffer.put(this.buffer, 0, read);
                 this.limit = this.compressedBuffer.position();
                 this.compressedBuffer.position(pos);
-            }
-            else{
-                if(this.preAlBuffer.remaining() > 0){
+            } else {
+                if (this.preAlBuffer.remaining() > 0) {
                     this.preAlBuffer.limit(this.preAlBuffer.position());
                     this.preAlBuffer.position(0);
 
@@ -200,37 +195,36 @@ public class StreamSound implements ISound{
             IntBuffer samples = stack.mallocInt(1);
 
             int used = STBVorbis.stb_vorbis_decode_frame_pushdata(this.vorbis, this.compressedBuffer, null, this.uncompressedBuffer, samples);
-            this.compressedBuffer.position(this.compressedBuffer.position()+used);
+            this.compressedBuffer.position(this.compressedBuffer.position() + used);
 
             int sampleAmount = samples.get(0);
             stack.pop();
 
             int error = STBVorbis.stb_vorbis_get_error(this.vorbis);
-            if(error != STBVorbis.VORBIS__no_error && error != STBVorbis.VORBIS_need_more_data){
+            if (error != STBVorbis.VORBIS__no_error && error != STBVorbis.VORBIS_need_more_data) {
                 this.shouldPlay = false;
-                throw new IOException("Invalid stream, error: "+error);
+                throw new IOException("Invalid stream, error: " + error);
             }
 
-            if(sampleAmount > 0){
+            if (sampleAmount > 0) {
                 PointerBuffer channelBuf = this.uncompressedBuffer.getPointerBuffer(this.channels);
-                if(this.channels == 1){
+                if (this.channels == 1) {
                     FloatBuffer channel = channelBuf.getFloatBuffer(sampleAmount);
-                    for(int i = 0; i < sampleAmount; i++){
-                        this.preAlBuffer.put((short)(channel.get()*Short.MAX_VALUE));
+                    for (int i = 0; i < sampleAmount; i++) {
+                        this.preAlBuffer.put((short) (channel.get() * Short.MAX_VALUE));
                     }
-                }
-                else{
+                } else {
                     FloatBuffer channel1 = channelBuf.getFloatBuffer(sampleAmount);
                     FloatBuffer channel2 = channelBuf.getFloatBuffer(sampleAmount);
-                    for(int i = 0; i < sampleAmount; i++){
-                        this.preAlBuffer.put((short)(channel1.get()*Short.MAX_VALUE));
-                        this.preAlBuffer.put((short)(channel2.get()*Short.MAX_VALUE));
+                    for (int i = 0; i < sampleAmount; i++) {
+                        this.preAlBuffer.put((short) (channel1.get() * Short.MAX_VALUE));
+                        this.preAlBuffer.put((short) (channel2.get() * Short.MAX_VALUE));
                     }
                 }
 
                 this.uncompressedBuffer.clear();
 
-                if(this.preAlBuffer.remaining() < 2048*this.channels){
+                if (this.preAlBuffer.remaining() < 2048 * this.channels) {
                     this.preAlBuffer.limit(this.preAlBuffer.position());
                     this.preAlBuffer.position(0);
 
@@ -242,71 +236,71 @@ public class StreamSound implements ISound{
     }
 
     @Override
-    public void play(){
+    public void play() {
         this.play(1F, 1F);
     }
 
     @Override
-    public void play(float pitch, float volume){
+    public void play(float pitch, float volume) {
         this.play(pitch, volume, false);
     }
 
     @Override
-    public void play(float pitch, float volume, boolean loop){
+    public void play(float pitch, float volume, boolean loop) {
         this.playAt(pitch, volume, SoundHandler.playerX, SoundHandler.playerY, SoundHandler.playerZ, loop);
     }
 
     @Override
-    public void playAt(double x, double y, double z){
+    public void playAt(double x, double y, double z) {
         this.playAt(1F, 1F, x, y, z);
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z){
+    public void playAt(float pitch, float volume, double x, double y, double z) {
         this.playAt(pitch, volume, x, y, z, false);
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop) {
         this.playAt(pitch, volume, x, y, z, loop, SoundHandler.ROLLOFF, SoundHandler.REF_DIST, SoundHandler.MAX_DIST);
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance){
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance) {
         this.pitch = pitch;
         this.volume = volume;
-        this.x = (float)x;
-        this.y = (float)y;
-        this.z = (float)z;
+        this.x = (float) x;
+        this.y = (float) y;
+        this.z = (float) z;
         this.loop = loop;
         this.rolloff = rolloffFactor;
         this.refDist = refDistance;
         this.maxDist = maxDistance;
 
-        if(!this.isPlaying()){
+        if (!this.isPlaying()) {
             SoundHandler.addStreamingSound(this);
             this.shouldPlay = true;
         }
     }
 
     @Override
-    public boolean isIndexPlaying(int index){
+    public boolean isIndexPlaying(int index) {
         return this.isPlaying();
     }
 
     @Override
-    public boolean isPlaying(){
+    public boolean isPlaying() {
         return this.shouldPlay || (this.currentIndex >= 0 && SoundHandler.isPlaying(this.currentIndex));
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         this.stopIndex(this.currentIndex);
     }
 
     @Override
-    public void stopIndex(int index){
-        if(this.currentIndex >= 0 && index == this.currentIndex){
+    public void stopIndex(int index) {
+        if (this.currentIndex >= 0 && index == this.currentIndex) {
             SoundHandler.stopSoundEffect(index);
             SoundHandler.removeStreamingSound(this);
             this.currentIndex = -1;
@@ -314,12 +308,12 @@ public class StreamSound implements ISound{
     }
 
     @Override
-    public Set<Integer> getPlayingSourceIds(){
+    public Set<Integer> getPlayingSourceIds() {
         return this.currentIndex >= 0 ? Collections.singleton(this.currentIndex) : Collections.emptySet();
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         this.stop();
         AL10.alDeleteBuffers(this.ids);
 
@@ -331,10 +325,9 @@ public class StreamSound implements ISound{
 
         STBVorbis.stb_vorbis_close(this.vorbis);
 
-        try{
+        try {
             this.stream.close();
-        }
-        catch(Exception ignored){
+        } catch (Exception ignored) {
         }
     }
 }

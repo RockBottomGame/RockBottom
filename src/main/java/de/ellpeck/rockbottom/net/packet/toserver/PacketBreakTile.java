@@ -14,26 +14,26 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketBreakTile implements IPacket{
+public class PacketBreakTile implements IPacket {
 
     private UUID playerId;
     private TileLayer layer;
     private double x;
     private double y;
 
-    public PacketBreakTile(UUID playerId, TileLayer layer, double x, double y){
+    public PacketBreakTile(UUID playerId, TileLayer layer, double x, double y) {
         this.playerId = playerId;
         this.layer = layer;
         this.x = x;
         this.y = y;
     }
 
-    public PacketBreakTile(){
+    public PacketBreakTile() {
 
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeInt(this.layer.index());
@@ -42,7 +42,7 @@ public class PacketBreakTile implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.layer = TileLayer.getAllLayers().get(buf.readInt());
         this.x = buf.readDouble();
@@ -50,11 +50,11 @@ public class PacketBreakTile implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
-        if(world != null){
+        if (world != null) {
             AbstractEntityPlayer player = world.getPlayer(this.playerId);
-            if(player != null){
+            if (player != null) {
                 int x = Util.floor(this.x);
                 int y = Util.floor(this.y);
 
@@ -63,7 +63,7 @@ public class PacketBreakTile implements IPacket{
 
                 boolean isRightTool = InteractionManager.isToolEffective(player, instance, tile, this.layer, x, y);
 
-                if(InteractionManager.defaultTileBreakingCheck(world, x, y, this.layer, this.x, this.y, player) && tile.canBreak(world, x, y, this.layer, player, isRightTool)){
+                if (InteractionManager.defaultTileBreakingCheck(world, x, y, this.layer, this.x, this.y, player) && tile.canBreak(world, x, y, this.layer, player, isRightTool)) {
                     InteractionManager.breakTile(tile, player, x, y, this.layer, isRightTool, instance);
                 }
             }

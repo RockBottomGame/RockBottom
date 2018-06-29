@@ -26,23 +26,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RecipeLoader implements IContentLoader<IRecipe>{
+public class RecipeLoader implements IContentLoader<IRecipe> {
 
     private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public ResourceName getContentIdentifier(){
+    public ResourceName getContentIdentifier() {
         return IRecipe.ID;
     }
 
     @Override
-    public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
-        if(!this.disabled.contains(resourceName)){
-            if(IRecipe.forName(resourceName) != null){
-                RockBottomAPI.logger().info("Recipe with name "+resourceName+" already exists, not adding recipe for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
-            }
-            else{
-                String resPath = path+element.getAsString();
+    public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
+        if (!this.disabled.contains(resourceName)) {
+            if (IRecipe.forName(resourceName) != null) {
+                RockBottomAPI.logger().info("Recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
+            } else {
+                String resPath = path + element.getAsString();
 
                 InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
                 JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
@@ -55,7 +54,7 @@ public class RecipeLoader implements IContentLoader<IRecipe>{
                 List<ItemInstance> outputList = new ArrayList<>();
 
                 JsonArray outputs = object.get("outputs").getAsJsonArray();
-                for(JsonElement output : outputs){
+                for (JsonElement output : outputs) {
                     JsonObject out = output.getAsJsonObject();
 
                     Item item = RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
@@ -66,41 +65,37 @@ public class RecipeLoader implements IContentLoader<IRecipe>{
                 }
 
                 JsonArray inputs = object.get("inputs").getAsJsonArray();
-                for(JsonElement input : inputs){
+                for (JsonElement input : inputs) {
                     JsonObject in = input.getAsJsonObject();
 
                     String name = in.get("name").getAsString();
                     int amount = in.has("amount") ? in.get("amount").getAsInt() : 1;
 
-                    if(Util.isResourceName(name)){
+                    if (Util.isResourceName(name)) {
                         int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
                         inputList.add(new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(name)), amount, meta));
-                    }
-                    else{
+                    } else {
                         inputList.add(new ResUseInfo(name, amount));
                     }
                 }
-                if("manual".equals(type)){
+                if ("manual".equals(type)) {
                     new BasicRecipe(resourceName, inputList, outputList).registerManual();
-                }
-                else if("manual_knowledge".equals(type)){
+                } else if ("manual_knowledge".equals(type)) {
                     new KnowledgeBasedRecipe(resourceName, inputList, outputList).registerManual();
-                }
-                else{
-                    throw new IllegalArgumentException("Invalid recipe type "+type+" for recipe "+resourceName);
+                } else {
+                    throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }
 
-                RockBottomAPI.logger().config("Loaded recipe "+resourceName+" for mod "+loadingMod.getDisplayName()+" with type "+type+", inputs "+inputList+" and outputs "+outputList+" with content pack "+pack.getName());
+                RockBottomAPI.logger().config("Loaded recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with type " + type + ", inputs " + inputList + " and outputs " + outputList + " with content pack " + pack.getName());
             }
-        }
-        else{
-            RockBottomAPI.logger().info("Recipe "+resourceName+" will not be loaded for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName()+" because it was disabled by another content pack!");
+        } else {
+            RockBottomAPI.logger().info("Recipe " + resourceName + " will not be loaded for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName() + " because it was disabled by another content pack!");
         }
     }
 
 
     @Override
-    public void disableContent(IGameInstance game, ResourceName resourceName){
+    public void disableContent(IGameInstance game, ResourceName resourceName) {
         this.disabled.add(resourceName);
     }
 }

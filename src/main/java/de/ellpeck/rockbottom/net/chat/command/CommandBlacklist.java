@@ -16,69 +16,62 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class CommandBlacklist extends Command{
+public class CommandBlacklist extends Command {
 
-    public CommandBlacklist(){
+    public CommandBlacklist() {
         super(ResourceName.intern("blacklist"), "Modifies blacklisted players. Params: <'add'/'remove'> <uuid> [reason]", 8);
     }
 
     @Override
-    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
-        if(args.length > 0){
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
+        if (args.length > 0) {
             INetHandler net = RockBottomAPI.getNet();
 
-            if("add".equals(args[0])){
-                if(args.length > 1){
-                        UUID id = chat.getPlayerIdFromString(args[1]);
-if(id != null){
+            if ("add".equals(args[0])) {
+                if (args.length > 1) {
+                    UUID id = chat.getPlayerIdFromString(args[1]);
+                    if (id != null) {
                         StringBuilder reason = new StringBuilder();
-                        if(args.length > 2){
-                            for(int i = 2; i < args.length; i++){
+                        if (args.length > 2) {
+                            for (int i = 2; i < args.length; i++) {
                                 reason.append(args[i]).append(' ');
                             }
                         }
 
                         net.blacklist(id, reason.toString());
                         net.saveServerSettings();
-                        return new ChatComponentText(FormattingCode.GREEN+"Added player "+id+" to the blacklist!");
+                        return new ChatComponentText(FormattingCode.GREEN + "Added player " + id + " to the blacklist!");
+                    } else {
+                        return new ChatComponentText(FormattingCode.RED + "Couldn't parse player id!");
                     }
-                    else{
-                        return new ChatComponentText(FormattingCode.RED+"Couldn't parse player id!");
-                    }
+                } else {
+                    return new ChatComponentText(FormattingCode.RED + "Specify the player to add!");
                 }
-                else{
-                    return new ChatComponentText(FormattingCode.RED+"Specify the player to add!");
-                }
-            }
-            else if("remove".equals(args[0])){
-                if(args.length > 1){
+            } else if ("remove".equals(args[0])) {
+                if (args.length > 1) {
                     UUID id = chat.getPlayerIdFromString(args[1]);
-                    if(id != null){
+                    if (id != null) {
                         net.removeBlacklist(id);
                         net.saveServerSettings();
-                        return new ChatComponentText(FormattingCode.GREEN+"Removed player "+id+" from the blacklist!");
+                        return new ChatComponentText(FormattingCode.GREEN + "Removed player " + id + " from the blacklist!");
+                    } else {
+                        return new ChatComponentText(FormattingCode.RED + "Couldn't parse player id!");
                     }
-                    else{
-                        return new ChatComponentText(FormattingCode.RED+"Couldn't parse player id!");
-                    }
-                }
-                else{
-                    return new ChatComponentText(FormattingCode.RED+"Specify the player to remove!");
+                } else {
+                    return new ChatComponentText(FormattingCode.RED + "Specify the player to remove!");
                 }
             }
         }
-        return new ChatComponentText(FormattingCode.RED+"Specify your action!");
+        return new ChatComponentText(FormattingCode.RED + "Specify your action!");
     }
 
     @Override
-    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
-        if(argNumber == 0){
+    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat) {
+        if (argNumber == 0) {
             return Arrays.asList("add", "remove");
-        }
-        else if(argNumber == 1){
+        } else if (argNumber == 1) {
             return chat.getPlayerSuggestions();
-        }
-        else{
+        } else {
             return Collections.emptyList();
         }
     }

@@ -30,21 +30,21 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketEffect implements IPacket{
+public class PacketEffect implements IPacket {
 
     private ActiveEffect effect;
     private boolean remove;
 
-    public PacketEffect(ActiveEffect effect, boolean remove){
+    public PacketEffect(ActiveEffect effect, boolean remove) {
         this.effect = effect;
         this.remove = remove;
     }
 
-    public PacketEffect(){
+    public PacketEffect() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         DataSet set = new DataSet();
         this.effect.save(set);
         NetUtil.writeSetToBuffer(set, buf);
@@ -52,7 +52,7 @@ public class PacketEffect implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         DataSet set = new DataSet();
         NetUtil.readSetFromBuffer(set, buf);
         this.effect = ActiveEffect.load(set);
@@ -60,14 +60,13 @@ public class PacketEffect implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
-        if(this.effect != null){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
+        if (this.effect != null) {
             AbstractEntityPlayer player = game.getPlayer();
-            if(player != null){
-                if(this.remove){
+            if (player != null) {
+                if (this.remove) {
                     player.removeEffect(this.effect.getEffect());
-                }
-                else{
+                } else {
                     player.addEffect(this.effect);
                 }
             }

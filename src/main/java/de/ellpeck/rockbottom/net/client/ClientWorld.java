@@ -19,14 +19,14 @@ import io.netty.channel.Channel;
 import java.util.List;
 import java.util.UUID;
 
-public class ClientWorld extends World{
+public class ClientWorld extends World {
 
-    public ClientWorld(WorldInfo info, DynamicRegistryInfo regInfo){
+    public ClientWorld(WorldInfo info, DynamicRegistryInfo regInfo) {
         super(info, regInfo, null);
     }
 
     @Override
-    protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue){
+    protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue) {
         Chunk chunk = new ClientChunk(this, gridX, gridY, isPersistent);
 
         this.loadedChunks.add(chunk);
@@ -36,68 +36,67 @@ public class ClientWorld extends World{
     }
 
     @Override
-    public void unloadChunk(IChunk chunk){
+    public void unloadChunk(IChunk chunk) {
         this.loadedChunks.remove(chunk);
         this.chunkLookup.remove(chunk.getGridX(), chunk.getGridY());
     }
 
     @Override
-    public void update(AbstractGame game){
-        if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
+    public void update(AbstractGame game) {
+        if (RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED) {
             this.updateChunks(game);
 
             this.info.totalTimeInWorld++;
 
             this.info.currentWorldTime++;
-            if(this.info.currentWorldTime >= Constants.TIME_PER_DAY){
+            if (this.info.currentWorldTime >= Constants.TIME_PER_DAY) {
                 this.info.currentWorldTime = 0;
             }
         }
     }
 
     @Override
-    public void save(){
+    public void save() {
         throw new UnsupportedOperationException("Cannot save client world");
     }
 
     @Override
-    protected boolean saveChunk(IChunk chunk, boolean enqueue){
+    protected boolean saveChunk(IChunk chunk, boolean enqueue) {
         throw new UnsupportedOperationException("Cannot save chunk in client world");
     }
 
     @Override
-    public EntityPlayer getPlayer(UUID id){
+    public EntityPlayer getPlayer(UUID id) {
         throw new UnsupportedOperationException("Cannot get player in client world");
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(String name){
+    public AbstractEntityPlayer getPlayer(String name) {
         throw new UnsupportedOperationException("Cannot get player in client world");
     }
 
     @Override
-    public List<AbstractEntityPlayer> getAllPlayers(){
+    public List<AbstractEntityPlayer> getAllPlayers() {
         throw new UnsupportedOperationException("Cannot get all players in client world");
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast){
-        if(channel != null){
+    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
+        if (channel != null) {
             throw new UnsupportedOperationException("Cannot create a connected player in a client world");
-        }
-        else{
+        } else {
             return new EntityPlayer(this, id, design);
         }
     }
 
     @Override
-    public void addEntity(Entity entity){
+    public void addEntity(Entity entity) {
         IChunk chunk = this.getChunk(entity.getX(), entity.getY());
         chunk.addEntity(entity);
     }
 
     @Override
-    public void removeEntity(Entity entity){
+    public void removeEntity(Entity entity) {
         IChunk chunk = this.getChunk(entity.getX(), entity.getY());
         chunk.removeEntity(entity);
 

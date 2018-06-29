@@ -8,26 +8,26 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.SlimeEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.ai.TaskSlimeJump;
 
-public class EntitySlime extends AbstractEntitySlime{
+public class EntitySlime extends AbstractEntitySlime {
 
     private static final int VARIATION_COUNT = 8;
     private final IEntityRenderer renderer = new SlimeEntityRenderer();
-    private int variation = Util.RANDOM.nextInt(VARIATION_COUNT);
     public TaskSlimeJump jumpTask = new TaskSlimeJump(0);
+    private int variation = Util.RANDOM.nextInt(VARIATION_COUNT);
 
-    public EntitySlime(IWorld world){
+    public EntitySlime(IWorld world) {
         super(world);
         this.addAiTask(this.jumpTask);
     }
 
     @Override
-    public IEntityRenderer getRenderer(){
+    public IEntityRenderer getRenderer() {
         return this.renderer;
     }
 
     @Override
-    public void applyMotion(){
-        if(!this.isClimbing){
+    public void applyMotion() {
+        if (!this.isClimbing) {
             this.motionY -= 0.025;
         }
 
@@ -36,54 +36,54 @@ public class EntitySlime extends AbstractEntitySlime{
     }
 
     @Override
-    public int getInitialMaxHealth(){
+    public int getInitialMaxHealth() {
         return 20;
     }
 
     @Override
-    public int getRegenRate(){
+    public int getRegenRate() {
         return 50;
     }
 
     @Override
-    public int getVariation(){
+    public int getVariation() {
         return this.variation;
     }
 
     @Override
-    public int getRenderPriority(){
+    public int getRenderPriority() {
         return 10;
     }
 
     @Override
-    protected int getJumpTimeout(){
+    protected int getJumpTimeout() {
         return 40;
     }
 
     @Override
-    public void save(DataSet set){
+    public void save(DataSet set) {
         super.save(set);
         set.addInt("variation", this.variation);
     }
 
     @Override
-    public void load(DataSet set){
+    public void load(DataSet set) {
         super.load(set);
         this.variation = set.getInt("variation");
     }
 
     @Override
-    public int getSyncFrequency(){
+    public int getSyncFrequency() {
         return 15;
     }
 
     @Override
-    public float getWidth(){
+    public float getWidth() {
         return 0.65F;
     }
 
     @Override
-    public float getHeight(){
+    public float getHeight() {
         return 0.65F;
     }
 }

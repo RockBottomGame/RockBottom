@@ -9,29 +9,29 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class TileOreMaterial extends TileBasic{
+public class TileOreMaterial extends TileBasic {
 
-    public TileOreMaterial(ResourceName name){
+    public TileOreMaterial(ResourceName name) {
         super(name);
     }
 
     @Override
-    protected ItemTile createItemTile(){
-        return new ItemTile(this.getName()){
+    protected ItemTile createItemTile() {
+        return new ItemTile(this.getName()) {
             @Override
-            protected IItemRenderer createRenderer(ResourceName name){
+            protected IItemRenderer createRenderer(ResourceName name) {
                 return new DefaultItemRenderer(name);
             }
         };
     }
 
     @Override
-    public boolean canPlaceInLayer(TileLayer layer){
+    public boolean canPlaceInLayer(TileLayer layer) {
         return false;
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
         return false;
     }
 }

@@ -26,9 +26,9 @@ import de.ellpeck.rockbottom.net.packet.toserver.*;
 import java.io.*;
 import java.util.logging.Level;
 
-public class DataManager implements IDataManager{
+public class DataManager implements IDataManager {
 
-    static{
+    static {
         RockBottomAPI.PART_REGISTRY.register(0, PartInt.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(1, PartFloat.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(2, PartDouble.FACTORY);
@@ -105,7 +105,7 @@ public class DataManager implements IDataManager{
     private final File contentPackSettingsFile;
     private final File playerDesignFile;
 
-    public DataManager(){
+    public DataManager() {
         this.gameDirectory = Main.gameDir;
         this.modsDirectory = new File(this.gameDirectory, "mods");
         this.contentPacksDirectory = new File(this.gameDirectory, "contentpacks");
@@ -125,142 +125,137 @@ public class DataManager implements IDataManager{
     }
 
     @Override
-    public File getGameDir(){
+    public File getGameDir() {
         return this.gameDirectory;
     }
 
     @Override
-    public File getModsDir(){
+    public File getModsDir() {
         return this.modsDirectory;
     }
 
     @Override
-    public File getContentPacksDir(){
+    public File getContentPacksDir() {
         return this.contentPacksDirectory;
     }
 
     @Override
-    public File getWorldsDir(){
+    public File getWorldsDir() {
         return this.saveDirectory;
     }
 
     @Override
-    public File getScreenshotDir(){
+    public File getScreenshotDir() {
         return this.screenshotDirectory;
     }
 
     @Override
-    public File getSettingsFile(){
+    public File getSettingsFile() {
         return this.settingsFile;
     }
 
     @Override
-    public File getServerSettingsFile(){
+    public File getServerSettingsFile() {
         return this.serverSettingsFile;
     }
 
     @Override
-    public File getCommandPermsFile(){
+    public File getCommandPermsFile() {
         return this.commandPermissionFile;
     }
 
     @Override
-    public File getWhitelistFile(){
+    public File getWhitelistFile() {
         return this.whitelistFile;
     }
 
     @Override
-    public File getBlacklistFile(){
+    public File getBlacklistFile() {
         return this.blacklistFile;
     }
 
     @Override
-    public File getModSettingsFile(){
+    public File getModSettingsFile() {
         return this.modSettingsFile;
     }
 
     @Override
-    public File getContentPackSettingsFile(){
+    public File getContentPackSettingsFile() {
         return this.contentPackSettingsFile;
     }
 
     @Override
-    public File getPlayerDesignFile(){
+    public File getPlayerDesignFile() {
         return this.playerDesignFile;
     }
 
     @Override
-    public File getModConfigFolder(){
+    public File getModConfigFolder() {
         return this.modConfigDirectory;
     }
 
     @Override
-    public File getSettingsFolder(){
+    public File getSettingsFolder() {
         return this.settingsDirectory;
     }
 
     @Override
-    public void loadSettings(IJsonSettings settings){
+    public void loadSettings(IJsonSettings settings) {
         JsonObject object = null;
         boolean loaded = false;
 
         File file = settings.getSettingsFile(this);
-        if(file.exists()){
-            try{
+        if (file.exists()) {
+            try {
                 InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8);
                 object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
                 reader.close();
 
                 loaded = true;
-            }
-            catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't load "+settings.getName(), e);
+            } catch (Exception e) {
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't load " + settings.getName(), e);
             }
         }
 
-        try{
+        try {
             settings.load(object == null ? new JsonObject() : object);
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't parse "+settings.getName(), e);
+        } catch (Exception e) {
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't parse " + settings.getName(), e);
         }
 
-        if(!loaded){
-            RockBottomAPI.logger().info("Creating "+settings.getName()+" from default");
+        if (!loaded) {
+            RockBottomAPI.logger().info("Creating " + settings.getName() + " from default");
             settings.save();
-        }
-        else{
-            RockBottomAPI.logger().info("Loaded "+settings.getName());
+        } else {
+            RockBottomAPI.logger().info("Loaded " + settings.getName());
         }
     }
 
     @Override
-    public void saveSettings(IJsonSettings settings){
+    public void saveSettings(IJsonSettings settings) {
         JsonObject object = new JsonObject();
 
-        try{
+        try {
             settings.save(object);
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't jsonify "+settings.getName(), e);
+        } catch (Exception e) {
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't jsonify " + settings.getName(), e);
         }
 
-        try{
+        try {
             File file = settings.getSettingsFile(this);
 
-            if(!file.exists()){
+            if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
 
-                RockBottomAPI.logger().info("Creating file for "+settings.getName()+" at "+file);
+                RockBottomAPI.logger().info("Creating file for " + settings.getName() + " at " + file);
             }
 
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8);
             Util.GSON.toJson(object, writer);
             writer.close();
-        }
-        catch(Exception e){
-            RockBottomAPI.logger().log(Level.WARNING, "Couldn't save "+settings.getName(), e);
+        } catch (Exception e) {
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't save " + settings.getName(), e);
         }
     }
 }

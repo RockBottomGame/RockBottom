@@ -6,11 +6,11 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
-public class ContainerChest extends ItemContainer{
+public class ContainerChest extends ItemContainer {
 
     private final TileEntityChest tile;
 
-    public ContainerChest(AbstractEntityPlayer player, TileEntityChest tile){
+    public ContainerChest(AbstractEntityPlayer player, TileEntityChest tile) {
         super(player);
         this.tile = tile;
 
@@ -21,21 +21,21 @@ public class ContainerChest extends ItemContainer{
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("chest");
     }
 
     @Override
-    public void onClosed(){
-        if(!this.tile.world.isClient()){
-            this.tile.setOpenCount(this.tile.getOpenCount()-1);
+    public void onClosed() {
+        if (!this.tile.world.isClient()) {
+            this.tile.setOpenCount(this.tile.getOpenCount() - 1);
         }
     }
 
     @Override
-    public void onOpened(){
-        if(!this.tile.world.isClient()){
-            this.tile.setOpenCount(this.tile.getOpenCount()+1);
+    public void onOpened() {
+        if (!this.tile.world.isClient()) {
+            this.tile.setOpenCount(this.tile.getOpenCount() + 1);
         }
     }
 }

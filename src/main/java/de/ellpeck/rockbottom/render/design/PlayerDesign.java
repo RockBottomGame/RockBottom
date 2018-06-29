@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 
-public class PlayerDesign implements IPlayerDesign{
+public class PlayerDesign implements IPlayerDesign {
 
     private static final String[] DEFAULT_NAMES = new String[]{"Jake", "Craig", "Mariana", "Louise", "Rosie", "Flo", "Luke", "Abbie", "James", "Chris", "Kieran", "Fatima", "Adam", "Giles", "Megan", "Tim", "Calypso", "Hayley", "Aimee", "Megan", "Eleanor"};
 
@@ -62,11 +62,11 @@ public class PlayerDesign implements IPlayerDesign{
     @SerializedName("beard_color")
     private int beardColor;
 
-    public static String getRandomName(){
+    public static String getRandomName() {
         return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
     }
 
-    public static void randomizeDesign(IPlayerDesign design){
+    public static void randomizeDesign(IPlayerDesign design) {
         design.setName(getRandomName());
         design.setFavoriteColor(Colors.random(Util.RANDOM));
         design.setFemale(Util.RANDOM.nextBoolean());
@@ -101,212 +101,212 @@ public class PlayerDesign implements IPlayerDesign{
     }
 
     @Override
-    public int getFavoriteColor(){
+    public int getFavoriteColor() {
         return this.color;
     }
 
     @Override
-    public void setFavoriteColor(int color){
+    public void setFavoriteColor(int color) {
         this.color = color;
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
     @Override
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public int getBase(){
+    public int getBase() {
         return this.base;
     }
 
     @Override
-    public int getEyeColor(){
-        return this.eyeColor;
-    }
-
-    @Override
-    public int getShirt(){
-        return this.shirt;
-    }
-
-    @Override
-    public int getShirtColor(){
-        return this.shirtColor;
-    }
-
-    @Override
-    public int getSleeves(){
-        return this.sleeves;
-    }
-
-    @Override
-    public int getSleevesColor(){
-        return this.sleevesColor;
-    }
-
-    @Override
-    public int getPants(){
-        return this.pants;
-    }
-
-    @Override
-    public int getPantsColor(){
-        return this.pantsColor;
-    }
-
-    @Override
-    public int getFootwear(){
-        return this.footwear;
-    }
-
-    @Override
-    public int getFootwearColor(){
-        return this.footwearColor;
-    }
-
-    @Override
-    public int getHair(){
-        return this.hair;
-    }
-
-    @Override
-    public int getHairColor(){
-        return this.hairColor;
-    }
-
-    @Override
-    public int getAccessory(){
-        return this.accessory;
-    }
-
-    @Override
-    public int getEyebrows(){
-        return this.eyebrows;
-    }
-
-    @Override
-    public int getMouth(){
-        return this.mouth;
-    }
-
-    @Override
-    public int getBeard(){
-        return this.beard;
-    }
-
-    @Override
-    public int getBeardColor(){
-        return this.beardColor;
-    }
-
-    @Override
-    public int getEyebrowsColor(){
-        return this.eyebrowsColor;
-    }
-
-    @Override
-    public boolean isFemale(){
-        return this.female;
-    }
-
-    @Override
-    public void setBase(int base){
+    public void setBase(int base) {
         this.base = base;
     }
 
     @Override
-    public void setEyeColor(int eyeColor){
+    public int getEyeColor() {
+        return this.eyeColor;
+    }
+
+    @Override
+    public void setEyeColor(int eyeColor) {
         this.eyeColor = eyeColor;
     }
 
     @Override
-    public void setShirt(int shirt){
+    public int getShirt() {
+        return this.shirt;
+    }
+
+    @Override
+    public void setShirt(int shirt) {
         this.shirt = shirt;
     }
 
     @Override
-    public void setShirtColor(int shirtColor){
+    public int getShirtColor() {
+        return this.shirtColor;
+    }
+
+    @Override
+    public void setShirtColor(int shirtColor) {
         this.shirtColor = shirtColor;
     }
 
     @Override
-    public void setSleeves(int sleeves){
+    public int getSleeves() {
+        return this.sleeves;
+    }
+
+    @Override
+    public void setSleeves(int sleeves) {
         this.sleeves = sleeves;
     }
 
     @Override
-    public void setSleevesColor(int sleevesColor){
+    public int getSleevesColor() {
+        return this.sleevesColor;
+    }
+
+    @Override
+    public void setSleevesColor(int sleevesColor) {
         this.sleevesColor = sleevesColor;
     }
 
     @Override
-    public void setPants(int pants){
+    public int getPants() {
+        return this.pants;
+    }
+
+    @Override
+    public void setPants(int pants) {
         this.pants = pants;
     }
 
     @Override
-    public void setPantsColor(int pantsColor){
+    public int getPantsColor() {
+        return this.pantsColor;
+    }
+
+    @Override
+    public void setPantsColor(int pantsColor) {
         this.pantsColor = pantsColor;
     }
 
     @Override
-    public void setFootwear(int footwear){
+    public int getFootwear() {
+        return this.footwear;
+    }
+
+    @Override
+    public void setFootwear(int footwear) {
         this.footwear = footwear;
     }
 
     @Override
-    public void setFootwearColor(int footwearColor){
+    public int getFootwearColor() {
+        return this.footwearColor;
+    }
+
+    @Override
+    public void setFootwearColor(int footwearColor) {
         this.footwearColor = footwearColor;
     }
 
     @Override
-    public void setHair(int hair){
+    public int getHair() {
+        return this.hair;
+    }
+
+    @Override
+    public void setHair(int hair) {
         this.hair = hair;
     }
 
     @Override
-    public void setHairColor(int hairColor){
+    public int getHairColor() {
+        return this.hairColor;
+    }
+
+    @Override
+    public void setHairColor(int hairColor) {
         this.hairColor = hairColor;
     }
 
     @Override
-    public void setAccessory(int accessory){
+    public int getAccessory() {
+        return this.accessory;
+    }
+
+    @Override
+    public void setAccessory(int accessory) {
         this.accessory = accessory;
     }
 
     @Override
-    public void setEyebrows(int eyebrows){
+    public int getEyebrows() {
+        return this.eyebrows;
+    }
+
+    @Override
+    public void setEyebrows(int eyebrows) {
         this.eyebrows = eyebrows;
     }
 
     @Override
-    public void setMouth(int mouth){
+    public int getMouth() {
+        return this.mouth;
+    }
+
+    @Override
+    public void setMouth(int mouth) {
         this.mouth = mouth;
     }
 
     @Override
-    public void setEyebrowsColor(int eyebrowsColor){
-        this.eyebrowsColor = eyebrowsColor;
+    public int getBeard() {
+        return this.beard;
     }
 
     @Override
-    public void setBeard(int beard){
+    public void setBeard(int beard) {
         this.beard = beard;
     }
 
     @Override
-    public void setBeardColor(int beardColor){
+    public int getBeardColor() {
+        return this.beardColor;
+    }
+
+    @Override
+    public void setBeardColor(int beardColor) {
         this.beardColor = beardColor;
     }
 
     @Override
-    public void setFemale(boolean female){
+    public int getEyebrowsColor() {
+        return this.eyebrowsColor;
+    }
+
+    @Override
+    public void setEyebrowsColor(int eyebrowsColor) {
+        this.eyebrowsColor = eyebrowsColor;
+    }
+
+    @Override
+    public boolean isFemale() {
+        return this.female;
+    }
+
+    @Override
+    public void setFemale(boolean female) {
         this.female = female;
     }
 }

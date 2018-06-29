@@ -10,29 +10,29 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.List;
 
-public class TileWater extends TileLiquid{
+public class TileWater extends TileLiquid {
 
-    public TileWater(){
+    public TileWater() {
         super(ResourceName.intern("water"));
     }
 
     @Override
-    public int getLevels(){
+    public int getLevels() {
         return 12;
     }
 
     @Override
-    public boolean doesFlow(){
+    public boolean doesFlow() {
         return true;
     }
 
     @Override
-    public int getFlowSpeed(){
+    public int getFlowSpeed() {
         return 5;
     }
 
     @Override
-    public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity){
+    public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity) {
         entity.motionX *= 0.95;
     }
 }

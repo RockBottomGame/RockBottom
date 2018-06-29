@@ -8,9 +8,9 @@ import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySimpleFurnace;
 
-public class ContainerSimpleFurnace extends ItemContainer{
+public class ContainerSimpleFurnace extends ItemContainer {
 
-    public ContainerSimpleFurnace(AbstractEntityPlayer player, TileEntitySimpleFurnace tile){
+    public ContainerSimpleFurnace(AbstractEntityPlayer player, TileEntitySimpleFurnace tile) {
         super(player);
 
         this.addPlayerInventory(player, 0, 60);
@@ -22,7 +22,7 @@ public class ContainerSimpleFurnace extends ItemContainer{
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("simple_furnace");
     }
 

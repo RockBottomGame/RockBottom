@@ -49,9 +49,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 
-public class AssetManager implements IAssetManager, IDisposable{
+public class AssetManager implements IAssetManager, IDisposable {
 
-    static{
+    static {
         new AnimationLoader().register();
         new FontLoader().register();
         new LocaleLoader().register();
@@ -73,6 +73,7 @@ public class AssetManager implements IAssetManager, IDisposable{
     private final Table<ResourceName, ResourceName, IAsset> assets = HashBasedTable.create();
     private final List<ISpecialCursor> sortedCursors = new ArrayList<>();
     private final Map<ISpecialCursor, Long> cursors = new HashMap<>();
+    private final RockBottom game;
     private ISound missingSound;
     private ITexture missingTexture;
     private Locale missingLocale;
@@ -81,58 +82,55 @@ public class AssetManager implements IAssetManager, IDisposable{
     private Locale defaultLocale;
     private IFont currentFont;
     private boolean isLocked = true;
-    private final RockBottom game;
     private float cursorScale;
 
-    public AssetManager(RockBottom game){
+    public AssetManager(RockBottom game) {
         this.game = game;
     }
 
     @Override
-    public void load(){
+    public void load() {
         this.dispose();
-        if(!this.assets.isEmpty()){
+        if (!this.assets.isEmpty()) {
             this.assets.clear();
         }
 
         this.isLocked = false;
         RockBottomAPI.getModLoader().preInitAssets();
 
-        try{
+        try {
             RockBottomAPI.logger().info("Loading resources...");
 
             List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
             Set<IAssetLoader> loaders = RockBottomAPI.ASSET_LOADER_REGISTRY.values();
 
             List<LoaderCallback> callbacks = new ArrayList<>();
-            for(IAssetLoader loader : loaders){
+            for (IAssetLoader loader : loaders) {
                 callbacks.add(new AssetCallback(loader));
             }
-            for(IMod mod : RockBottomAPI.getModLoader().getActiveMods()){
+            for (IMod mod : RockBottomAPI.getModLoader().getActiveMods()) {
                 ContentManager.loadContent(mod, mod.getResourceLocation(), "assets.json", callbacks, packs);
             }
 
-            for(IAssetLoader loader : loaders){
+            for (IAssetLoader loader : loaders) {
                 loader.finalize(this);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             RockBottomAPI.logger().log(Level.SEVERE, "Exception loading resources! ", e);
         }
 
         ImageBuffer buffer = new ImageBuffer(2, 2);
-        for(int x = 0; x < 2; x++){
-            for(int y = 0; y < 2; y++){
+        for (int x = 0; x < 2; x++) {
+            for (int y = 0; y < 2; y++) {
                 buffer.setRGBA(x, y, 0, x == y ? 255 : 0, 0, 255);
             }
         }
         this.stitcher.loadTexture("missing", buffer, (stitchX, stitchY, stitchedTexture) -> this.missingTexture = stitchedTexture);
 
-        try{
+        try {
             this.stitcher.doStitch();
             this.stitcher.reset();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             RockBottomAPI.logger().log(Level.SEVERE, "Exception stitching textures", e);
         }
 
@@ -143,10 +141,10 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.missingLocale = new Locale("fallback", new HashMap<>());
         this.missingAnimation = new Animation(this.missingTexture, 2, 2, new ArrayList<>(Collections.singletonList(new AnimationRow(new float[]{1F}))));
 
-        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ITexture.ID).size()+" texture resources!");
-        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(ISound.ID).size()+" sound resources!");
-        RockBottomAPI.logger().info("Loaded "+this.getAllOfType(IAnimation.ID).size()+" animations!");
-        RockBottomAPI.logger().info("Possible language settings: "+this.getAllOfType(Locale.ID).keySet());
+        RockBottomAPI.logger().info("Loaded " + this.getAllOfType(ITexture.ID).size() + " texture resources!");
+        RockBottomAPI.logger().info("Loaded " + this.getAllOfType(ISound.ID).size() + " sound resources!");
+        RockBottomAPI.logger().info("Loaded " + this.getAllOfType(IAnimation.ID).size() + " animations!");
+        RockBottomAPI.logger().info("Possible language settings: " + this.getAllOfType(Locale.ID).keySet());
 
         this.defaultLocale = this.getLocale(ResourceName.intern("us_english"));
 
@@ -160,7 +158,7 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.isLocked = true;
     }
 
-    private void initInternalShaders(int width, int height){
+    private void initInternalShaders(int width, int height) {
         IShaderProgram guiShader = this.getShaderProgram(IShaderProgram.GUI_SHADER);
         guiShader.setDefaultValues(width, height);
 
@@ -168,19 +166,19 @@ public class AssetManager implements IAssetManager, IDisposable{
         worldShader.setDefaultValues(width, height);
 
         IShaderProgram breakShader = this.getShaderProgram(IShaderProgram.BREAK_SHADER);
-        breakShader.setVertexProcessing(10, new VertexProcessor(){
+        breakShader.setVertexProcessing(10, new VertexProcessor() {
             private int vertexCounter;
 
             @Override
-            public void addVertex(IRenderer renderer, float x, float y, int color, float u, float v){
+            public void addVertex(IRenderer renderer, float x, float y, int color, float u, float v) {
                 super.addVertex(renderer, x, y, color, u, v);
 
-                ITexture tex = AssetManager.this.getTexture(ResourceName.intern("break."+Util.ceil(RockBottomAPI.getGame().getInteractionManager().getBreakProgress()*8F)));
+                ITexture tex = AssetManager.this.getTexture(ResourceName.intern("break." + Util.ceil(RockBottomAPI.getGame().getInteractionManager().getBreakProgress() * 8F)));
 
                 float breakU;
                 float breakV;
 
-                switch(this.vertexCounter){
+                switch (this.vertexCounter) {
                     case 0:
                     case 3:
                         breakU = 0F;
@@ -201,17 +199,17 @@ public class AssetManager implements IAssetManager, IDisposable{
                         break;
                 }
 
-                renderer.put((breakU*tex.getRenderWidth()+tex.getRenderOffsetX())/tex.getTextureWidth())
-                        .put((breakV*tex.getRenderHeight()+tex.getRenderOffsetY())/tex.getTextureHeight());
+                renderer.put((breakU * tex.getRenderWidth() + tex.getRenderOffsetX()) / tex.getTextureWidth())
+                        .put((breakV * tex.getRenderHeight() + tex.getRenderOffsetY()) / tex.getTextureHeight());
 
                 this.vertexCounter++;
-                if(this.vertexCounter >= 6){
+                if (this.vertexCounter >= 6) {
                     this.vertexCounter = 0;
                 }
             }
 
             @Override
-            public void onFlush(IRenderer renderer){
+            public void onFlush(IRenderer renderer) {
                 this.vertexCounter = 0;
             }
         });
@@ -220,184 +218,180 @@ public class AssetManager implements IAssetManager, IDisposable{
         breakShader.setUniform("breakImage", 1);
     }
 
-    private void loadCursors(){
-        if(!this.cursors.isEmpty()){
+    private void loadCursors() {
+        if (!this.cursors.isEmpty()) {
             this.cursors.clear();
         }
-        if(!this.sortedCursors.isEmpty()){
+        if (!this.sortedCursors.isEmpty()) {
             this.sortedCursors.clear();
         }
 
         this.sortedCursors.addAll(RockBottomAPI.SPECIAL_CURSORS.values());
-        this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor :: getPriority).reversed());
+        this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor::getPriority).reversed());
 
         GLFWVidMode mode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-        this.cursorScale = Math.min(mode.width(), mode.height())/1080F;
+        this.cursorScale = Math.min(mode.width(), mode.height()) / 1080F;
 
-        RockBottomAPI.logger().config("Using cursor scale "+this.cursorScale);
+        RockBottomAPI.logger().config("Using cursor scale " + this.cursorScale);
 
-        for(ISpecialCursor cursor : this.sortedCursors){
-            try{
+        for (ISpecialCursor cursor : this.sortedCursors) {
+            try {
                 ITexture texture = this.getTexture(cursor.getTexture());
                 float width = texture.getRenderWidth();
                 float height = texture.getRenderHeight();
-                int newWidth = Util.floor(width*cursorScale);
-                int newHeight = Util.floor(height*cursorScale);
+                int newWidth = Util.floor(width * this.cursorScale);
+                int newHeight = Util.floor(height * this.cursorScale);
 
                 GLFWImage image = GLFWImage.malloc();
-                ByteBuffer buf = BufferUtils.createByteBuffer(newWidth*newHeight*4);
+                ByteBuffer buf = BufferUtils.createByteBuffer(newWidth * newHeight * 4);
 
-                for(int y = 0; y < newHeight; y++){
-                    for(int x = 0; x < newWidth; x++){
-                        float newPercentX = x/(float)newWidth;
-                        float newPercentY = y/(float)newHeight;
-                        int color = texture.getTextureColor(Util.floor(newPercentX*width), Util.floor(newPercentY*height));
+                for (int y = 0; y < newHeight; y++) {
+                    for (int x = 0; x < newWidth; x++) {
+                        float newPercentX = x / (float) newWidth;
+                        float newPercentY = y / (float) newHeight;
+                        int color = texture.getTextureColor(Util.floor(newPercentX * width), Util.floor(newPercentY * height));
 
-                        buf.put((byte)Colors.getBInt(color));
-                        buf.put((byte)Colors.getGInt(color));
-                        buf.put((byte)Colors.getRInt(color));
-                        buf.put((byte)Colors.getAInt(color));
+                        buf.put((byte) Colors.getBInt(color));
+                        buf.put((byte) Colors.getGInt(color));
+                        buf.put((byte) Colors.getRInt(color));
+                        buf.put((byte) Colors.getAInt(color));
                     }
                 }
 
-                ((Buffer)buf).flip();
+                ((Buffer) buf).flip();
                 image.set(newWidth, newHeight, buf);
 
                 this.cursors.put(cursor, GLFW.glfwCreateCursor(image, cursor.getHotspotX(), cursor.getHotspotY()));
 
                 image.free();
-            }
-            catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Could not load mouse cursor "+cursor, e);
+            } catch (Exception e) {
+                RockBottomAPI.logger().log(Level.WARNING, "Could not load mouse cursor " + cursor, e);
             }
         }
     }
 
     @Override
-    public void setCursor(ISpecialCursor cursor){
-        try{
-            if(!this.game.getSettings().hardwareCursor){
+    public void setCursor(ISpecialCursor cursor) {
+        try {
+            if (!this.game.getSettings().hardwareCursor) {
                 GLFW.glfwSetCursor(this.game.getWindow(), this.cursors.get(cursor));
-            }
-            else{
+            } else {
                 GLFW.glfwSetCursor(this.game.getWindow(), MemoryUtil.NULL);
             }
 
-            RockBottomAPI.logger().config("Setting cursor to "+cursor);
-        }
-        catch(Exception e){
+            RockBottomAPI.logger().config("Setting cursor to " + cursor);
+        } catch (Exception e) {
             RockBottomAPI.logger().log(Level.SEVERE, "Could not set mouse cursor!", e);
         }
     }
 
     @Override
-    public <T extends IAsset> Map<ResourceName, T> getAllOfType(ResourceName identifier){
-        return (Map<ResourceName, T>)this.assets.row(identifier);
+    public <T extends IAsset> Map<ResourceName, T> getAllOfType(ResourceName identifier) {
+        return (Map<ResourceName, T>) this.assets.row(identifier);
     }
 
     @Override
-    public <T extends IAsset> T getAssetWithFallback(ResourceName identifier, ResourceName path, T fallback){
+    public <T extends IAsset> T getAssetWithFallback(ResourceName identifier, ResourceName path, T fallback) {
         IAsset asset = this.assets.get(identifier, path);
 
-        if(asset == null){
+        if (asset == null) {
             this.assets.put(identifier, path, fallback);
             asset = fallback;
 
-            RockBottomAPI.logger().warning("Resource with name "+path+" is missing for identifier "+identifier);
+            RockBottomAPI.logger().warning("Resource with name " + path + " is missing for identifier " + identifier);
         }
 
-        return (T)asset;
+        return (T) asset;
     }
 
     @Override
-    public boolean hasAsset(ResourceName identifier, ResourceName path){
+    public boolean hasAsset(ResourceName identifier, ResourceName path) {
         return this.assets.contains(identifier, path);
     }
 
     @Override
-    public ITexture getTexture(ResourceName path){
+    public ITexture getTexture(ResourceName path) {
         return this.getAssetWithFallback(ITexture.ID, path, this.missingTexture);
     }
 
     @Override
-    public IAnimation getAnimation(ResourceName path){
+    public IAnimation getAnimation(ResourceName path) {
         return this.getAssetWithFallback(IAnimation.ID, path, this.missingAnimation);
     }
 
     @Override
-    public ISound getSound(ResourceName path){
+    public ISound getSound(ResourceName path) {
         return this.getAssetWithFallback(ISound.ID, path, this.missingSound);
     }
 
     @Override
-    public IShaderProgram getShaderProgram(ResourceName path){
+    public IShaderProgram getShaderProgram(ResourceName path) {
         return this.getAssetWithFallback(IShaderProgram.ID, path, this.game.renderer.simpleProgram);
     }
 
     @Override
-    public Locale getLocale(ResourceName path){
+    public Locale getLocale(ResourceName path) {
         return this.getAssetWithFallback(Locale.ID, path, this.missingLocale);
     }
 
     @Override
-    public IFont getFont(ResourceName path){
+    public IFont getFont(ResourceName path) {
         return this.getAssetWithFallback(IFont.ID, path, this.game.renderer.simpleFont);
     }
 
     @Override
-    public String localize(ResourceName unloc, Object... format){
+    public String localize(ResourceName unloc, Object... format) {
         return this.currentLocale.localize(this.defaultLocale, unloc, format);
     }
 
     @Override
-    public IFont getFont(){
+    public IFont getFont() {
         return this.currentFont;
     }
 
     @Override
-    public void setFont(IFont font){
+    public void setFont(IFont font) {
         this.currentFont = font;
     }
 
     @Override
-    public Locale getLocale(){
+    public Locale getLocale() {
         return this.currentLocale;
     }
 
     @Override
-    public void setLocale(Locale locale){
+    public void setLocale(Locale locale) {
         this.currentLocale = locale;
     }
 
     @Override
-    public InputStream getResourceStream(String s){
+    public InputStream getResourceStream(String s) {
         return ContentManager.getResourceAsStream(s);
     }
 
     @Override
-    public URL getResourceURL(String s){
+    public URL getResourceURL(String s) {
         return ContentManager.getResource(s);
     }
 
     @Override
-    public ITexture getMissingTexture(){
+    public ITexture getMissingTexture() {
         return this.missingTexture;
     }
 
     @Override
-    public SimpleDateFormat getLocalizedDateFormat(){
-        try{
+    public SimpleDateFormat getLocalizedDateFormat() {
+        try {
             return new SimpleDateFormat(this.localize(ResourceName.intern("date_format")));
-        }
-        catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return new SimpleDateFormat();
         }
     }
 
     @Override
-    public ISpecialCursor pickCurrentCursor(){
-        for(ISpecialCursor cursor : this.sortedCursors){
-            if(cursor.shouldUseCursor(this.game, this.game.getAssetManager(), this.game.getRenderer(), this.game.getGuiManager(), this.game.getInteractionManager())){
+    public ISpecialCursor pickCurrentCursor() {
+        for (ISpecialCursor cursor : this.sortedCursors) {
+            if (cursor.shouldUseCursor(this.game, this.game.getAssetManager(), this.game.getRenderer(), this.game.getGuiManager(), this.game.getInteractionManager())) {
                 return cursor;
             }
         }
@@ -405,11 +399,11 @@ public class AssetManager implements IAssetManager, IDisposable{
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         Texture.unbindAllBanks();
 
-        if(!this.assets.isEmpty()){
-            for(IAsset asset : this.assets.values()){
+        if (!this.assets.isEmpty()) {
+            for (IAsset asset : this.assets.values()) {
                 asset.dispose();
             }
         }
@@ -420,71 +414,69 @@ public class AssetManager implements IAssetManager, IDisposable{
         this.disposeOptionalResource(this.missingTexture);
     }
 
-    private void disposeOptionalResource(IAsset asset){
-        if(asset != null){
+    private void disposeOptionalResource(IAsset asset) {
+        if (asset != null) {
             asset.dispose();
         }
     }
 
-    public void onResize(int width, int height){
-        for(IShaderProgram program : this.<IShaderProgram>getAllOfType(IShaderProgram.ID).values()){
+    public void onResize(int width, int height) {
+        for (IShaderProgram program : this.<IShaderProgram>getAllOfType(IShaderProgram.ID).values()) {
             program.updateProjection(width, height);
         }
         this.game.renderer.simpleProgram.updateProjection(width, height);
     }
 
     @Override
-    public TextureStitcher getTextureStitcher(){
+    public TextureStitcher getTextureStitcher() {
         return this.stitcher;
     }
 
     @Override
-    public boolean addAsset(IAssetLoader loader, ResourceName name, IAsset asset){
-        if(!this.isLocked){
+    public boolean addAsset(IAssetLoader loader, ResourceName name, IAsset asset) {
+        if (!this.isLocked) {
             ResourceName id = loader.getAssetIdentifier();
-            if(!this.hasAsset(id, name)){
+            if (!this.hasAsset(id, name)) {
                 this.assets.put(loader.getAssetIdentifier(), name, asset);
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
-        }
-        else{
+        } else {
             throw new UnsupportedOperationException("Cannot add assets to the asset manager while it's locked! Add assets during loading!");
         }
     }
 
     @Override
-    public float getCursorScale(){
+    public float getCursorScale() {
         return this.cursorScale;
     }
 
-    private class AssetCallback implements LoaderCallback{
+    private class AssetCallback implements LoaderCallback {
 
         private final IAssetLoader loader;
 
-        public AssetCallback(IAssetLoader loader){
+        public AssetCallback(IAssetLoader loader) {
             this.loader = loader;
         }
 
         @Override
-        public ResourceName getIdentifier(){
+        public ResourceName getIdentifier() {
             return this.loader.getAssetIdentifier();
         }
 
         @Override
-        public void load(ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+        public void load(ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
             this.loader.loadAsset(AssetManager.this, resourceName, path, element, elementName, loadingMod, pack);
         }
 
         @Override
-        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
+        public boolean dealWithSpecialCases(String resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
             return this.loader.dealWithSpecialCases(AssetManager.this, resourceName, path, element, elementName, loadingMod, pack);
         }
 
         @Override
-        public void disable(ResourceName resourceName){
+        public void disable(ResourceName resourceName) {
             this.loader.disableAsset(AssetManager.this, resourceName);
         }
     }

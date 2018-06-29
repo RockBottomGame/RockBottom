@@ -11,20 +11,20 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileStardrop;
 
-public class TileStardropRenderer extends DefaultTileRenderer<TileStardrop>{
+public class TileStardropRenderer extends DefaultTileRenderer<TileStardrop> {
 
     private final ResourceName[] stages = new ResourceName[StaticTileProps.STARDROP_GROWTH.getVariants()];
 
-    public TileStardropRenderer(ResourceName texture){
+    public TileStardropRenderer(ResourceName texture) {
         super(texture);
 
-        for(int i = 0; i < this.stages.length; i++){
-            this.stages[i] = this.texture.addSuffix(".stage_"+i);
+        for (int i = 0; i < this.stages.length; i++) {
+            this.stages[i] = this.texture.addSuffix(".stage_" + i);
         }
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileStardrop tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileStardrop tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         manager.getTexture(this.stages[state.get(StaticTileProps.STARDROP_GROWTH)]).draw(renderX, renderY, scale, scale, light);
     }
 }

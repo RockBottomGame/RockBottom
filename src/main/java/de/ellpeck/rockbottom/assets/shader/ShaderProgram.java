@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryStack;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShaderProgram implements IShaderProgram{
+public class ShaderProgram implements IShaderProgram {
 
     private static int boundProgram;
     private static ShaderProgram boundProgramRef;
@@ -26,7 +26,7 @@ public class ShaderProgram implements IShaderProgram{
     private int attributeOffset;
     private VertexProcessor processor;
 
-    public ShaderProgram(Shader vertex, Shader fragment){
+    public ShaderProgram(Shader vertex, Shader fragment) {
         this.id = GL20.glCreateProgram();
         this.vao = new VertexArrayObject();
 
@@ -39,8 +39,14 @@ public class ShaderProgram implements IShaderProgram{
         this.setVertexProcessing(8, new VertexProcessor());
     }
 
+    public static void unbindAll() {
+        if (boundProgram >= 0) {
+            boundProgramRef.unbind();
+        }
+    }
+
     @Override
-    public void setDefaultValues(int width, int height){
+    public void setDefaultValues(int width, int height) {
         this.bindFragmentDataLocation("fragColor", 0);
         this.link();
         this.bind();
@@ -57,90 +63,90 @@ public class ShaderProgram implements IShaderProgram{
     }
 
     @Override
-    public void updateProjection(int width, int height){
+    public void updateProjection(int width, int height) {
         this.setUniform("projection", new Matrix4f().ortho(0F, width, height, 0F, -1F, 1F));
     }
 
     @Override
-    public void bindFragmentDataLocation(String name, int location){
+    public void bindFragmentDataLocation(String name, int location) {
         GL30.glBindFragDataLocation(this.id, location, name);
     }
 
     @Override
-    public void link(){
+    public void link() {
         GL20.glLinkProgram(this.id);
 
-        Preconditions.checkState(GL20.glGetProgrami(this.id, GL20.GL_LINK_STATUS) == GL11.GL_TRUE, "Couldn't compile shader program:\n"+GL20.glGetProgramInfoLog(this.id));
+        Preconditions.checkState(GL20.glGetProgrami(this.id, GL20.GL_LINK_STATUS) == GL11.GL_TRUE, "Couldn't compile shader program:\n" + GL20.glGetProgramInfoLog(this.id));
     }
 
     @Override
-    public void bind(){
-        if(boundProgram != this.id){
+    public void bind() {
+        if (boundProgram != this.id) {
             boundProgram = this.id;
             boundProgramRef = this;
 
             GL20.glUseProgram(this.id);
             this.vao.bind();
 
-            for(int i : this.attributeLocations.values()){
+            for (int i : this.attributeLocations.values()) {
                 GL20.glEnableVertexAttribArray(i);
             }
         }
     }
 
     @Override
-    public int getAttributeLocation(String name){
+    public int getAttributeLocation(String name) {
         this.bind();
         return this.attributeLocations.computeIfAbsent(name, s -> GL20.glGetAttribLocation(this.id, s));
     }
 
     @Override
-    public int getUniformLocation(String name){
+    public int getUniformLocation(String name) {
         this.bind();
         return this.uniformLocations.computeIfAbsent(name, s -> GL20.glGetUniformLocation(this.id, s));
     }
 
     @Override
-    public void pointVertexAttribute(String name, int size){
+    public void pointVertexAttribute(String name, int size) {
         int location = this.getAttributeLocation(name);
-        GL20.glVertexAttribPointer(location, size, GL11.GL_FLOAT, false, this.componentsPerVertex*Float.BYTES, this.attributeOffset);
-        this.attributeOffset += size*Float.BYTES;
+        GL20.glVertexAttribPointer(location, size, GL11.GL_FLOAT, false, this.componentsPerVertex * Float.BYTES, this.attributeOffset);
+        this.attributeOffset += size * Float.BYTES;
 
         GL20.glEnableVertexAttribArray(location);
     }
 
     @Override
-    public void setUniform(String name, Matrix4f matrix){
+    public void setUniform(String name, Matrix4f matrix) {
         int location = this.getUniformLocation(name);
         MemoryStack stack = MemoryStack.stackPush();
-        GL20.glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(4*4)));
+        GL20.glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(4 * 4)));
         stack.pop();
     }
 
     @Override
-    public void setUniform(String name, int value){
+    public void setUniform(String name, int value) {
         GL20.glUniform1i(this.getUniformLocation(name), value);
     }
 
     @Override
-    public void setUniform(String name, float f){
+    public void setUniform(String name, float f) {
         GL20.glUniform1f(this.getUniformLocation(name), f);
     }
 
     @Override
-    public void setUniform(String name, float x, float y){
+    public void setUniform(String name, float x, float y) {
         GL20.glUniform2f(this.getUniformLocation(name), x, y);
     }
 
     @Override
-    public void setUniform(String name, float x, float y, float z){
+    public void setUniform(String name, float x, float y, float z) {
         GL20.glUniform3f(this.getUniformLocation(name), x, y, z);
     }
 
     @Override
-    public void unbind(){
-        if(boundProgram == this.id){
-            for(int i : this.attributeLocations.values()){
+    public void unbind() {
+        if (boundProgram == this.id) {
+            for (int i : this.attributeLocations.values()) {
                 GL20.glDisableVertexAttribArray(i);
             }
 
@@ -152,40 +158,34 @@ public class ShaderProgram implements IShaderProgram{
         }
     }
 
-    public static void unbindAll(){
-        if(boundProgram >= 0){
-            boundProgramRef.unbind();
-        }
-    }
-
     @Override
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 
     @Override
-    public void setVertexProcessing(int componentsPerVertex, VertexProcessor processor){
+    public void setVertexProcessing(int componentsPerVertex, VertexProcessor processor) {
         this.componentsPerVertex = componentsPerVertex;
         this.processor = processor;
     }
 
     @Override
-    public int getComponentsPerVertex(){
+    public int getComponentsPerVertex() {
         return this.componentsPerVertex;
     }
 
     @Override
-    public VertexProcessor getProcessor(){
+    public VertexProcessor getProcessor() {
         return this.processor;
     }
 
     @Override
-    public void draw(int amount){
+    public void draw(int amount) {
         this.vao.draw(amount);
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         this.unbind();
         GL20.glDeleteProgram(this.id);
     }

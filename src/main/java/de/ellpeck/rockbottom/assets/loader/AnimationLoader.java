@@ -22,37 +22,35 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class AnimationLoader implements IAssetLoader<Animation>{
+public class AnimationLoader implements IAssetLoader<Animation> {
 
     private final Map<String, CachedAnimInfo> rowCache = new HashMap<>();
     private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
-    public ResourceName getAssetIdentifier(){
+    public ResourceName getAssetIdentifier() {
         return IAnimation.ID;
     }
 
     @Override
-    public void loadAsset(IAssetManager manager, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception{
-        if(!this.disabled.contains(resourceName)){
-            if(manager.hasAsset(IAnimation.ID, resourceName)){
-                RockBottomAPI.logger().info("Animation "+resourceName+" already exists, not adding animation for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName());
-            }
-            else{
+    public void loadAsset(IAssetManager manager, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
+        if (!this.disabled.contains(resourceName)) {
+            if (manager.hasAsset(IAnimation.ID, resourceName)) {
+                RockBottomAPI.logger().info("Animation " + resourceName + " already exists, not adding animation for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
+            } else {
                 boolean shouldStitch = true;
                 String anim;
                 String texture;
 
-                if(element.isJsonObject()){
+                if (element.isJsonObject()) {
                     JsonObject object = element.getAsJsonObject();
                     anim = object.get("data").getAsString();
                     texture = object.get("path").getAsString();
 
-                    if(object.has("should_stitch")){
+                    if (object.has("should_stitch")) {
                         shouldStitch = object.get("should_stitch").getAsBoolean();
                     }
-                }
-                else{
+                } else {
                     JsonArray array = element.getAsJsonArray();
                     anim = array.get(0).getAsString();
                     texture = array.get(1).getAsString();
@@ -61,41 +59,39 @@ public class AnimationLoader implements IAssetLoader<Animation>{
                 int frameWidth = 0;
                 int frameHeight = 0;
 
-                CachedAnimInfo cachedInfo = this.rowCache.get(path+anim);
-                if(cachedInfo == null){
+                CachedAnimInfo cachedInfo = this.rowCache.get(path + anim);
+                if (cachedInfo == null) {
                     List<AnimationRow> rows = new ArrayList<>();
 
-                    InputStream infoStream = ContentManager.getResourceAsStream(path+anim);
+                    InputStream infoStream = ContentManager.getResourceAsStream(path + anim);
                     JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
                     infoStream.close();
 
-                    for(Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()){
+                    for (Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()) {
                         String key = entry.getKey();
                         JsonArray data = entry.getValue().getAsJsonArray();
 
-                        if("size".equals(key)){
+                        if ("size".equals(key)) {
                             frameWidth = data.get(0).getAsInt();
                             frameHeight = data.get(1).getAsInt();
-                        }
-                        else if("data".equals(key)){
-                            for(JsonElement e : data){
+                        } else if ("data".equals(key)) {
+                            for (JsonElement e : data) {
                                 JsonArray a = e.getAsJsonArray();
                                 float[] times = new float[a.size()];
 
-                                for(int i = 0; i < times.length; i++){
+                                for (int i = 0; i < times.length; i++) {
                                     times[i] = a.get(i).getAsFloat();
                                 }
 
                                 rows.add(new AnimationRow(times));
                             }
-                        }
-                        else{
-                            for(int i = 0; i < data.size(); i++){
+                        } else {
+                            for (int i = 0; i < data.size(); i++) {
                                 AnimationRow row = rows.get(i);
                                 JsonElement[] additionalData = new JsonElement[row.getFrameAmount()];
 
                                 JsonArray a = data.get(i).getAsJsonArray();
-                                for(int j = 0; j < additionalData.length; j++){
+                                for (int j = 0; j < additionalData.length; j++) {
                                     additionalData[j] = a.get(j);
                                 }
 
@@ -105,46 +101,44 @@ public class AnimationLoader implements IAssetLoader<Animation>{
                     }
 
                     cachedInfo = new CachedAnimInfo(rows, frameWidth, frameHeight);
-                    this.rowCache.put(path+anim, cachedInfo);
+                    this.rowCache.put(path + anim, cachedInfo);
                 }
 
                 CachedAnimInfo finalCachedInfo = cachedInfo;
                 IStitchCallback callback = (stitchX, stitchY, stitchedTexture) -> {
                     Animation animation = new Animation(stitchedTexture, finalCachedInfo.width, finalCachedInfo.height, finalCachedInfo.rows);
                     manager.addAsset(this, resourceName, animation);
-                    RockBottomAPI.logger().config("Loaded animation "+resourceName+" for mod "+loadingMod.getDisplayName());
+                    RockBottomAPI.logger().config("Loaded animation " + resourceName + " for mod " + loadingMod.getDisplayName());
                 };
 
-                if(shouldStitch){
-                    manager.getTextureStitcher().loadTexture(resourceName.toString(), ContentManager.getResourceAsStream(path+texture), callback);
-                }
-                else{
-                    callback.onStitched(0, 0, new Texture(ContentManager.getResourceAsStream(path+texture)));
+                if (shouldStitch) {
+                    manager.getTextureStitcher().loadTexture(resourceName.toString(), ContentManager.getResourceAsStream(path + texture), callback);
+                } else {
+                    callback.onStitched(0, 0, new Texture(ContentManager.getResourceAsStream(path + texture)));
                 }
             }
-        }
-        else{
-            RockBottomAPI.logger().info("Animation "+resourceName+" will not be loaded for mod "+loadingMod.getDisplayName()+" with content pack "+pack.getName()+" because it was disabled by another content pack!");
+        } else {
+            RockBottomAPI.logger().info("Animation " + resourceName + " will not be loaded for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName() + " because it was disabled by another content pack!");
         }
     }
 
     @Override
-    public void disableAsset(IAssetManager manager, ResourceName resourceName){
+    public void disableAsset(IAssetManager manager, ResourceName resourceName) {
         this.disabled.add(resourceName);
     }
 
     @Override
-    public void finalize(IAssetManager manager){
+    public void finalize(IAssetManager manager) {
         this.rowCache.clear();
     }
 
-    private static class CachedAnimInfo{
+    private static class CachedAnimInfo {
 
         public final List<AnimationRow> rows;
         public final int width;
         public final int height;
 
-        public CachedAnimInfo(List<AnimationRow> rows, int width, int height){
+        public CachedAnimInfo(List<AnimationRow> rows, int width, int height) {
             this.rows = rows;
             this.width = width;
             this.height = height;

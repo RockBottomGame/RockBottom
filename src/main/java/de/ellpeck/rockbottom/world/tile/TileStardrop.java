@@ -22,76 +22,75 @@ import de.ellpeck.rockbottom.render.tile.TileStardropRenderer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileStardrop extends TileBasic{
+public class TileStardrop extends TileBasic {
 
-    public TileStardrop(){
+    public TileStardrop() {
         super(ResourceName.intern("stardrop"));
         this.addProps(StaticTileProps.STARDROP_GROWTH);
     }
 
     @Override
-    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
+    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced) {
         super.describeItem(manager, instance, desc, isAdvanced);
-        desc.add(FormattingCode.GRAY+manager.localize(ResourceName.intern("info.stardrop")));
+        desc.add(FormattingCode.GRAY + manager.localize(ResourceName.intern("info.stardrop")));
     }
 
     @Override
-    protected ITileRenderer createRenderer(ResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name) {
         return new TileStardropRenderer(name);
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return null;
     }
 
     @Override
-    public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
-        if(Util.RANDOM.nextInt(200) <= 0){
+    public void updateRandomly(IWorld world, int x, int y, TileLayer layer) {
+        if (Util.RANDOM.nextInt(200) <= 0) {
             TileState state = world.getState(layer, x, y);
-            if(state.get(StaticTileProps.STARDROP_GROWTH) < 2){
+            if (state.get(StaticTileProps.STARDROP_GROWTH) < 2) {
                 world.setState(layer, x, y, state.cycleProp(StaticTileProps.STARDROP_GROWTH));
             }
         }
     }
 
     @Override
-    public boolean canPlaceInLayer(TileLayer layer){
+    public boolean canPlaceInLayer(TileLayer layer) {
         return false;
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
         return false;
     }
 
     @Override
-    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
-        return world.getState(x, y+1).getTile().isFullTile();
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
+        return world.getState(x, y + 1).getTile().isFullTile();
     }
 
     @Override
-    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
-        if(world.getState(layer, x, y).get(StaticTileProps.STARDROP_GROWTH) < 2){
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
+        if (world.getState(layer, x, y).get(StaticTileProps.STARDROP_GROWTH) < 2) {
             return new ArrayList<>();
-        }
-        else{
+        } else {
             return super.getDrops(world, x, y, layer, destroyer);
         }
     }
 
     @Override
-    protected ItemTile createItemTile(){
-        return new ItemTile(this.getName()){
+    protected ItemTile createItemTile() {
+        return new ItemTile(this.getName()) {
             @Override
-            public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance){
-                if(!world.isClient()){
-                    player.setMaxHealth(player.getMaxHealth()+10);
+            public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance) {
+                if (!world.isClient()) {
+                    player.setMaxHealth(player.getMaxHealth() + 10);
                     player.getInv().remove(player.getSelectedSlot(), 1);
                 }
 
@@ -101,7 +100,7 @@ public class TileStardrop extends TileBasic{
             }
 
             @Override
-            public double getMaxInteractionDistance(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+            public double getMaxInteractionDistance(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
                 return Double.MAX_VALUE;
             }
         };

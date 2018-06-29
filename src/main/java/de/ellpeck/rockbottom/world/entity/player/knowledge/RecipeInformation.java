@@ -13,57 +13,56 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.List;
 
-public class RecipeInformation extends Information{
+public class RecipeInformation extends Information {
 
     public static final ResourceName REG_NAME = ResourceName.intern("recipe");
 
     private IRecipe recipe;
 
-    public RecipeInformation(IRecipe recipe){
+    public RecipeInformation(IRecipe recipe) {
         super(recipe.getKnowledgeInformationName());
         this.recipe = recipe;
     }
 
-    public RecipeInformation(ResourceName name){
+    public RecipeInformation(ResourceName name) {
         super(name);
     }
 
     @Override
-    public Toast announceForget(){
+    public Toast announceForget() {
         return new Toast(ResourceName.intern("gui.construction.book_closed"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
     }
 
     @Override
-    public Toast announceTeach(){
+    public Toast announceTeach() {
         return new Toast(ResourceName.intern("gui.construction.book_open"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
     }
 
-    private ChatComponent getOutputName(){
-        if(this.recipe != null){
+    private ChatComponent getOutputName() {
+        if (this.recipe != null) {
             List<ItemInstance> outputs = this.recipe.getOutputs();
             ItemInstance output = outputs.get(0);
-            return new ChatComponentText(output.getDisplayName()+" x"+output.getAmount());
-        }
-        else{
+            return new ChatComponentText(output.getDisplayName() + " x" + output.getAmount());
+        } else {
             return new ChatComponentEmpty();
         }
     }
 
     @Override
-    public void save(DataSet set, IKnowledgeManager manager){
-        if(this.recipe != null){
+    public void save(DataSet set, IKnowledgeManager manager) {
+        if (this.recipe != null) {
             set.addString("recipe_name", this.recipe.getName().toString());
         }
     }
 
     @Override
-    public void load(DataSet set, IKnowledgeManager manager){
+    public void load(DataSet set, IKnowledgeManager manager) {
         ResourceName recName = new ResourceName(set.getString("recipe_name"));
         this.recipe = IRecipe.forName(recName);
     }
 
     @Override
-    public ResourceName getRegistryName(){
+    public ResourceName getRegistryName() {
         return REG_NAME;
     }
 }

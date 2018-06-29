@@ -58,11 +58,154 @@ import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class InternalHooks implements IInternalHooks{
+public class InternalHooks implements IInternalHooks {
+
+    public static boolean setOrPickUpHolding(AbstractEntityPlayer player, ItemContainer container, int slotId, boolean half) {
+        if (player.world.isClient()) {
+            RockBottomAPI.getNet().sendToServer(new PacketSetOrPickHolding(player.getUniqueId(), slotId, half));
+        }
+
+        ContainerSlot slot = container.getSlot(slotId);
+        ItemInstance slotInst = slot.get();
+
+        if (half) {
+            if (container.holdingInst == null) {
+                if (slotInst != null) {
+                    int halfAmount = Util.ceil(slot.get().getAmount() / 2D);
+                    if (slot.canRemove(halfAmount)) {
+                        container.holdingInst = slotInst.copy().setAmount(halfAmount);
+                        slot.set(slotInst.removeAmount(halfAmount).nullIfEmpty());
+                        return true;
+                    }
+                }
+            } else {
+                boolean should = false;
+
+                if (slotInst != null) {
+                    if (slotInst.isEffectivelyEqual(container.holdingInst) && slotInst.getAmount() < slotInst.getMaxAmount()) {
+                        should = true;
+
+                        ItemInstance newInst = slotInst.addAmount(1);
+                        if (slot.canPlace(newInst)) {
+                            slot.set(newInst);
+                        }
+                    }
+                } else {
+                    should = true;
+
+                    ItemInstance newInst = container.holdingInst.copy().setAmount(1);
+                    if (slot.canPlace(newInst)) {
+                        slot.set(newInst);
+                    }
+                }
+
+                if (should) {
+                    container.holdingInst = container.holdingInst.removeAmount(1).nullIfEmpty();
+                    return true;
+                }
+            }
+        } else {
+            if (container.holdingInst == null) {
+                if (slotInst != null && slot.canRemove(slotInst.getAmount())) {
+                    container.holdingInst = slotInst;
+                    slot.set(null);
+                    return true;
+                }
+            } else {
+                int removeAmount = 0;
+
+                if (slotInst != null) {
+                    if (slotInst.isEffectivelyEqual(container.holdingInst)) {
+                        int possibleAdd = Math.min(slotInst.getMaxAmount() - slotInst.getAmount(), container.holdingInst.getAmount());
+                        if (possibleAdd > 0) {
+                            ItemInstance newInst = slotInst.copy().addAmount(possibleAdd);
+                            if (slot.canPlace(newInst)) {
+                                removeAmount = possibleAdd;
+                                slot.set(newInst);
+                            }
+                        }
+                    } else if (slot.canRemove(slotInst.getAmount()) && slot.canPlace(container.holdingInst)) {
+                        ItemInstance slotCopy = slotInst.copy();
+                        slot.set(container.holdingInst);
+                        container.holdingInst = slotCopy;
+                        return true;
+                    }
+                } else if (slot.canPlace(container.holdingInst)) {
+                    removeAmount = container.holdingInst.getAmount();
+                    slot.set(container.holdingInst.copy());
+                }
+
+                if (removeAmount > 0) {
+                    container.holdingInst = container.holdingInst.removeAmount(removeAmount).nullIfEmpty();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static int shiftClick(AbstractEntityPlayer player, ItemContainer container, int from, int into) {
+        if (player.world.isClient()) {
+            RockBottomAPI.getNet().sendToServer(new PacketShiftClick(player.getUniqueId(), from, into));
+        }
+
+        ContainerSlot slotFrom = container.getSlot(from);
+        ContainerSlot slotInto = container.getSlot(into);
+
+        ItemInstance fromInst = slotFrom.get();
+        ItemInstance intoInst = slotInto.get();
+
+        if (intoInst == null) {
+            if (slotInto.canPlace(fromInst) && slotFrom.canRemove(fromInst.getAmount())) {
+                slotInto.set(fromInst);
+                slotFrom.set(null);
+                return 1;
+            }
+        } else if (intoInst.isEffectivelyEqual(fromInst)) {
+            int possible = Math.min(intoInst.getMaxAmount() - intoInst.getAmount(), fromInst.getAmount());
+            if (possible > 0 && slotFrom.canRemove(possible)) {
+                ItemInstance newInto = intoInst.copy().addAmount(possible);
+                if (slotInto.canPlace(newInto)) {
+                    int remaining = fromInst.getAmount() - possible;
+                    slotInto.set(newInto);
+                    if (remaining <= 0) {
+                        slotFrom.set(null);
+                        return 1;
+                    } else {
+                        slotFrom.set(fromInst.copy().setAmount(remaining));
+                        return 2;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static ResourceName generateTileStateName(Tile tile, Map<String, Comparable> properties) {
+        StringBuilder suffix = new StringBuilder();
+
+        if (!properties.isEmpty()) {
+            suffix.append(';');
+
+            Iterator<Map.Entry<String, Comparable>> iterator = properties.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Comparable> entry = iterator.next();
+
+                String append = entry.getKey() + '@' + entry.getValue();
+                if (iterator.hasNext()) {
+                    append += ",";
+                }
+
+                suffix.append(append);
+            }
+        }
+
+        return tile.getName().addSuffix(suffix.toString());
+    }
 
     @Override
-    public void doDefaultEntityUpdate(IGameInstance game, Entity entity, List<ActiveEffect> effects, List<AITask> aiTasks){
-        if(!entity.isDead()){
+    public void doDefaultEntityUpdate(IGameInstance game, Entity entity, List<ActiveEffect> effects, List<AITask> aiTasks) {
+        if (!entity.isDead()) {
             entity.applyMotion();
 
             entity.canClimb = false;
@@ -73,104 +216,101 @@ public class InternalHooks implements IInternalHooks{
             double x = entity.getX();
             double y = entity.getY();
 
-            if(entity.onGround || entity.isClimbing){
-                if(entity.onGround){
+            if (entity.onGround || entity.isClimbing) {
+                if (entity.onGround) {
                     entity.motionY = 0;
                 }
 
-                if(entity.isFalling){
-                    entity.onGroundHit(Math.max(0D, entity.fallStartY-y));
+                if (entity.isFalling) {
+                    entity.onGroundHit(Math.max(0D, entity.fallStartY - y));
 
                     entity.isFalling = false;
                     entity.fallStartY = 0;
                 }
-            }
-            else if(entity.motionY < 0){
-                if(!entity.isFalling){
+            } else if (entity.motionY < 0) {
+                if (!entity.isFalling) {
                     entity.isFalling = true;
                     entity.fallStartY = y;
                 }
             }
 
-            for(int i = effects.size()-1; i >= 0; i--){
+            for (int i = effects.size() - 1; i >= 0; i--) {
                 ActiveEffect active = effects.get(i);
 
                 IEffect effect = active.getEffect();
-                if(!effect.isInstant(entity)){
+                if (!effect.isInstant(entity)) {
                     effect.updateLasting(active, entity);
                 }
 
                 active.removeTime(1);
-                if(active.getTime() <= 0){
+                if (active.getTime() <= 0) {
                     effects.remove(i);
                     effect.onRemovedOrEnded(active, entity, true);
                 }
             }
 
             AITask currTask = entity.currentAiTask;
-            if(!entity.world.isClient()){
+            if (!entity.world.isClient()) {
                 boolean quitCurrentTask = true;
                 int lowestFindPrio = Integer.MIN_VALUE;
 
-                if(currTask != null){
+                if (currTask != null) {
                     currTask.execute(game, entity);
 
-                    if(!currTask.shouldEndExecution(entity)){
+                    if (!currTask.shouldEndExecution(entity)) {
                         quitCurrentTask = false;
-                        lowestFindPrio = currTask.getPriority()+1;
+                        lowestFindPrio = currTask.getPriority() + 1;
                     }
                 }
 
                 int newTaskId = -1;
 
-                for(int i = 0; i < aiTasks.size(); i++){
+                for (int i = 0; i < aiTasks.size(); i++) {
                     AITask task = aiTasks.get(i);
-                    if(task.getPriority() >= lowestFindPrio && task.shouldStartExecution(entity)){
+                    if (task.getPriority() >= lowestFindPrio && task.shouldStartExecution(entity)) {
                         newTaskId = i;
                         break;
                     }
                 }
 
-                if(quitCurrentTask || newTaskId >= 0){
+                if (quitCurrentTask || newTaskId >= 0) {
                     AITask newTask = entity.getTask(newTaskId);
-                    if(currTask != null){
+                    if (currTask != null) {
                         newTask = currTask.getNextTask(newTask, entity);
                     }
 
                     PacketAITask.setNewTask(entity, currTask, newTask);
 
-                    if(entity.world.isServer()){
+                    if (entity.world.isServer()) {
                         DataSet data = new DataSet();
-                        if(newTask != null){
+                        if (newTask != null) {
                             newTask.save(data, true);
                         }
                         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketAITask(entity.getUniqueId(), data, newTaskId), x, y);
                     }
                 }
-            }
-            else{
-                if(currTask != null){
+            } else {
+                if (currTask != null) {
                     currTask.execute(game, entity);
 
-                    if(currTask.shouldEndExecution(entity)){
+                    if (currTask.shouldEndExecution(entity)) {
                         entity.currentAiTask = null;
                     }
                 }
             }
-        }
-        else{
+        } else {
             entity.motionX = 0;
             entity.motionY = 0;
         }
 
         entity.ticksExisted++;
 
-        if(entity.world.isServer()){
-            if(entity.doesSync()){
-                if(entity.ticksExisted%entity.getSyncFrequency() == 0){
+        if (entity.world.isServer()) {
+            if (entity.doesSync()) {
+                if (entity.ticksExisted % entity.getSyncFrequency() == 0) {
                     double x = entity.getX();
                     double y = entity.getY();
-                    if(entity.lastX != x || entity.lastY != y){
+                    if (entity.lastX != x || entity.lastY != y) {
                         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.collidedHor, entity.collidedVert, entity.onGround), x, y, entity);
 
                         entity.lastX = x;
@@ -182,22 +322,22 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public void doWorldObjectMovement(MovableWorldObject object){
-        if(object.motionX != 0 || object.motionY != 0){
+    public void doWorldObjectMovement(MovableWorldObject object) {
+        if (object.motionX != 0 || object.motionY != 0) {
             BoundBox ownBox = object.currentBounds;
             BoundBox ownBoxMotion = ownBox.copy().add(object.motionX, object.motionY);
 
-            if(object.world.isPosLoaded(ownBoxMotion.getMinX(), ownBoxMotion.getMinY()) && object.world.isPosLoaded(ownBoxMotion.getMaxX(), ownBoxMotion.getMaxY())){
+            if (object.world.isPosLoaded(ownBoxMotion.getMinX(), ownBoxMotion.getMinY()) && object.world.isPosLoaded(ownBoxMotion.getMaxX(), ownBoxMotion.getMaxY())) {
                 List<BoundBox> boxes = new ArrayList<>();
 
-                for(int x = Util.floor(ownBoxMotion.getMinX()); x < Util.ceil(ownBoxMotion.getMaxX()); x++){
-                    for(int y = Util.floor(ownBoxMotion.getMinY()); y < Util.ceil(ownBoxMotion.getMaxY()); y++){
-                        if(object.world.isPosLoaded(x, y)){
-                            for(TileLayer layer : TileLayer.getAllLayers()){
+                for (int x = Util.floor(ownBoxMotion.getMinX()); x < Util.ceil(ownBoxMotion.getMaxX()); x++) {
+                    for (int y = Util.floor(ownBoxMotion.getMinY()); y < Util.ceil(ownBoxMotion.getMaxY()); y++) {
+                        if (object.world.isPosLoaded(x, y)) {
+                            for (TileLayer layer : TileLayer.getAllLayers()) {
                                 TileState state = object.world.getState(layer, x, y);
                                 List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, ownBox, ownBoxMotion);
 
-                                if(layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)){
+                                if (layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)) {
                                     object.onTileCollision(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
                                     boxes.addAll(tileBoxes);
                                 }
@@ -209,11 +349,11 @@ public class InternalHooks implements IInternalHooks{
                 }
 
                 List<Entity> entities = object.world.getEntities(ownBoxMotion);
-                for(Entity entity : entities){
+                for (Entity entity : entities) {
                     BoundBox entityBox = entity.currentBounds;
                     BoundBox entityBoxMotion = entityBox.copy().add(entity.motionX, entity.motionY);
 
-                    if(entity.canCollideWith(object, ownBox, ownBoxMotion)){
+                    if (entity.canCollideWith(object, ownBox, ownBoxMotion)) {
                         object.onEntityCollision(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
                         boxes.add(entityBox);
                     }
@@ -224,28 +364,26 @@ public class InternalHooks implements IInternalHooks{
                 RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBoxMotion, boxes));
 
                 double motionY = object.motionY;
-                if(motionY != 0){
-                    if(!boxes.isEmpty()){
-                        for(BoundBox box : boxes){
-                            if(motionY != 0){
-                                if(!box.isEmpty()){
-                                    if(ownBox.getMaxX() > box.getMinX() && ownBox.getMinX() < box.getMaxX()){
-                                        if(motionY > 0 && ownBox.getMaxY() <= box.getMinY()){
-                                            double diff = box.getMinY()-ownBox.getMaxY();
-                                            if(diff < motionY){
+                if (motionY != 0) {
+                    if (!boxes.isEmpty()) {
+                        for (BoundBox box : boxes) {
+                            if (motionY != 0) {
+                                if (!box.isEmpty()) {
+                                    if (ownBox.getMaxX() > box.getMinX() && ownBox.getMinX() < box.getMaxX()) {
+                                        if (motionY > 0 && ownBox.getMaxY() <= box.getMinY()) {
+                                            double diff = box.getMinY() - ownBox.getMaxY();
+                                            if (diff < motionY) {
                                                 motionY = diff;
                                             }
-                                        }
-                                        else if(motionY < 0 && ownBox.getMinY() >= box.getMaxY()){
-                                            double diff = box.getMaxY()-ownBox.getMinY();
-                                            if(diff > motionY){
+                                        } else if (motionY < 0 && ownBox.getMinY() >= box.getMaxY()) {
+                                            double diff = box.getMaxY() - ownBox.getMinY();
+                                            if (diff > motionY) {
                                                 motionY = diff;
                                             }
                                         }
                                     }
                                 }
-                            }
-                            else{
+                            } else {
                                 break;
                             }
                         }
@@ -255,28 +393,26 @@ public class InternalHooks implements IInternalHooks{
                 }
 
                 double motionX = object.motionX;
-                if(motionX != 0){
-                    if(!boxes.isEmpty()){
-                        for(BoundBox box : boxes){
-                            if(motionX != 0){
-                                if(!box.isEmpty()){
-                                    if(ownBox.getMaxY() > box.getMinY() && ownBox.getMinY() < box.getMaxY()){
-                                        if(motionX > 0 && ownBox.getMaxX() <= box.getMinX()){
-                                            double diff = box.getMinX()-ownBox.getMaxX();
-                                            if(diff < motionX){
+                if (motionX != 0) {
+                    if (!boxes.isEmpty()) {
+                        for (BoundBox box : boxes) {
+                            if (motionX != 0) {
+                                if (!box.isEmpty()) {
+                                    if (ownBox.getMaxY() > box.getMinY() && ownBox.getMinY() < box.getMaxY()) {
+                                        if (motionX > 0 && ownBox.getMaxX() <= box.getMinX()) {
+                                            double diff = box.getMinX() - ownBox.getMaxX();
+                                            if (diff < motionX) {
                                                 motionX = diff;
                                             }
-                                        }
-                                        else if(motionX < 0 && ownBox.getMinX() >= box.getMaxX()){
-                                            double diff = box.getMaxX()-ownBox.getMinX();
-                                            if(diff > motionX){
+                                        } else if (motionX < 0 && ownBox.getMinX() >= box.getMaxX()) {
+                                            double diff = box.getMaxX() - ownBox.getMinX();
+                                            if (diff > motionX) {
                                                 motionX = diff;
                                             }
                                         }
                                     }
                                 }
-                            }
-                            else{
+                            } else {
                                 break;
                             }
                         }
@@ -293,128 +429,37 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public boolean doDefaultSlotMovement(IGameInstance game, int button, float x, float y, GuiContainer gui, ComponentSlot slot){
+    public boolean doDefaultSlotMovement(IGameInstance game, int button, float x, float y, GuiContainer gui, ComponentSlot slot) {
         boolean isSecond = Settings.KEY_GUI_ACTION_2.isKey(button);
-        if(isSecond || Settings.KEY_GUI_ACTION_1.isKey(button)){
+        if (isSecond || Settings.KEY_GUI_ACTION_1.isKey(button)) {
             ItemContainer container = gui.getContainer();
             return setOrPickUpHolding(gui.player, container, container.getIdForSlot(slot.slot), isSecond);
         }
         return false;
     }
 
-    public static boolean setOrPickUpHolding(AbstractEntityPlayer player, ItemContainer container, int slotId, boolean half){
-        if(player.world.isClient()){
-            RockBottomAPI.getNet().sendToServer(new PacketSetOrPickHolding(player.getUniqueId(), slotId, half));
-        }
-
-        ContainerSlot slot = container.getSlot(slotId);
-        ItemInstance slotInst = slot.get();
-
-        if(half){
-            if(container.holdingInst == null){
-                if(slotInst != null){
-                    int halfAmount = Util.ceil(slot.get().getAmount()/2D);
-                    if(slot.canRemove(halfAmount)){
-                        container.holdingInst = slotInst.copy().setAmount(halfAmount);
-                        slot.set(slotInst.removeAmount(halfAmount).nullIfEmpty());
-                        return true;
-                    }
-                }
-            }
-            else{
-                boolean should = false;
-
-                if(slotInst != null){
-                    if(slotInst.isEffectivelyEqual(container.holdingInst) && slotInst.getAmount() < slotInst.getMaxAmount()){
-                        should = true;
-
-                        ItemInstance newInst = slotInst.addAmount(1);
-                        if(slot.canPlace(newInst)){
-                            slot.set(newInst);
-                        }
-                    }
-                }
-                else{
-                    should = true;
-
-                    ItemInstance newInst = container.holdingInst.copy().setAmount(1);
-                    if(slot.canPlace(newInst)){
-                        slot.set(newInst);
-                    }
-                }
-
-                if(should){
-                    container.holdingInst = container.holdingInst.removeAmount(1).nullIfEmpty();
-                    return true;
-                }
-            }
-        }
-        else{
-            if(container.holdingInst == null){
-                if(slotInst != null && slot.canRemove(slotInst.getAmount())){
-                    container.holdingInst = slotInst;
-                    slot.set(null);
-                    return true;
-                }
-            }
-            else{
-                int removeAmount = 0;
-
-                if(slotInst != null){
-                    if(slotInst.isEffectivelyEqual(container.holdingInst)){
-                        int possibleAdd = Math.min(slotInst.getMaxAmount()-slotInst.getAmount(), container.holdingInst.getAmount());
-                        if(possibleAdd > 0){
-                            ItemInstance newInst = slotInst.copy().addAmount(possibleAdd);
-                            if(slot.canPlace(newInst)){
-                                removeAmount = possibleAdd;
-                                slot.set(newInst);
-                            }
-                        }
-                    }
-                    else if(slot.canRemove(slotInst.getAmount()) && slot.canPlace(container.holdingInst)){
-                        ItemInstance slotCopy = slotInst.copy();
-                        slot.set(container.holdingInst);
-                        container.holdingInst = slotCopy;
-                        return true;
-                    }
-                }
-                else if(slot.canPlace(container.holdingInst)){
-                    removeAmount = container.holdingInst.getAmount();
-                    slot.set(container.holdingInst.copy());
-                }
-
-                if(removeAmount > 0){
-                    container.holdingInst = container.holdingInst.removeAmount(removeAmount).nullIfEmpty();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
-    public boolean doDefaultShiftClicking(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot){
-        if(Settings.KEY_GUI_ACTION_1.isKey(button)){
+    public boolean doDefaultShiftClicking(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot) {
+        if (Settings.KEY_GUI_ACTION_1.isKey(button)) {
             ItemContainer container = gui.getContainer();
             ItemInstance remaining = slot.slot.get();
 
-            if(remaining != null){
+            if (remaining != null) {
                 boolean modified = false;
-                for(GuiContainer.ShiftClickBehavior behavior : gui.shiftClickBehaviors){
-                    if(behavior.slots.contains(slot.componentId)){
-                        for(int i = 0; i < 2; i++){
-                            for(int slotInto : behavior.slotsInto){
+                for (GuiContainer.ShiftClickBehavior behavior : gui.shiftClickBehaviors) {
+                    if (behavior.slots.contains(slot.componentId)) {
+                        for (int i = 0; i < 2; i++) {
+                            for (int slotInto : behavior.slotsInto) {
                                 GuiComponent comp = gui.getComponents().get(slotInto);
-                                if(comp instanceof ComponentSlot){
-                                    ComponentSlot intoSlot = (ComponentSlot)comp;
-                                    if(i == 1 || (intoSlot.slot.get() != null && intoSlot.slot.get().isEffectivelyEqual(remaining))){
-                                        if(behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)){
+                                if (comp instanceof ComponentSlot) {
+                                    ComponentSlot intoSlot = (ComponentSlot) comp;
+                                    if (i == 1 || (intoSlot.slot.get() != null && intoSlot.slot.get().isEffectivelyEqual(remaining))) {
+                                        if (behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)) {
                                             int result = shiftClick(gui.player, container, container.getIdForSlot(slot.slot), container.getIdForSlot(intoSlot.slot));
 
-                                            if(result == 1){
+                                            if (result == 1) {
                                                 return true;
-                                            }
-                                            else if(result == 2){
+                                            } else if (result == 2) {
                                                 modified = true;
                                             }
                                         }
@@ -430,55 +475,16 @@ public class InternalHooks implements IInternalHooks{
         return false;
     }
 
-    public static int shiftClick(AbstractEntityPlayer player, ItemContainer container, int from, int into){
-        if(player.world.isClient()){
-            RockBottomAPI.getNet().sendToServer(new PacketShiftClick(player.getUniqueId(), from, into));
-        }
-
-        ContainerSlot slotFrom = container.getSlot(from);
-        ContainerSlot slotInto = container.getSlot(into);
-
-        ItemInstance fromInst = slotFrom.get();
-        ItemInstance intoInst = slotInto.get();
-
-        if(intoInst == null){
-            if(slotInto.canPlace(fromInst) && slotFrom.canRemove(fromInst.getAmount())){
-                slotInto.set(fromInst);
-                slotFrom.set(null);
-                return 1;
-            }
-        }
-        else if(intoInst.isEffectivelyEqual(fromInst)){
-            int possible = Math.min(intoInst.getMaxAmount()-intoInst.getAmount(), fromInst.getAmount());
-            if(possible > 0 && slotFrom.canRemove(possible)){
-                ItemInstance newInto = intoInst.copy().addAmount(possible);
-                if(slotInto.canPlace(newInto)){
-                    int remaining = fromInst.getAmount()-possible;
-                    slotInto.set(newInto);
-                    if(remaining <= 0){
-                        slotFrom.set(null);
-                        return 1;
-                    }
-                    else{
-                        slotFrom.set(fromInst.copy().setAmount(remaining));
-                        return 2;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
     @Override
-    public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate){
-        if(layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x+1, y+1), entity -> !(entity instanceof AbstractEntityItem)).isEmpty()){
-            if(layer.canTileBeInLayer(player.world, x, y, tile)){
+    public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate) {
+        if (layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x + 1, y + 1), entity -> !(entity instanceof AbstractEntityItem)).isEmpty()) {
+            if (layer.canTileBeInLayer(player.world, x, y, tile)) {
                 Tile tileThere = player.world.getState(layer, x, y).getTile();
-                if(tileThere != tile && tileThere.canReplace(player.world, x, y, layer)){
-                    if(InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer, player)){
-                        if(!simulate){
+                if (tileThere != tile && tileThere.canReplace(player.world, x, y, layer)) {
+                    if (InteractionManager.defaultTilePlacementCheck(player.world, x, y, layer, tile) && tile.canPlace(player.world, x, y, layer, player)) {
+                        if (!simulate) {
                             PlaceTileEvent event = new PlaceTileEvent(player, selected, removeItem, layer, x, y);
-                            if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+                            if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
                                 selected = event.instance;
                                 layer = event.layer;
                                 removeItem = event.removeItem;
@@ -487,19 +493,19 @@ public class InternalHooks implements IInternalHooks{
 
                                 tile.doPlace(player.world, x, y, layer, selected, player);
 
-                                if(!player.world.isClient()){
+                                if (!player.world.isClient()) {
                                     Item item = tile.getItem();
-                                    if(item != null){
+                                    if (item != null) {
                                         player.getStatistics().getOrInit(StatisticList.TILES_PLACED, ItemStatistic.class).update(item);
                                     }
 
-                                    if(removeItem){
+                                    if (removeItem) {
                                         player.getInv().set(player.getSelectedSlot(), selected.removeAmount(1).nullIfEmpty());
                                     }
 
                                     ResourceName sound = tile.getPlaceSound(player.world, x, y, layer, player, player.world.getState(layer, x, y));
-                                    if(sound != null){
-                                        player.world.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+                                    if (sound != null) {
+                                        player.world.playSound(sound, x + 0.5, y + 0.5, layer.index(), 1F, 1F);
                                     }
                                 }
                             }
@@ -513,55 +519,51 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public void doDefaultLiquidBehavior(IWorld world, int x, int y, TileLayer layer, TileLiquid tile){
+    public void doDefaultLiquidBehavior(IWorld world, int x, int y, TileLayer layer, TileLiquid tile) {
         TileState ourState = world.getState(layer, x, y);
-        int ourLevel = ourState.get(tile.level)+1;
-        if(!world.isPosLoaded(x, y-1)){
+        int ourLevel = ourState.get(tile.level) + 1;
+        if (!world.isPosLoaded(x, y - 1)) {
             return;
         }
         // Check down
-        if(world.getState(x, y-1).getTile().canLiquidSpreadInto(world, x, y-1, tile)){
-            TileState beneathState = world.getState(layer, x, y-1);
-            if(beneathState.getTile() == tile){
+        if (world.getState(x, y - 1).getTile().canLiquidSpreadInto(world, x, y - 1, tile)) {
+            TileState beneathState = world.getState(layer, x, y - 1);
+            if (beneathState.getTile() == tile) {
                 // Liquid beneath us
-                int otherLevel = beneathState.get(tile.level)+1;
-                int remaining = ourLevel-tile.getLevels()+otherLevel;
-                if(remaining < tile.getLevels() && tile.getLevels()-otherLevel != 0){ // If more liquid can fit beneath us
-                    if(remaining > 0){
+                int otherLevel = beneathState.get(tile.level) + 1;
+                int remaining = ourLevel - tile.getLevels() + otherLevel;
+                if (remaining < tile.getLevels() && tile.getLevels() - otherLevel != 0) { // If more liquid can fit beneath us
+                    if (remaining > 0) {
                         // Transfer one unit to the liquid beneath us
-                        world.setState(layer, x, y, ourState.prop(tile.level, remaining-1));
-                        world.setState(layer, x, y-1, beneathState.prop(tile.level, tile.getLevels()-1));
+                        world.setState(layer, x, y, ourState.prop(tile.level, remaining - 1));
+                        world.setState(layer, x, y - 1, beneathState.prop(tile.level, tile.getLevels() - 1));
                         return;
-                    }
-                    else{
+                    } else {
                         // Transfer our last unit to the liquid beneath us and remove this liquid
                         world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
-                        world.setState(layer, x, y-1, beneathState.prop(tile.level, otherLevel+ourLevel-1));
+                        world.setState(layer, x, y - 1, beneathState.prop(tile.level, otherLevel + ourLevel - 1));
                         return;
                     }
-                }
-                else{
-                    if(!world.isPosLoaded(x+1, y-1) || !world.isPosLoaded(x-1, y-1)){
+                } else {
+                    if (!world.isPosLoaded(x + 1, y - 1) || !world.isPosLoaded(x - 1, y - 1)) {
                         return;
                     }
-                    TileState leftState = world.getState(layer, x-1, y-1);
-                    TileState rightState = world.getState(layer, x+1, y-1);
+                    TileState leftState = world.getState(layer, x - 1, y - 1);
+                    TileState rightState = world.getState(layer, x + 1, y - 1);
                     // Try to balance to the sides
-                    if(Util.RANDOM.nextBoolean()){
-                        if(this.transferDown(world, layer, ourState, leftState, x, y, -1, tile) || this.transferDown(world, layer, ourState, rightState, x, y, 1, tile)){
+                    if (Util.RANDOM.nextBoolean()) {
+                        if (this.transferDown(world, layer, ourState, leftState, x, y, -1, tile) || this.transferDown(world, layer, ourState, rightState, x, y, 1, tile)) {
                             return;
                         }
-                    }
-                    else{
-                        if(this.transferDown(world, layer, ourState, rightState, x, y, 1, tile) || this.transferDown(world, layer, ourState, leftState, x, y, -1, tile)){
+                    } else {
+                        if (this.transferDown(world, layer, ourState, rightState, x, y, 1, tile) || this.transferDown(world, layer, ourState, leftState, x, y, -1, tile)) {
                             return;
                         }
                     }
                 }
-            }
-            else if(beneathState.getTile().isAir()){
+            } else if (beneathState.getTile().isAir()) {
                 // Nothing beneath us move down
-                world.setState(layer, x, y-1, ourState);
+                world.setState(layer, x, y - 1, ourState);
                 world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
                 return;
             }
@@ -569,31 +571,30 @@ public class InternalHooks implements IInternalHooks{
         }
 
         // Balance and spread
-        if(!world.isPosLoaded(x-1, y) || !world.isPosLoaded(x+1, y)){
+        if (!world.isPosLoaded(x - 1, y) || !world.isPosLoaded(x + 1, y)) {
             return;
         }
-        TileState leftState = world.getState(layer, x-1, y);
-        TileState rightState = world.getState(layer, x+1, y);
+        TileState leftState = world.getState(layer, x - 1, y);
+        TileState rightState = world.getState(layer, x + 1, y);
         boolean oneToSpare;
-        if(Util.RANDOM.nextBoolean()){
+        if (Util.RANDOM.nextBoolean()) {
             // Left first
             oneToSpare = this.balanceAndSpread(world, layer, leftState, rightState, ourState, ourLevel, x, y, -1, false, tile);
             ourState = world.getState(layer, x, y);
-            ourLevel = ourState.get(tile.level)+1;
+            ourLevel = ourState.get(tile.level) + 1;
             // Right second
             boolean found = this.balanceAndSpread(world, layer, rightState, leftState, ourState, ourLevel, x, y, 1, oneToSpare, tile);
-            if(found != oneToSpare){ // We need to check left again
+            if (found != oneToSpare) { // We need to check left again
                 this.balanceAndSpread(world, layer, leftState, rightState, ourState, ourLevel, x, y, -1, true, tile);
             }
-        }
-        else{
+        } else {
             // Right first
             oneToSpare = this.balanceAndSpread(world, layer, rightState, leftState, ourState, ourLevel, x, y, 1, false, tile);
             ourState = world.getState(layer, x, y);
-            ourLevel = ourState.get(tile.level)+1;
+            ourLevel = ourState.get(tile.level) + 1;
             // Left second
             boolean found = this.balanceAndSpread(world, layer, leftState, rightState, ourState, ourLevel, x, y, -1, oneToSpare, tile);
-            if(found != oneToSpare){ // We need to check right again
+            if (found != oneToSpare) { // We need to check right again
                 this.balanceAndSpread(world, layer, rightState, leftState, ourState, ourLevel, x, y, 1, true, tile);
             }
         }
@@ -601,8 +602,8 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public String getKeyOrMouseName(int key){
-        switch(key){
+    public String getKeyOrMouseName(int key) {
+        switch (key) {
             case GLFW.GLFW_MOUSE_BUTTON_1:
                 return this.localizeKey("mouse.left");
             case GLFW.GLFW_MOUSE_BUTTON_2:
@@ -867,47 +868,42 @@ public class InternalHooks implements IInternalHooks{
         }
     }
 
-    private String localizeKey(String name){
-        return RockBottomAPI.getGame().getAssetManager().localize(ResourceName.intern("key_name."+name));
+    private String localizeKey(String name) {
+        return RockBottomAPI.getGame().getAssetManager().localize(ResourceName.intern("key_name." + name));
     }
 
     // Direction: 1 = right, -1 = left
-    private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState oppositeState, TileState ourState, int ourLevel, int x, int y, int direction, boolean oneToSpare, TileLiquid tile){
-        if(world.getState(x+direction, y).getTile().canLiquidSpreadInto(world, x+direction, y, tile)){
-            if(otherState.getTile() == tile){
+    private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState oppositeState, TileState ourState, int ourLevel, int x, int y, int direction, boolean oneToSpare, TileLiquid tile) {
+        if (world.getState(x + direction, y).getTile().canLiquidSpreadInto(world, x + direction, y, tile)) {
+            if (otherState.getTile() == tile) {
                 // Balance with left
-                int otherLevel = otherState.get(tile.level)+1;
-                if(otherLevel > ourLevel){
-                    if(otherLevel-ourLevel > 1){
-                        this.transfer(world, layer, ourLevel, otherState, ourState, x+direction, x, y, tile);
-                    }
-                    else{
+                int otherLevel = otherState.get(tile.level) + 1;
+                if (otherLevel > ourLevel) {
+                    if (otherLevel - ourLevel > 1) {
+                        this.transfer(world, layer, ourLevel, otherState, ourState, x + direction, x, y, tile);
+                    } else {
                         // Remember for balancing
                         return true;
                     }
-                }
-                else if(otherLevel < ourLevel){
-                    if(otherLevel-ourLevel < -1){
-                        this.transfer(world, layer, otherLevel, ourState, otherState, x, x+direction, y, tile);
-                    }
-                    else if(oneToSpare){ // If we have one to spare we can transfer it here
-                        this.transfer(world, layer, otherLevel, oppositeState, otherState, x-direction, x+direction, y, tile);
-                    }
-                    else{ // Check if we have one to spare further away
-                        if(!world.isPosLoaded(x-direction*2, y)){
+                } else if (otherLevel < ourLevel) {
+                    if (otherLevel - ourLevel < -1) {
+                        this.transfer(world, layer, otherLevel, ourState, otherState, x, x + direction, y, tile);
+                    } else if (oneToSpare) { // If we have one to spare we can transfer it here
+                        this.transfer(world, layer, otherLevel, oppositeState, otherState, x - direction, x + direction, y, tile);
+                    } else { // Check if we have one to spare further away
+                        if (!world.isPosLoaded(x - direction * 2, y)) {
                             return false; // Maybe this should be an exception being thrown to completely cancel the update. I am not doing this however because exceptions are really bad for performance
                         }
-                        TileState farState = world.getState(layer, x-direction*2, y);
-                        if(farState.getTile() == tile){
-                            if(farState.get(tile.level)-otherLevel > 0){
-                                this.transfer(world, layer, otherLevel, farState, otherState, x-direction*2, x+direction, y, tile);
+                        TileState farState = world.getState(layer, x - direction * 2, y);
+                        if (farState.getTile() == tile) {
+                            if (farState.get(tile.level) - otherLevel > 0) {
+                                this.transfer(world, layer, otherLevel, farState, otherState, x - direction * 2, x + direction, y, tile);
                             }
                         }
                     }
                 }
-            }
-            else if(otherState.getTile().isAir()){
-                if(ourLevel > 1){
+            } else if (otherState.getTile().isAir()) {
+                if (ourLevel > 1) {
                     // Spread
                     this.spread(world, layer, ourLevel, ourState, x, y, direction, tile);
                 }
@@ -917,68 +913,64 @@ public class InternalHooks implements IInternalHooks{
     }
 
     // Direction: 1 = right, -1 = left
-    private void spread(IWorld world, TileLayer layer, int ourLevel, TileState ourState, int x, int y, int direction, TileLiquid tile){
-        world.setState(layer, x+direction, y, tile.getDefState()); // Place one unit
-        world.setState(layer, x, y, ourState.prop(tile.level, ourLevel-2)); // Decrease our level
+    private void spread(IWorld world, TileLayer layer, int ourLevel, TileState ourState, int x, int y, int direction, TileLiquid tile) {
+        world.setState(layer, x + direction, y, tile.getDefState()); // Place one unit
+        world.setState(layer, x, y, ourState.prop(tile.level, ourLevel - 2)); // Decrease our level
     }
 
     // Direction: 1 = right, -1 = left
-    private void transfer(IWorld world, TileLayer layer, int secondLevel, TileState firstState, TileState secondState, int x1, int x2, int y, TileLiquid tile){
-        world.setState(layer, x1, y, firstState.prop(tile.level, firstState.get(tile.level)-1)); // Decrease first by one
+    private void transfer(IWorld world, TileLayer layer, int secondLevel, TileState firstState, TileState secondState, int x1, int x2, int y, TileLiquid tile) {
+        world.setState(layer, x1, y, firstState.prop(tile.level, firstState.get(tile.level) - 1)); // Decrease first by one
         world.setState(layer, x2, y, secondState.prop(tile.level, secondLevel)); // Increase second by one
         world.scheduleUpdate(x2, y, layer, tile.getFlowSpeed());
     }
 
-    private boolean transferDown(IWorld world, TileLayer layer, TileState firstState, TileState secondState, int x, int y, int direction, TileLiquid tile){
+    private boolean transferDown(IWorld world, TileLayer layer, TileState firstState, TileState secondState, int x, int y, int direction, TileLiquid tile) {
         boolean empty = false;
-        if(secondState.getTile() == tile){
-            int secondLevel = secondState.get(tile.level)+1;
-            if(secondLevel < tile.getLevels()){
-                if(firstState.get(tile.level) == 0){
+        if (secondState.getTile() == tile) {
+            int secondLevel = secondState.get(tile.level) + 1;
+            if (secondLevel < tile.getLevels()) {
+                if (firstState.get(tile.level) == 0) {
                     world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
                     empty = true;
+                } else {
+                    world.setState(layer, x, y, firstState.prop(tile.level, firstState.get(tile.level) - 1)); // Decrease first by one
                 }
-                else{
-                    world.setState(layer, x, y, firstState.prop(tile.level, firstState.get(tile.level)-1)); // Decrease first by one
-                }
-                world.setState(layer, x+direction, y-1, secondState.prop(tile.level, secondLevel)); // Increase second by one
+                world.setState(layer, x + direction, y - 1, secondState.prop(tile.level, secondLevel)); // Increase second by one
             }
         }
         return empty;
     }
 
     @Override
-    public boolean doInputFieldKeyPress(IGameInstance game, int button, ComponentInputField field){
-        if(field.isSelected()){
-            if(button == GLFW.GLFW_KEY_BACKSPACE){
-                if(!field.getText().isEmpty()){
-                    field.setText(field.getText().substring(0, field.getText().length()-1));
+    public boolean doInputFieldKeyPress(IGameInstance game, int button, ComponentInputField field) {
+        if (field.isSelected()) {
+            if (button == GLFW.GLFW_KEY_BACKSPACE) {
+                if (!field.getText().isEmpty()) {
+                    field.setText(field.getText().substring(0, field.getText().length() - 1));
                 }
                 return true;
-            }
-            else if(button == GLFW.GLFW_KEY_ESCAPE){
-                if(field.selectable){
+            } else if (button == GLFW.GLFW_KEY_ESCAPE) {
+                if (field.selectable) {
                     field.setSelected(false);
                     return true;
                 }
-            }
-            else{
+            } else {
                 IInputHandler input = game.getInput();
-                if(input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) || input.isKeyDown(GLFW.GLFW_KEY_RIGHT_CONTROL)){
-                    if(button == GLFW.GLFW_KEY_V){
-                        try{
-                            String data = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+                if (input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) || input.isKeyDown(GLFW.GLFW_KEY_RIGHT_CONTROL)) {
+                    if (button == GLFW.GLFW_KEY_V) {
+                        try {
+                            String data = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
 
                             int space = this.getTextSpace(game, field);
-                            if(space < data.length()){
+                            if (space < data.length()) {
                                 data = data.substring(0, space);
                             }
 
-                            field.setText(field.getText()+data);
+                            field.setText(field.getText() + data);
 
                             return true;
-                        }
-                        catch(Exception ignored){
+                        } catch (Exception ignored) {
                         }
                         return false;
                     }
@@ -989,13 +981,13 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public boolean doInputFieldCharInput(IGameInstance game, char[] characters, ComponentInputField field){
+    public boolean doInputFieldCharInput(IGameInstance game, char[] characters, ComponentInputField field) {
         boolean did = false;
-        if(field.isSelected()){
-            for(char character : characters){
-                if(character >= 32 && character <= 254){
-                    if(this.getTextSpace(game, field) > 0){
-                        field.setText(field.getText()+character);
+        if (field.isSelected()) {
+            for (char character : characters) {
+                if (character >= 32 && character <= 254) {
+                    if (this.getTextSpace(game, field) > 0) {
+                        field.setText(field.getText() + character);
                         did = true;
                     }
                 }
@@ -1005,8 +997,8 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public void doInputFieldRender(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y, ComponentInputField field){
-        if(field.renderBox){
+    public void doInputFieldRender(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y, ComponentInputField field) {
+        if (field.renderBox) {
             g.addFilledRect(x, y, field.getWidth(), field.getHeight(), field.isMouseOverPrioritized(game) ? GuiComponent.getElementColor() : GuiComponent.getUnselectedElementColor());
             g.addEmptyRect(x, y, field.getWidth(), field.getHeight(), GuiComponent.getElementOutlineColor());
         }
@@ -1014,43 +1006,43 @@ public class InternalHooks implements IInternalHooks{
         IFont font = manager.getFont();
 
         String text = field.getDisplayText();
-        if(field.isCensored()){
+        if (field.isCensored()) {
             char[] chars = new char[text.length()];
             Arrays.fill(chars, '*');
             text = new String(chars);
         }
 
-        String display = text+(field.isSelected() ? ((game.getTotalTicks()/15)%2 == 0 ? "|" : " ") : "");
-        font.drawCutOffString(x+3, y+field.getHeight()/2F-font.getHeight(0.35F)/2F, display, 0.35F, field.getWidth()-6, true, false);
+        String display = text + (field.isSelected() ? ((game.getTotalTicks() / 15) % 2 == 0 ? "|" : " ") : "");
+        font.drawCutOffString(x + 3, y + field.getHeight() / 2F - font.getHeight(0.35F) / 2F, display, 0.35F, field.getWidth() - 6, true, false);
 
-        if(field.displaxMaxLength){
+        if (field.displaxMaxLength) {
             int space = this.getTextSpace(game, field);
-            FormattingCode format = space <= 0 ? FormattingCode.RED : (space <= field.maxLength/8 ? FormattingCode.ORANGE : (space <= field.maxLength/4 ? FormattingCode.YELLOW : FormattingCode.NONE));
-            font.drawStringFromRight(x+field.getWidth()-1, y+field.getHeight()-font.getHeight(0.2F), format.toString()+(field.maxLength-space)+'/'+field.maxLength, 0.2F);
+            FormattingCode format = space <= 0 ? FormattingCode.RED : (space <= field.maxLength / 8 ? FormattingCode.ORANGE : (space <= field.maxLength / 4 ? FormattingCode.YELLOW : FormattingCode.NONE));
+            font.drawStringFromRight(x + field.getWidth() - 1, y + field.getHeight() - font.getHeight(0.2F), format.toString() + (field.maxLength - space) + '/' + field.maxLength, 0.2F);
         }
     }
 
-    private int getTextSpace(IGameInstance game, ComponentInputField field){
-        return field.maxLength-game.getAssetManager().getFont().removeFormatting(field.getText()).length();
+    private int getTextSpace(IGameInstance game, ComponentInputField field) {
+        return field.maxLength - game.getAssetManager().getFont().removeFormatting(field.getText()).length();
     }
 
     @Override
-    public void doTileStateInit(TileState thisState, ResourceName name, Tile tile, Map<String, Comparable> properties, Table<String, Comparable, TileState> subStates){
+    public void doTileStateInit(TileState thisState, ResourceName name, Tile tile, Map<String, Comparable> properties, Table<String, Comparable, TileState> subStates) {
         RockBottomAPI.TILE_STATE_REGISTRY.register(name, thisState);
 
-        for(TileProp prop : tile.getProps()){
+        for (TileProp prop : tile.getProps()) {
             String propName = prop.getName();
-            for(int i = 0; i < prop.getVariants(); i++){
+            for (int i = 0; i < prop.getVariants(); i++) {
                 Comparable value = prop.getValue(i);
-                if(!properties.get(propName).equals(value)){
+                if (!properties.get(propName).equals(value)) {
                     Map<String, Comparable> subProps = new TreeMap<>(properties);
                     subProps.put(propName, value);
 
                     ResourceName subName = generateTileStateName(tile, subProps);
-                    if(tile.hasState(subName, subProps)){
+                    if (tile.hasState(subName, subProps)) {
                         TileState state = RockBottomAPI.TILE_STATE_REGISTRY.get(subName);
 
-                        if(state == null){
+                        if (state == null) {
                             state = new TileState(subName, tile, subProps);
                         }
 
@@ -1061,59 +1053,34 @@ public class InternalHooks implements IInternalHooks{
         }
     }
 
-    public static ResourceName generateTileStateName(Tile tile, Map<String, Comparable> properties){
-        StringBuilder suffix = new StringBuilder();
-
-        if(!properties.isEmpty()){
-            suffix.append(';');
-
-            Iterator<Map.Entry<String, Comparable>> iterator = properties.entrySet().iterator();
-            while(iterator.hasNext()){
-                Map.Entry<String, Comparable> entry = iterator.next();
-
-                String append = entry.getKey()+'@'+entry.getValue();
-                if(iterator.hasNext()){
-                    append += ",";
-                }
-
-                suffix.append(append);
-            }
-        }
-
-        return tile.getName().addSuffix(suffix.toString());
-    }
-
     @Override
-    public IStateHandler makeStateHandler(Tile tile){
+    public IStateHandler makeStateHandler(Tile tile) {
         return new StateHandler(tile);
     }
 
     @Override
-    public FormattingCode getFormattingCode(String s, int index, Map<Character, FormattingCode> defaults){
-        if(s.length() > index+1 && s.charAt(index) == '&'){
-            char formatChar = s.charAt(index+1);
+    public FormattingCode getFormattingCode(String s, int index, Map<Character, FormattingCode> defaults) {
+        if (s.length() > index + 1 && s.charAt(index) == '&') {
+            char formatChar = s.charAt(index + 1);
 
-            if(formatChar == '('){
-                int closingIndex = s.indexOf(")", index+2);
-                if(closingIndex > index+2){
-                    String code = s.substring(index+2, closingIndex);
+            if (formatChar == '(') {
+                int closingIndex = s.indexOf(")", index + 2);
+                if (closingIndex > index + 2) {
+                    String code = s.substring(index + 2, closingIndex);
                     String[] colors = code.split(",");
 
-                    if(colors.length == 3){
-                        try{
-                            return new FormattingCode(' ', Colors.rgb(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])), FontProp.NONE, code.length()+3, "&("+code+')');
-                        }
-                        catch(Exception ignored){
+                    if (colors.length == 3) {
+                        try {
+                            return new FormattingCode(' ', Colors.rgb(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])), FontProp.NONE, code.length() + 3, "&(" + code + ')');
+                        } catch (Exception ignored) {
                         }
                     }
                 }
-            }
-            else if(formatChar == 'r'){
-                return new FormattingCode('r', Colors.rainbow((Util.getTimeMillis()/10)%256));
-            }
-            else{
+            } else if (formatChar == 'r') {
+                return new FormattingCode('r', Colors.rainbow((Util.getTimeMillis() / 10) % 256));
+            } else {
                 FormattingCode def = defaults.get(formatChar);
-                if(def != null){
+                if (def != null) {
                     return def;
                 }
             }
@@ -1122,16 +1089,16 @@ public class InternalHooks implements IInternalHooks{
     }
 
     @Override
-    public AbstractEntityItem makeItem(IWorld world, ItemInstance inst, double x, double y, double motionX, double motionY){
+    public AbstractEntityItem makeItem(IWorld world, ItemInstance inst, double x, double y, double motionX, double motionY) {
         return new EntityItem(world, inst);
     }
 
     @Override
-    public List<ComponentStatistic> makeItemStatComponents(IGameInstance game, ItemStatistic.Stat stat, Map<Item, Counter> statMap, AbstractStatGui gui, ComponentMenu menu, ResourceName textureLocation){
+    public List<ComponentStatistic> makeItemStatComponents(IGameInstance game, ItemStatistic.Stat stat, Map<Item, Counter> statMap, AbstractStatGui gui, ComponentMenu menu, ResourceName textureLocation) {
         return Collections.singletonList(new ComponentStatistic(gui, () -> game.getAssetManager().localize(stat.getInitializer().getName().addPrefix("stat.")), () -> String.valueOf(stat.getTotal()), stat.getTotal(), () -> {
             List<ComponentStatistic> list = new ArrayList<>();
 
-            for(Map.Entry<Item, Counter> entry : statMap.entrySet()){
+            for (Map.Entry<Item, Counter> entry : statMap.entrySet()) {
                 Item item = entry.getKey();
                 Counter value = entry.getValue();
 
@@ -1139,14 +1106,14 @@ public class InternalHooks implements IInternalHooks{
                 String statName = game.getAssetManager().localize(stat.getInitializer().getName().addPrefix("stat.").addSuffix("_per_tile"));
 
                 list.add(new ComponentStatistic(gui, () -> {
-                    instance.setMeta((game.getTotalTicks()/Constants.TARGET_TPS)%(item.getHighestPossibleMeta()+1));
+                    instance.setMeta((game.getTotalTicks() / Constants.TARGET_TPS) % (item.getHighestPossibleMeta() + 1));
                     return String.format(statName, instance.getDisplayName());
-                }, value :: toString, value.get(), null){
+                }, value::toString, value.get(), null) {
                     @Override
-                    public void renderStatGraphic(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
+                    public void renderStatGraphic(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
                         IItemRenderer renderer = item.getRenderer();
-                        if(renderer != null){
-                            renderer.render(game, manager, g, item, instance, x+1, y+1, 12F, Colors.WHITE);
+                        if (renderer != null) {
+                            renderer.render(game, manager, g, item, instance, x + 1, y + 1, 12F, Colors.WHITE);
                         }
                     }
                 });
@@ -1155,26 +1122,26 @@ public class InternalHooks implements IInternalHooks{
             game.getGuiManager().openGui(gui.makeSubGui(list));
 
             return true;
-        }){
+        }) {
             @Override
-            public void renderStatGraphic(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y){
-                manager.getTexture(textureLocation).draw(x+1, y+1, 12F, 12F);
+            public void renderStatGraphic(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
+                manager.getTexture(textureLocation).draw(x + 1, y + 1, 12F, 12F);
             }
         });
     }
 
     @Override
-    public Logger logger(){
+    public Logger logger() {
         return Logging.mainLogger;
     }
 
     @Override
-    public void onToolBroken(IWorld world, AbstractEntityPlayer player, ItemInstance instance){
-        if(world.isServer()){
+    public void onToolBroken(IWorld world, AbstractEntityPlayer player, ItemInstance instance) {
+        if (world.isServer()) {
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new PacketToolBreak(player.getUniqueId(), instance), player.getX(), player.getY());
         }
 
-        if(!world.isDedicatedServer()){
+        if (!world.isDedicatedServer()) {
             RockBottomAPI.getGame().getParticleManager().addItemParticles(world, player.getX(), player.getY(), instance);
         }
 

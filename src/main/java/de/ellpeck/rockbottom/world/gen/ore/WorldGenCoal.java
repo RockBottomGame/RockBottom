@@ -8,40 +8,40 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 
 import java.util.Set;
 
-public class WorldGenCoal extends WorldGenOre{
+public class WorldGenCoal extends WorldGenOre {
 
     @Override
-    protected int getHighestGridPos(){
+    protected int getHighestGridPos() {
         return 0;
     }
 
     @Override
-    protected int getMaxAmount(){
+    protected int getMaxAmount() {
         return 8;
     }
 
     @Override
-    protected int getClusterRadiusX(){
+    protected int getClusterRadiusX() {
         return 5;
     }
 
     @Override
-    protected int getClusterRadiusY(){
+    protected int getClusterRadiusY() {
         return 3;
     }
 
     @Override
-    protected TileState getOreState(){
+    protected TileState getOreState() {
         return GameContent.TILE_COAL.getDefState();
     }
 
     @Override
-    public int getPriority(){
+    public int getPriority() {
         return 0;
     }
 
     @Override
-    protected Set<Biome> getAllowedBiomes(){
+    protected Set<Biome> getAllowedBiomes() {
         return Sets.newHashSet(GameContent.BIOME_GRASSLAND, GameContent.BIOME_UNDERGROUND);
     }
 }

@@ -8,26 +8,24 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 import java.util.logging.Level;
 
-public class PacketEncoder extends MessageToByteEncoder<IPacket>{
+public class PacketEncoder extends MessageToByteEncoder<IPacket> {
 
     public static int packetsSent;
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf){
+    protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf) {
         int id = RockBottomAPI.PACKET_REGISTRY.getId(packet.getClass());
 
-        if(id >= 0){
+        if (id >= 0) {
             buf.writeByte(id);
 
-            try{
+            try {
                 packet.toBuffer(buf);
+            } catch (Exception e) {
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't write packet " + packet.getClass() + " with id " + id + " to buffer", e);
             }
-            catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't write packet "+packet.getClass()+" with id "+id+" to buffer", e);
-            }
-        }
-        else{
-            RockBottomAPI.logger().warning("Found unregistered packet "+packet.getClass());
+        } else {
+            RockBottomAPI.logger().warning("Found unregistered packet " + packet.getClass());
         }
 
         packetsSent++;

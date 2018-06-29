@@ -11,27 +11,27 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.Random;
 
-public class WorldGenPebbles implements IWorldGenerator{
+public class WorldGenPebbles implements IWorldGenerator {
 
     private final Random pebbleRandom = new Random();
 
     @Override
-    public boolean shouldGenerate(IWorld world, IChunk chunk){
+    public boolean shouldGenerate(IWorld world, IChunk chunk) {
         return true;
     }
 
     @Override
-    public void generate(IWorld world, IChunk chunk){
-        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
+    public void generate(IWorld world, IChunk chunk) {
+        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             int y = chunk.getHeightInner(TileLayer.MAIN, x);
-            if(chunk.getY()+y >= world.getExpectedSurfaceHeight(TileLayer.MAIN, chunk.getX()+x)){
-                if(y < Constants.CHUNK_SIZE && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN)){
+            if (chunk.getY() + y >= world.getExpectedSurfaceHeight(TileLayer.MAIN, chunk.getX() + x)) {
+                if (y < Constants.CHUNK_SIZE && chunk.getStateInner(x, y).getTile().canReplace(world, chunk.getX() + x, chunk.getY() + y, TileLayer.MAIN)) {
                     float chance = chunk.getBiomeInner(x, y).getPebbleChance();
 
                     this.pebbleRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
-                    if(chance > 0F && this.pebbleRandom.nextFloat() <= chance){
+                    if (chance > 0F && this.pebbleRandom.nextFloat() <= chance) {
                         Tile tile = GameContent.TILE_PEBBLES;
-                        if(tile.canPlace(world, chunk.getX()+x, chunk.getY()+y, TileLayer.MAIN, null)){
+                        if (tile.canPlace(world, chunk.getX() + x, chunk.getY() + y, TileLayer.MAIN, null)) {
                             chunk.setStateInner(x, y, tile.getDefState());
                         }
                     }
@@ -41,7 +41,7 @@ public class WorldGenPebbles implements IWorldGenerator{
     }
 
     @Override
-    public int getPriority(){
+    public int getPriority() {
         return -90;
     }
 }

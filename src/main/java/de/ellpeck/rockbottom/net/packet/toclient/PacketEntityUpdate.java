@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketEntityUpdate implements IPacket{
+public class PacketEntityUpdate implements IPacket {
 
     private UUID uniqueId;
     private double x;
@@ -21,7 +21,7 @@ public class PacketEntityUpdate implements IPacket{
     private boolean collidedVert;
     private boolean onGround;
 
-    public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY, Direction facing, boolean collidedHor, boolean collidedVert, boolean onGround){
+    public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY, Direction facing, boolean collidedHor, boolean collidedVert, boolean onGround) {
         this.uniqueId = uniqueId;
         this.x = x;
         this.y = y;
@@ -33,12 +33,12 @@ public class PacketEntityUpdate implements IPacket{
         this.onGround = onGround;
     }
 
-    public PacketEntityUpdate(){
+    public PacketEntityUpdate() {
 
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.uniqueId.getMostSignificantBits());
         buf.writeLong(this.uniqueId.getLeastSignificantBits());
         buf.writeDouble(this.x);
@@ -52,7 +52,7 @@ public class PacketEntityUpdate implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.uniqueId = new UUID(buf.readLong(), buf.readLong());
         this.x = buf.readDouble();
         this.y = buf.readDouble();
@@ -65,10 +65,10 @@ public class PacketEntityUpdate implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
-        if(game.getWorld() != null){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
+        if (game.getWorld() != null) {
             Entity entity = game.getWorld().getEntity(this.uniqueId);
-            if(entity != null){
+            if (entity != null) {
                 entity.motionX = this.motionX;
                 entity.motionY = this.motionY;
                 entity.facing = this.facing;

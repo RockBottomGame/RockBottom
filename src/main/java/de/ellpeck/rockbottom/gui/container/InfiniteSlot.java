@@ -5,26 +5,26 @@ import de.ellpeck.rockbottom.api.inventory.AbstractInventory;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 
-public class InfiniteSlot extends ContainerSlot{
+public class InfiniteSlot extends ContainerSlot {
 
-    public InfiniteSlot(ItemInstance instance, int x, int y){
+    public InfiniteSlot(ItemInstance instance, int x, int y) {
         super(makeInventory(instance), 0, x, y);
     }
 
-    private static IInventory makeInventory(ItemInstance instance){
-        return new AbstractInventory(){
+    private static IInventory makeInventory(ItemInstance instance) {
+        return new AbstractInventory() {
             @Override
-            public void set(int id, ItemInstance instance){
+            public void set(int id, ItemInstance instance) {
 
             }
 
             @Override
-            public ItemInstance get(int id){
+            public ItemInstance get(int id) {
                 return instance.copy();
             }
 
             @Override
-            public int getSlotAmount(){
+            public int getSlotAmount() {
                 return 1;
             }
         };

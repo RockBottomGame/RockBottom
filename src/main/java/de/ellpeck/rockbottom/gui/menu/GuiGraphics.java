@@ -9,17 +9,17 @@ import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiManager;
 
-public class GuiGraphics extends Gui{
+public class GuiGraphics extends Gui {
 
     private static final String RAINBOW = "do the disco dance";
     private int rainbowIndex;
 
-    public GuiGraphics(Gui parent){
+    public GuiGraphics(Gui parent) {
         super(304, 150, parent);
     }
 
     @Override
-    public void init(IGameInstance game){
+    public void init(IGameInstance game) {
         super.init(game);
         Settings settings = game.getSettings();
         IAssetManager assetManager = game.getAssetManager();
@@ -33,15 +33,15 @@ public class GuiGraphics extends Gui{
             settings.cursorInfos = !settings.cursorInfos;
             return true;
         }, "button.cursor_infos", assetManager.localize(ResourceName.intern("info.cursor_infos"))));
-        this.components.add(new ComponentSlider(this, 0, 40, 150, 16, (int)(settings.textSpeed*10F), 1, 100, ((integer, aBoolean) -> settings.textSpeed = (float)integer/10F), assetManager.localize(ResourceName.intern("button.text_speed"))));
+        this.components.add(new ComponentSlider(this, 0, 40, 150, 16, (int) (settings.textSpeed * 10F), 1, 100, ((integer, aBoolean) -> settings.textSpeed = (float) integer / 10F), assetManager.localize(ResourceName.intern("button.text_speed"))));
 
-        this.components.add(new ComponentSlider(this, 154, 0, 150, 16, (int)(settings.renderScale*100F), 50, 150, (integer, aBoolean) -> {
-            settings.renderScale = (float)integer/100F;
+        this.components.add(new ComponentSlider(this, 154, 0, 150, 16, (int) (settings.renderScale * 100F), 50, 150, (integer, aBoolean) -> {
+            settings.renderScale = (float) integer / 100F;
             game.getRenderer().calcScales();
         }, assetManager.localize(ResourceName.intern("button.render_scale"))));
-        this.components.add(new ComponentSlider(this, 154, 20, 150, 16, (int)(settings.guiScale*100F), 50, 100, (integer, aBoolean) -> {
-            if(aBoolean){
-                settings.guiScale = (float)integer/100F;
+        this.components.add(new ComponentSlider(this, 154, 20, 150, 16, (int) (settings.guiScale * 100F), 50, 100, (integer, aBoolean) -> {
+            if (aBoolean) {
+                settings.guiScale = (float) integer / 100F;
                 settings.save();
                 game.getRenderer().calcScales();
                 game.getGuiManager().updateDimensions();
@@ -60,8 +60,8 @@ public class GuiGraphics extends Gui{
 
         this.components.add(new ComponentColorPicker(this, 55, 70, 40, 40, settings.guiColor, (color, letGo) -> settings.guiColor = color, false));
         this.components.add(new ComponentFancyButton(this, 99, 94, 16, 16, () -> {
-            this.components.add(new ComponentConfirmationPopup(this, 99+8, 94+8, aBoolean -> {
-                if(aBoolean){
+            this.components.add(new ComponentConfirmationPopup(this, 99 + 8, 94 + 8, aBoolean -> {
+                if (aBoolean) {
                     settings.guiColor = Settings.DEFAULT_GUI_COLOR;
                     GuiManager.rainbowMode = false;
                 }
@@ -70,28 +70,27 @@ public class GuiGraphics extends Gui{
             return true;
         }, ResourceName.intern("gui.reset"), assetManager.localize(ResourceName.intern("info.reset"))));
 
-        this.components.add(new ComponentButton(this, this.width/2-40, this.height-16, 80, 16, () -> {
+        this.components.add(new ComponentButton(this, this.width / 2 - 40, this.height - 16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
             return true;
         }, assetManager.localize(ResourceName.intern("button.back"))));
     }
 
     @Override
-    public boolean onCharInput(IGameInstance game, int codePoint, char[] characters){
+    public boolean onCharInput(IGameInstance game, int codePoint, char[] characters) {
         boolean did = false;
-        for(char c : characters){
-            if(this.rainbowIndex < RAINBOW.length()){
-                if(RAINBOW.charAt(this.rainbowIndex) == c){
+        for (char c : characters) {
+            if (this.rainbowIndex < RAINBOW.length()) {
+                if (RAINBOW.charAt(this.rainbowIndex) == c) {
                     this.rainbowIndex++;
 
-                    if(this.rainbowIndex >= RAINBOW.length()){
+                    if (this.rainbowIndex >= RAINBOW.length()) {
                         GuiManager.rainbowMode = true;
                         this.rainbowIndex = 0;
                     }
 
                     did = true;
-                }
-                else{
+                } else {
                     this.rainbowIndex = 0;
                 }
             }
@@ -100,14 +99,14 @@ public class GuiGraphics extends Gui{
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g){
-        manager.getFont().drawCenteredString(this.x+75, this.y+62, manager.localize(ResourceName.intern("info.gui_color")), 0.35F, false);
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g) {
+        manager.getFont().drawCenteredString(this.x + 75, this.y + 62, manager.localize(ResourceName.intern("info.gui_color")), 0.35F, false);
 
         super.render(game, manager, g);
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("graphics");
     }
 }

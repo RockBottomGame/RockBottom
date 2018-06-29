@@ -12,23 +12,33 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketAITask implements IPacket{
+public class PacketAITask implements IPacket {
 
     private UUID entityId;
     private DataSet data;
     private int taskId;
 
-    public PacketAITask(UUID entityId, DataSet data, int taskId){
+    public PacketAITask(UUID entityId, DataSet data, int taskId) {
         this.entityId = entityId;
         this.data = data;
         this.taskId = taskId;
     }
 
-    public PacketAITask(){
+    public PacketAITask() {
+    }
+
+    public static void setNewTask(Entity entity, AITask currTask, AITask newTask) {
+        if (currTask != null) {
+            currTask.onExecutionEnded(newTask, entity);
+        }
+        entity.currentAiTask = newTask;
+        if (newTask != null) {
+            newTask.onExecutionStarted(currTask, entity);
+        }
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.entityId.getMostSignificantBits());
         buf.writeLong(this.entityId.getLeastSignificantBits());
         buf.writeInt(this.taskId);
@@ -36,7 +46,7 @@ public class PacketAITask implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.entityId = new UUID(buf.readLong(), buf.readLong());
         this.taskId = buf.readInt();
         this.data = new DataSet();
@@ -44,30 +54,20 @@ public class PacketAITask implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
-        if(world != null){
+        if (world != null) {
             Entity entity = world.getEntity(this.entityId);
-            if(entity != null){
+            if (entity != null) {
                 AITask task = entity.getTask(this.taskId);
-                if(task != null){
+                if (task != null) {
                     task.load(this.data, true);
                 }
 
-                if(task == null || task.shouldStartExecution(entity)){
+                if (task == null || task.shouldStartExecution(entity)) {
                     setNewTask(entity, entity.currentAiTask, task);
                 }
             }
-        }
-    }
-
-    public static void setNewTask(Entity entity, AITask currTask, AITask newTask){
-        if(currTask != null){
-            currTask.onExecutionEnded(newTask, entity);
-        }
-        entity.currentAiTask = newTask;
-        if(newTask != null){
-            newTask.onExecutionStarted(currTask, entity);
         }
     }
 }

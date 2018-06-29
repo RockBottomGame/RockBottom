@@ -10,14 +10,14 @@ import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class Logging{
+public final class Logging {
 
     public static Logger mainLogger;
     public static Logger chatLogger;
     public static Logger glfwLogger;
     public static Logger nettyLogger;
 
-    public static void init(String levelName){
+    public static void init(String levelName) {
         Level level = getLogLevel(levelName);
         mainLogger = Logger.getLogger(AbstractGame.NAME);
         mainLogger.setLevel(level);
@@ -36,12 +36,12 @@ public final class Logging{
         errorHandler.setLevel(level);
         mainLogger.addHandler(errorHandler);
 
-        try{
+        try {
             File file = new File(Main.gameDir, "log");
-            if(!file.exists()){
+            if (!file.exists()) {
                 file.mkdirs();
 
-                mainLogger.info("Creating logs folder at "+file);
+                mainLogger.info("Creating logs folder at " + file);
             }
 
             FileHandler fileHandler = new FileHandler(new File(file, "latest.log").getPath());
@@ -49,8 +49,7 @@ public final class Logging{
             fileHandler.setFormatter(formatter);
             fileHandler.setLevel(level);
             mainLogger.addHandler(fileHandler);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             mainLogger.log(Level.SEVERE, "Could not initialize logger file saving", e);
         }
 
@@ -59,8 +58,8 @@ public final class Logging{
         nettyLogger = createLogger("Netty");
     }
 
-    private static Level getLogLevel(String level){
-        switch(level.toLowerCase(Locale.ROOT)){
+    private static Level getLogLevel(String level) {
+        switch (level.toLowerCase(Locale.ROOT)) {
             case "all":
                 return Level.ALL;
             case "finest":
@@ -80,10 +79,10 @@ public final class Logging{
             case "off":
                 return Level.OFF;
         }
-        throw new IllegalArgumentException("Specified log level "+level+" is invalid!");
+        throw new IllegalArgumentException("Specified log level " + level + " is invalid!");
     }
 
-    public static Logger createLogger(String name){
+    public static Logger createLogger(String name) {
         Logger logger = Logger.getLogger(name);
         logger.setParent(mainLogger);
         return logger;

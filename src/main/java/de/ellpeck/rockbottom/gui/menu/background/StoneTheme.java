@@ -6,17 +6,16 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 
-public class StoneTheme implements IMainMenuTheme{
+public class StoneTheme implements IMainMenuTheme {
 
     private final int ladderX = Util.RANDOM.nextInt(TILE_AMOUNT);
 
     @Override
-    public TileState getState(int x, int y, TileState[][] grid){
-        if(x == this.ladderX){
+    public TileState getState(int x, int y, TileState[][] grid) {
+        if (x == this.ladderX) {
             return GameContent.TILE_LADDER.getDefState();
-        }
-        else{
-            switch(Util.RANDOM.nextInt(10)){
+        } else {
+            switch (Util.RANDOM.nextInt(10)) {
                 case 0:
                     return GameContent.TILE_COAL.getDefState();
                 default:
@@ -26,7 +25,7 @@ public class StoneTheme implements IMainMenuTheme{
     }
 
     @Override
-    public int getBackgroundColor(){
+    public int getBackgroundColor() {
         return Colors.DARK_GRAY;
     }
 }

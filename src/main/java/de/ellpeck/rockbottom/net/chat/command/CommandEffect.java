@@ -20,87 +20,77 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandEffect extends Command{
+public class CommandEffect extends Command {
 
     private final List<String> effectAutocomplete = new ArrayList<>();
 
-    public CommandEffect(){
+    public CommandEffect() {
         super(ResourceName.intern("effect"), "Gives the player an effect. Params: <'add'/'remove'> <mod_id/effect_name> [time]", 4);
 
-        for(ResourceName name : RockBottomAPI.EFFECT_REGISTRY.keySet()){
+        for (ResourceName name : RockBottomAPI.EFFECT_REGISTRY.keySet()) {
             this.effectAutocomplete.add(name.toString());
         }
     }
 
     @Override
-    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
-        if(sender instanceof AbstractEntityPlayer){
-            AbstractEntityPlayer player = (AbstractEntityPlayer)sender;
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
+        if (sender instanceof AbstractEntityPlayer) {
+            AbstractEntityPlayer player = (AbstractEntityPlayer) sender;
 
             boolean remove;
-            if(args.length > 0 && "add".equals(args[0])){
+            if (args.length > 0 && "add".equals(args[0])) {
                 remove = false;
-            }
-            else if(args.length > 0 && "remove".equals(args[0])){
+            } else if (args.length > 0 && "remove".equals(args[0])) {
                 remove = true;
-            }
-            else{
-                return new ChatComponentText(FormattingCode.RED+"Specify an action!");
+            } else {
+                return new ChatComponentText(FormattingCode.RED + "Specify an action!");
             }
 
             IEffect effect;
-            if(args.length > 1){
-                try{
+            if (args.length > 1) {
+                try {
                     ResourceName name = new ResourceName(args[1]);
                     effect = RockBottomAPI.EFFECT_REGISTRY.get(name);
+                } catch (Exception e) {
+                    return new ChatComponentText(FormattingCode.RED + "'" + args[1] + "' isn't a valid effect name!");
                 }
-                catch(Exception e){
-                    return new ChatComponentText(FormattingCode.RED+"'"+args[1]+"' isn't a valid effect name!");
-                }
-            }
-            else{
-                return new ChatComponentText(FormattingCode.RED+"Specify an effect!");
+            } else {
+                return new ChatComponentText(FormattingCode.RED + "Specify an effect!");
             }
 
             int time = 0;
-            if(args.length > 2){
-                try{
+            if (args.length > 2) {
+                try {
                     time = Util.clamp(Integer.parseInt(args[2]), 0, effect.getMaxDuration(player));
-                }
-                catch(Exception ignored){
+                } catch (Exception ignored) {
                 }
             }
 
-            if(effect != null){
+            if (effect != null) {
                 ActiveEffect active = new ActiveEffect(effect, time);
 
-                if(remove){
+                if (remove) {
                     player.removeEffect(effect);
-                    return new ChatComponentText(FormattingCode.GREEN+"Removed effect ").append(new ChatComponentTranslation(effect.getUnlocalizedName(active, player)));
-                }
-                else{
+                    return new ChatComponentText(FormattingCode.GREEN + "Removed effect ").append(new ChatComponentTranslation(effect.getUnlocalizedName(active, player)));
+                } else {
                     player.addEffect(active);
-                    return new ChatComponentText(FormattingCode.GREEN+"Added effect ").append(new ChatComponentTranslation(effect.getUnlocalizedName(active, player))).append(new ChatComponentText(" with a time of "+time));
+                    return new ChatComponentText(FormattingCode.GREEN + "Added effect ").append(new ChatComponentTranslation(effect.getUnlocalizedName(active, player))).append(new ChatComponentText(" with a time of " + time));
                 }
+            } else {
+                return new ChatComponentText(FormattingCode.RED + "An effect with the name '" + args[0] + "' doesn't exist!");
             }
-            else{
-                return new ChatComponentText(FormattingCode.RED+"An effect with the name '"+args[0]+"' doesn't exist!");
-            }
-        }
-        else{
-            return new ChatComponentText(FormattingCode.RED+"Only players can have effects!");
+        } else {
+            return new ChatComponentText(FormattingCode.RED + "Only players can have effects!");
         }
     }
 
     @Override
-    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
-        if(argNumber == 0){
+    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat) {
+        if (argNumber == 0) {
             return Arrays.asList("add", "remove");
-        }
-        else if(argNumber == 1){
+        } else if (argNumber == 1) {
             return this.effectAutocomplete;
-        }
-        else{
+        } else {
             return Collections.emptyList();
         }
     }

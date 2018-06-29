@@ -12,31 +12,31 @@ import de.ellpeck.rockbottom.api.world.WorldInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketInitialServerData implements IPacket{
+public class PacketInitialServerData implements IPacket {
 
     private final DataSet playerSet = new DataSet();
     private WorldInfo info;
     private DynamicRegistryInfo regInfo;
 
-    public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, DynamicRegistryInfo regInfo){
+    public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, DynamicRegistryInfo regInfo) {
         player.save(this.playerSet);
         this.info = info;
         this.regInfo = regInfo;
     }
 
-    public PacketInitialServerData(){
+    public PacketInitialServerData() {
 
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         NetUtil.writeSetToBuffer(this.playerSet, buf);
         this.info.toBuffer(buf);
         this.regInfo.toBuffer(buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         NetUtil.readSetFromBuffer(this.playerSet, buf);
 
         this.info = new WorldInfo(null);
@@ -47,8 +47,8 @@ public class PacketInitialServerData implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
-        if(game.getWorld() == null){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
+        if (game.getWorld() == null) {
             RockBottomAPI.logger().info("Received initial server data, joining world");
 
             IGuiManager gui = game.getGuiManager();
@@ -56,8 +56,7 @@ public class PacketInitialServerData implements IPacket{
                 game.joinWorld(this.playerSet, this.info, this.regInfo);
                 gui.fadeIn(20, null);
             });
-        }
-        else{
+        } else {
             RockBottomAPI.logger().warning("Received initial server data while already being in a world!");
             context.channel().disconnect();
         }

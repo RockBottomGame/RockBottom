@@ -12,33 +12,33 @@ import de.ellpeck.rockbottom.gui.GuiInformation;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketReject implements IPacket{
+public class PacketReject implements IPacket {
 
     private ChatComponent text;
 
-    public PacketReject(ChatComponentTranslation text){
+    public PacketReject(ChatComponentTranslation text) {
         this.text = text;
     }
 
-    public PacketReject(){
+    public PacketReject() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         DataSet set = new DataSet();
         this.text.save(set);
         NetUtil.writeSetToBuffer(set, buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         DataSet set = new DataSet();
         NetUtil.readSetFromBuffer(set, buf);
         this.text = ChatComponentText.createFromSet(set);
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         context.disconnect();
         game.quitWorld();
 

@@ -10,21 +10,21 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-public class CursorClosedHand implements ISpecialCursor{
+public class CursorClosedHand implements ISpecialCursor {
 
     @Override
-    public ResourceName getTexture(){
+    public ResourceName getTexture() {
         return ResourceName.intern("gui.cursor.closed_hand");
     }
 
     @Override
-    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager){
+    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager) {
         Gui gui = guiManager.getGui();
-        return gui instanceof GuiContainer && ((GuiContainer)gui).getContainer().holdingInst != null;
+        return gui instanceof GuiContainer && ((GuiContainer) gui).getContainer().holdingInst != null;
     }
 
     @Override
-    public int getPriority(){
+    public int getPriority() {
         return 1000;
     }
 }

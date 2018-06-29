@@ -13,45 +13,45 @@ import de.ellpeck.rockbottom.gui.container.ContainerChest;
 import de.ellpeck.rockbottom.render.tile.TileChestRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
 
-public class TileChest extends TileBasic{
+public class TileChest extends TileBasic {
 
-    public TileChest(){
+    public TileChest() {
         super(ResourceName.intern("chest"));
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return null;
     }
 
     @Override
-    public boolean canProvideTileEntity(){
+    public boolean canProvideTileEntity() {
         return true;
     }
 
     @Override
-    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer){
+    public TileEntity provideTileEntity(IWorld world, int x, int y, TileLayer layer) {
         return new TileEntityChest(world, x, y, layer);
     }
 
     @Override
-    public boolean canPlaceInLayer(TileLayer layer){
+    public boolean canPlaceInLayer(TileLayer layer) {
         return layer == TileLayer.MAIN;
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player){
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
         TileEntityChest tile = world.getTileEntity(x, y, TileEntityChest.class);
         return tile != null && player.openGuiContainer(new GuiChest(player, tile.getTileInventory()), new ContainerChest(player, tile));
     }
 
     @Override
-    protected ITileRenderer createRenderer(ResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name) {
         return new TileChestRenderer(name);
     }
 }

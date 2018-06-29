@@ -18,7 +18,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 
-public class ModLoader implements IModLoader{
+public class ModLoader implements IModLoader {
 
     private final List<IMod> allMods = new ArrayList<>();
     private final List<IMod> activeMods = new ArrayList<>();
@@ -26,65 +26,63 @@ public class ModLoader implements IModLoader{
 
     private final ModSettings modSettings = new ModSettings();
 
-    public ModLoader(){
+    public ModLoader() {
         IGameInstance game = RockBottomAPI.getGame();
         this.allMods.add(game);
         this.activeMods.add(game);
     }
 
     @Override
-    public void loadJarMods(File dir){
+    public void loadJarMods(File dir) {
         IDataManager manager = RockBottomAPI.getGame().getDataManager();
         this.modSettings.load();
         File infoFile = new File(dir, "HOW TO INSTALL MODS.txt");
 
-        if(!dir.exists()){
+        if (!dir.exists()) {
             dir.mkdirs();
 
-            try{
+            try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
                 String l = System.lineSeparator();
 
-                writer.write("----------------------------------------------------------"+l);
-                writer.write("To install a mod, place its compiled jar into this folder."+l);
-                writer.write("Note that the game has to be restarted to activate a mod. "+l);
-                writer.write("                                                          "+l);
-                writer.write("If your mod doesn't have a compiled jar, or you downloaded"+l);
-                writer.write("something other than one, then please refer to the modding"+l);
-                writer.write("documentation or contact the mod author as mods should be "+l);
-                writer.write("distributed and used in jar form only.                    "+l);
-                writer.write("----------------------------------------------------------"+l);
+                writer.write("----------------------------------------------------------" + l);
+                writer.write("To install a mod, place its compiled jar into this folder." + l);
+                writer.write("Note that the game has to be restarted to activate a mod. " + l);
+                writer.write("                                                          " + l);
+                writer.write("If your mod doesn't have a compiled jar, or you downloaded" + l);
+                writer.write("something other than one, then please refer to the modding" + l);
+                writer.write("documentation or contact the mod author as mods should be " + l);
+                writer.write("distributed and used in jar form only.                    " + l);
+                writer.write("----------------------------------------------------------" + l);
                 writer.write("~Also known as README.txt~");
 
                 writer.close();
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 RockBottomAPI.logger().log(Level.WARNING, "Couldn't create info file in mods folder", e);
             }
 
-            RockBottomAPI.logger().info("Mods folder not found, creating at "+dir);
-        }
-        else{
+            RockBottomAPI.logger().info("Mods folder not found, creating at " + dir);
+        } else {
             int amount = 0;
 
-            RockBottomAPI.logger().info("Loading jar mods from mods folder "+dir);
+            RockBottomAPI.logger().info("Loading jar mods from mods folder " + dir);
 
-            for(File file : dir.listFiles()){
-                if(!file.equals(infoFile) && !file.equals(manager.getModConfigFolder())){
+            for (File file : dir.listFiles()) {
+                if (!file.equals(infoFile) && !file.equals(manager.getModConfigFolder())) {
                     String name = file.getName();
-                    if(name != null && name.endsWith(".jar")){
-                        try{
+                    if (name != null && name.endsWith(".jar")) {
+                        try {
                             JarFile jar = new JarFile(file);
                             Enumeration<JarEntry> entries = jar.entries();
 
                             Main.classLoader.addURL(file.toURI().toURL());
 
                             boolean foundMod = false;
-                            while(entries.hasMoreElements()){
+                            while (entries.hasMoreElements()) {
                                 JarEntry entry = entries.nextElement();
                                 String entryName = entry.getName();
 
-                                if(this.findMod(entryName)){
+                                if (this.findMod(entryName)) {
                                     amount++;
 
                                     foundMod = true;
@@ -94,95 +92,86 @@ public class ModLoader implements IModLoader{
 
                             jar.close();
 
-                            if(!foundMod){
-                                RockBottomAPI.logger().warning("Jar file "+file+" doesn't contain a valid mod");
+                            if (!foundMod) {
+                                RockBottomAPI.logger().warning("Jar file " + file + " doesn't contain a valid mod");
                             }
+                        } catch (Exception e) {
+                            RockBottomAPI.logger().log(Level.WARNING, "Loading jar mod from file " + file + " failed", e);
                         }
-                        catch(Exception e){
-                            RockBottomAPI.logger().log(Level.WARNING, "Loading jar mod from file "+file+" failed", e);
-                        }
-                    }
-                    else{
-                        RockBottomAPI.logger().warning("Found non-jar file "+file+" in mods folder "+dir);
+                    } else {
+                        RockBottomAPI.logger().warning("Found non-jar file " + file + " in mods folder " + dir);
                     }
                 }
             }
 
-            RockBottomAPI.logger().info("Loaded a total of "+amount+" jar mods");
+            RockBottomAPI.logger().info("Loaded a total of " + amount + " jar mods");
         }
     }
 
     @Override
-    public void loadUnpackedMods(File dir){
-        if(dir.exists()){
-            RockBottomAPI.logger().info("Loading unpacked mods from folder "+dir);
+    public void loadUnpackedMods(File dir) {
+        if (dir.exists()) {
+            RockBottomAPI.logger().info("Loading unpacked mods from folder " + dir);
 
             Counter amount = new Counter(0);
             this.recursiveLoad(dir, dir.listFiles(), amount);
 
-            RockBottomAPI.logger().info("Loaded a total of "+amount.get()+" unpacked mods");
-        }
-        else{
-            RockBottomAPI.logger().info("Not loading unpacked mods from folder "+dir+" as it doesn't exist");
+            RockBottomAPI.logger().info("Loaded a total of " + amount.get() + " unpacked mods");
+        } else {
+            RockBottomAPI.logger().info("Not loading unpacked mods from folder " + dir + " as it doesn't exist");
         }
     }
 
-    private void recursiveLoad(File original, File[] files, Counter amount){
-        for(File file : files){
-            if(file.isDirectory()){
+    private void recursiveLoad(File original, File[] files, Counter amount) {
+        for (File file : files) {
+            if (file.isDirectory()) {
                 this.recursiveLoad(original, file.listFiles(), amount);
-            }
-            else{
+            } else {
                 String name = file.getAbsolutePath();
-                if(name != null && name.endsWith(".class")){
-                    try{
+                if (name != null && name.endsWith(".class")) {
+                    try {
                         Main.classLoader.addURL(file.toURI().toURL());
 
-                        if(this.findMod(name.replace(original.getAbsolutePath(), "").replace(File.separator, ".").replaceFirst(".", ""))){
+                        if (this.findMod(name.replace(original.getAbsolutePath(), "").replace(File.separator, ".").replaceFirst(".", ""))) {
                             amount.add(1);
                         }
+                    } catch (Exception e) {
+                        RockBottomAPI.logger().log(Level.WARNING, "Loading unpacked mod from file " + file + " failed", e);
                     }
-                    catch(Exception e){
-                        RockBottomAPI.logger().log(Level.WARNING, "Loading unpacked mod from file "+file+" failed", e);
-                    }
-                }
-                else{
-                    RockBottomAPI.logger().warning("Found non-class file "+file+" in unpacked mods folder "+original);
+                } else {
+                    RockBottomAPI.logger().warning("Found non-class file " + file + " in unpacked mods folder " + original);
                 }
             }
         }
     }
 
-    private boolean findMod(String className) throws Exception{
-        if(className != null && className.endsWith(".class") && !className.contains("$")){
-            String actualClassName = className.substring(0, className.length()-6).replace("/", ".");
+    private boolean findMod(String className) throws Exception {
+        if (className != null && className.endsWith(".class") && !className.contains("$")) {
+            String actualClassName = className.substring(0, className.length() - 6).replace("/", ".");
             Class aClass = Class.forName(actualClassName, false, Main.classLoader);
 
-            if(aClass != null && !aClass.isInterface()){
-                if(IMod.class.isAssignableFrom(aClass)){
-                    IMod instance = (IMod)aClass.getConstructor().newInstance();
+            if (aClass != null && !aClass.isInterface()) {
+                if (IMod.class.isAssignableFrom(aClass)) {
+                    IMod instance = (IMod) aClass.getConstructor().newInstance();
                     String id = instance.getId();
 
-                    if(id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)){
-                        if(this.getMod(id) == null){
-                            if(instance.isDisableable() && this.modSettings.isDisabled(id)){
+                    if (id != null && !id.isEmpty() && id.toLowerCase(Locale.ROOT).equals(id) && id.replaceAll(" ", "").equals(id)) {
+                        if (this.getMod(id) == null) {
+                            if (instance.isDisableable() && this.modSettings.isDisabled(id)) {
                                 this.disabledMods.add(instance);
-                                RockBottomAPI.logger().info("Mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" is marked as disabled in the mod settings");
-                            }
-                            else{
+                                RockBottomAPI.logger().info("Mod " + instance.getDisplayName() + " with id " + id + " and version " + instance.getVersion() + " is marked as disabled in the mod settings");
+                            } else {
                                 this.activeMods.add(instance);
-                                RockBottomAPI.logger().info("Loaded mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion());
+                                RockBottomAPI.logger().info("Loaded mod " + instance.getDisplayName() + " with id " + id + " and version " + instance.getVersion());
                             }
 
                             this.allMods.add(instance);
                             return true;
+                        } else {
+                            RockBottomAPI.logger().warning("Cannot load mod " + instance.getDisplayName() + " with id " + id + " and version " + instance.getVersion() + " because a mod with that id is already present");
                         }
-                        else{
-                            RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because a mod with that id is already present");
-                        }
-                    }
-                    else{
-                        RockBottomAPI.logger().warning("Cannot load mod "+instance.getDisplayName()+" with id "+id+" and version "+instance.getVersion()+" because the id is either missing, empty, not all lower case or contains spaces");
+                    } else {
+                        RockBottomAPI.logger().warning("Cannot load mod " + instance.getDisplayName() + " with id " + id + " and version " + instance.getVersion() + " because the id is either missing, empty, not all lower case or contains spaces");
                     }
                 }
             }
@@ -191,18 +180,18 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
-    public void sortMods(){
+    public void sortMods() {
         RockBottomAPI.logger().info("Sorting mods");
 
-        Comparator comp = Comparator.comparingInt(IMod :: getSortingPriority).reversed();
+        Comparator comp = Comparator.comparingInt(IMod::getSortingPriority).reversed();
         this.allMods.sort(comp);
         this.activeMods.sort(comp);
         this.disabledMods.sort(comp);
 
         RockBottomAPI.logger().info("---------- Loaded Mods ----------");
-        for(IMod mod : this.allMods){
-            String s = mod.getDisplayName()+" @ "+mod.getVersion()+" ("+mod.getId()+')';
-            if(this.modSettings.isDisabled(mod.getId())){
+        for (IMod mod : this.allMods) {
+            String s = mod.getDisplayName() + " @ " + mod.getVersion() + " (" + mod.getId() + ')';
+            if (this.modSettings.isDisabled(mod.getId())) {
                 s += " [DISABLED]";
             }
             RockBottomAPI.logger().info(s);
@@ -211,19 +200,19 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
-    public void prePreInit(){
+    public void prePreInit() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             mod.prePreInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
     @Override
-    public void preInit(){
+    public void preInit() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             ModConfig config = mod.getModConfig();
-            if(config != null){
+            if (config != null) {
                 config.load();
             }
 
@@ -232,57 +221,57 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
-    public void init(){
+    public void init() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             mod.init(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
     @Override
-    public void preInitAssets(){
+    public void preInitAssets() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             mod.preInitAssets(game, game.getAssetManager(), RockBottomAPI.getApiHandler());
         }
     }
 
     @Override
-    public void initAssets(){
+    public void initAssets() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             mod.initAssets(game, game.getAssetManager(), RockBottomAPI.getApiHandler());
         }
     }
 
     @Override
-    public void postInitAssets(){
+    public void postInitAssets() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             mod.postInitAssets(game, game.getAssetManager(), RockBottomAPI.getApiHandler());
         }
     }
 
     @Override
-    public void postInit(){
+    public void postInit() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             mod.postInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
     @Override
-    public void postPostInit(){
+    public void postPostInit() {
         IGameInstance game = RockBottomAPI.getGame();
-        for(IMod mod : this.activeMods){
+        for (IMod mod : this.activeMods) {
             mod.postPostInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
         }
     }
 
     @Override
-    public IMod getMod(String id){
-        for(IMod mod : this.allMods){
-            if(mod.getId().equals(id)){
+    public IMod getMod(String id) {
+        for (IMod mod : this.allMods) {
+            if (mod.getId().equals(id)) {
                 return mod;
             }
         }
@@ -290,22 +279,22 @@ public class ModLoader implements IModLoader{
     }
 
     @Override
-    public List<IMod> getAllTheMods(){
+    public List<IMod> getAllTheMods() {
         return Collections.unmodifiableList(this.allMods);
     }
 
     @Override
-    public List<IMod> getActiveMods(){
+    public List<IMod> getActiveMods() {
         return Collections.unmodifiableList(this.activeMods);
     }
 
     @Override
-    public List<IMod> getDisabledMods(){
+    public List<IMod> getDisabledMods() {
         return Collections.unmodifiableList(this.disabledMods);
     }
 
     @Override
-    public ModSettings getModSettings(){
+    public ModSettings getModSettings() {
         return this.modSettings;
     }
 }

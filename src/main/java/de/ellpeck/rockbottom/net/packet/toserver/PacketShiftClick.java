@@ -11,23 +11,23 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketShiftClick implements IPacket{
+public class PacketShiftClick implements IPacket {
 
     private UUID playerId;
     private int slotFrom;
     private int slotInto;
 
-    public PacketShiftClick(){
+    public PacketShiftClick() {
     }
 
-    public PacketShiftClick(UUID playerId, int slotFrom, int slotInto){
+    public PacketShiftClick(UUID playerId, int slotFrom, int slotInto) {
         this.playerId = playerId;
         this.slotFrom = slotFrom;
         this.slotInto = slotInto;
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeInt(this.slotFrom);
@@ -35,20 +35,20 @@ public class PacketShiftClick implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.slotFrom = buf.readInt();
         this.slotInto = buf.readInt();
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
-        if(world != null){
+        if (world != null) {
             AbstractEntityPlayer player = world.getPlayer(this.playerId);
-            if(player != null){
+            if (player != null) {
                 ItemContainer container = player.getContainer();
-                if(container != null){
+                if (container != null) {
                     InternalHooks.shiftClick(player, container, this.slotFrom, this.slotInto);
                 }
             }

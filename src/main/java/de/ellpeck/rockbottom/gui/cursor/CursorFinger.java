@@ -9,15 +9,15 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.ISpecialCursor;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-public class CursorFinger implements ISpecialCursor{
+public class CursorFinger implements ISpecialCursor {
 
     @Override
-    public ResourceName getTexture(){
+    public ResourceName getTexture() {
         return ResourceName.intern("gui.cursor.finger");
     }
 
     @Override
-    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager){
+    public boolean shouldUseCursor(IGameInstance game, IAssetManager manager, IRenderer graphics, IGuiManager guiManager, IInteractionManager interactionManager) {
         Gui gui = guiManager.getGui();
         return gui != null && gui.shouldDoFingerCursor(game);
     }

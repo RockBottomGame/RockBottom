@@ -21,27 +21,26 @@ import java.io.File;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class RockBottomServer extends AbstractGame{
+public class RockBottomServer extends AbstractGame {
 
     protected ServerSettings settings;
 
-    public static void startGame(){
+    public static void startGame() {
         doInit(new RockBottomServer());
     }
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
 
         boolean isNew;
         File file = new File(this.dataManager.getWorldsDir(), this.settings.worldName);
 
         WorldInfo info = new WorldInfo(file);
-        if(WorldInfo.exists(file)){
+        if (WorldInfo.exists(file)) {
             info.load();
             isNew = false;
-        }
-        else{
+        } else {
             info.seed = Util.RANDOM.nextLong();
             info.save();
             isNew = true;
@@ -49,17 +48,16 @@ public class RockBottomServer extends AbstractGame{
 
         this.startWorld(file, info, isNew);
 
-        try{
+        try {
             RockBottomAPI.getNet().init(null, Main.port, true);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             RockBottomAPI.logger().log(Level.SEVERE, "Couldn't start server", e);
             this.exit();
         }
     }
 
     @Override
-    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler){
+    public void preInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler) {
         super.preInit(game, apiHandler, eventHandler);
 
         this.settings = new ServerSettings();
@@ -67,112 +65,112 @@ public class RockBottomServer extends AbstractGame{
     }
 
     @Override
-    public int getAutosaveInterval(){
+    public int getAutosaveInterval() {
         return this.settings.autosaveIntervalSeconds;
     }
 
     @Override
-    public int getPlayerCap(){
+    public int getPlayerCap() {
         return this.settings.maxPlayerAmount;
     }
 
     @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo){
+    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo) {
         throw new UnsupportedOperationException("Cannot join a world on a dedicated server");
     }
 
     @Override
-    public void openIngameMenu(){
+    public void openIngameMenu() {
         throw new UnsupportedOperationException("Cannot open the ingame menu on a dedicated server");
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(){
+    public AbstractEntityPlayer getPlayer() {
         throw new UnsupportedOperationException("Cannot get the player on a dedicated server");
     }
 
     @Override
-    public IGuiManager getGuiManager(){
+    public IGuiManager getGuiManager() {
         throw new UnsupportedOperationException("Cannot get the gui manager on a dedicated server");
     }
 
     @Override
-    public IInteractionManager getInteractionManager(){
+    public IInteractionManager getInteractionManager() {
         throw new UnsupportedOperationException("Cannot get the interaction manager on a dedicated server");
     }
 
     @Override
-    public IAssetManager getAssetManager(){
+    public IAssetManager getAssetManager() {
         throw new UnsupportedOperationException("Cannot get the asset manager on a dedicated server");
     }
 
     @Override
-    public IRenderer getRenderer(){
+    public IRenderer getRenderer() {
         throw new UnsupportedOperationException("Cannot get the graphics on a dedicated server");
     }
 
     @Override
-    public IParticleManager getParticleManager(){
+    public IParticleManager getParticleManager() {
         throw new UnsupportedOperationException("Cannot get the particle manager on a dedicated server");
     }
 
     @Override
-    public UUID getUniqueId(){
+    public UUID getUniqueId() {
         throw new UnsupportedOperationException("Cannot get the unique id on a dedicated server");
     }
 
     @Override
-    public UUID getDefaultUniqueId(){
+    public UUID getDefaultUniqueId() {
         throw new UnsupportedOperationException("Cannot get the default unique id on a dedicated server");
     }
 
     @Override
-    public void setFullscreen(boolean fullscreen){
+    public void setFullscreen(boolean fullscreen) {
         throw new UnsupportedOperationException("Cannot set fullscreen on a dedicated server");
     }
 
     @Override
-    public IPlayerDesign getPlayerDesign(){
+    public IPlayerDesign getPlayerDesign() {
         throw new UnsupportedOperationException("Cannot get player design on a dedicated server");
     }
 
     @Override
-    public void setPlayerDesign(String jsonString){
+    public void setPlayerDesign(String jsonString) {
         throw new UnsupportedOperationException("Cannot set player design on a dedicated server");
     }
 
     @Override
-    public boolean isDedicatedServer(){
+    public boolean isDedicatedServer() {
         return true;
     }
 
     @Override
-    public IInputHandler getInput(){
+    public IInputHandler getInput() {
         throw new UnsupportedOperationException("Cannot get input on a dedicated server");
     }
 
     @Override
-    public IToaster getToaster(){
+    public IToaster getToaster() {
         throw new UnsupportedOperationException("Cannot get toaster on a dedicated server");
     }
 
     @Override
-    public int getWidth(){
+    public int getWidth() {
         throw new UnsupportedOperationException("Cannot get width on a dedicated server");
     }
 
     @Override
-    public int getHeight(){
+    public int getHeight() {
         throw new UnsupportedOperationException("Cannot get height on a dedicated server");
     }
 
     @Override
-    public long getWindow(){
+    public long getWindow() {
         throw new UnsupportedOperationException("Cannot get window on a dedicated server");
     }
 
     @Override
-    public Settings getSettings(){
+    public Settings getSettings() {
         throw new UnsupportedOperationException("Cannot get settings on a dedicated server");
     }
 }

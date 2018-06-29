@@ -28,13 +28,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class ChatLog implements IChatLog{
+public class ChatLog implements IChatLog {
 
     private final List<ChatComponent> messages = new ArrayList<>();
     private final List<Counter> newMessageCounter = new ArrayList<>();
     private final List<String> lastInputs = new ArrayList<>();
 
-    public static void initCommands(){
+    public static void initCommands() {
         new CommandHelp().register();
         new CommandStopServer().register();
         new CommandSpawnItem().register();
@@ -48,10 +48,10 @@ public class ChatLog implements IChatLog{
     }
 
     @Override
-    public void displayMessage(ChatComponent message){
+    public void displayMessage(ChatComponent message) {
         this.messages.add(0, message);
 
-        if(!RockBottomAPI.getGame().isDedicatedServer()){
+        if (!RockBottomAPI.getGame().isDedicatedServer()) {
             this.newMessageCounter.add(0, new Counter(400));
         }
 
@@ -59,53 +59,49 @@ public class ChatLog implements IChatLog{
     }
 
     @Override
-    public void sendCommandSenderMessage(String message, ICommandSender sender){
-        if(RockBottomAPI.getNet().isServer()){
+    public void sendCommandSenderMessage(String message, ICommandSender sender) {
+        if (RockBottomAPI.getNet().isServer()) {
             ChatMessageEvent event = new ChatMessageEvent(this, sender, message);
-            if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+            if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
                 message = event.message;
 
-                if(message.startsWith("/")){
+                if (message.startsWith("/")) {
                     ChatComponent cmdFeedback;
 
                     String[] split = message.substring(1).split(" ");
                     Command command = this.getCommand(split[0]);
 
-                    if(command != null){
-                        if(sender.getCommandLevel() >= command.getLevel()){
+                    if (command != null) {
+                        if (sender.getCommandLevel() >= command.getLevel()) {
                             IGameInstance game = RockBottomAPI.getGame();
                             cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), sender, sender.getName(), game, this);
+                        } else {
+                            cmdFeedback = new ChatComponentText(FormattingCode.RED + "You are not allowed to execute this command!");
                         }
-                        else{
-                            cmdFeedback = new ChatComponentText(FormattingCode.RED+"You are not allowed to execute this command!");
-                        }
-                    }
-                    else{
-                        cmdFeedback = new ChatComponentText(FormattingCode.RED+"Unknown command, use /help for a list of commands.");
+                    } else {
+                        cmdFeedback = new ChatComponentText(FormattingCode.RED + "Unknown command, use /help for a list of commands.");
                     }
 
-                    if(cmdFeedback != null){
+                    if (cmdFeedback != null) {
                         this.sendMessageTo(sender, cmdFeedback);
                     }
 
-                    Logging.chatLogger.info("Command sender "+sender.getName()+" with id "+sender.getUniqueId()+" executed command '/"+split[0]+"' with feedback '"+cmdFeedback+'\'');
-                }
-                else{
-                    this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat()+'['+sender.getName()+"] &4"+message));
+                    Logging.chatLogger.info("Command sender " + sender.getName() + " with id " + sender.getUniqueId() + " executed command '/" + split[0] + "' with feedback '" + cmdFeedback + '\'');
+                } else {
+                    this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat() + '[' + sender.getName() + "] &4" + message));
                 }
             }
         }
     }
 
     @Override
-    public Command getCommand(String name){
-        if(Util.isResourceName(name)){
+    public Command getCommand(String name) {
+        if (Util.isResourceName(name)) {
             return RockBottomAPI.COMMAND_REGISTRY.get(new ResourceName(name));
-        }
-        else{
-            for(Command command : RockBottomAPI.COMMAND_REGISTRY.values()){
-                for(String s : command.getTriggers()){
-                    if(name.equals(s)){
+        } else {
+            for (Command command : RockBottomAPI.COMMAND_REGISTRY.values()) {
+                for (String s : command.getTriggers()) {
+                    if (name.equals(s)) {
                         return command;
                     }
                 }
@@ -115,54 +111,52 @@ public class ChatLog implements IChatLog{
     }
 
     @Override
-    public void sendMessageTo(ICommandSender sender, ChatComponent message){
+    public void sendMessageTo(ICommandSender sender, ChatComponent message) {
         sender.sendMessageTo(this, message);
     }
 
     @Override
-    public void broadcastMessage(ChatComponent message){
+    public void broadcastMessage(ChatComponent message) {
         this.displayMessage(message);
 
-        if(RockBottomAPI.getNet().isServer()){
+        if (RockBottomAPI.getNet().isServer()) {
             RockBottomAPI.getNet().sendToAllPlayers(RockBottomAPI.getGame().getWorld(), new PacketChatMessage(message));
         }
     }
 
     @Override
-    public List<ChatComponent> getMessages(){
+    public List<ChatComponent> getMessages() {
         return this.messages;
     }
 
     @Override
-    public List<String> getLastInputs(){
+    public List<String> getLastInputs() {
         return this.lastInputs;
     }
 
     //TODO Make this get a uuid from online if one in the world isn't available
     @Override
-    public UUID getPlayerIdFromString(String nameOrId){
-        try{
+    public UUID getPlayerIdFromString(String nameOrId) {
+        try {
             return UUID.fromString(nameOrId);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             IWorld world = RockBottomAPI.getGame().getWorld();
             AbstractEntityPlayer player = world.getPlayer(nameOrId);
 
-            if(player != null){
+            if (player != null) {
                 return player.getUniqueId();
-            }
-            else{
+            } else {
                 return null;
             }
         }
     }
 
     @Override
-    public List<String> getPlayerSuggestions(){
+    public List<String> getPlayerSuggestions() {
         List<String> suggestions = new ArrayList<>();
 
         IWorld world = RockBottomAPI.getGame().getWorld();
-        for(AbstractEntityPlayer player : world.getAllPlayers()){
+        for (AbstractEntityPlayer player : world.getAllPlayers()) {
             suggestions.add(player.getName());
             suggestions.add(player.getUniqueId().toString());
         }
@@ -171,25 +165,25 @@ public class ChatLog implements IChatLog{
     }
 
     @Override
-    public void clear(){
+    public void clear() {
         this.messages.clear();
         this.newMessageCounter.clear();
         this.lastInputs.clear();
     }
 
-    public void drawNewMessages(RockBottom game, IAssetManager manager, IRenderer g){
-        if(!this.newMessageCounter.isEmpty()){
-            GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size(), 0, (int)g.getHeightInGui()/2);
+    public void drawNewMessages(RockBottom game, IAssetManager manager, IRenderer g) {
+        if (!this.newMessageCounter.isEmpty()) {
+            GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size(), 0, (int) g.getHeightInGui() / 2);
         }
     }
 
-    public void updateNewMessages(){
-        if(!this.newMessageCounter.isEmpty()){
-            for(int i = this.newMessageCounter.size()-1; i >= 0; i--){
+    public void updateNewMessages() {
+        if (!this.newMessageCounter.isEmpty()) {
+            for (int i = this.newMessageCounter.size() - 1; i >= 0; i--) {
                 Counter counter = this.newMessageCounter.get(i);
                 counter.add(-1);
 
-                if(counter.get() <= 0){
+                if (counter.get() <= 0) {
                     this.newMessageCounter.remove(i);
                 }
             }

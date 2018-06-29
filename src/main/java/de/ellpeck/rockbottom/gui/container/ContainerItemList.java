@@ -7,28 +7,27 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-public class ContainerItemList extends ItemContainer{
+public class ContainerItemList extends ItemContainer {
 
-    public ContainerItemList(AbstractEntityPlayer player){
+    public ContainerItemList(AbstractEntityPlayer player) {
         super(player);
 
         this.addPlayerInventory(player, 7, 93);
         this.addSlot(new TrashSlot(154, 72));
 
-        for(Item item : RockBottomAPI.ITEM_REGISTRY.values()){
-            if(!item.useMetaAsDurability()){
-                for(int i = 0; i <= item.getHighestPossibleMeta(); i++){
+        for (Item item : RockBottomAPI.ITEM_REGISTRY.values()) {
+            if (!item.useMetaAsDurability()) {
+                for (int i = 0; i <= item.getHighestPossibleMeta(); i++) {
                     this.addSlot(new InfiniteSlot(new ItemInstance(item, item.getMaxAmount(), i), 0, 0));
                 }
-            }
-            else{
+            } else {
                 this.addSlot(new InfiniteSlot(new ItemInstance(item, item.getMaxAmount()), 0, 0));
             }
         }
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("item_list");
     }
 }

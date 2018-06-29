@@ -13,27 +13,26 @@ import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 
 import java.util.List;
 
-public class ItemCopperCanister extends ItemBasic{
+public class ItemCopperCanister extends ItemBasic {
 
-    public ItemCopperCanister(){
+    public ItemCopperCanister() {
         super(ResourceName.intern("copper_canister"));
     }
 
     @Override
-    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced){
+    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced) {
         super.describeItem(manager, instance, desc, isAdvanced);
         desc.add(manager.localize(ResourceName.intern("info.copper_canister")));
     }
 
     @Override
-    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance){
-        if(!world.isClient()){
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance) {
+        if (!world.isClient()) {
             player.getInv().remove(player.getSelectedSlot(), 1);
 
-            if(!player.getKnowledge().knowsRecipe(ConstructionRegistry.simpleFurnace)){
+            if (!player.getKnowledge().knowsRecipe(ConstructionRegistry.simpleFurnace)) {
                 player.getKnowledge().teachRecipe(ConstructionRegistry.simpleFurnace);
-            }
-            else{
+            } else {
                 player.sendMessageTo(RockBottomAPI.getGame().getChatLog(), new ChatComponentTranslation(ResourceName.intern("info.already_known")));
             }
         }

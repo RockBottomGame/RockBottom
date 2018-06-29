@@ -29,9 +29,9 @@ import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.tile.*;
 
-public final class ContentRegistry{
+public final class ContentRegistry {
 
-    public static void init(){
+    public static void init() {
         new TileAir().register();
         new TileSoil().register();
         new TileGrass().register();

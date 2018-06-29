@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketOpenUnboundContainer implements IPacket{
+public class PacketOpenUnboundContainer implements IPacket {
 
     public static final int ITEM_LIST_ID = 1;
     public static final int INV_ID = 0;
@@ -18,47 +18,45 @@ public class PacketOpenUnboundContainer implements IPacket{
     private UUID playerId;
     private int id;
 
-    public PacketOpenUnboundContainer(UUID playerId, int id){
+    public PacketOpenUnboundContainer(UUID playerId, int id) {
         this.playerId = playerId;
         this.id = id;
     }
 
-    public PacketOpenUnboundContainer(){
+    public PacketOpenUnboundContainer() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeInt(this.id);
-        if(this.playerId != null){
+        if (this.playerId != null) {
             buf.writeLong(this.playerId.getMostSignificantBits());
             buf.writeLong(this.playerId.getLeastSignificantBits());
         }
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.id = buf.readInt();
-        if(buf.isReadable()){
+        if (buf.isReadable()) {
             this.playerId = new UUID(buf.readLong(), buf.readLong());
         }
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
-        if(game.getWorld() != null){
-            if(this.id == ITEM_LIST_ID){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
+        if (game.getWorld() != null) {
+            if (this.id == ITEM_LIST_ID) {
                 AbstractEntityPlayer player = game.getPlayer();
-                if(player != null){
+                if (player != null) {
                     CommandItemList.open(player);
                 }
-            }
-            else{
+            } else {
                 AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-                if(player != null){
-                    if(this.id == CLOSE_ID){
+                if (player != null) {
+                    if (this.id == CLOSE_ID) {
                         player.closeContainer();
-                    }
-                    else if(this.id == INV_ID){
+                    } else if (this.id == INV_ID) {
                         player.openContainer(player.getInvContainer());
                     }
                 }

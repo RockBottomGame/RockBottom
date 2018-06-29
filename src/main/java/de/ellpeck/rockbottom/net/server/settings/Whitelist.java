@@ -10,62 +10,62 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class Whitelist implements IJsonSettings{
+public class Whitelist implements IJsonSettings {
 
     private final Set<UUID> whitelistedPlayers = new HashSet<>();
     private boolean isEnabled = false;
 
     @Override
-    public void load(JsonObject object){
+    public void load(JsonObject object) {
         this.isEnabled = this.get(object, "enabled", false);
 
         this.whitelistedPlayers.clear();
-        if(object.has("players")){
+        if (object.has("players")) {
             JsonArray array = object.get("players").getAsJsonArray();
-            for(int i = 0; i < array.size(); i++){
+            for (int i = 0; i < array.size(); i++) {
                 this.whitelistedPlayers.add(UUID.fromString(array.get(i).getAsString()));
             }
         }
     }
 
     @Override
-    public void save(JsonObject object){
+    public void save(JsonObject object) {
         object.addProperty("enabled", this.isEnabled);
 
         JsonArray array = new JsonArray();
-        for(UUID id : this.whitelistedPlayers){
+        for (UUID id : this.whitelistedPlayers) {
             array.add(id.toString());
         }
         object.add("players", array);
     }
 
     @Override
-    public File getSettingsFile(IDataManager manager){
+    public File getSettingsFile(IDataManager manager) {
         return manager.getWhitelistFile();
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Whitelist";
     }
 
-    public void add(UUID id){
+    public void add(UUID id) {
         this.whitelistedPlayers.add(id);
     }
 
-    public void remove(UUID id){
+    public void remove(UUID id) {
         this.whitelistedPlayers.remove(id);
     }
 
-    public boolean isWhitelisted(UUID id){
+    public boolean isWhitelisted(UUID id) {
         return this.whitelistedPlayers.contains(id);
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return this.isEnabled;
     }
 
-    public void setEnabled(boolean enabled){
+    public void setEnabled(boolean enabled) {
         this.isEnabled = enabled;
     }
 }

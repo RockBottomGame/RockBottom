@@ -15,38 +15,36 @@ import io.netty.channel.group.ChannelGroup;
 
 import java.util.UUID;
 
-public class NetHandler implements INetHandler{
+public class NetHandler implements INetHandler {
 
     private Client client;
     private Server server;
 
     @Override
-    public void init(String ip, int port, boolean isServer) throws Exception{
-        if(this.isActive()){
-            RockBottomAPI.logger().severe("Cannot initialize "+(isServer ? "server" : "client")+" because one is already running: Client: "+this.client+", Server: "+this.server);
-        }
-        else{
-            if(isServer){
+    public void init(String ip, int port, boolean isServer) throws Exception {
+        if (this.isActive()) {
+            RockBottomAPI.logger().severe("Cannot initialize " + (isServer ? "server" : "client") + " because one is already running: Client: " + this.client + ", Server: " + this.server);
+        } else {
+            if (isServer) {
                 this.server = new Server(ip, port);
-                RockBottomAPI.logger().info("Started server with ip "+ip+" on port "+port);
-            }
-            else{
+                RockBottomAPI.logger().info("Started server with ip " + ip + " on port " + port);
+            } else {
                 this.client = new Client(ip, port);
-                RockBottomAPI.logger().info("Started client with ip "+ip+" on port "+port);
+                RockBottomAPI.logger().info("Started client with ip " + ip + " on port " + port);
             }
         }
     }
 
     @Override
-    public void shutdown(){
-        if(this.isClient()){
+    public void shutdown() {
+        if (this.isClient()) {
             this.client.shutdown();
             this.client = null;
 
             RockBottomAPI.logger().info("Shut down client!");
         }
 
-        if(this.isServer()){
+        if (this.isServer()) {
             this.server.shutdown();
             this.server = null;
 
@@ -55,58 +53,57 @@ public class NetHandler implements INetHandler{
     }
 
     @Override
-    public boolean isThePlayer(Entity entity){
+    public boolean isThePlayer(Entity entity) {
         IGameInstance game = RockBottomAPI.getGame();
         return !game.isDedicatedServer() && game.getPlayer() == entity;
     }
 
     @Override
-    public boolean isClient(){
+    public boolean isClient() {
         return this.client != null;
     }
 
     @Override
-    public boolean isServer(){
+    public boolean isServer() {
         return this.server != null;
     }
 
     @Override
-    public boolean isActive(){
+    public boolean isActive() {
         return this.isClient() || this.isServer();
     }
 
     @Override
-    public boolean isConnectedToServer(){
+    public boolean isConnectedToServer() {
         return this.isClient() && this.client.channel.isOpen();
     }
 
     @Override
-    public ChannelGroup getConnectedClients(){
-        if(this.isServer()){
+    public ChannelGroup getConnectedClients() {
+        if (this.isServer()) {
             return this.server.connectedChannels;
-        }
-        else{
+        } else {
             return null;
         }
     }
 
     @Override
-    public void sendToServer(IPacket packet){
-        if(this.isClient()){
+    public void sendToServer(IPacket packet) {
+        if (this.isClient()) {
             this.client.channel.writeAndFlush(packet);
         }
     }
 
     @Override
-    public void sendToAllPlayers(IWorld world, IPacket packet){
+    public void sendToAllPlayers(IWorld world, IPacket packet) {
         this.sendToAllPlayersExcept(world, packet, null);
     }
 
     @Override
-    public void sendToAllPlayersExcept(IWorld world, IPacket packet, Entity except){
-        if(this.isServer()){
-            for(AbstractEntityPlayer player : world.getAllPlayers()){
-                if(player != except){
+    public void sendToAllPlayersExcept(IWorld world, IPacket packet, Entity except) {
+        if (this.isServer()) {
+            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+                if (player != except) {
                     player.sendPacket(packet);
                 }
             }
@@ -114,15 +111,15 @@ public class NetHandler implements INetHandler{
     }
 
     @Override
-    public void sendToAllPlayersAround(IWorld world, IPacket packet, double x, double y, double radius){
+    public void sendToAllPlayersAround(IWorld world, IPacket packet, double x, double y, double radius) {
         this.sendToAllPlayersAroundExcept(world, packet, x, y, radius, null);
     }
 
     @Override
-    public void sendToAllPlayersAroundExcept(IWorld world, IPacket packet, double x, double y, double radius, Entity except){
-        if(this.isServer()){
-            for(AbstractEntityPlayer player : world.getAllPlayers()){
-                if(player != except && Util.distanceSq(x, y, player.getX(), player.getY()) <= radius*radius){
+    public void sendToAllPlayersAroundExcept(IWorld world, IPacket packet, double x, double y, double radius, Entity except) {
+        if (this.isServer()) {
+            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+                if (player != except && Util.distanceSq(x, y, player.getX(), player.getY()) <= radius * radius) {
                     player.sendPacket(packet);
                 }
             }
@@ -130,16 +127,16 @@ public class NetHandler implements INetHandler{
     }
 
     @Override
-    public void sendToAllPlayersWithLoadedPos(IWorld world, IPacket packet, double x, double y){
+    public void sendToAllPlayersWithLoadedPos(IWorld world, IPacket packet, double x, double y) {
         this.sendToAllPlayersWithLoadedPosExcept(world, packet, x, y, null);
     }
 
     @Override
-    public void sendToAllPlayersWithLoadedPosExcept(IWorld world, IPacket packet, double x, double y, Entity except){
-        if(this.isServer()){
+    public void sendToAllPlayersWithLoadedPosExcept(IWorld world, IPacket packet, double x, double y, Entity except) {
+        if (this.isServer()) {
             IChunk chunk = world.getChunk(x, y);
-            for(AbstractEntityPlayer player : world.getAllPlayers()){
-                if(player != except && (chunk.getPlayersInRange().contains(player) || chunk.getPlayersLeftRange().contains(player))){
+            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+                if (player != except && (chunk.getPlayersInRange().contains(player) || chunk.getPlayersLeftRange().contains(player))) {
                     player.sendPacket(packet);
                 }
             }
@@ -147,90 +144,88 @@ public class NetHandler implements INetHandler{
     }
 
     @Override
-    public int getCommandLevel(AbstractEntityPlayer player){
-        if(this.isServer()){
+    public int getCommandLevel(AbstractEntityPlayer player) {
+        if (this.isServer()) {
             return this.server.commandPermissions.getCommandLevel(player);
-        }
-        else{
+        } else {
             return 0;
         }
     }
 
     @Override
-    public void setCommandLevel(AbstractEntityPlayer player, int level){
+    public void setCommandLevel(AbstractEntityPlayer player, int level) {
         this.setCommandLevel(player.getUniqueId(), level);
     }
 
     @Override
-    public void setCommandLevel(UUID id, int level){
-        if(this.isServer()){
+    public void setCommandLevel(UUID id, int level) {
+        if (this.isServer()) {
             this.server.commandPermissions.setCommandLevel(id, level);
         }
     }
 
     @Override
-    public void whitelist(UUID id){
-        if(this.isServer()){
+    public void whitelist(UUID id) {
+        if (this.isServer()) {
             this.server.whitelist.add(id);
         }
     }
 
     @Override
-    public void removeWhitelist(UUID id){
-        if(this.isServer()){
+    public void removeWhitelist(UUID id) {
+        if (this.isServer()) {
             this.server.whitelist.remove(id);
         }
     }
 
     @Override
-    public boolean isWhitelisted(UUID id){
+    public boolean isWhitelisted(UUID id) {
         return !this.isServer() || this.server.whitelist.isWhitelisted(id);
     }
 
     @Override
-    public boolean isWhitelistEnabled(){
+    public boolean isWhitelistEnabled() {
         return this.isServer() && this.server.whitelist.isEnabled();
     }
 
     @Override
-    public void enableWhitelist(boolean enabled){
-        if(this.isServer()){
+    public void enableWhitelist(boolean enabled) {
+        if (this.isServer()) {
             this.server.whitelist.setEnabled(enabled);
         }
     }
 
     @Override
-    public void blacklist(UUID id, String reason){
-        if(this.isServer()){
+    public void blacklist(UUID id, String reason) {
+        if (this.isServer()) {
             this.server.blacklist.add(id, reason);
         }
     }
 
     @Override
-    public String getBlacklistReason(UUID id){
-        if(this.isServer()){
+    public String getBlacklistReason(UUID id) {
+        if (this.isServer()) {
             return this.server.blacklist.getBlacklistReason(id);
-        }
-        else{
+        } else {
             return null;
         }
     }
 
     @Override
-    public void removeBlacklist(UUID id){
-        if(this.isServer()){
+    public void removeBlacklist(UUID id) {
+        if (this.isServer()) {
             this.server.blacklist.remove(id);
         }
     }
 
     @Override
-    public boolean isBlacklisted(UUID id){
+    public boolean isBlacklisted(UUID id) {
         return !this.isServer() || this.server.blacklist.isBlacklisted(id);
     }
 
     @Override
-    public void saveServerSettings(){
-        if(this.isServer()){
+    public void saveServerSettings() {
+        if (this.isServer()) {
             this.server.commandPermissions.save();
             this.server.whitelist.save();
             this.server.blacklist.save();

@@ -14,27 +14,26 @@ import de.ellpeck.rockbottom.world.tile.TileLog;
 
 import java.util.Locale;
 
-public class TileLogRenderer extends DefaultTileRenderer<TileLog>{
+public class TileLogRenderer extends DefaultTileRenderer<TileLog> {
 
     private final ResourceName[] textures;
 
-    public TileLogRenderer(ResourceName texture){
+    public TileLogRenderer(ResourceName texture) {
         super(texture);
 
         LogType[] types = LogType.values();
         this.textures = new ResourceName[types.length];
-        for(int i = 0; i < this.textures.length; i++){
-            if(types[i] != LogType.PLACED){
-                this.textures[i] = this.texture.addSuffix('.'+types[i].name().toLowerCase(Locale.ROOT));
-            }
-            else{
+        for (int i = 0; i < this.textures.length; i++) {
+            if (types[i] != LogType.PLACED) {
+                this.textures[i] = this.texture.addSuffix('.' + types[i].name().toLowerCase(Locale.ROOT));
+            } else {
                 this.textures[i] = this.texture;
             }
         }
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileLog tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileLog tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         LogType type = state.get(StaticTileProps.LOG_VARIANT);
         ResourceName tex = this.textures[type.ordinal()];
         manager.getTexture(tex).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);

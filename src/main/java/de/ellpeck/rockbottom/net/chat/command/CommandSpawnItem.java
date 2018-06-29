@@ -19,81 +19,73 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandSpawnItem extends Command{
+public class CommandSpawnItem extends Command {
 
     private final List<String> itemAutocomplete = new ArrayList<>();
 
-    public CommandSpawnItem(){
+    public CommandSpawnItem() {
         super(ResourceName.intern("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
 
-        for(ResourceName name : RockBottomAPI.ITEM_REGISTRY.keySet()){
+        for (ResourceName name : RockBottomAPI.ITEM_REGISTRY.keySet()) {
             this.itemAutocomplete.add(name.toString());
         }
     }
 
     @Override
-    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat){
-        if(sender instanceof AbstractEntityPlayer){
-            AbstractEntityPlayer player = (AbstractEntityPlayer)sender;
+    public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
+        if (sender instanceof AbstractEntityPlayer) {
+            AbstractEntityPlayer player = (AbstractEntityPlayer) sender;
 
             Item item;
-            if(args.length > 0){
-                try{
+            if (args.length > 0) {
+                try {
                     ResourceName name = new ResourceName(args[0]);
                     item = RockBottomAPI.ITEM_REGISTRY.get(name);
+                } catch (Exception e) {
+                    return new ChatComponentText(FormattingCode.RED + "'" + args[0] + "' isn't a valid item name!");
                 }
-                catch(Exception e){
-                    return new ChatComponentText(FormattingCode.RED+"'"+args[0]+"' isn't a valid item name!");
-                }
-            }
-            else{
-                return new ChatComponentText(FormattingCode.RED+"Specify an item!");
+            } else {
+                return new ChatComponentText(FormattingCode.RED + "Specify an item!");
             }
 
             int amount = 1;
-            if(args.length > 1){
-                try{
+            if (args.length > 1) {
+                try {
                     amount = Util.clamp(Integer.parseInt(args[1]), 0, item.getMaxAmount());
-                }
-                catch(Exception ignored){
+                } catch (Exception ignored) {
                 }
             }
 
             int meta = 0;
-            if(args.length > 2){
-                try{
+            if (args.length > 2) {
+                try {
                     meta = Util.clamp(Integer.parseInt(args[2]), 0, item.getHighestPossibleMeta());
-                }
-                catch(Exception ignored){
+                } catch (Exception ignored) {
                 }
             }
 
-            if(item != null){
+            if (item != null) {
                 ItemInstance instance = new ItemInstance(item, amount, meta);
                 ItemInstance left = player.getInv().addExistingFirst(instance, false);
 
-                if(left != null && left.isEffectivelyEqual(instance)){
-                    return new ChatComponentText(FormattingCode.RED+"Not enough space for ").append(new ChatComponentTranslation(item.getUnlocalizedName(instance))).append(new ChatComponentText(" x"+instance.getAmount()));
+                if (left != null && left.isEffectivelyEqual(instance)) {
+                    return new ChatComponentText(FormattingCode.RED + "Not enough space for ").append(new ChatComponentTranslation(item.getUnlocalizedName(instance))).append(new ChatComponentText(" x" + instance.getAmount()));
+                } else {
+                    return new ChatComponentText(FormattingCode.GREEN + "Spawned ").append(new ChatComponentTranslation(item.getUnlocalizedName(instance))).append(new ChatComponentText(" x" + instance.getAmount()));
                 }
-                else{
-                    return new ChatComponentText(FormattingCode.GREEN+"Spawned ").append(new ChatComponentTranslation(item.getUnlocalizedName(instance))).append(new ChatComponentText(" x"+instance.getAmount()));
-                }
+            } else {
+                return new ChatComponentText(FormattingCode.RED + "An item with the name '" + args[0] + "' doesn't exist!");
             }
-            else{
-                return new ChatComponentText(FormattingCode.RED+"An item with the name '"+args[0]+"' doesn't exist!");
-            }
-        }
-        else{
-            return new ChatComponentText(FormattingCode.RED+"Only players can spawn items!");
+        } else {
+            return new ChatComponentText(FormattingCode.RED + "Only players can spawn items!");
         }
     }
 
     @Override
-    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat){
-        if(argNumber == 0){
+    public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat) {
+        if (argNumber == 0) {
             return this.itemAutocomplete;
-        }
-        else{
+        } else {
             return Collections.emptyList();
         }
     }

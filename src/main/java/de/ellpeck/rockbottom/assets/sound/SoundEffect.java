@@ -17,12 +17,12 @@ import java.nio.ShortBuffer;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SoundEffect implements ISound{
+public class SoundEffect implements ISound {
 
     private final int id;
     private final Set<Integer> currentIndices = new HashSet<>();
 
-    public SoundEffect(InputStream stream) throws Exception{
+    public SoundEffect(InputStream stream) throws Exception {
         this.id = AL10.alGenBuffers();
 
         STBVorbisInfo info = STBVorbisInfo.malloc();
@@ -31,17 +31,17 @@ public class SoundEffect implements ISound{
         info.free();
     }
 
-    private ShortBuffer readVorbis(InputStream stream, STBVorbisInfo info) throws Exception{
+    private ShortBuffer readVorbis(InputStream stream, STBVorbisInfo info) throws Exception {
         byte[] input = ByteStreams.toByteArray(stream);
         stream.close();
 
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);
-        ((Buffer)data).flip();
+        ((Buffer) data).flip();
 
         IntBuffer error = BufferUtils.createIntBuffer(1);
         long decoder = STBVorbis.stb_vorbis_open_memory(data, error, null);
-        Preconditions.checkState(decoder != MemoryUtil.NULL, "Failed to load sound:\n"+error.get(0));
+        Preconditions.checkState(decoder != MemoryUtil.NULL, "Failed to load sound:\n" + error.get(0));
 
         STBVorbis.stb_vorbis_get_info(decoder, info);
 
@@ -49,59 +49,59 @@ public class SoundEffect implements ISound{
         ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples);
 
         int channels = info.channels();
-        ((Buffer)pcm).limit(STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm)*channels);
+        ((Buffer) pcm).limit(STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm) * channels);
         STBVorbis.stb_vorbis_close(decoder);
 
         return pcm;
     }
 
     @Override
-    public void play(){
+    public void play() {
         this.play(1F, 1F);
     }
 
     @Override
-    public void play(float pitch, float volume){
+    public void play(float pitch, float volume) {
         this.play(pitch, volume, false);
     }
 
     @Override
-    public void play(float pitch, float volume, boolean loop){
+    public void play(float pitch, float volume, boolean loop) {
         this.playAt(pitch, volume, SoundHandler.playerX, SoundHandler.playerY, SoundHandler.playerZ, loop);
     }
 
     @Override
-    public void playAt(double x, double y, double z){
+    public void playAt(double x, double y, double z) {
         this.playAt(1F, 1F, x, y, z);
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z){
+    public void playAt(float pitch, float volume, double x, double y, double z) {
         this.playAt(pitch, volume, x, y, z, false);
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop) {
         this.playAt(pitch, volume, x, y, z, loop, SoundHandler.ROLLOFF, SoundHandler.REF_DIST, SoundHandler.MAX_DIST);
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance){
-        int index = SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float)x, (float)y, (float)z, rolloffFactor, refDistance, maxDistance);
-        if(index >= 0){
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance) {
+        int index = SoundHandler.playAsSoundAt(this, this.id, pitch, volume, loop, (float) x, (float) y, (float) z, rolloffFactor, refDistance, maxDistance);
+        if (index >= 0) {
             this.currentIndices.add(index);
         }
     }
 
     @Override
-    public boolean isIndexPlaying(int index){
+    public boolean isIndexPlaying(int index) {
         return this.currentIndices.contains(index) && SoundHandler.isPlaying(index);
     }
 
     @Override
-    public boolean isPlaying(){
-        for(int i : this.currentIndices){
-            if(this.isIndexPlaying(i)){
+    public boolean isPlaying() {
+        for (int i : this.currentIndices) {
+            if (this.isIndexPlaying(i)) {
                 return true;
             }
         }
@@ -109,28 +109,28 @@ public class SoundEffect implements ISound{
     }
 
     @Override
-    public void stop(){
-        for(int i : this.currentIndices){
+    public void stop() {
+        for (int i : this.currentIndices) {
             SoundHandler.stopSoundEffect(i);
         }
         this.currentIndices.clear();
     }
 
     @Override
-    public void stopIndex(int index){
-        if(this.currentIndices.contains(index)){
+    public void stopIndex(int index) {
+        if (this.currentIndices.contains(index)) {
             SoundHandler.stopSoundEffect(index);
             this.currentIndices.remove(index);
         }
     }
 
     @Override
-    public Set<Integer> getPlayingSourceIds(){
+    public Set<Integer> getPlayingSourceIds() {
         return this.currentIndices;
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         this.stop();
         AL10.alDeleteBuffers(this.id);
     }

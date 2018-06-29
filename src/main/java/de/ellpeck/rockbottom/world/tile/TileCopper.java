@@ -12,22 +12,22 @@ import de.ellpeck.rockbottom.render.tile.TileCopperRenderer;
 
 import java.util.List;
 
-public class TileCopper extends TileOreMaterial{
+public class TileCopper extends TileOreMaterial {
 
-    public TileCopper(){
+    public TileCopper() {
         super(ResourceName.intern("copper"));
         this.addProps(StaticTileProps.HAS_CANISTER);
     }
 
     @Override
-    protected ITileRenderer createRenderer(ResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name) {
         return new TileCopperRenderer(name);
     }
 
     @Override
-    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
         List<ItemInstance> drops = super.getDrops(world, x, y, layer, destroyer);
-        if(world.getState(layer, x, y).get(StaticTileProps.HAS_CANISTER)){
+        if (world.getState(layer, x, y).get(StaticTileProps.HAS_CANISTER)) {
             drops.add(new ItemInstance(GameContent.ITEM_COPPER_CANISTER));
         }
         return drops;

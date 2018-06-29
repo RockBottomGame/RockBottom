@@ -17,66 +17,64 @@ import de.ellpeck.rockbottom.render.tile.TileGrassRenderer;
 import java.util.Collections;
 import java.util.List;
 
-public class TileGrass extends TileBasic{
+public class TileGrass extends TileBasic {
 
-    public TileGrass(){
+    public TileGrass() {
         super(ResourceName.intern("grass"));
     }
 
     @Override
-    protected ITileRenderer createRenderer(ResourceName name){
+    protected ITileRenderer createRenderer(ResourceName name) {
         return new TileGrassRenderer(name);
     }
 
     @Override
-    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer){
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
         return Collections.singletonList(new ItemInstance(GameContent.TILE_SOIL));
     }
 
     @Override
-    public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+    public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
         super.onChangeAround(world, x, y, layer, changedX, changedY, changedLayer);
 
-        if(this.shouldDecay(world, x, y, layer)){
+        if (this.shouldDecay(world, x, y, layer)) {
             world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
         }
     }
 
     @Override
-    public void updateRandomly(IWorld world, int x, int y, TileLayer layer){
-        if(this.shouldDecay(world, x, y, layer)){
+    public void updateRandomly(IWorld world, int x, int y, TileLayer layer) {
+        if (this.shouldDecay(world, x, y, layer)) {
             world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
-        }
-        else{
-            for(Direction dir : Direction.SURROUNDING){
-                if(world.isPosLoaded(x+dir.x, y+dir.y)){
-                    TileState state = world.getState(layer, x+dir.x, y+dir.y);
+        } else {
+            for (Direction dir : Direction.SURROUNDING) {
+                if (world.isPosLoaded(x + dir.x, y + dir.y)) {
+                    TileState state = world.getState(layer, x + dir.x, y + dir.y);
 
-                    if(state.getTile().canGrassSpreadTo(world, x+dir.x, y+dir.y, layer)){
-                        world.setState(layer, x+dir.x, y+dir.y, this.getDefState());
+                    if (state.getTile().canGrassSpreadTo(world, x + dir.x, y + dir.y, layer)) {
+                        world.setState(layer, x + dir.x, y + dir.y, this.getDefState());
                     }
                 }
             }
         }
     }
 
-    private boolean shouldDecay(IWorld world, int x, int y, TileLayer layer){
-        if(world.isPosLoaded(x, y+1)){
-            Tile tile = world.getState(layer, x, y+1).getTile();
-            return tile.hasSolidSurface(world, x, y+1, layer) && !tile.makesGrassSnowy(world, x, y+1, layer);
-        }
-        else{
+    private boolean shouldDecay(IWorld world, int x, int y, TileLayer layer) {
+        if (world.isPosLoaded(x, y + 1)) {
+            Tile tile = world.getState(layer, x, y + 1).getTile();
+            return tile.hasSolidSurface(world, x, y + 1, layer) && !tile.makesGrassSnowy(world, x, y + 1, layer);
+        } else {
             return false;
         }
     }
 
     @Override
-    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer){
+    public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer) {
         return this.shouldDecay(world, x, y, layer) ? GameContent.TILE_SOIL.getDefState() : this.getDefState();
     }
 
     @Override
-    public boolean canKeepPlants(IWorld world, int x, int y, TileLayer layer){
+    public boolean canKeepPlants(IWorld world, int x, int y, TileLayer layer) {
         return true;
     }
 }

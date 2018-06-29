@@ -51,17 +51,19 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
-public class World implements IWorld{
+public class World implements IWorld {
 
     public final List<IChunk> loadedChunks = new ArrayList<>();
     public final List<AbstractEntityPlayer> players = new ArrayList<>();
     protected final Table<Integer, Integer, IChunk> chunkLookup = HashBasedTable.create();
     protected final WorldInfo info;
+    protected final List<AbstractEntityPlayer> playersUnmodifiable;
     private final DynamicRegistryInfo regInfo;
     private final Map<ResourceName, IWorldGenerator> generators;
     private final List<IWorldGenerator> loopingGenerators;
     private final List<IWorldGenerator> retroactiveGenerators;
-    protected final List<AbstractEntityPlayer> playersUnmodifiable;
+    private final WorldGenBiomes biomeGen;
+    private final WorldGenHeights heightGen;
     protected File directory;
     protected File chunksDirectory;
     protected File playerDirectory;
@@ -69,10 +71,8 @@ public class World implements IWorld{
     protected File persistentChunksFile;
     protected int saveTicksCounter;
     private ModBasedDataSet additionalData;
-    private final WorldGenBiomes biomeGen;
-    private final WorldGenHeights heightGen;
 
-    public World(WorldInfo info, DynamicRegistryInfo regInfo, File worldDirectory){
+    public World(WorldInfo info, DynamicRegistryInfo regInfo, File worldDirectory) {
         this.info = info;
         this.regInfo = regInfo;
 
@@ -80,27 +80,26 @@ public class World implements IWorld{
         List<IWorldGenerator> loopingGenerators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
-        for(Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.entrySet()){
-            try{
+        for (Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.entrySet()) {
+            try {
                 IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
                 generator.initWorld(this);
 
-                if(generator.generatesPerChunk()){
+                if (generator.generatesPerChunk()) {
                     loopingGenerators.add(generator);
 
-                    if(generator.generatesRetroactively()){
+                    if (generator.generatesRetroactively()) {
                         retroactiveGenerators.add(generator);
                     }
                 }
 
                 generators.put(entry.getKey(), generator);
-            }
-            catch(Exception e){
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class "+entry.getValue(), e);
+            } catch (Exception e) {
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class " + entry.getValue(), e);
             }
         }
 
-        Comparator comp = Comparator.comparingInt(IWorldGenerator :: getPriority).reversed();
+        Comparator comp = Comparator.comparingInt(IWorldGenerator::getPriority).reversed();
         loopingGenerators.sort(comp);
         retroactiveGenerators.sort(comp);
 
@@ -108,20 +107,20 @@ public class World implements IWorld{
         this.loopingGenerators = Collections.unmodifiableList(loopingGenerators);
         this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
 
-        RockBottomAPI.logger().info("Added a total of "+this.generators.size()+" generators to world ("+this.loopingGenerators.size()+" per chunk, "+this.retroactiveGenerators.size()+" retroactive)");
+        RockBottomAPI.logger().info("Added a total of " + this.generators.size() + " generators to world (" + this.loopingGenerators.size() + " per chunk, " + this.retroactiveGenerators.size() + " retroactive)");
 
-        this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes)this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry!");
-        this.heightGen = Preconditions.checkNotNull((WorldGenHeights)this.getGenerator(WorldGenHeights.ID), "The default heights generator has been removed from the registry!");
+        this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes) this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry!");
+        this.heightGen = Preconditions.checkNotNull((WorldGenHeights) this.getGenerator(WorldGenHeights.ID), "The default heights generator has been removed from the registry!");
 
         this.playersUnmodifiable = Collections.unmodifiableList(this.players);
 
-        if(worldDirectory != null){
+        if (worldDirectory != null) {
             this.directory = worldDirectory;
             this.chunksDirectory = new File(worldDirectory, "chunks");
             this.playerDirectory = new File(worldDirectory, "players");
 
             this.additionalDataFile = new File(worldDirectory, "additional_data.dat");
-            if(this.additionalDataFile.exists()){
+            if (this.additionalDataFile.exists()) {
                 this.additionalData = new ModBasedDataSet();
                 this.additionalData.read(this.additionalDataFile);
             }
@@ -132,68 +131,67 @@ public class World implements IWorld{
         this.loadPersistentChunks();
     }
 
-    private void loadPersistentChunks(){
+    private void loadPersistentChunks() {
         Map<Pos2, Boolean> persistentChunks = new HashMap<>();
 
-        if(this.persistentChunksFile != null && this.persistentChunksFile.exists()){
+        if (this.persistentChunksFile != null && this.persistentChunksFile.exists()) {
             DataSet set = new DataSet();
             set.read(this.persistentChunksFile);
 
             int amount = set.getInt("amount");
-            for(int i = 0; i < amount; i++){
-                persistentChunks.put(new Pos2(set.getInt("x_"+i), set.getInt("y_"+i)), false);
+            for (int i = 0; i < amount; i++) {
+                persistentChunks.put(new Pos2(set.getInt("x_" + i), set.getInt("y_" + i)), false);
             }
         }
 
-        for(int x = -Constants.PERSISTENT_CHUNK_DISTANCE; x <= Constants.PERSISTENT_CHUNK_DISTANCE; x++){
-            for(int y = Constants.PERSISTENT_CHUNK_DISTANCE; y >= -Constants.PERSISTENT_CHUNK_DISTANCE; y--){
+        for (int x = -Constants.PERSISTENT_CHUNK_DISTANCE; x <= Constants.PERSISTENT_CHUNK_DISTANCE; x++) {
+            for (int y = Constants.PERSISTENT_CHUNK_DISTANCE; y >= -Constants.PERSISTENT_CHUNK_DISTANCE; y--) {
                 persistentChunks.put(new Pos2(x, y), true);
             }
         }
 
-        for(Map.Entry<Pos2, Boolean> entry : persistentChunks.entrySet()){
+        for (Map.Entry<Pos2, Boolean> entry : persistentChunks.entrySet()) {
             Pos2 pos = entry.getKey();
             boolean constantPersist = entry.getValue();
 
             this.loadChunk(pos.getX(), pos.getY(), constantPersist, !constantPersist);
 
-            if(constantPersist){
-                RockBottomAPI.logger().config("Creating constantly persistent chunk at "+pos.getX()+", "+pos.getY());
-            }
-            else{
-                RockBottomAPI.logger().config("Loading persisting chunk at "+pos.getX()+", "+pos.getY());
+            if (constantPersist) {
+                RockBottomAPI.logger().config("Creating constantly persistent chunk at " + pos.getX() + ", " + pos.getY());
+            } else {
+                RockBottomAPI.logger().config("Loading persisting chunk at " + pos.getX() + ", " + pos.getY());
             }
         }
     }
 
-    protected void updateChunks(IGameInstance game){
-        for(int i = this.loadedChunks.size()-1; i >= 0; i--){
+    protected void updateChunks(IGameInstance game) {
+        for (int i = this.loadedChunks.size() - 1; i >= 0; i--) {
             IChunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
 
-            if(chunk.shouldUnload()){
+            if (chunk.shouldUnload()) {
                 this.unloadChunk(chunk);
             }
         }
     }
 
-    public void update(AbstractGame game){
-        if(RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED){
+    public void update(AbstractGame game) {
+        if (RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED) {
             this.updateChunks(game);
 
             this.info.totalTimeInWorld++;
 
             this.info.currentWorldTime++;
-            if(this.info.currentWorldTime >= Constants.TIME_PER_DAY){
+            if (this.info.currentWorldTime >= Constants.TIME_PER_DAY) {
                 this.info.currentWorldTime = 0;
             }
 
-            if(this.isServer() && this.info.totalTimeInWorld%80 == 0){
+            if (this.isServer() && this.info.totalTimeInWorld % 80 == 0) {
                 RockBottomAPI.getNet().sendToAllPlayers(this, new PacketTime(this.info.currentWorldTime, this.info.totalTimeInWorld));
             }
 
             this.saveTicksCounter++;
-            if(this.saveTicksCounter >= game.getAutosaveInterval()*Constants.TARGET_TPS){
+            if (this.saveTicksCounter >= game.getAutosaveInterval() * Constants.TARGET_TPS) {
                 this.saveTicksCounter = 0;
 
                 this.save();
@@ -202,9 +200,9 @@ public class World implements IWorld{
     }
 
     @Override
-    public void addEntity(Entity entity){
+    public void addEntity(Entity entity) {
         AddEntityToWorldEvent event = new AddEntityToWorldEvent(this, entity);
-        if(RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED){
+        if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
             entity = event.entity;
 
             double x = entity.getX();
@@ -213,101 +211,100 @@ public class World implements IWorld{
             IChunk chunk = this.getChunk(x, y);
             chunk.addEntity(entity);
 
-            if(entity instanceof EntityPlayer){
-                EntityPlayer player = (EntityPlayer)entity;
+            if (entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) entity;
 
-                if(this.getPlayer(player.getUniqueId()) == null){
+                if (this.getPlayer(player.getUniqueId()) == null) {
                     this.players.add(player);
-                }
-                else{
-                    RockBottomAPI.logger().warning("Tried adding player "+player.getName()+" with id "+player.getUniqueId()+" to world that already contained it!");
+                } else {
+                    RockBottomAPI.logger().warning("Tried adding player " + player.getName() + " with id " + player.getUniqueId() + " to world that already contained it!");
                 }
             }
 
-            if(!chunk.isGenerating() && this.isServer()){
+            if (!chunk.isGenerating() && this.isServer()) {
                 RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), x, y, entity);
             }
         }
     }
 
     @Override
-    public void addTileEntity(TileEntity tile){
+    public void addTileEntity(TileEntity tile) {
         IChunk chunk = this.getChunk(tile.x, tile.y);
         chunk.addTileEntity(tile);
     }
 
     @Override
-    public void removeEntity(Entity entity){
+    public void removeEntity(Entity entity) {
         IChunk chunk = this.getChunk(entity.getX(), entity.getY());
         this.removeEntity(entity, chunk);
     }
 
     @Override
-    public void removeTileEntity(TileLayer layer, int x, int y){
+    public void removeTileEntity(TileLayer layer, int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         chunk.removeTileEntity(layer, x, y);
     }
 
     @Override
-    public TileEntity getTileEntity(TileLayer layer, int x, int y){
+    public TileEntity getTileEntity(TileLayer layer, int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getTileEntity(layer, x, y);
     }
 
     @Override
-    public TileEntity getTileEntity(int x, int y){
+    public TileEntity getTileEntity(int x, int y) {
         return this.getTileEntity(TileLayer.MAIN, x, y);
     }
 
     @Override
-    public <T extends TileEntity> T getTileEntity(TileLayer layer, int x, int y, Class<T> tileClass){
+    public <T extends TileEntity> T getTileEntity(TileLayer layer, int x, int y, Class<T> tileClass) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getTileEntity(layer, x, y, tileClass);
     }
 
     @Override
-    public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass){
+    public <T extends TileEntity> T getTileEntity(int x, int y, Class<T> tileClass) {
         return this.getTileEntity(TileLayer.MAIN, x, y, tileClass);
     }
 
     @Override
-    public void reevaluateTickBehavior(TileEntity tile){
+    public void reevaluateTickBehavior(TileEntity tile) {
         IChunk chunk = this.getChunk(tile.x, tile.y);
         chunk.reevaluateTickBehavior(tile);
     }
 
     @Override
-    public List<Entity> getAllEntities(){
+    public List<Entity> getAllEntities() {
         List<Entity> entities = new ArrayList<>();
-        for(IChunk chunk : this.loadedChunks){
+        for (IChunk chunk : this.loadedChunks) {
             entities.addAll(chunk.getAllEntities());
         }
         return entities;
     }
 
     @Override
-    public List<TileEntity> getAllTileEntities(){
+    public List<TileEntity> getAllTileEntities() {
         List<TileEntity> tiles = new ArrayList<>();
-        for(IChunk chunk : this.loadedChunks){
+        for (IChunk chunk : this.loadedChunks) {
             tiles.addAll(chunk.getAllTileEntities());
         }
         return tiles;
     }
 
     @Override
-    public List<TileEntity> getAllTickingTileEntities(){
+    public List<TileEntity> getAllTickingTileEntities() {
         List<TileEntity> tiles = new ArrayList<>();
-        for(IChunk chunk : this.loadedChunks){
+        for (IChunk chunk : this.loadedChunks) {
             tiles.addAll(chunk.getAllTickingTileEntities());
         }
         return tiles;
     }
 
     @Override
-    public Entity getEntity(UUID id){
-        for(IChunk chunk : this.loadedChunks){
+    public Entity getEntity(UUID id) {
+        for (IChunk chunk : this.loadedChunks) {
             Entity entity = chunk.getEntity(id);
-            if(entity != null){
+            if (entity != null) {
                 return entity;
             }
         }
@@ -315,31 +312,31 @@ public class World implements IWorld{
     }
 
     @Override
-    public List<Entity> getEntities(BoundBox area){
+    public List<Entity> getEntities(BoundBox area) {
         return this.getEntities(area, null, null);
     }
 
     @Override
-    public List<Entity> getEntities(BoundBox area, Predicate<Entity> test){
+    public List<Entity> getEntities(BoundBox area, Predicate<Entity> test) {
         return this.getEntities(area, null, test);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type){
+    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type) {
         return this.getEntities(area, type, null);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test){
-        int minChunkX = Util.toGridPos(area.getMinX()-Constants.CHUNK_SIZE/2);
-        int minChunkY = Util.toGridPos(area.getMinY()-Constants.CHUNK_SIZE/2);
-        int maxChunkX = Util.toGridPos(area.getMaxX()+Constants.CHUNK_SIZE/2);
-        int maxChunkY = Util.toGridPos(area.getMaxY()+Constants.CHUNK_SIZE/2);
+    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test) {
+        int minChunkX = Util.toGridPos(area.getMinX() - Constants.CHUNK_SIZE / 2);
+        int minChunkY = Util.toGridPos(area.getMinY() - Constants.CHUNK_SIZE / 2);
+        int maxChunkX = Util.toGridPos(area.getMaxX() + Constants.CHUNK_SIZE / 2);
+        int maxChunkY = Util.toGridPos(area.getMaxY() + Constants.CHUNK_SIZE / 2);
 
         List<T> entities = new ArrayList<>();
-        for(int x = minChunkX; x <= maxChunkX; x++){
-            for(int y = minChunkY; y <= maxChunkY; y++){
-                if(this.isChunkLoaded(x, y)){
+        for (int x = minChunkX; x <= maxChunkX; x++) {
+            for (int y = minChunkY; y <= maxChunkY; y++) {
+                if (this.isChunkLoaded(x, y)) {
                     IChunk chunk = this.getChunkFromGridCoords(x, y);
                     entities.addAll(chunk.getEntities(area, type, test));
                 }
@@ -349,38 +346,37 @@ public class World implements IWorld{
     }
 
     @Override
-    public int getIdForState(TileState state){
+    public int getIdForState(TileState state) {
         ResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
-        if(name != null){
+        if (name != null) {
             return this.getTileRegInfo().getId(name);
-        }
-        else{
+        } else {
             return -1;
         }
     }
 
     @Override
-    public TileState getStateForId(int id){
+    public TileState getStateForId(int id) {
         ResourceName name = this.getTileRegInfo().get(id);
         return RockBottomAPI.TILE_STATE_REGISTRY.get(name);
     }
 
     @Override
-    public byte getCombinedLight(int x, int y){
+    public byte getCombinedLight(int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getCombinedLight(x, y);
     }
 
     @Override
-    public byte getCombinedVisualLight(int x, int y){
+    public byte getCombinedVisualLight(int x, int y) {
         byte light = this.getCombinedLight(x, y);
 
-        if(!this.isDedicatedServer()){
+        if (!this.isDedicatedServer()) {
             AbstractEntityPlayer player = RockBottomAPI.getGame().getPlayer();
-            double dist = Util.distanceSq(x+0.5D, y, player.getX(), player.getY());
-            if(dist <= 20D){
-                byte newLight = (byte)(0.35D*(20D-dist));
-                if(light < newLight){
+            double dist = Util.distanceSq(x + 0.5D, y, player.getX(), player.getY());
+            if (dist <= 20D) {
+                byte newLight = (byte) (0.35D * (20D - dist));
+                if (light < newLight) {
                     light = newLight;
                 }
             }
@@ -390,260 +386,258 @@ public class World implements IWorld{
     }
 
     @Override
-    public boolean isStoryMode(){
+    public boolean isStoryMode() {
         return this.info.storyMode;
     }
 
     @Override
-    public byte getSkyLight(int x, int y){
+    public byte getSkyLight(int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getSkyLight(x, y);
     }
 
     @Override
-    public byte getArtificialLight(int x, int y){
+    public byte getArtificialLight(int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getArtificialLight(x, y);
     }
 
     @Override
-    public void setSkyLight(int x, int y, byte light){
+    public void setSkyLight(int x, int y, byte light) {
         IChunk chunk = this.getChunk(x, y);
         chunk.setSkyLight(x, y, light);
     }
 
     @Override
-    public void setArtificialLight(int x, int y, byte light){
+    public void setArtificialLight(int x, int y, byte light) {
         IChunk chunk = this.getChunk(x, y);
         chunk.setArtificialLight(x, y, light);
     }
 
     @Override
-    public void scheduleUpdate(int x, int y, TileLayer layer, int scheduledMeta, int time){
+    public void scheduleUpdate(int x, int y, TileLayer layer, int scheduledMeta, int time) {
         IChunk chunk = this.getChunk(x, y);
         chunk.scheduleUpdate(x, y, layer, scheduledMeta, time);
     }
 
     @Override
-    public boolean isChunkLoaded(int x, int y){
+    public boolean isChunkLoaded(int x, int y) {
         return this.isChunkLoaded(x, y, true);
     }
 
     @Override
-    public boolean isChunkLoaded(int x, int y, boolean checkGenerating){
+    public boolean isChunkLoaded(int x, int y, boolean checkGenerating) {
         IChunk chunk = this.chunkLookup.get(x, y);
         return chunk != null && (!checkGenerating || !chunk.isGenerating());
     }
 
     @Override
-    public boolean isPosLoaded(double x, double y){
+    public boolean isPosLoaded(double x, double y) {
         return this.isPosLoaded(x, y, true);
     }
 
     @Override
-    public boolean isPosLoaded(double x, double y, boolean checkGenerating){
+    public boolean isPosLoaded(double x, double y, boolean checkGenerating) {
         return this.isChunkLoaded(Util.toGridPos(x), Util.toGridPos(y), checkGenerating);
     }
 
     @Override
-    public void scheduleUpdate(int x, int y, TileLayer layer, int time){
+    public void scheduleUpdate(int x, int y, TileLayer layer, int time) {
         this.scheduleUpdate(x, y, layer, 0, time);
     }
 
     @Override
-    public void setDirty(int x, int y){
+    public void setDirty(int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         chunk.setDirty(x, y);
     }
 
     @Override
-    public int getChunkHeight(TileLayer layer, int x, int bottomY){
+    public int getChunkHeight(TileLayer layer, int x, int bottomY) {
         IChunk chunk = this.getChunk(x, bottomY);
         return chunk.getChunkHeight(layer, x, bottomY);
     }
 
     @Override
-    public int getAverageChunkHeight(TileLayer layer, int x, int bottomY){
+    public int getAverageChunkHeight(TileLayer layer, int x, int bottomY) {
         IChunk chunk = this.getChunk(x, bottomY);
         return chunk.getAverageChunkHeight(layer, x, bottomY);
     }
 
     @Override
-    public float getChunkFlatness(TileLayer layer, int x, int y){
+    public float getChunkFlatness(TileLayer layer, int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getChunkFlatness(layer, x, y);
     }
 
     @Override
-    public Biome getExpectedBiome(int x, int y){
+    public Biome getExpectedBiome(int x, int y) {
         return this.biomeGen.getBiome(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
     }
 
     @Override
-    public BiomeLevel getExpectedBiomeLevel(int x, int y){
+    public BiomeLevel getExpectedBiomeLevel(int x, int y) {
         return this.biomeGen.getSmoothedLevelForPos(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
     }
 
     @Override
-    public int getExpectedSurfaceHeight(TileLayer layer, int x){
+    public int getExpectedSurfaceHeight(TileLayer layer, int x) {
         return this.heightGen.getHeight(layer, x);
     }
 
     @Override
-    public int getExpectedAverageHeight(TileLayer layer, int startX, int endX){
+    public int getExpectedAverageHeight(TileLayer layer, int startX, int endX) {
         int totalHeight = 0;
-        for(int checkX = startX; checkX < endX; checkX++){
+        for (int checkX = startX; checkX < endX; checkX++) {
             totalHeight += this.getExpectedSurfaceHeight(layer, checkX);
         }
-        return totalHeight/Constants.CHUNK_SIZE;
+        return totalHeight / Constants.CHUNK_SIZE;
     }
 
     @Override
-    public float getExpectedSurfaceFlatness(TileLayer layer, int startX, int endX){
+    public float getExpectedSurfaceFlatness(TileLayer layer, int startX, int endX) {
         Set<Integer> uniqueHeights = new HashSet<>();
-        for(int checkX = startX; checkX < endX; checkX++){
+        for (int checkX = startX; checkX < endX; checkX++) {
             uniqueHeights.add(this.getExpectedSurfaceHeight(layer, checkX));
         }
-        return 1F-(uniqueHeights.size()-1F)/(Constants.CHUNK_SIZE-1F);
+        return 1F - (uniqueHeights.size() - 1F) / (Constants.CHUNK_SIZE - 1F);
     }
 
     @Override
-    public INoiseGen getNoiseGenForBiome(Biome biome){
+    public INoiseGen getNoiseGenForBiome(Biome biome) {
         return this.biomeGen.getBiomeNoise(this, biome);
     }
 
     @Override
-    public Biome getBiome(int x, int y){
+    public Biome getBiome(int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getBiome(x, y);
     }
 
     @Override
-    public void setBiome(int x, int y, Biome biome){
+    public void setBiome(int x, int y, Biome biome) {
         IChunk chunk = this.getChunk(x, y);
         chunk.setBiome(x, y, biome);
     }
 
     @Override
-    public boolean isClient(){
+    public boolean isClient() {
         return RockBottomAPI.getNet().isClient();
     }
 
     @Override
-    public boolean isServer(){
+    public boolean isServer() {
         return RockBottomAPI.getNet().isServer();
     }
 
     @Override
-    public boolean isDedicatedServer(){
+    public boolean isDedicatedServer() {
         return RockBottomAPI.getGame().isDedicatedServer();
     }
 
     @Override
-    public boolean isLocalPlayer(Entity entity){
+    public boolean isLocalPlayer(Entity entity) {
         return RockBottomAPI.getNet().isThePlayer(entity);
     }
 
     @Override
-    public void callRetroactiveGeneration(){
-        for(IChunk chunk : this.loadedChunks){
+    public void callRetroactiveGeneration() {
+        for (IChunk chunk : this.loadedChunks) {
             chunk.callRetroactiveGeneration();
         }
     }
 
     @Override
-    public long getSeed(){
+    public long getSeed() {
         return this.info.seed;
     }
 
     @Override
-    public WorldInfo getWorldInfo(){
+    public WorldInfo getWorldInfo() {
         return this.info;
     }
 
     @Override
-    public NameToIndexInfo getTileRegInfo(){
+    public NameToIndexInfo getTileRegInfo() {
         return this.regInfo.getTiles();
     }
 
     @Override
-    public int getIdForBiome(Biome biome){
+    public int getIdForBiome(Biome biome) {
         ResourceName name = RockBottomAPI.BIOME_REGISTRY.getId(biome);
-        if(name != null){
+        if (name != null) {
             return this.getBiomeRegInfo().getId(name);
-        }
-        else{
+        } else {
             return -1;
         }
     }
 
     @Override
-    public Biome getBiomeForId(int id){
+    public Biome getBiomeForId(int id) {
         ResourceName name = this.getBiomeRegInfo().get(id);
         return RockBottomAPI.BIOME_REGISTRY.get(name);
     }
 
     @Override
-    public NameToIndexInfo getBiomeRegInfo(){
+    public NameToIndexInfo getBiomeRegInfo() {
         return this.regInfo.getBiomes();
     }
 
     @Override
-    public DynamicRegistryInfo getRegInfo(){
+    public DynamicRegistryInfo getRegInfo() {
         return this.regInfo;
     }
 
     @Override
-    public int getCurrentTime(){
+    public int getCurrentTime() {
         return this.info.currentWorldTime;
     }
 
     @Override
-    public int getTotalTime(){
-        return this.info.totalTimeInWorld;
-    }
-
-    @Override
-    public void setCurrentTime(int time){
+    public void setCurrentTime(int time) {
         this.info.currentWorldTime = time;
     }
 
     @Override
-    public void setTotalTime(int time){
+    public int getTotalTime() {
+        return this.info.totalTimeInWorld;
+    }
+
+    @Override
+    public void setTotalTime(int time) {
         this.info.totalTimeInWorld = time;
     }
 
     @Override
-    public IChunk getChunk(double x, double y){
+    public IChunk getChunk(double x, double y) {
         return this.getChunkFromGridCoords(Util.toGridPos(x), Util.toGridPos(y));
     }
 
     @Override
-    public IChunk getChunkFromGridCoords(int gridX, int gridY){
+    public IChunk getChunkFromGridCoords(int gridX, int gridY) {
         IChunk chunk = this.chunkLookup.get(gridX, gridY);
 
-        if(chunk == null){
+        if (chunk == null) {
             chunk = this.loadChunk(gridX, gridY, false, true);
         }
 
         return chunk;
     }
 
-    protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue){
+    protected Chunk loadChunk(int gridX, int gridY, boolean isPersistent, boolean enqueue) {
         Chunk chunk = new Chunk(this, gridX, gridY, isPersistent);
         this.loadedChunks.add(chunk);
         this.chunkLookup.put(gridX, gridY, chunk);
 
         Runnable r = () -> {
             DataSet set = new DataSet();
-            set.read(new File(this.chunksDirectory, "c_"+gridX+'_'+gridY+".dat"));
+            set.read(new File(this.chunksDirectory, "c_" + gridX + '_' + gridY + ".dat"));
             chunk.loadOrCreate(set);
         };
 
-        if(enqueue){
+        if (enqueue) {
             ThreadHandler.chunkGenThread.add(r);
-        }
-        else{
+        } else {
             r.run();
         }
 
@@ -651,7 +645,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public void unloadChunk(IChunk chunk){
+    public void unloadChunk(IChunk chunk) {
         this.saveChunk(chunk, true);
 
         this.loadedChunks.remove(chunk);
@@ -659,36 +653,36 @@ public class World implements IWorld{
     }
 
     @Override
-    public TileState getState(int x, int y){
+    public TileState getState(int x, int y) {
         return this.getState(TileLayer.MAIN, x, y);
     }
 
     @Override
-    public TileState getState(TileLayer layer, int x, int y){
+    public TileState getState(TileLayer layer, int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getState(layer, x, y);
     }
 
     @Override
-    public void setState(int x, int y, TileState tile){
+    public void setState(int x, int y, TileState tile) {
         this.setState(TileLayer.MAIN, x, y, tile);
     }
 
     @Override
-    public void setState(TileLayer layer, int x, int y, TileState tile){
+    public void setState(TileLayer layer, int x, int y, TileState tile) {
         IChunk chunk = this.getChunk(x, y);
         chunk.setState(layer, x, y, tile);
     }
 
     @Override
-    public void notifyNeighborsOfChange(int x, int y, TileLayer layer){
-        for(Direction direction : Direction.ADJACENT_INCLUDING_NONE){
-            int offX = x+direction.x;
-            int offY = y+direction.y;
+    public void notifyNeighborsOfChange(int x, int y, TileLayer layer) {
+        for (Direction direction : Direction.ADJACENT_INCLUDING_NONE) {
+            int offX = x + direction.x;
+            int offY = y + direction.y;
 
-            if(this.isPosLoaded(offX, offY)){
-                for(TileLayer other : TileLayer.getAllLayers()){
-                    if(direction != Direction.NONE || layer != other){
+            if (this.isPosLoaded(offX, offY)) {
+                for (TileLayer other : TileLayer.getAllLayers()) {
+                    if (direction != Direction.NONE || layer != other) {
                         this.getState(other, offX, offY).getTile().onChangeAround(this, offX, offY, other, x, y, layer);
                     }
                 }
@@ -697,7 +691,7 @@ public class World implements IWorld{
     }
 
     @Override
-    public void save(){
+    public void save() {
         ThreadHandler.chunkGenThread.add(() -> {
             long timeStarted = Util.getTimeMillis();
             int amount = 0;
@@ -706,26 +700,26 @@ public class World implements IWorld{
 
             List<Pos2> persistentChunks = new ArrayList<>();
 
-            for(int i = 0; i < this.loadedChunks.size(); i++){
+            for (int i = 0; i < this.loadedChunks.size(); i++) {
                 IChunk chunk = this.loadedChunks.get(i);
 
-                if(this.saveChunk(chunk, false)){
+                if (this.saveChunk(chunk, false)) {
                     amount++;
                 }
 
-                if(chunk.doesEntityForcePersistence()){
+                if (chunk.doesEntityForcePersistence()) {
                     persistentChunks.add(new Pos2(chunk.getGridX(), chunk.getGridY()));
                 }
             }
 
             DataSet set = new DataSet();
-            if(!persistentChunks.isEmpty()){
+            if (!persistentChunks.isEmpty()) {
                 set.addInt("amount", persistentChunks.size());
 
                 int counter = 0;
-                for(Pos2 pos : persistentChunks){
-                    set.addInt("x_"+counter, pos.getX());
-                    set.addInt("y_"+counter, pos.getY());
+                for (Pos2 pos : persistentChunks) {
+                    set.addInt("x_" + counter, pos.getX());
+                    set.addInt("y_" + counter, pos.getY());
                     counter++;
                 }
             }
@@ -733,183 +727,180 @@ public class World implements IWorld{
 
             this.info.save();
 
-            for(int i = 0; i < this.players.size(); i++){
+            for (int i = 0; i < this.players.size(); i++) {
                 this.savePlayer(this.players.get(i));
             }
 
-            if(this.additionalData != null){
+            if (this.additionalData != null) {
                 this.additionalData.write(this.additionalDataFile);
             }
 
-            if(amount > 0){
-                long time = Util.getTimeMillis()-timeStarted;
-                RockBottomAPI.logger().info("Saved "+amount+" chunks, took "+time+"ms.");
+            if (amount > 0) {
+                long time = Util.getTimeMillis() - timeStarted;
+                RockBottomAPI.logger().info("Saved " + amount + " chunks, took " + time + "ms.");
 
-                if(!this.isDedicatedServer()){
+                if (!this.isDedicatedServer()) {
                     IGameInstance game = RockBottomAPI.getGame();
 
                     int finalAmount = amount;
-                    game.enqueueAction((g, o) -> game.getToaster().displayToast(new Toast(ResourceName.intern("gui.save_world"), new ChatComponentTranslation(ResourceName.intern("info.saved")), new ChatComponentTranslation(ResourceName.intern("info.saved_chunks"), String.valueOf(finalAmount), String.valueOf((float)time/1000F)), 160)), null);
+                    game.enqueueAction((g, o) -> game.getToaster().displayToast(new Toast(ResourceName.intern("gui.save_world"), new ChatComponentTranslation(ResourceName.intern("info.saved")), new ChatComponentTranslation(ResourceName.intern("info.saved_chunks"), String.valueOf(finalAmount), String.valueOf((float) time / 1000F)), 160)), null);
                 }
             }
         });
     }
 
     @Override
-    public List<AbstractEntityPlayer> getAllPlayers(){
+    public List<AbstractEntityPlayer> getAllPlayers() {
         return this.playersUnmodifiable;
     }
 
     @Override
-    public void removeEntity(Entity entity, IChunk chunk){
+    public void removeEntity(Entity entity, IChunk chunk) {
         chunk.removeEntity(entity);
 
-        if(entity instanceof EntityPlayer){
+        if (entity instanceof EntityPlayer) {
             this.players.remove(entity);
         }
 
         entity.onRemoveFromWorld();
 
-        if(this.isServer()){
+        if (this.isServer()) {
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, true), chunk.getX(), chunk.getY(), entity);
         }
     }
 
     @Override
-    public boolean isDaytime(){
+    public boolean isDaytime() {
         float light = this.getSkylightModifier(true);
         return light >= 0.7F;
     }
 
     @Override
-    public boolean isNighttime(){
+    public boolean isNighttime() {
         return !this.isDaytime();
     }
 
     @Override
-    public File getFolder(){
+    public File getFolder() {
         return this.directory;
     }
 
     @Override
-    public File getPlayerFolder(){
+    public File getPlayerFolder() {
         return this.playerDirectory;
     }
 
     @Override
-    public File getChunksFolder(){
+    public File getChunksFolder() {
         return this.chunksDirectory;
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return this.directory.getName();
     }
 
     @Override
-    public void playSound(AbstractEntityPlayer player, ResourceName name, double x, double y, double z, float pitch, float volume){
-        if(this.isLocalPlayer(player)){
+    public void playSound(AbstractEntityPlayer player, ResourceName name, double x, double y, double z, float pitch, float volume) {
+        if (this.isLocalPlayer(player)) {
             RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x, y, z);
-        }
-        else{
+        } else {
             player.sendPacket(new PacketSound(name, x, y, z, pitch, volume));
         }
     }
 
     @Override
-    public void broadcastSound(AbstractEntityPlayer player, ResourceName name, float pitch, float volume){
-        if(this.isLocalPlayer(player)){
+    public void broadcastSound(AbstractEntityPlayer player, ResourceName name, float pitch, float volume) {
+        if (this.isLocalPlayer(player)) {
             RockBottomAPI.getGame().getAssetManager().getSound(name).play(pitch, volume);
-        }
-        else{
+        } else {
             player.sendPacket(new PacketSound(name, pitch, volume));
         }
     }
 
     @Override
-    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume, AbstractEntityPlayer except){
-        if(this.isServer()){
+    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume, AbstractEntityPlayer except) {
+        if (this.isServer()) {
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketSound(name, x, y, z, pitch, volume), x, y, except);
         }
 
-        if(!this.isDedicatedServer() && !this.isLocalPlayer(except)){
+        if (!this.isDedicatedServer() && !this.isLocalPlayer(except)) {
             RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x, y, z);
         }
     }
 
     @Override
-    public void broadcastSound(ResourceName name, float pitch, float volume, AbstractEntityPlayer except){
-        if(this.isServer()){
+    public void broadcastSound(ResourceName name, float pitch, float volume, AbstractEntityPlayer except) {
+        if (this.isServer()) {
             RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, pitch, volume), except);
         }
 
-        if(!this.isDedicatedServer() && !this.isLocalPlayer(except)){
+        if (!this.isDedicatedServer() && !this.isLocalPlayer(except)) {
             RockBottomAPI.getGame().getAssetManager().getSound(name).play(pitch, volume);
         }
     }
 
     @Override
-    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume){
+    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume) {
         this.playSound(name, x, y, z, pitch, volume, null);
     }
 
     @Override
-    public void broadcastSound(ResourceName name, float pitch, float volume){
+    public void broadcastSound(ResourceName name, float pitch, float volume) {
         this.broadcastSound(name, pitch, volume, null);
     }
 
     @Override
-    public void savePlayer(AbstractEntityPlayer player){
+    public void savePlayer(AbstractEntityPlayer player) {
         DataSet playerSet = new DataSet();
         player.save(playerSet);
 
-        playerSet.write(new File(this.playerDirectory, player.getUniqueId()+".dat"));
+        playerSet.write(new File(this.playerDirectory, player.getUniqueId() + ".dat"));
     }
 
     @Override
-    public Map<ResourceName, IWorldGenerator> getAllGenerators(){
+    public Map<ResourceName, IWorldGenerator> getAllGenerators() {
         return this.generators;
     }
 
     @Override
-    public List<IWorldGenerator> getSortedLoopingGenerators(){
+    public List<IWorldGenerator> getSortedLoopingGenerators() {
         return this.loopingGenerators;
     }
 
     @Override
-    public List<IWorldGenerator> getSortedRetroactiveGenerators(){
+    public List<IWorldGenerator> getSortedRetroactiveGenerators() {
         return this.retroactiveGenerators;
     }
 
     @Override
-    public IWorldGenerator getGenerator(ResourceName name){
+    public IWorldGenerator getGenerator(ResourceName name) {
         return this.generators.get(name);
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast){
+    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
         EntityPlayer player = channel != null ? new ConnectedPlayer(this, id, design, channel) : new EntityPlayer(this, id, design);
 
-        File file = new File(this.playerDirectory, id+".dat");
-        if(file.exists()){
+        File file = new File(this.playerDirectory, id + ".dat");
+        if (file.exists()) {
             DataSet set = new DataSet();
             set.read(file);
 
             player.load(set);
-            RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+'!');
-        }
-        else{
+            RockBottomAPI.logger().info("Loading player " + design.getName() + " with unique id " + id + '!');
+        } else {
             boolean loaded = false;
 
-            if(loadOrSwapLast){
-                if(this.info.lastPlayerId != null){
-                    File lastFile = new File(this.playerDirectory, this.info.lastPlayerId+".dat");
-                    if(lastFile.exists()){
+            if (loadOrSwapLast) {
+                if (this.info.lastPlayerId != null) {
+                    File lastFile = new File(this.playerDirectory, this.info.lastPlayerId + ".dat");
+                    if (lastFile.exists()) {
                         DataSet set = new DataSet();
                         set.read(lastFile);
 
                         player.load(set);
-                        RockBottomAPI.logger().info("Loading player "+design.getName()+" with unique id "+id+" from last player file "+lastFile+'!');
+                        RockBottomAPI.logger().info("Loading player " + design.getName() + " with unique id " + id + " from last player file " + lastFile + '!');
 
                         this.savePlayer(player);
                         lastFile.delete();
@@ -918,13 +909,13 @@ public class World implements IWorld{
                 }
             }
 
-            if(!loaded){
+            if (!loaded) {
                 player.resetAndSpawn(RockBottomAPI.getGame());
-                RockBottomAPI.logger().info("Adding new player "+design.getName()+" with unique id "+id+" to world!");
+                RockBottomAPI.logger().info("Adding new player " + design.getName() + " with unique id " + id + " to world!");
             }
         }
 
-        if(loadOrSwapLast){
+        if (loadOrSwapLast) {
             this.info.lastPlayerId = id;
             this.info.save();
         }
@@ -935,9 +926,9 @@ public class World implements IWorld{
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(UUID id){
-        for(AbstractEntityPlayer player : this.players){
-            if(id.equals(player.getUniqueId())){
+    public AbstractEntityPlayer getPlayer(UUID id) {
+        for (AbstractEntityPlayer player : this.players) {
+            if (id.equals(player.getUniqueId())) {
                 return player;
             }
         }
@@ -945,27 +936,26 @@ public class World implements IWorld{
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(String name){
-        for(AbstractEntityPlayer player : this.players){
-            if(name.equals(player.getName())){
+    public AbstractEntityPlayer getPlayer(String name) {
+        for (AbstractEntityPlayer player : this.players) {
+            if (name.equals(player.getName())) {
                 return player;
             }
         }
         return null;
     }
 
-    protected boolean saveChunk(IChunk chunk, boolean enqueue){
-        if(chunk.needsSave()){
+    protected boolean saveChunk(IChunk chunk, boolean enqueue) {
+        if (chunk.needsSave()) {
             Runnable r = () -> {
                 DataSet set = new DataSet();
                 chunk.save(set);
-                set.write(new File(this.chunksDirectory, "c_"+chunk.getGridX()+'_'+chunk.getGridY()+".dat"));
+                set.write(new File(this.chunksDirectory, "c_" + chunk.getGridX() + '_' + chunk.getGridY() + ".dat"));
             };
 
-            if(enqueue){
+            if (enqueue) {
                 ThreadHandler.chunkGenThread.add(r);
-            }
-            else{
+            } else {
                 r.run();
             }
 
@@ -975,105 +965,104 @@ public class World implements IWorld{
     }
 
     @Override
-    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean shouldDrop){
+    public void destroyTile(int x, int y, TileLayer layer, Entity destroyer, boolean shouldDrop) {
         TileState state = this.getState(layer, x, y);
 
         state.getTile().onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
-        if(this.isServer()){
+        if (this.isServer()) {
             RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this, PacketParticles.tile(this, x, y, state), x, y);
         }
 
-        if(!this.isDedicatedServer()){
+        if (!this.isDedicatedServer()) {
             RockBottomAPI.getGame().getParticleManager().addTileParticles(this, x, y, state);
         }
 
         ResourceName sound = state.getTile().getBreakSound(this, x, y, layer, destroyer);
-        if(sound != null){
-            this.playSound(sound, x+0.5, y+0.5, layer.index(), 1F, 1F);
+        if (sound != null) {
+            this.playSound(sound, x + 0.5, y + 0.5, layer.index(), 1F, 1F);
         }
 
         this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
     }
 
     @Override
-    public int getSpawnX(){
+    public int getSpawnX() {
         return 0;
     }
 
     @Override
-    public void causeLightUpdate(int x, int y){
+    public void causeLightUpdate(int x, int y) {
         ThreadHandler.chunkGenThread.add(() -> {
             Counter recurseCount = new Counter(0);
 
-            try{
+            try {
                 this.causeLightUpdate(x, y, recurseCount);
 
-                if(recurseCount.get() >= 100){
-                    RockBottomAPI.logger().config("Updated light at "+x+", "+y+" using "+recurseCount.get()+" recursive calls");
+                if (recurseCount.get() >= 100) {
+                    RockBottomAPI.logger().config("Updated light at " + x + ", " + y + " using " + recurseCount.get() + " recursive calls");
                 }
-            }
-            catch(StackOverflowError e){
-                RockBottomAPI.logger().severe("Failed to update light at "+x+' '+y+" after too many ("+recurseCount.get()+") recursive calls");
+            } catch (StackOverflowError e) {
+                RockBottomAPI.logger().severe("Failed to update light at " + x + ' ' + y + " after too many (" + recurseCount.get() + ") recursive calls");
             }
         });
     }
 
-    private void causeLightUpdate(int x, int y, Counter recurseCount){
-        for(Direction direction : Direction.SURROUNDING_INCLUDING_NONE){
-            int dirX = x+direction.x;
-            int dirY = y+direction.y;
+    private void causeLightUpdate(int x, int y, Counter recurseCount) {
+        for (Direction direction : Direction.SURROUNDING_INCLUDING_NONE) {
+            int dirX = x + direction.x;
+            int dirY = y + direction.y;
 
-            if(this.isPosLoaded(dirX, dirY)){
+            if (this.isPosLoaded(dirX, dirY)) {
                 boolean change = false;
 
                 byte skylightThere = this.getSkyLight(dirX, dirY);
                 byte calcedSkylight = this.calcLight(dirX, dirY, true, true);
-                if(calcedSkylight != skylightThere){
+                if (calcedSkylight != skylightThere) {
                     this.setSkyLight(dirX, dirY, calcedSkylight);
                     change = true;
                 }
 
                 byte artLightThere = this.getArtificialLight(dirX, dirY);
                 byte calcedArtLight = this.calcLight(dirX, dirY, false, true);
-                if(calcedArtLight != artLightThere){
+                if (calcedArtLight != artLightThere) {
                     this.setArtificialLight(dirX, dirY, calcedArtLight);
                     change = true;
                 }
 
-                if(change){
+                if (change) {
                     this.causeLightUpdate(dirX, dirY, recurseCount.add(1));
                 }
             }
         }
     }
 
-    public void calcInitialSkylight(int x1, int y1, int x2, int y2){
-        for(int x = x2; x >= x1; x--){
-            for(int y = y2; y >= y1; y--){
+    public void calcInitialSkylight(int x1, int y1, int x2, int y2) {
+        for (int x = x2; x >= x1; x--) {
+            for (int y = y2; y >= y1; y--) {
                 byte light = this.calcLight(x, y, true, false);
                 this.setSkyLight(x, y, light);
             }
         }
 
-        for(int x = x1; x <= x2; x++){
-            for(int y = y1; y <= y2; y++){
+        for (int x = x1; x <= x2; x++) {
+            for (int y = y1; y <= y2; y++) {
                 byte light = this.calcLight(x, y, true, false);
                 this.setSkyLight(x, y, light);
             }
         }
     }
 
-    private byte calcLight(int x, int y, boolean isSky, boolean checkGenerating){
+    private byte calcLight(int x, int y, boolean isSky, boolean checkGenerating) {
         byte maxLight = 0;
 
-        for(Direction direction : Direction.SURROUNDING){
-            int dirX = x+direction.x;
-            int dirY = y+direction.y;
+        for (Direction direction : Direction.SURROUNDING) {
+            int dirX = x + direction.x;
+            int dirY = y + direction.y;
 
-            if(this.isPosLoaded(dirX, dirY, checkGenerating)){
+            if (this.isPosLoaded(dirX, dirY, checkGenerating)) {
                 byte light = isSky ? this.getSkyLight(dirX, dirY) : this.getArtificialLight(dirX, dirY);
-                if(light > maxLight){
+                if (light > maxLight) {
                     maxLight = light;
                 }
             }
@@ -1082,22 +1071,22 @@ public class World implements IWorld{
         maxLight *= this.getTileModifier(x, y, isSky);
 
         byte emitted = this.getTileLight(x, y, isSky);
-        if(emitted > maxLight){
+        if (emitted > maxLight) {
             maxLight = emitted;
         }
 
-        return (byte)Math.min(Constants.MAX_LIGHT, maxLight);
+        return (byte) Math.min(Constants.MAX_LIGHT, maxLight);
     }
 
-    private byte getTileLight(int x, int y, boolean isSky){
+    private byte getTileLight(int x, int y, boolean isSky) {
         int highestLight = 0;
         boolean nonAir = false;
 
-        for(TileLayer layer : TileLayer.getAllLayers()){
+        for (TileLayer layer : TileLayer.getAllLayers()) {
             Tile tile = this.getState(layer, x, y).getTile();
-            if(!tile.isAir()){
+            if (!tile.isAir()) {
                 int light = tile.getLight(this, x, y, layer);
-                if(light > highestLight){
+                if (light > highestLight) {
                     highestLight = light;
                 }
 
@@ -1105,26 +1094,25 @@ public class World implements IWorld{
             }
         }
 
-        if(nonAir){
-            if(!isSky){
-                return (byte)highestLight;
+        if (nonAir) {
+            if (!isSky) {
+                return (byte) highestLight;
             }
-        }
-        else if(isSky){
+        } else if (isSky) {
             return Constants.MAX_LIGHT;
         }
         return 0;
     }
 
-    private float getTileModifier(int x, int y, boolean isSky){
+    private float getTileModifier(int x, int y, boolean isSky) {
         float smallestMod = 1F;
         boolean nonAir = false;
 
-        for(TileLayer layer : TileLayer.getAllLayers()){
+        for (TileLayer layer : TileLayer.getAllLayers()) {
             Tile tile = this.getState(layer, x, y).getTile();
-            if(!tile.isAir()){
+            if (!tile.isAir()) {
                 float mod = tile.getTranslucentModifier(this, x, y, layer, isSky);
-                if(mod < smallestMod){
+                if (mod < smallestMod) {
                     smallestMod = mod;
                 }
 
@@ -1132,43 +1120,41 @@ public class World implements IWorld{
             }
         }
 
-        if(nonAir){
+        if (nonAir) {
             return smallestMod;
-        }
-        else{
+        } else {
             return isSky ? 1F : 0.8F;
         }
     }
 
-    public float getSkylightModifier(boolean doMinMax){
-        float mod = ((float)Math.sin(2*Math.PI*((double)this.info.currentWorldTime/(double)Constants.TIME_PER_DAY))+1F)/2F;
+    public float getSkylightModifier(boolean doMinMax) {
+        float mod = ((float) Math.sin(2 * Math.PI * ((double) this.info.currentWorldTime / (double) Constants.TIME_PER_DAY)) + 1F) / 2F;
 
-        if(doMinMax){
-            return Math.min(1F, mod+0.15F);
-        }
-        else{
+        if (doMinMax) {
+            return Math.min(1F, mod + 0.15F);
+        } else {
             return mod;
         }
     }
 
     @Override
-    public boolean hasAdditionalData(){
+    public boolean hasAdditionalData() {
         return this.additionalData != null;
     }
 
     @Override
-    public ModBasedDataSet getAdditionalData(){
+    public ModBasedDataSet getAdditionalData() {
         return this.additionalData;
     }
 
     @Override
-    public void setAdditionalData(ModBasedDataSet set){
+    public void setAdditionalData(ModBasedDataSet set) {
         this.additionalData = set;
     }
 
     @Override
-    public ModBasedDataSet getOrCreateAdditionalData(){
-        if(this.additionalData == null){
+    public ModBasedDataSet getOrCreateAdditionalData() {
+        if (this.additionalData == null) {
             this.additionalData = new ModBasedDataSet();
         }
         return this.additionalData;

@@ -11,40 +11,38 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.TileWoodDoor;
 
-public class TileDoorRenderer extends DefaultTileRenderer<TileWoodDoor>{
+public class TileDoorRenderer extends DefaultTileRenderer<TileWoodDoor> {
 
     private final ResourceName[] texClosed;
     private final ResourceName[] texOpen;
 
-    public TileDoorRenderer(ResourceName texture){
+    public TileDoorRenderer(ResourceName texture) {
         super(texture.addSuffix(".item"));
         texture = texture.addPrefix("tiles.");
 
         this.texClosed = new ResourceName[2];
         this.texOpen = new ResourceName[2];
-        for(int i = 0; i < 2; i++){
-            this.texClosed[i] = texture.addSuffix(".closed."+i);
-            this.texOpen[i] = texture.addSuffix(".open."+i);
+        for (int i = 0; i < 2; i++) {
+            this.texClosed[i] = texture.addSuffix(".closed." + i);
+            this.texOpen[i] = texture.addSuffix(".open." + i);
         }
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileWoodDoor tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileWoodDoor tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         int half = state.get(StaticTileProps.TOP_HALF) ? 0 : 1;
 
         ResourceName tex;
-        if(state.get(StaticTileProps.OPEN)){
+        if (state.get(StaticTileProps.OPEN)) {
             tex = this.texOpen[half];
-        }
-        else{
+        } else {
             tex = this.texClosed[half];
         }
 
-        if(state.get(StaticTileProps.FACING_RIGHT)){
+        if (state.get(StaticTileProps.FACING_RIGHT)) {
             manager.getTexture(tex).draw(renderX, renderY, scale, scale, light);
-        }
-        else{
-            manager.getTexture(tex).draw(renderX+scale, renderY, -scale, scale, light);
+        } else {
+            manager.getTexture(tex).draw(renderX + scale, renderY, -scale, scale, light);
         }
     }
 }

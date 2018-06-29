@@ -8,25 +8,25 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketScheduledUpdate implements IPacket{
+public class PacketScheduledUpdate implements IPacket {
 
     private TileLayer layer;
     private int x;
     private int y;
     private int scheduledMeta;
 
-    public PacketScheduledUpdate(TileLayer layer, int x, int y, int scheduledMeta){
+    public PacketScheduledUpdate(TileLayer layer, int x, int y, int scheduledMeta) {
         this.layer = layer;
         this.x = x;
         this.y = y;
         this.scheduledMeta = scheduledMeta;
     }
 
-    public PacketScheduledUpdate(){
+    public PacketScheduledUpdate() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeInt(this.layer.index());
         buf.writeInt(this.x);
         buf.writeInt(this.y);
@@ -34,7 +34,7 @@ public class PacketScheduledUpdate implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.layer = TileLayer.getAllLayers().get(buf.readInt());
         this.x = buf.readInt();
         this.y = buf.readInt();
@@ -42,9 +42,9 @@ public class PacketScheduledUpdate implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
-        if(world != null){
+        if (world != null) {
             TileState state = world.getState(this.x, this.y);
             state.getTile().onScheduledUpdate(world, this.x, this.y, this.layer, this.scheduledMeta);
         }

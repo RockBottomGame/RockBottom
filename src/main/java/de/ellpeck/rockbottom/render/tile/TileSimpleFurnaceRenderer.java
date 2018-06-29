@@ -15,32 +15,31 @@ import de.ellpeck.rockbottom.world.tile.entity.TileEntitySimpleFurnace;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileSimpleFurnaceRenderer extends MultiTileRenderer<TileSimpleFurnace>{
+public class TileSimpleFurnaceRenderer extends MultiTileRenderer<TileSimpleFurnace> {
 
     protected final Map<Pos2, ResourceName> texturesActive = new HashMap<>();
 
-    public TileSimpleFurnaceRenderer(ResourceName texture, TileSimpleFurnace tile){
+    public TileSimpleFurnaceRenderer(ResourceName texture, TileSimpleFurnace tile) {
         super(texture, tile);
 
-        for(int x = 0; x < tile.getWidth(); x++){
-            for(int y = 0; y < tile.getHeight(); y++){
-                if(tile.isStructurePart(x, y)){
-                    this.texturesActive.put(new Pos2(x, y), this.texture.addSuffix(".active."+x+'.'+y));
+        for (int x = 0; x < tile.getWidth(); x++) {
+            for (int y = 0; y < tile.getHeight(); y++) {
+                if (tile.isStructurePart(x, y)) {
+                    this.texturesActive.put(new Pos2(x, y), this.texture.addSuffix(".active." + x + '.' + y));
                 }
             }
         }
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileSimpleFurnace tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileSimpleFurnace tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         Pos2 main = tile.getMainPos(x, y, state);
         TileEntitySimpleFurnace tileEntity = world.getTileEntity(layer, main.getX(), main.getY(), TileEntitySimpleFurnace.class);
 
-        if(tileEntity != null && tileEntity.isActive()){
+        if (tileEntity != null && tileEntity.isActive()) {
             Pos2 innerCoord = tile.getInnerCoord(state);
             manager.getTexture(this.texturesActive.get(innerCoord)).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
-        }
-        else{
+        } else {
             super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
         }
     }

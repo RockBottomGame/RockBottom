@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketPlayerMovement implements IPacket{
+public class PacketPlayerMovement implements IPacket {
 
     private UUID playerId;
     private double x;
@@ -21,7 +21,7 @@ public class PacketPlayerMovement implements IPacket{
     private boolean collidedVert;
     private boolean onGround;
 
-    public PacketPlayerMovement(UUID playerId, double x, double y, double motionX, double motionY, Direction facing, boolean collidedHor, boolean collidedVert, boolean onGround){
+    public PacketPlayerMovement(UUID playerId, double x, double y, double motionX, double motionY, Direction facing, boolean collidedHor, boolean collidedVert, boolean onGround) {
         this.playerId = playerId;
         this.x = x;
         this.y = y;
@@ -33,11 +33,11 @@ public class PacketPlayerMovement implements IPacket{
         this.onGround = onGround;
     }
 
-    public PacketPlayerMovement(){
+    public PacketPlayerMovement() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeDouble(this.x);
@@ -51,7 +51,7 @@ public class PacketPlayerMovement implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.x = buf.readDouble();
         this.y = buf.readDouble();
@@ -64,10 +64,10 @@ public class PacketPlayerMovement implements IPacket{
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
-        if(game.getWorld() != null){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
+        if (game.getWorld() != null) {
             AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
-            if(player != null){
+            if (player != null) {
                 player.motionX = this.motionX;
                 player.motionY = this.motionY;
                 player.facing = this.facing;

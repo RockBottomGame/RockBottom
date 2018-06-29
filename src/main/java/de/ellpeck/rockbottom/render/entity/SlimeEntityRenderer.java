@@ -10,27 +10,26 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.world.entity.EntitySlime;
 
-public class SlimeEntityRenderer implements IEntityRenderer<EntitySlime>{
+public class SlimeEntityRenderer implements IEntityRenderer<EntitySlime> {
 
     private final ResourceName animation = ResourceName.intern("monster.slime");
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntitySlime entity, float x, float y, int light){
-        int row = entity.getVariation()*4;
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntitySlime entity, float x, float y, int light) {
+        int row = entity.getVariation() * 4;
         long startTime = 0;
 
-        if(entity.facing == Direction.LEFT){
+        if (entity.facing == Direction.LEFT) {
             row += 2;
         }
 
-        if(!entity.jumping && entity.jumpTask.chargeTime <= 0){
+        if (!entity.jumping && entity.jumpTask.chargeTime <= 0) {
             row += 1;
-        }
-        else{
+        } else {
             startTime = entity.jumpTask.jumpStartTime;
         }
 
         IAnimation animation = manager.getAnimation(this.animation);
-        animation.drawRow(startTime, row, x-0.5F, y+entity.getHeight()/2F-1F, 1F, 1F, light);
+        animation.drawRow(startTime, row, x - 0.5F, y + entity.getHeight() / 2F - 1F, 1F, 1F, light);
     }
 }

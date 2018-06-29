@@ -9,41 +9,41 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import java.util.Collections;
 import java.util.Set;
 
-public class WorldGenCopper extends WorldGenOre{
+public class WorldGenCopper extends WorldGenOre {
 
     @Override
-    protected int getHighestGridPos(){
+    protected int getHighestGridPos() {
         return 0;
     }
 
     @Override
-    protected int getMaxAmount(){
+    protected int getMaxAmount() {
         return 3;
     }
 
     @Override
-    protected int getClusterRadiusX(){
+    protected int getClusterRadiusX() {
         return 5;
     }
 
     @Override
-    protected int getClusterRadiusY(){
+    protected int getClusterRadiusY() {
         return 3;
     }
 
     @Override
-    protected TileState getOreState(){
+    protected TileState getOreState() {
         TileState state = GameContent.TILE_COPPER.getDefState();
         return this.oreRandom.nextInt(30) <= 0 ? state.prop(StaticTileProps.HAS_CANISTER, true) : state;
     }
 
     @Override
-    public int getPriority(){
+    public int getPriority() {
         return 0;
     }
 
     @Override
-    protected Set<Biome> getAllowedBiomes(){
+    protected Set<Biome> getAllowedBiomes() {
         return Collections.singleton(GameContent.BIOME_UNDERGROUND);
     }
 }

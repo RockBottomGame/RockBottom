@@ -12,33 +12,33 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.Random;
 
-public class WorldGenCaveMushrooms implements IWorldGenerator{
+public class WorldGenCaveMushrooms implements IWorldGenerator {
 
     private final Random random = new Random();
     private long seed;
 
     @Override
-    public void initWorld(IWorld world){
+    public void initWorld(IWorld world) {
         this.seed = Util.scrambleSeed(12378123, world.getSeed());
     }
 
     @Override
-    public boolean shouldGenerate(IWorld world, IChunk chunk){
+    public boolean shouldGenerate(IWorld world, IChunk chunk) {
         return chunk.getMostProminentBiome().hasUndergroundFeatures(world, chunk);
     }
 
     @Override
-    public void generate(IWorld world, IChunk chunk){
-        for(int x = 0; x < Constants.CHUNK_SIZE; x++){
-            for(int y = 0; y < Constants.CHUNK_SIZE; y++){
-                int worldX = chunk.getX()+x;
-                int worldY = chunk.getY()+y;
+    public void generate(IWorld world, IChunk chunk) {
+        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
+            for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
+                int worldX = chunk.getX() + x;
+                int worldY = chunk.getY() + y;
                 TileState state = chunk.getStateInner(x, y);
 
-                if(state.getTile().canReplace(world, worldX, worldY, TileLayer.MAIN)){
-                    if(y > 0 && chunk.getStateInner(x, y-1).getTile().hasSolidSurface(world, worldX, worldY-1, TileLayer.MAIN)){
+                if (state.getTile().canReplace(world, worldX, worldY, TileLayer.MAIN)) {
+                    if (y > 0 && chunk.getStateInner(x, y - 1).getTile().hasSolidSurface(world, worldX, worldY - 1, TileLayer.MAIN)) {
                         this.random.setSeed(Util.scrambleSeed(worldX, worldY, this.seed));
-                        if(this.random.nextFloat() >= 0.8F){
+                        if (this.random.nextFloat() >= 0.8F) {
                             TileMeta tile = GameContent.TILE_CAVE_MUSHROOM;
                             int variation = this.random.nextInt(tile.metaProp.getVariants());
                             chunk.setStateInner(x, y, tile.getDefState().prop(tile.metaProp, variation));
@@ -50,7 +50,7 @@ public class WorldGenCaveMushrooms implements IWorldGenerator{
     }
 
     @Override
-    public int getPriority(){
+    public int getPriority() {
         return -100;
     }
 }

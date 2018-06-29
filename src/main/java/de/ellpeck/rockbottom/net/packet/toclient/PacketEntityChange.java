@@ -16,7 +16,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketEntityChange implements IPacket{
+public class PacketEntityChange implements IPacket {
 
     private static final String PLAYER_NAME = ResourceName.intern("player").toString();
 
@@ -26,18 +26,17 @@ public class PacketEntityChange implements IPacket{
 
     private boolean remove;
 
-    public PacketEntityChange(Entity entity, boolean remove){
+    public PacketEntityChange(Entity entity, boolean remove) {
         this.remove = remove;
         this.uniqueId = entity.getUniqueId();
 
-        if(!this.remove){
-            if(entity instanceof EntityPlayer){
+        if (!this.remove) {
+            if (entity instanceof EntityPlayer) {
                 this.name = PLAYER_NAME;
 
-                EntityPlayer player = (EntityPlayer)entity;
+                EntityPlayer player = (EntityPlayer) entity;
                 this.entitySet.addString("design", Util.GSON.toJson(player.getDesign()));
-            }
-            else{
+            } else {
                 this.name = RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString();
             }
 
@@ -45,61 +44,58 @@ public class PacketEntityChange implements IPacket{
         }
     }
 
-    public PacketEntityChange(){
+    public PacketEntityChange() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.uniqueId.getMostSignificantBits());
         buf.writeLong(this.uniqueId.getLeastSignificantBits());
         buf.writeBoolean(this.remove);
 
-        if(!this.remove){
+        if (!this.remove) {
             NetUtil.writeStringToBuffer(this.name, buf);
             NetUtil.writeSetToBuffer(this.entitySet, buf);
         }
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.uniqueId = new UUID(buf.readLong(), buf.readLong());
         this.remove = buf.readBoolean();
 
-        if(!this.remove){
+        if (!this.remove) {
             this.name = NetUtil.readStringFromBuffer(buf);
             NetUtil.readSetFromBuffer(this.entitySet, buf);
         }
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
 
-        if(world != null){
+        if (world != null) {
             Entity entity = world.getEntity(this.uniqueId);
 
-            if(this.remove){
-                if(entity != null){
+            if (this.remove) {
+                if (entity != null) {
                     world.removeEntity(entity);
                 }
-            }
-            else{
-                if(entity == null){
-                    if(PLAYER_NAME.equals(this.name)){
+            } else {
+                if (entity == null) {
+                    if (PLAYER_NAME.equals(this.name)) {
                         PlayerDesign design = Util.GSON.fromJson(this.entitySet.getString("design"), PlayerDesign.class);
                         entity = new EntityPlayer(world, this.uniqueId, design);
-                    }
-                    else{
+                    } else {
                         entity = Util.createEntity(new ResourceName(this.name), world);
                     }
 
-                    if(entity != null){
+                    if (entity != null) {
                         entity.load(this.entitySet);
                         entity.setUniqueId(this.uniqueId);
                         world.addEntity(entity);
                     }
-                }
-                else{
+                } else {
                     entity.load(this.entitySet);
                 }
             }
@@ -107,7 +103,7 @@ public class PacketEntityChange implements IPacket{
     }
 
     @Override
-    public void enqueueAsAction(IGameInstance game, ChannelHandlerContext context){
-        game.enqueueAction(this :: handle, context, inst -> inst.getWorld() != null);
+    public void enqueueAsAction(IGameInstance game, ChannelHandlerContext context) {
+        game.enqueueAction(this::handle, context, inst -> inst.getWorld() != null);
     }
 }

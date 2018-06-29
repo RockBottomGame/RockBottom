@@ -7,39 +7,39 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class TileAir extends Tile{
+public class TileAir extends Tile {
 
-    public TileAir(){
+    public TileAir() {
         super(ResourceName.intern("air"));
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return null;
     }
 
     @Override
-    public boolean canBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player, boolean isRightTool){
+    public boolean canBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player, boolean isRightTool) {
         return false;
     }
 
     @Override
-    protected boolean hasItem(){
+    protected boolean hasItem() {
         return false;
     }
 
     @Override
-    public boolean canReplace(IWorld world, int x, int y, TileLayer layer){
+    public boolean canReplace(IWorld world, int x, int y, TileLayer layer) {
         return true;
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public boolean isAir(){
+    public boolean isAir() {
         return true;
     }
 }

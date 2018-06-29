@@ -10,65 +10,64 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.ItemEntityRenderer;
 
 @ApiInternal
-public class EntityItem extends AbstractEntityItem{
+public class EntityItem extends AbstractEntityItem {
 
     private final IEntityRenderer renderer;
     private ItemInstance item;
 
     private int pickupDelay = 10;
 
-    public EntityItem(IWorld world){
+    public EntityItem(IWorld world) {
         super(world);
         this.renderer = new ItemEntityRenderer();
     }
 
-    public EntityItem(IWorld world, ItemInstance item){
+    public EntityItem(IWorld world, ItemInstance item) {
         this(world);
         this.item = item;
     }
 
     @Override
-    public IEntityRenderer getRenderer(){
+    public IEntityRenderer getRenderer() {
         return this.renderer;
     }
 
     @Override
-    public void update(IGameInstance game){
+    public void update(IGameInstance game) {
         super.update(game);
 
-        if(this.pickupDelay > 0){
+        if (this.pickupDelay > 0) {
             this.pickupDelay--;
         }
 
-        if(!this.world.isClient()){
-            if(this.item != null){
-                if(this.ticksExisted >= this.item.getItem().getDespawnTime(this.item)){
+        if (!this.world.isClient()) {
+            if (this.item != null) {
+                if (this.ticksExisted >= this.item.getItem().getDespawnTime(this.item)) {
                     this.kill();
                 }
-            }
-            else{
+            } else {
                 this.kill();
             }
         }
     }
 
     @Override
-    public int getSyncFrequency(){
+    public int getSyncFrequency() {
         return 5;
     }
 
     @Override
-    public int getRenderPriority(){
+    public int getRenderPriority() {
         return 100;
     }
 
     @Override
-    public boolean canPickUp(){
+    public boolean canPickUp() {
         return this.pickupDelay <= 0;
     }
 
     @Override
-    public void applyMotion(){
+    public void applyMotion() {
         this.motionY -= 0.015;
 
         this.motionX *= this.onGround ? 0.8 : 0.98;
@@ -76,10 +75,10 @@ public class EntityItem extends AbstractEntityItem{
     }
 
     @Override
-    public void save(DataSet set){
+    public void save(DataSet set) {
         super.save(set);
 
-        if(this.item != null){
+        if (this.item != null) {
             DataSet itemSet = new DataSet();
             this.item.save(itemSet);
             set.addDataSet("item", itemSet);
@@ -89,7 +88,7 @@ public class EntityItem extends AbstractEntityItem{
     }
 
     @Override
-    public void load(DataSet set){
+    public void load(DataSet set) {
         super.load(set);
 
         DataSet itemSet = set.getDataSet("item");
@@ -98,22 +97,22 @@ public class EntityItem extends AbstractEntityItem{
     }
 
     @Override
-    public ItemInstance getItem(){
+    public ItemInstance getItem() {
         return this.item;
     }
 
     @Override
-    public void setItem(ItemInstance instance){
+    public void setItem(ItemInstance instance) {
         this.item = instance;
     }
 
     @Override
-    public float getWidth(){
+    public float getWidth() {
         return 0.5F;
     }
 
     @Override
-    public float getHeight(){
+    public float getHeight() {
         return 0.5F;
     }
 }

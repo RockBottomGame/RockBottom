@@ -5,70 +5,70 @@ import de.ellpeck.rockbottom.api.assets.ISound;
 import java.util.Collections;
 import java.util.Set;
 
-public class EmptySound implements ISound{
+public class EmptySound implements ISound {
 
     @Override
-    public void play(){
+    public void play() {
 
     }
 
     @Override
-    public void play(float pitch, float volume){
+    public void play(float pitch, float volume) {
 
     }
 
     @Override
-    public void play(float pitch, float volume, boolean loop){
+    public void play(float pitch, float volume, boolean loop) {
 
     }
 
     @Override
-    public void playAt(double x, double y, double z){
+    public void playAt(double x, double y, double z) {
 
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z){
+    public void playAt(float pitch, float volume, double x, double y, double z) {
 
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop){
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop) {
 
     }
 
     @Override
-    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance){
+    public void playAt(float pitch, float volume, double x, double y, double z, boolean loop, float rolloffFactor, float refDistance, float maxDistance) {
 
     }
 
     @Override
-    public boolean isIndexPlaying(int index){
+    public boolean isIndexPlaying(int index) {
         return false;
     }
 
     @Override
-    public boolean isPlaying(){
+    public boolean isPlaying() {
         return false;
     }
 
     @Override
-    public void stop(){
+    public void stop() {
 
     }
 
     @Override
-    public void stopIndex(int index){
+    public void stopIndex(int index) {
 
     }
 
     @Override
-    public Set<Integer> getPlayingSourceIds(){
+    public Set<Integer> getPlayingSourceIds() {
         return Collections.emptySet();
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
 
     }
 }

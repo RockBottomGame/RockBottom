@@ -9,23 +9,23 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketRespawn implements IPacket{
+public class PacketRespawn implements IPacket {
 
     private UUID playerId;
     private double x;
     private double y;
 
-    public PacketRespawn(UUID playerId, double x, double y){
+    public PacketRespawn(UUID playerId, double x, double y) {
         this.playerId = playerId;
         this.x = x;
         this.y = y;
     }
 
-    public PacketRespawn(){
+    public PacketRespawn() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
         buf.writeDouble(this.x);
@@ -33,18 +33,18 @@ public class PacketRespawn implements IPacket{
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.playerId = new UUID(buf.readLong(), buf.readLong());
         this.x = buf.readDouble();
         this.y = buf.readDouble();
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
-        if(game.getWorld() != null){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
+        if (game.getWorld() != null) {
             Entity entity = game.getWorld().getEntity(this.playerId);
-            if(entity instanceof EntityPlayer){
-                ((EntityPlayer)entity).resetAndSpawn(game, this.x, this.y);
+            if (entity instanceof EntityPlayer) {
+                ((EntityPlayer) entity).resetAndSpawn(game, this.x, this.y);
             }
         }
     }

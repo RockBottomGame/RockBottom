@@ -9,15 +9,15 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.world.entity.EntityFalling;
 
-public class FallingEntityRenderer implements IEntityRenderer<EntityFalling>{
+public class FallingEntityRenderer implements IEntityRenderer<EntityFalling> {
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityFalling entity, float x, float y, int light){
-        if(entity.state != null){
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityFalling entity, float x, float y, int light) {
+        if (entity.state != null) {
             Tile tile = entity.state.getTile();
             ITileRenderer renderer = tile.getRenderer();
-            if(renderer != null){
-                renderer.renderItem(game, manager, g, tile, entity.stateInstance, x-0.5F, y-0.5F, 1F, light);
+            if (renderer != null) {
+                renderer.renderItem(game, manager, g, tile, entity.stateInstance, x - 0.5F, y - 0.5F, 1F, light);
             }
         }
     }

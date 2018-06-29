@@ -13,44 +13,44 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.List;
 
-public class TileLadder extends TileBasic{
+public class TileLadder extends TileBasic {
 
-    public TileLadder(){
+    public TileLadder() {
         super(ResourceName.intern("ladder"));
     }
 
     @Override
-    public boolean canClimb(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity){
+    public boolean canClimb(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity) {
         return Util.floor(entity.getY()) == y;
     }
 
     @Override
-    public boolean isFullTile(){
+    public boolean isFullTile() {
         return false;
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer){
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
         return null;
     }
 
     @Override
-    public boolean canPlaceInLayer(TileLayer layer){
+    public boolean canPlaceInLayer(TileLayer layer) {
         return layer == TileLayer.MAIN;
     }
 
     @Override
-    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player){
+    public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
         return this.isLadderPos(world, x, y);
     }
 
     @Override
-    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer){
+    public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
         return this.isLadderPos(world, x, y);
     }
 
-    private boolean isLadderPos(IWorld world, int x, int y){
-        Tile below = world.getState(x, y-1).getTile();
+    private boolean isLadderPos(IWorld world, int x, int y) {
+        Tile below = world.getState(x, y - 1).getTile();
         return below == this || below.isFullTile() || world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile();
     }
 }

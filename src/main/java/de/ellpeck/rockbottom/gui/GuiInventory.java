@@ -6,20 +6,20 @@ import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-public class GuiInventory extends GuiContainer{
+public class GuiInventory extends GuiContainer {
 
     private boolean keepContainerOpen;
 
-    public GuiInventory(AbstractEntityPlayer player){
+    public GuiInventory(AbstractEntityPlayer player) {
         super(player, 135, 70);
 
-        ShiftClickBehavior behavior = new ShiftClickBehavior(0, 7, 8, player.getInv().getSlotAmount()-1);
+        ShiftClickBehavior behavior = new ShiftClickBehavior(0, 7, 8, player.getInv().getSlotAmount() - 1);
         this.shiftClickBehaviors.add(behavior);
         this.shiftClickBehaviors.add(behavior.reversed());
     }
 
     @Override
-    public void init(IGameInstance game){
+    public void init(IGameInstance game) {
         super.init(game);
 
         this.components.add(new ComponentFancyButton(this, -16, 0, 14, 14, () -> {
@@ -30,12 +30,12 @@ public class GuiInventory extends GuiContainer{
     }
 
     @Override
-    public boolean shouldCloseContainer(){
+    public boolean shouldCloseContainer() {
         return !this.keepContainerOpen;
     }
 
     @Override
-    public ResourceName getName(){
+    public ResourceName getName() {
         return ResourceName.intern("inventory");
     }
 }

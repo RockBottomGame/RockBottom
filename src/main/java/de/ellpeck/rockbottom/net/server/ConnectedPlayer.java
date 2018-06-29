@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ConnectedPlayer extends EntityPlayer{
+public class ConnectedPlayer extends EntityPlayer {
 
     private final List<IChunk> chunksToSend = new ArrayList<>();
     private final Channel channel;
@@ -40,56 +40,55 @@ public class ConnectedPlayer extends EntityPlayer{
     private int fallCalcTicks;
     private int climbingCalcTicks;
 
-    public ConnectedPlayer(World world, UUID uniqueId, IPlayerDesign design, Channel channel){
+    public ConnectedPlayer(World world, UUID uniqueId, IPlayerDesign design, Channel channel) {
         super(world, uniqueId, design);
         this.channel = channel;
     }
 
-    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player){
+    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player) {
         RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(player, true));
 
         game.getWorld().savePlayer(player);
         game.getWorld().removeEntity(player);
 
-        RockBottomAPI.logger().info("Saving and removing disconnected player "+player.getName()+" with id "+player.getUniqueId()+" from world");
+        RockBottomAPI.logger().info("Saving and removing disconnected player " + player.getName() + " with id " + player.getUniqueId() + " from world");
 
         RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(ResourceName.intern("info.disconnect"), player.getName()));
     }
 
     @Override
-    public void update(IGameInstance game){
+    public void update(IGameInstance game) {
         super.update(game);
         INetHandler net = RockBottomAPI.getNet();
 
         double x = this.getX();
         double y = this.getY();
 
-        if(this.ticksExisted%80 == 0){
-            if(!net.getConnectedClients().contains(this.channel)){
+        if (this.ticksExisted % 80 == 0) {
+            if (!net.getConnectedClients().contains(this.channel)) {
                 game.enqueueAction((inst, object) -> disconnectPlayer(inst, this), null);
             }
 
             double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, x, y);
-            double maxDist = 1.25*this.fallCalcTicks
-                    +this.getClimbSpeed()*this.climbingCalcTicks
-                    +this.getMoveSpeed()*(80-this.fallCalcTicks-this.climbingCalcTicks)
-                    +3;
+            double maxDist = 1.25 * this.fallCalcTicks
+                    + this.getClimbSpeed() * this.climbingCalcTicks
+                    + this.getMoveSpeed() * (80 - this.fallCalcTicks - this.climbingCalcTicks)
+                    + 3;
 
             ResetMovedPlayerEvent event = new ResetMovedPlayerEvent(this, this.lastCalcX, this.lastCalcY, this.fallCalcTicks, this.climbingCalcTicks, distanceSq, maxDist);
             boolean cancelled = RockBottomAPI.getEventHandler().fireEvent(event) == EventResult.CANCELLED;
             distanceSq = event.distanceSqMoved;
             maxDist = event.allowedDefaultDistance;
 
-            if(!cancelled && distanceSq > maxDist*maxDist){
+            if (!cancelled && distanceSq > maxDist * maxDist) {
                 this.motionX = 0;
                 this.motionY = 0;
                 this.isFalling = false;
                 this.fallStartY = 0;
                 this.setPos(this.lastCalcX, this.lastCalcY);
 
-                RockBottomAPI.logger().warning("Player "+this.getName()+" with id "+this.getUniqueId()+" moved a distance of "+Math.sqrt(distanceSq)+" which is more than the max "+maxDist+", moving them back");
-            }
-            else{
+                RockBottomAPI.logger().warning("Player " + this.getName() + " with id " + this.getUniqueId() + " moved a distance of " + Math.sqrt(distanceSq) + " which is more than the max " + maxDist + ", moving them back");
+            } else {
                 this.lastCalcX = x;
                 this.lastCalcY = y;
             }
@@ -98,43 +97,41 @@ public class ConnectedPlayer extends EntityPlayer{
             this.climbingCalcTicks = 0;
         }
 
-        if(net.isWhitelistEnabled() && !net.isWhitelisted(this.getUniqueId())){
+        if (net.isWhitelistEnabled() && !net.isWhitelisted(this.getUniqueId())) {
             this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.whitelist"))));
 
             this.channel.disconnect();
             disconnectPlayer(game, this);
-        }
-        else if(net.isBlacklisted(this.getUniqueId())){
+        } else if (net.isBlacklisted(this.getUniqueId())) {
             this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
 
             this.channel.disconnect();
             disconnectPlayer(game, this);
         }
 
-        if(this.isClimbing){
+        if (this.isClimbing) {
             this.climbingCalcTicks++;
-        }
-        else if(this.isFalling && this.fallStartY-y >= 5){
+        } else if (this.isFalling && this.fallStartY - y >= 5) {
             this.fallCalcTicks++;
         }
 
-        if(!this.chunksToSend.isEmpty()){
-            for(int i = this.chunksToSend.size()-1; i >= 0; i--){
+        if (!this.chunksToSend.isEmpty()) {
+            for (int i = this.chunksToSend.size() - 1; i >= 0; i--) {
                 IChunk chunk = this.chunksToSend.get(i);
-                if(this.sendChunk(chunk)){
+                if (this.sendChunk(chunk)) {
                     this.chunksToSend.remove(i);
                 }
             }
         }
 
-        if(this.getHealth() != this.lastHealth && this.world.getTotalTime()%10 == 0){
+        if (this.getHealth() != this.lastHealth && this.world.getTotalTime() % 10 == 0) {
             this.lastHealth = this.getHealth();
             this.sendPacket(new PacketHealth(this.getHealth(), false));
         }
     }
 
     @Override
-    public void setPos(double x, double y){
+    public void setPos(double x, double y) {
         super.setPos(x, y);
 
         this.lastCalcX = x;
@@ -145,54 +142,53 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
-    public void sendPacket(IPacket packet){
-        if(this.channel != null){
+    public void sendPacket(IPacket packet) {
+        if (this.channel != null) {
             this.channel.writeAndFlush(packet);
         }
     }
 
     @Override
-    public void onChunkLoaded(IChunk chunk){
-        if(!this.sendChunk(chunk)){
+    public void onChunkLoaded(IChunk chunk) {
+        if (!this.sendChunk(chunk)) {
             this.chunksToSend.add(chunk);
         }
     }
 
-    private boolean sendChunk(IChunk chunk){
-        if(!chunk.isGenerating()){
-            RockBottomAPI.logger().finer("Sending chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
+    private boolean sendChunk(IChunk chunk) {
+        if (!chunk.isGenerating()) {
+            RockBottomAPI.logger().finer("Sending chunk at " + chunk.getGridX() + ", " + chunk.getGridY() + " to player " + this.getName() + " with id " + this.getUniqueId());
 
             this.sendPacket(new PacketChunk(chunk));
 
-            for(Entity entity : chunk.getAllEntities()){
-                if(entity != this){
+            for (Entity entity : chunk.getAllEntities()) {
+                if (entity != this) {
                     this.sendPacket(new PacketEntityChange(entity, false));
                 }
             }
 
-            for(TileEntity tile : chunk.getAllTileEntities()){
+            for (TileEntity tile : chunk.getAllTileEntities()) {
                 this.sendPacket(new PacketTileEntityData(tile.x, tile.y, tile.layer, tile));
             }
 
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
     @Override
-    public void onChunkUnloaded(IChunk chunk){
-        RockBottomAPI.logger().finer("Sending chunk unloading packet for chunk at "+chunk.getGridX()+", "+chunk.getGridY()+" to player "+this.getName()+" with id "+this.getUniqueId());
+    public void onChunkUnloaded(IChunk chunk) {
+        RockBottomAPI.logger().finer("Sending chunk unloading packet for chunk at " + chunk.getGridX() + ", " + chunk.getGridY() + " to player " + this.getName() + " with id " + this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
     }
 
     @Override
-    public int addEffect(ActiveEffect effect){
+    public int addEffect(ActiveEffect effect) {
         int remaining = super.addEffect(effect);
 
-        if(remaining != effect.getTime()){
+        if (remaining != effect.getTime()) {
             this.sendPacket(new PacketEffect(effect, false));
         }
 
@@ -200,25 +196,24 @@ public class ConnectedPlayer extends EntityPlayer{
     }
 
     @Override
-    public boolean removeEffect(IEffect effect){
-        if(super.removeEffect(effect)){
+    public boolean removeEffect(IEffect effect) {
+        if (super.removeEffect(effect)) {
             this.sendPacket(new PacketEffect(new ActiveEffect(effect), true));
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
     @Override
-    public void load(DataSet set){
+    public void load(DataSet set) {
         super.load(set);
         this.lastCalcX = this.getX();
         this.lastCalcY = this.getY();
     }
 
     @Override
-    public void setMaxHealth(int maxHealth){
+    public void setMaxHealth(int maxHealth) {
         super.setMaxHealth(maxHealth);
 
         this.sendPacket(new PacketHealth(this.getMaxHealth(), true));

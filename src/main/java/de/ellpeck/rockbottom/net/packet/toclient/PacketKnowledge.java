@@ -13,52 +13,50 @@ import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class PacketKnowledge implements IPacket{
+public class PacketKnowledge implements IPacket {
 
     private final DataSet infoSet = new DataSet();
     private boolean announce;
     private boolean forget;
 
-    public PacketKnowledge(EntityPlayer player, Information information, boolean announce, boolean forget){
+    public PacketKnowledge(EntityPlayer player, Information information, boolean announce, boolean forget) {
         this.announce = announce;
         this.forget = forget;
 
-        if(forget){
+        if (forget) {
             this.infoSet.addString("name", information.getName().toString());
-        }
-        else{
+        } else {
             KnowledgeManager.saveInformation(this.infoSet, player.getKnowledge(), information);
         }
     }
 
-    public PacketKnowledge(){
+    public PacketKnowledge() {
     }
 
     @Override
-    public void toBuffer(ByteBuf buf){
+    public void toBuffer(ByteBuf buf) {
         buf.writeBoolean(this.announce);
         buf.writeBoolean(this.forget);
         NetUtil.writeSetToBuffer(this.infoSet, buf);
     }
 
     @Override
-    public void fromBuffer(ByteBuf buf){
+    public void fromBuffer(ByteBuf buf) {
         this.announce = buf.readBoolean();
         this.forget = buf.readBoolean();
         NetUtil.readSetFromBuffer(this.infoSet, buf);
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context){
+    public void handle(IGameInstance game, ChannelHandlerContext context) {
         AbstractEntityPlayer player = game.getPlayer();
-        if(player != null){
+        if (player != null) {
             IKnowledgeManager manager = player.getKnowledge();
-            if(this.forget){
+            if (this.forget) {
                 manager.forgetInformation(new ResourceName(this.infoSet.getString("name")), this.announce);
-            }
-            else{
+            } else {
                 Information information = KnowledgeManager.loadInformation(this.infoSet, manager);
-                if(information != null){
+                if (information != null) {
                     manager.teachInformation(information);
                 }
             }

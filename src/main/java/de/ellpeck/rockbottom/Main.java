@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-public final class Main{
+public final class Main {
 
-    public static byte[] memReserve = new byte[10*1024*1024];
+    public static byte[] memReserve = new byte[10 * 1024 * 1024];
     public static CustomClassLoader classLoader;
     public static Thread mainThread;
 
@@ -36,8 +36,8 @@ public final class Main{
     public static boolean isDedicatedServer;
     public static int port;
 
-    public static void main(String[] args){
-        try{
+    public static void main(String[] args) {
+        try {
             OptionParser parser = new OptionParser();
             parser.allowsUnrecognizedOptions();
             OptionSpec<String> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(String.class).defaultsTo(Level.INFO.getName());
@@ -60,20 +60,20 @@ public final class Main{
             gameDir = options.valueOf(optionGameDir);
             Logging.init(options.valueOf(optionLogLevel));
 
-            Logging.mainLogger.info("Using Java version "+System.getProperty("java.version"));
+            Logging.mainLogger.info("Using Java version " + System.getProperty("java.version"));
 
-            Logging.mainLogger.info("Found launch args "+Arrays.toString(args));
-            Logging.mainLogger.info("Ignoring unrecognized launch args "+options.valuesOf(optionIgnored));
+            Logging.mainLogger.info("Found launch args " + Arrays.toString(args));
+            Logging.mainLogger.info("Ignoring unrecognized launch args " + options.valuesOf(optionIgnored));
 
-            Logging.mainLogger.info("Setting log level to "+Logging.mainLogger.getLevel());
-            Logging.mainLogger.info("Setting game folder to "+gameDir);
+            Logging.mainLogger.info("Setting log level to " + Logging.mainLogger.getLevel());
+            Logging.mainLogger.info("Setting game folder to " + gameDir);
 
             isDedicatedServer = options.has(optionServer);
             port = options.valueOf(optionPort);
 
             unpackedModsDir = options.valueOf(optionUnpackedDir);
-            if(unpackedModsDir != null){
-                Logging.mainLogger.info("Setting unpacked mods folder to "+unpackedModsDir);
+            if (unpackedModsDir != null) {
+                Logging.mainLogger.info("Setting unpacked mods folder to " + unpackedModsDir);
             }
 
             debugMode = options.has(optionDebugMode);
@@ -85,18 +85,17 @@ public final class Main{
             saveTextureSheet = options.has(optionSaveTextureSheet);
 
             Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                throw new RuntimeException("There was an unhandled exception in thread "+t.getName(), e);
+                throw new RuntimeException("There was an unhandled exception in thread " + t.getName(), e);
             });
             mainThread = Thread.currentThread();
 
-            try{
+            try {
                 ClassLoader loader = Main.class.getClassLoader();
 
                 URL[] urls;
-                if(loader instanceof URLClassLoader){
-                    urls = ((URLClassLoader)loader).getURLs();
-                }
-                else{
+                if (loader instanceof URLClassLoader) {
+                    urls = ((URLClassLoader) loader).getURLs();
+                } else {
                     String classPath = appendPath(System.getProperty("java.class.path"), System.getProperty("env.class.path"));
                     urls = pathToURLs(classPath);
                 }
@@ -104,69 +103,62 @@ public final class Main{
                 classLoader = new CustomClassLoader(urls, loader);
                 mainThread.setContextClassLoader(classLoader);
 
-                Logging.mainLogger.info("Replacing class loader "+loader+" with new loader "+classLoader);
-            }
-            catch(Exception e){
+                Logging.mainLogger.info("Replacing class loader " + loader + " with new loader " + classLoader);
+            } catch (Exception e) {
                 throw new IllegalStateException("Failed to override original class loader", e);
             }
 
-            try{
+            try {
                 String className = isDedicatedServer ? "RockBottomServer" : "RockBottom";
-                Class gameClass = Class.forName("de.ellpeck.rockbottom.init."+className, false, classLoader);
+                Class gameClass = Class.forName("de.ellpeck.rockbottom.init." + className, false, classLoader);
                 Method method = gameClass.getMethod("startGame");
                 method.invoke(null);
-            }
-            catch(NoSuchMethodException | IllegalAccessException | ClassNotFoundException e){
+            } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
                 throw new RuntimeException("There was an error initializing the game", e);
-            }
-            catch(InvocationTargetException e){
+            } catch (InvocationTargetException e) {
                 Throwable target = e.getTargetException();
                 throw target == null ? e : target;
             }
-        }
-        catch(Throwable t){
+        } catch (Throwable t) {
             CrashManager.makeCrashReport(t);
             System.exit(1);
         }
         System.exit(0);
     }
 
-    private static URL fileToURL(File file){
-        try{
+    private static URL fileToURL(File file) {
+        try {
             return file.toURI().toURL();
-        }
-        catch(MalformedURLException e){
-            Logging.mainLogger.log(Level.WARNING, "Couldn't convert "+file+" to URL", e);
+        } catch (MalformedURLException e) {
+            Logging.mainLogger.log(Level.WARNING, "Couldn't convert " + file + " to URL", e);
             return null;
         }
     }
 
-    private static String appendPath(String pathTo, String pathFrom){
-        if(pathTo == null || pathTo.isEmpty()){
+    private static String appendPath(String pathTo, String pathFrom) {
+        if (pathTo == null || pathTo.isEmpty()) {
             return pathFrom;
-        }
-        else if(pathFrom == null || pathFrom.isEmpty()){
+        } else if (pathFrom == null || pathFrom.isEmpty()) {
             return pathTo;
-        }
-        else{
-            return pathTo+File.pathSeparator+pathFrom;
+        } else {
+            return pathTo + File.pathSeparator + pathFrom;
         }
     }
 
-    private static URL[] pathToURLs(String path){
+    private static URL[] pathToURLs(String path) {
         StringTokenizer tokenizer = new StringTokenizer(path, File.pathSeparator);
         URL[] urls = new URL[tokenizer.countTokens()];
 
         int count = 0;
-        while(tokenizer.hasMoreTokens()){
+        while (tokenizer.hasMoreTokens()) {
             URL url = fileToURL(new File(tokenizer.nextToken()));
-            if(url != null){
+            if (url != null) {
                 urls[count] = url;
                 count++;
             }
         }
 
-        if(urls.length != count){
+        if (urls.length != count) {
             URL[] tmp = new URL[count];
             System.arraycopy(urls, 0, tmp, 0, count);
             urls = tmp;
@@ -175,14 +167,14 @@ public final class Main{
         return urls;
     }
 
-    public static class CustomClassLoader extends URLClassLoader{
+    public static class CustomClassLoader extends URLClassLoader {
 
-        public CustomClassLoader(URL[] urls, ClassLoader parent){
+        public CustomClassLoader(URL[] urls, ClassLoader parent) {
             super(urls, parent);
         }
 
         @Override
-        public void addURL(URL url){
+        public void addURL(URL url) {
             super.addURL(url);
         }
     }
