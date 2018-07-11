@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.spawn.DespawnHandler;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.tile.Tile;
@@ -143,21 +144,26 @@ public class Chunk implements IChunk {
             if (entity.shouldBeRemoved()) {
                 this.world.removeEntity(entity, this);
             } else {
-                int newChunkX = Util.toGridPos(entity.getX());
-                int newChunkY = Util.toGridPos(entity.getY());
+                double x = entity.getX();
+                double y = entity.getY();
 
-                if (newChunkX != this.gridX || newChunkY != this.gridY) {
-                    this.removeEntity(entity);
+                if (!this.tryDespawn(entity, x, y)) {
+                    int newChunkX = Util.toGridPos(x);
+                    int newChunkY = Util.toGridPos(y);
 
-                    IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
-                    chunk.addEntity(entity);
+                    if (newChunkX != this.gridX || newChunkY != this.gridY) {
+                        this.removeEntity(entity);
 
-                    if (this.world.isServer()) {
-                        for (AbstractEntityPlayer player : chunk.getPlayersInRange()) {
-                            if (!this.playersInRange.contains(player)) {
-                                player.sendPacket(new PacketEntityChange(entity, false));
+                        IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
+                        chunk.addEntity(entity);
 
-                                RockBottomAPI.logger().config("Adding entity " + entity + " with id " + entity.getUniqueId() + " to chunk in range of player with id " + player.getUniqueId());
+                        if (this.world.isServer()) {
+                            for (AbstractEntityPlayer player : chunk.getPlayersInRange()) {
+                                if (!this.playersInRange.contains(player)) {
+                                    player.sendPacket(new PacketEntityChange(entity, false));
+
+                                    RockBottomAPI.logger().config("Adding entity " + entity + " with id " + entity.getUniqueId() + " to chunk in range of player with id " + player.getUniqueId());
+                                }
                             }
                         }
                     }
@@ -178,6 +184,28 @@ public class Chunk implements IChunk {
                 this.removeTileEntity(tile.layer, tile.x, tile.y);
             }
         }
+    }
+
+    private boolean tryDespawn(Entity entity, double x, double y) {
+        DespawnHandler handler = entity.getDespawnHandler();
+        if (handler != null) {
+            if (handler.isReadyToDespawn(entity)) {
+                handler.tickTimer();
+
+                if (handler.getTimer() >= handler.getDespawnTime(entity)) {
+                    handler.resetTimer();
+
+                    AbstractEntityPlayer player = this.world.getClosestPlayer(x, y);
+                    if (Util.distance(player.getX(), player.getY(), x, y) >= handler.getMaxPlayerDistance(entity)) {
+                        handler.despawn(entity);
+                        return true;
+                    }
+                }
+            } else {
+                handler.resetTimer();
+            }
+        }
+        return false;
     }
 
     @Override

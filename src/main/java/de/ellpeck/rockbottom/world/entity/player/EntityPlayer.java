@@ -7,10 +7,12 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
+import de.ellpeck.rockbottom.api.entity.spawn.SpawnBehavior;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
 import de.ellpeck.rockbottom.api.event.impl.ItemPickupEvent;
@@ -230,6 +232,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
                 if (y <= 0 && ConstructionRegistry.ladder != null) {
                     this.getKnowledge().teachRecipe(ConstructionRegistry.ladder, true);
                 }
+
+                this.handleEntitySpawns(x, y);
             }
 
             if (this.world.getTotalTime() % Constants.TARGET_TPS == 0) {
@@ -251,6 +255,42 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
                     this.lastX = x;
                     this.lastY = y;
+                }
+            }
+        }
+    }
+
+    private void handleEntitySpawns(double thisX, double thisY) {
+        for (SpawnBehavior behavior : RockBottomAPI.SPAWN_BEHAVIOR_REGISTRY.values()) {
+            if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0) {
+                double cap = behavior.getEntityCap(this.world);
+                if (cap > 0) {
+                    List<Entity> entities = this.world.getEntities(new BoundBox(thisX, thisY, thisX, thisY).expand(behavior.getEntityCapArea(this.world)), behavior::belongsToCap);
+                    if (entities.size() >= cap) {
+                        continue;
+                    }
+                }
+
+                double min = behavior.getMinPlayerDistance(this.world, this);
+                double max = behavior.getMaxPlayerDistance(this.world, this);
+
+                for (int i = behavior.getSpawnTries(this.world); i > 0; i--) {
+                    double x = thisX + (min + Util.RANDOM.nextDouble() * (max - min)) * (Util.RANDOM.nextBoolean() ? 1 : -1);
+                    double y = thisY + (min + Util.RANDOM.nextDouble() * (max - min)) * (Util.RANDOM.nextBoolean() ? 1 : -1);
+
+                    for (int j = behavior.getPackSize(this.world, x, y); j > 0; j--) {
+                        double theX = x += Util.RANDOM.nextGaussian() * 5D;
+                        double theY = y += Util.RANDOM.nextGaussian() * 5D;
+
+                        if (behavior.canSpawnHere(this.world, theX, theY)) {
+                            Entity entity = behavior.createEntity(this.world, theX, theY);
+                            if (entity != null) {
+                                this.world.addEntity(entity);
+
+                                RockBottomAPI.logger().finer("Spawned " + entity + " at " + theX + ", " + theY);
+                            }
+                        }
+                    }
                 }
             }
         }

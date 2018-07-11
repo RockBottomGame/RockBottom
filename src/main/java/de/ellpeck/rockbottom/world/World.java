@@ -391,6 +391,22 @@ public class World implements IWorld {
     }
 
     @Override
+    public AbstractEntityPlayer getClosestPlayer(double x, double y) {
+        double closestDist = 0;
+        AbstractEntityPlayer closestPlayer = null;
+
+        for (AbstractEntityPlayer player : this.players) {
+            double dist = Util.distanceSq(x, y, player.getX(), player.getY());
+            if (closestPlayer == null || closestDist <= dist) {
+                closestDist = dist;
+                closestPlayer = player;
+            }
+        }
+
+        return closestPlayer;
+    }
+
+    @Override
     public byte getSkyLight(int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getSkyLight(x, y);
