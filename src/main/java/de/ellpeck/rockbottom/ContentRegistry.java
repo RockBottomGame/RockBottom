@@ -116,5 +116,7 @@ public final class ContentRegistry {
         new FuelInput(new ResUseInfo(GameContent.RES_WOOD_PROCESSED), 100).register();
         new FuelInput(new ResUseInfo(GameContent.RES_PLANT_FIBER), 20).register();
         new FuelInput(new ResUseInfo(GameContent.RES_STICK), 20).register();
+
+        EntitySlime.SPAWN_BEHAVIOR.register();
     }
 }

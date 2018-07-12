@@ -262,10 +262,10 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     private void handleEntitySpawns(double thisX, double thisY) {
         for (SpawnBehavior behavior : RockBottomAPI.SPAWN_BEHAVIOR_REGISTRY.values()) {
-            if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0) {
+            if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0 && behavior.areGeneralConditionsMet(this.world)) {
                 double cap = behavior.getEntityCap(this.world);
                 if (cap > 0) {
-                    List<Entity> entities = this.world.getEntities(new BoundBox(thisX, thisY, thisX, thisY).expand(behavior.getEntityCapArea(this.world)), behavior::belongsToCap);
+                    List<Entity> entities = this.world.getEntities(new BoundBox(thisX, thisY, thisX, thisY).expand(behavior.getEntityCapArea(this.world, this)), behavior::belongsToCap);
                     if (entities.size() >= cap) {
                         continue;
                     }
@@ -279,15 +279,15 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     double y = thisY + (min + Util.RANDOM.nextDouble() * (max - min)) * (Util.RANDOM.nextBoolean() ? 1 : -1);
 
                     for (int j = behavior.getPackSize(this.world, x, y); j > 0; j--) {
-                        double theX = x += Util.RANDOM.nextGaussian() * 5D;
-                        double theY = y += Util.RANDOM.nextGaussian() * 5D;
+                        double theX = x + Util.RANDOM.nextGaussian() * 5D;
+                        double theY = y + Util.RANDOM.nextGaussian() * 5D;
 
                         if (behavior.canSpawnHere(this.world, theX, theY)) {
                             Entity entity = behavior.createEntity(this.world, theX, theY);
                             if (entity != null) {
                                 this.world.addEntity(entity);
 
-                                RockBottomAPI.logger().finer("Spawned " + entity + " at " + theX + ", " + theY);
+                                RockBottomAPI.logger().finest("Spawned " + entity + " at " + theX + ", " + theY);
                             }
                         }
                     }

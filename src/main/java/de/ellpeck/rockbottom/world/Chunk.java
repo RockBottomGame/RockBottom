@@ -196,7 +196,9 @@ public class Chunk implements IChunk {
                     handler.resetTimer();
 
                     AbstractEntityPlayer player = this.world.getClosestPlayer(x, y);
-                    if (Util.distance(player.getX(), player.getY(), x, y) >= handler.getMaxPlayerDistance(entity)) {
+                    double dist = handler.getMaxPlayerDistance(entity);
+
+                    if (Util.distanceSq(player.getX(), player.getY(), x, y) >= dist * dist) {
                         handler.despawn(entity);
                         return true;
                     }

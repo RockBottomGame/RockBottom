@@ -1,19 +1,75 @@
 package de.ellpeck.rockbottom.world.entity;
 
+import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntitySlime;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.spawn.DespawnHandler;
+import de.ellpeck.rockbottom.api.entity.spawn.SpawnBehavior;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.SlimeEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.ai.TaskSlimeJump;
 
 public class EntitySlime extends AbstractEntitySlime {
 
+    public static final SpawnBehavior<EntitySlime> SPAWN_BEHAVIOR = new SpawnBehavior<EntitySlime>(ResourceName.intern("slime")) {
+        @Override
+        public EntitySlime createEntity(IWorld world, double x, double y) {
+            EntitySlime slime = new EntitySlime(world);
+            slime.setPos(x, y);
+            return slime;
+        }
+
+        @Override
+        public double getMinPlayerDistance(IWorld world, AbstractEntityPlayer player) {
+            return 30;
+        }
+
+        @Override
+        public double getMaxPlayerDistance(IWorld world, AbstractEntityPlayer player) {
+            return 60;
+        }
+
+        @Override
+        public int getSpawnTries(IWorld world) {
+            return 30;
+        }
+
+        @Override
+        public int getPackSize(IWorld world, double x, double y) {
+            return 8;
+        }
+
+        @Override
+        public boolean belongsToCap(Entity entity) {
+            return entity instanceof AbstractEntitySlime;
+        }
+    };
+
     private static final int VARIATION_COUNT = 8;
     private final IEntityRenderer renderer = new SlimeEntityRenderer();
     public TaskSlimeJump jumpTask = new TaskSlimeJump(0);
     private int variation = Util.RANDOM.nextInt(VARIATION_COUNT);
+    private final DespawnHandler<EntitySlime> despawnHandler = new DespawnHandler<EntitySlime>() {
+        @Override
+        public boolean isReadyToDespawn(EntitySlime entity) {
+            return true;
+        }
+
+        @Override
+        public double getMaxPlayerDistance(EntitySlime entity) {
+            return 80;
+        }
+
+        @Override
+        public int getDespawnTime(EntitySlime entity) {
+            return Constants.TARGET_TPS * 10;
+        }
+    };
 
     public EntitySlime(IWorld world) {
         super(world);
@@ -85,5 +141,10 @@ public class EntitySlime extends AbstractEntitySlime {
     @Override
     public float getHeight() {
         return 0.65F;
+    }
+
+    @Override
+    public DespawnHandler getDespawnHandler() {
+        return this.despawnHandler;
     }
 }
