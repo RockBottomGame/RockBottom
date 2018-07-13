@@ -189,22 +189,13 @@ public class Chunk implements IChunk {
     private boolean tryDespawn(Entity entity, double x, double y) {
         DespawnHandler handler = entity.getDespawnHandler();
         if (handler != null) {
-            if (handler.isReadyToDespawn(entity)) {
-                handler.tickTimer();
-
-                if (handler.getTimer() >= handler.getDespawnTime(entity)) {
-                    handler.resetTimer();
-
-                    AbstractEntityPlayer player = this.world.getClosestPlayer(x, y);
-                    double dist = handler.getMaxPlayerDistance(entity);
-
-                    if (Util.distanceSq(player.getX(), player.getY(), x, y) >= dist * dist) {
-                        handler.despawn(entity);
-                        return true;
-                    }
+            if (this.world.getTotalTime() % handler.getDespawnFrequency(this.world) == 0 && handler.isReadyToDespawn(entity)) {
+                AbstractEntityPlayer player = this.world.getClosestPlayer(x, y);
+                double dist = handler.getMaxPlayerDistance(entity);
+                if (Util.distanceSq(player.getX(), player.getY(), x, y) >= dist * dist) {
+                    handler.despawn(entity);
+                    return true;
                 }
-            } else {
-                handler.resetTimer();
             }
         }
         return false;

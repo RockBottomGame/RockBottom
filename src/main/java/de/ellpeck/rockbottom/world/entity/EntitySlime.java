@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world.entity;
 
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntitySlime;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -31,22 +30,32 @@ public class EntitySlime extends AbstractEntitySlime {
 
         @Override
         public double getMaxPlayerDistance(IWorld world, AbstractEntityPlayer player) {
-            return 60;
+            return 50;
         }
 
         @Override
         public int getSpawnTries(IWorld world) {
-            return 30;
+            return 10;
         }
 
         @Override
         public int getPackSize(IWorld world, double x, double y) {
-            return 8;
+            return 10;
         }
 
         @Override
         public boolean belongsToCap(Entity entity) {
             return entity instanceof AbstractEntitySlime;
+        }
+
+        @Override
+        public int getEntityCap(IWorld world) {
+            return 30;
+        }
+
+        @Override
+        public double getEntityCapArea(IWorld world, AbstractEntityPlayer player) {
+            return super.getEntityCapArea(world, player);
         }
     };
 
@@ -62,12 +71,7 @@ public class EntitySlime extends AbstractEntitySlime {
 
         @Override
         public double getMaxPlayerDistance(EntitySlime entity) {
-            return 80;
-        }
-
-        @Override
-        public int getDespawnTime(EntitySlime entity) {
-            return Constants.TARGET_TPS * 10;
+            return 100;
         }
     };
 

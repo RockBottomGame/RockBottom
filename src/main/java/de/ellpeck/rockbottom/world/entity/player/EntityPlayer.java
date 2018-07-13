@@ -262,7 +262,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     private void handleEntitySpawns(double thisX, double thisY) {
         for (SpawnBehavior behavior : RockBottomAPI.SPAWN_BEHAVIOR_REGISTRY.values()) {
-            if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0 && behavior.areGeneralConditionsMet(this.world)) {
+            if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0 && behavior.isReadyToSpawn(this.world)) {
                 double cap = behavior.getEntityCap(this.world);
                 if (cap > 0) {
                     List<Entity> entities = this.world.getEntities(new BoundBox(thisX, thisY, thisX, thisY).expand(behavior.getEntityCapArea(this.world, this)), behavior::belongsToCap);
