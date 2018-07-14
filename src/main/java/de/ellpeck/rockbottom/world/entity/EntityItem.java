@@ -43,10 +43,10 @@ public class EntityItem extends AbstractEntityItem {
         if (!this.world.isClient()) {
             if (this.item != null) {
                 if (this.ticksExisted >= this.item.getItem().getDespawnTime(this.item)) {
-                    this.kill();
+                    this.setReadyToRemove();
                 }
             } else {
-                this.kill();
+                this.setReadyToRemove();
             }
         }
     }

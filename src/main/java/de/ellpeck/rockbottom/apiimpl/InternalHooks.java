@@ -205,35 +205,35 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public void doDefaultEntityUpdate(IGameInstance game, Entity entity, List<ActiveEffect> effects, List<AITask> aiTasks) {
-        if (!entity.isDead()) {
-            entity.applyMotion();
+        entity.applyMotion();
 
-            entity.canClimb = false;
-            entity.isClimbing = false;
+        entity.canClimb = false;
+        entity.isClimbing = false;
 
-            entity.move();
+        entity.move();
 
-            double x = entity.getX();
-            double y = entity.getY();
+        double x = entity.getX();
+        double y = entity.getY();
 
-            if (entity.onGround || entity.isClimbing) {
-                if (entity.onGround) {
-                    entity.motionY = 0;
-                }
-
-                if (entity.isFalling) {
-                    entity.onGroundHit(Math.max(0D, entity.fallStartY - y));
-
-                    entity.isFalling = false;
-                    entity.fallStartY = 0;
-                }
-            } else if (entity.motionY < 0) {
-                if (!entity.isFalling) {
-                    entity.isFalling = true;
-                    entity.fallStartY = y;
-                }
+        if (entity.onGround || entity.isClimbing) {
+            if (entity.onGround) {
+                entity.motionY = 0;
             }
 
+            if (entity.isFalling) {
+                entity.onGroundHit(Math.max(0D, entity.fallStartY - y));
+
+                entity.isFalling = false;
+                entity.fallStartY = 0;
+            }
+        } else if (entity.motionY < 0) {
+            if (!entity.isFalling) {
+                entity.isFalling = true;
+                entity.fallStartY = y;
+            }
+        }
+
+        if (!entity.isDead()) {
             for (int i = effects.size() - 1; i >= 0; i--) {
                 ActiveEffect active = effects.get(i);
 
@@ -298,9 +298,6 @@ public class InternalHooks implements IInternalHooks {
                     }
                 }
             }
-        } else {
-            entity.motionX = 0;
-            entity.motionY = 0;
         }
 
         entity.ticksExisted++;
@@ -308,8 +305,6 @@ public class InternalHooks implements IInternalHooks {
         if (entity.world.isServer()) {
             if (entity.doesSync()) {
                 if (entity.ticksExisted % entity.getSyncFrequency() == 0) {
-                    double x = entity.getX();
-                    double y = entity.getY();
                     if (entity.lastX != x || entity.lastY != y) {
                         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.collidedHor, entity.collidedVert, entity.onGround), x, y, entity);
 

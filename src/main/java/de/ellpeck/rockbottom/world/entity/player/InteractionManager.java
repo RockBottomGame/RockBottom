@@ -86,6 +86,7 @@ public class InteractionManager implements IInteractionManager {
     }
 
     public static boolean attackEntity(AbstractEntityPlayer player, double mouseX, double mouseY) {
+        boolean oneAttacked = false;
         ItemInstance selected = player.getInv().get(player.getSelectedSlot());
 
         List<Entity> entities = getAttackableEntities(player, mouseX, mouseY, selected);
@@ -94,12 +95,18 @@ public class InteractionManager implements IInteractionManager {
                 int damage = selected == null ? 5 : selected.getItem().getAttackDamage(player.world, entity, mouseX, mouseY, player, selected);
                 if (damage > 0) {
                     if (entity.onAttack(player, mouseX, mouseY, damage)) {
-                        return true;
+                        if (selected == null || selected.getItem().onEntityAttack(player.world, mouseX, mouseY, player, entity, selected)) {
+                            if (selected == null || !selected.getItem().attacksMultipleEntities(player.world, mouseX, mouseY, player, selected)) {
+                                return true;
+                            } else {
+                                oneAttacked = true;
+                            }
+                        }
                     }
                 }
             }
         }
-        return false;
+        return oneAttacked;
     }
 
     private static List<Entity> getAttackableEntities(AbstractEntityPlayer player, double mouseX, double mouseY, ItemInstance selected) {
@@ -232,7 +239,7 @@ public class InteractionManager implements IInteractionManager {
 
                     ItemInstance selected = player.getInv().get(player.getSelectedSlot());
 
-                    if (selected == null || selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player, selected) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()) {
+                    if (selected != null && selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player, selected) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()) {
                         if (this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)) {
                             if (RockBottomAPI.getNet().isClient()) {
                                 RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
@@ -265,8 +272,10 @@ public class InteractionManager implements IInteractionManager {
                                         this.breakProgress = event.totalProgress;
                                         progressAmount = event.progressAdded;
 
-                                        this.breakProgress += progressAmount;
-                                        didBreakProgress = true;
+                                        if (progressAmount > 0) {
+                                            this.breakProgress += progressAmount;
+                                            didBreakProgress = true;
+                                        }
 
                                         if (this.breakProgress >= 1) {
                                             this.breakProgress = 0;

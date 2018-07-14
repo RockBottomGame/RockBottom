@@ -57,7 +57,7 @@ public class EntityFalling extends Entity {
                     }
                 }
 
-                this.kill();
+                this.setReadyToRemove();
             }
         }
     }

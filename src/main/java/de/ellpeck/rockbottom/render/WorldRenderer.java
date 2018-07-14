@@ -127,15 +127,24 @@ public class WorldRenderer {
                     int color = RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN);
 
                     if (entity instanceof EntityLiving) {
+                        EntityLiving living = (EntityLiving) entity;
+
                         float damagePercentage;
-                        if (entity.isDead()) {
+                        float fadePercentage;
+
+                        if (living.isDead() || living.getHealth() <= 0) {
                             damagePercentage = 1F;
+                            fadePercentage = 1F - living.deathTimer / (float) living.getDeathLingerTime();
                         } else {
-                            damagePercentage = 1F - (world.getTotalTime() - ((EntityLiving) entity).lastDamageTime) / 20F;
+                            damagePercentage = 1F - (world.getTotalTime() - living.lastDamageTime) / 20F;
+                            fadePercentage = 0F;
                         }
 
                         if (damagePercentage > 0F) {
                             color = Colors.lerp(color, Colors.RED, damagePercentage);
+                        }
+                        if (fadePercentage > 0F) {
+                            color = Colors.multiplyA(color, fadePercentage);
                         }
                     }
 

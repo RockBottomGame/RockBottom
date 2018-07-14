@@ -39,7 +39,7 @@ public class EntityFirework extends Entity {
         if (!this.world.isClient()) {
             this.lifetime--;
             if (this.lifetime <= 0) {
-                this.kill();
+                this.setReadyToRemove();
             }
         }
 

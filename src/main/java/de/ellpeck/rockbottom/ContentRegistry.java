@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.effect.BasicEffect;
 import de.ellpeck.rockbottom.api.item.ItemBasic;
+import de.ellpeck.rockbottom.api.item.ItemSword;
 import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
@@ -77,6 +78,7 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("copper_pickaxe"), 4F, 350, ToolType.PICKAXE, 10).register();
         new ItemTool(ResourceName.intern("copper_axe"), 2F, 350, ToolType.AXE, 10).register();
         new ItemTool(ResourceName.intern("copper_shovel"), 2F, 350, ToolType.SHOVEL, 10).register();
+        new ItemSword(ResourceName.intern("copper_sword"), 350, 10, 20, 1.5D, 0.5D).register();
 
         BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
         BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 15, true, 1000).register();

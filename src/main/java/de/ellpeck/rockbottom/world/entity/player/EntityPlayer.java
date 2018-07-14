@@ -208,17 +208,17 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
                             ItemInstance theoreticalLeft = this.inv.add(instance, true);
                             if (theoreticalLeft == null || theoreticalLeft.getAmount() != instance.getAmount()) {
-                                if (Util.distanceSq(entityX, entityY, x, y + 0.5) <= 0.25) {
+                                if (Util.distanceSq(entityX, entityY, x, y) <= 0.25) {
                                     ItemInstance left = this.inv.addExistingFirst(instance, false);
 
                                     if (left == null) {
-                                        entity.kill();
+                                        entity.setReadyToRemove();
                                     } else {
                                         entity.setItem(left);
                                     }
                                 } else {
                                     double moveX = x - entityX;
-                                    double moveY = (y + 0.5) - entityY;
+                                    double moveY = y - entityY;
                                     double length = Util.distance(0, 0, moveX, moveY);
 
                                     entity.motionX = 0.3 * (moveX / length);

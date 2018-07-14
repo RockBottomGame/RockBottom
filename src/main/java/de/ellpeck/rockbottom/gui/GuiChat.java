@@ -210,7 +210,7 @@ public class GuiChat extends Gui {
             }
 
         } else if (button == GLFW.GLFW_KEY_DOWN) {
-            if (this.suggestions.isEmpty()) {
+            if (this.suggestions.size() <= 1) {
                 if (!lastInputs.isEmpty()) {
                     int newSelected = this.selectedLastInput - 1;
                     if (newSelected >= 0) {
@@ -227,7 +227,7 @@ public class GuiChat extends Gui {
                 return true;
             }
         } else if (button == GLFW.GLFW_KEY_UP) {
-            if (this.suggestions.isEmpty()) {
+            if (this.suggestions.size() <= 1) {
                 if (!lastInputs.isEmpty()) {
                     int newSelected = this.selectedLastInput + 1;
                     if (newSelected < lastInputs.size()) {
