@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.EntityLiving;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
@@ -69,8 +70,8 @@ public class WorldRenderer {
         float skylightMod = world.getSkylightModifier(false);
 
         int skyLight = (int) (skylightMod * (SKY_COLORS.length - 1));
-        int color = SKY_COLORS[skyLight];
-        g.backgroundColor(color);
+        int skyColor = SKY_COLORS[skyLight];
+        g.backgroundColor(skyColor);
 
         double width = g.getWidthInWorld();
         double height = g.getHeightInWorld();
@@ -123,7 +124,16 @@ public class WorldRenderer {
                     double y = entity.getY();
 
                     int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
-                    renderer.render(game, manager, g, world, entity, (float) x - transX, (float) -y - transY + 1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
+                    int color = RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN);
+
+                    if (entity instanceof EntityLiving) {
+                        float damagePercentage = (world.getTotalTime() - ((EntityLiving) entity).lastDamageTime) / 20F;
+                        if (damagePercentage > 0F && damagePercentage < 1F) {
+                            color = Colors.lerp(color, Colors.RED, 1F - damagePercentage);
+                        }
+                    }
+
+                    renderer.render(game, manager, g, world, entity, (float) x - transX, (float) -y - transY + 1F, color);
 
                     if (g.isBoundBoxDebug()) {
                         g.addFilledRect((float) x - transX - 0.1F, (float) -y - transY + 0.9F, 0.2F, 0.2F, Colors.GREEN);
