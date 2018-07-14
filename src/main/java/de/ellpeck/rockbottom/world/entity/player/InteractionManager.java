@@ -69,7 +69,7 @@ public class InteractionManager implements IInteractionManager {
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
             if (selected != null) {
                 Item item = selected.getItem();
-                if (player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))) {
+                if (player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player, selected))) {
                     interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new ItemInteractEvent(player, selected, mouseX, mouseY)) != EventResult.CANCELLED && item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected), item.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player, selected)));
                 }
             }
@@ -91,7 +91,7 @@ public class InteractionManager implements IInteractionManager {
         List<Entity> entities = getAttackableEntities(player, mouseX, mouseY, selected);
         if (!entities.isEmpty()) {
             for (Entity entity : entities) {
-                int damage = selected == null ? 5 : selected.getItem().getAttackDamage(player.world, entity, mouseX, mouseY, player);
+                int damage = selected == null ? 5 : selected.getItem().getAttackDamage(player.world, entity, mouseX, mouseY, player, selected);
                 if (damage > 0) {
                     if (entity.onAttack(player, mouseX, mouseY, damage)) {
                         return true;
@@ -104,7 +104,7 @@ public class InteractionManager implements IInteractionManager {
 
     private static List<Entity> getAttackableEntities(AbstractEntityPlayer player, double mouseX, double mouseY, ItemInstance selected) {
         if (selected != null) {
-            List<Entity> entities = selected.getItem().getCustomAttackableEntities(player.world, mouseX, mouseY, player);
+            List<Entity> entities = selected.getItem().getCustomAttackableEntities(player.world, mouseX, mouseY, player, selected);
             if (entities != null) {
                 return entities;
             }
@@ -232,13 +232,13 @@ public class InteractionManager implements IInteractionManager {
 
                     ItemInstance selected = player.getInv().get(player.getSelectedSlot());
 
-                    if (selected == null || selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()) {
+                    if (selected == null || selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player, selected) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()) {
                         if (this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)) {
                             if (RockBottomAPI.getNet().isClient()) {
                                 RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
                             }
 
-                            this.attackCooldown = selected == null ? 40 : selected.getItem().getAttackCooldown(player.world, mousedTileX, mousedTileY, player);
+                            this.attackCooldown = selected == null ? 40 : selected.getItem().getAttackCooldown(player.world, mousedTileX, mousedTileY, player, selected);
                             attacked = true;
                         }
                     }
@@ -257,7 +257,7 @@ public class InteractionManager implements IInteractionManager {
                                         float progressAmount = 0.05F / hardness;
 
                                         if (selected != null) {
-                                            progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective);
+                                            progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective, selected);
                                         }
 
                                         AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
