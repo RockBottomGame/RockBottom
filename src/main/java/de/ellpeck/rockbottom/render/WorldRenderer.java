@@ -137,13 +137,14 @@ public class WorldRenderer {
                             fadePercentage = 1F - living.deathTimer / (float) living.getDeathLingerTime();
                         } else {
                             damagePercentage = 1F - (world.getTotalTime() - living.lastDamageTime) / 20F;
-                            fadePercentage = 0F;
+                            fadePercentage = 1F;
                         }
 
                         if (damagePercentage > 0F) {
                             color = Colors.lerp(color, Colors.RED, damagePercentage);
                         }
-                        if (fadePercentage > 0F) {
+
+                        if (fadePercentage < 1F) {
                             color = Colors.multiplyA(color, fadePercentage);
                         }
                     }
