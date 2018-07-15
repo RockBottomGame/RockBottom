@@ -61,7 +61,7 @@ public class PacketAITask implements IPacket {
             if (entity != null) {
                 AITask task = entity.getTask(this.taskId);
                 if (task != null) {
-                    task.load(this.data, true);
+                    task.load(this.data, true, entity);
                 }
 
                 if (task == null || task.shouldStartExecution(entity)) {

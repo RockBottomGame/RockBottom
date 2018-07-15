@@ -147,7 +147,7 @@ public class Chunk implements IChunk {
                 double x = entity.getX();
                 double y = entity.getY();
 
-                if (!this.tryDespawn(entity, x, y)) {
+                if (this.world.isClient() || !this.tryDespawn(entity, x, y)) {
                     int newChunkX = Util.toGridPos(x);
                     int newChunkY = Util.toGridPos(y);
 
@@ -192,8 +192,9 @@ public class Chunk implements IChunk {
             if (this.world.getTotalTime() % handler.getDespawnFrequency(this.world) == 0 && handler.isReadyToDespawn(entity)) {
                 AbstractEntityPlayer player = this.world.getClosestPlayer(x, y);
                 double dist = handler.getMaxPlayerDistance(entity);
-                if (Util.distanceSq(player.getX(), player.getY(), x, y) >= dist * dist) {
+                if (player == null || Util.distanceSq(player.getX(), player.getY(), x, y) >= dist * dist) {
                     handler.despawn(entity);
+                    RockBottomAPI.logger().finest("Despawned " + entity + " at " + x + ", " + y);
                     return true;
                 }
             }
@@ -398,7 +399,7 @@ public class Chunk implements IChunk {
     @Override
     public void addEntity(Entity entity) {
         if (this.entityLookup.containsKey(entity.getUniqueId())) {
-            RockBottomAPI.logger().warning("Tried adding entity " + entity + " with id " + entity.getUniqueId() + " to chunk at " + this.gridX + ", " + this.gridY + " that already contained it!");
+            RockBottomAPI.logger().log(Level.WARNING, "Tried adding entity " + entity + " with id " + entity.getUniqueId() + " to chunk at " + this.gridX + ", " + this.gridY + " that already contained it!", new UnsupportedOperationException());
         } else {
             this.entities.add(entity);
             this.entityLookup.put(entity.getUniqueId(), entity);

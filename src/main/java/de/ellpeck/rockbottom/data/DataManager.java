@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDamage;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketDeath;
 import de.ellpeck.rockbottom.api.net.packet.toclient.PacketTileEntityData;
 import de.ellpeck.rockbottom.api.net.packet.toserver.PacketDrop;
@@ -83,6 +84,7 @@ public class DataManager implements IDataManager {
         RockBottomAPI.PACKET_REGISTRY.register(36, PacketStats.class);
         RockBottomAPI.PACKET_REGISTRY.register(37, PacketAITask.class);
         RockBottomAPI.PACKET_REGISTRY.register(38, PacketToolBreak.class);
+        RockBottomAPI.PACKET_REGISTRY.register(39, PacketDamage.class);
 
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(0, ChatComponentText.class);
         RockBottomAPI.CHAT_COMPONENT_REGISTRY.register(1, ChatComponentTranslation.class);

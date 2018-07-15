@@ -1,17 +1,21 @@
 package de.ellpeck.rockbottom.world.entity;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntitySlime;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.EntityLiving;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.spawn.DespawnHandler;
 import de.ellpeck.rockbottom.api.entity.spawn.SpawnBehavior;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
+import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.SlimeEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.ai.TaskSlimeJump;
+import de.ellpeck.rockbottom.world.entity.ai.TaskSlimeTarget;
 
 public class EntitySlime extends AbstractEntitySlime {
 
@@ -61,8 +65,10 @@ public class EntitySlime extends AbstractEntitySlime {
 
     private static final int VARIATION_COUNT = 8;
     private final IEntityRenderer renderer = new SlimeEntityRenderer();
-    public TaskSlimeJump jumpTask = new TaskSlimeJump(0);
+    public final TaskSlimeJump jumpTask = new TaskSlimeJump(0);
+    public final TaskSlimeTarget targetTask = new TaskSlimeTarget(10, 10D, 2D);
     private int variation = Util.RANDOM.nextInt(VARIATION_COUNT);
+    private int attackCooldown;
     private final DespawnHandler<EntitySlime> despawnHandler = new DespawnHandler<EntitySlime>() {
         @Override
         public boolean isReadyToDespawn(EntitySlime entity) {
@@ -78,11 +84,21 @@ public class EntitySlime extends AbstractEntitySlime {
     public EntitySlime(IWorld world) {
         super(world);
         this.addAiTask(this.jumpTask);
+        this.addAiTask(this.targetTask);
     }
 
     @Override
     public IEntityRenderer getRenderer() {
         return this.renderer;
+    }
+
+    @Override
+    public void update(IGameInstance game) {
+        super.update(game);
+
+        if (this.attackCooldown > 0) {
+            this.attackCooldown--;
+        }
     }
 
     @Override
@@ -150,5 +166,20 @@ public class EntitySlime extends AbstractEntitySlime {
     @Override
     public DespawnHandler getDespawnHandler() {
         return this.despawnHandler;
+    }
+
+    @Override
+    public void onIntersectWithEntity(Entity otherEntity, BoundBox thisBox, BoundBox thisBoxMotion, BoundBox otherBox, BoundBox otherBoxMotion) {
+        if (this.attackCooldown <= 0 && Math.abs(this.motionX) > 0.01D) {
+            if (!otherEntity.isDead() && otherEntity instanceof EntityLiving && !(otherEntity instanceof AbstractEntitySlime)) {
+                otherEntity.applyKnockback(this, 0.25D);
+
+                if (!this.world.isClient()) {
+                    ((EntityLiving) otherEntity).takeDamage(Util.RANDOM.nextInt(10) + 10);
+                }
+
+                this.attackCooldown = 20;
+            }
+        }
     }
 }

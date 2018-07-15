@@ -71,6 +71,11 @@ public class ClientWorld extends World {
     }
 
     @Override
+    public AbstractEntityPlayer getClosestPlayer(double x, double y) {
+        throw new UnsupportedOperationException("Cannot get player in client world");
+    }
+
+    @Override
     public AbstractEntityPlayer getPlayer(String name) {
         throw new UnsupportedOperationException("Cannot get player in client world");
     }

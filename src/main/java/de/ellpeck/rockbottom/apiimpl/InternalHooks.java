@@ -284,7 +284,7 @@ public class InternalHooks implements IInternalHooks {
                     if (entity.world.isServer()) {
                         DataSet data = new DataSet();
                         if (newTask != null) {
-                            newTask.save(data, true);
+                            newTask.save(data, true, entity);
                         }
                         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketAITask(entity.getUniqueId(), data, newTaskId), x, y);
                     }
@@ -343,7 +343,7 @@ public class InternalHooks implements IInternalHooks {
                     }
                 }
 
-                List<Entity> entities = object.world.getEntities(ownBoxMotion);
+                List<Entity> entities = object.world.getEntities(ownBoxMotion, e -> e != object);
                 for (Entity entity : entities) {
                     BoundBox entityBox = entity.currentBounds;
                     BoundBox entityBoxMotion = entityBox.copy().add(entity.motionX, entity.motionY);
