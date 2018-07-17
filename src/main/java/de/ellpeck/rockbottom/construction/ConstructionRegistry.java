@@ -22,14 +22,17 @@ public final class ConstructionRegistry {
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_PICKAXE));
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_AXE));
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_SHOVEL));
+        BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_SWORD));
 
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_PICKAXE));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_AXE));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_SHOVEL));
+        STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_SWORD));
 
         COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_PICKAXE));
         COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_AXE));
         COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_SHOVEL));
+        COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_SWORD));
 
         ladder = getRecipe(GameContent.TILE_LADDER.getItem());
         chest = getRecipe(GameContent.TILE_CHEST.getItem());

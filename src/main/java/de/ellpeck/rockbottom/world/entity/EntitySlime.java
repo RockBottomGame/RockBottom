@@ -175,10 +175,10 @@ public class EntitySlime extends AbstractEntitySlime {
                 otherEntity.applyKnockback(this, 0.25D);
 
                 if (!this.world.isClient()) {
-                    ((EntityLiving) otherEntity).takeDamage(Util.RANDOM.nextInt(10) + 10);
+                    ((EntityLiving) otherEntity).takeDamage(Util.RANDOM.nextInt(15) + 5);
                 }
 
-                this.attackCooldown = 20;
+                this.attackCooldown = 30;
             }
         }
     }
