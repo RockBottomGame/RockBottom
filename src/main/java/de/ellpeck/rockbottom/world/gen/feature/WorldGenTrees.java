@@ -86,6 +86,10 @@ public class WorldGenTrees implements IWorldGenerator {
     }
 
     public boolean makeTree(IWorld world, int x, int y, boolean simulate) {
+        if(this.treeDesigns == null){
+            this.initWorld(world);
+        }
+
         this.treeRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
 
         IStructure structure = this.treeDesigns.get(this.treeRandom.nextInt(this.treeDesigns.size()));
