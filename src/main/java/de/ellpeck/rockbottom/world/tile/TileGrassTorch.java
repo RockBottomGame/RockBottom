@@ -15,6 +15,6 @@ public class TileGrassTorch extends TileTorch {
 
     @Override
     public int getMaxLight() {
-        return 20;
+        return 50;
     }
 }

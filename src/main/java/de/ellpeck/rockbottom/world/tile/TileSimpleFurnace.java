@@ -31,7 +31,7 @@ public class TileSimpleFurnace extends MultiTile {
     public int getLight(IWorld world, int x, int y, TileLayer layer) {
         Pos2 main = this.getMainPos(x, y, world.getState(layer, x, y));
         TileEntitySimpleFurnace tile = world.getTileEntity(layer, main.getX(), main.getY(), TileEntitySimpleFurnace.class);
-        return tile != null && tile.isActive() ? 20 : 0;
+        return tile != null && tile.isActive() ? 70 : 0;
     }
 
     @Override

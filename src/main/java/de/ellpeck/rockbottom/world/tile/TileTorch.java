@@ -25,7 +25,7 @@ public class TileTorch extends TileBasic {
     }
 
     public int getMaxLight() {
-        return 25;
+        return 80;
     }
 
     @Override
