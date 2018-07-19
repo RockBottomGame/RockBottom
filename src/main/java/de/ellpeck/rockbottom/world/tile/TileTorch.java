@@ -4,20 +4,18 @@ import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileTorchRenderer;
 
-public class TileTorch extends TileBasic {
+public class TileTorch extends TileLamp {
 
     public TileTorch(ResourceName name) {
         super(name);
-        this.addProps(StaticTileProps.TORCH_FACING, StaticTileProps.TORCH_TIMER);
+        this.addProps(StaticTileProps.TORCH_TIMER);
     }
 
     public double getTurnOffChance() {
@@ -58,16 +56,6 @@ public class TileTorch extends TileBasic {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
-        return null;
-    }
-
-    @Override
-    public boolean canPlaceInLayer(TileLayer layer) {
-        return layer == TileLayer.MAIN;
-    }
-
-    @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
         return this.getTorchState(world, x, y, 0) != null;
     }
@@ -96,26 +84,12 @@ public class TileTorch extends TileBasic {
     }
 
     private TileState getTorchState(IWorld world, int x, int y, int timer) {
-        int meta;
-
-        if (world.getState(x, y - 1).getTile().hasSolidSurface(world, x, y - 1, TileLayer.MAIN)) {
-            meta = 0;
-        } else if (world.getState(x + 1, y).getTile().isFullTile()) {
-            meta = 1;
-        } else if (world.getState(x - 1, y).getTile().isFullTile()) {
-            meta = 2;
-        } else if (world.getState(TileLayer.BACKGROUND, x, y).getTile().isFullTile()) {
-            meta = 3;
+        int meta = this.getFacingMeta(world, x, y);
+        if (meta >= 0) {
+            return this.getDefState().prop(StaticTileProps.TORCH_FACING, meta).prop(StaticTileProps.TORCH_TIMER, timer);
         } else {
             return null;
         }
-
-        return this.getDefState().prop(StaticTileProps.TORCH_FACING, meta).prop(StaticTileProps.TORCH_TIMER, timer);
-    }
-
-    @Override
-    public boolean isFullTile() {
-        return false;
     }
 
     @Override

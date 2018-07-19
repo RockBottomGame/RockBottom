@@ -61,6 +61,7 @@ public final class ContentRegistry {
         new TileSimpleFurnace().register();
         new TileCaveMushroom().register();
         new TileStardrop().register();
+        new TileLamp(ResourceName.intern("lamp_iron")).register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolType.PICKAXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolType.AXE, 1).register();
