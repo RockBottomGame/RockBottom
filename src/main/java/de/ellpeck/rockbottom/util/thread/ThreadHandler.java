@@ -16,20 +16,25 @@ import java.util.logging.Level;
 
 public final class ThreadHandler {
 
-    public static final String CONSOLE_LISTENER = "ConsoleListener";
-    public static final String SOUND_UPDATER = "SoundUpdater";
-    public static final String SERVER_JOIN = "ServerJoin";
-    public static final String CHANGELOG_GRABBER = "ChangelogGrabber";
-    public static final String CHUNK_GEN = "ChunkGen";
-    public static final String SHUTDOWN_HOOK = "ShutdownHook";
+    public static final String CONSOLE_LISTENER = "consoleListener";
+    public static final String SOUND_UPDATER = "soundUpdater";
+    public static final String SERVER_JOIN = "serverJoin";
+    public static final String CHANGELOG_GRABBER = "changelogGrabber";
+    public static final String CHUNK_GEN = "chunkGen";
+    public static final String LIGHTING = "lighting";
+    public static final String SHUTDOWN_HOOK = "shutdownHook";
 
     public static Thread consoleThread;
-    public static ChunkThread chunkGenThread;
+    public static QueueThread chunkGenThread;
+    public static QueueThread lightingThread;
     public static Thread soundThread;
 
     public static void init(AbstractGame game) {
-        chunkGenThread = new ChunkThread(game);
+        chunkGenThread = new QueueThread(CHUNK_GEN, game);
         chunkGenThread.start();
+
+        lightingThread = new QueueThread(LIGHTING, game);
+        lightingThread.start();
 
         soundThread = new Thread(() -> SoundHandler.updateSounds(game), SOUND_UPDATER);
         soundThread.setDaemon(true);

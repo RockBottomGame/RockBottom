@@ -1009,7 +1009,7 @@ public class World implements IWorld {
 
     @Override
     public void causeLightUpdate(int x, int y) {
-        ThreadHandler.chunkGenThread.add(() -> {
+        ThreadHandler.lightingThread.add(() -> {
             Counter recurseCount = new Counter(0);
 
             try {
