@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.apiimpl;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
@@ -22,6 +23,7 @@ import de.ellpeck.rockbottom.api.render.engine.IVBO;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.assets.font.SimpleFont;
@@ -474,7 +476,13 @@ public class Renderer implements IRenderer {
             desc.add("");
             desc.add(FormattingCode.GRAY + "Name: " + instance.getItem().getName());
             desc.add(FormattingCode.GRAY + "Meta: " + instance.getMeta());
-            desc.add(FormattingCode.GRAY + "Data: " + instance.getAdditionalData());
+
+            JsonObject json = new JsonObject();
+            try {
+                RockBottomAPI.getApiHandler().writeDataSet(json, instance.getAdditionalData());
+            } catch (Exception ignored) {
+            }
+            desc.add(FormattingCode.GRAY + "Data: " + Util.GSON.toJson(json));
             desc.add(FormattingCode.GRAY + "Max Amount: " + instance.getMaxAmount());
             desc.add(FormattingCode.GRAY + "Resources: " + RockBottomAPI.getResourceRegistry().getNames(new ResInfo(instance)));
         }

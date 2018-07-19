@@ -1,8 +1,10 @@
 package de.ellpeck.rockbottom.net.chat.command;
 
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -24,7 +26,7 @@ public class CommandSpawnItem extends Command {
     private final List<String> itemAutocomplete = new ArrayList<>();
 
     public CommandSpawnItem() {
-        super(ResourceName.intern("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_item", "cheat");
+        super(ResourceName.intern("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta] [json data]", 5, "spawn_item", "cheat");
 
         for (ResourceName name : RockBottomAPI.ITEM_REGISTRY.keySet()) {
             this.itemAutocomplete.add(name.toString());
@@ -64,8 +66,24 @@ public class CommandSpawnItem extends Command {
                 }
             }
 
+            ModBasedDataSet set = null;
+            if (args.length > 3) {
+                try {
+                    set = new ModBasedDataSet();
+
+                    JsonObject json = Util.JSON_PARSER.parse(args[3]).getAsJsonObject();
+                    RockBottomAPI.getApiHandler().readDataSet(json, set);
+                } catch (Exception e) {
+                    return new ChatComponentText(FormattingCode.RED + "Couldn't parse json information " + args[3] + '!');
+                }
+            }
+
             if (item != null) {
                 ItemInstance instance = new ItemInstance(item, amount, meta);
+                if (set != null) {
+                    instance.setAdditionalData(set);
+                }
+
                 ItemInstance left = player.getInv().addExistingFirst(instance, false);
 
                 if (left != null && left.isEffectivelyEqual(instance)) {
