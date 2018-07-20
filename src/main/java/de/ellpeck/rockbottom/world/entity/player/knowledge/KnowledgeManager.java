@@ -144,13 +144,13 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public void forgetRecipe(IRecipe recipe, boolean forgetAllParts, boolean announce) {
+    public void forgetRecipe(IRecipe recipe, boolean announce) {
         this.forgetInformation(recipe.getKnowledgeInformationName(), announce);
     }
 
     @Override
-    public void forgetRecipe(IRecipe recipe, boolean forgetAllParts) {
-        this.forgetRecipe(recipe, forgetAllParts, true);
+    public void forgetRecipe(IRecipe recipe) {
+        this.forgetRecipe(recipe, true);
     }
 
     @Override

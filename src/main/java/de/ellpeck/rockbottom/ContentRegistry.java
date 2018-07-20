@@ -13,10 +13,7 @@ import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
-import de.ellpeck.rockbottom.item.ItemCopperCanister;
-import de.ellpeck.rockbottom.item.ItemFirework;
-import de.ellpeck.rockbottom.item.ItemStartNote;
-import de.ellpeck.rockbottom.item.ItemTwig;
+import de.ellpeck.rockbottom.item.*;
 import de.ellpeck.rockbottom.world.entity.EntityFalling;
 import de.ellpeck.rockbottom.world.entity.EntityFirework;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
@@ -82,6 +79,7 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("copper_axe"), 2F, 350, ToolType.AXE, 10).register();
         new ItemTool(ResourceName.intern("copper_shovel"), 2F, 350, ToolType.SHOVEL, 10).register();
         new ItemSword(ResourceName.intern("copper_sword"), 350, 12, 30, 2D, 0.35D).register();
+        new ItemRecipeNote().register();
 
         BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
         BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 15, true, 1000).register();
