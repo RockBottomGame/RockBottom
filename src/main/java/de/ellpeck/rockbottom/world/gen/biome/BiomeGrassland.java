@@ -67,4 +67,9 @@ public class BiomeGrassland extends BiomeBasic {
         random.setSeed(Util.scrambleSeed(x, y, world.getSeed()) + 12382342);
         return random.nextDouble() < chance ? GameContent.BIOME_COLD_GRASSLAND : this;
     }
+
+    @Override
+    public float getLakeChance(IWorld world, IChunk chunk) {
+        return 0.75F;
+    }
 }

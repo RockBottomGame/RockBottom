@@ -46,4 +46,9 @@ public class BiomeDesert extends BiomeBasic {
     public TileState getFillerTile(IWorld world, IChunk chunk, int x, int y) {
         return GameContent.TILE_SAND.getDefState();
     }
+
+    @Override
+    public float getLakeChance(IWorld world, IChunk chunk) {
+        return 0.15F;
+    }
 }

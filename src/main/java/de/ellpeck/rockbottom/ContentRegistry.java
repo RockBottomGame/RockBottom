@@ -108,6 +108,7 @@ public final class ContentRegistry {
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("caves"), WorldGenCaves.class);
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("cave_mushrooms"), WorldGenCaveMushrooms.class);
         RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), WorldGenStardrops.class);
+        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("lakes"), WorldGenLakes.class);
 
         RockBottomAPI.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 

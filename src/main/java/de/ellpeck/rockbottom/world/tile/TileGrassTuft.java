@@ -37,12 +37,16 @@ public class TileGrassTuft extends TileMeta {
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
-        return world.getState(layer, x, y - 1).getTile().canKeepPlants(world, x, y, layer);
+        return this.canBeHere(world, x, y, layer);
     }
 
     @Override
     public boolean canPlace(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player) {
-        return world.isPosLoaded(x, y - 1, false) && world.getState(layer, x, y - 1).getTile().canKeepPlants(world, x, y, layer);
+        return world.isPosLoaded(x, y - 1, false) && this.canBeHere(world, x, y, layer);
+    }
+
+    private boolean canBeHere(IWorld world, int x, int y, TileLayer layer) {
+        return world.getState(layer, x, y - 1).getTile().canKeepPlants(world, x, y, layer) && world.getState(TileLayer.LIQUIDS, x, y).getTile().isAir();
     }
 
     @Override

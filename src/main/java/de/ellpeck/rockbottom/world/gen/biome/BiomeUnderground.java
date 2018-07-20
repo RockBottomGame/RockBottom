@@ -29,4 +29,9 @@ public class BiomeUnderground extends BiomeBasic {
     public boolean hasUndergroundFeatures(IWorld world, IChunk chunk) {
         return true;
     }
+
+    @Override
+    public TileState getFillerTile(IWorld world, IChunk chunk, int x, int y) {
+        return GameContent.TILE_STONE.getDefState();
+    }
 }
