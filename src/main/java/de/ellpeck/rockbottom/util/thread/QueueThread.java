@@ -4,13 +4,13 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.logging.Level;
 
 public class QueueThread extends Thread {
 
-    private final List<Runnable> queue = new ArrayList<>();
+    private final Deque<Runnable> queue = new ArrayDeque<>();
     private final AbstractGame game;
     private final String name;
 
@@ -27,7 +27,7 @@ public class QueueThread extends Thread {
                 while (!this.queue.isEmpty()) {
                     Runnable runnable;
                     synchronized (this.queue) {
-                        runnable = this.queue.remove(0);
+                        runnable = this.queue.removeFirst();
                     }
                     runnable.run();
                 }

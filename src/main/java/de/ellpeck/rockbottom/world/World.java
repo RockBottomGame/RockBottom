@@ -22,7 +22,10 @@ import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.toast.Toast;
-import de.ellpeck.rockbottom.api.util.*;
+import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Direction;
+import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
@@ -1010,47 +1013,33 @@ public class World implements IWorld {
     @Override
     public void causeLightUpdate(int x, int y) {
         ThreadHandler.lightingThread.add(() -> {
-            Counter recurseCount = new Counter(0);
+            for (Direction direction : Direction.SURROUNDING_INCLUDING_NONE) {
+                int dirX = x + direction.x;
+                int dirY = y + direction.y;
 
-            try {
-                this.causeLightUpdate(x, y, recurseCount);
+                if (this.isPosLoaded(dirX, dirY)) {
+                    boolean change = false;
 
-                if (recurseCount.get() >= 100) {
-                    RockBottomAPI.logger().config("Updated light at " + x + ", " + y + " using " + recurseCount.get() + " recursive calls");
+                    byte skylightThere = this.getSkyLight(dirX, dirY);
+                    byte calcedSkylight = this.calcLight(dirX, dirY, true, true);
+                    if (calcedSkylight != skylightThere) {
+                        this.setSkyLight(dirX, dirY, calcedSkylight);
+                        change = true;
+                    }
+
+                    byte artLightThere = this.getArtificialLight(dirX, dirY);
+                    byte calcedArtLight = this.calcLight(dirX, dirY, false, true);
+                    if (calcedArtLight != artLightThere) {
+                        this.setArtificialLight(dirX, dirY, calcedArtLight);
+                        change = true;
+                    }
+
+                    if (change) {
+                        this.causeLightUpdate(dirX, dirY);
+                    }
                 }
-            } catch (StackOverflowError e) {
-                RockBottomAPI.logger().severe("Failed to update light at " + x + ' ' + y + " after too many (" + recurseCount.get() + ") recursive calls");
             }
         });
-    }
-
-    private void causeLightUpdate(int x, int y, Counter recurseCount) {
-        for (Direction direction : Direction.SURROUNDING_INCLUDING_NONE) {
-            int dirX = x + direction.x;
-            int dirY = y + direction.y;
-
-            if (this.isPosLoaded(dirX, dirY)) {
-                boolean change = false;
-
-                byte skylightThere = this.getSkyLight(dirX, dirY);
-                byte calcedSkylight = this.calcLight(dirX, dirY, true, true);
-                if (calcedSkylight != skylightThere) {
-                    this.setSkyLight(dirX, dirY, calcedSkylight);
-                    change = true;
-                }
-
-                byte artLightThere = this.getArtificialLight(dirX, dirY);
-                byte calcedArtLight = this.calcLight(dirX, dirY, false, true);
-                if (calcedArtLight != artLightThere) {
-                    this.setArtificialLight(dirX, dirY, calcedArtLight);
-                    change = true;
-                }
-
-                if (change) {
-                    this.causeLightUpdate(dirX, dirY, recurseCount.add(1));
-                }
-            }
-        }
     }
 
     public void calcInitialSkylight(int x1, int y1, int x2, int y2) {
