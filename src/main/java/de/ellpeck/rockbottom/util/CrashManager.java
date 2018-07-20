@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public final class CrashManager {
@@ -143,6 +144,23 @@ public final class CrashManager {
             for (String s : additionalInfo) {
                 writer.println(s);
             }
+        }
+
+        writer.println(divider);
+
+        try {
+            writer.println("THREAD DUMP:");
+            for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+                Thread thread = entry.getKey();
+                StackTraceElement[] stack = entry.getValue();
+
+                writer.println(thread.getName() + " @ " + thread.getState());
+                for (StackTraceElement element : stack) {
+                    writer.println("\tat " + element);
+                }
+            }
+        } catch (Exception e) {
+            writer.println("Thread dump unavailable");
         }
 
         writer.print(divider);
