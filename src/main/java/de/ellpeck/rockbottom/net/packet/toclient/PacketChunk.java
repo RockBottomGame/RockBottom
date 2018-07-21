@@ -128,9 +128,4 @@ public class PacketChunk implements IPacket {
             chunk.setGenerating(false);
         }
     }
-
-    @Override
-    public void enqueueAsAction(IGameInstance game, ChannelHandlerContext context) {
-        game.enqueueAction(this::handle, context, inst -> inst.getWorld() != null);
-    }
 }

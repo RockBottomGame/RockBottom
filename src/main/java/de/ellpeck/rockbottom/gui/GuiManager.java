@@ -212,7 +212,7 @@ public class GuiManager implements IGuiManager {
             }
         }
 
-        if (!(gui instanceof GuiChat)) {
+        if (!(gui instanceof GuiChat) && this.background == null) {
             game.getChatLog().drawNewMessages(game, manager, g);
         }
 

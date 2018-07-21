@@ -44,11 +44,10 @@ import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Locale;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 
 public abstract class AbstractGame implements IGameInstance {
@@ -57,7 +56,7 @@ public abstract class AbstractGame implements IGameInstance {
     public static final String NAME = "Rock Bottom";
     public static final String ID = "rockbottom";
     private static final int INTERVAL = 1000 / Constants.TARGET_TPS;
-    private final List<EnqueuedAction> enqueuedActions = new ArrayList<>();
+    private final Deque<EnqueuedAction> enqueuedActions = new ArrayDeque<>();
     protected DataManager dataManager;
     protected ChatLog chatLog;
     protected World world;
@@ -171,17 +170,12 @@ public abstract class AbstractGame implements IGameInstance {
     private void updateTicked() {
         this.totalTicks++;
 
-        synchronized (this.enqueuedActions) {
-            for (int i = 0; i < this.enqueuedActions.size(); i++) {
-                EnqueuedAction action = this.enqueuedActions.get(i);
-
-                if (action.condition == null || action.condition.test(this)) {
-                    action.action.accept(this, action.object);
-
-                    this.enqueuedActions.remove(i);
-                    i--;
-                }
+        while (!this.enqueuedActions.isEmpty()) {
+            EnqueuedAction action;
+            synchronized (this.enqueuedActions) {
+                action = this.enqueuedActions.removeFirst();
             }
+            action.action.accept(this, action.object);
         }
 
         this.update();
@@ -390,13 +384,8 @@ public abstract class AbstractGame implements IGameInstance {
 
     @Override
     public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object) {
-        this.enqueueAction(action, object, null);
-    }
-
-    @Override
-    public <T> void enqueueAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition) {
         synchronized (this.enqueuedActions) {
-            this.enqueuedActions.add(new EnqueuedAction(action, object, condition));
+            this.enqueuedActions.add(new EnqueuedAction(action, object));
         }
     }
 
@@ -446,12 +435,10 @@ public abstract class AbstractGame implements IGameInstance {
 
         public final BiConsumer<IGameInstance, T> action;
         public final T object;
-        public final Predicate<IGameInstance> condition;
 
-        public EnqueuedAction(BiConsumer<IGameInstance, T> action, T object, Predicate<IGameInstance> condition) {
+        public EnqueuedAction(BiConsumer<IGameInstance, T> action, T object) {
             this.action = action;
             this.object = object;
-            this.condition = condition;
         }
     }
 }

@@ -51,9 +51,14 @@ public class PacketInitialServerData implements IPacket {
         if (game.getWorld() == null) {
             RockBottomAPI.logger().info("Received initial server data, joining world");
 
+            game.joinWorld(this.playerSet, this.info, this.regInfo);
+
             IGuiManager gui = game.getGuiManager();
             gui.fadeOut(20, () -> {
-                game.joinWorld(this.playerSet, this.info, this.regInfo);
+                gui.closeGui();
+                gui.updateDimensions();
+                game.getToaster().cancelAllToasts();
+
                 gui.fadeIn(20, null);
             });
         } else {

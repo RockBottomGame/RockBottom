@@ -101,9 +101,4 @@ public class PacketEntityChange implements IPacket {
             }
         }
     }
-
-    @Override
-    public void enqueueAsAction(IGameInstance game, ChannelHandlerContext context) {
-        game.enqueueAction(this::handle, context, inst -> inst.getWorld() != null);
-    }
 }
