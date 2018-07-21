@@ -29,6 +29,8 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
+import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.state.IntProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -46,6 +48,7 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import de.ellpeck.rockbottom.world.entity.player.statistics.Statistics;
+import de.ellpeck.rockbottom.world.tile.TileWater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +85,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     private int respawnTimer;
     private double lastStatX;
     private double lastStatY;
+    private boolean canSwim;
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
@@ -177,6 +181,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public void update(IGameInstance game) {
+        this.canSwim = false;
         super.update(game);
 
         if (this.collidedHor) {
@@ -625,7 +630,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
             this.facing = Direction.RIGHT;
             return true;
         } else if (type == 2) {
-            this.jump(this.getJumpHeight());
+            if (this.canSwim) {
+                this.motionY = 0.075;
+            } else {
+                this.jump(this.getJumpHeight());
+            }
             return true;
         } else if (type == 3) {
             if (this.canClimb) {
@@ -656,5 +665,25 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public float getHeight() {
         return 1.85F;
+    }
+
+    @Override
+    public void onIntersectWithTile(int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes) {
+        if (!this.canSwim) {
+            if (this.collidedHor || y >= this.getY() - 1) {
+                Tile tile = state.getTile();
+                if (tile instanceof TileWater) {
+                    IntProp levels = ((TileWater) tile).level;
+                    if (state.get(levels) > levels.getVariants() / 2) {
+                        for (BoundBox box : tileBoxes) {
+                            if (entityBox.intersects(box)) {
+                                this.canSwim = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
