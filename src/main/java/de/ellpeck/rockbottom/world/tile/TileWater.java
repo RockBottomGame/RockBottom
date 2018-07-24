@@ -61,7 +61,7 @@ public class TileWater extends TileLiquid {
                         return;
                     } else {
                         TileState other = world.getState(layer, x + dir.x, y + dir.y);
-                        if (other.getTile() == this && state.get(this.level) > 3) {
+                        if (other.getTile() == this && other.get(this.level) > 3) {
                             return;
                         }
                     }
