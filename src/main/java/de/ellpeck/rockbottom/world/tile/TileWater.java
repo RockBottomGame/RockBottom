@@ -57,8 +57,13 @@ public class TileWater extends TileLiquid {
             int level = state.get(this.level);
             if (level <= 3) {
                 for (Direction dir : Direction.ADJACENT) {
-                    if (!world.isPosLoaded(x + dir.x, y + dir.y) || world.getState(layer, x + dir.x, y + dir.y).getTile() == this) {
+                    if (!world.isPosLoaded(x + dir.x, y + dir.y)) {
                         return;
+                    } else {
+                        TileState other = world.getState(layer, x + dir.x, y + dir.y);
+                        if (other.getTile() == this && state.get(this.level) > 3) {
+                            return;
+                        }
                     }
                 }
 
