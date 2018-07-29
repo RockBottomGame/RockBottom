@@ -36,6 +36,8 @@ public class TileWater extends TileLiquid {
 
     @Override
     public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity) {
+        super.onIntersectWithEntity(world, x, y, layer, state, entityBox, entityBoxMotion, tileBoxes, entity);
+
         if (state.get(this.level) > this.getLevels() / 3) {
             for (BoundBox box : tileBoxes) {
                 if (entityBox.intersects(box)) {
@@ -43,6 +45,7 @@ public class TileWater extends TileLiquid {
                     if (entity.motionY < 0) {
                         entity.motionY *= 0.85;
                     }
+                    entity.fallStartY = entity.getY();
 
                     break;
                 }

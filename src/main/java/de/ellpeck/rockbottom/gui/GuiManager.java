@@ -27,6 +27,7 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.gui.component.ComponentBreath;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
@@ -86,16 +87,19 @@ public class GuiManager implements IGuiManager {
 
         if (game.getWorld() != null) {
             IRenderer renderer = game.getRenderer();
-            double width = renderer.getWidthInGui();
-            double height = renderer.getHeightInGui();
+            int width = (int) renderer.getWidthInGui();
+            int height = (int) renderer.getHeightInGui();
 
             for (int i = 0; i < 8; i++) {
-                int x = (int) (width / 2 - 4 * 13 + 1 + i * 13);
+                int x = (width / 2 - 4 * 13 + 1 + i * 13);
                 this.onScreenComponents.add(new ComponentHotbarSlot(player, player.getInv(), i, x, 3));
             }
 
             int maxHealthParts = Util.ceil(game.getPlayer().getMaxHealth() / 20D);
-            this.onScreenComponents.add(new ComponentHealth(null, (int) width - 3 - maxHealthParts * 13, (int) height - 3 - 12, 13 * maxHealthParts - 1, 12));
+            this.onScreenComponents.add(new ComponentHealth(null, width - 3 - maxHealthParts * 13, height - 3 - 12, 13 * maxHealthParts - 1, 12));
+
+            int maxBreath = game.getPlayer().getMaxBreath();
+            this.onScreenComponents.add(new ComponentBreath(null, width - 3 - maxBreath * 13, height - 3 - 12 - 13, 13 * maxBreath - 1, 12));
         }
     }
 

@@ -10,10 +10,12 @@ public class PacketHealth implements IPacket {
 
     private int health;
     private boolean isMax;
+    private boolean isBreath;
 
-    public PacketHealth(int health, boolean isMax) {
+    public PacketHealth(int health, boolean isMax, boolean isBreath) {
         this.health = health;
         this.isMax = isMax;
+        this.isBreath = isBreath;
     }
 
     public PacketHealth() {
@@ -23,12 +25,14 @@ public class PacketHealth implements IPacket {
     public void toBuffer(ByteBuf buf) {
         buf.writeInt(this.health);
         buf.writeBoolean(this.isMax);
+        buf.writeBoolean(this.isBreath);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) {
         this.health = buf.readInt();
         this.isMax = buf.readBoolean();
+        this.isBreath = buf.readBoolean();
     }
 
     @Override
@@ -36,9 +40,15 @@ public class PacketHealth implements IPacket {
         AbstractEntityPlayer player = game.getPlayer();
         if (player != null) {
             if (this.isMax) {
-                player.setMaxHealth(this.health);
+                if (this.isBreath)
+                    player.setMaxBreath(this.health);
+                else
+                    player.setMaxHealth(this.health);
             } else {
-                player.setHealth(this.health);
+                if (this.isBreath)
+                    player.setBreath(this.health);
+                else
+                    player.setHealth(this.health);
             }
         }
     }

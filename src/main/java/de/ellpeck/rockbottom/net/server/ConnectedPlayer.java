@@ -34,6 +34,7 @@ public class ConnectedPlayer extends EntityPlayer {
     private final Channel channel;
 
     private int lastHealth;
+    private int lastBreath;
 
     private double lastCalcX;
     private double lastCalcY;
@@ -126,7 +127,12 @@ public class ConnectedPlayer extends EntityPlayer {
 
         if (this.getHealth() != this.lastHealth && this.world.getTotalTime() % 10 == 0) {
             this.lastHealth = this.getHealth();
-            this.sendPacket(new PacketHealth(this.getHealth(), false));
+            this.sendPacket(new PacketHealth(this.getHealth(), false, false));
+        }
+
+        if (this.getBreath() != this.lastBreath && this.world.getTotalTime() % 20 == 0) {
+            this.lastBreath = this.getBreath();
+            this.sendPacket(new PacketHealth(this.getBreath(), false, true));
         }
     }
 
@@ -215,7 +221,12 @@ public class ConnectedPlayer extends EntityPlayer {
     @Override
     public void setMaxHealth(int maxHealth) {
         super.setMaxHealth(maxHealth);
+        this.sendPacket(new PacketHealth(this.getMaxHealth(), true, false));
+    }
 
-        this.sendPacket(new PacketHealth(this.getMaxHealth(), true));
+    @Override
+    public void setMaxBreath(int maxBreath) {
+        super.setMaxBreath(maxBreath);
+        this.sendPacket(new PacketHealth(this.getMaxBreath(), true, true));
     }
 }

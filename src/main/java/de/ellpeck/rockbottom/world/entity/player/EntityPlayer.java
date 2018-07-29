@@ -584,6 +584,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.isFalling = false;
         this.fallStartY = 0;
         this.setHealth(this.getMaxHealth());
+        this.setBreath(this.getMaxBreath());
 
         if (this.isLocalPlayer()) {
             if (game.getGuiManager() != null) {
@@ -669,6 +670,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public void onIntersectWithTile(int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes) {
+        super.onIntersectWithTile(x, y, layer, state, entityBox, entityBoxMotion, tileBoxes);
+
         if (!this.canSwim) {
             if (this.collidedHor || y >= this.getY() - 1) {
                 Tile tile = state.getTile();
@@ -685,5 +688,10 @@ public class EntityPlayer extends AbstractEntityPlayer {
                 }
             }
         }
+    }
+
+    @Override
+    public double getEyeHeight() {
+        return this.getHeight() * 0.75D;
     }
 }
