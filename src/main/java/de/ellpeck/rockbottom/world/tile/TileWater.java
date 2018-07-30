@@ -15,8 +15,20 @@ import java.util.List;
 
 public class TileWater extends TileLiquid {
 
+    private final BoundBox[] bounds;
+
     public TileWater() {
         super(ResourceName.intern("water"));
+
+        this.bounds = new BoundBox[this.getLevels()];
+        for (int i = 0; i < this.bounds.length; i++) {
+            this.bounds[i] = new BoundBox(0, 0, 1, (i + 1) / (double) this.getLevels());
+        }
+    }
+
+    @Override
+    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
+        return this.bounds[world.getState(layer, x, y).get(this.level)];
     }
 
     @Override
@@ -38,17 +50,15 @@ public class TileWater extends TileLiquid {
     public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity) {
         super.onIntersectWithEntity(world, x, y, layer, state, entityBox, entityBoxMotion, tileBoxes, entity);
 
-        if (state.get(this.level) > this.getLevels() / 3) {
-            for (BoundBox box : tileBoxes) {
-                if (entityBox.intersects(box)) {
-                    entity.motionX *= 0.85;
-                    if (entity.motionY < 0) {
-                        entity.motionY *= 0.85;
-                    }
-                    entity.fallStartY = entity.getY();
-
-                    break;
+        for (BoundBox box : tileBoxes) {
+            if (box.contains(entity.getX(), entity.getOriginY() + entity.getEyeHeight())) {
+                entity.motionX *= 0.65;
+                if (entity.motionY < 0) {
+                    entity.motionY *= 0.65;
                 }
+                entity.fallStartY = entity.getY();
+
+                break;
             }
         }
     }

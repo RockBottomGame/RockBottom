@@ -30,7 +30,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
-import de.ellpeck.rockbottom.api.tile.state.IntProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -673,17 +672,12 @@ public class EntityPlayer extends AbstractEntityPlayer {
         super.onIntersectWithTile(x, y, layer, state, entityBox, entityBoxMotion, tileBoxes);
 
         if (!this.canSwim) {
-            if (this.collidedHor || y >= this.getY() - 1) {
-                Tile tile = state.getTile();
-                if (tile instanceof TileWater) {
-                    IntProp levels = ((TileWater) tile).level;
-                    if (state.get(levels) > levels.getVariants() / 2) {
-                        for (BoundBox box : tileBoxes) {
-                            if (entityBox.intersects(box)) {
-                                this.canSwim = true;
-                                break;
-                            }
-                        }
+            Tile tile = state.getTile();
+            if (tile instanceof TileWater) {
+                for (BoundBox box : tileBoxes) {
+                    if (this.collidedHor ? box.intersects(entityBox) : box.contains(this.getX(), this.getY())) {
+                        this.canSwim = true;
+                        break;
                     }
                 }
             }
