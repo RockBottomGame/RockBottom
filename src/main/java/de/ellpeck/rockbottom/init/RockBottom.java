@@ -468,7 +468,7 @@ public class RockBottom extends AbstractGame {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
             if (this.player != null) {
-                MakeCameraCoordsEvent event = new MakeCameraCoordsEvent(this.player, this.player.getX(), this.player.getY() - 0.5D);
+                MakeCameraCoordsEvent event = new MakeCameraCoordsEvent(this.player, this.player.getLerpedX(), this.player.getLerpedY() - 0.5D);
                 RockBottomAPI.getEventHandler().fireEvent(event);
                 this.renderer.cameraX = event.cameraX;
                 this.renderer.cameraY = event.cameraY;

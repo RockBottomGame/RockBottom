@@ -308,11 +308,11 @@ public class InternalHooks implements IInternalHooks {
         if (entity.world.isServer()) {
             if (entity.doesSync()) {
                 if (entity.ticksExisted % entity.getSyncFrequency() == 0) {
-                    if (entity.lastX != x || entity.lastY != y) {
+                    if (entity.lastSyncX != x || entity.lastSyncY != y) {
                         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.collidedHor, entity.collidedVert, entity.onGround), x, y, entity);
 
-                        entity.lastX = x;
-                        entity.lastY = y;
+                        entity.lastSyncX = x;
+                        entity.lastSyncY = y;
                     }
                 }
             }

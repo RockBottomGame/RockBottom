@@ -170,6 +170,8 @@ public abstract class AbstractGame implements IGameInstance {
     private void updateTicked() {
         this.totalTicks++;
 
+        this.update();
+
         while (!this.enqueuedActions.isEmpty()) {
             EnqueuedAction action;
             synchronized (this.enqueuedActions) {
@@ -177,8 +179,6 @@ public abstract class AbstractGame implements IGameInstance {
             }
             action.action.accept(this, action.object);
         }
-
-        this.update();
     }
 
     public void init() {

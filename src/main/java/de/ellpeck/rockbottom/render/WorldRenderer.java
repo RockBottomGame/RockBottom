@@ -120,8 +120,8 @@ public class WorldRenderer {
                     ResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
                     g.setProgram(program == null ? null : manager.getShaderProgram(program));
 
-                    double x = entity.getX();
-                    double y = entity.getY();
+                    double x = entity.getLerpedX();
+                    double y = entity.getLerpedY();
 
                     int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
                     int color = RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN);
@@ -172,7 +172,7 @@ public class WorldRenderer {
 
         players.forEach(entity -> {
             if (entity.shouldRender() && !entity.isLocalPlayer()) {
-                manager.getFont().drawCenteredString((float) entity.getX() - transX, (float) -entity.getY() - transY - 0.75F, entity.getChatColorFormat() + entity.getName(), 0.015F, false);
+                manager.getFont().drawCenteredString((float) entity.getLerpedX() - transX, (float) -entity.getLerpedY() - transY - 0.75F, entity.getChatColorFormat() + entity.getName(), 0.015F, false);
             }
         });
 
