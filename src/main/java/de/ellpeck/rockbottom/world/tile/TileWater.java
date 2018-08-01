@@ -51,7 +51,7 @@ public class TileWater extends TileLiquid {
         super.onIntersectWithEntity(world, x, y, layer, state, entityBox, entityBoxMotion, tileBoxes, entity);
 
         for (BoundBox box : tileBoxes) {
-            if (box.contains(entity.getX(), entity.getOriginY() + entity.getEyeHeight())) {
+            if (box.contains(entity.getX(), entity.getY())) {
                 entity.motionX *= 0.65;
                 if (entity.motionY < 0) {
                     entity.motionY *= 0.65;
