@@ -30,6 +30,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.component.ComponentBreath;
 import de.ellpeck.rockbottom.gui.component.ComponentHealth;
 import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
+import de.ellpeck.rockbottom.gui.component.ComponentSkill;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -100,7 +101,16 @@ public class GuiManager implements IGuiManager {
 
             int maxBreath = game.getPlayer().getMaxBreath();
             this.onScreenComponents.add(new ComponentBreath(null, width - 3 - maxBreath * 13, height - 3 - 12 - 13, 13 * maxBreath - 1, 12));
+
+            int skillWidth = 100;
+            int skillHeight = 15;
+            this.onScreenComponents.add(new ComponentSkill(null, 3, height - 3 - skillHeight, skillWidth, skillHeight));
         }
+    }
+
+    @Override
+    public List<GuiComponent> getOnScreenComponents() {
+        return this.onScreenComponents;
     }
 
     private void initAndSortGui(IGameInstance game) {

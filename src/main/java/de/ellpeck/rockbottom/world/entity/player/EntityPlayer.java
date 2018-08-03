@@ -85,6 +85,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
     private double lastStatX;
     private double lastStatY;
     private boolean canSwim;
+    private float skillPercentage;
+    private int skillPoints;
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
@@ -255,7 +257,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
             SoundHandler.setPlayerPos(x, y);
 
             if (this.world.isClient() && this.ticksExisted % this.getSyncFrequency() == 0) {
-                if (this.lastSyncX!= x || this.lastSyncY != y) {
+                if (this.lastSyncX != x || this.lastSyncY != y) {
                     RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
                     this.lastSyncX = x;
                     this.lastSyncY = y;
@@ -332,7 +334,16 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public void setMaxHealth(int maxHealth) {
         super.setMaxHealth(maxHealth);
+        this.reloadBars();
+    }
 
+    @Override
+    public void setMaxBreath(int maxBreath) {
+        super.setMaxBreath(maxBreath);
+        this.reloadBars();
+    }
+
+    private void reloadBars() {
         if (!this.world.isDedicatedServer()) {
             RockBottomAPI.getGame().getGuiManager().initOnScreenComponents();
         }
@@ -344,6 +355,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.inv.save(set);
         this.knowledge.save(set);
         this.statistics.save(set);
+        set.addFloat("skill_percentage", this.skillPercentage);
+        set.addInt("skill_points", this.skillPoints);
     }
 
     @Override
@@ -352,6 +365,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.inv.load(set);
         this.knowledge.load(set);
         this.statistics.load(set);
+        this.skillPercentage = set.getFloat("skill_percentage");
+        this.skillPoints = set.getInt("skill_points");
     }
 
     @Override
@@ -688,4 +703,32 @@ public class EntityPlayer extends AbstractEntityPlayer {
     public double getEyeHeight() {
         return this.getHeight() * 0.75D;
     }
+
+    @Override
+    public void gainSkill(float percentage) {
+        this.skillPercentage += percentage;
+
+        while (this.skillPercentage >= 1F) {
+            this.skillPercentage -= 1F;
+            this.skillPoints++;
+        }
+    }
+
+    @Override
+    public float getSkillPercentage() {
+        return this.skillPercentage;
+    }
+
+    @Override
+    public int getSkillPoints() {
+        return this.skillPoints;
+    }
+
+    @Override
+    public int takeSkillPoints(int points) {
+        int maxTaken = Math.min(points, this.skillPoints);
+        this.skillPoints -= maxTaken;
+        return points - maxTaken;
+    }
+
 }
