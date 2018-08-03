@@ -45,6 +45,6 @@ public class TileCaveMushroom extends TileMeta {
     }
 
     private boolean canBeHere(IWorld world, int x, int y, TileLayer layer) {
-        return world.getState(layer, x, y - 1).getTile().hasSolidSurface(world, x, y, layer) && world.getState(TileLayer.LIQUIDS, x, y).getTile().isAir();
+        return world.getState(layer, x, y - 1).getTile().hasSolidSurface(world, x, y - 1, layer) && world.getState(TileLayer.LIQUIDS, x, y).getTile().isAir();
     }
 }
