@@ -22,6 +22,7 @@ public class ComponentSkill extends GuiComponent {
         int points = player.getSkillPoints();
         float percentage = player.getSkillPercentage();
 
+        g.addFilledRect(x, y + this.height - 5, this.width, 5, Colors.multiply(Colors.GREEN, 0.5F, 0.5F, 0.5F, 0.35F));
         g.addFilledRect(x, y + this.height - 5, this.width * percentage, 5, Colors.GREEN);
         g.addEmptyRect(x, y + this.height - 5, this.width, 5, Colors.BLACK);
 

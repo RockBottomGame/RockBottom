@@ -102,7 +102,7 @@ public class GuiManager implements IGuiManager {
             int maxBreath = game.getPlayer().getMaxBreath();
             this.onScreenComponents.add(new ComponentBreath(null, width - 3 - maxBreath * 13, height - 3 - 12 - 13, 13 * maxBreath - 1, 12));
 
-            int skillWidth = 100;
+            int skillWidth = 75;
             int skillHeight = 15;
             this.onScreenComponents.add(new ComponentSkill(null, 3, height - 3 - skillHeight, skillWidth, skillHeight));
         }
