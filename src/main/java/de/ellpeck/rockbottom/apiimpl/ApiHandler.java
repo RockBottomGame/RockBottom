@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.set.part.IPartFactory;
-import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -192,33 +192,39 @@ public class ApiHandler implements IApiHandler {
     }
 
     @Override
-    public void construct(IWorld world, double x, double y, Inventory inventory, IRecipe recipe, int amount, List<IUseInfo> inputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter) {
+    public List<ItemInstance> construct(AbstractEntityPlayer player, Inventory inputInventory, Inventory outputInventory, IRecipe recipe, int amount, List<IUseInfo> inputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
+        List<ItemInstance> remains = new ArrayList<>();
         for (int a = 0; a < amount; a++) {
-            if (recipe.canConstruct(inventory)) {
+            if (recipe.canConstruct(inputInventory, outputInventory)) {
                 List<ItemInstance> usedInputs = new ArrayList<>();
 
                 for (IUseInfo input : inputs) {
-                    for (int i = 0; i < inventory.getSlotAmount(); i++) {
-                        ItemInstance inv = inventory.get(i);
+                    for (int i = 0; i < inputInventory.getSlotAmount(); i++) {
+                        ItemInstance inv = inputInventory.get(i);
 
                         if (inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()) {
                             usedInputs.add(inv.copy().setAmount(input.getAmount()));
-                            inventory.remove(i, input.getAmount());
+                            inputInventory.remove(i, input.getAmount());
                             break;
                         }
                     }
                 }
 
                 for (ItemInstance output : outputGetter.apply(usedInputs)) {
-                    ItemInstance left = inventory.addExistingFirst(output, false);
+                    ItemInstance left = outputInventory.addExistingFirst(output, false);
                     if (left != null) {
-                        AbstractEntityItem.spawn(world, left, x, y, 0F, 0F);
+                        remains.add(left);
                     }
+                }
+
+                if (player != null) {
+                    player.gainSkill(skillReward);
                 }
             } else {
                 break;
             }
         }
+        return remains;
     }
 
     @Override

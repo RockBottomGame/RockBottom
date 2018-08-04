@@ -332,6 +332,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
+    public float getKillReward(AbstractEntityPlayer player) {
+        return this.skillPoints + this.skillPercentage;
+    }
+
+    @Override
     public void setMaxHealth(int maxHealth) {
         super.setMaxHealth(maxHealth);
         this.reloadBars();
@@ -706,12 +711,17 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public void gainSkill(float percentage) {
-        this.skillPercentage += percentage;
+        float curr = this.skillPercentage;
+        int points = this.skillPoints;
 
-        while (this.skillPercentage >= 1F) {
-            this.skillPercentage -= 1F;
-            this.skillPoints++;
+        curr += percentage;
+
+        while (curr >= 1F) {
+            curr -= 1F;
+            points++;
         }
+
+        this.setSkill(curr, points);
     }
 
     @Override
@@ -727,8 +737,14 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public int takeSkillPoints(int points) {
         int maxTaken = Math.min(points, this.skillPoints);
-        this.skillPoints -= maxTaken;
+        this.setSkill(this.skillPercentage, this.skillPoints - maxTaken);
         return points - maxTaken;
+    }
+
+    @Override
+    public void setSkill(float percentage, int points) {
+        this.skillPoints = points;
+        this.skillPercentage = percentage;
     }
 
 }

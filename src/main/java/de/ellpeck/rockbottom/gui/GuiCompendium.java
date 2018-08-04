@@ -92,7 +92,8 @@ public class GuiCompendium extends GuiContainer {
         for (BasicRecipe recipe : RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.values()) {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
-                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(this.player.getInv()));
+                    IInventory inv = this.player.getInv();
+                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv));
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if (polaroid.isSelected) {
@@ -179,7 +180,8 @@ public class GuiCompendium extends GuiContainer {
         }
 
         if (recipe != null) {
-            this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(this.player.getInv()));
+            IInventory inv = this.player.getInv();
+            this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(inv, inv));
             this.components.add(this.construct);
         }
     }
@@ -245,7 +247,7 @@ public class GuiCompendium extends GuiContainer {
                         RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), RockBottomAPI.ALL_CONSTRUCTION_RECIPES.getId(this.selectedRecipe), 1));
                     } else {
                         if (this.selectedRecipe.isKnown(this.player)) {
-                            this.selectedRecipe.construct(this.player.world, this.player.getX(), this.player.getY(), this.player.getInv(), 1);
+                            this.selectedRecipe.playerConstruct(this.player, 1);
                         }
                     }
                     return true;

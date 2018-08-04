@@ -48,7 +48,7 @@ public class PacketManualConstruction implements IPacket {
             if (player != null) {
                 IRecipe recipe = IRecipe.forName(this.recipeName);
                 if (recipe != null && recipe.isKnown(player)) {
-                    recipe.construct(player.world, player.getX(), player.getY(), player.getInv(), this.amount);
+                    recipe.playerConstruct(player, this.amount);
                 }
             }
         }

@@ -229,4 +229,10 @@ public class ConnectedPlayer extends EntityPlayer {
         super.setMaxBreath(maxBreath);
         this.sendPacket(new PacketHealth(this.getMaxBreath(), true, true));
     }
+
+    @Override
+    public void setSkill(float percentage, int points) {
+        super.setSkill(percentage, points);
+        this.sendPacket(new PacketSkill(this.getSkillPercentage(), this.getSkillPoints()));
+    }
 }

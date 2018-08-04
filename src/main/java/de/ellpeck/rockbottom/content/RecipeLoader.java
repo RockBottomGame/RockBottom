@@ -49,6 +49,7 @@ public class RecipeLoader implements IContentLoader<IRecipe> {
 
                 JsonObject object = recipeElement.getAsJsonObject();
                 String type = object.get("type").getAsString();
+                float skill = object.get("skill").getAsFloat();
 
                 List<IUseInfo> inputList = new ArrayList<>();
                 List<ItemInstance> outputList = new ArrayList<>();
@@ -78,15 +79,16 @@ public class RecipeLoader implements IContentLoader<IRecipe> {
                         inputList.add(new ResUseInfo(name, amount));
                     }
                 }
+
                 if ("manual".equals(type)) {
-                    new BasicRecipe(resourceName, inputList, outputList).registerManual();
+                    new BasicRecipe(resourceName, inputList, outputList, skill).registerManual();
                 } else if ("manual_knowledge".equals(type)) {
-                    new KnowledgeBasedRecipe(resourceName, inputList, outputList).registerManual();
+                    new KnowledgeBasedRecipe(resourceName, inputList, outputList, skill).registerManual();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }
 
-                RockBottomAPI.logger().config("Loaded recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with type " + type + ", inputs " + inputList + " and outputs " + outputList + " with content pack " + pack.getName());
+                RockBottomAPI.logger().config("Loaded recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with type " + type + ", inputs " + inputList + " outputs " + outputList + " and skill " + skill + " with content pack " + pack.getName());
             }
         } else {
             RockBottomAPI.logger().info("Recipe " + resourceName + " will not be loaded for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName() + " because it was disabled by another content pack!");

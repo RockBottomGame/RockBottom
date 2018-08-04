@@ -122,6 +122,11 @@ public class EntitySlime extends AbstractEntitySlime {
     }
 
     @Override
+    public float getKillReward(AbstractEntityPlayer player) {
+        return 0.1F;
+    }
+
+    @Override
     public int getVariation() {
         return this.variation;
     }
