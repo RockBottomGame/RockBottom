@@ -92,8 +92,11 @@ public class ApiHandler implements IApiHandler {
     public void writeDataSet(DataOutput stream, AbstractDataSet set) throws Exception {
         stream.writeInt(set.size());
 
-        for (DataPart part : set.getData().values()) {
-            this.writePart(stream, part);
+        for (Map.Entry<String, DataPart> entry : set.getData().entrySet()) {
+            DataPart part = entry.getValue();
+            stream.writeByte(RockBottomAPI.PART_REGISTRY.getId(part.getFactory()));
+            stream.writeUTF(entry.getKey());
+            part.write(stream);
         }
     }
 
@@ -102,52 +105,37 @@ public class ApiHandler implements IApiHandler {
         int amount = stream.readInt();
 
         for (int i = 0; i < amount; i++) {
-            DataPart part = this.readPart(stream);
-            set.addPart(part);
+            int id = stream.readByte();
+            String name = stream.readUTF();
+            IPartFactory factory = RockBottomAPI.PART_REGISTRY.get(id);
+
+            set.addPart(name, factory.parse(stream));
         }
     }
 
     @Override
     public void writeDataSet(JsonObject main, AbstractDataSet set) throws Exception {
-        for (DataPart part : set.getData().values()) {
-            this.writePart(main, part);
+        for (Map.Entry<String, DataPart> entry : set.getData().entrySet()) {
+            main.add(entry.getKey(), entry.getValue().write());
         }
     }
 
     @Override
     public void readDataSet(JsonObject main, AbstractDataSet set) throws Exception {
         for (Map.Entry<String, JsonElement> entry : main.entrySet()) {
-            DataPart part = this.readPart(entry);
-            set.addPart(part);
+            DataPart part = this.readPart(entry.getValue());
+            set.addPart(entry.getKey(), part);
         }
     }
 
-    private void writePart(DataOutput stream, DataPart part) throws Exception {
-        stream.writeByte(RockBottomAPI.PART_REGISTRY.getId(part.getFactory()));
-        stream.writeUTF(part.getName());
-        part.write(stream);
-    }
-
-    private DataPart readPart(DataInput stream) throws Exception {
-        int id = stream.readByte();
-        String name = stream.readUTF();
-
-        IPartFactory factory = RockBottomAPI.PART_REGISTRY.get(id);
-        return factory.parse(name, stream);
-    }
-
-    private void writePart(JsonObject object, DataPart part) throws Exception {
-        object.add(part.getName(), part.write());
-    }
-
-    private DataPart readPart(Map.Entry<String, JsonElement> entry) throws Exception {
+    private DataPart readPart(JsonElement element) throws Exception {
         if (this.sortedPartFactories.isEmpty()) {
             this.sortedPartFactories.addAll(RockBottomAPI.PART_REGISTRY.values());
             this.sortedPartFactories.sort(Comparator.comparingInt((ToIntFunction<IPartFactory>) IPartFactory::getPriority).reversed());
         }
 
         for (IPartFactory factory : this.sortedPartFactories) {
-            DataPart part = factory.parse(entry.getKey(), entry.getValue());
+            DataPart part = factory.parse(element);
             if (part != null) {
                 return part;
             }

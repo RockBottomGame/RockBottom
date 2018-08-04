@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.List;
+import java.util.Map;
 
 public class ItemRecipeNote extends ItemBasic {
     public ItemRecipeNote() {
@@ -45,14 +46,13 @@ public class ItemRecipeNote extends ItemBasic {
             ModBasedDataSet set = instance.getAdditionalData();
             if (set != null) {
                 ModBasedDataSet recipes = set.getModBasedDataSet(ResourceName.intern("recipes"));
-                for (DataPart part : recipes.getData().values()) {
-                    if (part instanceof PartBoolean) {
-                        String s = part.getName();
-                        if (Util.isResourceName(s)) {
-                            ResourceName name = new ResourceName(s);
+                for (Map.Entry<String, DataPart> entry : recipes.getData().entrySet()) {
+                    if (entry.getValue() instanceof PartBoolean) {
+                        if (Util.isResourceName(entry.getKey())) {
+                            ResourceName name = new ResourceName(entry.getKey());
                             IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(name);
                             if (recipe != null) {
-                                if (((PartBoolean) part).get()) {
+                                if (((PartBoolean) entry.getValue()).get()) {
                                     player.getKnowledge().teachRecipe(recipe);
                                 } else {
                                     player.getKnowledge().forgetRecipe(recipe);
