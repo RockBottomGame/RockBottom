@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.render.tile;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.TileMetaRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -18,5 +19,10 @@ public class TileCaveMushroomRenderer extends TileMetaRenderer<TileCaveMushroom>
             light[i] = Math.max(light[i], Colors.multiply(Colors.WHITE, 0.2F));
         }
         this.getTexture(manager, tile, state.get(tile.metaProp)).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
+    }
+
+    @Override
+    public void renderItem(IGameInstance game, IAssetManager manager, IRenderer g, TileCaveMushroom tile, ItemInstance instance, float x, float y, float scale, int filter) {
+        manager.getTexture(tile.subResourceNames.get(instance.getMeta()).addSuffix(".item")).draw(x, y, scale, scale, filter);
     }
 }
