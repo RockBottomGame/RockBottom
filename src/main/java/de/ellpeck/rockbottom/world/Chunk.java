@@ -7,6 +7,11 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
+import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
+import de.ellpeck.rockbottom.api.data.set.part.PartList;
+import de.ellpeck.rockbottom.api.data.set.part.num.PartByte;
+import de.ellpeck.rockbottom.api.data.set.part.num.PartInt;
+import de.ellpeck.rockbottom.api.data.set.part.num.PartShort;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.spawn.DespawnHandler;
@@ -788,65 +793,55 @@ public class Chunk implements IChunk {
     public void save(DataSet set) {
         RockBottomAPI.getEventHandler().fireEvent(new ChunkSaveEvent(this, RockBottomAPI.getGame().getDataManager()));
 
-        int layerCounter = 0;
+        List<PartDataSet> layers = new ArrayList<>();
         for (TileLayer layer : this.stateGrid.keySet()) {
-            int[] ids = new int[Constants.CHUNK_SIZE * Constants.CHUNK_SIZE];
-
-            int counter = 0;
+            List<PartInt> data = new ArrayList<>(Constants.CHUNK_SIZE * Constants.CHUNK_SIZE);
             for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    ids[counter] = this.world.getIdForState(this.getStateInner(layer, x, y));
-                    counter++;
+                    data.add(new PartInt(this.world.getIdForState(this.getStateInner(layer, x, y))));
                 }
             }
 
-            set.addIntArray("l_" + layerCounter, ids);
-            set.addString("ln_" + layerCounter, layer.getName().toString());
-
-            layerCounter++;
+            DataSet layerSet = new DataSet();
+            layerSet.addString("n", layer.getName().toString());
+            layerSet.addList("d", data);
+            layers.add(new PartDataSet(layerSet));
         }
-        set.addInt("l_a", layerCounter);
+        set.addList("l", layers);
 
-        short[] biomes = new short[Constants.CHUNK_SIZE * Constants.CHUNK_SIZE];
-        int biomeCounter = 0;
+        List<PartShort> biomes = new ArrayList<>(Constants.CHUNK_SIZE * Constants.CHUNK_SIZE);
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                biomes[biomeCounter] = (short) this.world.getIdForBiome(this.getBiomeInner(x, y));
-                biomeCounter++;
+                biomes.add(new PartShort((short) this.world.getIdForBiome(this.getBiomeInner(x, y))));
             }
         }
-        set.addShortArray("bi", biomes);
+        set.addList("b", biomes);
 
-
-        for (int i = 0; i < this.lightGrid.length; i++) {
-            byte[] light = new byte[Constants.CHUNK_SIZE * Constants.CHUNK_SIZE];
-            int counter = 0;
+        List<PartList> light = new ArrayList<>();
+        for (byte[][] grid : this.lightGrid) {
+            List<PartByte> list = new ArrayList<>();
             for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    light[counter] = this.lightGrid[i][x][y];
-                    counter++;
+                    list.add(new PartByte(grid[x][y]));
                 }
             }
-
-            set.addByteArray("lg_" + i, light);
+            light.add(new PartList(list));
         }
+        set.addList("lg", light);
 
-        int entityId = 0;
+        List<PartDataSet> entities = new ArrayList<>();
         for (Entity entity : this.entities) {
             if (entity.doesSave() && !(entity instanceof EntityPlayer)) {
                 DataSet entitySet = new DataSet();
                 entitySet.addUniqueId("uuid", entity.getUniqueId());
                 entitySet.addString("name", RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString());
                 entity.save(entitySet);
-
-                set.addDataSet("e_" + entityId, entitySet);
-
-                entityId++;
+                entities.add(new PartDataSet(entitySet));
             }
         }
-        set.addInt("e_a", entityId);
+        set.addList("e", entities);
 
-        int tileEntityId = 0;
+        List<PartDataSet> tileEntities = new ArrayList<>();
         for (TileEntity tile : this.tileEntities) {
             if (tile.doesSave()) {
                 DataSet tileSet = new DataSet();
@@ -854,30 +849,23 @@ public class Chunk implements IChunk {
                 tileSet.addInt("y", tile.y);
                 tileSet.addString("layer", tile.layer.getName().toString());
                 tile.save(tileSet, false);
-
-                set.addDataSet("t_" + tileEntityId, tileSet);
-
-                tileEntityId++;
+                tileEntities.add(new PartDataSet(tileSet));
             }
         }
-        set.addInt("t_a", tileEntityId);
+        set.addList("t", tileEntities);
 
-        DataSet updateSet = new DataSet();
-
-        int updateId = 0;
+        List<PartDataSet> updates = new ArrayList<>();
         for (ScheduledUpdate update : this.scheduledUpdates) {
-            updateSet.addInt("x_" + updateId, update.x);
-            updateSet.addInt("y_" + updateId, update.y);
-            updateSet.addString("l_" + updateId, update.layer.getName().toString());
-            updateSet.addInt("m_" + updateId, update.scheduledMeta);
-            updateSet.addInt("t_" + updateId, update.time);
-            updateSet.addInt("i_" + updateId, this.world.getIdForState(update.tile));
-
-            updateId++;
+            DataSet updateSet = new DataSet();
+            updateSet.addInt("x", update.x);
+            updateSet.addInt("y", update.y);
+            updateSet.addString("l", update.layer.getName().toString());
+            updateSet.addInt("m", update.scheduledMeta);
+            updateSet.addInt("t", update.time);
+            updateSet.addInt("i", this.world.getIdForState(update.tile));
+            updates.add(new PartDataSet(updateSet));
         }
-        updateSet.addInt("a", updateId);
-
-        set.addDataSet("s_u", updateSet);
+        set.addList("u", updates);
 
         if (this.additionalData != null) {
             set.addModBasedDataSet("ad_da", this.additionalData);
@@ -890,22 +878,21 @@ public class Chunk implements IChunk {
         this.isGenerating = true;
 
         if (set != null && !set.isEmpty()) {
-            int layerAmount = set.getInt("l_a");
-
-            for (int i = 0; i < layerAmount; i++) {
-                ResourceName res = new ResourceName(set.getString("ln_" + i));
+            List<PartDataSet> layers = set.getList("l");
+            for (PartDataSet layerSet : layers) {
+                ResourceName res = new ResourceName(layerSet.get().getString("n"));
                 TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
                 if (layer != null) {
-                    int[] ids = set.getIntArray("l_" + i, Constants.CHUNK_SIZE * Constants.CHUNK_SIZE);
-
+                    List<PartInt> data = layerSet.get().getList("d");
                     int counter = 0;
                     for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
                         for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                            TileState tile = this.world.getStateForId(ids[counter]);
+                            int id = data.get(counter).get();
+                            TileState tile = this.world.getStateForId(id);
                             if (tile != null) {
                                 this.setStateInner(layer, x, y, tile);
                             } else {
-                                RockBottomAPI.logger().warning("Could not load tile at " + x + ' ' + y + " because id " + ids[counter] + " is missing!");
+                                RockBottomAPI.logger().warning("Could not load tile at " + x + ' ' + y + " because id " + id + " is missing!");
                             }
                             counter++;
                         }
@@ -915,34 +902,36 @@ public class Chunk implements IChunk {
                 }
             }
 
-            short[] biomes = set.getShortArray("bi", Constants.CHUNK_SIZE * Constants.CHUNK_SIZE);
+            List<PartShort> biomes = set.getList("b");
             int biomeCounter = 0;
             for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    Biome biome = this.world.getBiomeForId(biomes[biomeCounter]);
+                    short id = biomes.get(biomeCounter).get();
+                    Biome biome = this.world.getBiomeForId(id);
                     if (biome != null) {
                         this.setBiomeInner(x, y, biome);
                     } else {
-                        RockBottomAPI.logger().warning("Could not load biome at " + x + ' ' + y + " because id " + biomes[biomeCounter] + " is missing!");
+                        RockBottomAPI.logger().warning("Could not load biome at " + x + ' ' + y + " because id " + id + " is missing!");
                     }
                     biomeCounter++;
                 }
             }
 
+            List<PartList> lights = set.getList("lg");
             for (int i = 0; i < this.lightGrid.length; i++) {
-                byte[] light = set.getByteArray("lg_" + i, Constants.CHUNK_SIZE * Constants.CHUNK_SIZE);
+                List<PartByte> light = (List<PartByte>) lights.get(i).get();
                 int counter = 0;
                 for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
                     for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                        this.lightGrid[i][x][y] = light[counter];
+                        this.lightGrid[i][x][y] = light.get(counter).get();
                         counter++;
                     }
                 }
             }
 
-            int entityAmount = set.getInt("e_a");
-            for (int i = 0; i < entityAmount; i++) {
-                DataSet entitySet = set.getDataSet("e_" + i);
+            List<PartDataSet> entities = set.getList("e");
+            for (PartDataSet part : entities) {
+                DataSet entitySet = part.get();
 
                 UUID id = entitySet.getUniqueId("uuid");
                 String name = entitySet.getString("name");
@@ -957,9 +946,10 @@ public class Chunk implements IChunk {
                 }
             }
 
-            int tileEntityAmount = set.getInt("t_a");
-            for (int i = 0; i < tileEntityAmount; i++) {
-                DataSet tileSet = set.getDataSet("t_" + i);
+            List<PartDataSet> tileEntities = set.getList("t");
+            for (PartDataSet part : tileEntities) {
+                DataSet tileSet = part.get();
+
                 int x = tileSet.getInt("x");
                 int y = tileSet.getInt("y");
 
@@ -977,20 +967,19 @@ public class Chunk implements IChunk {
                 }
             }
 
-            DataSet updateSet = set.getDataSet("s_u");
+            List<PartDataSet> updates = set.getList("u");
+            for (PartDataSet part : updates) {
+                DataSet updateSet = part.get();
+                int x = updateSet.getInt("x");
+                int y = updateSet.getInt("y");
+                int meta = updateSet.getInt("m");
+                int time = updateSet.getInt("t");
 
-            int updateAmount = updateSet.getInt("a");
-            for (int i = 0; i < updateAmount; i++) {
-                int x = updateSet.getInt("x_" + i);
-                int y = updateSet.getInt("y_" + i);
-                int meta = updateSet.getInt("m_" + i);
-                int time = updateSet.getInt("t_" + i);
-
-                int id = updateSet.getInt("i_" + i);
+                int id = updateSet.getInt("i");
                 TileState tile = this.world.getStateForId(id);
 
                 if (tile != null) {
-                    ResourceName res = new ResourceName(updateSet.getString("l_" + i));
+                    ResourceName res = new ResourceName(updateSet.getString("l"));
                     TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
                     if (layer != null) {
                         this.scheduleUpdate(x, y, layer, meta, time);

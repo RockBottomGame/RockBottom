@@ -7,9 +7,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.part.*;
 import de.ellpeck.rockbottom.api.data.set.part.num.*;
-import de.ellpeck.rockbottom.api.data.set.part.num.array.PartByteArray;
-import de.ellpeck.rockbottom.api.data.set.part.num.array.PartIntArray;
-import de.ellpeck.rockbottom.api.data.set.part.num.array.PartShortArray;
 import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
@@ -33,9 +30,6 @@ public class DataManager implements IDataManager {
         RockBottomAPI.PART_REGISTRY.register(0, PartInt.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(1, PartFloat.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(2, PartDouble.FACTORY);
-        RockBottomAPI.PART_REGISTRY.register(3, PartIntArray.FACTORY);
-        RockBottomAPI.PART_REGISTRY.register(4, PartShortArray.FACTORY);
-        RockBottomAPI.PART_REGISTRY.register(5, PartByteArray.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(6, PartDataSet.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(7, PartLong.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(8, PartUniqueId.FACTORY);
@@ -44,6 +38,7 @@ public class DataManager implements IDataManager {
         RockBottomAPI.PART_REGISTRY.register(11, PartBoolean.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(12, PartString.FACTORY);
         RockBottomAPI.PART_REGISTRY.register(13, PartModBasedDataSet.FACTORY);
+        RockBottomAPI.PART_REGISTRY.register(14, PartList.FACTORY);
 
         RockBottomAPI.PACKET_REGISTRY.register(0, PacketJoin.class);
         RockBottomAPI.PACKET_REGISTRY.register(1, PacketChunk.class);

@@ -33,6 +33,8 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class ApiHandler implements IApiHandler {
 
@@ -54,7 +56,7 @@ public class ApiHandler implements IApiHandler {
                 Util.GSON.toJson(object, writer);
                 writer.close();
             } else {
-                DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
+                DataOutputStream stream = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
                 this.writeDataSet(stream, set);
                 stream.close();
             }
@@ -78,7 +80,7 @@ public class ApiHandler implements IApiHandler {
 
                     this.readDataSet(object, set);
                 } else {
-                    DataInputStream stream = new DataInputStream(new FileInputStream(file));
+                    DataInputStream stream = new DataInputStream(new GZIPInputStream(new FileInputStream(file)));
                     this.readDataSet(stream, set);
                     stream.close();
                 }
@@ -108,7 +110,6 @@ public class ApiHandler implements IApiHandler {
             int id = stream.readByte();
             String name = stream.readUTF();
             IPartFactory factory = RockBottomAPI.PART_REGISTRY.get(id);
-
             set.addPart(name, factory.parse(stream));
         }
     }
@@ -123,12 +124,13 @@ public class ApiHandler implements IApiHandler {
     @Override
     public void readDataSet(JsonObject main, AbstractDataSet set) throws Exception {
         for (Map.Entry<String, JsonElement> entry : main.entrySet()) {
-            DataPart part = this.readPart(entry.getValue());
+            DataPart part = this.readDataPart(entry.getValue());
             set.addPart(entry.getKey(), part);
         }
     }
 
-    private DataPart readPart(JsonElement element) throws Exception {
+    @Override
+    public DataPart readDataPart(JsonElement element) throws Exception {
         if (this.sortedPartFactories.isEmpty()) {
             this.sortedPartFactories.addAll(RockBottomAPI.PART_REGISTRY.values());
             this.sortedPartFactories.sort(Comparator.comparingInt((ToIntFunction<IPartFactory>) IPartFactory::getPriority).reversed());
