@@ -19,7 +19,7 @@ public class ComponentBreath extends GuiComponent {
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
-        if (this.shouldDisplay(game)) {
+        if (shouldDisplay(game)) {
             ITexture tex = manager.getTexture(TEX);
             int breath = game.getPlayer().getBreath();
             int currX = this.width - 13;
@@ -33,14 +33,14 @@ public class ComponentBreath extends GuiComponent {
     @Override
     public void renderOverlay(IGameInstance game, IAssetManager
             manager, IRenderer g, int x, int y) {
-        if (this.shouldDisplay(game)) {
+        if (shouldDisplay(game)) {
             if (this.isMouseOverPrioritized(game)) {
                 g.drawHoverInfoAtMouse(game, manager, false, 0, manager.localize(ResourceName.intern("info.breath")) + ':', game.getPlayer().getBreath() + "/" + game.getPlayer().getMaxBreath());
             }
         }
     }
 
-    private boolean shouldDisplay(IGameInstance game) {
+    public static boolean shouldDisplay(IGameInstance game) {
         AbstractEntityPlayer player = game.getPlayer();
         return player != null && (player.getBreath() < player.getMaxBreath() || !player.canBreathe);
     }

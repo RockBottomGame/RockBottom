@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.entity.player.knowledge;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.toast.Toast;
@@ -10,7 +11,9 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -57,27 +60,24 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     public void save(DataSet set) {
-        int counter = 0;
+        List<PartDataSet> list = new ArrayList<>();
         for (Information information : this.information.values()) {
             DataSet sub = new DataSet();
             saveInformation(sub, this, information);
 
             if (!sub.isEmpty()) {
-                set.addDataSet("info_" + counter, sub);
-                counter++;
+                list.add(new PartDataSet(sub));
             }
         }
-        set.addInt("info_amount", counter);
+        set.addList("knowledge", list);
     }
 
     public void load(DataSet set) {
         this.information.clear();
 
-        int amount = set.getInt("info_amount");
-        for (int i = 0; i < amount; i++) {
-            DataSet sub = set.getDataSet("info_" + i);
-
-            Information information = loadInformation(sub, this);
+        List<PartDataSet> list = set.getList("knowledge");
+        for (PartDataSet part : list) {
+            Information information = loadInformation(part.get(), this);
             if (information != null) {
                 this.information.put(information.getName(), information);
             }

@@ -188,6 +188,10 @@ public class GuiManager implements IGuiManager {
                 float x = width - 3F - 13F;
                 float y = height - 3F - 26F;
 
+                if (ComponentBreath.shouldDisplay(game)) {
+                    y -= 13F;
+                }
+
                 for (ActiveEffect effect : player.getActiveEffects()) {
                     ResourceName icon = effect.getEffect().getIcon(effect, player);
                     if (icon != null) {

@@ -2,14 +2,13 @@ package de.ellpeck.rockbottom.world.entity.player.statistics;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.Statistic;
 import de.ellpeck.rockbottom.api.entity.player.statistics.StatisticInitializer;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Statistics implements IStatistics {
@@ -42,25 +41,23 @@ public class Statistics implements IStatistics {
 
     @Override
     public void save(DataSet set) {
-        int counter = 0;
+        List<PartDataSet> list = new ArrayList<>();
         for (Map.Entry<ResourceName, Statistic> entry : this.statistics.entrySet()) {
             DataSet sub = new DataSet();
             sub.addString("name", entry.getKey().toString());
             entry.getValue().save(sub);
-
-            set.addDataSet("stat_" + counter, sub);
-            counter++;
+            list.add(new PartDataSet(sub));
         }
-        set.addInt("stat_amount", counter);
+        set.addList("stats", list);
     }
 
     @Override
     public void load(DataSet set) {
         this.statistics.clear();
 
-        int amount = set.getInt("stat_amount");
-        for (int i = 0; i < amount; i++) {
-            DataSet sub = set.getDataSet("stat_" + i);
+        List<PartDataSet> list = set.getList("stats");
+        for (PartDataSet part : list) {
+            DataSet sub = part.get();
             if (!sub.isEmpty()) {
                 ResourceName name = new ResourceName(sub.getString("name"));
                 Statistic stat = this.getOrInit(name);
