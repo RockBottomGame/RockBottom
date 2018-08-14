@@ -581,16 +581,20 @@ public class Chunk implements IChunk {
 
     @Override
     public void scheduleUpdate(int x, int y, TileLayer layer, int scheduledMeta, int time) {
-        Pos3 posVec = new Pos3(x, y, layer.index());
-        if (!this.scheduledUpdateLookup.containsKey(posVec)) {
-            ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getState(layer, x, y), scheduledMeta, time);
+        if (!this.isGenerating) {
+            Pos3 posVec = new Pos3(x, y, layer.index());
+            if (!this.scheduledUpdateLookup.containsKey(posVec)) {
+                ScheduledUpdate update = new ScheduledUpdate(x, y, layer, this.getState(layer, x, y), scheduledMeta, time);
 
-            this.scheduledUpdateLookup.put(posVec, update);
-            this.scheduledUpdates.add(update);
+                this.scheduledUpdateLookup.put(posVec, update);
+                this.scheduledUpdates.add(update);
 
-            if (!this.isGenerating) {
-                this.setDirty();
+                if (!this.isGenerating) {
+                    this.setDirty();
+                }
             }
+        } else {
+            this.getState(layer, x, y).getTile().onScheduledUpdate(this.world, x, y, layer, scheduledMeta);
         }
     }
 

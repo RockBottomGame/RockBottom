@@ -552,13 +552,28 @@ public class InternalHooks implements IInternalHooks {
                     TileState rightState = world.getState(layer, x + 1, y - 1);
                     // Try to balance to the sides
                     if (Util.RANDOM.nextBoolean()) {
-                        if (this.transferDown(world, layer, ourState, leftState, x, y, -1, tile) || this.transferDown(world, layer, ourState, rightState, x, y, 1, tile)) {
+                        if (this.transferDown(world, layer, ourState, leftState, x, y, -1, tile)) {
                             return;
+                        } else {
+                            ourState = world.getState(layer, x, y);
+                            if (this.transferDown(world, layer, ourState, rightState, x, y, 1, tile))
+                                return;
                         }
+                        ourState = world.getState(layer, x, y);
+                        ourLevel = ourState.get(tile.level) + 1;
+                        if (ourLevel != startLevel) return;
                     } else {
-                        if (this.transferDown(world, layer, ourState, rightState, x, y, 1, tile) || this.transferDown(world, layer, ourState, leftState, x, y, -1, tile)) {
+                        if (this.transferDown(world, layer, ourState, rightState, x, y, 1, tile)) {
                             return;
+                        } else {
+                            ourState = world.getState(layer, x, y);
+                            if (this.transferDown(world, layer, ourState, leftState, x, y, -1, tile))
+                                return;
+
                         }
+                        ourState = world.getState(layer, x, y);
+                        ourLevel = ourState.get(tile.level) + 1;
+                        if (ourLevel != startLevel) return;
                     }
                 }
             } else if (beneathState.getTile().isAir()) {
@@ -571,10 +586,6 @@ public class InternalHooks implements IInternalHooks {
         }
 
         // Balance and spread
-        if (!world.isPosLoaded(x - 1, y) || !world.isPosLoaded(x + 1, y)) {
-            return;
-        }
-
         boolean leftDone = false;
         boolean rightDone = false;
         int i = 1;
@@ -587,16 +598,18 @@ public class InternalHooks implements IInternalHooks {
                     TileState leftState = world.getState(layer, x - i, y);
                     leftDone = this.balanceAndSpread(world, layer, leftState, ourState, ourLevel, x, y, -i, tile);
                     ourState = world.getState(layer, x, y);
+                    if (ourState.getTile() != tile) return;
                     ourLevel = ourState.get(tile.level) + 1;
                 }
 
                 // Right second
-                if (!rightDone) {
+                if (!rightDone && ourLevel == startLevel) {
                     if (!world.isPosLoaded(x + i, y)) return;
 
                     TileState rightState = world.getState(layer, x + i, y);
                     rightDone = this.balanceAndSpread(world, layer, rightState, ourState, ourLevel, x, y, i, tile);
                     ourState = world.getState(layer, x, y);
+                    if (ourState.getTile() != tile) return;
                     ourLevel = ourState.get(tile.level) + 1;
                 }
 
@@ -607,19 +620,22 @@ public class InternalHooks implements IInternalHooks {
                 // Right first
                 if (!rightDone) {
                     if (!world.isPosLoaded(x + i, y)) return;
+
                     TileState rightState = world.getState(layer, x + i, y);
                     rightDone = this.balanceAndSpread(world, layer, rightState, ourState, ourLevel, x, y, i, tile);
                     ourState = world.getState(layer, x, y);
+                    if (ourState.getTile() != tile) return;
                     ourLevel = ourState.get(tile.level) + 1;
                 }
 
                 // Left second
-                if (!leftDone) {
+                if (!leftDone && ourLevel == startLevel) {
                     if (!world.isPosLoaded(x - i, y)) return;
 
                     TileState leftState = world.getState(layer, x - i, y);
                     leftDone = this.balanceAndSpread(world, layer, leftState, ourState, ourLevel, x, y, -i, tile);
                     ourState = world.getState(layer, x, y);
+                    if (ourState.getTile() != tile) return;
                     ourLevel = ourState.get(tile.level) + 1;
                 }
 
@@ -632,27 +648,47 @@ public class InternalHooks implements IInternalHooks {
     private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState ourState, int ourLevel, int x, int y, int direction, TileLiquid tile) {
         if (world.getState(x + direction, y).getTile().canLiquidSpreadInto(world, x + direction, y, tile)) {
             if (otherState.getTile() == tile) {
-                // Balance with left
+                // Balance in direction
                 int otherLevel = otherState.get(tile.level) + 1;
                 if (otherLevel > ourLevel) {
                     if (otherLevel - ourLevel > 1) {
                         this.transfer(world, layer, ourLevel, otherState, ourState, x + direction, x, y, tile);
+                        return true;
                     } else {
+                        world.scheduleUpdate(x + direction, y, layer, tile.getFlowSpeed());
                         return true; // this tile will balance itself later
                     }
                 } else if (otherLevel - ourLevel < -1) {
                     this.transfer(world, layer, otherLevel, ourState, otherState, x, x + direction, y, tile);
+                    return true;
+                } else {
+                    return ourLevel == 1 && world.getState(layer, x + direction, y - 1).getTile() != tile;
                 }
-            } else if (otherState.getTile().isAir()) {
-                if (ourLevel > 1) {
+            } else {
+                TileState belowState = world.getState(layer, x + direction, y - 1);
+                if (belowState.getTile() == tile) {
+                    if (belowState.get(tile.level) + 1 < tile.getLevels()) {
+                        world.setState(layer, x + direction, y, ourState);
+                        world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                        return true;
+                    } else if (ourLevel > 1) {
+                        // Spread
+                        this.spread(world, layer, ourLevel, ourState, x, y, direction, tile);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if (ourLevel > 1) {
                     // Spread
                     this.spread(world, layer, ourLevel, ourState, x, y, direction, tile);
+                    return true;
+                } else {
+                    return true;
                 }
             }
         } else {
             return true;
         }
-        return false;
     }
 
     private void spread(IWorld world, TileLayer layer, int ourLevel, TileState ourState, int x, int y, int direction, TileLiquid tile) {
