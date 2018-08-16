@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
@@ -47,7 +48,7 @@ public class SmeltingLoader implements IContentLoader<IRecipe> {
                 int time = object.get("time").getAsInt();
 
                 JsonObject out = object.get("output").getAsJsonObject();
-                Item outItem = RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
+                Item outItem = Registries.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
                 int outAmount = out.has("amount") ? out.get("amount").getAsInt() : 1;
                 int outMeta = out.has("meta") ? out.get("meta").getAsInt() : 0;
                 ItemInstance output = new ItemInstance(outItem, outAmount, outMeta);
@@ -59,7 +60,7 @@ public class SmeltingLoader implements IContentLoader<IRecipe> {
                 IUseInfo input;
                 if (Util.isResourceName(name)) {
                     int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                    input = new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(name)), amount, meta);
+                    input = new ItemUseInfo(Registries.ITEM_REGISTRY.get(new ResourceName(name)), amount, meta);
                 } else {
                     input = new ResUseInfo(name, amount);
                 }

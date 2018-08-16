@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.chat;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
@@ -97,9 +98,9 @@ public class ChatLog implements IChatLog {
     @Override
     public Command getCommand(String name) {
         if (Util.isResourceName(name)) {
-            return RockBottomAPI.COMMAND_REGISTRY.get(new ResourceName(name));
+            return Registries.COMMAND_REGISTRY.get(new ResourceName(name));
         } else {
-            for (Command command : RockBottomAPI.COMMAND_REGISTRY.values()) {
+            for (Command command : Registries.COMMAND_REGISTRY.values()) {
                 for (String s : command.getTriggers()) {
                     if (name.equals(s)) {
                         return command;

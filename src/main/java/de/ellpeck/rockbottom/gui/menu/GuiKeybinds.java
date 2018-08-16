@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.data.settings.Keybind;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
@@ -37,7 +37,7 @@ public class GuiKeybinds extends Gui {
             return true;
         }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
-        List<Keybind> binds = new ArrayList<>(RockBottomAPI.KEYBIND_REGISTRY.values());
+        List<Keybind> binds = new ArrayList<>(Registries.KEYBIND_REGISTRY.values());
         binds.sort(Comparator.comparing(Keybind::getName));
 
         int id = 0;

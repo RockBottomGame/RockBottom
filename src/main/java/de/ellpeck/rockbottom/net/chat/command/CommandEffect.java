@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.chat.command;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.effect.IEffect;
@@ -27,7 +27,7 @@ public class CommandEffect extends Command {
     public CommandEffect() {
         super(ResourceName.intern("effect"), "Gives the player an effect. Params: <'add'/'remove'> <mod_id/effect_name> [time]", 4);
 
-        for (ResourceName name : RockBottomAPI.EFFECT_REGISTRY.keySet()) {
+        for (ResourceName name : Registries.EFFECT_REGISTRY.keySet()) {
             this.effectAutocomplete.add(name.toString());
         }
     }
@@ -50,7 +50,7 @@ public class CommandEffect extends Command {
             if (args.length > 1) {
                 try {
                     ResourceName name = new ResourceName(args[1]);
-                    effect = RockBottomAPI.EFFECT_REGISTRY.get(name);
+                    effect = Registries.EFFECT_REGISTRY.get(name);
                 } catch (Exception e) {
                     return new ChatComponentText(FormattingCode.RED + "'" + args[1] + "' isn't a valid effect name!");
                 }

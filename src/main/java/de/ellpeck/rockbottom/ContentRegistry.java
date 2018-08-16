@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.effect.BasicEffect;
@@ -91,26 +91,26 @@ public final class ContentRegistry {
         new BiomeUnderground(ResourceName.intern("underground"), 1000, underground).register();
         new BiomeColdGrassland(ResourceName.intern("cold_grassland")).register();
 
-        RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("item"), EntityItem.class);
-        RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("falling"), EntityFalling.class);
-        RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("firework"), EntityFirework.class);
-        RockBottomAPI.ENTITY_REGISTRY.register(ResourceName.intern("slime"), EntitySlime.class);
+        Registries.ENTITY_REGISTRY.register(ResourceName.intern("item"), EntityItem.class);
+        Registries.ENTITY_REGISTRY.register(ResourceName.intern("falling"), EntityFalling.class);
+        Registries.ENTITY_REGISTRY.register(ResourceName.intern("firework"), EntityFirework.class);
+        Registries.ENTITY_REGISTRY.register(ResourceName.intern("slime"), EntitySlime.class);
 
-        RockBottomAPI.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);
-        RockBottomAPI.WORLD_GENERATORS.register(WorldGenHeights.ID, WorldGenHeights.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("grass"), WorldGenGrass.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("trees"), WorldGenTrees.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("flowers"), WorldGenFlowers.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("pebbles"), WorldGenPebbles.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("coal"), WorldGenCoal.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("start_hut"), WorldGenStartHut.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("copper"), WorldGenCopper.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("caves"), WorldGenCaves.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("cave_mushrooms"), WorldGenCaveMushrooms.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), WorldGenStardrops.class);
-        RockBottomAPI.WORLD_GENERATORS.register(ResourceName.intern("lakes"), WorldGenLakes.class);
+        Registries.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);
+        Registries.WORLD_GENERATORS.register(WorldGenHeights.ID, WorldGenHeights.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("grass"), WorldGenGrass.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("trees"), WorldGenTrees.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("flowers"), WorldGenFlowers.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("pebbles"), WorldGenPebbles.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("coal"), WorldGenCoal.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("start_hut"), WorldGenStartHut.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("copper"), WorldGenCopper.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("caves"), WorldGenCaves.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("cave_mushrooms"), WorldGenCaveMushrooms.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), WorldGenStardrops.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("lakes"), WorldGenLakes.class);
 
-        RockBottomAPI.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
+        Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 
         new BasicEffect(ResourceName.intern("speed"), false, false, 36000).register();
         new BasicEffect(ResourceName.intern("jump_height"), false, false, 36000).register();

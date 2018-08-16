@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.BasicRecipe;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
@@ -58,7 +59,7 @@ public class RecipeLoader implements IContentLoader<IRecipe> {
                 for (JsonElement output : outputs) {
                     JsonObject out = output.getAsJsonObject();
 
-                    Item item = RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
+                    Item item = Registries.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
                     int amount = out.has("amount") ? out.get("amount").getAsInt() : 1;
                     int meta = out.has("meta") ? out.get("meta").getAsInt() : 0;
 
@@ -74,7 +75,7 @@ public class RecipeLoader implements IContentLoader<IRecipe> {
 
                     if (Util.isResourceName(name)) {
                         int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                        inputList.add(new ItemUseInfo(RockBottomAPI.ITEM_REGISTRY.get(new ResourceName(name)), amount, meta));
+                        inputList.add(new ItemUseInfo(Registries.ITEM_REGISTRY.get(new ResourceName(name)), amount, meta));
                     } else {
                         inputList.add(new ResUseInfo(name, amount));
                     }

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.chat.command;
 
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
@@ -28,7 +29,7 @@ public class CommandSpawnItem extends Command {
     public CommandSpawnItem() {
         super(ResourceName.intern("spawn_item"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta] [json data]", 5, "spawn_item", "cheat");
 
-        for (ResourceName name : RockBottomAPI.ITEM_REGISTRY.keySet()) {
+        for (ResourceName name : Registries.ITEM_REGISTRY.keySet()) {
             this.itemAutocomplete.add(name.toString());
         }
     }
@@ -42,7 +43,7 @@ public class CommandSpawnItem extends Command {
             if (args.length > 0) {
                 try {
                     ResourceName name = new ResourceName(args[0]);
-                    item = RockBottomAPI.ITEM_REGISTRY.get(name);
+                    item = Registries.ITEM_REGISTRY.get(name);
                 } catch (Exception e) {
                     return new ChatComponentText(FormattingCode.RED + "'" + args[0] + "' isn't a valid item name!");
                 }

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
@@ -103,7 +104,7 @@ public class GuiChat extends Gui {
                     }
                 }
 
-                for (Command command : RockBottomAPI.COMMAND_REGISTRY.values()) {
+                for (Command command : Registries.COMMAND_REGISTRY.values()) {
                     for (String trigger : command.getTriggers()) {
                         if (split.length <= 0 || trigger.startsWith(split[0])) {
                             this.suggestions.add(trigger);

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IApiHandler;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
@@ -96,7 +97,7 @@ public class ApiHandler implements IApiHandler {
 
         for (Map.Entry<String, DataPart> entry : set.getData().entrySet()) {
             DataPart part = entry.getValue();
-            stream.writeByte(RockBottomAPI.PART_REGISTRY.getId(part.getFactory()));
+            stream.writeByte(Registries.PART_REGISTRY.getId(part.getFactory()));
             stream.writeUTF(entry.getKey());
             part.write(stream);
         }
@@ -109,7 +110,7 @@ public class ApiHandler implements IApiHandler {
         for (int i = 0; i < amount; i++) {
             int id = stream.readByte();
             String name = stream.readUTF();
-            IPartFactory factory = RockBottomAPI.PART_REGISTRY.get(id);
+            IPartFactory factory = Registries.PART_REGISTRY.get(id);
             set.addPart(name, factory.parse(stream));
         }
     }
@@ -132,7 +133,7 @@ public class ApiHandler implements IApiHandler {
     @Override
     public DataPart readDataPart(JsonElement element) throws Exception {
         if (this.sortedPartFactories.isEmpty()) {
-            this.sortedPartFactories.addAll(RockBottomAPI.PART_REGISTRY.values());
+            this.sortedPartFactories.addAll(Registries.PART_REGISTRY.values());
             this.sortedPartFactories.sort(Comparator.comparingInt((ToIntFunction<IPartFactory>) IPartFactory::getPriority).reversed());
         }
 

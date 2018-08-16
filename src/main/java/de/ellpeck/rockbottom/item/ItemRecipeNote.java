@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.item;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
@@ -50,7 +50,7 @@ public class ItemRecipeNote extends ItemBasic {
                     if (entry.getValue() instanceof PartBoolean) {
                         if (Util.isResourceName(entry.getKey())) {
                             ResourceName name = new ResourceName(entry.getKey());
-                            IRecipe recipe = RockBottomAPI.ALL_CONSTRUCTION_RECIPES.get(name);
+                            IRecipe recipe = Registries.ALL_CONSTRUCTION_RECIPES.get(name);
                             if (recipe != null) {
                                 if (((PartBoolean) entry.getValue()).get()) {
                                     player.getKnowledge().teachRecipe(recipe);

@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player.knowledge;
 
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.IRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -49,7 +50,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     private static Information loadInformation(ResourceName regName, ResourceName name) {
-        Class<? extends Information> infoClass = RockBottomAPI.INFORMATION_REGISTRY.get(regName);
+        Class<? extends Information> infoClass = Registries.INFORMATION_REGISTRY.get(regName);
 
         try {
             return infoClass.getConstructor(ResourceName.class).newInstance(name);

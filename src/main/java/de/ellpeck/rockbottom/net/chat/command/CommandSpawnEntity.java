@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.net.chat.command;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -25,7 +26,7 @@ public class CommandSpawnEntity extends Command {
     public CommandSpawnEntity() {
         super(ResourceName.intern("spawn_entity"), "Spawns an item into the player's inventory. Params: <mod_id/item_name> [amount] [meta]", 5, "spawn_entity", "spawn");
 
-        for (ResourceName name : RockBottomAPI.ENTITY_REGISTRY.keySet()) {
+        for (ResourceName name : Registries.ENTITY_REGISTRY.keySet()) {
             this.entityAutocomplete.add(name.toString());
         }
     }
@@ -39,7 +40,7 @@ public class CommandSpawnEntity extends Command {
             if (args.length > 0) {
                 try {
                     ResourceName name = new ResourceName(args[0]);
-                    entityClass = RockBottomAPI.ENTITY_REGISTRY.get(name);
+                    entityClass = Registries.ENTITY_REGISTRY.get(name);
                 } catch (Exception e) {
                     return new ChatComponentText(FormattingCode.RED + "'" + args[0] + "' isn't a valid entity name!");
                 }

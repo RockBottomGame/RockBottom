@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.chat.command;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
@@ -22,7 +22,7 @@ public class CommandHelp extends Command {
     public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
         StringBuilder s = new StringBuilder(FormattingCode.GREEN + "All Commands: \n");
 
-        for (Command command : RockBottomAPI.COMMAND_REGISTRY.values()) {
+        for (Command command : Registries.COMMAND_REGISTRY.values()) {
             s.append(FormattingCode.ORANGE)
                     .append(Arrays.toString(command.getTriggers()))
                     .append(FormattingCode.RESET_COLOR)

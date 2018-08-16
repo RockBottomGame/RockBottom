@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
@@ -69,7 +70,7 @@ public class StructureLoader implements IContentLoader<IStructure> {
                         JsonObject object = entry.getValue().getAsJsonObject();
 
                         String tileName = object.get("tile").getAsString();
-                        Tile tile = RockBottomAPI.TILE_REGISTRY.get(new ResourceName(tileName));
+                        Tile tile = Registries.TILE_REGISTRY.get(new ResourceName(tileName));
                         Preconditions.checkNotNull(tile, "Tile with name " + tileName + " doesn't exist!");
 
                         TileState state = tile.getDefState();
@@ -113,7 +114,7 @@ public class StructureLoader implements IContentLoader<IStructure> {
                 for (Map.Entry<String, JsonElement> entry : structure.entrySet()) {
                     String name = entry.getKey();
                     if (!"tiles".equals(name)) {
-                        TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(new ResourceName(name));
+                        TileLayer layer = Registries.TILE_LAYER_REGISTRY.get(new ResourceName(name));
                         Preconditions.checkArgument(layer != null, "A tile layer with name " + name + " doesn't exist!");
 
                         JsonArray layerGrid = entry.getValue().getAsJsonArray();
@@ -148,7 +149,7 @@ public class StructureLoader implements IContentLoader<IStructure> {
                     }
                 }
 
-                RockBottomAPI.STRUCTURE_REGISTRY.register(resourceName, new Structure(layers, width, height));
+                Registries.STRUCTURE_REGISTRY.register(resourceName, new Structure(layers, width, height));
 
                 RockBottomAPI.logger().config("Loaded structure " + resourceName + " for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             }

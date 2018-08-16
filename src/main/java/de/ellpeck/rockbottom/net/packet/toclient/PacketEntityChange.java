@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.net.NetUtil;
@@ -37,7 +37,7 @@ public class PacketEntityChange implements IPacket {
                 EntityPlayer player = (EntityPlayer) entity;
                 this.entitySet.addString("design", Util.GSON.toJson(player.getDesign()));
             } else {
-                this.name = RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString();
+                this.name = Registries.ENTITY_REGISTRY.getId(entity.getClass()).toString();
             }
 
             entity.save(this.entitySet);

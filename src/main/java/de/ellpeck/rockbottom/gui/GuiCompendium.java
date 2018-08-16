@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.gui;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.construction.BasicRecipe;
@@ -89,7 +90,7 @@ public class GuiCompendium extends GuiContainer {
         this.polaroids.clear();
 
         boolean containsSelected = false;
-        for (BasicRecipe recipe : RockBottomAPI.MANUAL_CONSTRUCTION_RECIPES.values()) {
+        for (BasicRecipe recipe : Registries.MANUAL_CONSTRUCTION_RECIPES.values()) {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
                     IInventory inv = this.player.getInv();
@@ -244,7 +245,7 @@ public class GuiCompendium extends GuiContainer {
 
                 if (this.construct != null && this.construct.isMouseOver(game)) {
                     if (RockBottomAPI.getNet().isClient()) {
-                        RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), RockBottomAPI.ALL_CONSTRUCTION_RECIPES.getId(this.selectedRecipe), 1));
+                        RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), Registries.ALL_CONSTRUCTION_RECIPES.getId(this.selectedRecipe), 1));
                     } else {
                         if (this.selectedRecipe.isKnown(this.player)) {
                             this.selectedRecipe.playerConstruct(this.player, 1);

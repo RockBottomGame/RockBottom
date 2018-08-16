@@ -3,10 +3,7 @@ package de.ellpeck.rockbottom.world;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -83,7 +80,7 @@ public class World implements IWorld {
         List<IWorldGenerator> loopingGenerators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
-        for (Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : RockBottomAPI.WORLD_GENERATORS.entrySet()) {
+        for (Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : Registries.WORLD_GENERATORS.entrySet()) {
             try {
                 IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
                 generator.initWorld(this);
@@ -350,7 +347,7 @@ public class World implements IWorld {
 
     @Override
     public int getIdForState(TileState state) {
-        ResourceName name = RockBottomAPI.TILE_STATE_REGISTRY.getId(state);
+        ResourceName name = Registries.TILE_STATE_REGISTRY.getId(state);
         if (name != null) {
             return this.getTileRegInfo().getId(name);
         } else {
@@ -361,7 +358,7 @@ public class World implements IWorld {
     @Override
     public TileState getStateForId(int id) {
         ResourceName name = this.getTileRegInfo().get(id);
-        return RockBottomAPI.TILE_STATE_REGISTRY.get(name);
+        return Registries.TILE_STATE_REGISTRY.get(name);
     }
 
     @Override
@@ -583,7 +580,7 @@ public class World implements IWorld {
 
     @Override
     public int getIdForBiome(Biome biome) {
-        ResourceName name = RockBottomAPI.BIOME_REGISTRY.getId(biome);
+        ResourceName name = Registries.BIOME_REGISTRY.getId(biome);
         if (name != null) {
             return this.getBiomeRegInfo().getId(name);
         } else {
@@ -594,7 +591,7 @@ public class World implements IWorld {
     @Override
     public Biome getBiomeForId(int id) {
         ResourceName name = this.getBiomeRegInfo().get(id);
-        return RockBottomAPI.BIOME_REGISTRY.get(name);
+        return Registries.BIOME_REGISTRY.get(name);
     }
 
     @Override

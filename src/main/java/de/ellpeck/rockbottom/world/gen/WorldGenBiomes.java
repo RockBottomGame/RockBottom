@@ -5,6 +5,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -45,9 +46,9 @@ public class WorldGenBiomes implements IWorldGenerator {
             this.layerSeeds[i] = rand.nextLong();
         }
 
-        for (Biome biome : RockBottomAPI.BIOME_REGISTRY.values()) {
+        for (Biome biome : Registries.BIOME_REGISTRY.values()) {
             List<BiomeLevel> levels = biome.getGenerationLevels(world);
-            for (BiomeLevel level : RockBottomAPI.BIOME_LEVEL_REGISTRY.values()) {
+            for (BiomeLevel level : Registries.BIOME_LEVEL_REGISTRY.values()) {
                 if (levels.contains(level) || level.getAdditionalGenBiomes(world).contains(biome)) {
                     this.biomesPerLevel.put(level, biome);
                 }

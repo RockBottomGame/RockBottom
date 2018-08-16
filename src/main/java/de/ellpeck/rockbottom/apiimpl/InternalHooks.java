@@ -1076,7 +1076,7 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public void doTileStateInit(TileState thisState, ResourceName name, Tile tile, Map<String, Comparable> properties, Table<String, Comparable, TileState> subStates) {
-        RockBottomAPI.TILE_STATE_REGISTRY.register(name, thisState);
+        Registries.TILE_STATE_REGISTRY.register(name, thisState);
 
         for (TileProp prop : tile.getProps()) {
             String propName = prop.getName();
@@ -1088,7 +1088,7 @@ public class InternalHooks implements IInternalHooks {
 
                     ResourceName subName = generateTileStateName(tile, subProps);
                     if (tile.hasState(subName, subProps)) {
-                        TileState state = RockBottomAPI.TILE_STATE_REGISTRY.get(subName);
+                        TileState state = Registries.TILE_STATE_REGISTRY.get(subName);
 
                         if (state == null) {
                             state = new TileState(subName, tile, subProps);

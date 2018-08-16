@@ -1,10 +1,7 @@
 package de.ellpeck.rockbottom.world;
 
 import com.google.common.base.Preconditions;
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
@@ -838,7 +835,7 @@ public class Chunk implements IChunk {
             if (entity.doesSave() && !(entity instanceof EntityPlayer)) {
                 DataSet entitySet = new DataSet();
                 entitySet.addUniqueId("uuid", entity.getUniqueId());
-                entitySet.addString("name", RockBottomAPI.ENTITY_REGISTRY.getId(entity.getClass()).toString());
+                entitySet.addString("name", Registries.ENTITY_REGISTRY.getId(entity.getClass()).toString());
                 entity.save(entitySet);
                 entities.add(new PartDataSet(entitySet));
             }
@@ -885,7 +882,7 @@ public class Chunk implements IChunk {
             List<PartDataSet> layers = set.getList("l");
             for (PartDataSet layerSet : layers) {
                 ResourceName res = new ResourceName(layerSet.get().getString("n"));
-                TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
+                TileLayer layer = Registries.TILE_LAYER_REGISTRY.get(res);
                 if (layer != null) {
                     List<PartInt> data = layerSet.get().getList("d");
                     int counter = 0;
@@ -958,7 +955,7 @@ public class Chunk implements IChunk {
                 int y = tileSet.getInt("y");
 
                 ResourceName res = new ResourceName(tileSet.getString("layer"));
-                TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
+                TileLayer layer = Registries.TILE_LAYER_REGISTRY.get(res);
                 if (layer != null) {
                     TileEntity tile = this.getTileEntity(layer, x, y);
                     if (tile != null) {
@@ -984,7 +981,7 @@ public class Chunk implements IChunk {
 
                 if (tile != null) {
                     ResourceName res = new ResourceName(updateSet.getString("l"));
-                    TileLayer layer = RockBottomAPI.TILE_LAYER_REGISTRY.get(res);
+                    TileLayer layer = Registries.TILE_LAYER_REGISTRY.get(res);
                     if (layer != null) {
                         this.scheduleUpdate(x, y, layer, meta, time);
                     } else {

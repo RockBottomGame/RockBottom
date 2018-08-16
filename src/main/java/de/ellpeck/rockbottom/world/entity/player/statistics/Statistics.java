@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player.statistics;
 
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
@@ -19,7 +20,7 @@ public class Statistics implements IStatistics {
     @Override
     public Statistic getOrInit(ResourceName name) {
         return this.statistics.computeIfAbsent(name, n -> {
-            StatisticInitializer s = RockBottomAPI.STATISTICS_REGISTRY.get(n);
+            StatisticInitializer s = Registries.STATISTICS_REGISTRY.get(n);
             return s != null ? s.makeStatistic(this) : null;
         });
     }

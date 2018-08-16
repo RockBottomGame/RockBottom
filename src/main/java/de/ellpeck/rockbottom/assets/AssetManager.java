@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonElement;
 import de.ellpeck.rockbottom.api.IRenderer;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.*;
 import de.ellpeck.rockbottom.api.assets.Locale;
@@ -59,14 +60,14 @@ public class AssetManager implements IAssetManager, IDisposable {
         new TextureLoader().register();
         new ShaderLoader().register();
 
-        RockBottomAPI.SPECIAL_CURSORS.register(0, new CursorPointer());
-        RockBottomAPI.SPECIAL_CURSORS.register(1, new CursorFinger());
-        RockBottomAPI.SPECIAL_CURSORS.register(2, new CursorClosedHand());
-        RockBottomAPI.SPECIAL_CURSORS.register(3, new CursorOpenHand());
+        Registries.SPECIAL_CURSORS.register(0, new CursorPointer());
+        Registries.SPECIAL_CURSORS.register(1, new CursorFinger());
+        Registries.SPECIAL_CURSORS.register(2, new CursorClosedHand());
+        Registries.SPECIAL_CURSORS.register(3, new CursorOpenHand());
 
-        RockBottomAPI.MAIN_MENU_THEMES.register(0, new StoneTheme());
-        RockBottomAPI.MAIN_MENU_THEMES.register(1, new NatureTheme());
-        RockBottomAPI.MAIN_MENU_THEMES.register(2, new DesertTheme());
+        Registries.MAIN_MENU_THEMES.register(0, new StoneTheme());
+        Registries.MAIN_MENU_THEMES.register(1, new NatureTheme());
+        Registries.MAIN_MENU_THEMES.register(2, new DesertTheme());
     }
 
     private final TextureStitcher stitcher = new TextureStitcher();
@@ -102,7 +103,7 @@ public class AssetManager implements IAssetManager, IDisposable {
             RockBottomAPI.logger().info("Loading resources...");
 
             List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
-            Set<IAssetLoader> loaders = RockBottomAPI.ASSET_LOADER_REGISTRY.values();
+            Set<IAssetLoader> loaders = Registries.ASSET_LOADER_REGISTRY.values();
 
             List<LoaderCallback> callbacks = new ArrayList<>();
             for (IAssetLoader loader : loaders) {
@@ -226,7 +227,7 @@ public class AssetManager implements IAssetManager, IDisposable {
             this.sortedCursors.clear();
         }
 
-        this.sortedCursors.addAll(RockBottomAPI.SPECIAL_CURSORS.values());
+        this.sortedCursors.addAll(Registries.SPECIAL_CURSORS.values());
         this.sortedCursors.sort(Comparator.comparingInt(ISpecialCursor::getPriority).reversed());
 
         GLFWVidMode mode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());

@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.gui.menu.background;
 
 import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.IMainMenuTheme;
@@ -31,7 +31,7 @@ public class MainMenuBackground {
     private long hoverPauseTime;
 
     public MainMenuBackground() {
-        List<IMainMenuTheme> themes = new ArrayList<>(RockBottomAPI.MAIN_MENU_THEMES.values());
+        List<IMainMenuTheme> themes = new ArrayList<>(Registries.MAIN_MENU_THEMES.values());
         this.theme = themes.get(Util.RANDOM.nextInt(themes.size()));
     }
 

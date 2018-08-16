@@ -450,11 +450,14 @@ public class RockBottom extends AbstractGame {
 
     @Override
     protected void onCrash() {
+        super.onCrash();
+
         try {
-            CrashManager.addInfo("Debug Info:");
+            CrashManager.addInfo("--------- Debug Info ---------");
             for (String s : DebugRenderer.getInfo(this, this.world, this.player, this.renderer)) {
-                CrashManager.addInfo("\t" + s);
+                CrashManager.addInfo(s);
             }
+            CrashManager.addInfo("------------------------------");
         } catch (Exception e) {
             CrashManager.addInfo("Debug information couldn't be gathered");
         }

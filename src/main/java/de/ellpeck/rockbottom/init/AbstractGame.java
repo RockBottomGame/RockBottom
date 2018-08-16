@@ -3,11 +3,7 @@ package de.ellpeck.rockbottom.init;
 import co.pemery.auth.RockBottomAuthenticator;
 import de.ellpeck.rockbottom.ContentRegistry;
 import de.ellpeck.rockbottom.Main;
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.IApiHandler;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.resource.IResourceRegistry;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.WorldCreationEvent;
@@ -19,6 +15,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.IRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameRegistry;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -37,6 +34,7 @@ import de.ellpeck.rockbottom.net.NetHandler;
 import de.ellpeck.rockbottom.net.PacketDecoder;
 import de.ellpeck.rockbottom.net.PacketEncoder;
 import de.ellpeck.rockbottom.net.chat.ChatLog;
+import de.ellpeck.rockbottom.util.CrashManager;
 import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
@@ -47,7 +45,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Locale;
+import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public abstract class AbstractGame implements IGameInstance {
@@ -159,7 +159,11 @@ public abstract class AbstractGame implements IGameInstance {
     }
 
     protected void onCrash() {
-
+        try {
+            this.printRegistryInfo(CrashManager::addInfo);
+        } catch (Exception e) {
+            CrashManager.addInfo("Registry information couldn't be gathered");
+        }
     }
 
     @Override
@@ -199,16 +203,16 @@ public abstract class AbstractGame implements IGameInstance {
         modLoader.postInit();
         modLoader.postPostInit();
 
-        RockBottomAPI.logger().info("--------- Registry Info ---------");
+        this.printRegistryInfo(s -> RockBottomAPI.logger().info(s));
+    }
 
-        for (IRegistry registry : RockBottomAPI.getAllRegistries()) {
-            RockBottomAPI.logger().info(registry + ": " + registry.getSize() + " entries");
+    protected void printRegistryInfo(Consumer<String> writer) {
+        writer.accept("--------- Registry Info ---------");
+        writer.accept("There are " + Registries.REGISTRIES.getSize() + " registered registries.");
+        for (Map.Entry<ResourceName, IRegistry> entry : Registries.REGISTRIES.entrySet()) {
+            writer.accept(entry.getKey() + ": " + entry.getValue().getSize() + " entries");
         }
-
-        IResourceRegistry res = RockBottomAPI.getResourceRegistry();
-        RockBottomAPI.logger().info("resource_registry: " + res.getAllResourceNames().size() + " names, " + res.getAllResources().size() + " resources");
-
-        RockBottomAPI.logger().info("---------------------------------");
+        writer.accept("---------------------------------");
     }
 
     protected void update() {
@@ -246,11 +250,11 @@ public abstract class AbstractGame implements IGameInstance {
     public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated) {
         RockBottomAPI.logger().info("Starting world with file " + worldFile);
 
-        NameToIndexInfo tileRegInfo = new NameToIndexInfo("tile_reg_world", new File(worldFile, "tile_reg_info.dat"), new File(worldFile, "tile_reg_info.json"), Integer.MAX_VALUE);
-        this.populateIndexInfo(tileRegInfo, RockBottomAPI.TILE_STATE_REGISTRY);
+        NameToIndexInfo tileRegInfo = new NameToIndexInfo(ResourceName.intern("tile_reg_world"), new File(worldFile, "tile_reg_info.json"), Integer.MAX_VALUE);
+        this.populateIndexInfo(tileRegInfo, Registries.TILE_STATE_REGISTRY);
 
-        NameToIndexInfo biomeRegInfo = new NameToIndexInfo("biome_reg_world", new File(worldFile, "biome_reg_info.dat"), new File(worldFile, "biome_reg_info.json"), Short.MAX_VALUE);
-        this.populateIndexInfo(biomeRegInfo, RockBottomAPI.BIOME_REGISTRY);
+        NameToIndexInfo biomeRegInfo = new NameToIndexInfo(ResourceName.intern("biome_reg_world"), new File(worldFile, "biome_reg_info.json"), Short.MAX_VALUE);
+        this.populateIndexInfo(biomeRegInfo, Registries.BIOME_REGISTRY);
 
         DynamicRegistryInfo regInfo = new DynamicRegistryInfo(tileRegInfo, biomeRegInfo);
 

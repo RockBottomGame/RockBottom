@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
@@ -29,7 +30,7 @@ public final class ContentManager {
         new StructureLoader().register();
 
         List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
-        Set<IContentLoader> loaders = RockBottomAPI.CONTENT_LOADER_REGISTRY.values();
+        Set<IContentLoader> loaders = Registries.CONTENT_LOADER_REGISTRY.values();
 
         List<LoaderCallback> callbacks = new ArrayList<>();
         for (IContentLoader loader : loaders) {

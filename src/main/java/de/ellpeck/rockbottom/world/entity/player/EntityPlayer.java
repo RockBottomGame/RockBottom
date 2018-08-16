@@ -1,9 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
@@ -267,7 +264,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     private void handleEntitySpawns(double thisX, double thisY) {
-        for (SpawnBehavior behavior : RockBottomAPI.SPAWN_BEHAVIOR_REGISTRY.values()) {
+        for (SpawnBehavior behavior : Registries.SPAWN_BEHAVIOR_REGISTRY.values()) {
             if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0 && behavior.isReadyToSpawn(this.world)) {
                 double cap = behavior.getEntityCap(this.world);
                 if (cap > 0) {

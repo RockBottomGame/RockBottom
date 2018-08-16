@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.gui.container;
 
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.item.Item;
@@ -15,7 +15,7 @@ public class ContainerItemList extends ItemContainer {
         this.addPlayerInventory(player, 7, 93);
         this.addSlot(new TrashSlot(154, 72));
 
-        for (Item item : RockBottomAPI.ITEM_REGISTRY.values()) {
+        for (Item item : Registries.ITEM_REGISTRY.values()) {
             if (!item.useMetaAsDurability()) {
                 for (int i = 0; i <= item.getHighestPossibleMeta(); i++) {
                     this.addSlot(new InfiniteSlot(new ItemInstance(item, item.getMaxAmount(), i), 0, 0));

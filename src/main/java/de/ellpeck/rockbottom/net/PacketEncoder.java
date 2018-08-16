@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.net;
 
+import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
@@ -14,7 +15,7 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf) {
-        int id = RockBottomAPI.PACKET_REGISTRY.getId(packet.getClass());
+        int id = Registries.PACKET_REGISTRY.getId(packet.getClass());
 
         if (id >= 0) {
             buf.writeByte(id);
