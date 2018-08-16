@@ -80,6 +80,7 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("copper_shovel"), 2F, 350, ToolType.SHOVEL, 10).register();
         new ItemSword(ResourceName.intern("copper_sword"), 350, 12, 30, 2D, 0.35D).register();
         new ItemRecipeNote().register();
+        new ItemBowl().register();
 
         BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
         BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 15, true, 1000).register();
