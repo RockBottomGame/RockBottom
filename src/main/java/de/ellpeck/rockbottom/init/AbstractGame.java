@@ -90,16 +90,15 @@ public abstract class AbstractGame implements IGameInstance {
             int fpsAccumulator = 0;
 
             long lastDeltaTime = Util.getTimeMillis();
+            long lastTickTime = lastDeltaTime;
             int deltaAccumulator = 0;
 
             while (game.isRunning) {
                 long time = Util.getTimeMillis();
 
-                int delta = (int) (time - lastDeltaTime);
-                game.tickDelta = delta / (float) INTERVAL;
+                deltaAccumulator += (time - lastDeltaTime);
                 lastDeltaTime = time;
 
-                deltaAccumulator += delta;
                 if (deltaAccumulator >= INTERVAL) {
                     long updates = deltaAccumulator / INTERVAL;
                     for (int i = 0; i < updates; i++) {
@@ -107,8 +106,11 @@ public abstract class AbstractGame implements IGameInstance {
                         tpsAccumulator++;
 
                         deltaAccumulator -= INTERVAL;
+                        lastTickTime = time;
                     }
                 }
+
+                game.tickDelta = (time - lastTickTime) / (float) INTERVAL;
 
                 game.updateTickless();
                 fpsAccumulator++;
