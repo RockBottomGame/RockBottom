@@ -213,7 +213,7 @@ public class GuiManager implements IGuiManager {
                         font.drawString(x, y + 8F, display, 0.25F);
 
                         if (mouseX >= x && mouseY >= y && mouseX < x + 12F && mouseY < y + 12F) {
-                            hover = new String[]{manager.localize(effect.getEffect().getUnlocalizedName(effect, player)), String.format("%02d:%02d", seconds / 60, seconds % 60)};
+                            hover = new String[]{effect.getDisplayName(manager, player), effect.getDisplayTime()};
                         }
 
                         x -= 13F;

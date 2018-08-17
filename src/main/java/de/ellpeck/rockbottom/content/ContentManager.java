@@ -28,6 +28,7 @@ public final class ContentManager {
         new RecipeLoader().register();
         new SmeltingLoader().register();
         new StructureLoader().register();
+        new MortarLoader().register();
 
         List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
         Set<IContentLoader> loaders = Registries.CONTENT_LOADER_REGISTRY.values();

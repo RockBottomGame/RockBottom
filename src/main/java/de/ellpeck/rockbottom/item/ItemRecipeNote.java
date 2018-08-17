@@ -66,4 +66,9 @@ public class ItemRecipeNote extends ItemBasic {
         }
         return true;
     }
+
+    @Override
+    public boolean isDataSensitive(ItemInstance instance) {
+        return true;
+    }
 }

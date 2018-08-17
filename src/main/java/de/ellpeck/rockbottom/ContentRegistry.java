@@ -59,6 +59,7 @@ public final class ContentRegistry {
         new TileCaveMushroom().register();
         new TileStardrop().register();
         new TileLamp(ResourceName.intern("lamp_iron")).register();
+        new TileMortar().register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolType.PICKAXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolType.AXE, 1).register();
@@ -81,6 +82,8 @@ public final class ContentRegistry {
         new ItemSword(ResourceName.intern("copper_sword"), 350, 12, 30, 2D, 0.35D).register();
         new ItemRecipeNote().register();
         new ItemBowl().register();
+        new ItemBasic(ResourceName.intern("pestle")).register();
+        new ItemMush().register();
 
         BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
         BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 15, true, 1000).register();
