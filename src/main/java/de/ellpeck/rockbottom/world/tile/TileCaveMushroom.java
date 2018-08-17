@@ -1,12 +1,15 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.render.tile.TileCaveMushroomRenderer;
 
 public class TileCaveMushroom extends TileMeta {
@@ -46,5 +49,18 @@ public class TileCaveMushroom extends TileMeta {
 
     private boolean canBeHere(IWorld world, int x, int y, TileLayer layer) {
         return world.getState(layer, x, y - 1).getTile().hasSolidSurface(world, x, y - 1, layer) && world.getState(TileLayer.LIQUIDS, x, y).getTile().isAir();
+    }
+
+    @Override
+    public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop) {
+        super.onDestroyed(world, x, y, destroyer, layer, shouldDrop);
+
+        if (!world.isClient() && shouldDrop && destroyer instanceof AbstractEntityPlayer) {
+            IKnowledgeManager knowledge = ((AbstractEntityPlayer) destroyer).getKnowledge();
+            if (ConstructionRegistry.mortar != null)
+                knowledge.teachRecipe(ConstructionRegistry.mortar);
+            if (ConstructionRegistry.pestle != null)
+                knowledge.teachRecipe(ConstructionRegistry.pestle);
+        }
     }
 }
