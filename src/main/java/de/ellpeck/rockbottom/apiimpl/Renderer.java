@@ -57,6 +57,7 @@ public class Renderer implements IRenderer {
     public boolean isHeightDebug;
     public boolean isBiomeDebug;
     public boolean isBoundBoxDebug;
+    public boolean isCullingDebug;
     public double cameraX;
     public double cameraY;
     private IShaderProgram defaultProgram;
@@ -715,6 +716,11 @@ public class Renderer implements IRenderer {
     @Override
     public boolean isBoundBoxDebug() {
         return this.isBoundBoxDebug;
+    }
+
+    @Override
+    public boolean isCullingDebug() {
+        return this.isCullingDebug;
     }
 
     @Override

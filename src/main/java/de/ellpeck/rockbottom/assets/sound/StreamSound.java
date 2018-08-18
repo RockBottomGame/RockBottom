@@ -247,7 +247,7 @@ public class StreamSound implements ISound {
 
     @Override
     public void play(float pitch, float volume, boolean loop) {
-        this.playAt(pitch, volume, SoundHandler.playerX, SoundHandler.playerY, SoundHandler.playerZ, loop);
+        this.playAt(pitch, volume, SoundHandler.listenerX, SoundHandler.listenerY, SoundHandler.playerZ, loop);
     }
 
     @Override

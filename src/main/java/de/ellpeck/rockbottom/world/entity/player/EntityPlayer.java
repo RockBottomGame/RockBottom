@@ -33,7 +33,6 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
@@ -251,8 +250,6 @@ public class EntityPlayer extends AbstractEntityPlayer {
         }
 
         if (this.isLocalPlayer()) {
-            SoundHandler.setPlayerPos(x, y);
-
             if (this.world.isClient() && this.ticksExisted % this.getSyncFrequency() == 0) {
                 if (this.lastSyncX != x || this.lastSyncY != y) {
                     RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));

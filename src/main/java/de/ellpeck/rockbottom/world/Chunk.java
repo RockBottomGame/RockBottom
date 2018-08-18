@@ -209,9 +209,9 @@ public class Chunk implements IChunk {
         if (!this.isGenerating) {
             this.updateEntities(game);
 
-            int layers = TileLayer.getAllLayers().size();
-            for (int i = 0; i < Constants.RANDOM_TILE_UPDATES * layers; i++) {
-                TileLayer layer = TileLayer.getAllLayers().get(Util.RANDOM.nextInt(layers));
+            List<TileLayer> layers = TileLayer.getAllLayers();
+            for (int i = 0; i < Constants.RANDOM_TILE_UPDATES * layers.size(); i++) {
+                TileLayer layer = layers.get(Util.RANDOM.nextInt(layers.size()));
                 int randX = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
                 int randY = Util.RANDOM.nextInt(Constants.CHUNK_SIZE);
 

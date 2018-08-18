@@ -1,11 +1,14 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Pos2;
+import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -90,5 +93,25 @@ public class TileSimpleFurnace extends MultiTile {
     @Override
     public int getMainY() {
         return 0;
+    }
+
+    @Override
+    public void updateRandomlyInPlayerView(IWorld world, int x, int y, TileLayer layer, TileState state, IParticleManager manager) {
+        if (Util.RANDOM.nextFloat() >= 0.25F) {
+            Pos2 main = this.getMainPos(x, y, world.getState(layer, x, y));
+            TileEntitySimpleFurnace tile = world.getTileEntity(layer, main.getX(), main.getY(), TileEntitySimpleFurnace.class);
+            if (tile.isActive()) {
+                if (x == main.getX() && y == main.getY()) {
+                    if (Util.RANDOM.nextBoolean()) {
+                        manager.addSmokeParticle(world, x + 0.4F + Util.RANDOM.nextFloat() * 0.2F, y + 0.4F + Util.RANDOM.nextFloat() * 0.2F, Util.RANDOM.nextGaussian() * 0.01F, 0F, Util.RANDOM.nextFloat() * 0.1F + 0.1F);
+                    }
+                } else {
+                    manager.addSmokeParticle(world, x + 0.1F, y + 0.87F, Util.RANDOM.nextFloat() * -0.06F, 0F, Util.RANDOM.nextFloat() * 0.25F + 0.15F);
+                    if (Util.RANDOM.nextFloat() >= 0.25F) {
+                        manager.addSmokeParticle(world, x + 0.75F, y + 0.7F, Util.RANDOM.nextGaussian() * 0.01F, 0F, Util.RANDOM.nextFloat() * 0.15F + 0.15F);
+                    }
+                }
+            }
+        }
     }
 }

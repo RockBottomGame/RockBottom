@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.tile;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -95,5 +96,13 @@ public class TileTorch extends TileLamp {
     @Override
     protected ITileRenderer createRenderer(ResourceName name) {
         return new TileTorchRenderer(name);
+    }
+
+    @Override
+    public void updateRandomlyInPlayerView(IWorld world, int x, int y, TileLayer layer, TileState state, IParticleManager manager) {
+        float percentage = 1F - state.get(StaticTileProps.TORCH_TIMER) / 10F;
+        if (Util.RANDOM.nextFloat() <= 0.25F * percentage) {
+            manager.addSmokeParticle(world, x + 0.5F, y + 0.8F, Util.RANDOM.nextGaussian() * 0.025F, 0F, Util.RANDOM.nextFloat() * 0.15F + 0.15F);
+        }
     }
 }

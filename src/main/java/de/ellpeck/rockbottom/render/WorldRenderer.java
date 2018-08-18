@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.EntityLiving;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
+import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -45,6 +46,17 @@ public class WorldRenderer {
     private final List<Cloud> clouds = new ArrayList<>();
     private final Random random = new Random();
 
+    private float transX;
+    private float transY;
+    private int minChunkX;
+    private int minChunkY;
+    private int maxChunkX;
+    private int maxChunkY;
+    private int minX;
+    private int minY;
+    private int maxX;
+    private int maxY;
+
     public WorldRenderer() {
         float step = 1F / Constants.MAX_LIGHT;
         for (int i = 0; i <= Constants.MAX_LIGHT; i++) {
@@ -65,6 +77,30 @@ public class WorldRenderer {
         this.addClouds(Util.RANDOM.nextInt(5) + 3, true);
     }
 
+    public void calcCameraValues(IRenderer g) {
+        double width = g.getWidthInWorld();
+        double height = g.getHeightInWorld();
+
+        this.transX = (float) (g.getCameraX() - width / 2);
+        this.transY = (float) (-g.getCameraY() - height / 2);
+
+        int topLeftX = Util.toGridPos(this.transX);
+        int topLeftY = Util.toGridPos(-this.transY + 1);
+        int bottomRightX = Util.toGridPos(this.transX + width);
+        int bottomRightY = Util.toGridPos(-this.transY - height);
+
+        this.minChunkX = Math.min(topLeftX, bottomRightX);
+        this.minChunkY = Math.min(topLeftY, bottomRightY);
+        this.maxChunkX = Math.max(topLeftX, bottomRightX);
+        this.maxChunkY = Math.max(topLeftY, bottomRightY);
+
+        int offset = g.isCullingDebug() ? 2 : 0;
+        this.minX = Util.floor(this.transX) + offset;
+        this.minY = Util.floor(-this.transY - g.getHeightInWorld() + 1) + offset;
+        this.maxX = Util.ceil(this.transX + g.getWidthInWorld()) - offset;
+        this.maxY = Util.ceil(-this.transY + 1) - offset;
+    }
+
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, World world, EntityPlayer player, InteractionManager input) {
         float scale = g.getWorldScale();
         float skylightMod = world.getSkylightModifier(false);
@@ -73,31 +109,16 @@ public class WorldRenderer {
         int skyColor = SKY_COLORS[skyLight];
         g.backgroundColor(skyColor);
 
-        double width = g.getWidthInWorld();
-        double height = g.getHeightInWorld();
-        float transX = (float) (g.getCameraX() - width / 2);
-        float transY = (float) (-g.getCameraY() - height / 2);
-
-        this.renderSky(game, manager, g, world, player, skylightMod, width, height);
-
-        int topLeftX = Util.toGridPos(transX);
-        int topLeftY = Util.toGridPos(-transY + 1);
-        int bottomRightX = Util.toGridPos(transX + width);
-        int bottomRightY = Util.toGridPos(-transY - height);
-
-        int minX = Math.min(topLeftX, bottomRightX);
-        int minY = Math.min(topLeftY, bottomRightY);
-        int maxX = Math.max(topLeftX, bottomRightX);
-        int maxY = Math.max(topLeftY, bottomRightY);
+        this.renderSky(game, manager, g, world, player, skylightMod, g.getWidthInWorld(), g.getHeightInWorld());
 
         List<Entity> entities = new ArrayList<>();
         List<EntityPlayer> players = new ArrayList<>();
 
-        for (int gridY = minY; gridY <= maxY; gridY++) {
-            for (int gridX = minX; gridX <= maxX; gridX++) {
+        for (int gridY = this.minChunkY; gridY <= this.maxChunkY; gridY++) {
+            for (int gridX = this.minChunkX; gridX <= this.maxChunkX; gridX++) {
                 if (world.isChunkLoaded(gridX, gridY)) {
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
-                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, chunk.getLoadedLayers(), false);
+                    this.renderChunk(game, manager, g, input, world, chunk, scale, chunk.getLoadedLayers(), false);
 
                     for (Entity entity : chunk.getAllEntities()) {
                         entities.add(entity);
@@ -117,72 +138,73 @@ public class WorldRenderer {
             if (entity.shouldRender()) {
                 IEntityRenderer renderer = entity.getRenderer();
                 if (renderer != null) {
-                    ResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
-                    g.setProgram(program == null ? null : manager.getShaderProgram(program));
-
                     double x = entity.getLerpedX();
                     double y = entity.getLerpedY();
+                    if (x >= this.minX && x <= this.maxX && y >= this.minY && y <= this.maxY) {
+                        ResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
+                        g.setProgram(program == null ? null : manager.getShaderProgram(program));
 
-                    int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
-                    int color = RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN);
+                        int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
+                        int color = RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN);
 
-                    if (entity instanceof EntityLiving) {
-                        EntityLiving living = (EntityLiving) entity;
+                        if (entity instanceof EntityLiving) {
+                            EntityLiving living = (EntityLiving) entity;
 
-                        float damagePercentage;
-                        float fadePercentage;
+                            float damagePercentage;
+                            float fadePercentage;
 
-                        if (living.isDead() || living.getHealth() <= 0) {
-                            damagePercentage = 1F;
-                            fadePercentage = 1F - living.deathTimer / (float) living.getDeathLingerTime();
-                        } else {
-                            damagePercentage = 1F - (world.getTotalTime() - living.lastDamageTime) / 20F;
-                            fadePercentage = 1F;
+                            if (living.isDead() || living.getHealth() <= 0) {
+                                damagePercentage = 1F;
+                                fadePercentage = 1F - living.deathTimer / (float) living.getDeathLingerTime();
+                            } else {
+                                damagePercentage = 1F - (world.getTotalTime() - living.lastDamageTime) / 20F;
+                                fadePercentage = 1F;
+                            }
+
+                            if (damagePercentage > 0F) {
+                                color = Colors.lerp(color, Colors.RED, damagePercentage);
+                            }
+
+                            if (fadePercentage < 1F) {
+                                color = Colors.multiplyA(color, fadePercentage);
+                            }
                         }
 
-                        if (damagePercentage > 0F) {
-                            color = Colors.lerp(color, Colors.RED, damagePercentage);
+                        renderer.render(game, manager, g, world, entity, (float) x - this.transX, (float) -y - this.transY + 1F, color);
+
+                        if (g.isBoundBoxDebug()) {
+                            g.addFilledRect((float) x - this.transX - 0.1F, (float) -y - this.transY + 0.9F, 0.2F, 0.2F, Colors.GREEN);
+
+                            BoundBox box = entity.currentBounds;
+                            g.addEmptyRect((float) box.getMinX() - this.transX, (float) -box.getMaxY() - this.transY + 1F, (float) box.getWidth(), (float) box.getHeight(), 0.1F, Colors.RED);
+
+                            BoundBox boxMotion = box.copy().add(entity.motionX, entity.motionY);
+                            g.addEmptyRect((float) boxMotion.getMinX() - this.transX, (float) -boxMotion.getMaxY() - this.transY + 1F, (float) boxMotion.getWidth(), (float) boxMotion.getHeight(), 0.05F, Colors.YELLOW);
                         }
-
-                        if (fadePercentage < 1F) {
-                            color = Colors.multiplyA(color, fadePercentage);
-                        }
-                    }
-
-                    renderer.render(game, manager, g, world, entity, (float) x - transX, (float) -y - transY + 1F, color);
-
-                    if (g.isBoundBoxDebug()) {
-                        g.addFilledRect((float) x - transX - 0.1F, (float) -y - transY + 0.9F, 0.2F, 0.2F, Colors.GREEN);
-
-                        BoundBox box = entity.currentBounds;
-                        g.addEmptyRect((float) box.getMinX() - transX, (float) -box.getMaxY() - transY + 1F, (float) box.getWidth(), (float) box.getHeight(), 0.1F, Colors.RED);
-
-                        BoundBox boxMotion = box.copy().add(entity.motionX, entity.motionY);
-                        g.addEmptyRect((float) boxMotion.getMinX() - transX, (float) -boxMotion.getMaxY() - transY + 1F, (float) boxMotion.getWidth(), (float) boxMotion.getHeight(), 0.05F, Colors.YELLOW);
                     }
                 }
             }
         });
         g.setProgram(null);
 
-        particles.render(game, manager, g, world, transX, transY);
+        particles.render(game, manager, g, world, this.transX, this.transY);
         g.setProgram(null);
 
-        RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, transX, transY));
+        RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, this.transX, this.transY));
 
         players.forEach(entity -> {
             if (entity.shouldRender() && !entity.isLocalPlayer()) {
-                manager.getFont().drawCenteredString((float) entity.getLerpedX() - transX, (float) -entity.getLerpedY() - transY - 0.75F, entity.getChatColorFormat() + entity.getName(), 0.015F, false);
+                manager.getFont().drawCenteredString((float) entity.getLerpedX() - this.transX, (float) -entity.getLerpedY() - this.transY - 0.75F, entity.getChatColorFormat() + entity.getName(), 0.015F, false);
             }
         });
 
         g.setScale(1F, 1F);
 
-        for (int gridY = minY; gridY <= maxY; gridY++) {
-            for (int gridX = minX; gridX <= maxX; gridX++) {
+        for (int gridY = this.minChunkY; gridY <= this.maxChunkY; gridY++) {
+            for (int gridX = this.minChunkX; gridX <= this.maxChunkX; gridX++) {
                 if (world.isChunkLoaded(gridX, gridY)) {
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
-                    this.renderChunk(game, manager, g, input, world, chunk, transX, transY, scale, chunk.getLoadedLayers(), true);
+                    this.renderChunk(game, manager, g, input, world, chunk, scale, chunk.getLoadedLayers(), true);
                 }
             }
         }
@@ -195,14 +217,14 @@ public class WorldRenderer {
         if (chunkDebug || heightDebug || biomeDebug) {
             g.setScale(scale, scale);
 
-            for (int gridX = minX; gridX <= maxX; gridX++) {
-                for (int gridY = minY; gridY <= maxY; gridY++) {
+            for (int gridX = this.minChunkX; gridX <= this.maxChunkX; gridX++) {
+                for (int gridY = this.minChunkY; gridY <= this.maxChunkY; gridY++) {
                     if (world.isChunkLoaded(gridX, gridY)) {
                         int worldX = Util.toWorldPos(gridX);
                         int worldY = Util.toWorldPos(gridY);
 
                         if (chunkDebug) {
-                            g.addEmptyRect(worldX - transX, -worldY - transY + 1F - Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 0.1F, Colors.GREEN);
+                            g.addEmptyRect(worldX - this.transX, -worldY - this.transY + 1F - Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 0.1F, Colors.GREEN);
                         }
 
                         if (heightDebug || biomeDebug) {
@@ -211,17 +233,17 @@ public class WorldRenderer {
                                 if (heightDebug) {
                                     for (TileLayer layer : TileLayer.getLayersByRenderPrio()) {
                                         this.random.setSeed(layer.getName().hashCode());
-                                        g.addFilledRect(worldX - transX + x, -worldY - transY + 1F - chunk.getHeightInner(layer, x), 1F, 0.1F, Colors.random(this.random));
+                                        g.addFilledRect(worldX - this.transX + x, -worldY - this.transY + 1F - chunk.getHeightInner(layer, x), 1F, 0.1F, Colors.random(this.random));
                                     }
                                 }
 
                                 if (biomeDebug) {
                                     for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
                                         this.random.setSeed(chunk.getExpectedBiomeLevel(worldX + x, worldY + y).getName().hashCode());
-                                        g.addFilledRect(worldX - transX + x + 0.35F, -worldY - transY - y + 0.35F, 0.3F, 0.3F, Colors.random(this.random));
+                                        g.addFilledRect(worldX - this.transX + x + 0.35F, -worldY - this.transY - y + 0.35F, 0.3F, 0.3F, Colors.random(this.random));
 
                                         this.random.setSeed(chunk.getBiomeInner(x, y).getName().hashCode());
-                                        g.addEmptyRect(worldX - transX + x + 0.25F, -worldY - transY - y + 0.25F, 0.5F, 0.5F, 0.1F, Colors.random(this.random));
+                                        g.addEmptyRect(worldX - this.transX + x + 0.25F, -worldY - this.transY - y + 0.25F, 0.5F, 0.5F, 0.1F, Colors.random(this.random));
                                     }
                                 }
                             }
@@ -234,14 +256,14 @@ public class WorldRenderer {
         }
     }
 
-    private void renderChunk(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, float transX, float transY, float scale, List<TileLayer> layers, boolean foreground) {
+    private void renderChunk(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, float scale, List<TileLayer> layers, boolean foreground) {
         int chunkX = chunk.getX();
         int chunkY = chunk.getY();
 
-        int startX = Math.max(Util.floor(transX), chunkX);
-        int startY = Math.max(Util.floor(-transY - g.getHeightInWorld() + 1), chunkY);
-        int endX = Math.min(Util.ceil(transX + g.getWidthInWorld()), chunkX + Constants.CHUNK_SIZE);
-        int endY = Math.min(Util.ceil(-transY + 1), chunkY + Constants.CHUNK_SIZE);
+        int startX = Math.max(this.minX, chunkX);
+        int startY = Math.max(this.minY, chunkY);
+        int endX = Math.min(this.maxX, chunkX + Constants.CHUNK_SIZE);
+        int endY = Math.min(this.maxY, chunkY + Constants.CHUNK_SIZE);
 
         for (int y = startY; y < endY; y++) {
             for (int x = startX; x < endX; x++) {
@@ -268,13 +290,13 @@ public class WorldRenderer {
                         }
                     }
 
-                    this.renderLayer(game, manager, g, input, world, chunk, layer, x, y, transX, transY, scale, color, foreground);
+                    this.renderLayer(game, manager, g, input, world, chunk, layer, x, y, scale, color, foreground);
                 }
             }
         }
     }
 
-    private void renderLayer(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float transX, float transY, float scale, int[] color, boolean foreground) {
+    private void renderLayer(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float scale, int[] color, boolean foreground) {
         if (layer.isVisible(game, game.getPlayer(), chunk, x, y, foreground)) {
             TileState state = chunk.getState(layer, x, y);
             Tile tile = state.getTile();
@@ -283,15 +305,15 @@ public class WorldRenderer {
 
             if (renderer != null) {
                 if (foreground) {
-                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, transX, transY, scale, color, forcesForeground, true);
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, scale, color, forcesForeground, true);
                 } else if (!forcesForeground) {
-                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, transX, transY, scale, color, true, false);
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, scale, color, true, false);
                 }
             }
         }
     }
 
-    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, int x, int y, float transX, float transY, float scale, int[] color, boolean renderNormal, boolean renderForeground) {
+    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, int x, int y, float scale, int[] color, boolean renderNormal, boolean renderForeground) {
         boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
 
         if (isBreakTile) {
@@ -303,11 +325,11 @@ public class WorldRenderer {
         }
 
         if (renderNormal) {
-            renderer.render(game, manager, g, world, tile, state, x, y, layer, (x - transX) * scale, (-y - transY) * scale, scale, color);
+            renderer.render(game, manager, g, world, tile, state, x, y, layer, (x - this.transX) * scale, (-y - this.transY) * scale, scale, color);
         }
 
         if (renderForeground) {
-            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x - transX) * scale, (-y - transY) * scale, scale, color);
+            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x - this.transX) * scale, (-y - this.transY) * scale, scale, color);
         }
 
         if (isBreakTile) {
@@ -367,7 +389,7 @@ public class WorldRenderer {
         g.setScale(1F, 1F);
     }
 
-    public void update() {
+    public void update(IWorld world, IParticleManager manager) {
         int possibleAddAmount = 0;
 
         for (int i = this.clouds.size() - 1; i >= 0; i--) {
@@ -391,11 +413,28 @@ public class WorldRenderer {
                 this.addClouds(Util.RANDOM.nextInt(possibleAddAmount) + 1, false);
             }
         }
+
+        this.doRandomTileRenderUpdates(world, manager);
     }
 
     private void addClouds(int amount, boolean randomX) {
         for (int i = 0; i < amount; i++) {
             this.clouds.add(new Cloud(Util.RANDOM.nextDouble() * 0.001D, randomX ? Util.RANDOM.nextDouble() : -0.5D, Util.RANDOM.nextDouble() * 0.3D));
+        }
+    }
+
+    private void doRandomTileRenderUpdates(IWorld world, IParticleManager manager) {
+        int tileAmount = (this.maxX - this.minX) * (this.maxY - this.minY);
+        int toUpdate = Util.floor(tileAmount * Constants.RANDOM_TILE_RENDER_UPDATES);
+
+        List<TileLayer> layers = TileLayer.getAllLayers();
+        for (int i = 0; i < toUpdate * layers.size(); i++) {
+            TileLayer layer = layers.get(Util.RANDOM.nextInt(layers.size()));
+            int x = Util.RANDOM.nextInt(this.maxX - this.minX) + this.minX;
+            int y = Util.RANDOM.nextInt(this.maxY - this.minY) + this.minY;
+
+            TileState state = world.getState(layer, x, y);
+            state.getTile().updateRandomlyInPlayerView(world, x, y, layer, state, manager);
         }
     }
 

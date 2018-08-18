@@ -343,7 +343,7 @@ public class RockBottom extends AbstractGame {
                 this.interactionManager.update(this);
 
                 this.particleManager.update(this);
-                this.worldRenderer.update();
+                this.worldRenderer.update(this.world, this.particleManager);
             }
         }
 
@@ -479,6 +479,8 @@ public class RockBottom extends AbstractGame {
                 this.renderer.cameraX = 0D;
                 this.renderer.cameraY = 0D;
             }
+            SoundHandler.setListenerPos(this.renderer.cameraX, this.renderer.cameraY);
+            this.worldRenderer.calcCameraValues(this.renderer);
 
             this.render();
 

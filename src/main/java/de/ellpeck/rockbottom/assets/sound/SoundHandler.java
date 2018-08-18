@@ -19,8 +19,8 @@ public final class SoundHandler {
     private static final List<Integer> SOURCES = new ArrayList<>();
     private static final ISound[] PLAYING_SOUNDS = new ISound[MAX_SOURCES];
     private static final List<StreamSound> STREAM_SOUNDS = new ArrayList<>();
-    public static float playerX;
-    public static float playerY;
+    public static float listenerX;
+    public static float listenerY;
     public static float playerZ = -10F;
     private static long context;
     private static long device;
@@ -62,14 +62,14 @@ public final class SoundHandler {
         if (error != AL10.AL_NO_ERROR) {
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize sounds:\n" + AL10.alGetString(error));
         } else {
-            AL10.alListener3f(AL10.AL_POSITION, playerX, playerY, playerZ);
+            AL10.alListener3f(AL10.AL_POSITION, listenerX, listenerY, playerZ);
         }
     }
 
-    public static void setPlayerPos(double x, double y) {
-        playerX = (float) x;
-        playerY = (float) y;
-        AL10.alListener3f(AL10.AL_POSITION, playerX, playerY, playerZ);
+    public static void setListenerPos(double x, double y) {
+        listenerX = (float) x;
+        listenerY = (float) y;
+        AL10.alListener3f(AL10.AL_POSITION, listenerX, listenerY, playerZ);
     }
 
     public static int playAsSoundAt(SoundEffect effect, int id, float pitch, float volume, boolean loop, float x, float y, float z, float rolloffFactor, float refDistance, float maxDistance) {
