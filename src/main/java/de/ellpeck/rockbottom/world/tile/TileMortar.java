@@ -43,8 +43,8 @@ public class TileMortar extends TileBasic {
                             if (!world.isClient()) {
                                 inv.set(i, toAdd);
                                 player.getInv().remove(player.getSelectedSlot(), 1);
-                                return true;
                             }
+                            return true;
                         }
                     }
                 }
