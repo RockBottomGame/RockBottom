@@ -214,6 +214,9 @@ public class RockBottom extends AbstractGame {
         ChangelogManager.loadChangelog();
         super.init();
 
+        //TODO Remove this once the auth system is actually there
+        this.tempUUID();
+
         this.guiManager.updateDimensions();
         if (!Main.skipIntro) {
             this.guiManager.openGui(new GuiLogo("intro.ellpeck", new GuiLogo("intro.wiiv", new GuiMainMenu())));
@@ -221,6 +224,32 @@ public class RockBottom extends AbstractGame {
             this.guiManager.openGui(new GuiMainMenu());
         }
         this.guiManager.fadeIn(30, null);
+    }
+
+    private void tempUUID() {
+        File dataFile = new File(this.dataManager.getGameDir(), "uuid.dat");
+        if (dataFile.exists()) {
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile)));
+                this.uniqueId = UUID.fromString(reader.readLine());
+                RockBottomAPI.logger().info("Setting game uuid to " + this.uniqueId);
+                reader.close();
+                return;
+            } catch (Exception e) {
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't read game uuid", e);
+            }
+        }
+
+        this.uniqueId = UUID.randomUUID();
+        RockBottomAPI.logger().info("Creating new game uuid " + this.uniqueId);
+        try {
+            dataFile.getParentFile().mkdirs();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dataFile)));
+            writer.write(this.uniqueId.toString());
+            writer.close();
+        } catch (Exception e) {
+            RockBottomAPI.logger().log(Level.WARNING, "Couldn't write game uuid", e);
+        }
     }
 
     protected void getWindowSize() {
