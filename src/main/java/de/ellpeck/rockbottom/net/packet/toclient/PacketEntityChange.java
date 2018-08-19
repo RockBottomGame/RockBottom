@@ -9,7 +9,6 @@ import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,14 +32,10 @@ public class PacketEntityChange implements IPacket {
         if (!this.remove) {
             if (entity instanceof EntityPlayer) {
                 this.name = PLAYER_NAME;
-
-                EntityPlayer player = (EntityPlayer) entity;
-                this.entitySet.addString("design", Util.GSON.toJson(player.getDesign()));
             } else {
                 this.name = Registries.ENTITY_REGISTRY.getId(entity.getClass()).toString();
+                entity.save(this.entitySet);
             }
-
-            entity.save(this.entitySet);
         }
     }
 
@@ -84,15 +79,17 @@ public class PacketEntityChange implements IPacket {
             } else {
                 if (entity == null) {
                     if (PLAYER_NAME.equals(this.name)) {
-                        PlayerDesign design = Util.GSON.fromJson(this.entitySet.getString("design"), PlayerDesign.class);
-                        entity = new EntityPlayer(world, this.uniqueId, design);
+                        entity = world.getPlayer(this.uniqueId);
                     } else {
                         entity = Util.createEntity(new ResourceName(this.name), world);
+
+                        if (entity != null) {
+                            entity.load(this.entitySet);
+                            entity.setUniqueId(this.uniqueId);
+                        }
                     }
 
                     if (entity != null) {
-                        entity.load(this.entitySet);
-                        entity.setUniqueId(this.uniqueId);
                         world.addEntity(entity);
                     }
                 } else {

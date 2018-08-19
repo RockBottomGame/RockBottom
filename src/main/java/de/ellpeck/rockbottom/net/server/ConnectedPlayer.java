@@ -19,6 +19,7 @@ import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -49,8 +50,10 @@ public class ConnectedPlayer extends EntityPlayer {
     public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player) {
         RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(player, true));
 
-        game.getWorld().savePlayer(player);
-        game.getWorld().removeEntity(player);
+        IWorld world = game.getWorld();
+        world.savePlayer(player);
+        world.removeEntity(player);
+        world.removePlayer(player);
 
         RockBottomAPI.logger().info("Saving and removing disconnected player " + player.getName() + " with id " + player.getUniqueId() + " from world");
 

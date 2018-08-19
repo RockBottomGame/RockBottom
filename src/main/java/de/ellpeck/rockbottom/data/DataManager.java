@@ -82,6 +82,7 @@ public class DataManager implements IDataManager {
         Registries.PACKET_REGISTRY.register(38, PacketToolBreak.class);
         Registries.PACKET_REGISTRY.register(39, PacketDamage.class);
         Registries.PACKET_REGISTRY.register(40, PacketSkill.class);
+        Registries.PACKET_REGISTRY.register(41, PacketPlayer.class);
 
         Registries.CHAT_COMPONENT_REGISTRY.register(0, ChatComponentText.class);
         Registries.CHAT_COMPONENT_REGISTRY.register(1, ChatComponentTranslation.class);

@@ -23,6 +23,11 @@ public class ClientChunk extends Chunk {
     }
 
     @Override
+    public void callRetroactiveGeneration() {
+        throw new UnsupportedOperationException("Cannot generate client chunk");
+    }
+
+    @Override
     public void save(DataSet set) {
         throw new UnsupportedOperationException("Cannot save client chunk");
     }

@@ -161,10 +161,13 @@ public class Chunk implements IChunk {
 
                         if (this.world.isServer()) {
                             for (AbstractEntityPlayer player : chunk.getPlayersInRange()) {
-                                if (!this.playersInRange.contains(player)) {
+                                if (!this.playersInRange.contains(player) && !this.playersOutOfRangeCached.contains(player)) {
                                     player.sendPacket(new PacketEntityChange(entity, false));
-
-                                    RockBottomAPI.logger().config("Adding entity " + entity + " with id " + entity.getUniqueId() + " to chunk in range of player with id " + player.getUniqueId());
+                                }
+                            }
+                            for(AbstractEntityPlayer player : chunk.getPlayersLeftRange()){
+                                if (!this.playersInRange.contains(player) && !this.playersOutOfRangeCached.contains(player)) {
+                                    player.sendPacket(new PacketEntityChange(entity, false));
                                 }
                             }
                         }

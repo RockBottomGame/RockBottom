@@ -393,6 +393,7 @@ public class RockBottom extends AbstractGame {
 
         this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, true);
         this.world.addEntity(this.player);
+        this.world.addPlayer(this.player);
 
         this.guiManager.closeGui();
         this.guiManager.updateDimensions();
@@ -408,7 +409,9 @@ public class RockBottom extends AbstractGame {
 
         this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, false);
         this.player.load(playerSet);
+
         this.world.addEntity(this.player);
+        this.world.addPlayer(this.player);
     }
 
     @Override

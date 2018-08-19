@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
+import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -222,6 +223,21 @@ public class GuiManager implements IGuiManager {
 
                 if (hover != null) {
                     g.drawHoverInfoAtMouse(game, manager, true, 0, hover);
+                }
+            }
+
+            if (RockBottomAPI.getNet().isActive() && Settings.KEY_PLAYER_LIST.isDown()) {
+                font.drawString(5, 5, "Players:", 0.3F);
+
+                int y = 0;
+                for (AbstractEntityPlayer p : player.world.getAllPlayers()) {
+                    String s = p.getChatColorFormat() + p.getName();
+                    if (p != player) {
+                        s += String.format(FormattingCode.RESET_COLOR + " (%.2f tiles away)", Util.distance(p.getX(), p.getY(), player.getX(), player.getY()));
+                    }
+
+                    font.drawString(5, y + 13, s, 0.25F);
+                    y += 7;
                 }
             }
 

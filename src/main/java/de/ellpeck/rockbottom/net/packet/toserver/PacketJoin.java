@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketPlayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketReject;
 import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import io.netty.buffer.ByteBuf;
@@ -90,6 +91,12 @@ public class PacketJoin implements IPacket {
                     if (world.getPlayer(this.id) == null) {
                         AbstractEntityPlayer player = world.createPlayer(this.id, this.design, context.channel(), false);
                         player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getRegInfo()));
+
+                        for (AbstractEntityPlayer p : world.getAllPlayers()) {
+                            player.sendPacket(new PacketPlayer(p, false));
+                        }
+
+                        world.addPlayer(player);
                         world.addEntity(player);
 
                         RockBottomAPI.logger().info("Player " + this.design.getName() + " with id " + this.id + " joined, sending initial server data");

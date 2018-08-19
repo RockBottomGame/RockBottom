@@ -35,10 +35,7 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketSound;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
+import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -210,16 +207,6 @@ public class World implements IWorld {
 
             IChunk chunk = this.getChunk(x, y);
             chunk.addEntity(entity);
-
-            if (entity instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) entity;
-
-                if (this.getPlayer(player.getUniqueId()) == null) {
-                    this.players.add(player);
-                } else {
-                    RockBottomAPI.logger().warning("Tried adding player " + player.getName() + " with id " + player.getUniqueId() + " to world that already contained it!");
-                }
-            }
 
             if (!chunk.isGenerating() && this.isServer()) {
                 RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), x, y, entity);
@@ -404,6 +391,28 @@ public class World implements IWorld {
         }
 
         return closestPlayer;
+    }
+
+    @Override
+    public void addPlayer(AbstractEntityPlayer player) {
+        if (this.getPlayer(player.getUniqueId()) == null) {
+            this.players.add(player);
+        } else {
+            RockBottomAPI.logger().warning("Tried adding player " + player.getName() + " with id " + player.getUniqueId() + " to world that already contained it!");
+        }
+
+        if (this.isServer()) {
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketPlayer(player, false), player);
+        }
+    }
+
+    @Override
+    public void removePlayer(AbstractEntityPlayer player) {
+        this.players.remove(player);
+
+        if (this.isServer()) {
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketPlayer(player, true), player);
+        }
     }
 
     @Override
@@ -773,11 +782,6 @@ public class World implements IWorld {
     @Override
     public void removeEntity(Entity entity, IChunk chunk) {
         chunk.removeEntity(entity);
-
-        if (entity instanceof EntityPlayer) {
-            this.players.remove(entity);
-        }
-
         entity.onRemoveFromWorld();
 
         if (this.isServer()) {
