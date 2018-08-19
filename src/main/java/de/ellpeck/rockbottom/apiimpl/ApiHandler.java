@@ -14,6 +14,8 @@ import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.set.part.IPartFactory;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -185,34 +187,46 @@ public class ApiHandler implements IApiHandler {
     @Override
     public List<ItemInstance> construct(AbstractEntityPlayer player, Inventory inputInventory, Inventory outputInventory, IRecipe recipe, int amount, List<IUseInfo> inputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
         List<ItemInstance> remains = new ArrayList<>();
-        for (int a = 0; a < amount; a++) {
-            if (recipe.canConstruct(inputInventory, outputInventory)) {
-                List<ItemInstance> usedInputs = new ArrayList<>();
 
-                for (IUseInfo input : inputs) {
-                    for (int i = 0; i < inputInventory.getSlotAmount(); i++) {
-                        ItemInstance inv = inputInventory.get(i);
+        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, amount, inputs, outputGetter, skillReward);
+        if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
+            inputInventory = event.inputInventory;
+            outputInventory = event.outputInventory;
+            recipe = event.recipe;
+            amount = event.amount;
+            inputs = event.inputs;
+            outputGetter = event.outputGetter;
+            skillReward = event.skillReward;
 
-                        if (inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()) {
-                            usedInputs.add(inv.copy().setAmount(input.getAmount()));
-                            inputInventory.remove(i, input.getAmount());
-                            break;
+            for (int a = 0; a < amount; a++) {
+                if (recipe.canConstruct(inputInventory, outputInventory)) {
+                    List<ItemInstance> usedInputs = new ArrayList<>();
+
+                    for (IUseInfo input : inputs) {
+                        for (int i = 0; i < inputInventory.getSlotAmount(); i++) {
+                            ItemInstance inv = inputInventory.get(i);
+
+                            if (inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()) {
+                                usedInputs.add(inv.copy().setAmount(input.getAmount()));
+                                inputInventory.remove(i, input.getAmount());
+                                break;
+                            }
                         }
                     }
-                }
 
-                for (ItemInstance output : outputGetter.apply(usedInputs)) {
-                    ItemInstance left = outputInventory.addExistingFirst(output, false);
-                    if (left != null) {
-                        remains.add(left);
+                    for (ItemInstance output : outputGetter.apply(usedInputs)) {
+                        ItemInstance left = outputInventory.addExistingFirst(output, false);
+                        if (left != null) {
+                            remains.add(left);
+                        }
                     }
-                }
 
-                if (player != null) {
-                    player.gainSkill(skillReward);
+                    if (player != null) {
+                        player.gainSkill(skillReward);
+                    }
+                } else {
+                    break;
                 }
-            } else {
-                break;
             }
         }
         return remains;
