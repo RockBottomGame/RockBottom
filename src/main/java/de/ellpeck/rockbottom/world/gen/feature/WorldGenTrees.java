@@ -104,7 +104,7 @@ public class WorldGenTrees implements IWorldGenerator {
                         if (!simulate) {
                             world.setState(theX, theY, state);
                         }
-                    } else if (subX == structure.getWidth() / 2) {
+                    } else if (subX == structure.getWidth() / 2 && subY > 0) {
                         return false;
                     }
                 }

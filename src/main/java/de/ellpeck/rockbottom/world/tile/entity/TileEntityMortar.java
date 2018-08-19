@@ -21,10 +21,7 @@ public class TileEntityMortar extends TileEntity {
 
     public TileEntityMortar(IWorld world, int x, int y, TileLayer layer) {
         super(world, x, y, layer);
-        this.inventory.addChangeCallback((inv, slot) -> {
-            System.out.println("CALLBACK YO");
-            this.sendToClients();
-        });
+        this.inventory.addChangeCallback((inv, slot) -> this.sendToClients());
     }
 
     public void doPestleProgress() {
