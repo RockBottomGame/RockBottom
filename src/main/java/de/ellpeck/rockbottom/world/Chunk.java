@@ -156,20 +156,12 @@ public class Chunk implements IChunk {
                     if (newChunkX != this.gridX || newChunkY != this.gridY) {
                         this.removeEntity(entity);
 
-                        IChunk chunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
-                        chunk.addEntity(entity);
+                        IChunk newChunk = this.world.getChunkFromGridCoords(newChunkX, newChunkY);
+                        newChunk.addEntity(entity);
 
                         if (this.world.isServer()) {
-                            for (AbstractEntityPlayer player : chunk.getPlayersInRange()) {
-                                if (!this.playersInRange.contains(player) && !this.playersOutOfRangeCached.contains(player)) {
-                                    player.sendPacket(new PacketEntityChange(entity, false));
-                                }
-                            }
-                            for(AbstractEntityPlayer player : chunk.getPlayersLeftRange()){
-                                if (!this.playersInRange.contains(player) && !this.playersOutOfRangeCached.contains(player)) {
-                                    player.sendPacket(new PacketEntityChange(entity, false));
-                                }
-                            }
+                            addRemoveEntitiesOnBorder(newChunk, this, entity, false);
+                            addRemoveEntitiesOnBorder(this, newChunk, entity, true);
                         }
                     }
                 }
@@ -187,6 +179,19 @@ public class Chunk implements IChunk {
 
             if (tile.shouldRemove()) {
                 this.removeTileEntity(tile.layer, tile.x, tile.y);
+            }
+        }
+    }
+
+    private static void addRemoveEntitiesOnBorder(IChunk firstChunk, IChunk secondChunk, Entity entity, boolean remove) {
+        for (AbstractEntityPlayer player : firstChunk.getPlayersInRange()) {
+            if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
+                player.sendPacket(new PacketEntityChange(entity, remove));
+            }
+        }
+        for (AbstractEntityPlayer player : firstChunk.getPlayersLeftRange()) {
+            if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
+                player.sendPacket(new PacketEntityChange(entity, remove));
             }
         }
     }

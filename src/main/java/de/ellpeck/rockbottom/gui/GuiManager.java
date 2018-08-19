@@ -226,14 +226,18 @@ public class GuiManager implements IGuiManager {
                 }
             }
 
-            if (RockBottomAPI.getNet().isActive() && Settings.KEY_PLAYER_LIST.isDown()) {
+            if (player != null && RockBottomAPI.getNet().isActive() && Settings.KEY_PLAYER_LIST.isDown()) {
                 font.drawString(5, 5, "Players:", 0.3F);
 
                 int y = 0;
                 for (AbstractEntityPlayer p : player.world.getAllPlayers()) {
                     String s = p.getChatColorFormat() + p.getName();
                     if (p != player) {
-                        s += String.format(FormattingCode.RESET_COLOR + " (%.2f tiles away)", Util.distance(p.getX(), p.getY(), player.getX(), player.getY()));
+                        if (player.world.getEntity(p.getUniqueId()) != null) {
+                            s += String.format(FormattingCode.RESET_COLOR + " (%.2f tiles away)", Util.distance(p.getX(), p.getY(), player.getX(), player.getY()));
+                        } else {
+                            s += FormattingCode.RESET_COLOR + " (Far away)";
+                        }
                     }
 
                     font.drawString(5, y + 13, s, 0.25F);

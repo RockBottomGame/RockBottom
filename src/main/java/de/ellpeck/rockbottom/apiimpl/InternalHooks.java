@@ -321,9 +321,12 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public void doWorldObjectMovement(MovableWorldObject object) {
-        if (object.motionX != 0 || object.motionY != 0) {
+        double motionX = object.motionX;
+        double motionY = object.motionY;
+
+        if (motionX != 0 || motionY != 0) {
             BoundBox ownBox = object.currentBounds;
-            BoundBox ownBoxMotion = ownBox.copy().add(object.motionX, object.motionY);
+            BoundBox ownBoxMotion = ownBox.copy().add(motionX, motionY);
 
             if (object.world.isPosLoaded(ownBoxMotion.getMinX(), ownBoxMotion.getMinY()) && object.world.isPosLoaded(ownBoxMotion.getMaxX(), ownBoxMotion.getMaxY())) {
                 List<BoundBox> boxes = new ArrayList<>();
@@ -361,7 +364,6 @@ public class InternalHooks implements IInternalHooks {
 
                 RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBoxMotion, boxes));
 
-                double motionY = object.motionY;
                 if (motionY != 0) {
                     if (!boxes.isEmpty()) {
                         for (BoundBox box : boxes) {
@@ -390,7 +392,6 @@ public class InternalHooks implements IInternalHooks {
                     ownBox.add(0D, motionY);
                 }
 
-                double motionX = object.motionX;
                 if (motionX != 0) {
                     if (!boxes.isEmpty()) {
                         for (BoundBox box : boxes) {
@@ -418,21 +419,21 @@ public class InternalHooks implements IInternalHooks {
 
                     ownBox.add(motionX, 0D);
                 }
-
-                if (object.world.isClient() && object instanceof Entity) {
-                    Entity entity = (Entity) object;
-                    if (entity.doesInterpolate() && !entity.world.isLocalPlayer(entity)) {
-                        double diff = 1F / entity.getSyncFrequency();
-                        double distX = entity.interpolationX - entity.getOriginX();
-                        double distY = entity.interpolationY - entity.getOriginY();
-                        entity.currentBounds.add(distX * diff, distY * diff);
-                    }
-                }
-
-                object.collidedHor = motionX != object.motionX;
-                object.collidedVert = motionY != object.motionY;
-                object.onGround = object.collidedVert && object.motionY < 0;
             }
+
+            if (object.world.isClient() && object instanceof Entity) {
+                Entity entity = (Entity) object;
+                if (entity.doesInterpolate() && !entity.world.isLocalPlayer(entity)) {
+                    double diff = 1F / entity.getSyncFrequency();
+                    double distX = entity.interpolationX - entity.getOriginX();
+                    double distY = entity.interpolationY - entity.getOriginY();
+                    entity.currentBounds.add(distX * diff, distY * diff);
+                }
+            }
+
+            object.collidedHor = motionX != object.motionX;
+            object.collidedVert = motionY != object.motionY;
+            object.onGround = object.collidedVert && object.motionY < 0;
         }
     }
 
