@@ -309,7 +309,7 @@ public class InternalHooks implements IInternalHooks {
             if (entity.doesSync()) {
                 if (entity.ticksExisted % entity.getSyncFrequency() == 0) {
                     if (entity.lastSyncX != x || entity.lastSyncY != y) {
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.collidedHor, entity.collidedVert, entity.onGround), x, y, entity);
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing), x, y, entity);
 
                         entity.lastSyncX = x;
                         entity.lastSyncY = y;
@@ -417,6 +417,16 @@ public class InternalHooks implements IInternalHooks {
                     }
 
                     ownBox.add(motionX, 0D);
+                }
+
+                if (object.world.isClient() && object instanceof Entity) {
+                    Entity entity = (Entity) object;
+                    if (entity.doesInterpolate() && !entity.world.isLocalPlayer(entity)) {
+                        double diff = 1F / entity.getSyncFrequency();
+                        double distX = entity.interpolationX - entity.getOriginX();
+                        double distY = entity.interpolationY - entity.getOriginY();
+                        entity.currentBounds.add(distX * diff, distY * diff);
+                    }
                 }
 
                 object.collidedHor = motionX != object.motionX;

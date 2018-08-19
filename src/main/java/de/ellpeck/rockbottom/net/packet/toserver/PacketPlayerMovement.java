@@ -17,20 +17,14 @@ public class PacketPlayerMovement implements IPacket {
     private double motionX;
     private double motionY;
     private Direction facing;
-    private boolean collidedHor;
-    private boolean collidedVert;
-    private boolean onGround;
 
-    public PacketPlayerMovement(UUID playerId, double x, double y, double motionX, double motionY, Direction facing, boolean collidedHor, boolean collidedVert, boolean onGround) {
+    public PacketPlayerMovement(UUID playerId, double x, double y, double motionX, double motionY, Direction facing) {
         this.playerId = playerId;
         this.x = x;
         this.y = y;
         this.motionX = motionX;
         this.motionY = motionY;
         this.facing = facing;
-        this.collidedHor = collidedHor;
-        this.collidedVert = collidedVert;
-        this.onGround = onGround;
     }
 
     public PacketPlayerMovement() {
@@ -45,9 +39,6 @@ public class PacketPlayerMovement implements IPacket {
         buf.writeDouble(this.motionX);
         buf.writeDouble(this.motionY);
         buf.writeInt(this.facing.ordinal());
-        buf.writeBoolean(this.collidedHor);
-        buf.writeBoolean(this.collidedVert);
-        buf.writeBoolean(this.onGround);
     }
 
     @Override
@@ -58,9 +49,6 @@ public class PacketPlayerMovement implements IPacket {
         this.motionX = buf.readDouble();
         this.motionY = buf.readDouble();
         this.facing = Direction.DIRECTIONS[buf.readInt()];
-        this.collidedHor = buf.readBoolean();
-        this.collidedVert = buf.readBoolean();
-        this.onGround = buf.readBoolean();
     }
 
     @Override
@@ -71,9 +59,6 @@ public class PacketPlayerMovement implements IPacket {
                 player.motionX = this.motionX;
                 player.motionY = this.motionY;
                 player.facing = this.facing;
-                player.collidedHor = this.collidedHor;
-                player.collidedVert = this.collidedVert;
-                player.onGround = this.onGround;
                 player.setBoundsOrigin(this.x, this.y);
             }
         }

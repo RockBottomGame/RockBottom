@@ -57,6 +57,11 @@ public class EntityItem extends AbstractEntityItem {
     }
 
     @Override
+    public boolean doesInterpolate() {
+        return true;
+    }
+
+    @Override
     public int getRenderPriority() {
         return 100;
     }

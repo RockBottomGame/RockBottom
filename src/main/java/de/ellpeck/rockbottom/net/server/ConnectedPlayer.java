@@ -137,14 +137,14 @@ public class ConnectedPlayer extends EntityPlayer {
     }
 
     @Override
-    public void setPos(double x, double y) {
-        super.setPos(x, y);
+    public void onPositionReset() {
+        super.onPositionReset();
 
-        this.lastCalcX = x;
-        this.lastCalcY = y;
+        this.lastCalcX = this.getX();
+        this.lastCalcY = this.getY();
         this.fallCalcTicks = 0;
 
-        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.collidedHor, this.collidedVert, this.onGround));
+        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing));
     }
 
     @Override

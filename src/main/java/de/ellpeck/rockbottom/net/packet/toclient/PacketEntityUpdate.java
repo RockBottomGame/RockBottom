@@ -17,20 +17,14 @@ public class PacketEntityUpdate implements IPacket {
     private double motionX;
     private double motionY;
     private Direction facing;
-    private boolean collidedHor;
-    private boolean collidedVert;
-    private boolean onGround;
 
-    public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY, Direction facing, boolean collidedHor, boolean collidedVert, boolean onGround) {
+    public PacketEntityUpdate(UUID uniqueId, double x, double y, double motionX, double motionY, Direction facing) {
         this.uniqueId = uniqueId;
         this.x = x;
         this.y = y;
         this.motionX = motionX;
         this.motionY = motionY;
         this.facing = facing;
-        this.collidedHor = collidedHor;
-        this.collidedVert = collidedVert;
-        this.onGround = onGround;
     }
 
     public PacketEntityUpdate() {
@@ -46,9 +40,6 @@ public class PacketEntityUpdate implements IPacket {
         buf.writeDouble(this.motionX);
         buf.writeDouble(this.motionY);
         buf.writeInt(this.facing.ordinal());
-        buf.writeBoolean(this.collidedHor);
-        buf.writeBoolean(this.collidedVert);
-        buf.writeBoolean(this.onGround);
     }
 
     @Override
@@ -59,9 +50,6 @@ public class PacketEntityUpdate implements IPacket {
         this.motionX = buf.readDouble();
         this.motionY = buf.readDouble();
         this.facing = Direction.DIRECTIONS[buf.readInt()];
-        this.collidedHor = buf.readBoolean();
-        this.collidedVert = buf.readBoolean();
-        this.onGround = buf.readBoolean();
     }
 
     @Override
@@ -72,10 +60,13 @@ public class PacketEntityUpdate implements IPacket {
                 entity.motionX = this.motionX;
                 entity.motionY = this.motionY;
                 entity.facing = this.facing;
-                entity.collidedHor = this.collidedHor;
-                entity.collidedVert = this.collidedVert;
-                entity.onGround = this.onGround;
-                entity.setBoundsOrigin(this.x, this.y);
+
+                if (entity.doesInterpolate()) {
+                    entity.interpolationX = this.x;
+                    entity.interpolationY = this.y;
+                } else {
+                    entity.setBoundsOrigin(this.x, this.y);
+                }
             }
         }
     }
