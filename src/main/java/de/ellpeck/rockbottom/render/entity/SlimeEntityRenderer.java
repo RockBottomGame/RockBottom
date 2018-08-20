@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -30,6 +31,6 @@ public class SlimeEntityRenderer implements IEntityRenderer<EntitySlime> {
         }
 
         IAnimation animation = manager.getAnimation(this.animation);
-        animation.drawRow(startTime, row, x - 0.5F, y + entity.getHeight() / 2F - 1F, 1F, 1F, light);
+        animation.drawRow(startTime, row, x - 0.5F, y + entity.getHeight() / 2F - 1F, 1F, 1F, Colors.WHITE);
     }
 }

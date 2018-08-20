@@ -378,19 +378,26 @@ public class World implements IWorld {
     }
 
     @Override
-    public AbstractEntityPlayer getClosestPlayer(double x, double y) {
-        double closestDist = 0;
+    public AbstractEntityPlayer getClosestPlayer(double x, double y, AbstractEntityPlayer excluding) {
+        double closestDist = Double.MAX_VALUE;
         AbstractEntityPlayer closestPlayer = null;
 
         for (AbstractEntityPlayer player : this.players) {
-            double dist = Util.distanceSq(x, y, player.getX(), player.getY());
-            if (closestPlayer == null || closestDist <= dist) {
-                closestDist = dist;
-                closestPlayer = player;
+            if (player != excluding) {
+                double dist = Util.distanceSq(x, y, player.getX(), player.getY());
+                if (closestDist >= dist) {
+                    closestDist = dist;
+                    closestPlayer = player;
+                }
             }
         }
 
         return closestPlayer;
+    }
+
+    @Override
+    public AbstractEntityPlayer getClosestPlayer(double x, double y) {
+        return this.getClosestPlayer(x, y, null);
     }
 
     @Override

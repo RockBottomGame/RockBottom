@@ -263,14 +263,6 @@ public class EntityPlayer extends AbstractEntityPlayer {
     private void handleEntitySpawns(double thisX, double thisY) {
         for (SpawnBehavior behavior : Registries.SPAWN_BEHAVIOR_REGISTRY.values()) {
             if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0 && behavior.isReadyToSpawn(this.world)) {
-                double cap = behavior.getEntityCap(this.world);
-                if (cap > 0) {
-                    List<Entity> entities = this.world.getEntities(new BoundBox(thisX, thisY, thisX, thisY).expand(behavior.getEntityCapArea(this.world, this)), behavior::belongsToCap);
-                    if (entities.size() >= cap) {
-                        continue;
-                    }
-                }
-
                 double min = behavior.getMinPlayerDistance(this.world, this);
                 double max = behavior.getMaxPlayerDistance(this.world, this);
 
@@ -278,16 +270,27 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     double x = thisX + (min + Util.RANDOM.nextDouble() * (max - min)) * (Util.RANDOM.nextBoolean() ? 1 : -1);
                     double y = thisY + (min + Util.RANDOM.nextDouble() * (max - min)) * (Util.RANDOM.nextBoolean() ? 1 : -1);
 
-                    for (int j = behavior.getPackSize(this.world, x, y); j > 0; j--) {
-                        double theX = x + Util.RANDOM.nextGaussian() * 5D;
-                        double theY = y + Util.RANDOM.nextGaussian() * 5D;
+                    AbstractEntityPlayer closest = this.world.getClosestPlayer(x, y, this);
+                    if (closest == null || Util.distanceSq(closest.getX(), closest.getY(), x, y) >= min * min) {
+                        double cap = behavior.getEntityCap(this.world);
+                        if (cap > 0) {
+                            List<Entity> entities = this.world.getEntities(new BoundBox(x, y, x, y).expand(behavior.getEntityCapArea(this.world, this)), behavior::belongsToCap);
+                            if (entities.size() >= cap) {
+                                break;
+                            }
+                        }
 
-                        if (behavior.canSpawnHere(this.world, theX, theY)) {
-                            Entity entity = behavior.createEntity(this.world, theX, theY);
-                            if (entity != null) {
-                                this.world.addEntity(entity);
+                        for (int j = behavior.getPackSize(this.world, x, y); j > 0; j--) {
+                            double theX = Util.floor(x + Util.RANDOM.nextGaussian() * 5D) + 0.5D;
+                            double theY = Util.floor(y + Util.RANDOM.nextGaussian() * 5D) + 0.5D;
 
-                                RockBottomAPI.logger().finest("Spawned " + entity + " at " + theX + ", " + theY);
+                            if (behavior.canSpawnHere(this.world, theX, theY)) {
+                                Entity entity = behavior.createEntity(this.world, theX, theY);
+                                if (entity != null) {
+                                    this.world.addEntity(entity);
+
+                                    RockBottomAPI.logger().finest("Spawned " + entity + " at " + theX + ", " + theY);
+                                }
                             }
                         }
                     }

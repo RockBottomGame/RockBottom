@@ -29,37 +29,37 @@ public class EntitySlime extends AbstractEntitySlime {
 
         @Override
         public double getMinPlayerDistance(IWorld world, AbstractEntityPlayer player) {
-            return 30;
+            return 20;
         }
 
         @Override
         public double getMaxPlayerDistance(IWorld world, AbstractEntityPlayer player) {
-            return 50;
-        }
-
-        @Override
-        public int getSpawnTries(IWorld world) {
-            return 10;
-        }
-
-        @Override
-        public int getPackSize(IWorld world, double x, double y) {
-            return 10;
-        }
-
-        @Override
-        public boolean belongsToCap(Entity entity) {
-            return entity instanceof AbstractEntitySlime;
-        }
-
-        @Override
-        public int getEntityCap(IWorld world) {
             return 30;
         }
 
         @Override
+        public int getSpawnTries(IWorld world) {
+            return 5;
+        }
+
+        @Override
+        public int getPackSize(IWorld world, double x, double y) {
+            return 3;
+        }
+
+        @Override
+        public boolean belongsToCap(Entity entity) {
+            return entity instanceof EntityLiving;
+        }
+
+        @Override
         public double getEntityCapArea(IWorld world, AbstractEntityPlayer player) {
-            return super.getEntityCapArea(world, player);
+            return 15;
+        }
+
+        @Override
+        public int getEntityCap(IWorld world) {
+            return 3;
         }
     };
 
@@ -71,13 +71,8 @@ public class EntitySlime extends AbstractEntitySlime {
     private int attackCooldown;
     private final DespawnHandler<EntitySlime> despawnHandler = new DespawnHandler<EntitySlime>() {
         @Override
-        public boolean isReadyToDespawn(EntitySlime entity) {
-            return true;
-        }
-
-        @Override
         public double getMaxPlayerDistance(EntitySlime entity) {
-            return 100;
+            return 50;
         }
     };
 
