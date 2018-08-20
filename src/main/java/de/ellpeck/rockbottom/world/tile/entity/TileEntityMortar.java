@@ -36,13 +36,13 @@ public class TileEntityMortar extends TileEntity {
             if (recipe != null) {
                 this.progress++;
                 if (this.progress >= recipe.getTime()) {
+                    this.currentRecipe = null;
+                    this.progress = 0;
+
                     for (int i = 0; i < this.inventory.getSlotAmount(); i++) {
                         ItemInstance toSet = recipe.getOutput()[i];
                         this.inventory.set(i, toSet == null ? null : toSet.copy());
                     }
-
-                    this.currentRecipe = null;
-                    this.progress = 0;
                 } else {
                     this.sendToClients();
                 }
