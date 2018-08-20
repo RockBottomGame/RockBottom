@@ -364,6 +364,9 @@ public class InternalHooks implements IInternalHooks {
 
                 RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBoxMotion, boxes));
 
+                motionX = object.motionX;
+                motionY = object.motionY;
+
                 if (motionY != 0) {
                     if (!boxes.isEmpty()) {
                         for (BoundBox box : boxes) {
