@@ -91,18 +91,13 @@ public class TileLog extends TileBasic {
 
     @Override
     public boolean canLiquidSpreadInto(IWorld world, int x, int y, TileLiquid liquid) {
-        LogType type = world.getState(x, y).get(StaticTileProps.LOG_VARIANT);
-        return type != LogType.TRUNK_BOTTOM && type != LogType.TRUNK_MIDDLE;
+        return world.getState(x, y).get(StaticTileProps.LOG_VARIANT).isNatural();
     }
 
     @Override
     public boolean canBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer player, boolean isRightTool) {
-        if (isRightTool) {
-            LogType type = world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT);
-            return !type.isNatural() || type == LogType.TRUNK_BOTTOM || type == LogType.TRUNK_MIDDLE;
-        } else {
-            return false;
-        }
+        LogType type = world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT);
+        return !type.isNatural() || (isRightTool && (type == LogType.TRUNK_BOTTOM || type == LogType.TRUNK_MIDDLE));
     }
 
     @Override
