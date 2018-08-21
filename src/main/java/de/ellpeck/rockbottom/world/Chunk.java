@@ -894,10 +894,21 @@ public class Chunk implements IChunk {
                         for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
                             int id = data.get(counter).get();
                             TileState tile = this.world.getStateForId(id);
+
+                            if (tile == null) {
+                                ResourceName name = this.world.getTileRegInfo().get(id);
+
+                                MissingTileEvent event = new MissingTileEvent(this.world, this, id, name);
+                                RockBottomAPI.getEventHandler().fireEvent(event);
+                                tile = event.newState;
+
+                                if (tile == null) {
+                                    RockBottomAPI.logger().warning("Could not load tile at " + x + ' ' + y + " because tile state with name " + name + " is missing - subscribe to the MissingTileEvent to fix this issue!");
+                                }
+                            }
+
                             if (tile != null) {
                                 this.setStateInner(layer, x, y, tile);
-                            } else {
-                                RockBottomAPI.logger().warning("Could not load tile at " + x + ' ' + y + " because id " + id + " is missing!");
                             }
                             counter++;
                         }
@@ -916,7 +927,7 @@ public class Chunk implements IChunk {
                     if (biome != null) {
                         this.setBiomeInner(x, y, biome);
                     } else {
-                        RockBottomAPI.logger().warning("Could not load biome at " + x + ' ' + y + " because id " + id + " is missing!");
+                        RockBottomAPI.logger().warning("Could not load biome at " + x + ' ' + y + " because biome with name " + this.world.getBiomeRegInfo().get(id) + " is missing!");
                     }
                     biomeCounter++;
                 }
