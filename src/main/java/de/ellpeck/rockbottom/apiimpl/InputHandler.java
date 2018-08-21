@@ -194,9 +194,8 @@ public class InputHandler implements IInputHandler {
             } else if (key == GLFW.GLFW_KEY_F9) {
                 renderer.isBoundBoxDebug = !renderer.isBoundBoxDebug;
                 return true;
-            }
-            else if(key == GLFW.GLFW_KEY_F11){
-                renderer.isCullingDebug =!renderer.isCullingDebug;
+            } else if (key == GLFW.GLFW_KEY_F11) {
+                renderer.isCullingDebug = !renderer.isCullingDebug;
                 return true;
             }
         }

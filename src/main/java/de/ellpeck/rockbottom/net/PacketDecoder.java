@@ -1,14 +1,12 @@
 package de.ellpeck.rockbottom.net;
 
 import de.ellpeck.rockbottom.api.Registries;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
-import java.util.logging.Level;
 
 public class PacketDecoder extends ByteToMessageDecoder {
 
@@ -26,18 +24,15 @@ public class PacketDecoder extends ByteToMessageDecoder {
                 packet.fromBuffer(buf);
 
                 if (buf.isReadable()) {
-                    RockBottomAPI.logger().log(Level.WARNING, "Packet " + packetClass + " with id " + id + " read from buffer, but left " + buf.readableBytes() + " bytes behind!");
-                    buf.clear();
+                    throw new IllegalStateException("Packet " + packetClass + " with id " + id + " read from buffer, but left " + buf.readableBytes() + " bytes behind!");
                 }
             } catch (Exception e) {
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't read packet " + packetClass + " with id " + id + " from buffer", e);
-                buf.clear();
+                throw new RuntimeException("Couldn't read packet " + packetClass + " with id " + id + " from buffer", e);
             }
 
             out.add(packet);
         } else {
-            RockBottomAPI.logger().log(Level.WARNING, "Found unknown packet with id " + id);
-            buf.clear();
+            throw new IllegalStateException("Found unknown packet with id " + id);
         }
 
         packetsReceived++;
