@@ -161,7 +161,16 @@ public class World implements IWorld {
         }
     }
 
-    protected void updateChunks(IGameInstance game) {
+    protected void updateChunksAndTime(IGameInstance game) {
+        if (!this.info.timeFrozen) {
+            this.info.totalTimeInWorld++;
+
+            this.info.currentWorldTime++;
+            if (this.info.currentWorldTime >= Constants.TIME_PER_DAY) {
+                this.info.currentWorldTime = 0;
+            }
+        }
+
         for (int i = this.loadedChunks.size() - 1; i >= 0; i--) {
             IChunk chunk = this.loadedChunks.get(i);
             chunk.update(game);
@@ -174,17 +183,10 @@ public class World implements IWorld {
 
     public void update(AbstractGame game) {
         if (RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED) {
-            this.updateChunks(game);
-
-            this.info.totalTimeInWorld++;
-
-            this.info.currentWorldTime++;
-            if (this.info.currentWorldTime >= Constants.TIME_PER_DAY) {
-                this.info.currentWorldTime = 0;
-            }
+            this.updateChunksAndTime(game);
 
             if (this.isServer() && this.info.totalTimeInWorld % 80 == 0) {
-                RockBottomAPI.getNet().sendToAllPlayers(this, new PacketTime(this.info.currentWorldTime, this.info.totalTimeInWorld));
+                RockBottomAPI.getNet().sendToAllPlayers(this, new PacketTime(this.info.currentWorldTime, this.info.totalTimeInWorld, this.info.timeFrozen));
             }
 
             this.saveTicksCounter++;

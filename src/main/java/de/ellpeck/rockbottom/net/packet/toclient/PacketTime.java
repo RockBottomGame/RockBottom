@@ -10,10 +10,12 @@ public class PacketTime implements IPacket {
 
     private int currentTime;
     private int totalTime;
+    private boolean frozen;
 
-    public PacketTime(int currentTime, int totalTime) {
+    public PacketTime(int currentTime, int totalTime, boolean frozen) {
         this.currentTime = currentTime;
         this.totalTime = totalTime;
+        this.frozen = frozen;
     }
 
     public PacketTime() {
@@ -23,12 +25,14 @@ public class PacketTime implements IPacket {
     public void toBuffer(ByteBuf buf) {
         buf.writeInt(this.currentTime);
         buf.writeInt(this.totalTime);
+        buf.writeBoolean(this.frozen);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) {
         this.currentTime = buf.readInt();
         this.totalTime = buf.readInt();
+        this.frozen = buf.readBoolean();
     }
 
     @Override
@@ -37,6 +41,7 @@ public class PacketTime implements IPacket {
         if (world != null) {
             world.setCurrentTime(this.currentTime);
             world.setTotalTime(this.totalTime);
+            world.getWorldInfo().timeFrozen = this.frozen;
         }
     }
 }

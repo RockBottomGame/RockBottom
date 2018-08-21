@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.net.client;
 
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
@@ -41,14 +40,7 @@ public class ClientWorld extends World {
     @Override
     public void update(AbstractGame game) {
         if (RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED) {
-            this.updateChunks(game);
-
-            this.info.totalTimeInWorld++;
-
-            this.info.currentWorldTime++;
-            if (this.info.currentWorldTime >= Constants.TIME_PER_DAY) {
-                this.info.currentWorldTime = 0;
-            }
+            this.updateChunksAndTime(game);
         }
     }
 

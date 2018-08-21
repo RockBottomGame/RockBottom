@@ -28,22 +28,36 @@ public class CommandTime extends Command {
         if (args.length >= 2) {
             IWorld world = game.getWorld();
 
-            try {
-                int amount = Math.abs(Integer.parseInt(args[1])) % Constants.TIME_PER_DAY;
-
-                if ("set".equals(args[0])) {
-                    world.setCurrentTime(amount);
-                } else if ("advance".equals(args[0])) {
-                    world.setCurrentTime(world.getCurrentTime() + amount);
+            if ("freeze".equals(args[0])) {
+                boolean value;
+                if ("on".equals(args[1])) {
+                    value = true;
+                } else if ("off".equals(args[1])) {
+                    value = false;
                 } else {
-                    return new ChatComponentText(FormattingCode.RED + "Specify your action!");
+                    return new ChatComponentText(FormattingCode.RED + "Couldn't parse freeze value!");
                 }
+                world.getWorldInfo().timeFrozen = value;
 
-                RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(world.getCurrentTime(), world.getTotalTime()));
+                RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
+                return new ChatComponentText(FormattingCode.GREEN + "Set time freeze to " + value + '!');
+            } else {
+                try {
+                    int amount = Math.abs(Integer.parseInt(args[1])) % Constants.TIME_PER_DAY;
 
-                return new ChatComponentText(FormattingCode.GREEN + "Set time to " + world.getCurrentTime() + '!');
-            } catch (NumberFormatException e) {
-                return new ChatComponentText(FormattingCode.RED + "Couldn't parse time!");
+                    if ("set".equals(args[0])) {
+                        world.setCurrentTime(amount);
+                    } else if ("advance".equals(args[0])) {
+                        world.setCurrentTime(world.getCurrentTime() + amount);
+                    } else {
+                        return new ChatComponentText(FormattingCode.RED + "Specify your action!");
+                    }
+
+                    RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
+                    return new ChatComponentText(FormattingCode.GREEN + "Set time to " + world.getCurrentTime() + '!');
+                } catch (NumberFormatException e) {
+                    return new ChatComponentText(FormattingCode.RED + "Couldn't parse time!");
+                }
             }
         } else {
             return new ChatComponentText(FormattingCode.RED + "Wrong number of arguments!");
@@ -53,7 +67,9 @@ public class CommandTime extends Command {
     @Override
     public List<String> getAutocompleteSuggestions(String[] args, int argNumber, ICommandSender sender, IGameInstance game, IChatLog chat) {
         if (argNumber == 0) {
-            return Arrays.asList("set", "advance");
+            return Arrays.asList("set", "advance", "freeze");
+        } else if (argNumber == 1 && "freeze".equals(args[0])) {
+            return Arrays.asList("on", "off");
         } else {
             return Collections.emptyList();
         }
