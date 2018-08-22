@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
@@ -31,8 +32,9 @@ public class TileMortar extends TileBasic {
         if (tile != null) {
             IFilteredInventory inv = tile.getTileInventory();
             if (instance != null) {
-                if (instance.getItem().getName().getResourceName().contains("pestle")) {
+                if (instance.getItem().getToolProperties(instance).containsKey(ToolProperty.PESTLE)) {
                     if (!world.isClient()) {
+                        instance.getItem().takeDamage(instance, player, 1);
                         tile.doPestleProgress();
                     }
                     return true;

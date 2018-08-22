@@ -12,6 +12,7 @@ import de.ellpeck.rockbottom.api.event.impl.LayerActionEvent.Type;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.item.ToolType;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -181,9 +182,20 @@ public class InteractionManager implements IInteractionManager {
 
     public static boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y) {
         if (instance != null) {
+            //Can be removed later
             Map<ToolType, Integer> tools = instance.getItem().getToolTypes(instance);
             if (!tools.isEmpty()) {
                 for (Map.Entry<ToolType, Integer> entry : tools.entrySet()) {
+                    if (tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())) {
+                        return true;
+                    }
+                }
+            }
+            //Removable code end
+
+            Map<ToolProperty, Integer> props = instance.getItem().getToolProperties(instance);
+            if (!props.isEmpty()) {
+                for (Map.Entry<ToolProperty, Integer> entry : props.entrySet()) {
                     if (tile.isToolEffective(player.world, x, y, layer, entry.getKey(), entry.getValue())) {
                         return true;
                     }
