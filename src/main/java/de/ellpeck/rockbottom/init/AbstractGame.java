@@ -40,7 +40,9 @@ import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -435,6 +437,16 @@ public abstract class AbstractGame implements IGameInstance {
     @Override
     public boolean isRunning() {
         return this.isRunning;
+    }
+
+    @Override
+    public InputStream getResourceStream(String s) {
+        return ContentManager.getResourceAsStream(s);
+    }
+
+    @Override
+    public URL getResourceURL(String s) {
+        return ContentManager.getResource(s);
     }
 
     private static class EnqueuedAction<T> {
