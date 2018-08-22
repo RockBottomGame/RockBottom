@@ -16,12 +16,14 @@ public class PacketInteract implements IPacket {
     private TileLayer layer;
     private double x;
     private double y;
+    private boolean isDestroyKey;
 
-    public PacketInteract(UUID playerId, TileLayer layer, double x, double y) {
+    public PacketInteract(UUID playerId, TileLayer layer, double x, double y, boolean isDestroyKey) {
         this.playerId = playerId;
         this.layer = layer;
         this.x = x;
         this.y = y;
+        this.isDestroyKey = isDestroyKey;
     }
 
     public PacketInteract() {
@@ -35,6 +37,7 @@ public class PacketInteract implements IPacket {
         buf.writeInt(this.layer.index());
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
+        buf.writeBoolean(this.isDestroyKey);
     }
 
     @Override
@@ -43,6 +46,7 @@ public class PacketInteract implements IPacket {
         this.layer = TileLayer.getAllLayers().get(buf.readInt());
         this.x = buf.readDouble();
         this.y = buf.readDouble();
+        this.isDestroyKey = buf.readBoolean();
     }
 
     @Override
@@ -50,7 +54,7 @@ public class PacketInteract implements IPacket {
         if (game.getWorld() != null) {
             AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
             if (player != null) {
-                InteractionManager.interact(player, this.layer, this.x, this.y);
+                InteractionManager.interact(player, this.layer, this.x, this.y, this.isDestroyKey);
             }
         }
     }

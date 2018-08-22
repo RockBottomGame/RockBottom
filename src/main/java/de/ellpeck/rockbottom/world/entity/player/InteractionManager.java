@@ -40,10 +40,10 @@ public class InteractionManager implements IInteractionManager {
     public int breakTileY;
 
     public float breakProgress;
-    public int placeCooldown;
+    public int interactCooldown;
     public int attackCooldown;
 
-    public static boolean interact(AbstractEntityPlayer player, TileLayer inputLayer, double mouseX, double mouseY) {
+    public static boolean interact(AbstractEntityPlayer player, TileLayer inputLayer, double mouseX, double mouseY, boolean destKey) {
         List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
 
         InteractionEvent event = new InteractionEvent(player, entities, inputLayer, Util.floor(mouseX), Util.floor(mouseY), mouseX, mouseY);
@@ -56,21 +56,21 @@ public class InteractionManager implements IInteractionManager {
 
             for (Entity entity : entities) {
                 if (player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player))) {
-                    interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new EntityInteractEvent(player, entity, mouseX, mouseY)) != EventResult.CANCELLED && entity.onInteractWith(player, mouseX, mouseY), entity.getInteractionPriority(player, mouseX, mouseY)));
+                    interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new EntityInteractEvent(player, entity, mouseX, mouseY)) != EventResult.CANCELLED && (destKey ? entity.onInteractWithBreakKey(player, mouseX, mouseY) : entity.onInteractWith(player, mouseX, mouseY)), entity.getInteractionPriority(player, mouseX, mouseY)));
                 }
             }
 
             TileState state = player.world.getState(layer, x, y);
             Tile tile = state.getTile();
             if (player.isInRange(mouseX, mouseY, tile.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player))) {
-                interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new TileInteractEvent(player, state, layer, x, y, mouseX, mouseY)) != EventResult.CANCELLED && tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player), tile.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player)));
+                interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new TileInteractEvent(player, state, layer, x, y, mouseX, mouseY)) != EventResult.CANCELLED && (destKey ? tile.onInteractWithBreakKey(player.world, x, y, layer, mouseX, mouseY, player) : tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)), tile.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player)));
             }
 
             ItemInstance selected = player.getInv().get(player.getSelectedSlot());
             if (selected != null) {
                 Item item = selected.getItem();
                 if (player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player, selected))) {
-                    interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new ItemInteractEvent(player, selected, mouseX, mouseY)) != EventResult.CANCELLED && item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected), item.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player, selected)));
+                    interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new ItemInteractEvent(player, selected, mouseX, mouseY)) != EventResult.CANCELLED && (destKey ? item.onInteractWithDestKey(player.world, x, y, layer, mouseX, mouseY, player, selected) : item.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player, selected)), item.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player, selected)));
                 }
             }
 
@@ -199,8 +199,8 @@ public class InteractionManager implements IInteractionManager {
             Gui gui = game.getGuiManager().getGui();
 
             if (gui == null && !player.isDead()) {
-                if (this.placeCooldown > 0) {
-                    this.placeCooldown--;
+                if (this.interactCooldown > 0) {
+                    this.interactCooldown--;
                 }
 
                 if (this.attackCooldown > 0) {
@@ -252,9 +252,23 @@ public class InteractionManager implements IInteractionManager {
 
                     if (!attacked) {
                         for (TileLayer layer : TileLayer.getLayersByInteractionPrio()) {
-                            EventResult breakResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.BREAK, player.world, layer, mousedTileX, mousedTileY));
-                            if (breakResult != EventResult.CANCELLED && (breakResult == EventResult.MODIFIED || layer.canEditLayer(game, player))) {
-                                if (Settings.KEY_DESTROY.isDown()) {
+                            if (Settings.KEY_DESTROY.isDown()) {
+                                if (this.breakProgress <= 0) {
+                                    EventResult interactBreakResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.INTERACT_WITH_BREAK_KEY, player.world, layer, mousedTileX, mousedTileY));
+                                    if (interactBreakResult != EventResult.CANCELLED && (interactBreakResult == EventResult.MODIFIED || (layer.canEditLayer(game, player) && this.interactCooldown <= 0))) {
+                                        if (interact(player, layer, mousedTileX, mousedTileY, true)) {
+                                            if (RockBottomAPI.getNet().isClient()) {
+                                                RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY, true));
+                                            }
+
+                                            this.interactCooldown = 10;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                EventResult breakResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.BREAK, player.world, layer, mousedTileX, mousedTileY));
+                                if (breakResult != EventResult.CANCELLED && (breakResult == EventResult.MODIFIED || layer.canEditLayer(game, player))) {
                                     Tile tile = player.world.getState(layer, x, y).getTile();
 
                                     boolean effective = isToolEffective(player, selected, tile, layer, x, y);
@@ -296,18 +310,16 @@ public class InteractionManager implements IInteractionManager {
                                 }
                             }
 
-                            EventResult placeResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.INTERACT, player.world, layer, mousedTileX, mousedTileY));
-                            if (placeResult != EventResult.CANCELLED && (placeResult == EventResult.MODIFIED || layer.canEditLayer(game, player))) {
-                                if (this.placeCooldown <= 0) {
-                                    if (Settings.KEY_PLACE.isDown()) {
-                                        if (interact(player, layer, mousedTileX, mousedTileY)) {
-                                            if (RockBottomAPI.getNet().isClient()) {
-                                                RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY));
-                                            }
-
-                                            this.placeCooldown = 10;
-                                            break;
+                            if (Settings.KEY_PLACE.isDown()) {
+                                EventResult placeResult = RockBottomAPI.getEventHandler().fireEvent(new LayerActionEvent(Type.INTERACT, player.world, layer, mousedTileX, mousedTileY));
+                                if (placeResult != EventResult.CANCELLED && (placeResult == EventResult.MODIFIED || (layer.canEditLayer(game, player) && this.interactCooldown <= 0))) {
+                                    if (interact(player, layer, mousedTileX, mousedTileY, false)) {
+                                        if (RockBottomAPI.getNet().isClient()) {
+                                            RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY, false));
                                         }
+
+                                        this.interactCooldown = 10;
+                                        break;
                                     }
                                 }
                             }
@@ -405,7 +417,7 @@ public class InteractionManager implements IInteractionManager {
 
     @Override
     public int getPlaceCooldown() {
-        return this.placeCooldown;
+        return this.interactCooldown;
     }
 
     private static class InteractionInfo {
