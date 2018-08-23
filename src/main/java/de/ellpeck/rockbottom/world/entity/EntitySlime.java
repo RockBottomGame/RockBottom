@@ -137,14 +137,14 @@ public class EntitySlime extends AbstractEntitySlime {
     }
 
     @Override
-    public void save(DataSet set) {
-        super.save(set);
+    public void save(DataSet set, boolean forFullSync) {
+        super.save(set, forFullSync);
         set.addInt("variation", this.variation);
     }
 
     @Override
-    public void load(DataSet set) {
-        super.load(set);
+    public void load(DataSet set, boolean forFullSync) {
+        super.load(set, forFullSync);
         this.variation = set.getInt("variation");
     }
 

@@ -35,7 +35,7 @@ public class PacketEntityChange implements IPacket {
             } else {
                 this.name = Registries.ENTITY_REGISTRY.getId(entity.getClass()).toString();
             }
-            entity.save(this.entitySet);
+            entity.save(this.entitySet, true);
         }
     }
 
@@ -88,11 +88,11 @@ public class PacketEntityChange implements IPacket {
                     }
 
                     if (entity != null) {
-                        entity.load(this.entitySet);
+                        entity.load(this.entitySet, true);
                         world.addEntity(entity);
                     }
                 } else {
-                    entity.load(this.entitySet);
+                    entity.load(this.entitySet, true);
                 }
             }
         }

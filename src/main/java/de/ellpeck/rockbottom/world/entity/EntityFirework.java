@@ -72,14 +72,14 @@ public class EntityFirework extends Entity {
     }
 
     @Override
-    public void save(DataSet set) {
-        super.save(set);
+    public void save(DataSet set, boolean forFullSync) {
+        super.save(set, forFullSync);
         set.addInt("lifetime", this.lifetime);
     }
 
     @Override
-    public void load(DataSet set) {
-        super.load(set);
+    public void load(DataSet set, boolean forFullSync) {
+        super.load(set, forFullSync);
         this.lifetime = set.getInt("lifetime");
     }
 }

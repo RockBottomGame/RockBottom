@@ -408,7 +408,7 @@ public class RockBottom extends AbstractGame {
         RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
 
         this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, false);
-        this.player.load(playerSet);
+        this.player.load(playerSet, true);
 
         this.world.addEntity(this.player);
         this.world.addPlayer(this.player);

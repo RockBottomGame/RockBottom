@@ -31,6 +31,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -42,9 +43,8 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.log.Logging;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketAITask;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityUpdate;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketToolBreak;
+import de.ellpeck.rockbottom.net.packet.toclient.*;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
@@ -1208,5 +1208,30 @@ public class InternalHooks implements IInternalHooks {
         }
 
         player.getStatistics().getOrInit(StatisticList.TOOLS_BROKEN, NumberStatistic.class).update();
+    }
+
+    @Override
+    public void dropHeldItem(AbstractEntityPlayer player, ItemContainer container) {
+        PacketDrop.dropHeldItem(player, container);
+    }
+
+    @Override
+    public void packetDamage(IWorld world, double x, double y, UUID entityId, int damage) {
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new PacketDamage(entityId, damage), x, y);
+    }
+
+    @Override
+    public void packetDeath(IWorld world, double x, double y, UUID entityId) {
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new PacketDeath(entityId), x, y);
+    }
+
+    @Override
+    public void packetTileEntityData(TileEntity tile) {
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(tile.world, new PacketTileEntityData(tile.x, tile.y, tile.layer, tile), tile.x, tile.y);
+    }
+
+    @Override
+    public void packetEntityData(Entity entity) {
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketEntityChange(entity, false), entity.getX(), entity.getY());
     }
 }

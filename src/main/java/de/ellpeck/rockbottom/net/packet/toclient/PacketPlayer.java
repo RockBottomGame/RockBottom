@@ -25,7 +25,7 @@ public class PacketPlayer implements IPacket {
         this.remove = remove;
 
         if (!remove) {
-            player.save(this.playerData);
+            player.save(this.playerData, true);
             this.playerData.addString("design", Util.GSON.toJson(player.getDesign()));
         }
     }
@@ -60,7 +60,7 @@ public class PacketPlayer implements IPacket {
             } else {
                 PlayerDesign design = Util.GSON.fromJson(this.playerData.getString("design"), PlayerDesign.class);
                 AbstractEntityPlayer player = new EntityPlayer(world, this.playerId, design);
-                player.load(this.playerData);
+                player.load(this.playerData, true);
                 world.addPlayer(player);
             }
         }

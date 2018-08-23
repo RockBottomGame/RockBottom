@@ -357,8 +357,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
-    public void save(DataSet set) {
-        super.save(set);
+    public void save(DataSet set, boolean forFullSync) {
+        super.save(set, forFullSync);
         this.inv.save(set);
         this.knowledge.save(set);
         this.statistics.save(set);
@@ -367,8 +367,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
-    public void load(DataSet set) {
-        super.load(set);
+    public void load(DataSet set, boolean forFullSync) {
+        super.load(set, forFullSync);
         this.inv.load(set);
         this.knowledge.load(set);
         this.statistics.load(set);

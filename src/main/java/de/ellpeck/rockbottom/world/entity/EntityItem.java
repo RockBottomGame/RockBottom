@@ -80,8 +80,8 @@ public class EntityItem extends AbstractEntityItem {
     }
 
     @Override
-    public void save(DataSet set) {
-        super.save(set);
+    public void save(DataSet set, boolean forFullSync) {
+        super.save(set, forFullSync);
 
         if (this.item != null) {
             DataSet itemSet = new DataSet();
@@ -93,8 +93,8 @@ public class EntityItem extends AbstractEntityItem {
     }
 
     @Override
-    public void load(DataSet set) {
-        super.load(set);
+    public void load(DataSet set, boolean forFullSync) {
+        super.load(set, forFullSync);
 
         DataSet itemSet = set.getDataSet("item");
         this.item = ItemInstance.load(itemSet);

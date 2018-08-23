@@ -63,14 +63,14 @@ public class EntityFalling extends Entity {
     }
 
     @Override
-    public void save(DataSet set) {
-        super.save(set);
+    public void save(DataSet set, boolean forFullSync) {
+        super.save(set, forFullSync);
         set.addInt("state", this.world.getIdForState(this.state));
     }
 
     @Override
-    public void load(DataSet set) {
-        super.load(set);
+    public void load(DataSet set, boolean forFullSync) {
+        super.load(set,forFullSync);
         this.state = this.world.getStateForId(set.getInt("state"));
         if (this.state != null) {
             this.stateInstance = new ItemInstance(this.state.getTile());

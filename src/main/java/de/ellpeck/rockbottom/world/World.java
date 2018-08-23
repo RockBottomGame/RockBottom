@@ -882,7 +882,7 @@ public class World implements IWorld {
     @Override
     public void savePlayer(AbstractEntityPlayer player) {
         DataSet playerSet = new DataSet();
-        player.save(playerSet);
+        player.save(playerSet, false);
 
         playerSet.write(new File(this.playerDirectory, player.getUniqueId() + ".dat"));
     }
@@ -916,7 +916,7 @@ public class World implements IWorld {
             DataSet set = new DataSet();
             set.read(file);
 
-            player.load(set);
+            player.load(set, false);
             RockBottomAPI.logger().info("Loading player " + design.getName() + " with unique id " + id + '!');
         } else {
             boolean loaded = false;
@@ -928,7 +928,7 @@ public class World implements IWorld {
                         DataSet set = new DataSet();
                         set.read(lastFile);
 
-                        player.load(set);
+                        player.load(set, false);
                         RockBottomAPI.logger().info("Loading player " + design.getName() + " with unique id " + id + " from last player file " + lastFile + '!');
 
                         this.savePlayer(player);

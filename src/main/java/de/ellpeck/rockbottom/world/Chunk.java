@@ -840,7 +840,7 @@ public class Chunk implements IChunk {
                 DataSet entitySet = new DataSet();
                 entitySet.addUniqueId("uuid", entity.getUniqueId());
                 entitySet.addString("name", Registries.ENTITY_REGISTRY.getId(entity.getClass()).toString());
-                entity.save(entitySet);
+                entity.save(entitySet, false);
                 entities.add(new PartDataSet(entitySet));
             }
         }
@@ -954,7 +954,7 @@ public class Chunk implements IChunk {
                 Entity entity = Util.createEntity(new ResourceName(name), this.world);
 
                 if (entity != null) {
-                    entity.load(entitySet);
+                    entity.load(entitySet, false);
                     entity.setUniqueId(id);
                     this.addEntity(entity);
                 } else {

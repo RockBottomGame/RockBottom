@@ -19,7 +19,7 @@ public class PacketInitialServerData implements IPacket {
     private DynamicRegistryInfo regInfo;
 
     public PacketInitialServerData(AbstractEntityPlayer player, WorldInfo info, DynamicRegistryInfo regInfo) {
-        player.save(this.playerSet);
+        player.save(this.playerSet, true);
         this.info = info;
         this.regInfo = regInfo;
     }
