@@ -162,9 +162,9 @@ public class World implements IWorld {
     }
 
     protected void updateChunksAndTime(IGameInstance game) {
-        if (!this.info.timeFrozen) {
-            this.info.totalTimeInWorld++;
+        this.info.totalTimeInWorld++;
 
+        if (!this.info.timeFrozen) {
             this.info.currentWorldTime++;
             if (this.info.currentWorldTime >= Constants.TIME_PER_DAY) {
                 this.info.currentWorldTime = 0;
