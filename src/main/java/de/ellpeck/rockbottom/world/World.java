@@ -85,6 +85,11 @@ public class World extends AbstractWorld {
     }
 
     @Override
+    protected boolean shouldGenerateHere(IWorldGenerator generator, ResourceName name) {
+        return generator.shouldExistInWorld(this);
+    }
+
+    @Override
     public boolean update(AbstractGame game) {
         if (super.update(game)) {
             for (SubWorld world : this.subWorlds) {

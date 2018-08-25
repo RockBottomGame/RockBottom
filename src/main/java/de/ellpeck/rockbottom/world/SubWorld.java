@@ -35,6 +35,11 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
+    protected boolean shouldGenerateHere(IWorldGenerator generator, ResourceName name) {
+        return this.initializer.shouldGenerateHere(this, generator, name);
+    }
+
+    @Override
     public String getName() {
         return this.name + "@" + this.mainWorld.getName();
     }

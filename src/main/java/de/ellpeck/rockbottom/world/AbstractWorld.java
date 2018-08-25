@@ -87,7 +87,7 @@ public abstract class AbstractWorld implements IWorld {
         for (Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : Registries.WORLD_GENERATORS.entrySet()) {
             try {
                 IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
-                if (generator.shouldExistInWorld(this)) {
+                if (this.shouldGenerateHere(generator, entry.getKey())) {
                     generator.initWorld(this);
 
                     if (generator.generatesPerChunk()) {
@@ -101,7 +101,7 @@ public abstract class AbstractWorld implements IWorld {
                     generators.put(entry.getKey(), generator);
                 }
             } catch (Exception e) {
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class " + entry.getValue()+" for world "+this.getName(), e);
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class " + entry.getValue() + " for world " + this.getName(), e);
             }
         }
 
@@ -115,6 +115,8 @@ public abstract class AbstractWorld implements IWorld {
 
         RockBottomAPI.logger().info("Added a total of " + this.generators.size() + " generators to world " + this.getName() + " (" + this.loopingGenerators.size() + " per chunk, " + this.retroactiveGenerators.size() + " retroactive)");
     }
+
+    protected abstract boolean shouldGenerateHere(IWorldGenerator generator, ResourceName name);
 
     protected void loadPersistentChunks(List<Pos2> defaults) {
         Map<Pos2, Boolean> persistentChunks = new HashMap<>();
@@ -672,7 +674,7 @@ public abstract class AbstractWorld implements IWorld {
         });
     }
 
-    protected void saveMore(){
+    protected void saveMore() {
 
     }
 
