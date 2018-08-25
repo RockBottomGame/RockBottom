@@ -38,12 +38,9 @@ public class ClientWorld extends World {
     }
 
     @Override
-    public boolean update(AbstractGame game) {
+    public void update(AbstractGame game) {
         if (RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED) {
             this.updateChunksAndTime(game);
-            return true;
-        } else {
-            return false;
         }
     }
 

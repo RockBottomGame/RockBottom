@@ -50,7 +50,7 @@ public class Chunk implements IChunk {
     public final List<AbstractEntityPlayer> playersInRange = new ArrayList<>();
     public final List<AbstractEntityPlayer> playersOutOfRangeCached = new ArrayList<>();
     public final Map<AbstractEntityPlayer, Counter> playersOutOfRangeCachedTimers = new HashMap<>();
-    protected final AbstractWorld world;
+    protected final World world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final Map<TileLayer, TileState[][]> stateGrid = new HashMap<>();
     protected final List<TileLayer> layersByRenderPrio = new ArrayList<>();
@@ -77,7 +77,7 @@ public class Chunk implements IChunk {
     private Biome mostProminentBiome = GameContent.BIOME_SKY;
     private float fadePercentage;
 
-    public Chunk(AbstractWorld world, int gridX, int gridY, boolean constantlyPersistent) {
+    public Chunk(World world, int gridX, int gridY, boolean constantlyPersistent) {
         this.world = world;
         this.constantlyPersistent = constantlyPersistent;
 
@@ -120,7 +120,7 @@ public class Chunk implements IChunk {
 
     private boolean canGenerate(IWorldGenerator generator) {
         if (generator.needsPlayerToAllowGeneration(this.world, this)) {
-            for (AbstractEntityPlayer player : this.world.getAllPlayers()) {
+            for (AbstractEntityPlayer player : this.world.players) {
                 if (generator.doesPlayerAllowGeneration(this.world, this, player)) {
                     return true;
                 }

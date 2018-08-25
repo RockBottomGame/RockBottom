@@ -79,7 +79,7 @@ public final class DebugRenderer {
             list.add(chunks);
 
             list.add("Entities: " + world.getAllEntities().size());
-            list.add("Players: " + world.getAllPlayers().size());
+            list.add("Players: " + world.players.size());
             list.add("TileEntities: " + world.getAllTileEntities().size() + ", Ticking: " + world.getAllTickingTileEntities().size());
             list.add("Particles: " + game.getParticleManager().getAmount());
             int scheduledTileAmount = 0;
