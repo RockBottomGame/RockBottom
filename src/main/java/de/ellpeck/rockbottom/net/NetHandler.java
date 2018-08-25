@@ -135,7 +135,7 @@ public class NetHandler implements INetHandler {
     public void sendToAllPlayersAroundExcept(IWorld world, IPacket packet, double x, double y, double radius, Entity except) {
         if (this.isServer()) {
             for (AbstractEntityPlayer player : world.getAllPlayers()) {
-                if (player.world == world && player != except && Util.distanceSq(x, y, player.getX(), player.getY()) <= radius * radius) {
+                if (player != except && Util.distanceSq(x, y, player.getX(), player.getY()) <= radius * radius) {
                     player.sendPacket(packet);
                 }
             }
