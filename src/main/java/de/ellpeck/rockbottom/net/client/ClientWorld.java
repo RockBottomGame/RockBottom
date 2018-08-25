@@ -4,8 +4,10 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IChunk;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.Chunk;
@@ -13,6 +15,7 @@ import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ClientWorld extends World {
@@ -64,5 +67,20 @@ public class ClientWorld extends World {
         } else {
             return new EntityPlayer(this, id, design);
         }
+    }
+
+    @Override
+    public IWorld getSubWorld(ResourceName name) {
+        throw new UnsupportedOperationException("Cannot get sub worlds in a client world");
+    }
+
+    @Override
+    public List<IWorld> getSubWorlds() {
+        throw new UnsupportedOperationException("Cannot get sub worlds in a client world");
+    }
+
+    @Override
+    public String getName() {
+        return "Client world";
     }
 }

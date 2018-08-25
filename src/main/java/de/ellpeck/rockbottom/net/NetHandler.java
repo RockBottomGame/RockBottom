@@ -111,6 +111,22 @@ public class NetHandler implements INetHandler {
     }
 
     @Override
+    public void sendToAllPlayersInSameWorld(IWorld world, IPacket packet) {
+        this.sendToAllPlayersInSameWorldExcept(world, packet, null);
+    }
+
+    @Override
+    public void sendToAllPlayersInSameWorldExcept(IWorld world, IPacket packet, Entity except) {
+        if (this.isServer()) {
+            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+                if (player.world == world && player != except) {
+                    player.sendPacket(packet);
+                }
+            }
+        }
+    }
+
+    @Override
     public void sendToAllPlayersAround(IWorld world, IPacket packet, double x, double y, double radius) {
         this.sendToAllPlayersAroundExcept(world, packet, x, y, radius, null);
     }
