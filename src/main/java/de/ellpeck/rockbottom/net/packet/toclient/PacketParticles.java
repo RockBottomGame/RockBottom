@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -25,7 +25,7 @@ public class PacketParticles implements IPacket {
 
     }
 
-    public static PacketParticles tile(World world, int x, int y, TileState state) {
+    public static PacketParticles tile(IWorld world, int x, int y, TileState state) {
         return new PacketParticles(x, y, 0, world.getIdForState(state));
     }
 

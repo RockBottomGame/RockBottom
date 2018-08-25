@@ -41,7 +41,7 @@ public class PacketTime implements IPacket {
         if (world != null) {
             world.setCurrentTime(this.currentTime);
             world.setTotalTime(this.totalTime);
-            world.getWorldInfo().timeFrozen = this.frozen;
+            world.setTimeFrozen(this.frozen);
         }
     }
 }
