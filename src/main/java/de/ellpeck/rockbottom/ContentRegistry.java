@@ -10,14 +10,9 @@ import de.ellpeck.rockbottom.api.item.ItemSword;
 import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.SubWorldInitializer;
-import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.item.*;
 import de.ellpeck.rockbottom.world.entity.EntityFalling;
 import de.ellpeck.rockbottom.world.entity.EntityFirework;
@@ -31,9 +26,6 @@ import de.ellpeck.rockbottom.world.gen.feature.*;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.tile.*;
-
-import java.util.Collections;
-import java.util.List;
 
 public final class ContentRegistry {
 
@@ -134,37 +126,5 @@ public final class ContentRegistry {
         new FuelInput(new ResUseInfo(GameContent.RES_STICK), 20).register();
 
         EntitySlime.SPAWN_BEHAVIOR.register();
-
-        new SubWorldInitializer(ResourceName.intern("test")) {
-            @Override
-            public Biome getExpectedBiome(IWorld subWorld, int x, int y) {
-                return null;
-            }
-
-            @Override
-            public BiomeLevel getExpectedBiomeLevel(IWorld subWorld, int x, int y) {
-                return null;
-            }
-
-            @Override
-            public int getExpectedSurfaceHeight(IWorld subWorld, TileLayer layer, int x) {
-                return 0;
-            }
-
-            @Override
-            public int getSeedModifier(IWorld subWorld) {
-                return 1238912378;
-            }
-
-            @Override
-            public int getSpawnX(IWorld subWorld) {
-                return 0;
-            }
-
-            @Override
-            public List<Pos2> getDefaultPersistentChunks(IWorld subWorld) {
-                return Collections.emptyList();
-            }
-        }.register();
     }
 }

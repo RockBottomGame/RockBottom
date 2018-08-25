@@ -1,8 +1,12 @@
 package de.ellpeck.rockbottom.world;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.Constants;
+import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -23,8 +27,9 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
+import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
@@ -32,11 +37,12 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketSound;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
 import de.ellpeck.rockbottom.util.thread.ThreadHandler;
+import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
+import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
 
 import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 
 public abstract class AbstractWorld implements IWorld {
 
@@ -47,13 +53,12 @@ public abstract class AbstractWorld implements IWorld {
     protected File chunksDirectory;
     protected File additionalDataFile;
     protected File worldDataFile;
+    protected WorldGenBiomes biomeGen;
+    protected WorldGenHeights heightGen;
     protected int time;
     protected int totalTime;
     protected boolean timeFrozen;
     protected File persistentChunksFile;
-    protected Map<ResourceName, IWorldGenerator> generators;
-    protected List<IWorldGenerator> loopingGenerators;
-    protected List<IWorldGenerator> retroactiveGenerators;
 
     public AbstractWorld(File worldDirectory) {
         if (worldDirectory != null) {
@@ -79,44 +84,10 @@ public abstract class AbstractWorld implements IWorld {
         }
     }
 
-    protected void initGenerators() {
-        Map<ResourceName, IWorldGenerator> generators = new HashMap<>();
-        List<IWorldGenerator> loopingGenerators = new ArrayList<>();
-        List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
+    protected void onGeneratorsLoaded() {
+        this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes) this.getGenerator(WorldGenBiomes.ID), "The default biome generator for world " + this.getName() + " has been removed from the registry!");
+        this.heightGen = Preconditions.checkNotNull((WorldGenHeights) this.getGenerator(WorldGenHeights.ID), "The default heights generator for world " + this.getName() + " has been removed from the registry!");
 
-        for (Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : Registries.WORLD_GENERATORS.entrySet()) {
-            try {
-                IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
-                if (generator.shouldExistInWorld(this)) {
-                    generator.initWorld(this);
-
-                    if (generator.generatesPerChunk()) {
-                        loopingGenerators.add(generator);
-
-                        if (generator.generatesRetroactively()) {
-                            retroactiveGenerators.add(generator);
-                        }
-                    }
-
-                    generators.put(entry.getKey(), generator);
-                }
-            } catch (Exception e) {
-                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class " + entry.getValue()+" for world "+this.getName(), e);
-            }
-        }
-
-        Comparator comp = Comparator.comparingInt(IWorldGenerator::getPriority).reversed();
-        loopingGenerators.sort(comp);
-        retroactiveGenerators.sort(comp);
-
-        this.generators = Collections.unmodifiableMap(generators);
-        this.loopingGenerators = Collections.unmodifiableList(loopingGenerators);
-        this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
-
-        RockBottomAPI.logger().info("Added a total of " + this.generators.size() + " generators to world " + this.getName() + " (" + this.loopingGenerators.size() + " per chunk, " + this.retroactiveGenerators.size() + " retroactive)");
-    }
-
-    protected void loadPersistentChunks(List<Pos2> defaults) {
         Map<Pos2, Boolean> persistentChunks = new HashMap<>();
 
         if (this.persistentChunksFile != null && this.persistentChunksFile.exists()) {
@@ -129,7 +100,7 @@ public abstract class AbstractWorld implements IWorld {
             }
         }
 
-        for (Pos2 pos : defaults) {
+        for(Pos2 pos : this.getDefaultPersistentChunks()){
             persistentChunks.put(pos, true);
         }
 
@@ -146,6 +117,8 @@ public abstract class AbstractWorld implements IWorld {
             }
         }
     }
+
+    protected abstract List<Pos2> getDefaultPersistentChunks();
 
     protected void updateChunksAndTime(IGameInstance game) {
         this.totalTime++;
@@ -172,7 +145,7 @@ public abstract class AbstractWorld implements IWorld {
             this.updateChunksAndTime(game);
 
             if (this.isServer() && this.totalTime % 80 == 0) {
-                RockBottomAPI.getNet().sendToAllPlayersInSameWorld(this, new PacketTime(this.time, this.totalTime, this.timeFrozen));
+                RockBottomAPI.getNet().sendToAllPlayers(this, new PacketTime(this.time, this.totalTime, this.timeFrozen));
             }
 
             return true;
@@ -473,6 +446,21 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
+    public Biome getExpectedBiome(int x, int y) {
+        return this.biomeGen.getBiome(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
+    }
+
+    @Override
+    public BiomeLevel getExpectedBiomeLevel(int x, int y) {
+        return this.biomeGen.getSmoothedLevelForPos(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
+    }
+
+    @Override
+    public int getExpectedSurfaceHeight(TileLayer layer, int x) {
+        return this.heightGen.getHeight(layer, x);
+    }
+
+    @Override
     public int getExpectedAverageHeight(TileLayer layer, int startX, int endX) {
         int totalHeight = 0;
         for (int checkX = startX; checkX < endX; checkX++) {
@@ -488,6 +476,11 @@ public abstract class AbstractWorld implements IWorld {
             uniqueHeights.add(this.getExpectedSurfaceHeight(layer, checkX));
         }
         return 1F - (uniqueHeights.size() - 1F) / (Constants.CHUNK_SIZE - 1F);
+    }
+
+    @Override
+    public INoiseGen getNoiseGenForBiome(Biome biome) {
+        return this.biomeGen.getBiomeNoise(this, biome);
     }
 
     @Override
@@ -656,11 +649,9 @@ public abstract class AbstractWorld implements IWorld {
                 this.additionalData.write(this.additionalDataFile);
             }
 
-            this.saveMore();
-
             if (amount > 0) {
                 long time = Util.getTimeMillis() - timeStarted;
-                RockBottomAPI.logger().info("Saved " + amount + " chunks for world " + this.getName() + ", took " + time + "ms.");
+                RockBottomAPI.logger().info("Saved " + amount + " chunks for world "+this.getName()+", took " + time + "ms.");
 
                 if (!this.isDedicatedServer()) {
                     IGameInstance game = RockBottomAPI.getGame();
@@ -670,10 +661,6 @@ public abstract class AbstractWorld implements IWorld {
                 }
             }
         });
-    }
-
-    protected void saveMore(){
-
     }
 
     @Override
@@ -723,7 +710,7 @@ public abstract class AbstractWorld implements IWorld {
     @Override
     public void broadcastSound(ResourceName name, float pitch, float volume, AbstractEntityPlayer except) {
         if (this.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersInSameWorldExcept(this, new PacketSound(name, pitch, volume), except);
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketSound(name, pitch, volume), except);
         }
 
         if (!this.isDedicatedServer() && !this.isLocalPlayer(except)) {

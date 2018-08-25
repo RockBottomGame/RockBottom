@@ -24,6 +24,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
@@ -651,6 +652,11 @@ public class Chunk implements IChunk {
     @Override
     public float getExpectedSurfaceFlatness(TileLayer layer, int startX, int endX) {
         return this.world.getExpectedSurfaceFlatness(layer, startX, endX);
+    }
+
+    @Override
+    public INoiseGen getNoiseGenForBiome(Biome biome) {
+        return this.world.getNoiseGenForBiome(biome);
     }
 
     @Override

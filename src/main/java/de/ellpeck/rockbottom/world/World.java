@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.world;
 
-import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -14,36 +13,30 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
-import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.SubWorldInitializer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
-import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketPlayer;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
-import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
 import io.netty.channel.Channel;
 
 import java.io.File;
 import java.util.*;
+import java.util.logging.Level;
 
 public class World extends AbstractWorld {
 
     protected final List<AbstractEntityPlayer> players = new ArrayList<>();
     protected final List<AbstractEntityPlayer> playersUnmodifiable = Collections.unmodifiableList(this.players);
-    protected final List<SubWorld> subWorlds = new ArrayList<>();
-    protected final List<IWorld> subWorldsUnmodifiable = Collections.unmodifiableList(this.subWorlds);
     protected final DynamicRegistryInfo regInfo;
     protected final WorldInfo info;
+    protected Map<ResourceName, IWorldGenerator> generators;
+    protected List<IWorldGenerator> loopingGenerators;
+    protected List<IWorldGenerator> retroactiveGenerators;
     protected int saveTicksCounter;
     protected File playerDirectory;
-    protected WorldGenBiomes biomeGen;
-    protected WorldGenHeights heightGen;
 
     public World(WorldInfo info, DynamicRegistryInfo regInfo, File worldDirectory) {
         super(worldDirectory);
@@ -53,44 +46,59 @@ public class World extends AbstractWorld {
         this.playerDirectory = new File(worldDirectory, "players");
 
         this.initGenerators();
+    }
 
-        List<Pos2> defaults = new ArrayList<>();
-        for (int x = -Constants.PERSISTENT_CHUNK_DISTANCE; x <= Constants.PERSISTENT_CHUNK_DISTANCE; x++) {
-            for (int y = Constants.PERSISTENT_CHUNK_DISTANCE; y >= -Constants.PERSISTENT_CHUNK_DISTANCE; y--) {
-                defaults.add(new Pos2(x, y));
+    private void initGenerators() {
+        Map<ResourceName, IWorldGenerator> generators = new HashMap<>();
+        List<IWorldGenerator> loopingGenerators = new ArrayList<>();
+        List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
+
+        for (Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : Registries.WORLD_GENERATORS.entrySet()) {
+            try {
+                IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
+                generator.initWorld(this);
+
+                if (generator.generatesPerChunk()) {
+                    loopingGenerators.add(generator);
+
+                    if (generator.generatesRetroactively()) {
+                        retroactiveGenerators.add(generator);
+                    }
+                }
+
+                generators.put(entry.getKey(), generator);
+            } catch (Exception e) {
+                RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize world generator with class " + entry.getValue(), e);
             }
         }
-        this.loadPersistentChunks(defaults);
 
-        for (SubWorldInitializer init : Registries.SUB_WORLD_INITIALIZER_REGISTRY.values()) {
-            SubWorld subWorld = new SubWorld(init.getWorldName(), this, init);
+        Comparator comp = Comparator.comparingInt(IWorldGenerator::getPriority).reversed();
+        loopingGenerators.sort(comp);
+        retroactiveGenerators.sort(comp);
 
-            subWorld.initGenerators();
-            init.onGeneratorsInitialized(subWorld);
+        this.generators = Collections.unmodifiableMap(generators);
+        this.loopingGenerators = Collections.unmodifiableList(loopingGenerators);
+        this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
 
-            subWorld.loadPersistentChunks(init.getDefaultPersistentChunks(subWorld));
+        RockBottomAPI.logger().info("Added a total of " + this.generators.size() + " generators to world (" + this.loopingGenerators.size() + " per chunk, " + this.retroactiveGenerators.size() + " retroactive)");
 
-            this.subWorlds.add(subWorld);
-
-            RockBottomAPI.logger().info("Initialized sub world " + subWorld.getName() + " for world " + this.getName());
-        }
+        this.onGeneratorsLoaded();
     }
 
     @Override
-    protected void initGenerators() {
-        super.initGenerators();
-
-        this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes) this.getGenerator(WorldGenBiomes.ID), "The default biome generator for world " + this.getName() + " has been removed from the registry!");
-        this.heightGen = Preconditions.checkNotNull((WorldGenHeights) this.getGenerator(WorldGenHeights.ID), "The default heights generator for world " + this.getName() + " has been removed from the registry!");
+    protected List<Pos2> getDefaultPersistentChunks() {
+        List<Pos2> chunks = new ArrayList<>();
+        for (int x = -Constants.PERSISTENT_CHUNK_DISTANCE; x <= Constants.PERSISTENT_CHUNK_DISTANCE; x++) {
+            for (int y = Constants.PERSISTENT_CHUNK_DISTANCE; y >= -Constants.PERSISTENT_CHUNK_DISTANCE; y--) {
+                chunks.add(new Pos2(x, y));
+            }
+        }
+        return chunks;
     }
 
     @Override
     public boolean update(AbstractGame game) {
         if (super.update(game)) {
-            for (SubWorld world : this.subWorlds) {
-                world.update(game);
-            }
-
             this.saveTicksCounter++;
             if (this.saveTicksCounter >= game.getAutosaveInterval() * Constants.TARGET_TPS) {
                 this.saveTicksCounter = 0;
@@ -171,38 +179,8 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public List<IWorld> getSubWorlds() {
-        return this.subWorldsUnmodifiable;
-    }
-
-    @Override
-    public IWorld getSubWorld(ResourceName name) {
-        for (SubWorld world : this.subWorlds) {
-            if (name.equals(world.name)) {
-                return world;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public long getSeed() {
         return this.info.seed;
-    }
-
-    @Override
-    public Biome getExpectedBiome(int x, int y) {
-        return this.biomeGen.getBiome(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
-    }
-
-    @Override
-    public BiomeLevel getExpectedBiomeLevel(int x, int y) {
-        return this.biomeGen.getSmoothedLevelForPos(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
-    }
-
-    @Override
-    public int getExpectedSurfaceHeight(TileLayer layer, int x) {
-        return this.heightGen.getHeight(layer, x);
     }
 
     @Override
@@ -242,15 +220,13 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    protected void saveMore() {
+    public void save() {
+        super.save();
+
         this.info.save();
 
         for (int i = 0; i < this.players.size(); i++) {
             this.savePlayer(this.players.get(i));
-        }
-
-        for (SubWorld world : this.subWorlds) {
-            world.save();
         }
     }
 

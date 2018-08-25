@@ -65,7 +65,7 @@ public class WorldGenBiomes implements IWorldGenerator {
 
         int levels = this.biomesPerLevel.keySet().size();
         Preconditions.checkState(levels == this.totalWeights.size(), "BiomesPerLevel and TotalWeights are out of sync!");
-        RockBottomAPI.logger().info("Initialized " + levels + " biome levels to generate for world " + world.getName());
+        RockBottomAPI.logger().info("Initialized " + levels + " biome levels to generate for this world!");
     }
 
     @Override

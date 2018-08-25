@@ -516,7 +516,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.inv.selectedSlot = slot;
 
         if (this.world.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this.getX(), this.getY(), this);
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
         }
     }
 
@@ -616,7 +616,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.setPos(x, y);
 
         if (this.world.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersInSameWorld(this.world, new PacketRespawn(this.getUniqueId(), x, y));
+            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketRespawn(this.getUniqueId(), x, y));
         }
     }
 

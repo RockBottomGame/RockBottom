@@ -3,40 +3,36 @@ package de.ellpeck.rockbottom.world;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
-import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.SubWorldInitializer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
-import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.channel.Channel;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class SubWorld extends AbstractWorld {
 
-    protected final SubWorldInitializer initializer;
-    protected final ResourceName name;
     private final AbstractWorld mainWorld;
+    private final int seedModifier;
 
-    public SubWorld(ResourceName name, AbstractWorld mainWorld, SubWorldInitializer initializer) {
-        super(new File(mainWorld.directory, name.toString()));
+    public SubWorld(String worldName, AbstractWorld mainWorld, int seedModifier) {
+        super(new File(mainWorld.directory, worldName));
         this.mainWorld = mainWorld;
-        this.initializer = initializer;
-        this.name = name;
+        this.seedModifier = seedModifier;
     }
 
     @Override
-    public String getName() {
-        return this.name + "@" + this.mainWorld.getName();
+    protected List<Pos2> getDefaultPersistentChunks() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -96,7 +92,7 @@ public class SubWorld extends AbstractWorld {
 
     @Override
     public int getSpawnX() {
-        return this.initializer.getSpawnX(this);
+        return 0;
     }
 
     @Override
@@ -160,32 +156,7 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
-    public List<IWorld> getSubWorlds() {
-        return this.mainWorld.getSubWorlds();
-    }
-
-    @Override
-    public IWorld getSubWorld(ResourceName name) {
-        return this.mainWorld.getSubWorld(name);
-    }
-
-    @Override
     public long getSeed() {
-        return Util.scrambleSeed(this.initializer.getSeedModifier(this), this.mainWorld.getSeed());
-    }
-
-    @Override
-    public Biome getExpectedBiome(int x, int y) {
-        return this.initializer.getExpectedBiome(this, x, y);
-    }
-
-    @Override
-    public BiomeLevel getExpectedBiomeLevel(int x, int y) {
-        return this.initializer.getExpectedBiomeLevel(this, x, y);
-    }
-
-    @Override
-    public int getExpectedSurfaceHeight(TileLayer layer, int x) {
-        return this.initializer.getExpectedSurfaceHeight(this, layer, x);
+        return Util.scrambleSeed(this.seedModifier, this.mainWorld.getSeed());
     }
 }
