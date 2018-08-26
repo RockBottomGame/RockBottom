@@ -26,7 +26,6 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
-import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
@@ -101,7 +100,7 @@ public class WorldRenderer {
         this.maxY = Util.ceil(-this.transY + 1) - offset;
     }
 
-    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, World world, EntityPlayer player, InteractionManager input) {
+    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, IWorld world, EntityPlayer player, InteractionManager input) {
         float scale = g.getWorldScale();
         float skylightMod = world.getSkylightModifier(false);
 
@@ -239,9 +238,10 @@ public class WorldRenderer {
 
                                 if (biomeDebug) {
                                     for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                                        this.random.setSeed(chunk.getExpectedBiomeLevel(worldX + x, worldY + y).getName().hashCode());
-                                        g.addFilledRect(worldX - this.transX + x + 0.35F, -worldY - this.transY - y + 0.35F, 0.3F, 0.3F, Colors.random(this.random));
-
+                                        if (!world.isClient()) {
+                                            this.random.setSeed(chunk.getExpectedBiomeLevel(worldX + x, worldY + y).getName().hashCode());
+                                            g.addFilledRect(worldX - this.transX + x + 0.35F, -worldY - this.transY - y + 0.35F, 0.3F, 0.3F, Colors.random(this.random));
+                                        }
                                         this.random.setSeed(chunk.getBiomeInner(x, y).getName().hashCode());
                                         g.addEmptyRect(worldX - this.transX + x + 0.25F, -worldY - this.transY - y + 0.25F, 0.5F, 0.5F, 0.1F, Colors.random(this.random));
                                     }

@@ -5,12 +5,13 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.util.CrashManager;
-import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.Locale;
 
 public final class DebugRenderer {
 
-    public static void render(RockBottom game, IAssetManager manager, World world, EntityPlayer player, IRenderer g) {
+    public static void render(RockBottom game, IAssetManager manager, IWorld world, EntityPlayer player, IRenderer g) {
         List<String> list = getInfo(game, world, player, g);
 
         int y = 0;
@@ -43,7 +44,7 @@ public final class DebugRenderer {
         }
     }
 
-    public static List<String> getInfo(RockBottom game, World world, EntityPlayer player, IRenderer g) {
+    public static List<String> getInfo(RockBottom game, IWorld world, EntityPlayer player, IRenderer g) {
         List<String> list = new ArrayList<>();
 
         Runtime runtime = Runtime.getRuntime();
@@ -71,19 +72,24 @@ public final class DebugRenderer {
 
         if (world != null && player != null) {
             list.add("");
+            list.add("Current world: " + world.getName());
+            if (!world.isClient()) {
+                list.add("Sub world amount: " + world.getSubWorlds().size());
+            }
+            list.add("");
 
-            String chunks = "Loaded Chunks: " + world.loadedChunks.size();
+            String chunks = "Loaded Chunks: " + ((AbstractWorld) world).loadedChunks.size();
             if (!RockBottomAPI.getNet().isClient()) {
                 chunks += ", PlayerChunks: " + player.getChunksInRange().size();
             }
             list.add(chunks);
 
             list.add("Entities: " + world.getAllEntities().size());
-            list.add("Players: " + world.players.size());
+            list.add("Players: " + world.getAllPlayers().size());
             list.add("TileEntities: " + world.getAllTileEntities().size() + ", Ticking: " + world.getAllTickingTileEntities().size());
             list.add("Particles: " + game.getParticleManager().getAmount());
             int scheduledTileAmount = 0;
-            for (IChunk chunk : world.loadedChunks) {
+            for (IChunk chunk : ((AbstractWorld) world).loadedChunks) {
                 scheduledTileAmount += chunk.getScheduledUpdateAmount();
             }
             list.add("Scheduled Tile Updates: " + scheduledTileAmount);
@@ -109,7 +115,11 @@ public final class DebugRenderer {
                     list.add("ChunkPlayers: " + chunk.getPlayersInRange().size() + ", PlayersCached: " + chunk.getPlayersLeftRange().size());
                 }
                 list.add("Light: Sky " + world.getSkyLight(x, y) + " / Art " + world.getArtificialLight(x, y) + " -> " + world.getCombinedVisualLight(x, y));
-                list.add("Biome: " + world.getBiome(x, y).getName() + ", Level: " + world.getExpectedBiomeLevel(x, y).getName());
+                String s = "Biome: " + world.getBiome(x, y).getName();
+                if (!world.isClient()) {
+                    s += ", Level: " + world.getExpectedBiomeLevel(x, y).getName();
+                }
+                list.add(s);
                 list.add("Most Prominent Biome: " + chunk.getMostProminentBiome().getName());
 
                 list.add("");

@@ -24,6 +24,7 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import de.ellpeck.rockbottom.apiimpl.InputHandler;
 import de.ellpeck.rockbottom.apiimpl.Renderer;
@@ -372,7 +373,7 @@ public class RockBottom extends AbstractGame {
                 this.interactionManager.update(this);
 
                 this.particleManager.update(this);
-                this.worldRenderer.update(this.world, this.particleManager);
+                this.worldRenderer.update(this.getPlayerWorld(), this.particleManager);
             }
         }
 
@@ -392,8 +393,8 @@ public class RockBottom extends AbstractGame {
         super.startWorld(worldFile, info, isNewlyCreated);
 
         this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, true);
-        this.world.addEntity(this.player);
-        this.world.addPlayer(this.player);
+        this.player.world.addEntity(this.player);
+        this.player.world.addPlayer(this.player);
 
         this.guiManager.closeGui();
         this.guiManager.updateDimensions();
@@ -401,10 +402,13 @@ public class RockBottom extends AbstractGame {
     }
 
     @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo) {
+    public void joinWorld(DataSet playerSet, WorldInfo info, ResourceName subName, DataSet worldData, DynamicRegistryInfo regInfo) {
         RockBottomAPI.logger().info("Joining world");
 
         this.world = new ClientWorld(info, regInfo);
+        this.world.loadWorldData(worldData);
+        this.world.setSubName(subName);
+
         RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
 
         this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, false);
@@ -412,6 +416,23 @@ public class RockBottom extends AbstractGame {
 
         this.world.addEntity(this.player);
         this.world.addPlayer(this.player);
+    }
+
+    @Override
+    public void changeWorld(ResourceName subName, DataSet worldData) {
+        if (this.world != null) {
+            if (this.world.isClient()) {
+                this.world.unloadEverything();
+
+                this.world.setSubName(subName);
+                this.world.loadWorldData(worldData);
+                this.world.addEntity(this.player);
+
+                RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, this.world.getWorldInfo(), this.world.getRegInfo()));
+            } else {
+                throw new UnsupportedOperationException("Cannot change the world this way on a non-client instance");
+            }
+        }
     }
 
     @Override
@@ -486,7 +507,7 @@ public class RockBottom extends AbstractGame {
 
         try {
             CrashManager.addInfo("--------- Debug Info ---------");
-            for (String s : DebugRenderer.getInfo(this, this.world, this.player, this.renderer)) {
+            for (String s : DebugRenderer.getInfo(this, this.getPlayerWorld(), this.player, this.renderer)) {
                 CrashManager.addInfo(s);
             }
             CrashManager.addInfo("------------------------------");
@@ -527,8 +548,8 @@ public class RockBottom extends AbstractGame {
         this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.WORLD_SHADER));
         this.renderer.begin();
 
-        if (this.world != null) {
-            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, this.world, this.player, this.interactionManager);
+        if (this.player != null) {
+            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, this.getPlayerWorld(), this.player, this.interactionManager);
         }
 
         this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.GUI_SHADER));
@@ -542,7 +563,7 @@ public class RockBottom extends AbstractGame {
         this.renderer.setScale(1F, 1F);
 
         if (this.renderer.isDebug()) {
-            DebugRenderer.render(this, this.assetManager, this.world, this.player, this.renderer);
+            DebugRenderer.render(this, this.assetManager, this.getPlayerWorld(), this.player, this.renderer);
         }
 
         this.renderer.end();
@@ -570,6 +591,15 @@ public class RockBottom extends AbstractGame {
     @Override
     public InteractionManager getInteractionManager() {
         return this.interactionManager;
+    }
+
+    @Override
+    public IWorld getPlayerWorld() {
+        if (this.player == null) {
+            return null;
+        } else {
+            return this.player.world;
+        }
     }
 
     @Override

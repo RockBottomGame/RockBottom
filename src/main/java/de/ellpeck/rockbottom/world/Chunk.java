@@ -24,7 +24,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
@@ -50,7 +49,7 @@ public class Chunk implements IChunk {
     public final List<AbstractEntityPlayer> playersInRange = new ArrayList<>();
     public final List<AbstractEntityPlayer> playersOutOfRangeCached = new ArrayList<>();
     public final Map<AbstractEntityPlayer, Counter> playersOutOfRangeCachedTimers = new HashMap<>();
-    protected final World world;
+    protected final AbstractWorld world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final Map<TileLayer, TileState[][]> stateGrid = new HashMap<>();
     protected final List<TileLayer> layersByRenderPrio = new ArrayList<>();
@@ -77,7 +76,7 @@ public class Chunk implements IChunk {
     private Biome mostProminentBiome = GameContent.BIOME_SKY;
     private float fadePercentage;
 
-    public Chunk(World world, int gridX, int gridY, boolean constantlyPersistent) {
+    public Chunk(AbstractWorld world, int gridX, int gridY, boolean constantlyPersistent) {
         this.world = world;
         this.constantlyPersistent = constantlyPersistent;
 
@@ -120,7 +119,7 @@ public class Chunk implements IChunk {
 
     private boolean canGenerate(IWorldGenerator generator) {
         if (generator.needsPlayerToAllowGeneration(this.world, this)) {
-            for (AbstractEntityPlayer player : this.world.players) {
+            for (AbstractEntityPlayer player : this.world.getAllPlayers()) {
                 if (generator.doesPlayerAllowGeneration(this.world, this, player)) {
                     return true;
                 }
@@ -652,11 +651,6 @@ public class Chunk implements IChunk {
     @Override
     public float getExpectedSurfaceFlatness(TileLayer layer, int startX, int endX) {
         return this.world.getExpectedSurfaceFlatness(layer, startX, endX);
-    }
-
-    @Override
-    public INoiseGen getNoiseGenForBiome(Biome biome) {
-        return this.world.getNoiseGenForBiome(biome);
     }
 
     @Override

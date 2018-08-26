@@ -58,12 +58,12 @@ public class PacketBreakTile implements IPacket {
                 int x = Util.floor(this.x);
                 int y = Util.floor(this.y);
 
-                Tile tile = world.getState(this.layer, x, y).getTile();
+                Tile tile = player.world.getState(this.layer, x, y).getTile();
                 ItemInstance instance = player.getInv().get(player.getSelectedSlot());
 
                 boolean isRightTool = InteractionManager.isToolEffective(player, instance, tile, this.layer, x, y);
 
-                if (InteractionManager.defaultTileBreakingCheck(world, x, y, this.layer, this.x, this.y, player) && tile.canBreak(world, x, y, this.layer, player, isRightTool)) {
+                if (InteractionManager.defaultTileBreakingCheck(player.world, x, y, this.layer, this.x, this.y, player) && tile.canBreak(player.world, x, y, this.layer, player, isRightTool)) {
                     InteractionManager.breakTile(tile, player, x, y, this.layer, isRightTool, instance);
                 }
             }

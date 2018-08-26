@@ -35,6 +35,6 @@ public class PacketDisconnect implements IPacket {
     @Override
     public void handle(IGameInstance game, ChannelHandlerContext context) {
         AbstractEntityPlayer player = game.getWorld().getPlayer(this.id);
-        ConnectedPlayer.disconnectPlayer(game, player);
+        ConnectedPlayer.disconnectPlayer(player);
     }
 }

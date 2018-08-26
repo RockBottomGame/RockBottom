@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.init.AbstractGame;
 
@@ -42,6 +43,11 @@ public final class ThreadHandler {
 
         if (game.isDedicatedServer()) {
             ICommandSender consoleCommandSender = new ICommandSender() {
+                @Override
+                public IWorld getWorld() {
+                    return game.getWorld();
+                }
+
                 @Override
                 public int getCommandLevel() {
                     return Constants.ADMIN_PERMISSION;

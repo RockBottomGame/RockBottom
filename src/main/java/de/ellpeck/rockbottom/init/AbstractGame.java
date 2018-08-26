@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.WorldCreationEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
-import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
 import de.ellpeck.rockbottom.api.internal.Internals;
 import de.ellpeck.rockbottom.api.mod.IModLoader;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -262,7 +261,7 @@ public abstract class AbstractGame implements IGameInstance {
 
         DynamicRegistryInfo regInfo = new DynamicRegistryInfo(tileRegInfo, biomeRegInfo);
 
-        this.world = new World(info, regInfo, worldFile);
+        this.world = new World(info, regInfo, worldFile, false);
 
         if (isNewlyCreated) {
             RockBottomAPI.getEventHandler().fireEvent(new WorldCreationEvent(worldFile, this.world, info, regInfo));
@@ -287,7 +286,7 @@ public abstract class AbstractGame implements IGameInstance {
         if (this.world != null) {
             RockBottomAPI.logger().info("Quitting current world");
 
-            RockBottomAPI.getEventHandler().fireEvent(new WorldUnloadEvent(this.world));
+            this.world.onUnloaded();
             this.world = null;
         }
 

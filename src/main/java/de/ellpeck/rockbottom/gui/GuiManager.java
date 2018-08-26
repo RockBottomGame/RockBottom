@@ -65,7 +65,7 @@ public class GuiManager implements IGuiManager {
             this.initAndSortGui(game);
         }
 
-        if (game.getWorld() != null) {
+        if (game.getPlayerWorld() != null) {
             this.background = null;
         } else {
             if (this.background == null) {
@@ -87,7 +87,7 @@ public class GuiManager implements IGuiManager {
             this.onScreenComponents.clear();
         }
 
-        if (game.getWorld() != null) {
+        if (game.getPlayerWorld() != null) {
             IRenderer renderer = game.getRenderer();
             int width = (int) renderer.getWidthInGui();
             int height = (int) renderer.getHeightInGui();

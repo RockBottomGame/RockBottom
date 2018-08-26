@@ -453,6 +453,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
+    public IWorld getWorld() {
+        return this.world;
+    }
+
+    @Override
     public int getCommandLevel() {
         if (this.world.isServer()) {
             INetHandler net = RockBottomAPI.getNet();
@@ -493,6 +498,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
                 chunk.getPlayersLeftRange().remove(this);
                 chunk.getLeftPlayerTimers().remove(this);
             }
+            this.chunksInRange.clear();
         }
     }
 
@@ -516,7 +522,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.inv.selectedSlot = slot;
 
         if (this.world.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
+            RockBottomAPI.getNet().sendToAllPlayersInWorldExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
         }
     }
 
@@ -616,7 +622,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.setPos(x, y);
 
         if (this.world.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayers(this.world, new PacketRespawn(this.getUniqueId(), x, y));
+            RockBottomAPI.getNet().sendToAllPlayersInWorld(this.world, new PacketRespawn(this.getUniqueId(), x, y));
         }
     }
 

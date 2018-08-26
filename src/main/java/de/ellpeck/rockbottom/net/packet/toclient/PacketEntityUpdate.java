@@ -61,7 +61,7 @@ public class PacketEntityUpdate implements IPacket {
                 entity.motionY = this.motionY;
                 entity.facing = this.facing;
 
-                if (entity.doesInterpolate()) {
+                if (!entity.world.isLocalPlayer(entity) && entity.doesInterpolate()) {
                     entity.interpolationX = this.x;
                     entity.interpolationY = this.y;
                 } else {

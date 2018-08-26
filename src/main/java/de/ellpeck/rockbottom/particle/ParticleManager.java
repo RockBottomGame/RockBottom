@@ -12,7 +12,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class ParticleManager implements IParticleManager {
         }
     }
 
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, World world, float transX, float transY) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, float transX, float transY) {
         this.particles.forEach(particle -> {
             ResourceName program = particle.getRenderShader(game, manager, g);
             g.setProgram(program == null ? null : manager.getShaderProgram(program));

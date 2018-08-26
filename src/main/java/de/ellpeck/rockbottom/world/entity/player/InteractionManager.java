@@ -206,8 +206,8 @@ public class InteractionManager implements IInteractionManager {
     }
 
     public void update(RockBottom game) {
-        if (game.getWorld() != null) {
-            EntityPlayer player = game.getPlayer();
+        EntityPlayer player = game.getPlayer();
+        if (player != null) {
             Gui gui = game.getGuiManager().getGui();
 
             if (gui == null && !player.isDead()) {
@@ -386,7 +386,7 @@ public class InteractionManager implements IInteractionManager {
         if (game.getGuiManager().onKeyPressed(game, button)) {
             return true;
         } else {
-            if (game.getWorld() != null && game.getGuiManager().getGui() == null) {
+            if (game.getPlayer() != null && game.getGuiManager().getGui() == null) {
                 for (int i = 0; i < Settings.KEYS_ITEM_SELECTION.length; i++) {
                     if (Settings.KEYS_ITEM_SELECTION[i].isKey(button)) {
                         game.getPlayer().setSelectedSlot(i);

@@ -111,6 +111,22 @@ public class NetHandler implements INetHandler {
     }
 
     @Override
+    public void sendToAllPlayersInWorld(IWorld world, IPacket packet) {
+        this.sendToAllPlayersInWorldExcept(world, packet, null);
+    }
+
+    @Override
+    public void sendToAllPlayersInWorldExcept(IWorld world, IPacket packet, Entity except) {
+        if (this.isServer()) {
+            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+                if (player.world == world && player != except) {
+                    player.sendPacket(packet);
+                }
+            }
+        }
+    }
+
+    @Override
     public void sendToAllPlayersAround(IWorld world, IPacket packet, double x, double y, double radius) {
         this.sendToAllPlayersAroundExcept(world, packet, x, y, radius, null);
     }
@@ -119,7 +135,7 @@ public class NetHandler implements INetHandler {
     public void sendToAllPlayersAroundExcept(IWorld world, IPacket packet, double x, double y, double radius, Entity except) {
         if (this.isServer()) {
             for (AbstractEntityPlayer player : world.getAllPlayers()) {
-                if (player != except && Util.distanceSq(x, y, player.getX(), player.getY()) <= radius * radius) {
+                if (player.world == world && player != except && Util.distanceSq(x, y, player.getX(), player.getY()) <= radius * radius) {
                     player.sendPacket(packet);
                 }
             }
@@ -136,7 +152,7 @@ public class NetHandler implements INetHandler {
         if (this.isServer()) {
             IChunk chunk = world.getChunk(x, y);
             for (AbstractEntityPlayer player : world.getAllPlayers()) {
-                if (player != except && (chunk.getPlayersInRange().contains(player) || chunk.getPlayersLeftRange().contains(player))) {
+                if (player.world == world && player != except && (chunk.getPlayersInRange().contains(player) || chunk.getPlayersLeftRange().contains(player))) {
                     player.sendPacket(packet);
                 }
             }

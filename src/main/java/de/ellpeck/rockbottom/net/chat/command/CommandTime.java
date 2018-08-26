@@ -26,7 +26,7 @@ public class CommandTime extends Command {
     @Override
     public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
         if (args.length >= 2) {
-            IWorld world = game.getWorld();
+            IWorld world = sender.getWorld();
 
             if ("freeze".equals(args[0])) {
                 boolean value;
@@ -39,7 +39,7 @@ public class CommandTime extends Command {
                 }
                 world.getWorldInfo().timeFrozen = value;
 
-                RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
+                RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
                 return new ChatComponentText(FormattingCode.GREEN + "Set time freeze to " + value + '!');
             } else {
                 try {
@@ -53,7 +53,7 @@ public class CommandTime extends Command {
                         return new ChatComponentText(FormattingCode.RED + "Specify your action!");
                     }
 
-                    RockBottomAPI.getNet().sendToAllPlayers(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
+                    RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
                     return new ChatComponentText(FormattingCode.GREEN + "Set time to " + world.getCurrentTime() + '!');
                 } catch (NumberFormatException e) {
                     return new ChatComponentText(FormattingCode.RED + "Couldn't parse time!");

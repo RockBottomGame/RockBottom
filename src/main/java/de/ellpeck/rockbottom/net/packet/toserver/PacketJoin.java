@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.INetHandler;
@@ -16,6 +17,7 @@ import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketPlayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketReject;
 import de.ellpeck.rockbottom.render.design.PlayerDesign;
+import de.ellpeck.rockbottom.world.AbstractWorld;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -90,14 +92,17 @@ public class PacketJoin implements IPacket {
                 if (world != null) {
                     if (world.getPlayer(this.id) == null) {
                         AbstractEntityPlayer player = world.createPlayer(this.id, this.design, context.channel(), false);
-                        player.sendPacket(new PacketInitialServerData(player, world.getWorldInfo(), world.getRegInfo()));
+
+                        DataSet set = new DataSet();
+                        ((AbstractWorld) player.world).saveWorldData(set);
+                        player.sendPacket(new PacketInitialServerData(player, player.world.getWorldInfo(), player.world.getSubName(), set, player.world.getRegInfo()));
 
                         for (AbstractEntityPlayer p : world.getAllPlayers()) {
                             player.sendPacket(new PacketPlayer(p, false));
                         }
 
-                        world.addPlayer(player);
-                        world.addEntity(player);
+                        player.world.addPlayer(player);
+                        player.world.addEntity(player);
 
                         RockBottomAPI.logger().info("Player " + this.design.getName() + " with id " + this.id + " joined, sending initial server data");
 

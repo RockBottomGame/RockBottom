@@ -22,7 +22,7 @@ public class ComponentHealth extends GuiComponent {
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
-        if (game.getWorld() != null) {
+        if (game.getPlayerWorld() != null) {
             ITexture heart = manager.getTexture(TEX_HEART);
             ITexture heartEmpty = manager.getTexture(TEX_HEART_EMPTY);
 
@@ -66,7 +66,7 @@ public class ComponentHealth extends GuiComponent {
 
     @Override
     public void renderOverlay(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
-        if (game.getWorld() != null) {
+        if (game.getPlayerWorld() != null) {
             if (this.isMouseOverPrioritized(game)) {
                 g.drawHoverInfoAtMouse(game, manager, false, 0, manager.localize(LOC_HEALTH) + ':', game.getPlayer().getHealth() + "/" + game.getPlayer().getMaxHealth());
             }

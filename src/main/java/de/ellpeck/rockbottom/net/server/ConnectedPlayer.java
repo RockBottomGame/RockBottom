@@ -20,7 +20,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
-import de.ellpeck.rockbottom.world.World;
+import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.channel.Channel;
 
@@ -41,18 +41,17 @@ public class ConnectedPlayer extends EntityPlayer {
     private int fallCalcTicks;
     private int climbingCalcTicks;
 
-    public ConnectedPlayer(World world, UUID uniqueId, IPlayerDesign design, Channel channel) {
+    public ConnectedPlayer(IWorld world, UUID uniqueId, IPlayerDesign design, Channel channel) {
         super(world, uniqueId, design);
         this.channel = channel;
     }
 
-    public static void disconnectPlayer(IGameInstance game, AbstractEntityPlayer player) {
+    public static void disconnectPlayer(AbstractEntityPlayer player) {
         RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(player, true));
 
-        IWorld world = game.getWorld();
-        world.savePlayer(player);
-        world.removeEntity(player);
-        world.removePlayer(player);
+        player.world.savePlayer(player);
+        player.world.removeEntity(player);
+        player.world.removePlayer(player);
 
         RockBottomAPI.logger().info("Saving and removing disconnected player " + player.getName() + " with id " + player.getUniqueId() + " from world");
 
@@ -69,7 +68,7 @@ public class ConnectedPlayer extends EntityPlayer {
 
         if (this.ticksExisted % 80 == 0) {
             if (!net.getConnectedClients().contains(this.channel)) {
-                game.enqueueAction((inst, object) -> disconnectPlayer(inst, this), null);
+                game.enqueueAction((inst, object) -> disconnectPlayer(this), null);
             }
 
             double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, x, y);
@@ -104,12 +103,12 @@ public class ConnectedPlayer extends EntityPlayer {
             this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.whitelist"))));
 
             this.channel.disconnect();
-            disconnectPlayer(game, this);
+            disconnectPlayer(this);
         } else if (net.isBlacklisted(this.getUniqueId())) {
             this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
 
             this.channel.disconnect();
-            disconnectPlayer(game, this);
+            disconnectPlayer(this);
         }
 
         if (this.isClimbing) {
@@ -190,6 +189,15 @@ public class ConnectedPlayer extends EntityPlayer {
         RockBottomAPI.logger().finer("Sending chunk unloading packet for chunk at " + chunk.getGridX() + ", " + chunk.getGridY() + " to player " + this.getName() + " with id " + this.getUniqueId());
 
         this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
+    }
+
+    @Override
+    public void moveToWorld(IWorld world) {
+        super.moveToWorld(world);
+
+        DataSet set = new DataSet();
+        ((AbstractWorld) world).saveWorldData(set);
+        this.sendPacket(new PacketChangeWorld(set, world.getSubName()));
     }
 
     @Override

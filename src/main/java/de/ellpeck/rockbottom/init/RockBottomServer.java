@@ -14,7 +14,9 @@ import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
+import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 
 import java.io.File;
@@ -75,8 +77,13 @@ public class RockBottomServer extends AbstractGame {
     }
 
     @Override
-    public void joinWorld(DataSet playerSet, WorldInfo info, DynamicRegistryInfo regInfo) {
+    public void joinWorld(DataSet playerSet, WorldInfo info, ResourceName subName, DataSet worldData, DynamicRegistryInfo regInfo) {
         throw new UnsupportedOperationException("Cannot join a world on a dedicated server");
+    }
+
+    @Override
+    public void changeWorld(ResourceName subName, DataSet worldData) {
+        throw new UnsupportedOperationException("Cannot change worlds on a dedicated server");
     }
 
     @Override
@@ -97,6 +104,11 @@ public class RockBottomServer extends AbstractGame {
     @Override
     public IInteractionManager getInteractionManager() {
         throw new UnsupportedOperationException("Cannot get the interaction manager on a dedicated server");
+    }
+
+    @Override
+    public IWorld getPlayerWorld() {
+        throw new UnsupportedOperationException("Cannot get the player world on a dedicated server");
     }
 
     @Override
