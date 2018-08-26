@@ -1,8 +1,6 @@
 package de.ellpeck.rockbottom;
 
-import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
@@ -12,16 +10,9 @@ import de.ellpeck.rockbottom.api.item.ItemSword;
 import de.ellpeck.rockbottom.api.item.ItemTool;
 import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
-import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.api.world.IChunk;
-import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.api.world.SubWorldInitializer;
-import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
-import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.item.*;
 import de.ellpeck.rockbottom.world.entity.EntityFalling;
 import de.ellpeck.rockbottom.world.entity.EntityFirework;
@@ -35,9 +26,6 @@ import de.ellpeck.rockbottom.world.gen.feature.*;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
 import de.ellpeck.rockbottom.world.tile.*;
-
-import java.util.Collections;
-import java.util.List;
 
 public final class ContentRegistry {
 
@@ -138,80 +126,5 @@ public final class ContentRegistry {
         new FuelInput(new ResUseInfo(GameContent.RES_STICK), 20).register();
 
         EntitySlime.SPAWN_BEHAVIOR.register();
-
-        Registries.WORLD_GENERATORS.register(ResourceName.intern("stone"), GenStone.class);
-        new SubWorldInitializer(ResourceName.intern("test")) {
-            @Override
-            public int getSeedModifier() {
-                return 123123123;
-            }
-
-            @Override
-            public List<Pos2> getDefaultPersistentChunks(IWorld subWorld) {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public void onSave(IWorld subWorld) {
-
-            }
-
-            @Override
-            public Biome getExpectedBiome(IWorld subWorld, int x, int y) {
-                return GameContent.BIOME_SKY;
-            }
-
-            @Override
-            public BiomeLevel getExpectedBiomeLevel(IWorld subWorld, int x, int y) {
-                return GameContent.BIOME_LEVEL_SKY;
-            }
-
-            @Override
-            public int getExpectedSurfaceHeight(IWorld subWorld, TileLayer layer, int x) {
-                return 0;
-            }
-
-            @Override
-            public void onGeneratorsInitialized(IWorld subWorld) {
-
-            }
-
-            @Override
-            public boolean shouldGenerateHere(IWorld subWorld, ResourceName name, IWorldGenerator generator) {
-                return name.getResourceName().equals("stone");
-            }
-
-            @Override
-            public void update(IWorld subWorld, IGameInstance game) {
-                subWorld.setCurrentTime(subWorld.getCurrentTime() + 3);
-            }
-        }.register();
-    }
-
-    public static class GenStone implements IWorldGenerator {
-
-        @Override
-        public boolean shouldGenerate(IWorld world, IChunk chunk) {
-            return chunk.getGridY() == -1;
-        }
-
-        @Override
-        public void generate(IWorld world, IChunk chunk) {
-            for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
-                for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    chunk.setStateInner(x, y, GameContent.TILE_STONE.getDefState());
-                }
-            }
-        }
-
-        @Override
-        public int getPriority() {
-            return 0;
-        }
-
-        @Override
-        public boolean shouldExistInWorld(IWorld world) {
-            return world.getSubName() != null;
-        }
     }
 }

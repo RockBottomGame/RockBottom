@@ -348,10 +348,11 @@ public class World extends AbstractWorld {
         DataSet set = new DataSet();
         set.read(file);
 
-        IWorld world;
+        IWorld world = null;
         if (set.hasKey("world")) {
             world = this.getSubWorld(new ResourceName(set.getString("world")));
-        } else {
+        }
+        if (world == null) {
             world = this;
         }
 

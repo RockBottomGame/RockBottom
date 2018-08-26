@@ -12,6 +12,8 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.gui.GuiSimpleFurnace;
+import de.ellpeck.rockbottom.gui.container.ContainerSimpleFurnace;
 import de.ellpeck.rockbottom.render.tile.TileSimpleFurnaceRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySimpleFurnace;
 
@@ -23,18 +25,9 @@ public class TileSimpleFurnace extends MultiTile {
 
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
-        if (!world.isClient()) {
-            if (world.getSubName() == null) {
-                world.travelToSubWorld(player, ResourceName.intern("test"), 0, 10);
-            } else {
-                world.travelToSubWorld(player, null, 0, 10);
-            }
-        }
-        return true;
-        /*
         Pos2 main = this.getMainPos(x, y, world.getState(layer, x, y));
         TileEntitySimpleFurnace tile = world.getTileEntity(layer, main.getX(), main.getY(), TileEntitySimpleFurnace.class);
-        return tile != null && player.openGuiContainer(new GuiSimpleFurnace(player, tile), new ContainerSimpleFurnace(player, tile));*/
+        return tile != null && player.openGuiContainer(new GuiSimpleFurnace(player, tile), new ContainerSimpleFurnace(player, tile));
     }
 
     @Override
