@@ -24,15 +24,15 @@ public class PacketDecoder extends ByteToMessageDecoder {
                 packet.fromBuffer(buf);
 
                 if (buf.isReadable()) {
-                    throw new IllegalStateException("Packet " + packetClass + " with id " + id + " read from buffer, but left " + buf.readableBytes() + " bytes behind!");
+                    ctx.fireExceptionCaught(new IllegalStateException("Packet " + packetClass + " with id " + id + " read from buffer, but left " + buf.readableBytes() + " bytes behind!"));
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Couldn't read packet " + packetClass + " with id " + id + " from buffer", e);
+                ctx.fireExceptionCaught(new RuntimeException("Couldn't read packet " + packetClass + " with id " + id + " from buffer", e));
             }
 
             out.add(packet);
         } else {
-            throw new IllegalStateException("Found unknown packet with id " + id);
+            ctx.fireExceptionCaught(new IllegalStateException("Found unknown packet with id " + id));
         }
 
         packetsReceived++;

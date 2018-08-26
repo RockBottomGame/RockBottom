@@ -37,6 +37,10 @@ public class ClientNetworkHandler extends SimpleChannelInboundHandler<IPacket> {
         ctx.disconnect();
         game.quitWorld();
 
-        game.getGuiManager().openGui(new GuiInformation(new GuiMainMenu(), 0.5F, game.getAssetManager().localize(ResourceName.intern("info.reject.exception"), cause.getMessage())));
+        String message = cause.getMessage();
+        if (message == null) {
+            message = "Unspecified reason";
+        }
+        game.getGuiManager().openGui(new GuiInformation(new GuiMainMenu(), 0.5F, game.getAssetManager().localize(ResourceName.intern("info.reject.exception"), message)));
     }
 }

@@ -47,8 +47,12 @@ public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket> {
         this.notifyAndClose(ctx, cause);
     }
 
-    private void notifyAndClose(ChannelHandlerContext ctx, Throwable cause){
-        ctx.writeAndFlush(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.exception"), cause.getMessage())));
+    private void notifyAndClose(ChannelHandlerContext ctx, Throwable cause) {
+        String message = cause.getMessage();
+        if (message == null) {
+            message = "Unspecified reason";
+        }
+        ctx.writeAndFlush(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.exception"), message)));
         ctx.disconnect();
     }
 }

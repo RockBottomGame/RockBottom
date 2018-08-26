@@ -20,10 +20,10 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket> {
             try {
                 packet.toBuffer(buf);
             } catch (Exception e) {
-                throw new RuntimeException("Couldn't write packet " + packet.getClass() + " with id " + id + " to buffer", e);
+                ctx.fireExceptionCaught(new RuntimeException("Couldn't write packet " + packet.getClass() + " with id " + id + " to buffer", e));
             }
         } else {
-            throw new IllegalStateException("Found unregistered packet " + packet.getClass());
+            ctx.fireExceptionCaught(new IllegalStateException("Found unregistered packet " + packet.getClass()));
         }
 
         packetsSent++;

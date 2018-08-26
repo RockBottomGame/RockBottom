@@ -38,9 +38,6 @@ repositories {
     maven {
         url "http://clojars.org/repo/"
     }
-    maven {
-        url "https://maven.ssblur.com/"
-    }
 }
 
 dependencies {
@@ -48,9 +45,7 @@ dependencies {
     compile project(":Assets")
 
     //JOPT Simple for launch arg parsing
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '5.0.4'
-    //Auth System by Blur
-    compile group: 'co.pemery.auth', name: 'RockBottomAuth', version: '0.2.1'
+    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-2'
 }
 
 jar {
