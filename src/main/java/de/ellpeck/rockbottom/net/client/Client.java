@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.client;
 
 import de.ellpeck.rockbottom.net.PacketDecoder;
 import de.ellpeck.rockbottom.net.PacketEncoder;
+import de.ellpeck.rockbottom.net.TrafficMonitor;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -39,7 +40,8 @@ public class Client {
                                 .addLast(new PacketDecoder())
                                 .addLast(new FastLzFrameEncoder())
                                 .addLast(new PacketEncoder())
-                                .addLast(new ClientNetworkHandler());
+                                .addLast(new ClientNetworkHandler())
+                                .addLast(new TrafficMonitor());
                     }
                 }).connect(ip, port).syncUninterruptibly().channel();
     }

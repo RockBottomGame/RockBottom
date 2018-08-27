@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.net.server;
 
 import de.ellpeck.rockbottom.net.PacketDecoder;
 import de.ellpeck.rockbottom.net.PacketEncoder;
+import de.ellpeck.rockbottom.net.TrafficMonitor;
 import de.ellpeck.rockbottom.net.server.settings.Blacklist;
 import de.ellpeck.rockbottom.net.server.settings.CommandPermissions;
 import de.ellpeck.rockbottom.net.server.settings.Whitelist;
@@ -55,7 +56,8 @@ public class Server {
                                 .addLast(new PacketDecoder())
                                 .addLast(new FastLzFrameEncoder())
                                 .addLast(new PacketEncoder())
-                                .addLast(new ServerNetworkHandler(Server.this));
+                                .addLast(new ServerNetworkHandler(Server.this))
+                                .addLast(new TrafficMonitor());
                     }
                 }).bind(ip != null ? InetAddress.getByName(ip) : null, port).syncUninterruptibly().channel();
     }
