@@ -14,10 +14,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
 import de.ellpeck.rockbottom.item.*;
-import de.ellpeck.rockbottom.world.entity.EntityFalling;
-import de.ellpeck.rockbottom.world.entity.EntityFirework;
-import de.ellpeck.rockbottom.world.entity.EntityItem;
-import de.ellpeck.rockbottom.world.entity.EntitySlime;
+import de.ellpeck.rockbottom.world.entity.*;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
 import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
 import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
@@ -84,6 +81,7 @@ public final class ContentRegistry {
         new ItemBowl().register();
         new ItemTool(ResourceName.intern("pestle"), 1F, 64, ToolProperty.PESTLE, 1).register();
         new ItemMush().register();
+        new ItemBoomerang(ResourceName.intern("wood_boomerang"), 50, 4, 0.25, 8).register();
 
         BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
         BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 15, true, 1000).register();
@@ -99,6 +97,7 @@ public final class ContentRegistry {
         Registries.ENTITY_REGISTRY.register(ResourceName.intern("falling"), EntityFalling.class);
         Registries.ENTITY_REGISTRY.register(ResourceName.intern("firework"), EntityFirework.class);
         Registries.ENTITY_REGISTRY.register(ResourceName.intern("slime"), EntitySlime.class);
+        Registries.ENTITY_REGISTRY.register(ResourceName.intern("boomerang"), EntityBoomerang.class);
 
         Registries.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);
         Registries.WORLD_GENERATORS.register(WorldGenHeights.ID, WorldGenHeights.class);

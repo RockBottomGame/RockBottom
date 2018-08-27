@@ -37,9 +37,9 @@ public class CommandTime extends Command {
                 } else {
                     return new ChatComponentText(FormattingCode.RED + "Couldn't parse freeze value!");
                 }
-                world.getWorldInfo().timeFrozen = value;
+                world.setTimeFrozen(value);
 
-                RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
+                RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.isTimeFrozen()));
                 return new ChatComponentText(FormattingCode.GREEN + "Set time freeze to " + value + '!');
             } else {
                 try {
@@ -53,7 +53,7 @@ public class CommandTime extends Command {
                         return new ChatComponentText(FormattingCode.RED + "Specify your action!");
                     }
 
-                    RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.getWorldInfo().timeFrozen));
+                    RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new PacketTime(world.getCurrentTime(), world.getTotalTime(), world.isTimeFrozen()));
                     return new ChatComponentText(FormattingCode.GREEN + "Set time to " + world.getCurrentTime() + '!');
                 } catch (NumberFormatException e) {
                     return new ChatComponentText(FormattingCode.RED + "Couldn't parse time!");
