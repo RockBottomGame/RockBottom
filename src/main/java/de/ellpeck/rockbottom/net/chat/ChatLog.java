@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.net.chat;
 
-import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -25,7 +24,6 @@ import de.ellpeck.rockbottom.net.chat.command.*;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +44,8 @@ public class ChatLog implements IChatLog {
         new CommandTime().register();
         new CommandEffect().register();
         new CommandItemList().register();
+        new CommandMe().register();
+        new CommandMessage().register();
     }
 
     @Override
@@ -64,18 +64,24 @@ public class ChatLog implements IChatLog {
         if (RockBottomAPI.getNet().isServer()) {
             ChatMessageEvent event = new ChatMessageEvent(this, sender, message);
             if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
-                message = event.message;
+                message = event.message.trim();
 
                 if (message.startsWith("/")) {
                     ChatComponent cmdFeedback;
 
-                    String[] split = message.substring(1).split(" ");
-                    Command command = this.getCommand(split[0]);
+                    String cmdName = message.substring(1).split(" ", 2)[0];
+                    Command command = this.getCommand(cmdName);
 
                     if (command != null) {
                         if (sender.getCommandLevel() >= command.getLevel()) {
-                            IGameInstance game = RockBottomAPI.getGame();
-                            cmdFeedback = command.execute(Arrays.copyOfRange(split, 1, split.length), sender, sender.getName(), game, this);
+                            String[] args;
+                            if (message.length() >= cmdName.length() + 2) {
+                                args = message.substring(cmdName.length() + 2).split(" ", command.getMaxArgumentAmount());
+                            } else {
+                                args = new String[0];
+                            }
+
+                            cmdFeedback = command.execute(args, sender, sender.getName(), RockBottomAPI.getGame(), this);
                         } else {
                             cmdFeedback = new ChatComponentText(FormattingCode.RED + "You are not allowed to execute this command!");
                         }
@@ -87,7 +93,7 @@ public class ChatLog implements IChatLog {
                         this.sendMessageTo(sender, cmdFeedback);
                     }
 
-                    Logging.chatLogger.info("Command sender " + sender.getName() + " with id " + sender.getUniqueId() + " executed command '/" + split[0] + "' with feedback '" + cmdFeedback + '\'');
+                    Logging.chatLogger.info("Command sender " + sender.getName() + " with id " + sender.getUniqueId() + " executed command '/" + cmdName + "' with feedback '" + cmdFeedback + '\'');
                 } else {
                     this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat() + '[' + sender.getName() + "] &4" + message));
                 }

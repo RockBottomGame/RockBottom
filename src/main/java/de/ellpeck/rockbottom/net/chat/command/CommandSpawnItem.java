@@ -108,4 +108,9 @@ public class CommandSpawnItem extends Command {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public int getMaxArgumentAmount() {
+        return 4;
+    }
 }
