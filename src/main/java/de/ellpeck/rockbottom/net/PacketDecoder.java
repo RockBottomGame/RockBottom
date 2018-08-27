@@ -10,8 +10,6 @@ import java.util.List;
 
 public class PacketDecoder extends ByteToMessageDecoder {
 
-    public static int packetsReceived;
-
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> out) throws Exception {
         int id = buf.readByte();
@@ -34,7 +32,5 @@ public class PacketDecoder extends ByteToMessageDecoder {
         } else {
             ctx.fireExceptionCaught(new IllegalStateException("Found unknown packet with id " + id));
         }
-
-        packetsReceived++;
     }
 }

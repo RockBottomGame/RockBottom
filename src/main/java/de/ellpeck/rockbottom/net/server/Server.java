@@ -52,12 +52,12 @@ public class Server {
                         channel.config().setOption(ChannelOption.TCP_NODELAY, true);
 
                         channel.pipeline()
+                                .addLast(new TrafficMonitor())
                                 .addLast(new FastLzFrameDecoder())
                                 .addLast(new PacketDecoder())
                                 .addLast(new FastLzFrameEncoder())
                                 .addLast(new PacketEncoder())
-                                .addLast(new ServerNetworkHandler(Server.this))
-                                .addLast(new TrafficMonitor());
+                                .addLast(new ServerNetworkHandler(Server.this));
                     }
                 }).bind(ip != null ? InetAddress.getByName(ip) : null, port).syncUninterruptibly().channel();
     }

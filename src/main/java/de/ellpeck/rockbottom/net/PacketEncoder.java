@@ -8,8 +8,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public class PacketEncoder extends MessageToByteEncoder<IPacket> {
 
-    public static int packetsSent;
-
     @Override
     protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf) throws RuntimeException {
         int id = Registries.PACKET_REGISTRY.getId(packet.getClass());
@@ -25,7 +23,5 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket> {
         } else {
             ctx.fireExceptionCaught(new IllegalStateException("Found unregistered packet " + packet.getClass()));
         }
-
-        packetsSent++;
     }
 }

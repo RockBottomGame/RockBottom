@@ -36,12 +36,12 @@ public class Client {
                         channel.config().setOption(ChannelOption.TCP_NODELAY, true);
 
                         channel.pipeline()
+                                .addLast(new TrafficMonitor())
                                 .addLast(new FastLzFrameDecoder())
                                 .addLast(new PacketDecoder())
                                 .addLast(new FastLzFrameEncoder())
                                 .addLast(new PacketEncoder())
-                                .addLast(new ClientNetworkHandler())
-                                .addLast(new TrafficMonitor());
+                                .addLast(new ClientNetworkHandler());
                     }
                 }).connect(ip, port).syncUninterruptibly().channel();
     }
