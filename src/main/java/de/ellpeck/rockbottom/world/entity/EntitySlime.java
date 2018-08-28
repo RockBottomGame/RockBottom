@@ -177,12 +177,9 @@ public class EntitySlime extends AbstractEntitySlime {
     public void onIntersectWithEntity(Entity otherEntity, BoundBox thisBox, BoundBox thisBoxMotion, BoundBox otherBox, BoundBox otherBoxMotion) {
         if (this.attackCooldown <= 0 && Math.abs(this.motionX) > 0.01D) {
             if (!otherEntity.isDead() && otherEntity instanceof EntityLiving && !(otherEntity instanceof AbstractEntitySlime)) {
-                otherEntity.applyKnockback(this, 0.25D);
-
-                if (!this.world.isClient()) {
-                    ((EntityLiving) otherEntity).takeDamage(Util.RANDOM.nextInt(15) + 5);
+                if (((EntityLiving) otherEntity).takeDamage(Util.RANDOM.nextInt(15) + 5)) {
+                    otherEntity.applyKnockback(this, 0.25D);
                 }
-
                 this.attackCooldown = 30;
             }
         }
