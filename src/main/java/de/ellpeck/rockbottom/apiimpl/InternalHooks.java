@@ -271,7 +271,14 @@ public class InternalHooks implements IInternalHooks {
         x = entity.getX();
         y = entity.getY();
 
-        if (entity.onGround || entity.isClimbing) {
+        if (entity.shouldBeFalling()) {
+            if (entity.motionY < 0) {
+                if (!entity.isFalling) {
+                    entity.isFalling = true;
+                    entity.fallStartY = y;
+                }
+            }
+        } else {
             if (entity.onGround) {
                 entity.motionY = 0;
             }
@@ -281,11 +288,6 @@ public class InternalHooks implements IInternalHooks {
 
                 entity.isFalling = false;
                 entity.fallStartY = 0;
-            }
-        } else if (entity.motionY < 0) {
-            if (!entity.isFalling) {
-                entity.isFalling = true;
-                entity.fallStartY = y;
             }
         }
 
