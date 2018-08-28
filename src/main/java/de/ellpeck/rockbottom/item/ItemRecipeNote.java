@@ -46,7 +46,7 @@ public class ItemRecipeNote extends ItemBasic {
             ModBasedDataSet set = instance.getAdditionalData();
             if (set != null) {
                 ModBasedDataSet recipes = set.getModBasedDataSet(ResourceName.intern("recipes"));
-                for (Map.Entry<String, DataPart> entry : recipes.getData().entrySet()) {
+                for (Map.Entry<String, DataPart> entry : recipes) {
                     if (entry.getValue() instanceof PartBoolean) {
                         if (Util.isResourceName(entry.getKey())) {
                             ResourceName name = new ResourceName(entry.getKey());

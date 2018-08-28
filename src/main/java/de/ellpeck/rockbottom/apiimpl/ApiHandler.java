@@ -97,7 +97,7 @@ public class ApiHandler implements IApiHandler {
     public void writeDataSet(DataOutput stream, AbstractDataSet set) throws Exception {
         stream.writeInt(set.size());
 
-        for (Map.Entry<String, DataPart> entry : set.getData().entrySet()) {
+        for (Map.Entry<String, DataPart> entry : set) {
             DataPart part = entry.getValue();
             stream.writeByte(Registries.PART_REGISTRY.getId(part.getFactory()));
             stream.writeUTF(entry.getKey());
@@ -119,7 +119,7 @@ public class ApiHandler implements IApiHandler {
 
     @Override
     public void writeDataSet(JsonObject main, AbstractDataSet set) throws Exception {
-        for (Map.Entry<String, DataPart> entry : set.getData().entrySet()) {
+        for (Map.Entry<String, DataPart> entry : set) {
             main.add(entry.getKey(), entry.getValue().write());
         }
     }

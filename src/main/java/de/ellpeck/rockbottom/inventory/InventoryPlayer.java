@@ -20,8 +20,8 @@ public class InventoryPlayer extends Inventory {
             this.addChangeCallback((inv, slot) -> {
                 if (ConstructionRegistry.chest != null && !ConstructionRegistry.chest.isKnown(player)) {
                     int fullness = 0;
-                    for (int i = 0; i < inv.getSlotAmount(); i++) {
-                        if (inv.get(i) != null) {
+                    for (ItemInstance instance : inv) {
+                        if (instance != null) {
                             fullness++;
 
                             if (fullness >= inv.getSlotAmount() / 2) {

@@ -31,8 +31,7 @@ public class TileMortarRenderer extends DefaultTileRenderer<TileMortar> {
             IInventory inventory = tileEntity.getTileInventory();
 
             float xOff = scale / 6;
-            for (int i = 0; i < inventory.getSlotAmount(); i++) {
-                ItemInstance content = inventory.get(i);
+            for (ItemInstance content : inventory) {
                 if (content != null) {
                     Item item = content.getItem();
                     IItemRenderer renderer = item.getRenderer();
