@@ -34,6 +34,7 @@ import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
 import de.ellpeck.rockbottom.gui.component.ComponentSkill;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
 import de.ellpeck.rockbottom.init.RockBottom;
+import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
@@ -226,7 +227,7 @@ public class GuiManager implements IGuiManager {
                 }
             }
 
-            if (player != null && RockBottomAPI.getNet().isActive() && Settings.KEY_PLAYER_LIST.isDown()) {
+            if (player != null && gui == null && RockBottomAPI.getNet().isActive() && Settings.KEY_PLAYER_LIST.isDown()) {
                 font.drawString(5, 5, "Players:", 0.3F);
 
                 int y = 0;
@@ -240,8 +241,10 @@ public class GuiManager implements IGuiManager {
                         }
                     }
 
-                    font.drawString(5, y + 13, s, 0.25F);
-                    y += 7;
+                    font.drawString(12, y + 16, s, 0.25F);
+                    PlayerEntityRenderer.renderPlayer(p, game, manager, g, p.getDesign(), 5, y + 13, 5F, 2, Colors.WHITE);
+
+                    y += 12;
                 }
             }
 

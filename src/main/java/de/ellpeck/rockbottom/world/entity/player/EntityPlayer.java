@@ -72,7 +72,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
                 }
 
                 if (isInv && slot == this.getSelectedSlot()) {
-                    RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this.getX(), this.getY(), this);
+                    RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
                 }
             }
         }
@@ -522,7 +522,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.inv.selectedSlot = slot;
 
         if (this.world.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersInWorldExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this.world, new PacketActiveItem(this.getUniqueId(), slot, this.inv.get(slot)), this);
         }
     }
 

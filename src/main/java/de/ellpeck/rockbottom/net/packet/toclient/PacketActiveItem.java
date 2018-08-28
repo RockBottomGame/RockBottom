@@ -2,12 +2,11 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -57,9 +56,8 @@ public class PacketActiveItem implements IPacket {
     public void handle(IGameInstance game, ChannelHandlerContext context) {
         IWorld world = game.getWorld();
         if (world != null) {
-            Entity entity = world.getEntity(this.playerId);
-            if (entity instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) entity;
+            AbstractEntityPlayer player = world.getPlayer(this.playerId);
+            if (player != null) {
                 player.setSelectedSlot(this.slot);
                 player.getInv().set(this.slot, this.newSlotItem);
             }

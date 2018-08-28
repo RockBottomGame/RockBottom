@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.impl.PlayerRenderEvent;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -25,7 +26,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer> {
     private static final ResourceName SPECIAL_BASE = ResourceName.intern("player.base.s");
     private static final ResourceName SPECIAL_ARMS = ResourceName.intern("player.arm.skin_s");
 
-    public static void renderPlayer(EntityPlayer player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light) {
+    public static void renderPlayer(AbstractEntityPlayer player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light) {
         ItemInstance holding = player != null ? player.getInv().get(player.getSelectedSlot()) : null;
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
