@@ -61,9 +61,13 @@ public class EntityBoomerang extends AbstractEntityBoomerang {
 
                     this.motionX = -lastMotionX;
                     this.motionY = -lastMotionY;
+                    return;
                 }
             }
         }
+
+        this.motionX = lastMotionX;
+        this.motionY = lastMotionY;
     }
 
     @Override
