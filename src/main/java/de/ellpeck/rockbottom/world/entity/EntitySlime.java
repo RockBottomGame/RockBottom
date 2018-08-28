@@ -61,6 +61,11 @@ public class EntitySlime extends AbstractEntitySlime {
         public int getEntityCap(IWorld world) {
             return 3;
         }
+
+        @Override
+        public boolean canSpawnHere(IWorld world, double x, double y) {
+            return world.getCombinedLight(Util.floor(x), Util.floor(y)) <= 25 && super.canSpawnHere(world, x, y);
+        }
     };
 
     private static final int VARIATION_COUNT = 8;
