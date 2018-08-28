@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.IDataManager;
+import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.ModConfig;
 import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.mod.IMod;
@@ -265,6 +266,22 @@ public class ModLoader implements IModLoader {
         IGameInstance game = RockBottomAPI.getGame();
         for (IMod mod : this.activeMods) {
             mod.postPostInit(game, RockBottomAPI.getApiHandler(), RockBottomAPI.getEventHandler());
+        }
+    }
+
+
+    @Override
+    public DataSet sendMessage(IMod sender, IMod recipient, String messageIdentifier, DataSet message) {
+        return recipient.receiveMessage(sender, messageIdentifier, message);
+    }
+
+    @Override
+    public DataSet sendMessage(IMod sender, String recipientId, String messageIdentifier, DataSet message) {
+        IMod mod = this.getMod(recipientId);
+        if (mod != null) {
+            return this.sendMessage(sender, mod, messageIdentifier, message);
+        } else {
+            return null;
         }
     }
 
