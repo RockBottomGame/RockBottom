@@ -205,53 +205,12 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public void doDefaultEntityUpdate(IGameInstance game, Entity entity, List<ActiveEffect> effects, List<AITask> aiTasks) {
-        entity.applyMotion();
-
-        entity.canClimb = false;
-        entity.isClimbing = false;
-
-        entity.submergedLiquid = null;
-        entity.canBreathe = true;
-
-        entity.move();
-
         double x = entity.getX();
         double y = entity.getY();
 
-        if (entity.onGround || entity.isClimbing) {
-            if (entity.onGround) {
-                entity.motionY = 0;
-            }
-
-            if (entity.isFalling) {
-                entity.onGroundHit(Math.max(0D, entity.fallStartY - y));
-
-                entity.isFalling = false;
-                entity.fallStartY = 0;
-            }
-        } else if (entity.motionY < 0) {
-            if (!entity.isFalling) {
-                entity.isFalling = true;
-                entity.fallStartY = y;
-            }
-        }
+        entity.applyMotion();
 
         if (!entity.isDead()) {
-            for (int i = effects.size() - 1; i >= 0; i--) {
-                ActiveEffect active = effects.get(i);
-
-                IEffect effect = active.getEffect();
-                if (!effect.isInstant(entity)) {
-                    effect.updateLasting(active, entity);
-                }
-
-                active.removeTime(1);
-                if (active.getTime() <= 0) {
-                    effects.remove(i);
-                    effect.onRemovedOrEnded(active, entity, true);
-                }
-            }
-
             AITask currTask = entity.currentAiTask;
             if (!entity.world.isClient()) {
                 boolean quitCurrentTask = true;
@@ -299,6 +258,50 @@ public class InternalHooks implements IInternalHooks {
                     if (currTask.shouldEndExecution(entity)) {
                         entity.currentAiTask = null;
                     }
+                }
+            }
+        }
+
+        entity.canClimb = false;
+        entity.isClimbing = false;
+        entity.submergedLiquid = null;
+        entity.canBreathe = true;
+        entity.move();
+
+        x = entity.getX();
+        y = entity.getY();
+
+        if (entity.onGround || entity.isClimbing) {
+            if (entity.onGround) {
+                entity.motionY = 0;
+            }
+
+            if (entity.isFalling) {
+                entity.onGroundHit(Math.max(0D, entity.fallStartY - y));
+
+                entity.isFalling = false;
+                entity.fallStartY = 0;
+            }
+        } else if (entity.motionY < 0) {
+            if (!entity.isFalling) {
+                entity.isFalling = true;
+                entity.fallStartY = y;
+            }
+        }
+
+        if (!entity.isDead()) {
+            for (int i = effects.size() - 1; i >= 0; i--) {
+                ActiveEffect active = effects.get(i);
+
+                IEffect effect = active.getEffect();
+                if (!effect.isInstant(entity)) {
+                    effect.updateLasting(active, entity);
+                }
+
+                active.removeTime(1);
+                if (active.getTime() <= 0) {
+                    effects.remove(i);
+                    effect.onRemovedOrEnded(active, entity, true);
                 }
             }
         }
