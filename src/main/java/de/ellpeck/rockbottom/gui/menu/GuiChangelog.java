@@ -38,10 +38,12 @@ public class GuiChangelog extends Gui {
             return true;
         }, assetManager.localize(ResourceName.intern("button.back"))));
 
-        int height = this.height / 3 * 2 - 10;
-        int max = (this.drawAndGetHeight(this.changelog, assetManager.getFont(), 20, 5, Integer.MAX_VALUE, false) - height) / 10;
-        this.scrollBar = new ComponentScrollBar(this, 12, 5, height, new BoundBox(0, 0, this.width - 20 * 2, height).add(20, 5), max, null);
-        this.components.add(this.scrollBar);
+        if (this.changelog != null && !this.failed) {
+            int height = this.height / 3 * 2 - 10;
+            int max = (this.drawAndGetHeight(this.changelog, assetManager.getFont(), 20, 5, Integer.MAX_VALUE, false) - height) / 10;
+            this.scrollBar = new ComponentScrollBar(this, 12, 5, height, new BoundBox(0, 0, this.width - 20 * 2, height).add(20, 5), max, null);
+            this.components.add(this.scrollBar);
+        }
     }
 
     @Override
