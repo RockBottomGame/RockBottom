@@ -277,12 +277,14 @@ public class ApiHandler implements IApiHandler {
             layerSeeds[i] = rand.nextLong();
         }
 
-        for (Biome biome : Registries.BIOME_REGISTRY.values()) {
-            List<BiomeLevel> levels = gen.getGenerationLevels(biome, world);
-            if (!levels.isEmpty()) {
-                for (BiomeLevel level : Registries.BIOME_LEVEL_REGISTRY.values()) {
-                    if (levels.contains(level) || level.getAdditionalGenBiomes(world).contains(biome)) {
-                        biomesPerLevel.put(level, biome);
+        for (Biome biome : gen.getBiomesToGen(world)) {
+            if (biome.shouldGenerateInWorld(world)) {
+                List<BiomeLevel> levels = biome.getGenerationLevels(world);
+                for (BiomeLevel level : gen.getLevelsToGen(world)) {
+                    if (level.shouldGenerateInWorld(world)) {
+                        if (levels.contains(level) || level.getAdditionalGenBiomes(world).contains(biome)) {
+                            biomesPerLevel.put(level, biome);
+                        }
                     }
                 }
             }
