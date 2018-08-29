@@ -23,10 +23,10 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.SubWorldInitializer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.gen.BiomeGen;
+import de.ellpeck.rockbottom.api.world.gen.HeightGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
-import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketPlayer;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
@@ -47,8 +47,6 @@ public class World extends AbstractWorld {
     protected final List<AbstractEntityPlayer> playersUnmodifiable = Collections.unmodifiableList(this.players);
     private final List<SubWorld> subWorlds;
     private final DynamicRegistryInfo regInfo;
-    private final WorldGenBiomes biomeGen;
-    private final WorldGenHeights heightGen;
     protected File playerDirectory;
     protected int saveTicksCounter;
     protected final WorldInfo info;
@@ -64,9 +62,6 @@ public class World extends AbstractWorld {
 
         if (!isClient) {
             this.initializeGenerators();
-            this.biomeGen = Preconditions.checkNotNull((WorldGenBiomes) this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry!");
-            this.heightGen = Preconditions.checkNotNull((WorldGenHeights) this.getGenerator(WorldGenHeights.ID), "The default heights generator has been removed from the registry!");
-
             this.loadPersistentChunks();
 
             List<SubWorld> subs = new ArrayList<>();
@@ -91,9 +86,17 @@ public class World extends AbstractWorld {
             RockBottomAPI.logger().info("Initialized a total of " + this.subWorlds.size() + " sub worlds for world " + this.getName());
         } else {
             this.subWorlds = null;
-            this.biomeGen = null;
-            this.heightGen = null;
         }
+    }
+
+    @Override
+    protected BiomeGen getBiomeGen() {
+        return Preconditions.checkNotNull((WorldGenBiomes) this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry!");
+    }
+
+    @Override
+    protected HeightGen getHeightGen() {
+        return Preconditions.checkNotNull((WorldGenHeights) this.getGenerator(WorldGenHeights.ID), "The default heights generator has been removed from the registry!");
     }
 
     @Override
@@ -383,21 +386,6 @@ public class World extends AbstractWorld {
             }
         }
         return null;
-    }
-
-    @Override
-    public Biome getExpectedBiome(int x, int y) {
-        return this.biomeGen.getBiome(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
-    }
-
-    @Override
-    public BiomeLevel getExpectedBiomeLevel(int x, int y) {
-        return this.biomeGen.getSmoothedLevelForPos(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
-    }
-
-    @Override
-    public int getExpectedSurfaceHeight(TileLayer layer, int x) {
-        return this.heightGen.getHeight(layer, x);
     }
 
     @Override

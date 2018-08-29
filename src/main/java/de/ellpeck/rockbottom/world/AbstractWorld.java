@@ -21,8 +21,11 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.gen.BiomeGen;
+import de.ellpeck.rockbottom.api.world.gen.HeightGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
@@ -53,6 +56,8 @@ public abstract class AbstractWorld implements IWorld {
     private int time;
     private int totalTime;
     private boolean timeFrozen;
+    private BiomeGen biomeGen;
+    private HeightGen heightGen;
 
     public AbstractWorld(File worldDirectory, long seed) {
         this.seed = seed;
@@ -80,6 +85,10 @@ public abstract class AbstractWorld implements IWorld {
     protected abstract List<Pos2> getDefaultPersistentChunks();
 
     protected abstract boolean shouldGenerateHere(IWorldGenerator generator, ResourceName name);
+
+    protected abstract BiomeGen getBiomeGen();
+
+    protected abstract HeightGen getHeightGen();
 
     protected void initializeGenerators() {
         Map<ResourceName, IWorldGenerator> generators = new HashMap<>();
@@ -116,6 +125,9 @@ public abstract class AbstractWorld implements IWorld {
         this.retroactiveGenerators = Collections.unmodifiableList(retroactiveGenerators);
 
         RockBottomAPI.logger().info("Added a total of " + this.generators.size() + " generators to world " + this.getName() + " (" + this.loopingGenerators.size() + " per chunk, " + this.retroactiveGenerators.size() + " retroactive)");
+
+        this.biomeGen = this.getBiomeGen();
+        this.heightGen = this.getHeightGen();
     }
 
     protected void loadPersistentChunks() {
@@ -966,6 +978,21 @@ public abstract class AbstractWorld implements IWorld {
     @Override
     public void setSubName(ResourceName subName) {
         throw new UnsupportedOperationException("Cannot set sub name in a non-client world");
+    }
+
+    @Override
+    public Biome getExpectedBiome(int x, int y) {
+        return this.biomeGen.getBiome(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
+    }
+
+    @Override
+    public BiomeLevel getExpectedBiomeLevel(int x, int y) {
+        return this.biomeGen.getBiomeLevel(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
+    }
+
+    @Override
+    public int getExpectedSurfaceHeight(TileLayer layer, int x) {
+        return this.heightGen.getHeight(this, layer, x);
     }
 
     protected abstract void saveImpl(long startTime);

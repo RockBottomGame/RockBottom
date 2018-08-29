@@ -12,10 +12,10 @@ import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.SubWorldInitializer;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
+import de.ellpeck.rockbottom.api.world.gen.BiomeGen;
+import de.ellpeck.rockbottom.api.world.gen.HeightGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
-import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
-import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
 import io.netty.channel.Channel;
 
@@ -52,6 +52,16 @@ public class SubWorld extends AbstractWorld {
     @Override
     protected boolean shouldGenerateHere(IWorldGenerator generator, ResourceName name) {
         return this.initializer.shouldGenerateHere(this, name, generator);
+    }
+
+    @Override
+    protected BiomeGen getBiomeGen() {
+        return this.initializer.initBiomeGen(this);
+    }
+
+    @Override
+    protected HeightGen getHeightGen() {
+        return this.initializer.initHeightGen(this);
     }
 
     @Override
@@ -177,21 +187,6 @@ public class SubWorld extends AbstractWorld {
     @Override
     public ResourceName getSubName() {
         return this.initializer.getWorldName();
-    }
-
-    @Override
-    public Biome getExpectedBiome(int x, int y) {
-        return this.initializer.getExpectedBiome(this, x, y);
-    }
-
-    @Override
-    public BiomeLevel getExpectedBiomeLevel(int x, int y) {
-        return this.initializer.getExpectedBiomeLevel(this, x, y);
-    }
-
-    @Override
-    public int getExpectedSurfaceHeight(TileLayer layer, int x) {
-        return this.initializer.getExpectedSurfaceHeight(this, layer, x);
     }
 
     @Override
