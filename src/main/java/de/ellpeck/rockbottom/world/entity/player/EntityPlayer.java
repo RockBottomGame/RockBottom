@@ -175,6 +175,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public void update(IGameInstance game) {
+        boolean couldSwim = this.canSwim;
         super.update(game);
 
         if (this.collidedHor) {
@@ -252,6 +253,10 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     this.lastSyncX = x;
                     this.lastSyncY = y;
                 }
+            }
+
+            if (couldSwim && !this.canSwim && this.collidedHor) {
+                this.motionY += 0.15D;
             }
         }
     }
