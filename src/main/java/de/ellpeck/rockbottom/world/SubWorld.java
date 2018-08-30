@@ -1,5 +1,8 @@
 package de.ellpeck.rockbottom.world;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IRenderer;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -62,6 +65,11 @@ public class SubWorld extends AbstractWorld {
     @Override
     protected HeightGen getHeightGen() {
         return this.initializer.initHeightGen(this);
+    }
+
+    @Override
+    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+        return this.initializer.renderSky(this, game, manager, g, world, player, width, height);
     }
 
     @Override

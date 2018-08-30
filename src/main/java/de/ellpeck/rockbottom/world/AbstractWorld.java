@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -89,6 +90,8 @@ public abstract class AbstractWorld implements IWorld {
     protected abstract BiomeGen getBiomeGen();
 
     protected abstract HeightGen getHeightGen();
+
+    public abstract boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height);
 
     protected void initializeGenerators() {
         Map<ResourceName, IWorldGenerator> generators = new HashMap<>();

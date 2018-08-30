@@ -48,6 +48,7 @@ import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.util.CrashManager;
+import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import joptsimple.internal.Strings;
@@ -549,7 +550,7 @@ public class RockBottom extends AbstractGame {
         this.renderer.begin();
 
         if (this.player != null) {
-            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, this.getPlayerWorld(), this.player, this.interactionManager);
+            this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, (AbstractWorld) this.getPlayerWorld(), this.player, this.interactionManager);
         }
 
         this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.GUI_SHADER));

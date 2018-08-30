@@ -26,6 +26,7 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
+import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
@@ -100,15 +101,10 @@ public class WorldRenderer {
         this.maxY = Util.ceil(-this.transY + 1) - offset;
     }
 
-    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, IWorld world, EntityPlayer player, InteractionManager input) {
+    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, AbstractWorld world, EntityPlayer player, InteractionManager input) {
         float scale = g.getWorldScale();
-        float skylightMod = world.getSkylightModifier(false);
 
-        int skyLight = (int) (skylightMod * (SKY_COLORS.length - 1));
-        int skyColor = SKY_COLORS[skyLight];
-        g.backgroundColor(skyColor);
-
-        this.renderSky(game, manager, g, world, player, skylightMod, g.getWidthInWorld(), g.getHeightInWorld());
+        this.renderSky(game, manager, g, world, player, g.getWidthInWorld(), g.getHeightInWorld());
 
         List<Entity> entities = new ArrayList<>();
         List<EntityPlayer> players = new ArrayList<>();
@@ -338,7 +334,17 @@ public class WorldRenderer {
         }
     }
 
-    private void renderSky(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, AbstractEntityPlayer player, float skylightMod, double width, double height) {
+    private void renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+        if (!world.renderSky(game, manager, g, world, player, width, height)) {
+            return;
+        }
+
+        float skylightMod = world.getSkylightModifier(false);
+
+        int skyLight = (int) (skylightMod * (SKY_COLORS.length - 1));
+        int skyColor = SKY_COLORS[skyLight];
+        g.backgroundColor(skyColor);
+
         float scale = g.getWorldScale();
         g.setScale(scale, scale);
 

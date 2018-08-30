@@ -1,10 +1,8 @@
 package de.ellpeck.rockbottom.world;
 
 import com.google.common.base.Preconditions;
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.Registries;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
@@ -97,6 +95,11 @@ public class World extends AbstractWorld {
     @Override
     protected HeightGen getHeightGen() {
         return Preconditions.checkNotNull((WorldGenHeights) this.getGenerator(WorldGenHeights.ID), "The default heights generator has been removed from the registry!");
+    }
+
+    @Override
+    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+        return true;
     }
 
     @Override
