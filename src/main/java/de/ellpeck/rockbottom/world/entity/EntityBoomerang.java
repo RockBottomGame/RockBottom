@@ -34,7 +34,7 @@ public class EntityBoomerang extends AbstractEntityBoomerang {
 
         super.update(game);
 
-        if (!this.world.isClient()) {
+        if (!this.world.isClient() && !this.isDead()) {
             double x = this.getX();
             double y = this.getY();
 
