@@ -266,6 +266,7 @@ public class InternalHooks implements IInternalHooks {
         entity.isClimbing = false;
         entity.submergedLiquid = null;
         entity.canBreathe = true;
+        entity.canSwim = false;
         entity.move();
 
         x = entity.getX();

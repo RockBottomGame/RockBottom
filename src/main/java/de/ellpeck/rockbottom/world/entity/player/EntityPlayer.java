@@ -26,7 +26,6 @@ import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -43,7 +42,6 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import de.ellpeck.rockbottom.world.entity.player.statistics.Statistics;
-import de.ellpeck.rockbottom.world.tile.TileWater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +78,6 @@ public class EntityPlayer extends AbstractEntityPlayer {
     private int respawnTimer;
     private double lastStatX;
     private double lastStatY;
-    private boolean canSwim;
     private float skillPercentage;
     private int skillPoints;
 
@@ -178,7 +175,6 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public void update(IGameInstance game) {
-        this.canSwim = false;
         super.update(game);
 
         if (this.collidedHor) {
@@ -693,23 +689,6 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public float getHeight() {
         return 1.85F;
-    }
-
-    @Override
-    public void onIntersectWithTile(int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes) {
-        super.onIntersectWithTile(x, y, layer, state, entityBox, entityBoxMotion, tileBoxes);
-
-        if (!this.canSwim) {
-            Tile tile = state.getTile();
-            if (tile instanceof TileWater) {
-                for (BoundBox box : tileBoxes) {
-                    if (this.collidedHor ? box.intersects(entityBox) : box.contains(this.getX(), this.getY())) {
-                        this.canSwim = true;
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     @Override
