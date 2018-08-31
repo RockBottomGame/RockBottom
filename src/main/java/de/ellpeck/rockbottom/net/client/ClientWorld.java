@@ -1,7 +1,11 @@
 package de.ellpeck.rockbottom.net.client;
 
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
@@ -13,6 +17,7 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
+import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
@@ -68,6 +73,33 @@ public class ClientWorld extends World {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Override
+    protected void updateLocalTime() {
+        if (this.subWorld != null) {
+            this.subWorld.updateLocalTime(this);
+        } else {
+            super.updateLocalTime();
+        }
+    }
+
+    @Override
+    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+        if (this.subWorld != null) {
+            return this.subWorld.renderSky(this, game, manager, g, world, player, width, height);
+        } else {
+            return super.renderSky(game, manager, g, world, player, width, height);
+        }
+    }
+
+    @Override
+    protected float getSkylightModifierModifier() {
+        if (this.subWorld != null) {
+            return this.subWorld.getSkylightModifierModifier(this);
+        } else {
+            return super.getSkylightModifierModifier();
         }
     }
 
