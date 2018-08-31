@@ -103,6 +103,18 @@ public class World extends AbstractWorld {
     }
 
     @Override
+    protected float getSkylightModifierModifier() {
+        return 1F;
+    }
+
+    @Override
+    protected void updateLocalTime() {
+        if (!this.timeFrozen) {
+            this.time = (this.time + 1) % Constants.TIME_PER_DAY;
+        }
+    }
+
+    @Override
     protected List<Pos2> getDefaultPersistentChunks() {
         List<Pos2> list = new ArrayList<>();
         int dist = Constants.PERSISTENT_CHUNK_DISTANCE;

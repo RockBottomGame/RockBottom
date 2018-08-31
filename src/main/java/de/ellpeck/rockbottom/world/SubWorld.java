@@ -73,6 +73,16 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
+    protected float getSkylightModifierModifier() {
+        return this.initializer.getSkylightModifierModifier(this);
+    }
+
+    @Override
+    protected void updateLocalTime() {
+        this.initializer.updateLocalTime(this);
+    }
+
+    @Override
     protected void saveImpl(long startTime) {
         this.initializer.onSave(this);
     }

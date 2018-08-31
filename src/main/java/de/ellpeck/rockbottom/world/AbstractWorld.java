@@ -54,11 +54,12 @@ public abstract class AbstractWorld implements IWorld {
     protected File persistentChunksFile;
     protected File worldDataFile;
     private ModBasedDataSet additionalData;
-    private int time;
-    private int totalTime;
-    private boolean timeFrozen;
+    protected int time;
+    protected int totalTime;
+    protected boolean timeFrozen;
     private BiomeGen biomeGen;
     private HeightGen heightGen;
+    protected float skylightModifier;
 
     public AbstractWorld(File worldDirectory, long seed) {
         this.seed = seed;
@@ -178,13 +179,8 @@ public abstract class AbstractWorld implements IWorld {
 
     protected void updateChunksAndTime(IGameInstance game) {
         this.totalTime++;
-
-        if (!this.timeFrozen) {
-            this.time++;
-            if (this.time >= Constants.TIME_PER_DAY) {
-                this.time = 0;
-            }
-        }
+        this.updateLocalTime();
+        this.skylightModifier = (((float) Math.sin(2 * Math.PI * ((double) this.time / (double) Constants.TIME_PER_DAY)) + 1F) / 2F) * this.getSkylightModifierModifier();
 
         for (int i = this.loadedChunks.size() - 1; i >= 0; i--) {
             IChunk chunk = this.loadedChunks.get(i);
@@ -195,6 +191,10 @@ public abstract class AbstractWorld implements IWorld {
             }
         }
     }
+
+    protected abstract float getSkylightModifierModifier();
+
+    protected abstract void updateLocalTime();
 
     public boolean update(AbstractGame game) {
         if (RockBottomAPI.getEventHandler().fireEvent(new WorldTickEvent(this)) != EventResult.CANCELLED) {
@@ -679,12 +679,10 @@ public abstract class AbstractWorld implements IWorld {
 
     @Override
     public float getSkylightModifier(boolean doMinMax) {
-        float mod = ((float) Math.sin(2 * Math.PI * ((double) this.time / (double) Constants.TIME_PER_DAY)) + 1F) / 2F;
-
         if (doMinMax) {
-            return Math.min(1F, mod + 0.15F);
+            return Math.min(1F, this.skylightModifier + 0.15F);
         } else {
-            return mod;
+            return this.skylightModifier;
         }
     }
 
