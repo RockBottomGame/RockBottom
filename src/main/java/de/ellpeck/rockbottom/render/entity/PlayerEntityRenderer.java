@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerRenderEvent;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -27,6 +28,10 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer> {
     private static final ResourceName SPECIAL_ARMS = ResourceName.intern("player.arm.skin_s");
 
     public static void renderPlayer(AbstractEntityPlayer player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light) {
+        if (RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent.Pre(game, manager, g, player, x, y)) == EventResult.CANCELLED) {
+            return;
+        }
+
         ItemInstance holding = player != null ? player.getInv().get(player.getSelectedSlot()) : null;
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
@@ -141,6 +146,8 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer> {
                 }
             }
         }
+
+        RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent(game, manager, g, player, x, y));
     }
 
     @Override
@@ -160,7 +167,5 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer> {
             row = isRight ? 2 : 3;
         }
         renderPlayer(entity, game, manager, g, design, x - 0.5F, y + entity.getHeight() / 2F - 2F, 1F, row, light);
-
-        RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent(game, manager, g, entity, x, y));
     }
 }
