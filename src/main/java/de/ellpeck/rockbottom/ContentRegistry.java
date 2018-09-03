@@ -115,6 +115,7 @@ public final class ContentRegistry {
         Registries.WORLD_GENERATORS.register(ResourceName.intern("cave_mushrooms"), WorldGenCaveMushrooms.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), WorldGenStardrops.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("lakes"), WorldGenLakes.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("corn"), WorldGenCorn.class);
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 

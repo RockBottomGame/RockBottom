@@ -19,6 +19,7 @@ public final class ConstructionRegistry {
     public static IRecipe torch;
     public static IRecipe mortar;
     public static IRecipe pestle;
+    public static IRecipe simpleHoe;
 
     public static void postInit() {
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_PICKAXE));
@@ -43,6 +44,7 @@ public final class ConstructionRegistry {
         torch = getRecipe(GameContent.TILE_TORCH.getItem());
         mortar = getRecipe(GameContent.TILE_MORTAR.getItem());
         pestle = getRecipe(GameContent.ITEM_PESTLE);
+        simpleHoe = getRecipe(GameContent.ITEM_SIMPLE_HOE);
     }
 
     private static IRecipe getRecipe(Item item) {

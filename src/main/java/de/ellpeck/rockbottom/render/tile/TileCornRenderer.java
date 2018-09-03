@@ -15,18 +15,22 @@ public class TileCornRenderer extends DefaultTileRenderer<TileCorn> {
 
     private final ResourceName[][] textures;
 
-    public TileCornRenderer(ResourceName name) {
-        super(name);
+    public TileCornRenderer(ResourceName texture) {
+        super(texture);
 
         this.textures = new ResourceName[2][10];
         for (int i = 0; i < 10; i++) {
-            this.textures[0][i] = name.addSuffix("." + i + ".bottom");
-            this.textures[1][i] = name.addSuffix("." + i + ".top");
+            this.textures[0][i] = this.texture.addSuffix("." + i + ".bottom");
+            this.textures[1][i] = this.texture.addSuffix("." + i + ".top");
         }
     }
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileCorn tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    }
+
+    @Override
+    public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileCorn tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         int top = state.get(StaticTileProps.TOP_HALF) ? 1 : 0;
         int variant = state.get(StaticTileProps.CORN_GROWTH);
         manager.getTexture(this.textures[top][variant]).draw(renderX, renderY, scale, scale, light);
