@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
@@ -76,5 +77,18 @@ public class TileGrass extends TileBasic {
     @Override
     public boolean canKeepPlants(IWorld world, int x, int y, TileLayer layer) {
         return true;
+    }
+
+    @Override
+    public boolean onInteractWithBreakKey(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
+        ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+        if (selected != null && selected.getItem().getToolProperties(selected).containsKey(ToolProperty.HOE)) {
+            if (!world.isClient()) {
+                world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
+                selected.getItem().takeDamage(selected, player, 1);
+            }
+            return true;
+        }
+        return false;
     }
 }

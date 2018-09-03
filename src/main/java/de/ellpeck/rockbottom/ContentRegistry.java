@@ -57,6 +57,8 @@ public final class ContentRegistry {
         new TileStardrop().register();
         new TileLamp(ResourceName.intern("lamp_iron")).register();
         new TileMortar().register();
+        new TileTilledSoil().register();
+        new TileCorn().register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();
@@ -82,6 +84,7 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("pestle"), 1F, 64, ToolProperty.PESTLE, 1).register();
         new ItemMush().register();
         new ItemBoomerang(ResourceName.intern("wood_boomerang"), 50, 4, 0.25, 8).register();
+        new ItemTool(ResourceName.intern("simple_hoe"), 1F, 50, ToolProperty.HOE, 1).register();
 
         BiomeLevel sky = new BiomeLevelBasic(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
         BiomeLevel surface = new BiomeLevelBasic(ResourceName.intern("surface"), -10, 15, true, 1000).register();
