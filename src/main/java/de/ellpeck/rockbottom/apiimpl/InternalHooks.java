@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
@@ -45,6 +46,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
@@ -1239,5 +1241,16 @@ public class InternalHooks implements IInternalHooks {
     @Override
     public void packetEntityData(Entity entity) {
         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketEntityChange(entity, false), entity.getX(), entity.getY());
+    }
+
+    @Override
+    public void defaultConstruct(AbstractEntityPlayer player, ConstructionRecipe recipe){
+        if (RockBottomAPI.getNet().isClient()) {
+            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.MANUAL_CONSTRUCTION_RECIPES.getId(recipe), 1));
+        } else {
+            if (recipe.isKnown(player)) {
+                recipe.playerConstruct(player, 1);
+            }
+        }
     }
 }

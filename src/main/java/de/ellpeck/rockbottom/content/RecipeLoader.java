@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.BasicRecipe;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
-import de.ellpeck.rockbottom.api.construction.KnowledgeBasedRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.KnowledgeConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
@@ -27,19 +27,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RecipeLoader implements IContentLoader<IRecipe> {
+public class RecipeLoader implements IContentLoader<ICompendiumRecipe> {
 
     private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
     public ResourceName getContentIdentifier() {
-        return IRecipe.ID;
+        return ICompendiumRecipe.ID;
     }
 
     @Override
     public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
         if (!this.disabled.contains(resourceName)) {
-            if (IRecipe.forName(resourceName) != null) {
+            if (ConstructionRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
                 String resPath = path + element.getAsString();
@@ -82,9 +82,9 @@ public class RecipeLoader implements IContentLoader<IRecipe> {
                 }
 
                 if ("manual".equals(type)) {
-                    new BasicRecipe(resourceName, inputList, outputList, skill).registerManual();
+                    new ConstructionRecipe(resourceName, inputList, outputList, skill).registerManual();
                 } else if ("manual_knowledge".equals(type)) {
-                    new KnowledgeBasedRecipe(resourceName, inputList, outputList, skill).registerManual();
+                    new KnowledgeConstructionRecipe(resourceName, inputList, outputList, skill).registerManual();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }

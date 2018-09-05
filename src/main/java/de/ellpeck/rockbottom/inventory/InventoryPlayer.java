@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.inventory;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -45,7 +45,7 @@ public class InventoryPlayer extends Inventory {
             this.addChangeCallback((inv, slot) -> {
                 ItemInstance instance = inv.get(slot);
                 if (instance != null && RockBottomAPI.getResourceRegistry().getNames(instance).contains(GameContent.RES_COPPER_PROCESSED)) {
-                    for (IRecipe recipe : ConstructionRegistry.COPPER_TOOLS) {
+                    for (ConstructionRecipe recipe : ConstructionRegistry.COPPER_TOOLS) {
                         if (recipe != null) {
                             player.getKnowledge().teachRecipe(recipe);
                         }

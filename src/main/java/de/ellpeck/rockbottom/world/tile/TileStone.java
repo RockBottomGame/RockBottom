@@ -1,6 +1,6 @@
 package de.ellpeck.rockbottom.world.tile;
 
-import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
@@ -21,7 +21,7 @@ public class TileStone extends TileBasic {
 
         if (!world.isClient() && shouldDrop && destroyer instanceof AbstractEntityPlayer) {
             AbstractEntityPlayer player = (AbstractEntityPlayer) destroyer;
-            for (IRecipe recipe : ConstructionRegistry.STONE_TOOLS) {
+            for (ConstructionRecipe recipe : ConstructionRegistry.STONE_TOOLS) {
                 if (recipe != null) {
                     player.getKnowledge().teachRecipe(recipe, true);
                 }

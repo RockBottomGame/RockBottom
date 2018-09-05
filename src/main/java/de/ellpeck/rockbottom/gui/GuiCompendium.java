@@ -3,10 +3,9 @@ package de.ellpeck.rockbottom.gui;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.construction.BasicRecipe;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
@@ -22,7 +21,6 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +38,7 @@ public class GuiCompendium extends GuiContainer {
     private static final ResourceName SEARCH_BAR = ResourceName.intern("gui.construction.search_bar_extended");
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
     private final List<ComponentIngredient> ingredients = new ArrayList<>();
-    public IRecipe selectedRecipe;
+    public ICompendiumRecipe selectedRecipe;
     private ComponentMenu menu;
     private ComponentConstruct construct;
 
@@ -90,7 +88,7 @@ public class GuiCompendium extends GuiContainer {
         this.polaroids.clear();
 
         boolean containsSelected = false;
-        for (BasicRecipe recipe : Registries.MANUAL_CONSTRUCTION_RECIPES.values()) {
+        for (ConstructionRecipe recipe : Registries.MANUAL_CONSTRUCTION_RECIPES.values()) {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
                     IInventory inv = this.player.getInv();
@@ -174,7 +172,7 @@ public class GuiCompendium extends GuiContainer {
         }
     }
 
-    private void initConstructButton(IRecipe recipe) {
+    private void initConstructButton(ICompendiumRecipe recipe) {
         if (this.construct != null) {
             this.components.remove(this.construct);
             this.construct = null;
@@ -243,19 +241,7 @@ public class GuiCompendium extends GuiContainer {
                     return true;
                 }
 
-                if (this.construct != null && this.construct.isMouseOver(game)) {
-                    if (RockBottomAPI.getNet().isClient()) {
-                        RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(game.getPlayer().getUniqueId(), Registries.ALL_CONSTRUCTION_RECIPES.getId(this.selectedRecipe), 1));
-                    } else {
-                        if (this.selectedRecipe.isKnown(this.player)) {
-                            this.selectedRecipe.playerConstruct(this.player, 1);
-                        }
-                    }
-                    return true;
-                }
-
                 boolean did = false;
-
                 for (ComponentPolaroid polaroid : this.polaroids) {
                     if (polaroid.recipe != null && polaroid.isMouseOverPrioritized(game)) {
                         if (this.selectedRecipe != polaroid.recipe) {

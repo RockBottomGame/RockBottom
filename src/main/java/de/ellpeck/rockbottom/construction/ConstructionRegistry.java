@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.construction;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.item.Item;
 
 import java.util.ArrayList;
@@ -9,17 +9,17 @@ import java.util.List;
 
 public final class ConstructionRegistry {
 
-    public static final List<IRecipe> BRITTLE_TOOLS = new ArrayList<>();
-    public static final List<IRecipe> STONE_TOOLS = new ArrayList<>();
-    public static final List<IRecipe> COPPER_TOOLS = new ArrayList<>();
-    public static IRecipe ladder;
-    public static IRecipe chest;
-    public static IRecipe grassTorch;
-    public static IRecipe simpleFurnace;
-    public static IRecipe torch;
-    public static IRecipe mortar;
-    public static IRecipe pestle;
-    public static IRecipe simpleHoe;
+    public static final List<ConstructionRecipe> BRITTLE_TOOLS = new ArrayList<>();
+    public static final List<ConstructionRecipe> STONE_TOOLS = new ArrayList<>();
+    public static final List<ConstructionRecipe> COPPER_TOOLS = new ArrayList<>();
+    public static ConstructionRecipe ladder;
+    public static ConstructionRecipe chest;
+    public static ConstructionRecipe grassTorch;
+    public static ConstructionRecipe simpleFurnace;
+    public static ConstructionRecipe torch;
+    public static ConstructionRecipe mortar;
+    public static ConstructionRecipe pestle;
+    public static ConstructionRecipe simpleHoe;
 
     public static void postInit() {
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_PICKAXE));
@@ -47,7 +47,7 @@ public final class ConstructionRegistry {
         simpleHoe = getRecipe(GameContent.ITEM_SIMPLE_HOE);
     }
 
-    private static IRecipe getRecipe(Item item) {
-        return IRecipe.forName(item.getName());
+    private static ConstructionRecipe getRecipe(Item item) {
+        return ConstructionRecipe.forName(item.getName());
     }
 }

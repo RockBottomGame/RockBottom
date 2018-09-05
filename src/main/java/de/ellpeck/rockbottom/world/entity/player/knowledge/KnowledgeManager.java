@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.world.entity.player.knowledge;
 
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
@@ -86,7 +86,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public boolean knowsRecipe(IRecipe recipe) {
+    public boolean knowsRecipe(ConstructionRecipe recipe) {
         return this.knowsInformation(recipe.getKnowledgeInformationName());
     }
 
@@ -111,7 +111,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public void teachRecipe(IRecipe recipe, boolean announce) {
+    public void teachRecipe(ConstructionRecipe recipe, boolean announce) {
         if (!recipe.isKnown(this.player)) {
             RecipeInformation information = new RecipeInformation(recipe);
             this.teachInformation(information, announce);
@@ -119,7 +119,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public void teachRecipe(IRecipe recipe) {
+    public void teachRecipe(ConstructionRecipe recipe) {
         this.teachRecipe(recipe, true);
     }
 
@@ -145,12 +145,12 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public void forgetRecipe(IRecipe recipe, boolean announce) {
+    public void forgetRecipe(ConstructionRecipe recipe, boolean announce) {
         this.forgetInformation(recipe.getKnowledgeInformationName(), announce);
     }
 
     @Override
-    public void forgetRecipe(IRecipe recipe) {
+    public void forgetRecipe(ConstructionRecipe recipe) {
         this.forgetRecipe(recipe, true);
     }
 

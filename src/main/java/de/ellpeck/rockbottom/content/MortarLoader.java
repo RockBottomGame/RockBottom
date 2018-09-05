@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
-import de.ellpeck.rockbottom.api.construction.MortarRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.mortar.MortarRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
@@ -21,11 +21,12 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class MortarLoader implements IContentLoader<IRecipe> {
+public class MortarLoader implements IContentLoader<ICompendiumRecipe> {
 
     private final Set<ResourceName> disabled = new HashSet<>();
 
@@ -37,7 +38,7 @@ public class MortarLoader implements IContentLoader<IRecipe> {
     @Override
     public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
         if (!this.disabled.contains(resourceName)) {
-            if (IRecipe.forName(resourceName) != null) {
+            if (MortarRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Mortar recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
                 String resPath = path + element.getAsString();
@@ -49,41 +50,37 @@ public class MortarLoader implements IContentLoader<IRecipe> {
                 JsonObject object = recipeElement.getAsJsonObject();
                 int time = object.get("time").getAsInt();
 
-                ItemInstance[] output = new ItemInstance[3];
-                int counter = 0;
+                List<ItemInstance> output = new ArrayList<>();
                 for (JsonElement e : object.get("output").getAsJsonArray()) {
                     JsonObject out = e.getAsJsonObject();
                     Item outItem = Registries.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
                     int outAmount = out.has("amount") ? out.get("amount").getAsInt() : 1;
                     int outMeta = out.has("meta") ? out.get("meta").getAsInt() : 0;
 
-                    output[counter] = new ItemInstance(outItem, outAmount, outMeta);
+                    ItemInstance instance = new ItemInstance(outItem, outAmount, outMeta);
                     if (out.has("data")) {
-                        ModBasedDataSet set = output[counter].getOrCreateAdditionalData();
+                        ModBasedDataSet set = instance.getOrCreateAdditionalData();
                         RockBottomAPI.getApiHandler().readDataSet(out.get("data").getAsJsonObject(), set);
                     }
-
-                    counter++;
+                    output.add(instance);
                 }
 
-                IUseInfo[] input = new IUseInfo[3];
-                counter = 0;
+                List<IUseInfo> input = new ArrayList<>();
                 for (JsonElement e : object.get("input").getAsJsonArray()) {
                     JsonObject in = e.getAsJsonObject();
                     String name = in.get("name").getAsString();
 
                     if (Util.isResourceName(name)) {
                         int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                        input[counter] = new ItemUseInfo(Registries.ITEM_REGISTRY.get(new ResourceName(name)), 1, meta);
+                        input.add(new ItemUseInfo(Registries.ITEM_REGISTRY.get(new ResourceName(name)), 1, meta));
                     } else {
-                        input[counter] = new ResUseInfo(name);
+                        input.add(new ResUseInfo(name));
                     }
-                    counter++;
                 }
 
                 new MortarRecipe(resourceName, input, output, time).register();
 
-                RockBottomAPI.logger().config("Loaded mortar recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with time " + time + ", input " + Arrays.toString(input) + " and output " + Arrays.toString(output) + " with content pack " + pack.getName());
+                RockBottomAPI.logger().config("Loaded mortar recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with time " + time + ", input " + input + " and output " + output + " with content pack " + pack.getName());
             }
         } else {
             RockBottomAPI.logger().info("Mortar recipe " + resourceName + " will not be loaded for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName() + " because it was disabled by another content pack!");

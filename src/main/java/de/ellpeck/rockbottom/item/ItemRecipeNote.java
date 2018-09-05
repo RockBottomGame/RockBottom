@@ -1,10 +1,10 @@
 package de.ellpeck.rockbottom.item;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.set.part.PartBoolean;
@@ -24,10 +24,10 @@ public class ItemRecipeNote extends ItemBasic {
         super(ResourceName.intern("recipe_note"));
     }
 
-    public static ItemInstance create(IRecipe... recipes) {
+    public static ItemInstance create(ICompendiumRecipe... recipes) {
         ItemInstance instance = new ItemInstance(GameContent.ITEM_RECIPE_NOTE);
         ModBasedDataSet set = new ModBasedDataSet();
-        for (IRecipe recipe : recipes) {
+        for (ICompendiumRecipe recipe : recipes) {
             set.addBoolean(recipe.getName(), true);
         }
         instance.getOrCreateAdditionalData().addModBasedDataSet(ResourceName.intern("recipes"), set);
@@ -50,7 +50,7 @@ public class ItemRecipeNote extends ItemBasic {
                     if (entry.getValue() instanceof PartBoolean) {
                         if (Util.isResourceName(entry.getKey())) {
                             ResourceName name = new ResourceName(entry.getKey());
-                            IRecipe recipe = Registries.ALL_CONSTRUCTION_RECIPES.get(name);
+                            ConstructionRecipe recipe = ConstructionRecipe.forName(name);
                             if (recipe != null) {
                                 if (((PartBoolean) entry.getValue()).get()) {
                                     player.getKnowledge().teachRecipe(recipe);

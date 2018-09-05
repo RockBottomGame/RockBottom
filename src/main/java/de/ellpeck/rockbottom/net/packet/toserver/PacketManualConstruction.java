@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.construction.IRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
@@ -46,7 +46,7 @@ public class PacketManualConstruction implements IPacket {
         if (game.getWorld() != null) {
             AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
             if (player != null) {
-                IRecipe recipe = IRecipe.forName(this.recipeName);
+                ConstructionRecipe recipe = ConstructionRecipe.forName(this.recipeName);
                 if (recipe != null && recipe.isKnown(player)) {
                     recipe.playerConstruct(player, this.amount);
                 }
