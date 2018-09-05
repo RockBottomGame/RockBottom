@@ -224,7 +224,7 @@ public class ApiHandler implements IApiHandler {
                         }
                     }
 
-                    if (player != null) {
+                    if (player != null && skillReward > 0F) {
                         player.gainSkill(skillReward);
                     }
                 } else {

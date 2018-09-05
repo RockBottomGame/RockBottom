@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.KnowledgeConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
@@ -27,13 +26,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RecipeLoader implements IContentLoader<ICompendiumRecipe> {
+public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
 
     private final Set<ResourceName> disabled = new HashSet<>();
 
     @Override
     public ResourceName getContentIdentifier() {
-        return ICompendiumRecipe.ID;
+        return ConstructionRecipe.ID;
     }
 
     @Override

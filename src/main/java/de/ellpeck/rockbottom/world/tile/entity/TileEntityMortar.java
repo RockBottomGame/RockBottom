@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.world.tile.entity;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.construction.compendium.mortar.MortarRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.entity.TileInventory;
@@ -12,7 +11,6 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 import java.util.Collections;
-import java.util.List;
 
 public class TileEntityMortar extends TileEntity {
 
@@ -40,10 +38,7 @@ public class TileEntityMortar extends TileEntity {
                     this.currentRecipe = null;
                     this.progress = 0;
 
-                    List<ItemInstance> outputs = recipe.getOutputs();
-                    for (int i = 0; i < this.inventory.getSlotAmount(); i++) {
-                        this.inventory.set(i, i < outputs.size() ? outputs.get(i).copy() : null);
-                    }
+                    recipe.construct(this.inventory, 1);
                 } else {
                     this.sendToClients();
                 }
