@@ -4,8 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.construction.compendium.CompendiumCategory;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
@@ -21,6 +21,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.gui.component.ComponentCompendiumCategory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,18 +39,19 @@ public class GuiCompendium extends GuiContainer {
     private static final ResourceName SEARCH_BAR = ResourceName.intern("gui.construction.search_bar_extended");
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
     private final List<ComponentIngredient> ingredients = new ArrayList<>();
+    private final CompendiumCategory currentCategory;
     public ICompendiumRecipe selectedRecipe;
     private ComponentMenu menu;
     private ComponentConstruct construct;
-
     private ComponentInputField searchBar;
     private BoundBox searchButtonBox;
     private String searchText = "";
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> this.organize();
-    private boolean keepContainerOpen;
+    public boolean keepContainerOpen;
 
-    public GuiCompendium(AbstractEntityPlayer player) {
+    public GuiCompendium(AbstractEntityPlayer player, CompendiumCategory currentCategory) {
         super(player, PAGE_WIDTH * 2 + 1, PAGE_HEIGHT + 75);
+        this.currentCategory = currentCategory;
 
         ShiftClickBehavior behavior = new ShiftClickBehavior(0, 7, 8, player.getInv().getSlotAmount() - 1);
         this.shiftClickBehaviors.add(behavior);
@@ -69,7 +71,7 @@ public class GuiCompendium extends GuiContainer {
             return true;
         }, ResourceName.intern("gui.construction.book_open"), game.getAssetManager().localize(ResourceName.intern("button.close_compendium"))));
 
-        this.searchBar = new ComponentInputField(this, 145, 79, 70, 12, false, false, false, 64, false, strg -> {
+        this.searchBar = new ComponentInputField(this, 145, 80, 70, 12, false, false, false, 64, false, strg -> {
             if (!strg.equals(this.searchText)) {
                 this.searchText = strg;
                 this.organize();
@@ -78,7 +80,15 @@ public class GuiCompendium extends GuiContainer {
         this.searchBar.setActive(false);
         this.components.add(this.searchBar);
 
-        this.searchButtonBox = new BoundBox(0, 0, 13, 14).add(this.x + 145, this.y + 78);
+        this.searchButtonBox = new BoundBox(0, 0, 13, 14).add(this.x + 145, this.y + 79);
+
+        int y = 1;
+        for (CompendiumCategory category : Registries.COMPENDIUM_CATEGORY_REGISTRY.values()) {
+            if (category.shouldDisplay(this.player)) {
+                this.components.add(new ComponentCompendiumCategory(this, this.width, y, category, category == this.currentCategory));
+                y += 14;
+            }
+        }
 
         this.organize();
     }
@@ -88,7 +98,7 @@ public class GuiCompendium extends GuiContainer {
         this.polaroids.clear();
 
         boolean containsSelected = false;
-        for (ConstructionRecipe recipe : Registries.MANUAL_CONSTRUCTION_RECIPES.values()) {
+        for (ICompendiumRecipe recipe : this.currentCategory.getRecipes()) {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
                     IInventory inv = this.player.getInv();
@@ -196,9 +206,9 @@ public class GuiCompendium extends GuiContainer {
         }
 
         if (this.searchBar.isActive()) {
-            manager.getTexture(SEARCH_BAR).draw(this.x + 145, this.y + 78, 84, 14);
+            manager.getTexture(SEARCH_BAR).draw(this.x + 145, this.y + 79, 84, 14);
         } else {
-            manager.getTexture(SEARCH_ICON).draw(this.x + 145, this.y + 78, 13, 14);
+            manager.getTexture(SEARCH_ICON).draw(this.x + 145, this.y + 79, 13, 14);
         }
 
         super.render(game, manager, g);
