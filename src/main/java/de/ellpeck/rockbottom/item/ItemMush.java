@@ -22,6 +22,19 @@ public class ItemMush extends ItemBasic {
         super(ResourceName.intern("mush"));
     }
 
+    public static ActiveEffect getEffect(ItemInstance instance) {
+        ModBasedDataSet set = instance.getAdditionalData();
+        if (set != null) {
+            DataSet data = set.getDataSet(ResourceName.intern("effect"));
+            if (!data.isEmpty()) {
+                IEffect effect = Registries.EFFECT_REGISTRY.get(new ResourceName(data.getString("name")));
+                int amount = data.getInt("time");
+                return new ActiveEffect(effect, amount);
+            }
+        }
+        return null;
+    }
+
     @Override
     public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced) {
         super.describeItem(manager, instance, desc, isAdvanced);
@@ -50,18 +63,5 @@ public class ItemMush extends ItemBasic {
     @Override
     public double getMaxInteractionDistance(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player, ItemInstance instance) {
         return Double.MAX_VALUE;
-    }
-
-    public static ActiveEffect getEffect(ItemInstance instance) {
-        ModBasedDataSet set = instance.getAdditionalData();
-        if (set != null) {
-            DataSet data = set.getDataSet(ResourceName.intern("effect"));
-            if (!data.isEmpty()) {
-                IEffect effect = Registries.EFFECT_REGISTRY.get(new ResourceName(data.getString("name")));
-                int amount = data.getInt("time");
-                return new ActiveEffect(effect, amount);
-            }
-        }
-        return null;
     }
 }

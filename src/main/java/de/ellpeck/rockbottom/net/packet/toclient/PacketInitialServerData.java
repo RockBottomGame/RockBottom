@@ -39,7 +39,7 @@ public class PacketInitialServerData implements IPacket {
         NetUtil.writeSetToBuffer(this.playerSet, buf);
         this.info.toBuffer(buf);
         this.regInfo.toBuffer(buf);
-        if(this.subName != null){
+        if (this.subName != null) {
             NetUtil.writeStringToBuffer(this.subName.toString(), buf);
         }
     }
@@ -56,7 +56,7 @@ public class PacketInitialServerData implements IPacket {
         this.regInfo = new DynamicRegistryInfo();
         this.regInfo.fromBuffer(buf);
 
-        if(buf.isReadable()){
+        if (buf.isReadable()) {
             this.subName = new ResourceName(NetUtil.readStringFromBuffer(buf));
         }
     }

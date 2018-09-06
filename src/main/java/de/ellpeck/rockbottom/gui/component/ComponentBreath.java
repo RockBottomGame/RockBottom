@@ -17,6 +17,11 @@ public class ComponentBreath extends GuiComponent {
         super(gui, x, y, sizeX, sizeY);
     }
 
+    public static boolean shouldDisplay(IGameInstance game) {
+        AbstractEntityPlayer player = game.getPlayer();
+        return player != null && (player.getBreath() < player.getMaxBreath() || !player.canBreathe);
+    }
+
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
         if (shouldDisplay(game)) {
@@ -38,11 +43,6 @@ public class ComponentBreath extends GuiComponent {
                 g.drawHoverInfoAtMouse(game, manager, false, 0, manager.localize(ResourceName.intern("info.breath")) + ':', game.getPlayer().getBreath() + "/" + game.getPlayer().getMaxBreath());
             }
         }
-    }
-
-    public static boolean shouldDisplay(IGameInstance game) {
-        AbstractEntityPlayer player = game.getPlayer();
-        return player != null && (player.getBreath() < player.getMaxBreath() || !player.canBreathe);
     }
 
     @Override

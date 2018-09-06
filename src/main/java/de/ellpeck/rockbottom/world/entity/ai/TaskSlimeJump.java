@@ -40,8 +40,8 @@ public class TaskSlimeJump extends AITask<EntitySlime> {
                 this.motionY = entity.targetTask.isClose ? 0.3D : 0.35D;
             } else {
                 this.jumpRight = Util.RANDOM.nextBoolean();
-                this.motionX = 0.1D+0.25D*Util.RANDOM.nextDouble();
-                this.motionY = 0.1D+0.3D*Util.RANDOM.nextDouble();
+                this.motionX = 0.1D + 0.25D * Util.RANDOM.nextDouble();
+                this.motionY = 0.1D + 0.3D * Util.RANDOM.nextDouble();
             }
             entity.facing = this.jumpRight ? Direction.RIGHT : Direction.LEFT;
         }

@@ -35,7 +35,7 @@ public class PacketChangeWorld implements IPacket {
     public void fromBuffer(ByteBuf buf) {
         this.worldData = new DataSet();
         NetUtil.readSetFromBuffer(this.worldData, buf);
-        if(buf.isReadable()){
+        if (buf.isReadable()) {
             this.subName = new ResourceName(NetUtil.readStringFromBuffer(buf));
         }
     }

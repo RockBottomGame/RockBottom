@@ -69,17 +69,17 @@ public class EntitySlime extends AbstractEntitySlime {
     };
 
     private static final int VARIATION_COUNT = 8;
-    private final IEntityRenderer renderer = new SlimeEntityRenderer();
     public final TaskSlimeJump jumpTask = new TaskSlimeJump(0);
     public final TaskSlimeTarget targetTask = new TaskSlimeTarget(10, 10D, 2D);
-    private int variation = Util.RANDOM.nextInt(VARIATION_COUNT);
-    private int attackCooldown;
+    private final IEntityRenderer renderer = new SlimeEntityRenderer();
     private final DespawnHandler<EntitySlime> despawnHandler = new DespawnHandler<EntitySlime>() {
         @Override
         public double getMaxPlayerDistance(EntitySlime entity) {
             return 50;
         }
     };
+    private int variation = Util.RANDOM.nextInt(VARIATION_COUNT);
+    private int attackCooldown;
 
     public EntitySlime(IWorld world) {
         super(world);

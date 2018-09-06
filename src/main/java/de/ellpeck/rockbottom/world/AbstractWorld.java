@@ -44,22 +44,22 @@ public abstract class AbstractWorld implements IWorld {
 
     public final List<IChunk> loadedChunks = new ArrayList<>();
     protected final Table<Integer, Integer, IChunk> chunkLookup = HashBasedTable.create();
-    private Map<ResourceName, IWorldGenerator> generators;
-    private List<IWorldGenerator> loopingGenerators;
-    private List<IWorldGenerator> retroactiveGenerators;
     private final long seed;
     protected File directory;
     protected File chunksDirectory;
     protected File additionalDataFile;
     protected File persistentChunksFile;
     protected File worldDataFile;
-    private ModBasedDataSet additionalData;
     protected int time;
     protected int totalTime;
     protected boolean timeFrozen;
+    protected float skylightModifier;
+    private Map<ResourceName, IWorldGenerator> generators;
+    private List<IWorldGenerator> loopingGenerators;
+    private List<IWorldGenerator> retroactiveGenerators;
+    private ModBasedDataSet additionalData;
     private BiomeGen biomeGen;
     private HeightGen heightGen;
-    protected float skylightModifier;
 
     public AbstractWorld(File worldDirectory, long seed) {
         this.seed = seed;

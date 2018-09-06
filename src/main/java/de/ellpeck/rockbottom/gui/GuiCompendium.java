@@ -41,13 +41,13 @@ public class GuiCompendium extends GuiContainer {
     private final List<ComponentIngredient> ingredients = new ArrayList<>();
     private final CompendiumCategory currentCategory;
     public ICompendiumRecipe selectedRecipe;
+    public boolean keepContainerOpen;
     private ComponentMenu menu;
     private ComponentConstruct construct;
     private ComponentInputField searchBar;
     private BoundBox searchButtonBox;
     private String searchText = "";
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> this.organize();
-    public boolean keepContainerOpen;
 
     public GuiCompendium(AbstractEntityPlayer player, CompendiumCategory currentCategory) {
         super(player, PAGE_WIDTH * 2 + 1, PAGE_HEIGHT + 75);

@@ -98,6 +98,19 @@ public class Chunk implements IChunk {
         this.tickingTileEntitiesUnmodifiable = Collections.unmodifiableList(this.tickingTileEntities);
     }
 
+    private static void addRemoveEntitiesOnBorder(IChunk firstChunk, IChunk secondChunk, Entity entity, boolean remove) {
+        for (AbstractEntityPlayer player : firstChunk.getPlayersInRange()) {
+            if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
+                player.sendPacket(new PacketEntityChange(entity, remove));
+            }
+        }
+        for (AbstractEntityPlayer player : firstChunk.getPlayersLeftRange()) {
+            if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
+                player.sendPacket(new PacketEntityChange(entity, remove));
+            }
+        }
+    }
+
     private void generate(List<? extends IWorldGenerator> gens) {
         if (isGeneratingChunk) {
             RockBottomAPI.logger().log(Level.WARNING, "CHUNK GEN BLEEDING INTO DIFFERENT CHUNK AT " + this.gridX + ", " + this.gridY + "! THIS SHOULD NOT HAPPEN!", new IllegalStateException());
@@ -178,19 +191,6 @@ public class Chunk implements IChunk {
 
             if (tile.shouldRemove()) {
                 this.removeTileEntity(tile.layer, tile.x, tile.y);
-            }
-        }
-    }
-
-    private static void addRemoveEntitiesOnBorder(IChunk firstChunk, IChunk secondChunk, Entity entity, boolean remove) {
-        for (AbstractEntityPlayer player : firstChunk.getPlayersInRange()) {
-            if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
-                player.sendPacket(new PacketEntityChange(entity, remove));
-            }
-        }
-        for (AbstractEntityPlayer player : firstChunk.getPlayersLeftRange()) {
-            if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
-                player.sendPacket(new PacketEntityChange(entity, remove));
             }
         }
     }

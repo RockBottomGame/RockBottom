@@ -43,11 +43,11 @@ public class World extends AbstractWorld {
 
     public final List<AbstractEntityPlayer> players = new ArrayList<>();
     protected final List<AbstractEntityPlayer> playersUnmodifiable = Collections.unmodifiableList(this.players);
+    protected final WorldInfo info;
     private final List<SubWorld> subWorlds;
     private final DynamicRegistryInfo regInfo;
     protected File playerDirectory;
     protected int saveTicksCounter;
-    protected final WorldInfo info;
 
     public World(WorldInfo info, DynamicRegistryInfo regInfo, File worldDirectory, boolean isClient) {
         super(worldDirectory, info.seed);
@@ -85,6 +85,10 @@ public class World extends AbstractWorld {
         } else {
             this.subWorlds = null;
         }
+    }
+
+    private static EntityPlayer makePlayer(IWorld world, UUID id, IPlayerDesign design, Channel channel) {
+        return channel != null ? new ConnectedPlayer(world, id, design, channel) : new EntityPlayer(world, id, design);
     }
 
     @Override
@@ -377,10 +381,6 @@ public class World extends AbstractWorld {
         EntityPlayer player = makePlayer(world, id, design, channel);
         player.load(set, false);
         return player;
-    }
-
-    private static EntityPlayer makePlayer(IWorld world, UUID id, IPlayerDesign design, Channel channel) {
-        return channel != null ? new ConnectedPlayer(world, id, design, channel) : new EntityPlayer(world, id, design);
     }
 
     @Override

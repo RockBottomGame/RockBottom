@@ -142,6 +142,15 @@ public class ClientWorld extends World {
     }
 
     @Override
+    public void setSubName(ResourceName subName) {
+        if (subName == null) {
+            this.subWorld = null;
+        } else {
+            this.subWorld = Registries.SUB_WORLD_INITIALIZER_REGISTRY.get(subName);
+        }
+    }
+
+    @Override
     public String getName() {
         ResourceName sub = this.getSubName();
         return (sub == null ? "" : sub + "@") + "client_world";
@@ -190,14 +199,5 @@ public class ClientWorld extends World {
     @Override
     public void onUnloaded() {
         RockBottomAPI.getEventHandler().fireEvent(new WorldUnloadEvent(this));
-    }
-
-    @Override
-    public void setSubName(ResourceName subName) {
-        if (subName == null) {
-            this.subWorld = null;
-        } else {
-            this.subWorld = Registries.SUB_WORLD_INITIALIZER_REGISTRY.get(subName);
-        }
     }
 }
