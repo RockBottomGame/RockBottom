@@ -369,7 +369,7 @@ public class InternalHooks implements IInternalHooks {
                 object.onEntityIntersection(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
             }
 
-            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBoxMotion, boxes));
+            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBox, ownBoxMotion, boxes));
 
             motionX = object.motionX;
             motionY = object.motionY;
