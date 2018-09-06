@@ -23,11 +23,6 @@ public class ItemMush extends ItemBasic {
     }
 
     @Override
-    public boolean isDataSensitive(ItemInstance instance) {
-        return true;
-    }
-
-    @Override
     public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced) {
         super.describeItem(manager, instance, desc, isAdvanced);
 
