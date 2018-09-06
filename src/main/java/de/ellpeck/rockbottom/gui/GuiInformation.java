@@ -13,11 +13,13 @@ public class GuiInformation extends Gui {
 
     private final String[] information;
     private final float scale;
+    private final boolean canClose;
 
-    public GuiInformation(Gui parent, float scale, String... information) {
+    public GuiInformation(Gui parent, float scale, boolean canClose, String... information) {
         super(parent);
         this.information = information;
         this.scale = scale;
+        this.canClose = canClose;
     }
 
     @Override
@@ -47,9 +49,16 @@ public class GuiInformation extends Gui {
     public void init(IGameInstance game) {
         super.init(game);
 
-        this.components.add(new ComponentButton(this, this.width / 2 - 40, this.height - 30, 80, 16, () -> {
-            game.getGuiManager().openGui(this.parent);
-            return true;
-        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
+        if (this.canClose) {
+            this.components.add(new ComponentButton(this, this.width / 2 - 40, this.height - 30, 80, 16, () -> {
+                game.getGuiManager().openGui(this.parent);
+                return true;
+            }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
+        }
+    }
+
+    @Override
+    protected boolean tryEscape(IGameInstance game) {
+        return this.canClose && super.tryEscape(game);
     }
 }

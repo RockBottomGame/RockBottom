@@ -43,6 +43,6 @@ public class PacketReject implements IPacket {
         game.quitWorld();
 
         IGuiManager manager = game.getGuiManager();
-        manager.openGui(new GuiInformation(manager.getGui(), 0.5F, this.text.getDisplayWithChildren(game, game.getAssetManager())));
+        manager.openGui(new GuiInformation(manager.getGui(), 0.5F, true, this.text.getDisplayWithChildren(game, game.getAssetManager())));
     }
 }

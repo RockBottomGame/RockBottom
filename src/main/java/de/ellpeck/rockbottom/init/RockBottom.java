@@ -381,7 +381,7 @@ public class RockBottom extends AbstractGame {
         if (RockBottomAPI.getNet().isClient()) {
             if (!RockBottomAPI.getNet().isConnectedToServer()) {
                 this.quitWorld();
-                this.guiManager.openGui(new GuiInformation(this.guiManager.getGui(), 0.5F, this.assetManager.localize(ResourceName.intern("info.reject.server_down"))));
+                this.guiManager.openGui(new GuiInformation(this.guiManager.getGui(), 0.5F, true, this.assetManager.localize(ResourceName.intern("info.reject.server_down"))));
             }
         }
 
