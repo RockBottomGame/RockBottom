@@ -332,120 +332,118 @@ public class InternalHooks implements IInternalHooks {
         double motionX = object.motionX;
         double motionY = object.motionY;
 
-        if (motionX != 0 || motionY != 0) {
-            BoundBox ownBox = object.currentBounds;
-            BoundBox ownBoxMotion = ownBox.copy().add(motionX, motionY);
+        BoundBox ownBox = object.currentBounds;
+        BoundBox ownBoxMotion = ownBox.copy().add(motionX, motionY);
 
-            if (object.world.isPosLoaded(ownBoxMotion.getMinX(), ownBoxMotion.getMinY()) && object.world.isPosLoaded(ownBoxMotion.getMaxX(), ownBoxMotion.getMaxY())) {
-                List<BoundBox> boxes = new ArrayList<>();
+        if (object.world.isPosLoaded(ownBoxMotion.getMinX(), ownBoxMotion.getMinY()) && object.world.isPosLoaded(ownBoxMotion.getMaxX(), ownBoxMotion.getMaxY())) {
+            List<BoundBox> boxes = new ArrayList<>();
 
-                for (int x = Util.floor(ownBoxMotion.getMinX()); x < Util.ceil(ownBoxMotion.getMaxX()); x++) {
-                    for (int y = Util.floor(ownBoxMotion.getMinY()); y < Util.ceil(ownBoxMotion.getMaxY()); y++) {
-                        if (object.world.isPosLoaded(x, y)) {
-                            for (TileLayer layer : TileLayer.getAllLayers()) {
-                                TileState state = object.world.getState(layer, x, y);
-                                List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, ownBox, ownBoxMotion);
+            for (int x = Util.floor(ownBoxMotion.getMinX()); x < Util.ceil(ownBoxMotion.getMaxX()); x++) {
+                for (int y = Util.floor(ownBoxMotion.getMinY()); y < Util.ceil(ownBoxMotion.getMaxY()); y++) {
+                    if (object.world.isPosLoaded(x, y)) {
+                        for (TileLayer layer : TileLayer.getAllLayers()) {
+                            TileState state = object.world.getState(layer, x, y);
+                            List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, ownBox, ownBoxMotion);
 
-                                if (layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)) {
-                                    object.onTileCollision(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
-                                    boxes.addAll(tileBoxes);
-                                }
-
-                                object.onTileIntersection(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
+                            if (layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)) {
+                                object.onTileCollision(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
+                                boxes.addAll(tileBoxes);
                             }
+
+                            object.onTileIntersection(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
                         }
                     }
-                }
-
-                List<Entity> entities = object.world.getEntities(ownBoxMotion, e -> e != object);
-                for (Entity entity : entities) {
-                    BoundBox entityBox = entity.currentBounds;
-                    BoundBox entityBoxMotion = entityBox.copy().add(entity.motionX, entity.motionY);
-
-                    if (entity.canCollideWith(object, ownBox, ownBoxMotion)) {
-                        object.onEntityCollision(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
-                        boxes.add(entityBox);
-                    }
-
-                    object.onEntityIntersection(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
-                }
-
-                RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBoxMotion, boxes));
-
-                motionX = object.motionX;
-                motionY = object.motionY;
-
-                if (motionY != 0) {
-                    if (!boxes.isEmpty()) {
-                        for (BoundBox box : boxes) {
-                            if (motionY != 0) {
-                                if (!box.isEmpty()) {
-                                    if (ownBox.getMaxX() > box.getMinX() && ownBox.getMinX() < box.getMaxX()) {
-                                        if (motionY > 0 && ownBox.getMaxY() <= box.getMinY()) {
-                                            double diff = box.getMinY() - ownBox.getMaxY();
-                                            if (diff < motionY) {
-                                                motionY = diff;
-                                            }
-                                        } else if (motionY < 0 && ownBox.getMinY() >= box.getMaxY()) {
-                                            double diff = box.getMaxY() - ownBox.getMinY();
-                                            if (diff > motionY) {
-                                                motionY = diff;
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-
-                    ownBox.add(0D, motionY);
-                }
-
-                if (motionX != 0) {
-                    if (!boxes.isEmpty()) {
-                        for (BoundBox box : boxes) {
-                            if (motionX != 0) {
-                                if (!box.isEmpty()) {
-                                    if (ownBox.getMaxY() > box.getMinY() && ownBox.getMinY() < box.getMaxY()) {
-                                        if (motionX > 0 && ownBox.getMaxX() <= box.getMinX()) {
-                                            double diff = box.getMinX() - ownBox.getMaxX();
-                                            if (diff < motionX) {
-                                                motionX = diff;
-                                            }
-                                        } else if (motionX < 0 && ownBox.getMinX() >= box.getMaxX()) {
-                                            double diff = box.getMaxX() - ownBox.getMinX();
-                                            if (diff > motionX) {
-                                                motionX = diff;
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-
-                    ownBox.add(motionX, 0D);
                 }
             }
 
-            if (object.world.isClient() && object instanceof Entity) {
-                Entity entity = (Entity) object;
-                if (entity.doesInterpolate() && !entity.world.isLocalPlayer(entity)) {
-                    double diff = 1F / entity.getSyncFrequency();
-                    double distX = entity.interpolationX - entity.getOriginX();
-                    double distY = entity.interpolationY - entity.getOriginY();
-                    entity.currentBounds.add(distX * diff, distY * diff);
+            List<Entity> entities = object.world.getEntities(ownBoxMotion, e -> e != object);
+            for (Entity entity : entities) {
+                BoundBox entityBox = entity.currentBounds;
+                BoundBox entityBoxMotion = entityBox.copy().add(entity.motionX, entity.motionY);
+
+                if (entity.canCollideWith(object, ownBox, ownBoxMotion)) {
+                    object.onEntityCollision(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
+                    boxes.add(entityBox);
                 }
+
+                object.onEntityIntersection(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
             }
 
-            object.collidedHor = motionX != object.motionX;
-            object.collidedVert = motionY != object.motionY;
-            object.onGround = object.collidedVert && object.motionY < 0;
+            RockBottomAPI.getEventHandler().fireEvent(new WorldObjectCollisionEvent(object, ownBoxMotion, boxes));
+
+            motionX = object.motionX;
+            motionY = object.motionY;
+
+            if (motionY != 0) {
+                if (!boxes.isEmpty()) {
+                    for (BoundBox box : boxes) {
+                        if (motionY != 0) {
+                            if (!box.isEmpty()) {
+                                if (ownBox.getMaxX() > box.getMinX() && ownBox.getMinX() < box.getMaxX()) {
+                                    if (motionY > 0 && ownBox.getMaxY() <= box.getMinY()) {
+                                        double diff = box.getMinY() - ownBox.getMaxY();
+                                        if (diff < motionY) {
+                                            motionY = diff;
+                                        }
+                                    } else if (motionY < 0 && ownBox.getMinY() >= box.getMaxY()) {
+                                        double diff = box.getMaxY() - ownBox.getMinY();
+                                        if (diff > motionY) {
+                                            motionY = diff;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                ownBox.add(0D, motionY);
+            }
+
+            if (motionX != 0) {
+                if (!boxes.isEmpty()) {
+                    for (BoundBox box : boxes) {
+                        if (motionX != 0) {
+                            if (!box.isEmpty()) {
+                                if (ownBox.getMaxY() > box.getMinY() && ownBox.getMinY() < box.getMaxY()) {
+                                    if (motionX > 0 && ownBox.getMaxX() <= box.getMinX()) {
+                                        double diff = box.getMinX() - ownBox.getMaxX();
+                                        if (diff < motionX) {
+                                            motionX = diff;
+                                        }
+                                    } else if (motionX < 0 && ownBox.getMinX() >= box.getMaxX()) {
+                                        double diff = box.getMaxX() - ownBox.getMinX();
+                                        if (diff > motionX) {
+                                            motionX = diff;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                ownBox.add(motionX, 0D);
+            }
         }
+
+        if (object.world.isClient() && object instanceof Entity) {
+            Entity entity = (Entity) object;
+            if (entity.doesInterpolate() && !entity.world.isLocalPlayer(entity)) {
+                double diff = 1F / entity.getSyncFrequency();
+                double distX = entity.interpolationX - entity.getOriginX();
+                double distY = entity.interpolationY - entity.getOriginY();
+                entity.currentBounds.add(distX * diff, distY * diff);
+            }
+        }
+
+        object.collidedHor = motionX != object.motionX;
+        object.collidedVert = motionY != object.motionY;
+        object.onGround = object.collidedVert && object.motionY < 0;
     }
 
     @Override
@@ -1244,7 +1242,7 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public void defaultConstruct(AbstractEntityPlayer player, ConstructionRecipe recipe){
+    public void defaultConstruct(AbstractEntityPlayer player, ConstructionRecipe recipe) {
         if (RockBottomAPI.getNet().isClient()) {
             RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.MANUAL_CONSTRUCTION_RECIPES.getId(recipe), 1));
         } else {
