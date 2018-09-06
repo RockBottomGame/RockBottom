@@ -66,15 +66,23 @@ public class CommandEffect extends Command {
                 }
             }
 
+            int level = 1;
+            if (args.length > 3) {
+                try {
+                    level = Util.clamp(Integer.parseInt(args[3]), 1, effect.getMaxLevel(player));
+                } catch (Exception ignored) {
+                }
+            }
+
             if (effect != null) {
-                ActiveEffect active = new ActiveEffect(effect, time);
+                ActiveEffect active = new ActiveEffect(effect, time, level);
 
                 if (remove) {
                     player.removeEffect(effect);
                     return new ChatComponentText(FormattingCode.GREEN + "Removed effect ").append(new ChatComponentTranslation(effect.getUnlocalizedName(active, player)));
                 } else {
                     player.addEffect(active);
-                    return new ChatComponentText(FormattingCode.GREEN + "Added effect ").append(new ChatComponentTranslation(effect.getUnlocalizedName(active, player))).append(new ChatComponentText(" with a time of " + time));
+                    return new ChatComponentText(FormattingCode.GREEN + "Added effect ").append(new ChatComponentTranslation(effect.getUnlocalizedName(active, player))).append(new ChatComponentText(" with a time of " + time + " and a level of " + level));
                 }
             } else {
                 return new ChatComponentText(FormattingCode.RED + "An effect with the name '" + args[0] + "' doesn't exist!");

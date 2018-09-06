@@ -575,11 +575,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public double getMoveSpeed() {
         double speed = MOVE_SPEED;
-
-        if (this.hasEffect(GameContent.EFFECT_SPEED)) {
-            speed += 0.07D;
-        }
-
+        speed += 0.01D * this.getEffectModifier(GameContent.EFFECT_SPEED);
         return speed;
     }
 
@@ -591,11 +587,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public double getJumpHeight() {
         double height = 0.29D;
-
-        if (this.hasEffect(GameContent.EFFECT_JUMP_HEIGHT)) {
-            height += 0.125D;
-        }
-
+        height += 0.03 * this.getEffectModifier(GameContent.EFFECT_JUMP_HEIGHT);
         return height;
     }
 

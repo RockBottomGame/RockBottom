@@ -29,7 +29,8 @@ public class ItemMush extends ItemBasic {
             if (!data.isEmpty()) {
                 IEffect effect = Registries.EFFECT_REGISTRY.get(new ResourceName(data.getString("name")));
                 int amount = data.getInt("time");
-                return new ActiveEffect(effect, amount);
+                int level = data.hasKey("level") ? data.getInt("level") : 1;
+                return new ActiveEffect(effect, amount, level);
             }
         }
         return null;
