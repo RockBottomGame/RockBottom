@@ -121,8 +121,9 @@ public final class ContentRegistry {
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 
-        new BasicEffect(ResourceName.intern("speed"), false, false, 36000, 5).register();
+        new BasicEffect(ResourceName.intern("speed"), false, false, 36000, 10).register();
         new BasicEffect(ResourceName.intern("jump_height"), false, false, 36000, 20).register();
+        new BasicEffect(ResourceName.intern("range"), false, false, 36000, 10).register();
 
         new FuelInput(new ResUseInfo(GameContent.RES_COAL), 1000).register();
         new FuelInput(new ResUseInfo(GameContent.RES_WOOD_RAW), 300).register();

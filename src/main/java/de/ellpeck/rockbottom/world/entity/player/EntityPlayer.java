@@ -597,6 +597,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public double getRange() {
         double range = 5;
+        range += this.getEffectModifier(GameContent.EFFECT_RANGE);
         return this.statEvent(StatType.RANGE, range);
     }
 
