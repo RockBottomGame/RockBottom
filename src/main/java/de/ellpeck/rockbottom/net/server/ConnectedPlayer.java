@@ -78,8 +78,6 @@ public class ConnectedPlayer extends EntityPlayer {
             distanceSq = event.distanceSqMoved;
             maxDist = event.allowedDefaultDistance;
 
-            System.out.println("Player moved " + Math.sqrt(distanceSq) + " out of allowed " + maxDist);
-
             if (!cancelled && distanceSq > maxDist * maxDist) {
                 this.motionX = 0;
                 this.motionY = 0;
