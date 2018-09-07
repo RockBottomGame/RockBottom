@@ -13,6 +13,8 @@ import de.ellpeck.rockbottom.api.entity.spawn.SpawnBehavior;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ContainerOpenEvent;
 import de.ellpeck.rockbottom.api.event.impl.ItemPickupEvent;
+import de.ellpeck.rockbottom.api.event.impl.PlayerStatsEvent;
+import de.ellpeck.rockbottom.api.event.impl.PlayerStatsEvent.StatType;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
@@ -574,21 +576,34 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public double getMoveSpeed() {
-        double speed = MOVE_SPEED;
-        speed += 0.01D * this.getEffectModifier(GameContent.EFFECT_SPEED);
-        return speed;
+        double speed = 0.2;
+        speed += 0.01 * this.getEffectModifier(GameContent.EFFECT_SPEED);
+        return this.statEvent(StatType.MOVE_SPEED, speed);
     }
 
     @Override
     public double getClimbSpeed() {
-        return CLIMB_SPEED;
+        double speed = 0.1;
+        return this.statEvent(StatType.CLIMB_SPEED, speed);
     }
 
     @Override
     public double getJumpHeight() {
-        double height = 0.29D;
+        double height = 0.29;
         height += 0.03 * this.getEffectModifier(GameContent.EFFECT_JUMP_HEIGHT);
-        return height;
+        return this.statEvent(StatType.JUMP_HEIGHT, height);
+    }
+
+    @Override
+    public double getRange() {
+        double range = 5;
+        return this.statEvent(StatType.RANGE, range);
+    }
+
+    private double statEvent(StatType type, double def) {
+        PlayerStatsEvent event = new PlayerStatsEvent(this, type, def);
+        RockBottomAPI.getEventHandler().fireEvent(event);
+        return event.value;
     }
 
     @Override

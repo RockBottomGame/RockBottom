@@ -22,7 +22,7 @@ public class TileSignRenderer extends DefaultTileRenderer<TileSign> {
     @Override
     public void renderOnMouseOver(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileSign tile, TileState state, int x, int y, TileLayer layer, float mouseX, float mouseY) {
         AbstractEntityPlayer player = game.getPlayer();
-        if (player.isInRange(g.getMousedTileX(), g.getMousedTileY(), AbstractEntityPlayer.RANGE)) {
+        if (player.isInRange(g.getMousedTileX(), g.getMousedTileY(), player.getRange())) {
             TileEntitySign tileEntity = world.getTileEntity(x, y, TileEntitySign.class);
             if (tileEntity != null) {
                 g.scale(0.5F, 0.5F);
