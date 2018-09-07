@@ -38,8 +38,7 @@ public class ConnectedPlayer extends EntityPlayer {
 
     private double lastCalcX;
     private double lastCalcY;
-    private int fallCalcTicks;
-    private int climbingCalcTicks;
+    private double distanceCounter;
 
     public ConnectedPlayer(IWorld world, UUID uniqueId, IPlayerDesign design, Channel channel) {
         super(world, uniqueId, design);
@@ -72,15 +71,14 @@ public class ConnectedPlayer extends EntityPlayer {
             }
 
             double distanceSq = Util.distanceSq(this.lastCalcX, this.lastCalcY, x, y);
-            double maxDist = 1.25 * this.fallCalcTicks
-                    + this.getClimbSpeed() * this.climbingCalcTicks
-                    + this.getMoveSpeed() * (80 - this.fallCalcTicks - this.climbingCalcTicks)
-                    + 3;
+            double maxDist = this.distanceCounter + 3;
 
-            ResetMovedPlayerEvent event = new ResetMovedPlayerEvent(this, this.lastCalcX, this.lastCalcY, this.fallCalcTicks, this.climbingCalcTicks, distanceSq, maxDist);
+            ResetMovedPlayerEvent event = new ResetMovedPlayerEvent(this, this.lastCalcX, this.lastCalcY, distanceSq, maxDist);
             boolean cancelled = RockBottomAPI.getEventHandler().fireEvent(event) == EventResult.CANCELLED;
             distanceSq = event.distanceSqMoved;
             maxDist = event.allowedDefaultDistance;
+
+            System.out.println("Player moved " + Math.sqrt(distanceSq) + " out of allowed " + maxDist);
 
             if (!cancelled && distanceSq > maxDist * maxDist) {
                 this.motionX = 0;
@@ -95,8 +93,7 @@ public class ConnectedPlayer extends EntityPlayer {
                 this.lastCalcY = y;
             }
 
-            this.fallCalcTicks = 0;
-            this.climbingCalcTicks = 0;
+            this.distanceCounter = 0;
         }
 
         if (net.isWhitelistEnabled() && !net.isWhitelisted(this.getUniqueId())) {
@@ -112,9 +109,13 @@ public class ConnectedPlayer extends EntityPlayer {
         }
 
         if (this.isClimbing) {
-            this.climbingCalcTicks++;
-        } else if (this.isFalling && this.fallStartY - y >= 5) {
-            this.fallCalcTicks++;
+            this.distanceCounter += this.getClimbSpeed();
+        } else if (this.isFalling && this.fallStartY - y >= 20) {
+            this.distanceCounter += 1.225;
+        } else if (this.isFalling && this.fallStartY - y >= 3) {
+            this.distanceCounter += 1;
+        } else {
+            this.distanceCounter += this.getMoveSpeed();
         }
 
         if (!this.chunksToSend.isEmpty()) {
@@ -143,7 +144,7 @@ public class ConnectedPlayer extends EntityPlayer {
 
         this.lastCalcX = this.getX();
         this.lastCalcY = this.getY();
-        this.fallCalcTicks = 0;
+        this.distanceCounter = 0;
 
         this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing));
     }
