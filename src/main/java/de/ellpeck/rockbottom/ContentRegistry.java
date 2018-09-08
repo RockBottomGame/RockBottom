@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
 import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
 import de.ellpeck.rockbottom.construction.category.CategoryMortar;
+import de.ellpeck.rockbottom.construction.category.CategorySmelting;
 import de.ellpeck.rockbottom.item.*;
 import de.ellpeck.rockbottom.world.entity.*;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
@@ -61,6 +62,7 @@ public final class ContentRegistry {
         new TileMortar().register();
         new TileTilledSoil().register();
         new TileCorn().register();
+        new TileGlass().register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();
@@ -135,5 +137,6 @@ public final class ContentRegistry {
 
         CategoryConstruction.INSTANCE.register();
         new CategoryMortar().register();
+        new CategorySmelting().register();
     }
 }

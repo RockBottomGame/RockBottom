@@ -20,6 +20,7 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentCompendiumCategory;
 
@@ -34,7 +35,6 @@ public class GuiCompendium extends GuiContainer {
     public static final int PAGE_WIDTH = 72;
     public static final int PAGE_HEIGHT = 94;
     private static final ResourceName LEFT_PAGE = ResourceName.intern("gui.construction.page_items");
-    private static final ResourceName RIGHT_PAGE = ResourceName.intern("gui.construction.page_recipes");
     private static final ResourceName SEARCH_ICON = ResourceName.intern("gui.construction.search_bar");
     private static final ResourceName SEARCH_BAR = ResourceName.intern("gui.construction.search_bar_extended");
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
@@ -133,6 +133,8 @@ public class GuiCompendium extends GuiContainer {
             this.stockIngredients(Collections.emptyList());
         }
         this.initConstructButton(this.selectedRecipe);
+
+        this.currentCategory.onGuiOrganized(this, this.menu, this.polaroids, this.ingredients, this.construct);
     }
 
     @Override
@@ -157,28 +159,17 @@ public class GuiCompendium extends GuiContainer {
         }
 
         this.ingredients.addAll(actualIngredients);
-        while (this.ingredients.size() < 8) {
+        while (this.ingredients.size() < this.currentCategory.getMaxIngredientAmount(this, actualIngredients)) {
             this.ingredients.add(new ComponentIngredient(this, false, Collections.emptyList()));
         }
 
         this.components.addAll(this.ingredients);
 
-        int ingrX = 0;
-        int ingrY = 0;
         int counter = 0;
-
         for (ComponentIngredient comp : this.ingredients) {
-            comp.setPos(78 + ingrX, 51 + ingrY);
-
-            ingrX += 16;
+            Pos2 pos = this.currentCategory.getIngredientPosition(this, comp, counter);
+            comp.setPos(pos.getX(), pos.getY());
             counter++;
-
-            if (counter >= 4) {
-                counter = 0;
-                ingrX = 0;
-
-                ingrY += 19;
-            }
         }
     }
 
@@ -198,7 +189,7 @@ public class GuiCompendium extends GuiContainer {
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g) {
         manager.getTexture(LEFT_PAGE).draw(this.x, this.y, PAGE_WIDTH, PAGE_HEIGHT);
-        manager.getTexture(RIGHT_PAGE).draw(this.x + PAGE_WIDTH + 1, this.y, PAGE_WIDTH, PAGE_HEIGHT);
+        manager.getTexture(this.currentCategory.getBackgroundPicture(this, manager)).draw(this.x + PAGE_WIDTH + 1, this.y, PAGE_WIDTH, PAGE_HEIGHT);
 
         if (this.selectedRecipe != null) {
             String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
