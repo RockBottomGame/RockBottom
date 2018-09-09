@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.construction.smelting.SmeltingRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.inventory.CombinedInventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.SyncedInt;
@@ -14,22 +15,13 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class TileEntitySimpleFurnace extends TileEntity {
 
-    private final TileInventory inventory = new TileInventory(this, 3, inst -> {
-        List<Integer> list = new ArrayList<>(2);
-        if (SmeltingRecipe.forInput(inst) != null) {
-            list.add(0);
-        }
-        if (FuelInput.getFuelTime(inst) > 0) {
-            list.add(1);
-        }
-        return list;
-    }, Collections.singletonList(2));
+    private final TileInventory inputInv = new TileInventory(this, inst -> SmeltingRecipe.forInput(inst) != null);
+    private final TileInventory fuelInv = new TileInventory(this, inst -> FuelInput.getFuelTime(inst) > 0);
+    private final TileInventory outputInv = new TileInventory(this);
+    private final CombinedInventory inventory = new CombinedInventory(this.inputInv, this.fuelInv, this.outputInv);
+
     private final SyncedInt smeltTime = new SyncedInt("smelt_time");
     private final SyncedInt maxSmeltTime = new SyncedInt("max_smelt_time");
     private final SyncedInt fuelTime = new SyncedInt("fuel_time");
@@ -57,19 +49,19 @@ public class TileEntitySimpleFurnace extends TileEntity {
 
         if (!this.world.isClient()) {
             if (this.maxSmeltTime.get() <= 0) {
-                ItemInstance input = this.inventory.get(0);
+                ItemInstance input = this.inputInv.get(0);
                 if (input != null) {
                     SmeltingRecipe recipe = SmeltingRecipe.forInput(input);
                     if (recipe != null) {
                         IUseInfo recipeInput = recipe.getInput();
                         if (input.getAmount() >= recipeInput.getAmount()) {
                             ItemInstance output = recipe.getOutput();
-                            ItemInstance currentOutput = this.inventory.get(2);
+                            ItemInstance currentOutput = this.outputInv.get(0);
 
                             if (currentOutput == null || (currentOutput.isEffectivelyEqual(output) && currentOutput.fitsAmount(output.getAmount()))) {
                                 this.maxSmeltTime.set(recipe.getTime());
                                 this.scheduledOutput = output.copy();
-                                this.inventory.remove(0, recipeInput.getAmount());
+                                this.inputInv.remove(0, recipeInput.getAmount());
                             }
                         }
                     }
@@ -80,13 +72,13 @@ public class TileEntitySimpleFurnace extends TileEntity {
                 }
             } else {
                 if (this.fuelTime.get() <= 0) {
-                    ItemInstance fuel = this.inventory.get(1);
+                    ItemInstance fuel = this.fuelInv.get(0);
                     if (fuel != null) {
                         int time = FuelInput.getFuelTime(fuel);
                         if (time > 0) {
                             this.fuelTime.set(time);
                             this.maxFuelTime.set(time);
-                            this.inventory.remove(1, 1);
+                            this.fuelInv.remove(0, 1);
                         }
                     }
 
@@ -99,11 +91,11 @@ public class TileEntitySimpleFurnace extends TileEntity {
                     }
 
                     if (this.smeltTime.get() >= this.maxSmeltTime.get()) {
-                        ItemInstance currentOutput = this.inventory.get(2);
+                        ItemInstance currentOutput = this.outputInv.get(0);
                         if (currentOutput != null && currentOutput.isEffectivelyEqual(this.scheduledOutput)) {
-                            this.inventory.add(2, this.scheduledOutput.getAmount());
+                            this.outputInv.add(0, this.scheduledOutput.getAmount());
                         } else {
-                            this.inventory.set(2, this.scheduledOutput);
+                            this.outputInv.set(0, this.scheduledOutput);
                         }
 
                         this.scheduledOutput = null;
