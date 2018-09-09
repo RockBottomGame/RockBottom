@@ -195,7 +195,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     this.resetAndSpawn(game);
                 }
             } else {
-                List<AbstractEntityItem> entities = this.world.getEntities(this.currentBounds.copy().expand(1), AbstractEntityItem.class);
+                List<AbstractEntityItem> entities = this.world.getEntities(this.currentBounds.copy().expand(this.getPickupRange()), AbstractEntityItem.class);
                 for (AbstractEntityItem entity : entities) {
                     if (entity.canPickUp()) {
                         double entityX = entity.getX();
@@ -599,6 +599,13 @@ public class EntityPlayer extends AbstractEntityPlayer {
         double range = 5;
         range += this.getEffectModifier(GameContent.EFFECT_RANGE);
         return this.statEvent(StatType.RANGE, range);
+    }
+
+    @Override
+    public double getPickupRange() {
+        double range = 1;
+        range += 0.5 * this.getEffectModifier(GameContent.EFFECT_PICKUP_RANGE);
+        return this.statEvent(StatType.PICKUP_RANGE, range);
     }
 
     private double statEvent(StatType type, double def) {

@@ -126,6 +126,7 @@ public final class ContentRegistry {
         new BasicEffect(ResourceName.intern("speed"), false, false, 36000, 10).register();
         new BasicEffect(ResourceName.intern("jump_height"), false, false, 36000, 20).register();
         new BasicEffect(ResourceName.intern("range"), false, false, 36000, 10).register();
+        new BasicEffect(ResourceName.intern("pickup_range"), false, false, 36000, 10).register();
 
         new FuelInput(new ResUseInfo(GameContent.RES_COAL), 1000).register();
         new FuelInput(new ResUseInfo(GameContent.RES_WOOD_RAW), 300).register();
