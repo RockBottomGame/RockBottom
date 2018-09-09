@@ -15,8 +15,8 @@ public class ComponentCompendiumCategory extends GuiComponent {
     private final boolean isActive;
     private final GuiCompendium gui;
 
-    public ComponentCompendiumCategory(GuiCompendium gui, int x, int y, CompendiumCategory category, boolean isActive) {
-        super(gui, x, y, 16, 14);
+    public ComponentCompendiumCategory(GuiCompendium gui, CompendiumCategory category, boolean isActive) {
+        super(gui, 0, 0, 16, 14);
         this.gui = gui;
         this.category = category;
         this.isActive = isActive;
@@ -42,9 +42,11 @@ public class ComponentCompendiumCategory extends GuiComponent {
     public boolean onMouseAction(IGameInstance game, int button, float x, float y) {
         if (this.isMouseOverPrioritized(game)) {
             if (!this.isActive) {
+                GuiCompendium.currentCategory = this.category;
+
                 Gui gui = this.category.getGuiOverride(this.gui);
                 if (gui == null) {
-                    gui = new GuiCompendium(game.getPlayer(), this.category);
+                    gui = new GuiCompendium(game.getPlayer());
                 }
 
                 this.gui.keepContainerOpen = true;

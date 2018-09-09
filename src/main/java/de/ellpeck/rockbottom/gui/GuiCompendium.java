@@ -22,6 +22,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
 import de.ellpeck.rockbottom.gui.component.ComponentCompendiumCategory;
 
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ import java.util.function.BiConsumer;
 
 public class GuiCompendium extends GuiContainer {
 
+    public static CompendiumCategory currentCategory = CategoryConstruction.INSTANCE;
+    private static int categoryOffset;
+
     public static final int PAGE_WIDTH = 72;
     public static final int PAGE_HEIGHT = 94;
     private static final ResourceName LEFT_PAGE = ResourceName.intern("gui.construction.page_items");
@@ -39,7 +43,9 @@ public class GuiCompendium extends GuiContainer {
     private static final ResourceName SEARCH_BAR = ResourceName.intern("gui.construction.search_bar_extended");
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
     private final List<ComponentIngredient> ingredients = new ArrayList<>();
-    private final CompendiumCategory currentCategory;
+    private final List<ComponentCompendiumCategory> categories = new ArrayList<>();
+    private ComponentFancyButton categoryDown;
+    private ComponentFancyButton categoryUp;
     public ICompendiumRecipe selectedRecipe;
     public boolean keepContainerOpen;
     private ComponentMenu menu;
@@ -49,9 +55,8 @@ public class GuiCompendium extends GuiContainer {
     private String searchText = "";
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> this.organize();
 
-    public GuiCompendium(AbstractEntityPlayer player, CompendiumCategory currentCategory) {
+    public GuiCompendium(AbstractEntityPlayer player) {
         super(player, PAGE_WIDTH * 2 + 1, PAGE_HEIGHT + 75);
-        this.currentCategory = currentCategory;
 
         ShiftClickBehavior behavior = new ShiftClickBehavior(0, 7, 8, player.getInv().getSlotAmount() - 1);
         this.shiftClickBehaviors.add(behavior);
@@ -82,15 +87,47 @@ public class GuiCompendium extends GuiContainer {
 
         this.searchButtonBox = new BoundBox(0, 0, 13, 14).add(this.x + 145, this.y + 79);
 
-        int y = 1;
         for (CompendiumCategory category : Registries.COMPENDIUM_CATEGORY_REGISTRY.values()) {
             if (category.shouldDisplay(this.player)) {
-                this.components.add(new ComponentCompendiumCategory(this, this.width, y, category, category == this.currentCategory));
+                this.categories.add(new ComponentCompendiumCategory(this, category, category == currentCategory));
+            }
+        }
+        this.components.addAll(this.categories);
+
+        this.categoryUp = new ComponentFancyButton(this, this.width + 17, 1, 6, 6, () -> {
+            categoryOffset--;
+            this.sortCategories();
+            return true;
+        }, ResourceName.intern("gui.construction.arrow_up"));
+        this.components.add(this.categoryUp.setHasBackground(false));
+
+        this.categoryDown = new ComponentFancyButton(this, this.width + 17, 1 + 14 * 5 - 6, 6, 6, () -> {
+            categoryOffset++;
+            this.sortCategories();
+            return true;
+        }, ResourceName.intern("gui.construction.arrow_down"));
+        this.components.add(this.categoryDown.setHasBackground(false));
+
+        this.sortCategories();
+        this.organize();
+    }
+
+    private void sortCategories() {
+        int y = 1;
+        for (int i = 0; i < this.categories.size(); i++) {
+            ComponentCompendiumCategory comp = this.categories.get(i);
+            if (i >= categoryOffset && i < categoryOffset + 5) {
+                comp.setActive(true);
+
+                comp.setPos(this.width, y);
                 y += 14;
+            } else {
+                comp.setActive(false);
             }
         }
 
-        this.organize();
+        this.categoryUp.setActive(categoryOffset > 0);
+        this.categoryDown.setActive(this.categories.size() > categoryOffset + 5);
     }
 
     private void organize() {
@@ -98,7 +135,7 @@ public class GuiCompendium extends GuiContainer {
         this.polaroids.clear();
 
         boolean containsSelected = false;
-        for (ICompendiumRecipe recipe : this.currentCategory.getRecipes()) {
+        for (ICompendiumRecipe recipe : currentCategory.getRecipes()) {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
                     IInventory inv = this.player.getInv();
@@ -134,7 +171,7 @@ public class GuiCompendium extends GuiContainer {
         }
         this.initConstructButton(this.selectedRecipe);
 
-        this.currentCategory.onGuiOrganized(this, this.menu, this.polaroids, this.ingredients, this.construct);
+        currentCategory.onGuiOrganized(this, this.menu, this.polaroids, this.ingredients, this.construct);
     }
 
     @Override
@@ -159,7 +196,7 @@ public class GuiCompendium extends GuiContainer {
         }
 
         this.ingredients.addAll(actualIngredients);
-        while (this.ingredients.size() < this.currentCategory.getMaxIngredientAmount(this, actualIngredients)) {
+        while (this.ingredients.size() < currentCategory.getMaxIngredientAmount(this, actualIngredients)) {
             this.ingredients.add(new ComponentIngredient(this, false, Collections.emptyList()));
         }
 
@@ -167,7 +204,7 @@ public class GuiCompendium extends GuiContainer {
 
         int counter = 0;
         for (ComponentIngredient comp : this.ingredients) {
-            Pos2 pos = this.currentCategory.getIngredientPosition(this, comp, counter);
+            Pos2 pos = currentCategory.getIngredientPosition(this, comp, counter);
             comp.setPos(pos.getX(), pos.getY());
             counter++;
         }
@@ -189,7 +226,7 @@ public class GuiCompendium extends GuiContainer {
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g) {
         manager.getTexture(LEFT_PAGE).draw(this.x, this.y, PAGE_WIDTH, PAGE_HEIGHT);
-        manager.getTexture(this.currentCategory.getBackgroundPicture(this, manager)).draw(this.x + PAGE_WIDTH + 1, this.y, PAGE_WIDTH, PAGE_HEIGHT);
+        manager.getTexture(currentCategory.getBackgroundPicture(this, manager)).draw(this.x + PAGE_WIDTH + 1, this.y, PAGE_WIDTH, PAGE_HEIGHT);
 
         if (this.selectedRecipe != null) {
             String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();

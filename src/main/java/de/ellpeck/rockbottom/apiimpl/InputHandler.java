@@ -10,7 +10,6 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiCompendium;
 import de.ellpeck.rockbottom.gui.GuiInventory;
@@ -155,7 +154,7 @@ public class InputHandler implements IInputHandler {
                     player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
                     return true;
                 } else if (Settings.KEY_COMPENDIUM.isKey(key)) {
-                    player.openGuiContainer(new GuiCompendium(player, CategoryConstruction.INSTANCE), player.getInvContainer());
+                    player.openGuiContainer(new GuiCompendium(player), player.getInvContainer());
                     return true;
                 } else if (Settings.KEY_CHAT.isKey(key)) {
                     if (RockBottomAPI.getNet().isActive()) {

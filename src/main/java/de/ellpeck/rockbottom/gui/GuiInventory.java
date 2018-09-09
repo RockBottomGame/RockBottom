@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
 
 public class GuiInventory extends GuiContainer {
 
@@ -25,7 +24,7 @@ public class GuiInventory extends GuiContainer {
 
         this.components.add(new ComponentFancyButton(this, -16, 0, 14, 14, () -> {
             this.keepContainerOpen = true;
-            game.getGuiManager().openGui(new GuiCompendium(this.player, CategoryConstruction.INSTANCE));
+            game.getGuiManager().openGui(new GuiCompendium(this.player));
             return true;
         }, ResourceName.intern("gui.construction.book_closed"), game.getAssetManager().localize(ResourceName.intern("button.open_compendium"))));
     }
