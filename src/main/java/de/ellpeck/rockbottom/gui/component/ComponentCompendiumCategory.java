@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.construction.compendium.CompendiumCategory;
-import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiCompendium;
@@ -42,15 +41,9 @@ public class ComponentCompendiumCategory extends GuiComponent {
     public boolean onMouseAction(IGameInstance game, int button, float x, float y) {
         if (this.isMouseOverPrioritized(game)) {
             if (!this.isActive) {
-                GuiCompendium.currentCategory = this.category;
-
-                Gui gui = this.category.getGuiOverride(this.gui);
-                if (gui == null) {
-                    gui = new GuiCompendium(game.getPlayer());
-                }
-
                 this.gui.keepContainerOpen = true;
-                game.getGuiManager().openGui(gui);
+                GuiCompendium.currentCategory = this.category;
+                game.getGuiManager().openGui(new GuiCompendium(game.getPlayer()));
 
                 return true;
             }
