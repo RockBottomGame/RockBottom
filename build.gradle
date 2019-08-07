@@ -88,3 +88,7 @@ if (proguardEnabled) {
     buildObf.dependsOn build
     buildObf.dependsOn installDist
 }
+
+run {
+    args += ["--debugMode", "--skipIntro"]
+}

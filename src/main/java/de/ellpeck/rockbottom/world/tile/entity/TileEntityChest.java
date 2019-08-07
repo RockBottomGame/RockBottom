@@ -25,11 +25,6 @@ public class TileEntityChest extends TileEntity {
     }
 
     @Override
-    public boolean doesTick() {
-        return false;
-    }
-
-    @Override
     public void save(DataSet set, boolean forSync) {
         if (!forSync) {
             this.inventory.save(set);

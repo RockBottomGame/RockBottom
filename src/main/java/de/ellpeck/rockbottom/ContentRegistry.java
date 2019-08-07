@@ -56,6 +56,7 @@ public final class ContentRegistry {
         new TileGrassTorch().register();
         new TileCopper().register();
         new TileSimpleFurnace().register();
+        new TileConstructionTable().register();
         new TileCaveMushroom().register();
         new TileStardrop().register();
         new TileLamp(ResourceName.intern("lamp_iron")).register();
@@ -68,6 +69,11 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_shovel"), 1.25F, 50, ToolProperty.SHOVEL, 1).register();
         new ItemSword(ResourceName.intern("brittle_sword"), 50, 4, 10, 1.5D, 0.25D).register();
+        new ItemConstructionTool(ResourceName.intern("wrench")).register();
+        new ItemConstructionTool(ResourceName.intern("saw")).register();
+        new ItemConstructionTool(ResourceName.intern("hammer")).register();
+        new ItemConstructionTool(ResourceName.intern("mallet")).register();
+        new ItemConstructionTool(ResourceName.intern("chisel")).register();
         new ItemFirework().register();
         new ItemStartNote().register();
         new ItemBasic(ResourceName.intern("plant_fiber")).register();

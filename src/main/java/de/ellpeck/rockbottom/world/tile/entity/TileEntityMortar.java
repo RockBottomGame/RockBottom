@@ -55,11 +55,6 @@ public class TileEntityMortar extends TileEntity {
     }
 
     @Override
-    public boolean doesTick() {
-        return false;
-    }
-
-    @Override
     public IFilteredInventory getTileInventory() {
         return this.inventory;
     }
