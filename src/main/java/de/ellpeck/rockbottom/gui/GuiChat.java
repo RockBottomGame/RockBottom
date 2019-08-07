@@ -35,6 +35,11 @@ public class GuiChat extends Gui {
     private int selectedSuggestion;
     private int selectedLastInput = -1;
     private float suggestionX;
+    private final boolean startCommand;
+
+    public GuiChat(boolean startCommand) {
+        this.startCommand = startCommand;
+    }
 
     public static int drawMessages(IGameInstance game, IAssetManager manager, IRenderer g, List<ChatComponent> messages, int messageCount, int offset, int maxHeight) {
         IFont font = manager.getFont();
@@ -113,6 +118,9 @@ public class GuiChat extends Gui {
                 }
             }
         });
+        if (startCommand) {
+            this.inputField.append("/");
+        }
         this.components.add(this.inputField);
 
         this.selector = new ComponentFormatSelector(this, 7 + this.width / 2 - 16, this.height - 21, this.inputField);

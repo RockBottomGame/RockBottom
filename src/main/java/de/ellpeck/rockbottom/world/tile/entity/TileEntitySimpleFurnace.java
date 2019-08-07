@@ -17,9 +17,9 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class TileEntitySimpleFurnace extends TileEntity {
 
-    public final TileInventory inputInv = new TileInventory(this, inst -> SmeltingRecipe.forInput(inst) != null);
-    public final TileInventory fuelInv = new TileInventory(this, inst -> FuelInput.getFuelTime(inst) > 0);
-    public final TileInventory outputInv = new TileInventory(this);
+    private final TileInventory inputInv = new TileInventory(this, inst -> SmeltingRecipe.forInput(inst) != null);
+    private final TileInventory fuelInv = new TileInventory(this, inst -> FuelInput.getFuelTime(inst) > 0);
+    private final TileInventory outputInv = new TileInventory(this);
     private final CombinedInventory inventory = new CombinedInventory(this.inputInv, this.fuelInv, this.outputInv);
 
     private final SyncedInt smeltTime = new SyncedInt("smelt_time");
