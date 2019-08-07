@@ -1,5 +1,5 @@
 include ":API"
-project(":API").projectDir = file("../RockBottomAPI")
+project(":API").projectDir = file("../API")
 
 gradle.ext.proguardDir = '../proguard/lib'
 

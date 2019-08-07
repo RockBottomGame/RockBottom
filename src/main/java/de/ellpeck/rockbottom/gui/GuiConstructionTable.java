@@ -78,7 +78,7 @@ public class GuiConstructionTable extends GuiContainer {
                             polaroid.isSelected = true;
 
                             this.initConstructButton(polaroid.recipe);
-                            this.stockIngredients(polaroid.recipe.getIngredientButtons(this, this.player));
+                            this.stockIngredients(polaroid.recipe.getIngredientButtons(this, this.player, true));
                         }
                         did = true;
                     } else {
@@ -110,6 +110,7 @@ public class GuiConstructionTable extends GuiContainer {
         if (recipe != null) {
             IInventory inv = this.player.getInv();
             this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct.setPos(56, 17);
             this.components.add(this.construct);
         }
     }
@@ -140,7 +141,7 @@ public class GuiConstructionTable extends GuiContainer {
             if (tile.containsTool(recipe.getTool())) {
                 if (recipe.isKnown(this.player)) {
                     IInventory inv = this.player.getInv();
-                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv));
+                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv), true);
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if (polaroid.isSelected) {
@@ -150,12 +151,13 @@ public class GuiConstructionTable extends GuiContainer {
                     this.polaroids.add(polaroid);
 
                 } else {
-                    this.polaroids.add(new ComponentPolaroid(this, null, false));
+                    this.polaroids.add(new ComponentPolaroid(this, null, false, ComponentPolaroid.CONSTRUCTION_TEX, ComponentPolaroid.CONSTRUCTION_TEX_HIGHLIGHTED, ComponentPolaroid.CONSTRUCTION_TEX_SELECTED));
                 }
             }
         }
         if (!containsSelected) {
             this.selectedRecipe = null;
+            initConstructButton(null);
         }
 
         this.polaroids.sort((p1, p2) -> Integer.compare(Boolean.compare(p1.recipe == null, p2.recipe == null) * 2, Boolean.compare(p1.canConstruct, p2.canConstruct)));
@@ -167,7 +169,7 @@ public class GuiConstructionTable extends GuiContainer {
         this.menu.organize();
 
         if (this.selectedRecipe != null) {
-            this.stockIngredients(this.selectedRecipe.getIngredientButtons(this, this.player));
+            this.stockIngredients(this.selectedRecipe.getIngredientButtons(this, this.player, true));
         } else {
             this.stockIngredients(Collections.emptyList());
         }
@@ -181,7 +183,7 @@ public class GuiConstructionTable extends GuiContainer {
 
         this.ingredients.addAll(actualIngredients);
         while (this.ingredients.size() < 8) {
-            this.ingredients.add(new ComponentIngredient(this, false, Collections.emptyList()));
+            this.ingredients.add(new ComponentIngredient(this, false, Collections.emptyList(), ComponentIngredient.CONSTRUCTION_TEX, ComponentIngredient.CONSTRUCTION_TEX_NONE));
         }
 
         this.components.addAll(this.ingredients);
