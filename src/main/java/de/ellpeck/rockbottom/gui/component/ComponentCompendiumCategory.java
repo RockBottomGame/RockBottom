@@ -23,7 +23,7 @@ public class ComponentCompendiumCategory extends GuiComponent {
 
     @Override
     public void render(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
-        ResourceName texture = ResourceName.intern("gui.construction." + (this.isActive ? "tab_extended" : "tab"));
+        ResourceName texture = ResourceName.intern("gui.compendium." + (this.isActive ? "tab_extended" : "tab"));
         manager.getTexture(texture).draw(x, y, this.width, this.height);
 
         int theX = this.isActive ? 3 : 1;

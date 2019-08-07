@@ -20,7 +20,7 @@ public class CategoryConstruction extends CompendiumCategory {
 
     @Override
     public ResourceName getIcon(IGameInstance game, IAssetManager assetManager, IRenderer g) {
-        return this.getName().addPrefix("gui.construction.");
+        return this.getName().addPrefix("gui.compendium.");
     }
 
     @Override

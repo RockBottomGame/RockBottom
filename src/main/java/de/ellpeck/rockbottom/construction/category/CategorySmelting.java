@@ -24,12 +24,12 @@ public class CategorySmelting extends CompendiumCategory {
 
     @Override
     public ResourceName getIcon(IGameInstance game, IAssetManager assetManager, IRenderer g) {
-        return this.getName().addPrefix("gui.construction.");
+        return this.getName().addPrefix("gui.compendium.");
     }
 
     @Override
     public ResourceName getBackgroundPicture(Gui gui, IAssetManager manager) {
-        return ResourceName.intern("gui.construction.page_recipes_smelting");
+        return ResourceName.intern("gui.compendium.page_recipes_smelting");
     }
 
     @Override

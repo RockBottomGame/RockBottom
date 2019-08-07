@@ -26,7 +26,7 @@ public class GuiInventory extends GuiContainer {
             this.keepContainerOpen = true;
             game.getGuiManager().openGui(new GuiCompendium(this.player));
             return true;
-        }, ResourceName.intern("gui.construction.book_closed"), game.getAssetManager().localize(ResourceName.intern("button.open_compendium"))));
+        }, ResourceName.intern("gui.compendium.book_closed"), game.getAssetManager().localize(ResourceName.intern("button.open_compendium"))));
     }
 
     @Override

@@ -54,6 +54,12 @@ public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
                 List<IUseInfo> inputList = new ArrayList<>();
                 List<ItemInstance> outputList = new ArrayList<>();
 
+                Item tool = null;
+
+                if (object.has("tool")) {
+                    tool = Registries.ITEM_REGISTRY.get(new ResourceName(object.get("tool").getAsString()));
+                }
+
                 JsonArray outputs = object.get("outputs").getAsJsonArray();
                 for (JsonElement output : outputs) {
                     JsonObject out = output.getAsJsonObject();
@@ -81,9 +87,13 @@ public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
                 }
 
                 if ("manual".equals(type)) {
-                    new ConstructionRecipe(resourceName, inputList, outputList, skill).registerManual();
+                    new ConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
                 } else if ("manual_knowledge".equals(type)) {
-                    new KnowledgeConstructionRecipe(resourceName, inputList, outputList, skill).registerManual();
+                    new KnowledgeConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
+                } else if ("construction_table".equals(type)) {
+                    new ConstructionRecipe(resourceName, tool, inputList, outputList, skill).registerConstructionTable();
+                } else if ("construction_table_knowledge".equals(type)) {
+                    new KnowledgeConstructionRecipe(resourceName, tool, inputList, outputList, skill).registerConstructionTable();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }

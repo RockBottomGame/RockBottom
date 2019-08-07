@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.CombinedInventory;
+import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.entity.TileInventory;
@@ -32,6 +33,21 @@ public class TileEntityConstructionTable extends TileEntity {
     @Override
     public void update(IGameInstance game) {
         super.update(game);
+    }
+
+    public boolean containsTool(Item tool) {
+        if (tool == GameContent.ITEM_CHISEL) {
+            return chiselSlot.get(0) != null;
+        } else if (tool == GameContent.ITEM_HAMMER) {
+            return hammerSlot.get(0) != null;
+        } else if (tool == GameContent.ITEM_SAW) {
+            return sawSlot.get(0) != null;
+        } else if (tool == GameContent.ITEM_MALLET) {
+            return malletSlot.get(0) != null;
+        } else if (tool == GameContent.ITEM_WRENCH) {
+            return wrenchSlot.get(0) != null;
+        }
+        return tool == null;
     }
 
     @Override
