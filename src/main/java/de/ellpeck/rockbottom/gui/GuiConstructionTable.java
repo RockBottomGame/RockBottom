@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
+import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentPolaroid;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -48,6 +49,12 @@ public class GuiConstructionTable extends GuiContainer {
 
         this.menu = new ComponentMenu(this, 7, 1, 6, PAGE_HEIGHT - 2, 1, 4, 4, 0, new BoundBox(7, 0, MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction_table.scroll_bar"));
         this.components.add(this.menu);
+
+        organise();
+    }
+
+    private void organise() {
+        this.menu.clear();
     }
 
     @Override
