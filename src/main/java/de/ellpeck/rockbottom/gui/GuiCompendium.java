@@ -22,7 +22,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
+import de.ellpeck.rockbottom.construction.category.CategoryManualConstruction;
 import de.ellpeck.rockbottom.gui.component.ComponentCompendiumCategory;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.function.BiConsumer;
 
 public class GuiCompendium extends GuiContainer {
 
-    public static CompendiumCategory currentCategory = CategoryConstruction.INSTANCE;
+    public static CompendiumCategory currentCategory = CategoryManualConstruction.INSTANCE;
     private static int categoryOffset;
 
     public static final int PAGE_WIDTH = 72;

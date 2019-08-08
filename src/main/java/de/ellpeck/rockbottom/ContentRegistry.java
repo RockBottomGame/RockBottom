@@ -13,7 +13,8 @@ import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
-import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
+import de.ellpeck.rockbottom.construction.category.CategoryConstructionTable;
+import de.ellpeck.rockbottom.construction.category.CategoryManualConstruction;
 import de.ellpeck.rockbottom.construction.category.CategoryMortar;
 import de.ellpeck.rockbottom.construction.category.CategorySmelting;
 import de.ellpeck.rockbottom.item.*;
@@ -142,7 +143,8 @@ public final class ContentRegistry {
 
         EntitySlime.SPAWN_BEHAVIOR.register();
 
-        CategoryConstruction.INSTANCE.register();
+        CategoryManualConstruction.INSTANCE.register();
+        new CategoryConstructionTable().register();
         new CategoryMortar().register();
         new CategorySmelting().register();
     }

@@ -12,7 +12,6 @@ public final class ConstructionRegistry {
     public static final List<ConstructionRecipe> BRITTLE_TOOLS = new ArrayList<>();
     public static final List<ConstructionRecipe> STONE_TOOLS = new ArrayList<>();
     public static final List<ConstructionRecipe> COPPER_TOOLS = new ArrayList<>();
-    public static final List<ConstructionRecipe> CONSTRUCTION_TOOLS = new ArrayList<>();
     public static ConstructionRecipe ladder;
     public static ConstructionRecipe chest;
     public static ConstructionRecipe grassTorch;
@@ -21,6 +20,7 @@ public final class ConstructionRegistry {
     public static ConstructionRecipe mortar;
     public static ConstructionRecipe pestle;
     public static ConstructionRecipe simpleHoe;
+    public static ConstructionRecipe constructionTable;
 
     public static void postInit() {
         BRITTLE_TOOLS.add(getRecipe(GameContent.ITEM_BRITTLE_PICKAXE));
@@ -52,6 +52,7 @@ public final class ConstructionRegistry {
         mortar = getRecipe(GameContent.TILE_MORTAR.getItem());
         pestle = getRecipe(GameContent.ITEM_PESTLE);
         simpleHoe = getRecipe(GameContent.ITEM_SIMPLE_HOE);
+        constructionTable = getRecipe(GameContent.TILE_CONSTRUCTION_TABLE.getItem());
     }
 
     private static ConstructionRecipe getRecipe(Item item) {

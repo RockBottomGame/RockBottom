@@ -10,12 +10,12 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Set;
 
-public class CategoryConstruction extends CompendiumCategory {
+public class CategoryManualConstruction extends CompendiumCategory {
 
-    public static final CategoryConstruction INSTANCE = new CategoryConstruction();
+    public static final CategoryManualConstruction INSTANCE = new CategoryManualConstruction();
 
-    public CategoryConstruction() {
-        super(ResourceName.intern("construction"));
+    public CategoryManualConstruction() {
+        super(ResourceName.intern("manual_construction"));
     }
 
     @Override
