@@ -218,7 +218,7 @@ public class GuiCompendium extends GuiContainer {
 
         if (recipe != null) {
             IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct = recipe.getConstructButton(this, this.player, null, this.selectedRecipe.canConstruct(inv, inv));
             this.components.add(this.construct);
         }
     }

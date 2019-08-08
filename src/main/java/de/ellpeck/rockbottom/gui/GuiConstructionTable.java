@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -109,7 +110,7 @@ public class GuiConstructionTable extends GuiContainer {
 
         if (recipe != null) {
             IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct = recipe.getConstructButton(this, this.player, tile, this.selectedRecipe.canConstruct(inv, inv));
             this.construct.setPos(56, 17);
             this.components.add(this.construct);
         }
@@ -138,7 +139,7 @@ public class GuiConstructionTable extends GuiContainer {
 
         boolean containsSelected = false;
         for (ConstructionRecipe recipe : Registries.CONSTRUCTION_TABLE_RECIPES.values()) {
-            if (tile.containsTool(recipe.getTool())) {
+            if (recipe.canUseTools(tile)) {
                 if (recipe.isKnown(this.player)) {
                     IInventory inv = this.player.getInv();
                     ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv), true);

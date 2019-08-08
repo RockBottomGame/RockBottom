@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.KnowledgeConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
@@ -19,6 +20,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.init.RockBottom;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -54,10 +56,21 @@ public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
                 List<IUseInfo> inputList = new ArrayList<>();
                 List<ItemInstance> outputList = new ArrayList<>();
 
-                Item tool = null;
+                List<ConstructionTool> tools = new ArrayList<>();
 
-                if (object.has("tool")) {
-                    tool = Registries.ITEM_REGISTRY.get(new ResourceName(object.get("tool").getAsString()));
+                if (object.has("tools")) {
+                    JsonArray toolsJson = object.get("tools").getAsJsonArray();
+                    for (JsonElement toolRaw : toolsJson) {
+                        JsonObject tool = toolRaw.getAsJsonObject();
+                        Item item = Registries.ITEM_REGISTRY.get(new ResourceName(tool.get("name").getAsString()));
+                        int durability = tool.has("durability") ? tool.get("durability").getAsInt() : 1;
+
+                        if (item != null && durability > 0) {
+                            tools.add(new ConstructionTool(item, durability));
+                        } else {
+                            RockBottomAPI.logger().warning("Invalid tool listed for recipe " + resourceName);
+                        }
+                    }
                 }
 
                 JsonArray outputs = object.get("outputs").getAsJsonArray();
@@ -91,9 +104,9 @@ public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
                 } else if ("manual_knowledge".equals(type)) {
                     new KnowledgeConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
                 } else if ("construction_table".equals(type)) {
-                    new ConstructionRecipe(resourceName, tool, inputList, outputList, skill).registerConstructionTable();
+                    new ConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
                 } else if ("construction_table_knowledge".equals(type)) {
-                    new KnowledgeConstructionRecipe(resourceName, tool, inputList, outputList, skill).registerConstructionTable();
+                    new KnowledgeConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }
