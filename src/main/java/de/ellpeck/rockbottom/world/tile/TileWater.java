@@ -27,8 +27,8 @@ public class TileWater extends TileLiquid {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
-        return this.bounds[world.getState(layer, x, y).get(this.level)];
+    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+        return this.bounds[state.get(this.level)];
     }
 
     @Override
