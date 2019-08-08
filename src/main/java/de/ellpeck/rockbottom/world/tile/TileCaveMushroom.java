@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -32,7 +33,7 @@ public class TileCaveMushroom extends TileMeta {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
+    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
     }
 

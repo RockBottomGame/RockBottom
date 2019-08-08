@@ -343,7 +343,7 @@ public class InternalHooks implements IInternalHooks {
                     if (object.world.isPosLoaded(x, y)) {
                         for (TileLayer layer : TileLayer.getAllLayers()) {
                             TileState state = object.world.getState(layer, x, y);
-                            List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, x, y, layer, object, ownBox, ownBoxMotion);
+                            List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, state, x, y, layer, object, ownBox, ownBoxMotion);
 
                             if (layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)) {
                                 object.onTileCollision(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
@@ -495,7 +495,8 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate) {
-        if (layer != TileLayer.MAIN || player.world.getEntities(new BoundBox(x, y, x + 1, y + 1), entity -> !(entity instanceof AbstractEntityItem)).isEmpty()) {
+    	BoundBox tileBounds = tile.getActualBoundBox(player.world, tile.getPlacementState(player.world, x, y, layer, selected, player), x, y, layer).copy().add(x, y);
+        if (layer != TileLayer.MAIN || player.world.getEntities(tileBounds, entity -> !(entity instanceof AbstractEntityItem)).isEmpty()) {
             if (layer.canTileBeInLayer(player.world, x, y, tile)) {
                 Tile tileThere = player.world.getState(layer, x, y).getTile();
                 if (tileThere != tile && tileThere.canReplace(player.world, x, y, layer)) {

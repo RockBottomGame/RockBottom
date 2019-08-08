@@ -181,7 +181,29 @@ public class EntityPlayer extends AbstractEntityPlayer {
         super.update(game);
 
         if (this.collidedHor) {
-            this.motionX = 0;
+        	/*
+        	int moveOntoX = Util.floor(this.currentBounds.getBoundEdge(this.facing)+this.facing.x/100f);
+        	int moveOntoY = Util.floor(this.getY()+1);
+        	TileState moveOntoState = world.getState(moveOntoX, moveOntoY);
+        	BoundBox tileBounds = moveOntoState.getTile().getBoundBox(world, moveOntoX, moveOntoY, TileLayer.MAIN);
+
+        	if (tileBounds == null) {
+        		tileBounds = new BoundBox();
+			}
+			else {
+				tileBounds = tileBounds.copy();
+			}
+			tileBounds.add(moveOntoX, moveOntoY);
+			BoundBox playerBounds = this.currentBounds.copy().add(this.motionX, this.motionY);
+			boolean canStepUp = tileBounds.isEmpty() || !tileBounds.intersects(playerBounds);
+        	if (this.onGround && canStepUp) {
+        		this.setPos(this.getX(), this.getY()+1.03f);
+			}
+			else {
+				this.motionX = 0;
+			}
+			*/
+        	this.motionX = 0;
         }
 
         double x = this.getX();

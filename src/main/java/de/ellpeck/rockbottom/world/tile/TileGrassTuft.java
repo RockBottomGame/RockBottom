@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -60,7 +61,7 @@ public class TileGrassTuft extends TileMeta {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
+    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
     }
 }

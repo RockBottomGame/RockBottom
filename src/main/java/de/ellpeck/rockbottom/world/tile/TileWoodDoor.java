@@ -43,16 +43,21 @@ public class TileWoodDoor extends TileBasic {
         return world.getState(x, y - 1).getTile().isFullTile() && world.getState(x, y + 1).getTile().canReplace(world, x, y + 1, layer);
     }
 
-    @Override
+	@Override
+	public TileState getPlacementState(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer) {
+		return getDefState().prop(StaticTileProps.FACING_RIGHT, placer.facing == Direction.RIGHT);
+	}
+
+	@Override
     public void doPlace(IWorld world, int x, int y, TileLayer layer, ItemInstance instance, AbstractEntityPlayer placer) {
         if (!world.isClient()) {
-            TileState state = this.getDefState().prop(StaticTileProps.FACING_RIGHT, placer.facing == Direction.RIGHT);
+            TileState state = getPlacementState(world, x, y, layer, instance, placer);
             world.setState(layer, x, y, state.prop(StaticTileProps.TOP_HALF, false));
             world.setState(layer, x, y + 1, state.prop(StaticTileProps.TOP_HALF, true));
         }
     }
 
-    @Override
+	@Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
         TileState state = world.getState(layer, x, y);
         int yAdd = state.get(StaticTileProps.TOP_HALF) ? -1 : 1;
@@ -92,8 +97,7 @@ public class TileWoodDoor extends TileBasic {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, int x, int y, TileLayer layer) {
-        TileState state = world.getState(layer, x, y);
+    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         if (state.get(StaticTileProps.OPEN)) {
             return null;
         } else {
