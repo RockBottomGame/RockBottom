@@ -12,6 +12,7 @@ public final class ConstructionRegistry {
     public static final List<ConstructionRecipe> BRITTLE_TOOLS = new ArrayList<>();
     public static final List<ConstructionRecipe> STONE_TOOLS = new ArrayList<>();
     public static final List<ConstructionRecipe> COPPER_TOOLS = new ArrayList<>();
+    public static final List<ConstructionRecipe> CONSTRUCTION_TOOLS = new ArrayList<>();
     public static ConstructionRecipe ladder;
     public static ConstructionRecipe chest;
     public static ConstructionRecipe grassTorch;
@@ -31,11 +32,17 @@ public final class ConstructionRegistry {
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_AXE));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_SHOVEL));
         STONE_TOOLS.add(getRecipe(GameContent.ITEM_STONE_SWORD));
+        STONE_TOOLS.add(getRecipe(GameContent.ITEM_WRENCH));
+        STONE_TOOLS.add(getRecipe(GameContent.ITEM_SAW));
+        STONE_TOOLS.add(getRecipe(GameContent.ITEM_HAMMER));
+        STONE_TOOLS.add(getRecipe(GameContent.ITEM_MALLET));
+        STONE_TOOLS.add(getRecipe(GameContent.ITEM_CHISEL));
 
         COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_PICKAXE));
         COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_AXE));
         COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_SHOVEL));
         COPPER_TOOLS.add(getRecipe(GameContent.ITEM_COPPER_SWORD));
+
 
         ladder = getRecipe(GameContent.TILE_LADDER.getItem());
         chest = getRecipe(GameContent.TILE_CHEST.getItem());
