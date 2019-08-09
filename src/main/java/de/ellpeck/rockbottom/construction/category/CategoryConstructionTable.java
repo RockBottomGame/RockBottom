@@ -12,10 +12,10 @@ import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 
 import java.util.Set;
 
-public class CategoryMortar extends CompendiumCategory {
+public class CategoryConstructionTable extends CompendiumCategory {
 
-    public CategoryMortar() {
-        super(ResourceName.intern("mortar"));
+    public CategoryConstructionTable() {
+        super(ResourceName.intern("construction_table"));
     }
 
     @Override
@@ -25,11 +25,11 @@ public class CategoryMortar extends CompendiumCategory {
 
     @Override
     public Set<? extends ICompendiumRecipe> getRecipes() {
-        return Registries.MORTAR_REGISTRY.values();
+        return Registries.CONSTRUCTION_TABLE_RECIPES.values();
     }
 
     @Override
     public boolean shouldDisplay(AbstractEntityPlayer player) {
-        return ConstructionRegistry.mortar == null || ConstructionRegistry.mortar.isKnown(player);
+        return ConstructionRegistry.constructionTable == null || ConstructionRegistry.constructionTable.isKnown(player);
     }
 }

@@ -18,6 +18,7 @@ import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Pos2;
@@ -188,14 +189,15 @@ public class ApiHandler implements IApiHandler {
     }
 
     @Override
-    public List<ItemInstance> construct(AbstractEntityPlayer player, Inventory inputInventory, Inventory outputInventory, ICompendiumRecipe recipe, int amount, List<IUseInfo> inputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
+    public List<ItemInstance> construct(AbstractEntityPlayer player, Inventory inputInventory, Inventory outputInventory, ICompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> inputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
         List<ItemInstance> remains = new ArrayList<>();
 
-        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, amount, inputs, outputGetter, skillReward);
+        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, machine, amount, inputs, outputGetter, skillReward);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
             inputInventory = event.inputInventory;
             outputInventory = event.outputInventory;
             recipe = event.recipe;
+            machine = event.machine;
             amount = event.amount;
             inputs = event.inputs;
             outputGetter = event.outputGetter;
@@ -203,29 +205,33 @@ public class ApiHandler implements IApiHandler {
 
             for (int a = 0; a < amount; a++) {
                 if (recipe.canConstruct(inputInventory, outputInventory)) {
-                    List<ItemInstance> usedInputs = new ArrayList<>();
+                    if (recipe.handleMachine(player, inputInventory, outputInventory, machine, amount, inputs, outputGetter, skillReward)) {
+                        List<ItemInstance> usedInputs = new ArrayList<>();
 
-                    for (IUseInfo input : inputs) {
-                        for (int i = 0; i < inputInventory.getSlotAmount(); i++) {
-                            ItemInstance inv = inputInventory.get(i);
+                        for (IUseInfo input : inputs) {
+                            for (int i = 0; i < inputInventory.getSlotAmount(); i++) {
+                                ItemInstance inv = inputInventory.get(i);
 
-                            if (inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()) {
-                                usedInputs.add(inv.copy().setAmount(input.getAmount()));
-                                inputInventory.remove(i, input.getAmount());
-                                break;
+                                if (inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()) {
+                                    usedInputs.add(inv.copy().setAmount(input.getAmount()));
+                                    inputInventory.remove(i, input.getAmount());
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    for (ItemInstance output : outputGetter.apply(usedInputs)) {
-                        ItemInstance left = outputInventory.addExistingFirst(output, false);
-                        if (left != null) {
-                            remains.add(left);
+                        for (ItemInstance output : outputGetter.apply(usedInputs)) {
+                            ItemInstance left = outputInventory.addExistingFirst(output, false);
+                            if (left != null) {
+                                remains.add(left);
+                            }
                         }
-                    }
 
-                    if (player != null && skillReward > 0F) {
-                        player.gainSkill(skillReward);
+                        if (player != null && skillReward > 0F) {
+                            player.gainSkill(skillReward);
+                        }
+                    } else {
+                        break;
                     }
                 } else {
                     break;

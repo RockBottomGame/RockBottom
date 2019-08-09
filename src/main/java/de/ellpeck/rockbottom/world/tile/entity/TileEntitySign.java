@@ -31,9 +31,4 @@ public class TileEntitySign extends TileEntity {
             this.text[i] = set.getString("text_" + i);
         }
     }
-
-    @Override
-    public boolean doesTick() {
-        return false;
-    }
 }

@@ -13,7 +13,8 @@ import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
-import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
+import de.ellpeck.rockbottom.construction.category.CategoryConstructionTable;
+import de.ellpeck.rockbottom.construction.category.CategoryManualConstruction;
 import de.ellpeck.rockbottom.construction.category.CategoryMortar;
 import de.ellpeck.rockbottom.construction.category.CategorySmelting;
 import de.ellpeck.rockbottom.item.*;
@@ -56,6 +57,7 @@ public final class ContentRegistry {
         new TileGrassTorch().register();
         new TileCopper().register();
         new TileSimpleFurnace().register();
+        new TileConstructionTable().register();
         new TileCaveMushroom().register();
         new TileStardrop().register();
         new TileLamp(ResourceName.intern("lamp_iron")).register();
@@ -68,6 +70,11 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_shovel"), 1.25F, 50, ToolProperty.SHOVEL, 1).register();
         new ItemSword(ResourceName.intern("brittle_sword"), 50, 4, 10, 1.5D, 0.25D).register();
+        new ItemConstructionTool(ResourceName.intern("wrench"), 100).register();
+        new ItemConstructionTool(ResourceName.intern("saw"), 100).register();
+        new ItemConstructionTool(ResourceName.intern("hammer"), 100).register();
+        new ItemConstructionTool(ResourceName.intern("mallet"), 100).register();
+        new ItemConstructionTool(ResourceName.intern("chisel"), 100).register();
         new ItemFirework().register();
         new ItemStartNote().register();
         new ItemBasic(ResourceName.intern("plant_fiber")).register();
@@ -136,7 +143,8 @@ public final class ContentRegistry {
 
         EntitySlime.SPAWN_BEHAVIOR.register();
 
-        CategoryConstruction.INSTANCE.register();
+        CategoryManualConstruction.INSTANCE.register();
+        new CategoryConstructionTable().register();
         new CategoryMortar().register();
         new CategorySmelting().register();
     }

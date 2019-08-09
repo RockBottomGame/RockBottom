@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
+import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -52,6 +53,7 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
+import de.ellpeck.rockbottom.world.tile.entity.TileEntityConstructionTable;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -533,6 +535,14 @@ public class InternalHooks implements IInternalHooks {
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean useConstructionTableTool(TileEntity constructionTable, ConstructionTool tool, boolean simulate) {
+        if (constructionTable instanceof TileEntityConstructionTable) {
+            return ((TileEntityConstructionTable)constructionTable).damageTool(tool, simulate);
         }
         return false;
     }
@@ -1243,12 +1253,12 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public void defaultConstruct(AbstractEntityPlayer player, ConstructionRecipe recipe) {
+    public void defaultConstruct(AbstractEntityPlayer player, ConstructionRecipe recipe, TileEntity machine) {
         if (RockBottomAPI.getNet().isClient()) {
-            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.MANUAL_CONSTRUCTION_RECIPES.getId(recipe), 1));
+            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.MANUAL_CONSTRUCTION_RECIPES.getId(recipe), machine, 1));
         } else {
             if (recipe.isKnown(player)) {
-                recipe.playerConstruct(player, 1);
+                recipe.playerConstruct(player, machine,1);
             }
         }
     }

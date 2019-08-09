@@ -26,6 +26,9 @@ public class TileStone extends TileBasic {
                     player.getKnowledge().teachRecipe(recipe, true);
                 }
             }
+            if (ConstructionRegistry.constructionTable != null) {
+                player.getKnowledge().teachRecipe(ConstructionRegistry.constructionTable, true);
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.category.CategoryConstruction;
+import de.ellpeck.rockbottom.construction.category.CategoryManualConstruction;
 import de.ellpeck.rockbottom.gui.component.ComponentCompendiumCategory;
 
 import java.util.ArrayList;
@@ -33,14 +33,14 @@ import java.util.function.BiConsumer;
 
 public class GuiCompendium extends GuiContainer {
 
-    public static CompendiumCategory currentCategory = CategoryConstruction.INSTANCE;
+    public static CompendiumCategory currentCategory = CategoryManualConstruction.INSTANCE;
     private static int categoryOffset;
 
     public static final int PAGE_WIDTH = 72;
     public static final int PAGE_HEIGHT = 94;
-    private static final ResourceName LEFT_PAGE = ResourceName.intern("gui.construction.page_items");
-    private static final ResourceName SEARCH_ICON = ResourceName.intern("gui.construction.search_bar");
-    private static final ResourceName SEARCH_BAR = ResourceName.intern("gui.construction.search_bar_extended");
+    private static final ResourceName LEFT_PAGE = ResourceName.intern("gui.compendium.page_items");
+    private static final ResourceName SEARCH_ICON = ResourceName.intern("gui.compendium.search_bar");
+    private static final ResourceName SEARCH_BAR = ResourceName.intern("gui.compendium.search_bar_extended");
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
     private final List<ComponentIngredient> ingredients = new ArrayList<>();
     private final List<ComponentCompendiumCategory> categories = new ArrayList<>();
@@ -67,14 +67,14 @@ public class GuiCompendium extends GuiContainer {
     public void init(IGameInstance game) {
         super.init(game);
 
-        this.menu = new ComponentMenu(this, -12, 2, 12, PAGE_HEIGHT - 4, 3, 4, 11, 0, new BoundBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction.scroll_bar"));
+        this.menu = new ComponentMenu(this, -12, 2, 12, PAGE_HEIGHT - 4, 3, 4, 11, 0, new BoundBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.compendium.scroll_bar"));
         this.components.add(this.menu);
 
         this.components.add(new ComponentFancyButton(this, 5 - 16, GuiCompendium.PAGE_HEIGHT + 5, 14, 14, () -> {
             this.keepContainerOpen = true;
             game.getGuiManager().openGui(new GuiInventory(this.player));
             return true;
-        }, ResourceName.intern("gui.construction.book_open"), game.getAssetManager().localize(ResourceName.intern("button.close_compendium"))));
+        }, ResourceName.intern("gui.compendium.book_open"), game.getAssetManager().localize(ResourceName.intern("button.close_compendium"))));
 
         this.searchBar = new ComponentInputField(this, 145, 80, 70, 12, false, false, false, 64, false, strg -> {
             if (!strg.equals(this.searchText)) {
@@ -98,14 +98,14 @@ public class GuiCompendium extends GuiContainer {
             categoryOffset--;
             this.sortCategories();
             return true;
-        }, ResourceName.intern("gui.construction.arrow_up"));
+        }, ResourceName.intern("gui.compendium.arrow_up"));
         this.components.add(this.categoryUp.setHasBackground(false));
 
         this.categoryDown = new ComponentFancyButton(this, this.width + 17, 1 + 14 * 5 - 6, 6, 6, () -> {
             categoryOffset++;
             this.sortCategories();
             return true;
-        }, ResourceName.intern("gui.construction.arrow_down"));
+        }, ResourceName.intern("gui.compendium.arrow_down"));
         this.components.add(this.categoryDown.setHasBackground(false));
 
         this.sortCategories();
@@ -139,7 +139,7 @@ public class GuiCompendium extends GuiContainer {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
                     IInventory inv = this.player.getInv();
-                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv));
+                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv), false);
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if (polaroid.isSelected) {
@@ -165,7 +165,7 @@ public class GuiCompendium extends GuiContainer {
         this.menu.organize();
 
         if (this.selectedRecipe != null) {
-            this.stockIngredients(this.selectedRecipe.getIngredientButtons(this, this.player));
+            this.stockIngredients(this.selectedRecipe.getIngredientButtons(this, this.player, false));
         } else {
             this.stockIngredients(Collections.emptyList());
         }
@@ -218,7 +218,7 @@ public class GuiCompendium extends GuiContainer {
 
         if (recipe != null) {
             IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct = recipe.getConstructButton(this, this.player, null, this.selectedRecipe.canConstruct(inv, inv));
             this.components.add(this.construct);
         }
     }
@@ -287,7 +287,7 @@ public class GuiCompendium extends GuiContainer {
                             polaroid.isSelected = true;
 
                             this.initConstructButton(polaroid.recipe);
-                            this.stockIngredients(polaroid.recipe.getIngredientButtons(this, this.player));
+                            this.stockIngredients(polaroid.recipe.getIngredientButtons(this, this.player, false));
                         }
                         did = true;
                     } else {
