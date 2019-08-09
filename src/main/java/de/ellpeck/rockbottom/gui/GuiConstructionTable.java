@@ -18,6 +18,7 @@ import de.ellpeck.rockbottom.api.gui.component.construction.ComponentPolaroid;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityConstructionTable;
@@ -119,7 +120,10 @@ public class GuiConstructionTable extends GuiContainer {
     @Override
     public final void render(IGameInstance game, IAssetManager assetManager, IRenderer renderer) {
         assetManager.getTexture(background).draw((float) this.x + 7, (float) this.y, 120.0F, 94.0F);
-
+        if (this.selectedRecipe != null) {
+            String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
+            assetManager.getFont().drawAutoScaledString(this.x + 72, this.y + 6, strg, 0.25F, 72 - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
+        }
         super.render(game, assetManager, renderer);
     }
 
