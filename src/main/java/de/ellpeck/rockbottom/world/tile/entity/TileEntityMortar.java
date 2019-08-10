@@ -73,7 +73,7 @@ public class TileEntityMortar extends TileEntity {
         this.inventory.load(set);
         this.progress = set.getInt("progress");
         if (set.hasKey("recipe")) {
-            this.currentRecipe = Registries.MORTAR_REGISTRY.get(new ResourceName(set.getString("recipe")));
+            this.currentRecipe = Registries.MORTAR_RECIPES.get(new ResourceName(set.getString("recipe")));
         }
     }
 }

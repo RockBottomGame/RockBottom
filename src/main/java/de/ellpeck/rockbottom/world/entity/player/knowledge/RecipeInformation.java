@@ -14,7 +14,6 @@ import de.ellpeck.rockbottom.api.toast.ToastBasic;
 import de.ellpeck.rockbottom.api.toast.ToastItem;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
-import java.util.Collections;
 import java.util.List;
 
 public class RecipeInformation extends Information {

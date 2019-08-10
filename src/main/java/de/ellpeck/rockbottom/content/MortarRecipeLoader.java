@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MortarLoader implements IContentLoader<ICompendiumRecipe> {
+public class MortarRecipeLoader implements IContentLoader<MortarRecipe> {
 
     private final Set<ResourceName> disabled = new HashSet<>();
 

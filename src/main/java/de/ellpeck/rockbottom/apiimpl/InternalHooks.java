@@ -35,6 +35,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
+import de.ellpeck.rockbottom.api.tile.entity.ICraftingStation;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
@@ -543,11 +544,8 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public boolean useConstructionTableTool(TileEntity constructionTable, ConstructionTool tool, boolean simulate) {
-        if (constructionTable instanceof TileEntityConstructionTable) {
-            return ((TileEntityConstructionTable)constructionTable).damageTool(tool, simulate);
-        }
-        return false;
+    public boolean useCraftingTool(ICraftingStation craftingStation, ConstructionTool tool, boolean simulate) {
+            return craftingStation.damageTool(tool, simulate);
     }
 
     @Override
@@ -1262,9 +1260,9 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public void defaultConstruct(AbstractEntityPlayer player, ConstructionRecipe recipe, TileEntity machine) {
+    public void defaultConstruct(AbstractEntityPlayer player, ICompendiumRecipe recipe, TileEntity machine) {
         if (RockBottomAPI.getNet().isClient()) {
-            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.MANUAL_CONSTRUCTION_RECIPES.getId(recipe), machine, 1));
+            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
         } else {
             if (recipe.isKnown(player)) {
                 recipe.playerConstruct(player, machine,1);

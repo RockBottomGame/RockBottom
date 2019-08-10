@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.construction.category;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
@@ -8,7 +9,6 @@ import de.ellpeck.rockbottom.api.construction.compendium.CompendiumCategory;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 
 import java.util.Set;
 
@@ -25,11 +25,12 @@ public class CategoryMortar extends CompendiumCategory {
 
     @Override
     public Set<? extends ICompendiumRecipe> getRecipes() {
-        return Registries.MORTAR_REGISTRY.values();
+        return Registries.MORTAR_RECIPES.values();
     }
 
     @Override
     public boolean shouldDisplay(AbstractEntityPlayer player) {
-        return ConstructionRegistry.mortar == null || ConstructionRegistry.mortar.isKnown(player);
+    	ICompendiumRecipe recipe = ICompendiumRecipe.getRecipe(GameContent.TILE_MORTAR.getName());
+        return recipe == null || recipe.isKnown(player);
     }
 }

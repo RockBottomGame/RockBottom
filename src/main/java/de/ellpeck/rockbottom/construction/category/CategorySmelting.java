@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.construction.category;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
@@ -11,7 +12,6 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentIngredient;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 
 import java.util.List;
 import java.util.Set;
@@ -49,6 +49,7 @@ public class CategorySmelting extends CompendiumCategory {
 
     @Override
     public boolean shouldDisplay(AbstractEntityPlayer player) {
-        return ConstructionRegistry.simpleFurnace == null || ConstructionRegistry.simpleFurnace.isKnown(player);
+    	ICompendiumRecipe recipe = ICompendiumRecipe.getRecipe(GameContent.TILE_SIMPLE_FURNACE.getName());
+        return recipe == null || recipe.isKnown(player);
     }
 }

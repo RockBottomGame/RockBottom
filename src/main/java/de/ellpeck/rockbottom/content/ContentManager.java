@@ -25,10 +25,10 @@ import java.util.logging.Level;
 public final class ContentManager {
 
     public static void init(IGameInstance game) {
-        new RecipeLoader().register();
-        new SmeltingLoader().register();
+        new ConstructionRecipeLoader().register();
+        new SmeltingRecipeLoader().register();
         new StructureLoader().register();
-        new MortarLoader().register();
+        new MortarRecipeLoader().register();
 
         List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
         Set<IContentLoader> loaders = Registries.CONTENT_LOADER_REGISTRY.values();
