@@ -442,6 +442,13 @@ public class Renderer implements IRenderer {
     public void renderItemInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, int color, boolean displayAmount, boolean displayDurability) {
         Item item = slot.getItem();
 
+
+
+        IItemRenderer renderer = item.getRenderer();
+        if (renderer != null) {
+            renderer.render(game, manager, this, item, slot, x, y, 10F * scale, color);
+        }
+
         if (displayDurability) {
             if (item.useMetaAsDurability()) {
                 int meta = slot.getMeta();
@@ -451,13 +458,8 @@ public class Renderer implements IRenderer {
                 float r = 1F - percentage;
                 float g = percentage * 0.75F;
 
-                this.addFilledRect(x - 2F * scale, y + 12F * scale - 14F * scale * percentage, 14F * scale, 14F * scale * percentage, Colors.rgb(r, g, 0F, 0.45F));
+                this.addFilledRect(x - 1F * scale, y + 12F * scale - 3F * scale, 12F * scale * percentage, 2F * scale, Colors.rgb(r, g, 0F, 1));
             }
-        }
-
-        IItemRenderer renderer = item.getRenderer();
-        if (renderer != null) {
-            renderer.render(game, manager, this, item, slot, x, y, 10F * scale, color);
         }
 
         if (displayAmount) {
