@@ -1261,10 +1261,8 @@ public class InternalHooks implements IInternalHooks {
     public void defaultConstruct(AbstractEntityPlayer player, PlayerCompendiumRecipe recipe, TileEntity machine) {
         if (RockBottomAPI.getNet().isClient()) {
             RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
-        } else {
-            if (recipe.isKnown(player)) {
-                recipe.playerConstruct(player, machine,1);
-            }
-        }
+        } else if (recipe.isKnown(player)) {
+			recipe.playerConstruct(player, machine, 1);
+		}
     }
 }

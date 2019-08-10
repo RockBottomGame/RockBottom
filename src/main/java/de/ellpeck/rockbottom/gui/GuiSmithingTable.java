@@ -55,6 +55,8 @@ public class GuiSmithingTable extends GuiContainer {
         ShiftClickBehavior input = new ShiftClickBehavior(0, playerSlots - 1, playerSlots, playerSlots - 1 + tile.getTileInventory().getSlotAmount());
         this.shiftClickBehaviors.add(input);
         this.shiftClickBehaviors.add(input.reversed());
+
+		System.out.println(Registries.SMITHING_RECIPES.values());
     }
 
     @Override
@@ -204,6 +206,6 @@ public class GuiSmithingTable extends GuiContainer {
 
     @Override
     public ResourceName getName() {
-        return ResourceName.intern("construction_table");
+        return ResourceName.intern("smithing_table");
     }
 }

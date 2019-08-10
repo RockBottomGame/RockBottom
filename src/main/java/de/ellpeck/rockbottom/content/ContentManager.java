@@ -12,6 +12,10 @@ import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.content.recipes.ConstructionRecipeLoader;
+import de.ellpeck.rockbottom.content.recipes.MortarRecipeLoader;
+import de.ellpeck.rockbottom.content.recipes.SmeltingRecipeLoader;
+import de.ellpeck.rockbottom.content.recipes.SmithingRecipeLoader;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,8 +31,9 @@ public final class ContentManager {
     public static void init(IGameInstance game) {
         new ConstructionRecipeLoader().register();
         new SmeltingRecipeLoader().register();
-        new StructureLoader().register();
-        new MortarRecipeLoader().register();
+        new SmithingRecipeLoader().register();
+		new MortarRecipeLoader().register();
+		new StructureLoader().register();
 
         List<ContentPack> packs = RockBottomAPI.getContentPackLoader().getActivePacks();
         Set<IContentLoader> loaders = Registries.CONTENT_LOADER_REGISTRY.values();

@@ -10,7 +10,9 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.GuiConstructionTable;
+import de.ellpeck.rockbottom.gui.GuiSmithingTable;
 import de.ellpeck.rockbottom.gui.container.ContainerConstructionTable;
+import de.ellpeck.rockbottom.gui.container.ContainerSmithingTable;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityConstructionTable;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmithingTable;
 
@@ -23,8 +25,8 @@ public class TileSmithingTable extends MultiTile {
 	@Override
 	public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
 		Pos2 main = this.getMainPos(x, y, world.getState(layer, x, y));
-		TileEntityConstructionTable tile = world.getTileEntity(layer, main.getX(), main.getY(), TileEntityConstructionTable.class);
-		return tile != null && player.openGuiContainer(new GuiConstructionTable(player, tile), new ContainerConstructionTable(player, tile));
+		TileEntitySmithingTable tile = world.getTileEntity(layer, main.getX(), main.getY(), TileEntitySmithingTable.class);
+		return tile != null && player.openGuiContainer(new GuiSmithingTable(player, tile), new ContainerSmithingTable(player, tile));
 	}
 
 	@Override
@@ -35,6 +37,11 @@ public class TileSmithingTable extends MultiTile {
 	@Override
 	public boolean canPlaceInLayer(TileLayer layer) {
 		return layer == TileLayer.MAIN;
+	}
+
+	@Override
+	public boolean isFullTile() {
+		return false;
 	}
 
 	@Override
