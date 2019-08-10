@@ -414,7 +414,7 @@ public class Renderer implements IRenderer {
 
     @Override
     public void renderSlotInGui(IGameInstance game, IAssetManager manager, ItemInstance slot, float x, float y, float scale, boolean hovered, boolean canPlaceInto) {
-        renderSlotInGui(game, manager, slot, x, y, scale, hovered, canPlaceInto, true, -1);
+        renderSlotInGui(game, manager, slot, x, y, scale, hovered, canPlaceInto, true, game.getSettings().guiColor);
     }
 
     @Override
