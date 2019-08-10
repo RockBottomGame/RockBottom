@@ -7,10 +7,17 @@ import de.ellpeck.rockbottom.api.construction.compendium.construction.Constructi
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.toast.IToast;
+import de.ellpeck.rockbottom.api.toast.ToastItem;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketRecipesToast;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryPlayer extends Inventory {
@@ -40,20 +47,15 @@ public class InventoryPlayer extends Inventory {
             this.addChangeCallback((inv, slot) -> {
                 ItemInstance instance = inv.get(slot);
                 if (instance == null) return;
-                teachRecipes(player, CriteriaPickupItem.getRecipesFor(instance.getItem()));
-
+                List<ICompendiumRecipe> allRecipes = CriteriaPickupItem.getRecipesFor(instance.getItem());
+                if (allRecipes == null) allRecipes = new ArrayList<>();
                 List<String> names = RockBottomAPI.getResourceRegistry().getNames(instance);
                 for (String name : names) {
-                    teachRecipes(player, CriteriaPickupItem.getRecipesFor(name));
+                    List<ICompendiumRecipe> resRecipes = CriteriaPickupItem.getRecipesFor(name);
+                    if (resRecipes != null) allRecipes.addAll(resRecipes);
                 }
+                player.getKnowledge().teachRecipes(allRecipes);
             });
-        }
-    }
-
-    private void teachRecipes(EntityPlayer player, List<ICompendiumRecipe> recipes) {
-        if (recipes == null) return;
-        for (ICompendiumRecipe recipe : recipes) {
-            player.getKnowledge().teachRecipe(recipe);
         }
     }
 

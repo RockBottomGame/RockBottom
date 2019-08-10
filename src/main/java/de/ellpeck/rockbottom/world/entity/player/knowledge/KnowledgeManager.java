@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.toast.IToast;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
+import de.ellpeck.rockbottom.net.packet.toclient.PacketRecipesToast;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
@@ -112,16 +113,36 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public void teachRecipe(ICompendiumRecipe recipe, boolean announce) {
+    public boolean teachRecipe(ICompendiumRecipe recipe, boolean announce) {
         if (!recipe.isKnown(this.player)) {
             RecipeInformation information = new RecipeInformation(recipe);
             this.teachInformation(information, announce);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void teachRecipes(List<ICompendiumRecipe> recipes) {
+        if (recipes == null) return;
+        List<ICompendiumRecipe> newRecipes = new ArrayList<>();
+        for (ICompendiumRecipe recipe : recipes) {
+            if (player.getKnowledge().teachRecipe(recipe, false)) {
+                newRecipes.add(recipe);
+            }
+        }
+
+        PacketRecipesToast packet = new PacketRecipesToast(newRecipes);
+        if (player.isLocalPlayer()) {
+            packet.handle(RockBottomAPI.getGame(), null);
+        } else if (player.world.isServer()) {
+            player.sendPacket(packet);
         }
     }
 
     @Override
-    public void teachRecipe(ICompendiumRecipe recipe) {
-        this.teachRecipe(recipe, true);
+    public boolean teachRecipe(ICompendiumRecipe recipe) {
+        return this.teachRecipe(recipe, true);
     }
 
     @Override
@@ -130,9 +151,11 @@ public class KnowledgeManager implements IKnowledgeManager {
             this.information.put(information.getName(), information);
 
             if (this.player.isLocalPlayer()) {
-                IToast toast = information.announceTeach();
-                if (toast != null) {
-                    RockBottomAPI.getGame().getToaster().displayToast(toast);
+                if (announce) {
+                    IToast toast = information.announceTeach();
+                    if (toast != null) {
+                        RockBottomAPI.getGame().getToaster().displayToast(toast);
+                    }
                 }
             } else if (this.player.world.isServer()) {
                 this.player.sendPacket(new PacketKnowledge(this.player, information, announce, false));

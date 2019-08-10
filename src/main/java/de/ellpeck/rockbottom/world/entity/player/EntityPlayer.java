@@ -256,9 +256,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
                 List<ICompendiumRecipe> depthRecipes = CriteriaReachDepth.getRecipesFor((int)y);
                 if (depthRecipes != null) {
-                    for (ICompendiumRecipe recipe : depthRecipes) {
-                        this.getKnowledge().teachRecipe(recipe, true);
-                    }
+                    this.getKnowledge().teachRecipes(depthRecipes);
                 }
 
                 this.handleEntitySpawns(x, y);
