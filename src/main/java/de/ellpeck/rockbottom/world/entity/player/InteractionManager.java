@@ -275,17 +275,22 @@ public class InteractionManager implements IInteractionManager {
                                         boolean effective = isToolEffective(player, selected, tile, layer, x, y);
 
                                         if (defaultTileBreakingCheck(player.world, x, y, layer, mousedTileX, mousedTileY, player) && tile.canBreak(player.world, x, y, layer, player, effective)) {
-                                            float hardness = tile.getHardness(player.world, x, y, layer);
-                                            float progressAmount = 0.05F / hardness;
 
-                                            if (selected != null) {
-                                                progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective, selected);
+                                            float progressAmount;
+
+                                            if(player.getGamemode().isCreative()){
+                                                progressAmount = 1.0F;
+                                            } else {
+                                                float hardness = tile.getHardness(player.world, x, y, layer);
+                                                progressAmount = 0.05F / hardness;
+                                                if (selected != null) {
+                                                    progressAmount *= selected.getItem().getMiningSpeed(player.world, x, y, layer, tile, effective, selected);
+                                                }
+                                                AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
+                                                RockBottomAPI.getEventHandler().fireEvent(event);
+                                                this.breakProgress = event.totalProgress;
+                                                progressAmount = event.progressAdded;
                                             }
-
-                                            AddBreakProgressEvent event = new AddBreakProgressEvent(player, layer, x, y, this.breakProgress, progressAmount);
-                                            RockBottomAPI.getEventHandler().fireEvent(event);
-                                            this.breakProgress = event.totalProgress;
-                                            progressAmount = event.progressAdded;
 
                                             if (progressAmount > 0) {
                                                 this.breakProgress += progressAmount;

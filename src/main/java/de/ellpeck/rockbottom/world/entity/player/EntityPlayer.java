@@ -7,6 +7,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.Gamemode;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
@@ -83,12 +84,14 @@ public class EntityPlayer extends AbstractEntityPlayer {
     private double lastStatY;
     private float skillPercentage;
     private int skillPoints;
+    private Gamemode gamemode;
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
         this.setUniqueId(uniqueId);
         this.facing = Direction.RIGHT;
         this.design = design;
+        this.gamemode = Gamemode.SURVIVAL;
         this.inv.addChangeCallback(this.invCallback);
     }
 
@@ -339,7 +342,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public void onGroundHit(double fallDistance) {
         if (!this.world.isClient()) {
-            if (fallDistance > 4) {
+            if (!this.gamemode.isCreative() && fallDistance > 4) {
                 this.takeDamage(Util.ceil((fallDistance - 4D) * 4.5D));
             }
         }
@@ -363,6 +366,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public float getKillReward(AbstractEntityPlayer player) {
         return this.skillPoints + this.skillPercentage;
+    }
+
+    @Override
+    public boolean takeDamage(int amount) {
+        return !this.gamemode.isCreative() && super.takeDamage(amount);
     }
 
     @Override
@@ -391,6 +399,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.statistics.save(set);
         set.addFloat("skill_percentage", this.skillPercentage);
         set.addInt("skill_points", this.skillPoints);
+        set.addEnum("gamemode", this.gamemode);
     }
 
     @Override
@@ -401,6 +410,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.statistics.load(set);
         this.skillPercentage = set.getFloat("skill_percentage");
         this.skillPoints = set.getInt("skill_points");
+        this.gamemode = set.getEnum("gamemode", Gamemode.class);
     }
 
     @Override
@@ -776,6 +786,16 @@ public class EntityPlayer extends AbstractEntityPlayer {
     public void setSkill(float percentage, int points) {
         this.skillPoints = points;
         this.skillPercentage = percentage;
+    }
+
+    @Override
+    public Gamemode getGamemode() {
+        return gamemode;
+    }
+
+    @Override
+    public void setGamemode(Gamemode gamemode){
+        this.gamemode = gamemode;
     }
 
 }
