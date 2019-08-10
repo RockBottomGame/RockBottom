@@ -58,6 +58,7 @@ public final class ContentRegistry {
         new TileCopper().register();
         new TileSimpleFurnace().register();
         new TileConstructionTable().register();
+        new TileSmithingTable().register();
         new TileCaveMushroom().register();
         new TileStardrop().register();
         new TileLamp(ResourceName.intern("lamp_iron")).register();
