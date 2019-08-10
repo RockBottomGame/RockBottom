@@ -38,7 +38,7 @@ public class TileEntityMortar extends TileEntity {
                     this.currentRecipe = null;
                     this.progress = 0;
 
-                    recipe.construct(this.inventory, 1);
+                    recipe.construct(this.inventory, this, 1);
                 } else {
                     this.sendToClients();
                 }
@@ -73,7 +73,7 @@ public class TileEntityMortar extends TileEntity {
         this.inventory.load(set);
         this.progress = set.getInt("progress");
         if (set.hasKey("recipe")) {
-            this.currentRecipe = Registries.MORTAR_REGISTRY.get(new ResourceName(set.getString("recipe")));
+            this.currentRecipe = Registries.MORTAR_RECIPES.get(new ResourceName(set.getString("recipe")));
         }
     }
 }

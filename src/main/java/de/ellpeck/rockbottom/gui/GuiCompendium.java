@@ -139,7 +139,7 @@ public class GuiCompendium extends GuiContainer {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
                     IInventory inv = this.player.getInv();
-                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv), false);
+                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv), ComponentPolaroid.DEFAULT_TEX);
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if (polaroid.isSelected) {
@@ -165,7 +165,7 @@ public class GuiCompendium extends GuiContainer {
         this.menu.organize();
 
         if (this.selectedRecipe != null) {
-            this.stockIngredients(this.selectedRecipe.getIngredientButtons(this, this.player, false));
+            this.stockIngredients(this.selectedRecipe.getIngredientButtons(this, this.player, ComponentIngredient.DEFAULT_TEX));
         } else {
             this.stockIngredients(Collections.emptyList());
         }
@@ -287,7 +287,7 @@ public class GuiCompendium extends GuiContainer {
                             polaroid.isSelected = true;
 
                             this.initConstructButton(polaroid.recipe);
-                            this.stockIngredients(polaroid.recipe.getIngredientButtons(this, this.player, false));
+                            this.stockIngredients(polaroid.recipe.getIngredientButtons(this, this.player, ComponentIngredient.DEFAULT_TEX));
                         }
                         did = true;
                     } else {

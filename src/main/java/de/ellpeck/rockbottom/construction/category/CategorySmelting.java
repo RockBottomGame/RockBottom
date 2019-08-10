@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentIngredient;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
+import de.ellpeck.rockbottom.construction.RecipeCache;
 
 import java.util.List;
 import java.util.Set;
@@ -49,6 +49,6 @@ public class CategorySmelting extends CompendiumCategory {
 
     @Override
     public boolean shouldDisplay(AbstractEntityPlayer player) {
-        return ConstructionRegistry.simpleFurnace == null || ConstructionRegistry.simpleFurnace.isKnown(player);
+        return RecipeCache.simpleFurnace == null || RecipeCache.simpleFurnace.isKnown(player);
     }
 }

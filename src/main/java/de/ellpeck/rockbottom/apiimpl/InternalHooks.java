@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.apiimpl;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Table;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -9,7 +8,7 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
@@ -35,6 +34,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
+import de.ellpeck.rockbottom.api.tile.entity.IToolStation;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
@@ -56,7 +56,6 @@ import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
-import de.ellpeck.rockbottom.world.tile.entity.TileEntityConstructionTable;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -543,11 +542,8 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public boolean useConstructionTableTool(TileEntity constructionTable, ConstructionTool tool, boolean simulate) {
-        if (constructionTable instanceof TileEntityConstructionTable) {
-            return ((TileEntityConstructionTable)constructionTable).damageTool(tool, simulate);
-        }
-        return false;
+    public boolean useCraftingTool(IToolStation craftingStation, ConstructionTool tool, boolean simulate) {
+            return craftingStation.damageTool(tool, simulate);
     }
 
     @Override
@@ -1262,9 +1258,9 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public void defaultConstruct(AbstractEntityPlayer player, ConstructionRecipe recipe, TileEntity machine) {
+    public void defaultConstruct(AbstractEntityPlayer player, PlayerCompendiumRecipe recipe, TileEntity machine) {
         if (RockBottomAPI.getNet().isClient()) {
-            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.MANUAL_CONSTRUCTION_RECIPES.getId(recipe), machine, 1));
+            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
         } else {
             if (recipe.isKnown(player)) {
                 recipe.playerConstruct(player, machine,1);

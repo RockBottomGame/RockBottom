@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.construction.compendium.CompendiumCategory;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
+import de.ellpeck.rockbottom.construction.RecipeCache;
 
 import java.util.Set;
 
@@ -30,6 +30,6 @@ public class CategoryConstructionTable extends CompendiumCategory {
 
     @Override
     public boolean shouldDisplay(AbstractEntityPlayer player) {
-        return ConstructionRegistry.constructionTable == null || ConstructionRegistry.constructionTable.isKnown(player);
+        return RecipeCache.constructionTable == null || RecipeCache.constructionTable.isKnown(player);
     }
 }

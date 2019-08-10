@@ -1,17 +1,15 @@
 package de.ellpeck.rockbottom.inventory;
 
-import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.construction.RecipeCache;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.toast.IToast;
 import de.ellpeck.rockbottom.api.toast.ToastItem;
-import de.ellpeck.rockbottom.construction.ConstructionRegistry;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketRecipesToast;
@@ -29,14 +27,14 @@ public class InventoryPlayer extends Inventory {
 
         if (!player.world.isClient()) {
             this.addChangeCallback((inv, slot) -> {
-                if (ConstructionRegistry.chest != null && !ConstructionRegistry.chest.isKnown(player)) {
+				if (RecipeCache.chest != null && !RecipeCache.chest.isKnown(player)) {
                     int fullness = 0;
                     for (ItemInstance instance : inv) {
                         if (instance != null) {
                             fullness++;
 
                             if (fullness >= inv.getSlotAmount() / 2) {
-                                player.getKnowledge().teachRecipe(ConstructionRegistry.chest);
+                                player.getKnowledge().teachRecipe(RecipeCache.chest);
                                 break;
                             }
                         }

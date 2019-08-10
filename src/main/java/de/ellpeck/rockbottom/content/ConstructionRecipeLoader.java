@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.KnowledgeConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.ICriteria;
@@ -28,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
+public class ConstructionRecipeLoader implements IContentLoader<ConstructionRecipe> {
 
     private final Set<ResourceName> disabled = new HashSet<>();
 
@@ -63,10 +64,10 @@ public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
                     for (JsonElement toolRaw : toolsJson) {
                         JsonObject tool = toolRaw.getAsJsonObject();
                         Item item = Registries.ITEM_REGISTRY.get(new ResourceName(tool.get("name").getAsString()));
-                        int durability = tool.has("durability") ? tool.get("durability").getAsInt() : 1;
+                        int usage = tool.has("usage") ? tool.get("usage").getAsInt() : 1;
 
-                        if (item != null && durability > 0) {
-                            tools.add(new ConstructionTool(item, durability));
+                        if (item != null && usage > 0) {
+                            tools.add(new ConstructionTool(item, usage));
                         } else {
                             RockBottomAPI.logger().warning("Invalid tool listed for recipe " + resourceName);
                         }
