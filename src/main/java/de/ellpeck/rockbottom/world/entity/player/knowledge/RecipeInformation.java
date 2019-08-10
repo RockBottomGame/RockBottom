@@ -9,9 +9,12 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
-import de.ellpeck.rockbottom.api.toast.Toast;
+import de.ellpeck.rockbottom.api.toast.IToast;
+import de.ellpeck.rockbottom.api.toast.ToastBasic;
+import de.ellpeck.rockbottom.api.toast.ToastItem;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
+import java.util.Collections;
 import java.util.List;
 
 public class RecipeInformation extends Information {
@@ -30,13 +33,13 @@ public class RecipeInformation extends Information {
     }
 
     @Override
-    public Toast announceForget() {
-        return new Toast(ResourceName.intern("gui.compendium.book_closed"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
+    public IToast announceForget() {
+        return new ToastBasic(ResourceName.intern("gui.compendium.book_closed"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
     }
 
     @Override
-    public Toast announceTeach() {
-        return new Toast(ResourceName.intern("gui.compendium.book_open"), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
+    public IToast announceTeach() {
+        return new ToastItem(recipe.getOutputs(), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
     }
 
     private ChatComponent getOutputName() {

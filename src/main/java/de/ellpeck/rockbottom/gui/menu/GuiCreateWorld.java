@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.gui.component.ComponentToggleButton;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
-import de.ellpeck.rockbottom.api.toast.Toast;
+import de.ellpeck.rockbottom.api.toast.ToastBasic;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -98,7 +98,7 @@ public class GuiCreateWorld extends Gui {
                     gui.fadeIn(20, null);
 
                     if (info.storyMode) {
-                        Toast toast = new Toast(ResourceName.intern("gui.info"), new ChatComponentTranslation(ResourceName.intern("info.new_world.title")), new ChatComponentTranslation(ResourceName.intern("info.new_world")), 600) {
+                        ToastBasic toast = new ToastBasic(ResourceName.intern("gui.info"), new ChatComponentTranslation(ResourceName.intern("info.new_world.title")), new ChatComponentTranslation(ResourceName.intern("info.new_world")), 600) {
                             @Override
                             public float getWidth() {
                                 return 150F;

@@ -19,7 +19,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
-import de.ellpeck.rockbottom.api.toast.Toast;
+import de.ellpeck.rockbottom.api.toast.ToastBasic;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -691,7 +691,7 @@ public class RockBottom extends AbstractGame {
             ImageIO.write(image, "png", file);
 
             RockBottomAPI.logger().info("Saved screenshot to " + file);
-            this.toaster.displayToast(new Toast(new ChatComponentTranslation(ResourceName.intern("info.screenshot.title")), new ChatComponentTranslation(ResourceName.intern("info.screenshot"), file.getName()), 350));
+            this.toaster.displayToast(new ToastBasic(new ChatComponentTranslation(ResourceName.intern("info.screenshot.title")), new ChatComponentTranslation(ResourceName.intern("info.screenshot"), file.getName()), 350));
         } catch (Exception e) {
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't take screenshot", e);
         }
