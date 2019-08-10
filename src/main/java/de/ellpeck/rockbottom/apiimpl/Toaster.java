@@ -3,8 +3,8 @@ package de.ellpeck.rockbottom.apiimpl;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.toast.IToast;
 import de.ellpeck.rockbottom.api.toast.IToaster;
-import de.ellpeck.rockbottom.api.toast.Toast;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 
 public class Toaster implements IToaster {
 
-    private final Map<Toast, ToastPosition> toasts = new LinkedHashMap<>();
+    private final Map<IToast, ToastPosition> toasts = new LinkedHashMap<>();
 
     public void update() {
         Iterator<ToastPosition> iterator = this.toasts.values().iterator();
@@ -28,8 +28,8 @@ public class Toaster implements IToaster {
     }
 
     public void render(IGameInstance game, IAssetManager manager, IRenderer g) {
-        for (Entry<Toast, ToastPosition> entry : this.toasts.entrySet()) {
-            Toast toast = entry.getKey();
+        for (Entry<IToast, ToastPosition> entry : this.toasts.entrySet()) {
+            IToast toast = entry.getKey();
             ToastPosition pos = entry.getValue();
 
             float width = toast.getWidth();
@@ -50,10 +50,10 @@ public class Toaster implements IToaster {
     }
 
     @Override
-    public void displayToast(Toast toast) {
+    public void displayToast(IToast toast) {
         float lowestY = 2;
 
-        for (Map.Entry<Toast, ToastPosition> entry : this.toasts.entrySet()) {
+        for (Map.Entry<IToast, ToastPosition> entry : this.toasts.entrySet()) {
             float y = entry.getValue().y + entry.getKey().getHeight() + 2;
             if (lowestY < y) {
                 lowestY = y;
@@ -64,7 +64,7 @@ public class Toaster implements IToaster {
     }
 
     @Override
-    public void cancelToast(Toast toast) {
+    public void cancelToast(IToast toast) {
         this.toasts.remove(toast);
     }
 

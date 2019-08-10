@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
-import de.ellpeck.rockbottom.api.toast.Toast;
+import de.ellpeck.rockbottom.api.toast.ToastBasic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.logging.Level;
@@ -34,19 +34,19 @@ public class GuiMenu extends Gui {
                 if (RockBottomAPI.getNet().isServer()) {
                     RockBottomAPI.getNet().shutdown();
 
-                    game.getToaster().displayToast(new Toast(new ChatComponentTranslation(ResourceName.intern("info.server_shutdown.title")), new ChatComponentTranslation(ResourceName.intern("info.server_shutdown")), 160));
+                    game.getToaster().displayToast(new ToastBasic(new ChatComponentTranslation(ResourceName.intern("info.server_shutdown.title")), new ChatComponentTranslation(ResourceName.intern("info.server_shutdown")), 160));
 
                     return true;
                 } else {
                     try {
                         RockBottomAPI.getNet().init(null, Main.port, true);
 
-                        game.getToaster().displayToast(new Toast(new ChatComponentTranslation(ResourceName.intern("info.server_started.title")), new ChatComponentTranslation(ResourceName.intern("info.server_started"), String.valueOf(Main.port)), 160));
+                        game.getToaster().displayToast(new ToastBasic(new ChatComponentTranslation(ResourceName.intern("info.server_started.title")), new ChatComponentTranslation(ResourceName.intern("info.server_started"), String.valueOf(Main.port)), 160));
 
                         return true;
                     } catch (Exception e) {
                         RockBottomAPI.logger().log(Level.WARNING, "Couldn't start server", e);
-                        game.getToaster().displayToast(new Toast(new ChatComponentText("Oh no!"), new ChatComponentText("Something went wrong, please check the log."), 160));
+                        game.getToaster().displayToast(new ToastBasic(new ChatComponentText("Oh no!"), new ChatComponentText("Something went wrong, please check the log."), 160));
                     }
                 }
                 return false;

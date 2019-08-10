@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.toast.Toast;
+import de.ellpeck.rockbottom.api.toast.ToastBasic;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
@@ -420,7 +420,7 @@ public class World extends AbstractWorld {
 
         if (!this.isDedicatedServer()) {
             IGameInstance game = RockBottomAPI.getGame();
-            game.enqueueAction((g, o) -> game.getToaster().displayToast(new Toast(ResourceName.intern("gui.save_world"), new ChatComponentTranslation(ResourceName.intern("info.saved")), new ChatComponentTranslation(ResourceName.intern("info.saved_world"), String.valueOf((float) time / 1000F)), 160)), null);
+            game.enqueueAction((g, o) -> game.getToaster().displayToast(new ToastBasic(ResourceName.intern("gui.save_world"), new ChatComponentTranslation(ResourceName.intern("info.saved")), new ChatComponentTranslation(ResourceName.intern("info.saved_world"), String.valueOf((float) time / 1000F)), 160)), null);
         }
     }
 
