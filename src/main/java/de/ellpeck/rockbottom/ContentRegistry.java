@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.Registries;
+import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.effect.BasicEffect;
@@ -17,6 +18,8 @@ import de.ellpeck.rockbottom.construction.category.CategoryConstructionTable;
 import de.ellpeck.rockbottom.construction.category.CategoryManualConstruction;
 import de.ellpeck.rockbottom.construction.category.CategoryMortar;
 import de.ellpeck.rockbottom.construction.category.CategorySmelting;
+import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
+import de.ellpeck.rockbottom.construction.criteria.CriteriaReachDepth;
 import de.ellpeck.rockbottom.item.*;
 import de.ellpeck.rockbottom.world.entity.*;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
@@ -34,7 +37,7 @@ public final class ContentRegistry {
         new TileAir().register();
         new TileSoil().register();
         new TileGrass().register();
-        new TileStone().register();
+        new TileBasic(ResourceName.intern("stone")).register();
         new TileGrassTuft().register();
         new TileLog().register();
         new TileLeaves().register();
@@ -42,7 +45,7 @@ public final class ContentRegistry {
         new TilePebbles().register();
         new TileFalling(ResourceName.intern("sand")).register();
         new TileBasic(ResourceName.intern("sandstone")).register();
-        new TileCoal().register();
+        new TileBasic(ResourceName.intern("coal")).register();
         new TileTorch(ResourceName.intern("torch")).register();
         new TileSnow().register();
         new TileLadder().register();
@@ -129,6 +132,10 @@ public final class ContentRegistry {
         Registries.WORLD_GENERATORS.register(ResourceName.intern("corn"), WorldGenCorn.class);
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
+
+        new CriteriaBreakTile().register();
+        new CriteriaPickupItem().register();
+        new CriteriaReachDepth().register();
 
         new BasicEffect(ResourceName.intern("speed"), false, false, 36000, 10).register();
         new BasicEffect(ResourceName.intern("jump_height"), false, false, 36000, 20).register();

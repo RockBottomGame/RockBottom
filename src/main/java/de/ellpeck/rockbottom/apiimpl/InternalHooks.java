@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.apiimpl;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Table;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -7,6 +8,7 @@ import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -44,6 +46,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
@@ -545,6 +548,12 @@ public class InternalHooks implements IInternalHooks {
             return ((TileEntityConstructionTable)constructionTable).damageTool(tool, simulate);
         }
         return false;
+    }
+
+    @Override
+    public List<ICompendiumRecipe> getRecipesToLearnFrom(Tile tile) {
+        List<ICompendiumRecipe> recipes = CriteriaBreakTile.getRecipesFor(tile);
+        return recipes == null ? null : Collections.unmodifiableList(recipes);
     }
 
     @Override

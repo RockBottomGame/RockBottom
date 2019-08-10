@@ -67,20 +67,6 @@ public class TilePebbles extends TileBasic {
     }
 
     @Override
-    public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop) {
-        super.onDestroyed(world, x, y, destroyer, layer, shouldDrop);
-
-        if (!world.isClient() && destroyer instanceof AbstractEntityPlayer) {
-            AbstractEntityPlayer player = (AbstractEntityPlayer) destroyer;
-            for (ConstructionRecipe recipe : ConstructionRegistry.BRITTLE_TOOLS) {
-                if (recipe != null) {
-                    player.getKnowledge().teachRecipe(recipe, true);
-                }
-            }
-        }
-    }
-
-    @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
         return Collections.singletonList(new ItemInstance(this, Util.RANDOM.nextInt(3) + 1));
     }

@@ -2,12 +2,16 @@ package de.ellpeck.rockbottom.inventory;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
+import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+
+import java.util.List;
 
 public class InventoryPlayer extends Inventory {
 
@@ -34,24 +38,22 @@ public class InventoryPlayer extends Inventory {
             });
 
             this.addChangeCallback((inv, slot) -> {
-                if (ConstructionRegistry.grassTorch != null && !ConstructionRegistry.grassTorch.isKnown(player)) {
-                    ItemInstance instance = inv.get(slot);
-                    if (instance != null && instance.getItem() == GameContent.TILE_GRASS_TORCH.getItem()) {
-                        player.getKnowledge().teachRecipe(ConstructionRegistry.grassTorch);
-                    }
-                }
-            });
-
-            this.addChangeCallback((inv, slot) -> {
                 ItemInstance instance = inv.get(slot);
-                if (instance != null && RockBottomAPI.getResourceRegistry().getNames(instance).contains(GameContent.RES_COPPER_PROCESSED)) {
-                    for (ConstructionRecipe recipe : ConstructionRegistry.COPPER_TOOLS) {
-                        if (recipe != null) {
-                            player.getKnowledge().teachRecipe(recipe);
-                        }
-                    }
+                if (instance == null) return;
+                teachRecipes(player, CriteriaPickupItem.getRecipesFor(instance.getItem()));
+
+                List<String> names = RockBottomAPI.getResourceRegistry().getNames(instance);
+                for (String name : names) {
+                    teachRecipes(player, CriteriaPickupItem.getRecipesFor(name));
                 }
             });
+        }
+    }
+
+    private void teachRecipes(EntityPlayer player, List<ICompendiumRecipe> recipes) {
+        if (recipes == null) return;
+        for (ICompendiumRecipe recipe : recipes) {
+            player.getKnowledge().teachRecipe(recipe);
         }
     }
 
