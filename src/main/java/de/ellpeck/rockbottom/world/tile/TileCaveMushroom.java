@@ -51,17 +51,4 @@ public class TileCaveMushroom extends TileMeta {
     private boolean canBeHere(IWorld world, int x, int y, TileLayer layer) {
         return world.getState(layer, x, y - 1).getTile().hasSolidSurface(world, x, y - 1, layer) && world.getState(TileLayer.LIQUIDS, x, y).getTile().isAir();
     }
-
-    @Override
-    public void onDestroyed(IWorld world, int x, int y, Entity destroyer, TileLayer layer, boolean shouldDrop) {
-        super.onDestroyed(world, x, y, destroyer, layer, shouldDrop);
-
-        if (!world.isClient() && shouldDrop && destroyer instanceof AbstractEntityPlayer) {
-            IKnowledgeManager knowledge = ((AbstractEntityPlayer) destroyer).getKnowledge();
-            if (ConstructionRegistry.mortar != null)
-                knowledge.teachRecipe(ConstructionRegistry.mortar);
-            if (ConstructionRegistry.pestle != null)
-                knowledge.teachRecipe(ConstructionRegistry.pestle);
-        }
-    }
 }

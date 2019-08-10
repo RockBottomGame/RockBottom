@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player.knowledge;
 
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
@@ -17,9 +18,9 @@ public class RecipeInformation extends Information {
 
     public static final ResourceName REG_NAME = ResourceName.intern("recipe");
 
-    private ConstructionRecipe recipe;
+    private ICompendiumRecipe recipe;
 
-    public RecipeInformation(ConstructionRecipe recipe) {
+    public RecipeInformation(ICompendiumRecipe recipe) {
         super(recipe.getKnowledgeInformationName());
         this.recipe = recipe;
     }

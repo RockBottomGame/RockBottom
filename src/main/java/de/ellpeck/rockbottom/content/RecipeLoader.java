@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.KnowledgeConstructionRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.ICriteria;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
@@ -20,7 +21,6 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.init.RockBottom;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -99,16 +99,33 @@ public class RecipeLoader implements IContentLoader<ConstructionRecipe> {
                     }
                 }
 
+                ConstructionRecipe recipe;
                 if ("manual".equals(type)) {
-                    new ConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
+                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
                 } else if ("manual_knowledge".equals(type)) {
-                    new KnowledgeConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
+                    recipe = new KnowledgeConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
                 } else if ("construction_table".equals(type)) {
-                    new ConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
+                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
                 } else if ("construction_table_knowledge".equals(type)) {
-                    new KnowledgeConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
+                    recipe = new KnowledgeConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
+                }
+
+                if (object.has("criteria")) {
+                    JsonArray ca = object.getAsJsonArray("criteria");
+                    for (JsonElement ce : ca) {
+                        JsonObject criteria = ce.getAsJsonObject();
+                        String cname = criteria.get("name").getAsString();
+                        ICriteria icriteria = Registries.CRITERIA_REGISTRY.get(new ResourceName(cname));
+                        if (icriteria == null) {
+                            throw new IllegalArgumentException("Invalid criteria " + cname + " for recipe " + resourceName);
+                        }
+                        JsonObject params = criteria.getAsJsonObject("params");
+                        if (!icriteria.deserialize(recipe, params)) {
+                            RockBottomAPI.logger().warning("Failed to deserialize criteria " + cname + " for recipe " + resourceName);
+                        }
+                    }
                 }
 
                 RockBottomAPI.logger().config("Loaded recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with type " + type + ", inputs " + inputList + " outputs " + outputList + " and skill " + skill + " with content pack " + pack.getName());

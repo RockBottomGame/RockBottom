@@ -81,15 +81,11 @@ public class TileCorn extends TileBasic {
     public boolean onInteractWithBreakKey(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
         TileState state = world.getState(layer, x, y);
         if (state.get(StaticTileProps.TOP_HALF) && state.get(StaticTileProps.CORN_GROWTH) >= 9) {
-            this.onDestroyed(world, x, y, null, layer, true);
+            this.onDestroyed(world, x, y, player, layer, true);
 
             if (!world.isClient()) {
                 world.setState(layer, x, y, state.prop(StaticTileProps.CORN_GROWTH, 5));
                 world.setState(layer, x, y - 1, world.getState(layer, x, y - 1).prop(StaticTileProps.CORN_GROWTH, 5));
-
-                if (player != null && ConstructionRegistry.simpleHoe != null) {
-                    player.getKnowledge().teachRecipe(ConstructionRegistry.simpleHoe);
-                }
             }
 
             return true;

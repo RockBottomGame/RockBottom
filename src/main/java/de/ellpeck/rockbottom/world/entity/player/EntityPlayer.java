@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.entity.player;
 
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -35,6 +36,7 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.construction.ConstructionRegistry;
+import de.ellpeck.rockbottom.construction.criteria.CriteriaReachDepth;
 import de.ellpeck.rockbottom.gui.container.ContainerInventory;
 import de.ellpeck.rockbottom.inventory.InventoryPlayer;
 import de.ellpeck.rockbottom.net.packet.backandforth.PacketOpenUnboundContainer;
@@ -252,8 +254,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     }
                 }
 
-                if (y <= 0 && ConstructionRegistry.ladder != null) {
-                    this.getKnowledge().teachRecipe(ConstructionRegistry.ladder, true);
+                List<ICompendiumRecipe> depthRecipes = CriteriaReachDepth.getRecipesFor((int)y);
+                if (depthRecipes != null) {
+                    for (ICompendiumRecipe recipe : depthRecipes) {
+                        this.getKnowledge().teachRecipe(recipe, true);
+                    }
                 }
 
                 this.handleEntitySpawns(x, y);
