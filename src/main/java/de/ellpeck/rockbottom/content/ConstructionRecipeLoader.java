@@ -64,10 +64,10 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
                     for (JsonElement toolRaw : toolsJson) {
                         JsonObject tool = toolRaw.getAsJsonObject();
                         Item item = Registries.ITEM_REGISTRY.get(new ResourceName(tool.get("name").getAsString()));
-                        int durability = tool.has("usage") ? tool.get("usage").getAsInt() : 1;
+                        int usage = tool.has("usage") ? tool.get("usage").getAsInt() : 1;
 
-                        if (item != null && durability > 0) {
-                            tools.add(new ConstructionTool(item, durability));
+                        if (item != null && usage > 0) {
+                            tools.add(new ConstructionTool(item, usage));
                         } else {
                             RockBottomAPI.logger().warning("Invalid tool listed for recipe " + resourceName);
                         }

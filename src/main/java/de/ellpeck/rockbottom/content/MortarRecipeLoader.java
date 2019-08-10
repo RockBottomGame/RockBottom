@@ -47,8 +47,13 @@ public class MortarRecipeLoader implements IContentLoader<MortarRecipe> {
                 JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
                 reader.close();
 
-                JsonObject object = recipeElement.getAsJsonObject();
-                int time = object.get("time").getAsInt();
+
+				JsonObject object = recipeElement.getAsJsonObject();
+				int skillReward = 0;
+				if (object.has("skill")) {
+					object.get("skill").getAsInt();
+				}
+				int time = object.get("time").getAsInt();
 
                 List<ItemInstance> output = new ArrayList<>();
                 for (JsonElement e : object.get("output").getAsJsonArray()) {
@@ -78,7 +83,7 @@ public class MortarRecipeLoader implements IContentLoader<MortarRecipe> {
                     }
                 }
 
-                new MortarRecipe(resourceName, input, output, time).register();
+                new MortarRecipe(resourceName, input, output, time, skillReward).register();
 
                 RockBottomAPI.logger().config("Loaded mortar recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with time " + time + ", input " + input + " and output " + output + " with content pack " + pack.getName());
             }

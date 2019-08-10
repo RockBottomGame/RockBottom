@@ -15,7 +15,6 @@ import de.ellpeck.rockbottom.api.gui.component.construction.ComponentConstruct;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentIngredient;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentPolaroid;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.tile.entity.ICraftingStation;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
@@ -148,7 +147,7 @@ public class GuiConstructionTable extends GuiContainer {
             if (recipe.canUseTools(tile)) {
                 if (recipe.isKnown(this.player)) {
                     IInventory inv = this.player.getInv();
-                    ComponentPolaroid polaroid = new ComponentPolaroid(this, recipe, recipe.canConstruct(inv, inv), POLAROID_TEX);
+                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(inv, inv), POLAROID_TEX);
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if (polaroid.isSelected) {

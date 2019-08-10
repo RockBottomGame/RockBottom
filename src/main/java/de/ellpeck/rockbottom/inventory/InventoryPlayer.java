@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.inventory;
 
-import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.construction.RecipeCache;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
@@ -19,16 +19,15 @@ public class InventoryPlayer extends Inventory {
         super(32);
 
         if (!player.world.isClient()) {
-        	ICompendiumRecipe recipe = ICompendiumRecipe.getRecipe(GameContent.TILE_CHEST.getName());
             this.addChangeCallback((inv, slot) -> {
-                if (recipe != null && !recipe.isKnown(player)) {
+				if (RecipeCache.chest != null && !RecipeCache.chest.isKnown(player)) {
                     int fullness = 0;
                     for (ItemInstance instance : inv) {
                         if (instance != null) {
                             fullness++;
 
                             if (fullness >= inv.getSlotAmount() / 2) {
-                                player.getKnowledge().teachRecipe(recipe);
+                                player.getKnowledge().teachRecipe(RecipeCache.chest);
                                 break;
                             }
                         }

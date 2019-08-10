@@ -22,6 +22,7 @@ import de.ellpeck.rockbottom.apiimpl.ApiHandler;
 import de.ellpeck.rockbottom.apiimpl.EventHandler;
 import de.ellpeck.rockbottom.apiimpl.InternalHooks;
 import de.ellpeck.rockbottom.apiimpl.ResourceRegistry;
+import de.ellpeck.rockbottom.construction.RecipeCache;
 import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.content.ContentPackLoader;
 import de.ellpeck.rockbottom.data.DataManager;
@@ -222,6 +223,7 @@ public abstract class AbstractGame implements IGameInstance {
     public void postInit(IGameInstance game, IApiHandler apiHandler, IEventHandler eventHandler) {
         TileLayer.init();
         ContentManager.init(this);
+		RecipeCache.postInit();
 
         this.chatLog = new ChatLog();
     }
