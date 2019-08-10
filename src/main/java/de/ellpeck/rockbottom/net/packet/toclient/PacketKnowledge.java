@@ -57,7 +57,7 @@ public class PacketKnowledge implements IPacket {
             } else {
                 Information information = KnowledgeManager.loadInformation(this.infoSet, manager);
                 if (information != null) {
-                    manager.teachInformation(information);
+                    manager.teachInformation(information, announce);
                 }
             }
         }

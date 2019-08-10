@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
 import de.ellpeck.rockbottom.api.toast.IToast;
 import de.ellpeck.rockbottom.api.toast.ToastBasic;
 import de.ellpeck.rockbottom.api.toast.ToastItem;
@@ -34,12 +35,13 @@ public class RecipeInformation extends Information {
 
     @Override
     public IToast announceForget() {
-        return new ToastBasic(ResourceName.intern("gui.compendium.book_closed"), new ChatComponentText("Recipe forgotten"), this.getOutputName(), 200);
+        return new ToastBasic(ResourceName.intern("gui.compendium.book_closed"), new ChatComponentTranslation(ResourceName.intern("info.recipe_forgotten")), this.getOutputName(), 200);
     }
 
     @Override
     public IToast announceTeach() {
-        return new ToastItem(recipe.getOutputs(), new ChatComponentText("Recipe learned"), this.getOutputName(), 200);
+        if (recipe == null) return new ToastBasic(ResourceName.intern("gui.compendium.book_open"), new ChatComponentTranslation(ResourceName.intern("info.recipe_learned")), this.getOutputName(), 200);
+        return new ToastItem(recipe.getOutputs(), new ChatComponentTranslation(ResourceName.intern("info.recipe_learned")), Collections.singletonList(this.getOutputName()), 200);
     }
 
     private ChatComponent getOutputName() {
