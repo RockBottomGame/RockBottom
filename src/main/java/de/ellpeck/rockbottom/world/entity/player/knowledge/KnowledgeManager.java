@@ -2,8 +2,7 @@ package de.ellpeck.rockbottom.world.entity.player.knowledge;
 
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
@@ -88,7 +87,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public boolean knowsRecipe(ConstructionRecipe recipe) {
+    public boolean knowsRecipe(PlayerCompendiumRecipe recipe) {
         return this.knowsInformation(recipe.getKnowledgeInformationName());
     }
 
@@ -113,7 +112,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public boolean teachRecipe(ICompendiumRecipe recipe, boolean announce) {
+    public boolean teachRecipe(PlayerCompendiumRecipe recipe, boolean announce) {
         if (!recipe.isKnown(this.player)) {
             RecipeInformation information = new RecipeInformation(recipe);
             this.teachInformation(information, announce);
@@ -123,10 +122,10 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public void teachRecipes(List<ICompendiumRecipe> recipes) {
+    public void teachRecipes(List<PlayerCompendiumRecipe> recipes) {
         if (recipes == null) return;
-        List<ICompendiumRecipe> newRecipes = new ArrayList<>();
-        for (ICompendiumRecipe recipe : recipes) {
+        List<PlayerCompendiumRecipe> newRecipes = new ArrayList<>();
+        for (PlayerCompendiumRecipe recipe : recipes) {
             if (player.getKnowledge().teachRecipe(recipe, false)) {
                 newRecipes.add(recipe);
             }
@@ -141,7 +140,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public boolean teachRecipe(ICompendiumRecipe recipe) {
+    public boolean teachRecipe(PlayerCompendiumRecipe recipe) {
         return this.teachRecipe(recipe, true);
     }
 
@@ -169,12 +168,12 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public void forgetRecipe(ICompendiumRecipe recipe, boolean announce) {
+    public void forgetRecipe(PlayerCompendiumRecipe recipe, boolean announce) {
         this.forgetInformation(recipe.getKnowledgeInformationName(), announce);
     }
 
     @Override
-    public void forgetRecipe(ICompendiumRecipe recipe) {
+    public void forgetRecipe(PlayerCompendiumRecipe recipe) {
         this.forgetRecipe(recipe, true);
     }
 

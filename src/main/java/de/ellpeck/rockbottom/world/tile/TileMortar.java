@@ -36,7 +36,7 @@ public class TileMortar extends TileBasic {
                 if (instance.getItem().getToolProperties(instance).containsKey(ToolProperty.PESTLE)) {
                     if (!world.isClient()) {
                         instance.getItem().takeDamage(instance, player, 1);
-                        tile.doPestleProgress();
+                        tile.doPestleProgress(player);
                     }
                     return true;
                 } else {

@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -50,7 +49,7 @@ import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketManualConstruction;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketConstruction;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
@@ -547,8 +546,8 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public List<ICompendiumRecipe> getRecipesToLearnFrom(Tile tile) {
-        List<ICompendiumRecipe> recipes = CriteriaBreakTile.getRecipesFor(tile);
+    public List<PlayerCompendiumRecipe> getRecipesToLearnFrom(Tile tile) {
+        List<PlayerCompendiumRecipe> recipes = CriteriaBreakTile.getRecipesFor(tile);
         return recipes == null ? null : Collections.unmodifiableList(recipes);
     }
 
@@ -1260,7 +1259,7 @@ public class InternalHooks implements IInternalHooks {
     @Override
     public void defaultConstruct(AbstractEntityPlayer player, PlayerCompendiumRecipe recipe, TileEntity machine) {
         if (RockBottomAPI.getNet().isClient()) {
-            RockBottomAPI.getNet().sendToServer(new PacketManualConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
+            RockBottomAPI.getNet().sendToServer(new PacketConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
         } else {
             if (recipe.isKnown(player)) {
                 recipe.playerConstruct(player, machine,1);
