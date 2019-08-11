@@ -88,7 +88,7 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     @Override
-    public boolean knowsRecipe(ICompendiumRecipe recipe) {
+    public boolean knowsRecipe(ConstructionRecipe recipe) {
         return this.knowsInformation(recipe.getKnowledgeInformationName());
     }
 
