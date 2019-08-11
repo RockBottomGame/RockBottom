@@ -6,6 +6,8 @@ import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
+import de.ellpeck.rockbottom.api.data.set.part.DataPart;
+import de.ellpeck.rockbottom.api.data.set.part.num.PartInt;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -60,6 +62,9 @@ public abstract class AbstractWorld implements IWorld {
     private ModBasedDataSet additionalData;
     private BiomeGen biomeGen;
     private HeightGen heightGen;
+
+    // Maps every x position to the y position of the highest tile in the chunk
+    private Map<Integer, Integer> highestTileLookup = new HashMap<>();
 
     public AbstractWorld(File worldDirectory, long seed) {
         this.seed = seed;
@@ -169,12 +174,22 @@ public abstract class AbstractWorld implements IWorld {
         this.time = set.getInt("time");
         this.totalTime = set.getInt("total_time");
         this.timeFrozen = set.getBoolean("time_frozen");
+        DataSet highestTileSet = set.getDataSet("highest_tiles");
+        this.highestTileLookup = new HashMap<>();
+        for (Map.Entry<String, DataPart> entry : highestTileSet.getData().entrySet()) {
+            this.highestTileLookup.put(Integer.parseInt(entry.getKey()), ((PartInt)entry.getValue()).get());
+        }
     }
 
     public void saveWorldData(DataSet set) {
         set.addInt("time", this.time);
         set.addInt("total_time", this.totalTime);
         set.addBoolean("time_frozen", this.timeFrozen);
+        DataSet highestTileSet = new DataSet();
+        for (Map.Entry<Integer, Integer> entry : this.highestTileLookup.entrySet()) {
+            highestTileSet.addInt(entry.getKey().toString(), entry.getValue());
+        }
+        set.addDataSet("highest_tiles", highestTileSet);
     }
 
     protected void updateChunksAndTime(IGameInstance game) {
@@ -548,6 +563,22 @@ public abstract class AbstractWorld implements IWorld {
         }
 
         this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+    }
+
+    @Override
+    public int getHighestTile(int x, int fallback, boolean setFallback) {
+        if (this.highestTileLookup.containsKey(x)) {
+            int highest = this.highestTileLookup.get(x);
+            return highest;
+        }
+        if (setFallback) this.highestTileLookup.put(x, fallback);
+        return fallback;
+    }
+
+    @Override
+    public void setHighestTile(int x, int y) {
+        System.out.println("Set highest tile at " + x + " to " + y);
+        this.highestTileLookup.put(x, y);
     }
 
     @Override

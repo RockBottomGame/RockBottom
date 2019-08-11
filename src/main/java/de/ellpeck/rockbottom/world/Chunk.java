@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world;
 
 import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
@@ -376,6 +377,18 @@ public class Chunk implements IChunk {
 
                     int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
                     if (heights[x] < newHeight || heights[x] == y + 1) {
+
+                        int actualX = getX() + x;
+                        int realOld = getY() + heights[x];
+                        int realNew = getY() + newHeight;
+                        int curHighest = world.getHighestTile(actualX, realNew, true);
+                        if (realNew > curHighest || realOld == curHighest) world.setHighestTile(actualX, realNew);
+                        else if (world.isPosLoaded(actualX, curHighest)) {
+                            TileState highestState = world.getState(TileLayer.MAIN, actualX, curHighest);
+                            if (!highestState.getTile().isFullTile()) world.setHighestTile(actualX, realNew);
+                        }
+                        //System.out.println(getX() + ":" + getGridX() + ":" + x);
+
                         heights[x] = newHeight;
 
                         Set<Integer> uniqueHeights = new HashSet<>();
