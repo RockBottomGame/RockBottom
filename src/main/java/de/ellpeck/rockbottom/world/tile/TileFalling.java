@@ -38,4 +38,9 @@ public class TileFalling extends TileBasic {
     public void onAdded(IWorld world, int x, int y, TileLayer layer) {
         tryFall(world, x, y, layer);
     }
+
+    @Override
+    public float getTranslucentModifier(IWorld world, int x, int y, TileLayer layer, boolean skylight) {
+        return layer == TileLayer.BACKGROUND ? 0.9F : 0.7F;
+    }
 }

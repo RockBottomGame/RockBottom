@@ -27,6 +27,11 @@ public class TileSoil extends TileBasic {
     }
 
     @Override
+    public float getTranslucentModifier(IWorld world, int x, int y, TileLayer layer, boolean skylight) {
+        return layer == TileLayer.BACKGROUND ? 0.9F : 0.7F;
+    }
+
+    @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
         ItemInstance selected = player.getInv().get(player.getSelectedSlot());
         if (selected != null && selected.getItem().getToolProperties(selected).containsKey(ToolProperty.HOE)) {

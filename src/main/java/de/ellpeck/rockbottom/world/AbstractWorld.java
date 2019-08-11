@@ -566,6 +566,11 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
+    public boolean hasHighestTile(int x) {
+        return highestTileLookup.containsKey(x);
+    }
+
+    @Override
     public int getHighestTile(int x, int fallback, boolean setFallback) {
         if (this.highestTileLookup.containsKey(x)) {
             int highest = this.highestTileLookup.get(x);
@@ -659,6 +664,11 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     private byte getTileLight(int x, int y, boolean isSky) {
+        if (isSky && this.hasHighestTile(x)) {
+            int highestTile = this.getHighestTile(x, y - Constants.CHUNK_SIZE * 4, false);
+            //if (y > highestTile) return Constants.MAX_LIGHT;
+        }
+
         int highestLight = 0;
         boolean nonAir = false;
 

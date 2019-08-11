@@ -398,17 +398,6 @@ public class Chunk implements IChunk {
                     }
                 }
 
-                if (!this.isGenerating) {
-                    this.world.causeLightUpdate(this.x + setStateX, this.y + setStateY);
-                    this.world.notifyNeighborsOfChange(this.x + setStateX, this.y + setStateY, layer);
-
-                    if (this.world.isServer() && this.getStateInner(layer, setStateX, setStateY) == setState) {
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x + setStateX, this.y + setStateY, layer, this.world.getIdForState(setState)), this.x + setStateX, this.y + setStateY);
-                    }
-
-                    this.setDirty();
-                }
-
                 if (setTile != lastTile) {
                     if (layer.canHoldTileEntities() && setTile.canProvideTileEntity()) {
                         TileEntity tileEntity = setTile.provideTileEntity(this.world, this.x + setStateX, this.y + setStateY, layer);
@@ -418,6 +407,17 @@ public class Chunk implements IChunk {
                     }
 
                     setTile.onAdded(this.world, this.x + setStateX, this.y + setStateY, layer);
+                }
+
+                if (!this.isGenerating) {
+                    this.world.causeLightUpdate(this.x + setStateX, this.y + setStateY);
+                    this.world.notifyNeighborsOfChange(this.x + setStateX, this.y + setStateY, layer);
+
+                    if (this.world.isServer() && this.getStateInner(layer, setStateX, setStateY) == setState) {
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x + setStateX, this.y + setStateY, layer, this.world.getIdForState(setState)), this.x + setStateX, this.y + setStateY);
+                    }
+
+                    this.setDirty();
                 }
             }
         }

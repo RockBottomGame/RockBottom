@@ -48,6 +48,13 @@ public class TileLog extends TileBasic {
         }
     }
 
+
+    public float getTranslucentModifier(IWorld world, int x, int y, TileLayer layer, boolean skylight) {
+        if (world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT).isNatural())
+            return skylight ? 1F : layer == TileLayer.BACKGROUND ? 0.9f : 0.8f;
+        return super.getTranslucentModifier(world, x, y, layer, skylight);
+    }
+
     private void recursiveTreeCheck(IWorld world, int x, int y, TileLayer layer, int originalY, List<Pos2> alreadyChecked) {
         for (Direction direction : Direction.ADJACENT) {
             if (direction != Direction.DOWN) {
