@@ -41,7 +41,7 @@ public class TileEntityMortar extends TileEntity {
                     this.currentRecipe = null;
                     this.progress = 0;
 
-                    recipe.construct(this.inventory, this, 1);
+                    recipe.construct(player, this.inventory, this, 1);
                 } else {
                     this.sendToClients();
                 }

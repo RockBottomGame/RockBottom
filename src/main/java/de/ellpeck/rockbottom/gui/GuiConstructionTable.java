@@ -132,7 +132,7 @@ public class GuiConstructionTable extends GuiContainer {
     public void init(IGameInstance game) {
         super.init(game);
 
-        this.menu = new ComponentMenu(this, 7, 1, 6, PAGE_HEIGHT - 2, 1, 4, -2, 1, new BoundBox(7, 0, MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction_table.scroll_bar"));
+        this.menu = new ComponentMenu(this, 7, 1, 6, PAGE_HEIGHT - 2, 1, 4, -2, 1, new BoundBox(7, 0, 7 + MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction_table.scroll_bar"));
         this.components.add(this.menu);
 
         organise();
