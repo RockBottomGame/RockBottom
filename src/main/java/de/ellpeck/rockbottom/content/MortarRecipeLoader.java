@@ -31,7 +31,7 @@ public class MortarRecipeLoader implements IContentLoader<MortarRecipe> {
             if (MortarRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Mortar recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-				JsonObject object = ContentLoaderUtils.getReecipeObject(path + element.getAsString());
+				JsonObject object = ContentLoaderUtils.getRecipeObject(path + element.getAsString());
 
 				boolean isKnowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
 				int skillReward = object.has("skill") ? object.get("skill").getAsInt() : 0;

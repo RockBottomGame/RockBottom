@@ -61,7 +61,7 @@ public class DataManager implements IDataManager {
         Registries.PACKET_REGISTRY.register(21, PacketRespawn.class);
         Registries.PACKET_REGISTRY.register(22, PacketDrop.class);
         Registries.PACKET_REGISTRY.register(23, PacketChunkUnload.class);
-        Registries.PACKET_REGISTRY.register(24, PacketManualConstruction.class);
+        Registries.PACKET_REGISTRY.register(24, PacketConstruction.class);
         Registries.PACKET_REGISTRY.register(25, PacketDeath.class);
         Registries.PACKET_REGISTRY.register(26, PacketKnowledge.class);
         Registries.PACKET_REGISTRY.register(27, PacketRecipesToast.class);

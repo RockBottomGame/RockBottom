@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContentLoaderUtils {
-    public static JsonObject getReecipeObject(String path) throws IOException {
+    public static JsonObject getRecipeObject(String path) throws IOException {
         InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(path), Charsets.UTF_8);
         JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
         reader.close();

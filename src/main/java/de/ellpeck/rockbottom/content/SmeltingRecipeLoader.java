@@ -31,7 +31,7 @@ public class SmeltingRecipeLoader implements IContentLoader<SmeltingRecipe> {
             if (Registries.SMELTING_REGISTRY.get(resourceName) != null) {
                 RockBottomAPI.logger().info("Smelting recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-                JsonObject object = ContentLoaderUtils.getReecipeObject(path + element.getAsString());
+                JsonObject object = ContentLoaderUtils.getRecipeObject(path + element.getAsString());
 
                 int time = object.get("time").getAsInt();
                 ItemInstance output = ContentLoaderUtils.readItemInstance(object.get("output").getAsJsonObject());

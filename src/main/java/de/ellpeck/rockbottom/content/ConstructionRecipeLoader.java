@@ -37,7 +37,7 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
             if (ICompendiumRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-                JsonObject object = ContentLoaderUtils.getReecipeObject(path + element.getAsString());
+                JsonObject object = ContentLoaderUtils.getRecipeObject(path + element.getAsString());
 
                 String type = object.get("type").getAsString();
                 boolean knowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
