@@ -547,8 +547,8 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public List<ICompendiumRecipe> getRecipesToLearnFrom(Tile tile) {
-        List<ICompendiumRecipe> recipes = CriteriaBreakTile.getRecipesFor(tile);
+    public List<PlayerCompendiumRecipe> getRecipesToLearnFrom(Tile tile) {
+        List<PlayerCompendiumRecipe> recipes = CriteriaBreakTile.getRecipesFor(tile);
         return recipes == null ? null : Collections.unmodifiableList(recipes);
     }
 

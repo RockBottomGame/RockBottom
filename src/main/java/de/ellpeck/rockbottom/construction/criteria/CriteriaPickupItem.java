@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.ICriteria;
+import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -14,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CriteriaPickupItem implements ICriteria {
-    private static final Map<ResourceName, List<ICompendiumRecipe>> ITEMS_MAP = new HashMap<>();
-    private static final Map<String, List<ICompendiumRecipe>> RES_MAP = new HashMap<>();
+    private static final Map<ResourceName, List<PlayerCompendiumRecipe>> ITEMS_MAP = new HashMap<>();
+    private static final Map<String, List<PlayerCompendiumRecipe>> RES_MAP = new HashMap<>();
 
-    public static List<ICompendiumRecipe> getRecipesFor(Item item) {
+    public static List<PlayerCompendiumRecipe> getRecipesFor(Item item) {
         return ITEMS_MAP.get(item.getName());
     }
 
-    public static List<ICompendiumRecipe> getRecipesFor(String name) {
+    public static List<PlayerCompendiumRecipe> getRecipesFor(String name) {
         return RES_MAP.get(name);
     }
 
@@ -31,7 +32,7 @@ public class CriteriaPickupItem implements ICriteria {
     }
 
     @Override
-    public boolean deserialize(ICompendiumRecipe recipe, JsonObject params) {
+    public boolean deserialize(PlayerCompendiumRecipe recipe, JsonObject params) {
         if (!params.has("item")) return false;
         String name = params.get("item").getAsString();
         if (!Util.isResourceName(name)) {

@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.set.part.PartBoolean;
@@ -14,6 +15,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.construction.RecipeCache;
 
 import java.util.List;
 import java.util.Map;
@@ -49,7 +51,7 @@ public class ItemRecipeNote extends ItemBasic {
                     if (entry.getValue() instanceof PartBoolean) {
                         if (Util.isResourceName(entry.getKey())) {
                             ResourceName name = new ResourceName(entry.getKey());
-                            ICompendiumRecipe recipe = ICompendiumRecipe.forName(name);
+                            PlayerCompendiumRecipe recipe = RecipeCache.getPlayerRecipe(name);
                             if (recipe != null) {
                                 if (((PartBoolean) entry.getValue()).get()) {
                                     player.getKnowledge().teachRecipe(recipe);
