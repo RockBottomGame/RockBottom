@@ -31,18 +31,18 @@ public class MortarRecipeLoader implements IContentLoader<MortarRecipe> {
             if (MortarRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Mortar recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-				JsonObject object = ContentLoaderUtils.getReecipeObject(path + element.getAsString());
+				JsonObject object = getRecipeObject(game, path + element.getAsString());
 
 				boolean isKnowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
 				int skillReward = object.has("skill") ? object.get("skill").getAsInt() : 0;
 				int time = object.get("time").getAsInt();
-                List<ItemInstance> output = ContentLoaderUtils.readItemInstances(object.get("output").getAsJsonArray());
-                List<IUseInfo> input = ContentLoaderUtils.readUseInfos(object.get("input").getAsJsonArray());
+                List<ItemInstance> output = readItemInstances(object.get("output").getAsJsonArray());
+                List<IUseInfo> input = readUseInfos(object.get("input").getAsJsonArray());
 
                 MortarRecipe recipe = new MortarRecipe(resourceName, input, output, time, isKnowledge, skillReward).register();
 
                 if (object.has("criteria")) {
-                    ContentLoaderUtils.processCriteria(recipe, object.getAsJsonArray("criteria"));
+                    processCriteria(recipe, object.getAsJsonArray("criteria"));
                 }
 
                 RockBottomAPI.logger().config("Loaded mortar recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with time " + time + ", input " + input + " and output " + output + " with content pack " + pack.getName());

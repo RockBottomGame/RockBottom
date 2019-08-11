@@ -37,14 +37,14 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
             if (ICompendiumRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-                JsonObject object = ContentLoaderUtils.getReecipeObject(path + element.getAsString());
+                JsonObject object = getRecipeObject(game, path + element.getAsString());
 
                 String type = object.get("type").getAsString();
                 boolean knowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
                 float skill = object.has("skill") ? object.get("skill").getAsFloat() : 0;
 
-                List<IUseInfo> inputList = ContentLoaderUtils.readUseInfos(object.get("inputs").getAsJsonArray());
-                List<ItemInstance> outputList = ContentLoaderUtils.readItemInstances(object.get("outputs").getAsJsonArray());
+                List<IUseInfo> inputList = readUseInfos(object.get("inputs").getAsJsonArray());
+                List<ItemInstance> outputList = readItemInstances(object.get("outputs").getAsJsonArray());
 
                 List<ConstructionTool> tools = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
                 }
 
                 if (object.has("criteria")) {
-                    ContentLoaderUtils.processCriteria(recipe, object.getAsJsonArray("criteria"));
+                    processCriteria(recipe, object.getAsJsonArray("criteria"));
                 }
 
                 RockBottomAPI.logger().config("Loaded recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with type " + type + ", inputs " + inputList + " outputs " + outputList + " and skill " + skill + " with content pack " + pack.getName());

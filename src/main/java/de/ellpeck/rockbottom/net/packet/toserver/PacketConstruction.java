@@ -15,7 +15,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
-public class PacketManualConstruction implements IPacket {
+public class PacketConstruction implements IPacket {
 
     private UUID playerId;
     private ResourceName recipeName;
@@ -23,7 +23,7 @@ public class PacketManualConstruction implements IPacket {
     private Pos2 machinePos = null;
     private int amount;
 
-    public PacketManualConstruction(UUID playerId, ResourceName recipeName, TileEntity machine, int amount) {
+    public PacketConstruction(UUID playerId, ResourceName recipeName, TileEntity machine, int amount) {
         this.playerId = playerId;
         this.recipeName = recipeName;
         if (machine != null) {
@@ -33,7 +33,7 @@ public class PacketManualConstruction implements IPacket {
         this.amount = amount;
     }
 
-    public PacketManualConstruction() {
+    public PacketConstruction() {
     }
 
     @Override
