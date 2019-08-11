@@ -911,6 +911,12 @@ public abstract class AbstractWorld implements IWorld {
         return chunk;
     }
 
+    // TODO: this
+    protected void findHighestTile(int x, int startY) {
+        loadChunk(Util.toGridPos(x), Util.toGridPos(startY), false, true);
+
+    }
+
     @Override
     public void unloadChunk(IChunk chunk) {
         this.saveChunk(chunk, true);

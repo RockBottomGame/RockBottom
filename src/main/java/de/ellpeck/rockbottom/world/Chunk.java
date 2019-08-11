@@ -373,11 +373,16 @@ public class Chunk implements IChunk {
 
                         if (layer == TileLayer.MAIN) {
                             int actualX = getX() + setStateX;
-                            int realOld = getY() + heights[setStateX];
+                            boolean emptyCol = newHeight == 0 && !getStateInner(setStateX, 0).getTile().factorsIntoHeightMap(this.world, actualX, getY(), TileLayer.MAIN);
+                            int realOld = getY() + oldHeight;
                             int realNew = getY() + newHeight;
+                            if (emptyCol) {
+                                realNew = world.getChunkHeight(TileLayer.MAIN, actualX, getY() - Constants.CHUNK_SIZE + 1) + getY() - Constants.CHUNK_SIZE;
+                            }
                             int curHighest = world.getHighestTile(actualX, realNew, true);
                             if (realNew > curHighest || realOld == curHighest) world.setHighestTile(actualX, realNew);
                         }
+
                         heights[setStateX] = newHeight;
 
                         Set<Integer> uniqueHeights = new HashSet<>();
