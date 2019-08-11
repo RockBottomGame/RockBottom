@@ -40,7 +40,7 @@ public class ComponentHotbarSlot extends GuiComponent {
         if (this.isMouseOverPrioritized(game)) {
             ItemInstance instance = this.inv.get(this.id);
             if (instance != null) {
-                g.describeItem(game, manager, instance);
+                g.describeItem(game, manager, instance, true);
             }
         }
     }

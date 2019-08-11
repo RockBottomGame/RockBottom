@@ -40,8 +40,8 @@ public class ItemStartNote extends ItemBasic {
     }
 
     @Override
-    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced) {
-        super.describeItem(manager, instance, desc, isAdvanced);
+    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced, boolean isRealItem) {
+        super.describeItem(manager, instance, desc, isAdvanced, isRealItem);
         desc.add(manager.localize(ResourceName.intern("info.start_note")));
     }
 }
