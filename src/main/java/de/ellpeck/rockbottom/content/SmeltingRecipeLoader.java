@@ -31,11 +31,11 @@ public class SmeltingRecipeLoader implements IContentLoader<SmeltingRecipe> {
             if (Registries.SMELTING_REGISTRY.get(resourceName) != null) {
                 RockBottomAPI.logger().info("Smelting recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-                JsonObject object = ContentLoaderUtils.getRecipeObject(path + element.getAsString());
+                JsonObject object = getRecipeObject(game, path + element.getAsString());
 
                 int time = object.get("time").getAsInt();
-                ItemInstance output = ContentLoaderUtils.readItemInstance(object.get("output").getAsJsonObject());
-                IUseInfo input = ContentLoaderUtils.readUseInfo(object.get("input").getAsJsonObject());
+                ItemInstance output = readItemInstance(object.get("output").getAsJsonObject());
+                IUseInfo input = readUseInfo(object.get("input").getAsJsonObject());
 
                 new SmeltingRecipe(resourceName, input, output, time).register();
 
