@@ -230,9 +230,9 @@ public class WorldRenderer {
                                         this.random.setSeed(layer.getName().hashCode());
                                         g.addFilledRect(worldX - this.transX + x, -worldY - this.transY + 1F - chunk.getHeightInner(layer, x), 1F, 0.1F, Colors.random(this.random));
                                     }
-                                    int highest = world.getHighestTile(x, world.getChunkHeight(TileLayer.MAIN, worldX, worldY), false);
+                                    int highest = world.getHighestTile(worldX + x, world.getChunkHeight(TileLayer.MAIN, worldX, worldY), false);
                                     if (highest >= chunk.getY() && highest <= chunk.getY() + Constants.CHUNK_SIZE) {
-                                        g.addFilledRect(worldX - this.transX + x,  -highest - this.transY + 1F, 1F, 0.1F, Colors.YELLOW);
+                                        g.addFilledRect(worldX - this.transX + x,  -highest - this.transY + 1.1F, 1F, 0.1F, Colors.YELLOW);
                                     }
                                 }
 

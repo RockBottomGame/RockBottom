@@ -577,7 +577,6 @@ public abstract class AbstractWorld implements IWorld {
 
     @Override
     public void setHighestTile(int x, int y) {
-        System.out.println("Set highest tile at " + x + " to " + y);
         this.highestTileLookup.put(x, y);
     }
 

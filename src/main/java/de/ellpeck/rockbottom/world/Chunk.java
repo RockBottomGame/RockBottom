@@ -317,79 +317,68 @@ public class Chunk implements IChunk {
     }
 
     @Override
-    public void setStateInner(TileLayer layer, int x, int y, TileState state) {
-        SetStateEvent event = new SetStateEvent(this, state, layer, x, y);
+    public void setStateInner(TileLayer layer, int setStateX, int setStateY, TileState setState) {
+        SetStateEvent event = new SetStateEvent(this, setState, layer, setStateX, setStateY);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
-            state = event.state;
+            setState = event.state;
             layer = event.layer;
-            x = event.x;
-            y = event.y;
+            setStateX = event.x;
+            setStateY = event.y;
 
-            Preconditions.checkNotNull(state, "Tried setting null tile in chunk at " + this.gridX + ", " + this.gridY + '!');
+            Preconditions.checkNotNull(setState, "Tried setting null tile in chunk at " + this.gridX + ", " + this.gridY + '!');
             Preconditions.checkNotNull(layer, "Tried setting tile to null layer in chunk at " + this.gridX + ", " + this.gridY + '!');
 
-            TileState lastState = this.getStateInner(layer, x, y);
-            if (state != lastState) {
-                Tile tile = state.getTile();
-                Preconditions.checkArgument(layer.canTileBeInLayer(this.world, this.x + x, this.y + y, tile), "Tried setting tile " + state + " at " + (this.x + x) + ", " + (this.y + y) + " on layer " + layer + " that doesn't allow it!");
+            TileState lastState = this.getStateInner(layer, setStateX, setStateY);
+            if (setState != lastState) {
+                Tile setTile = setState.getTile();
+                Preconditions.checkArgument(layer.canTileBeInLayer(this.world, this.x + setStateX, this.y + setStateY, setTile), "Tried setting tile " + setState + " at " + (this.x + setStateX) + ", " + (this.y + setStateY) + " on layer " + layer + " that doesn't allow it!");
 
                 Tile lastTile = lastState.getTile();
-                boolean oldHeightMap = lastTile.factorsIntoHeightMap(this.world, this.x + x, this.y + y, layer);
+                boolean oldTileHadHeightmap = lastTile.factorsIntoHeightMap(this.world, this.x + setStateX, this.y + setStateY, layer);
 
-                if (tile != lastTile) {
-                    lastTile.onRemoved(this.world, this.x + x, this.y + y, layer);
+                if (setTile != lastTile) {
+                    lastTile.onRemoved(this.world, this.x + setStateX, this.y + setStateY, layer);
 
                     if (layer.canHoldTileEntities() && lastTile.canProvideTileEntity()) {
-                        this.removeTileEntity(layer, this.x + x, this.y + y);
+                        this.removeTileEntity(layer, this.x + setStateX, this.y + setStateY);
                     }
                 }
 
-                TileState[][] grid = this.getGrid(layer, !tile.isAir());
+                TileState[][] grid = this.getGrid(layer, !setTile.isAir());
                 if (grid != null) {
-                    grid[x][y] = state;
+                    grid[setStateX][setStateY] = setState;
                 }
 
-                if (tile != lastTile) {
-                    if (layer.canHoldTileEntities() && tile.canProvideTileEntity()) {
-                        TileEntity tileEntity = tile.provideTileEntity(this.world, this.x + x, this.y + y, layer);
-                        if (tileEntity != null) {
-                            this.addTileEntity(tileEntity);
-                        }
-                    }
-
-                    tile.onAdded(this.world, this.x + x, this.y + y, layer);
-                }
-
-                boolean newHeightMap = tile.factorsIntoHeightMap(this.world, this.x + x, this.y + y, layer);
-                if (newHeightMap != oldHeightMap) {
+                boolean newTileHasHeightmap = setTile.factorsIntoHeightMap(this.world, this.x + setStateX, this.y + setStateY, layer);
+                if (newTileHasHeightmap != oldTileHadHeightmap) {
                     int newHeight = 0;
 
-                    if (!newHeightMap) {
-                        for (int checkY = y - 1; checkY >= 0; checkY--) {
-                            if (this.getStateInner(layer, x, checkY).getTile().factorsIntoHeightMap(this.world, this.x + x, this.y + checkY, layer)) {
+                    if (!newTileHasHeightmap) {
+                        for (int checkY = setStateY - 1; checkY >= 0; checkY--) {
+                            TileState checkState = this.getStateInner(layer, setStateX, checkY);
+                            if (checkState.getTile().factorsIntoHeightMap(this.world, this.x + setStateX, this.y + checkY, layer)) {
                                 newHeight = checkY + 1;
                                 break;
                             }
                         }
                     } else {
-                        newHeight = y + 1;
+                        newHeight = setStateY + 1;
                     }
 
                     int[] heights = this.heights.computeIfAbsent(layer, l -> new int[Constants.CHUNK_SIZE]);
-                    if (heights[x] < newHeight || heights[x] == y + 1) {
 
-                        int actualX = getX() + x;
-                        int realOld = getY() + heights[x];
-                        int realNew = getY() + newHeight;
-                        int curHighest = world.getHighestTile(actualX, realNew, true);
-                        if (realNew > curHighest || realOld == curHighest) world.setHighestTile(actualX, realNew);
-                        else if (world.isPosLoaded(actualX, curHighest)) {
-                            TileState highestState = world.getState(TileLayer.MAIN, actualX, curHighest);
-                            if (!highestState.getTile().isFullTile()) world.setHighestTile(actualX, realNew);
+                    int oldHeight = heights[setStateX];
+
+                    if (oldHeight < newHeight || oldHeight == setStateY + 1) {
+
+                        if (layer == TileLayer.MAIN) {
+                            int actualX = getX() + setStateX;
+                            int realOld = getY() + heights[setStateX];
+                            int realNew = getY() + newHeight;
+                            int curHighest = world.getHighestTile(actualX, realNew, true);
+                            if (realNew > curHighest || realOld == curHighest) world.setHighestTile(actualX, realNew);
                         }
-                        //System.out.println(getX() + ":" + getGridX() + ":" + x);
-
-                        heights[x] = newHeight;
+                        heights[setStateX] = newHeight;
 
                         Set<Integer> uniqueHeights = new HashSet<>();
                         int totalHeight = 0;
@@ -405,14 +394,25 @@ public class Chunk implements IChunk {
                 }
 
                 if (!this.isGenerating) {
-                    this.world.causeLightUpdate(this.x + x, this.y + y);
-                    this.world.notifyNeighborsOfChange(this.x + x, this.y + y, layer);
+                    this.world.causeLightUpdate(this.x + setStateX, this.y + setStateY);
+                    this.world.notifyNeighborsOfChange(this.x + setStateX, this.y + setStateY, layer);
 
-                    if (this.world.isServer() && this.getStateInner(layer, x, y) == state) {
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x + x, this.y + y, layer, this.world.getIdForState(state)), this.x + x, this.y + y);
+                    if (this.world.isServer() && this.getStateInner(layer, setStateX, setStateY) == setState) {
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x + setStateX, this.y + setStateY, layer, this.world.getIdForState(setState)), this.x + setStateX, this.y + setStateY);
                     }
 
                     this.setDirty();
+                }
+
+                if (setTile != lastTile) {
+                    if (layer.canHoldTileEntities() && setTile.canProvideTileEntity()) {
+                        TileEntity tileEntity = setTile.provideTileEntity(this.world, this.x + setStateX, this.y + setStateY, layer);
+                        if (tileEntity != null) {
+                            this.addTileEntity(tileEntity);
+                        }
+                    }
+
+                    setTile.onAdded(this.world, this.x + setStateX, this.y + setStateY, layer);
                 }
             }
         }
