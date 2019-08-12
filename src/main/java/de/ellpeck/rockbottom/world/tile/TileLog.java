@@ -48,7 +48,6 @@ public class TileLog extends TileBasic {
         }
     }
 
-
     public float getTranslucentModifier(IWorld world, int x, int y, TileLayer layer, boolean skylight) {
         if (world.getState(layer, x, y).get(StaticTileProps.LOG_VARIANT).isNatural())
             return skylight ? 1F : layer == TileLayer.BACKGROUND ? 0.9f : 0.8f;

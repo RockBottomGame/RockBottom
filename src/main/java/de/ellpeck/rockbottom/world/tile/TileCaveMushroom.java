@@ -34,6 +34,10 @@ public class TileCaveMushroom extends TileMeta {
         return null;
     }
 
+    @Override
+    public int getLight(IWorld world, int x, int y, TileLayer layer) {
+        return 20;
+    }
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {

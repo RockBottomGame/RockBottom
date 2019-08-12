@@ -75,6 +75,12 @@ public class TileWoodDoor extends TileBasic {
         }
     }
 
+    public float getTranslucentModifier(IWorld world, int x, int y, TileLayer layer, boolean skylight) {
+        if (!world.getState(layer, x, y).get(StaticTileProps.OPEN))
+            return layer == TileLayer.BACKGROUND ? 0.9F : solidLightPropagation;
+        return super.getTranslucentModifier(world, x, y, layer, skylight);
+    }
+
     @Override
     public void doBreak(IWorld world, int x, int y, TileLayer layer, AbstractEntityPlayer breaker, boolean isRightTool, boolean allowDrop) {
         if (!world.isClient()) {
