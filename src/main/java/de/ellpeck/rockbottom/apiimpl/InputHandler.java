@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.util.Pair;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiChat;
 import de.ellpeck.rockbottom.gui.GuiCompendium;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InputHandler implements IInputHandler {
 
@@ -31,6 +33,7 @@ public class InputHandler implements IInputHandler {
     private final List<Integer> charsToProcess = new ArrayList<>();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
+    private final Set<Pair<Integer, Long>> pressedKeysTimed = new HashSet<>();
     private final Set<Integer> pressedMouse = new HashSet<>();
     private final int[] nextMouseWheelDelta = new int[2];
     private final int[] mouseWheelDelta = new int[2];
@@ -118,6 +121,7 @@ public class InputHandler implements IInputHandler {
         for (int key : this.keysToProcess) {
             if (!this.keyPressed(key)) {
                 this.pressedKeys.add(key);
+                this.pressedKeysTimed.add(Pair.of(key, System.currentTimeMillis()));
             }
         }
 
@@ -238,6 +242,15 @@ public class InputHandler implements IInputHandler {
     @Override
     public boolean wasKeyPressed(int key) {
         return this.pressedKeys.contains(key);
+    }
+
+    @Override
+    public boolean wasKeyPressedWithinTime(int key, int amount, long time) {
+        return this.pressedKeysTimed.stream()
+                .filter(pair -> pair.getLeft().equals(key))
+                .mapToLong(Pair::getRight)
+                .filter(value -> value >= System.currentTimeMillis() - time)
+                .count() >= amount;
     }
 
     @Override

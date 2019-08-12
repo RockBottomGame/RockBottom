@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
-import de.ellpeck.rockbottom.api.entity.player.Gamemode;
+import de.ellpeck.rockbottom.api.entity.player.GameMode;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
@@ -84,14 +84,14 @@ public class EntityPlayer extends AbstractEntityPlayer {
     private double lastStatY;
     private float skillPercentage;
     private int skillPoints;
-    private Gamemode gamemode;
+    private GameMode gameMode;
 
     public EntityPlayer(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
         this.setUniqueId(uniqueId);
         this.facing = Direction.RIGHT;
         this.design = design;
-        this.gamemode = Gamemode.SURVIVAL;
+        this.gameMode = GameMode.SURVIVAL;
         this.inv.addChangeCallback(this.invCallback);
     }
 
@@ -288,6 +288,10 @@ public class EntityPlayer extends AbstractEntityPlayer {
                 this.motionY += 0.15D;
             }
         }
+        
+        if(this.isFlying){
+            this.motionY = 0;
+        }
     }
 
     private void handleEntitySpawns(double thisX, double thisY) {
@@ -342,7 +346,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     @Override
     public void onGroundHit(double fallDistance) {
         if (!this.world.isClient()) {
-            if (!this.gamemode.isCreative() && fallDistance > 4) {
+            if (!this.gameMode.isCreative() && fallDistance > 4) {
                 this.takeDamage(Util.ceil((fallDistance - 4D) * 4.5D));
             }
         }
@@ -370,7 +374,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public boolean takeDamage(int amount) {
-        return !this.gamemode.isCreative() && super.takeDamage(amount);
+        return !this.gameMode.isCreative() && super.takeDamage(amount);
     }
 
     @Override
@@ -399,7 +403,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.statistics.save(set);
         set.addFloat("skill_percentage", this.skillPercentage);
         set.addInt("skill_points", this.skillPoints);
-        set.addEnum("gamemode", this.gamemode);
+        set.addEnum("game_mode", this.gameMode);
     }
 
     @Override
@@ -410,7 +414,9 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.statistics.load(set);
         this.skillPercentage = set.getFloat("skill_percentage");
         this.skillPoints = set.getInt("skill_points");
-        this.gamemode = set.getEnum("gamemode", Gamemode.class);
+        if(set.hasKey("game_mode")){
+            this.gameMode = set.getEnum("game_mode", GameMode.class);
+        }
     }
 
     @Override
@@ -719,10 +725,18 @@ public class EntityPlayer extends AbstractEntityPlayer {
                 this.motionY += this.getClimbSpeed();
                 this.facing = Direction.UP;
                 return true;
+            } else if(this.isFlying){
+                this.motionY += this.getMoveSpeed();
+                this.facing = Direction.UP;
+                return true;
             }
         } else if (type == 4) {
             if (this.canClimb) {
                 this.motionY -= this.getClimbSpeed();
+                this.facing = Direction.DOWN;
+                return true;
+            } else if(this.isFlying){
+                this.motionY -= this.getMoveSpeed();
                 this.facing = Direction.DOWN;
                 return true;
             }
@@ -789,13 +803,14 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
-    public Gamemode getGamemode() {
-        return gamemode;
+    public GameMode getGameMode() {
+        return gameMode;
     }
 
     @Override
-    public void setGamemode(Gamemode gamemode){
-        this.gamemode = gamemode;
+    public void setGameMode(GameMode gameMode){
+        this.gameMode = gameMode;
+        this.isFlying = false;
     }
 
 }

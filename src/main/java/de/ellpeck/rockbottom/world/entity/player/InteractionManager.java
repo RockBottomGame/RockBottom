@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.event.impl.LayerActionEvent.Type;
 import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolProperty;
@@ -21,10 +22,8 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.RockBottom;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketAttack;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketBreakTile;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketHotbar;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketInteract;
+import de.ellpeck.rockbottom.inventory.InventoryPlayer;
+import de.ellpeck.rockbottom.net.packet.toserver.*;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 
 import java.util.ArrayList;
@@ -192,6 +191,27 @@ public class InteractionManager implements IInteractionManager {
         }
         return false;
     }
+    
+    public static boolean pickup(AbstractEntityPlayer player, TileLayer layer, int x, int y){
+        Tile tile = player.world.getState(layer, x, y).getTile();
+        if(tile != null){
+            Item item = tile.getItem();
+            if(item == null){
+                List<ItemInstance> drops = tile.getDrops(player.world, x, y, layer, player);
+                if(!drops.isEmpty()){
+                    item = drops.get(0).getItem();
+                }
+            }
+            if(item != null){
+                Inventory inv = player.getInv();
+                if(inv.get(player.getSelectedSlot()) == null){
+                    inv.set(player.getSelectedSlot(), new ItemInstance(item, 1));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public void update(RockBottom game) {
         EntityPlayer player = game.getPlayer();
@@ -221,6 +241,12 @@ public class InteractionManager implements IInteractionManager {
 
                 if (Settings.KEY_JUMP.isDown()) {
                     player.move(2);
+                }
+
+                if(Settings.KEY_JUMP.wasPressedWithinTime(2, 200)){
+                    if(player.getGameMode().isCreative()){
+                        player.isFlying = !player.isFlying;
+                    }
                 }
 
                 double mousedTileX = game.getRenderer().getMousedTileX();
@@ -278,7 +304,7 @@ public class InteractionManager implements IInteractionManager {
 
                                             float progressAmount;
 
-                                            if(player.getGamemode().isCreative()){
+                                            if(player.getGameMode().isCreative()){
                                                 progressAmount = 1.0F;
                                             } else {
                                                 float hardness = tile.getHardness(player.world, x, y, layer);
@@ -325,6 +351,19 @@ public class InteractionManager implements IInteractionManager {
                                             RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY, false));
                                         }
 
+                                        this.interactCooldown = 10;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if(Settings.KEY_PICKUP.isDown()){
+                                if(player.getGameMode().isCreative()){
+                                    if(pickup(player, layer, x, y)){
+                                        if (RockBottomAPI.getNet().isClient()) {
+                                            RockBottomAPI.getNet().sendToServer(new PacketPickup(player.getUniqueId(), layer, x, y));
+                                        }
+    
                                         this.interactCooldown = 10;
                                         break;
                                     }
