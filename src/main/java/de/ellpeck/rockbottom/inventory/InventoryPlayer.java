@@ -1,18 +1,12 @@
 package de.ellpeck.rockbottom.inventory;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.construction.RecipeCache;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
-import de.ellpeck.rockbottom.api.toast.IToast;
-import de.ellpeck.rockbottom.api.toast.ToastItem;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketRecipesToast;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
@@ -45,11 +39,11 @@ public class InventoryPlayer extends Inventory {
             this.addChangeCallback((inv, slot) -> {
                 ItemInstance instance = inv.get(slot);
                 if (instance == null) return;
-                List<ICompendiumRecipe> allRecipes = CriteriaPickupItem.getRecipesFor(instance.getItem());
+                List<PlayerCompendiumRecipe> allRecipes = CriteriaPickupItem.getRecipesFor(instance.getItem());
                 if (allRecipes == null) allRecipes = new ArrayList<>();
                 List<String> names = RockBottomAPI.getResourceRegistry().getNames(instance);
                 for (String name : names) {
-                    List<ICompendiumRecipe> resRecipes = CriteriaPickupItem.getRecipesFor(name);
+                    List<PlayerCompendiumRecipe> resRecipes = CriteriaPickupItem.getRecipesFor(name);
                     if (resRecipes != null) allRecipes.addAll(resRecipes);
                 }
                 player.getKnowledge().teachRecipes(allRecipes);

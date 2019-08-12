@@ -37,38 +37,20 @@ public class TileEntityConstructionTable extends TileEntity implements IToolStat
         super.update(game);
     }
 
-    /**
-     * Damages the specified tool in the table if it is found
-     * @param tool Tool to be damaged
-     * @param simulate Should we only check for the existence of the tool?
-     * @return True if the tool exists
-     */
     @Override
-    public boolean damageTool(ConstructionTool tool, boolean simulate) {
-        ItemInstance toolItem;
-        if (tool != null && (toolItem = getTool(tool.tool)) != null) {
-            if (!simulate) {
-                toolItem.getItem().takeDamage(toolItem, tool.usage);
-            }
-            return true;
-        }
-        return tool == null || tool.tool == null;
-    }
-
-    @Override
-    public ItemInstance getTool(Item tool) {
+    public int getToolSlot(Item tool) {
         if (tool == GameContent.ITEM_CHISEL) {
-            return chiselSlot.get(0);
+            return 0;
         } else if (tool == GameContent.ITEM_HAMMER) {
-            return hammerSlot.get(0);
+            return 1;
         } else if (tool == GameContent.ITEM_SAW) {
-            return sawSlot.get(0);
+            return 2;
         } else if (tool == GameContent.ITEM_MALLET) {
-            return malletSlot.get(0);
+            return 3;
         } else if (tool == GameContent.ITEM_WRENCH) {
-            return wrenchSlot.get(0);
+            return 4;
         }
-        return null;
+        return -1;
     }
 
     @Override

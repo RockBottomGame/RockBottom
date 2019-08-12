@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.tile.entity;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.construction.compendium.mortar.MortarRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
+import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.entity.TileInventory;
@@ -23,9 +24,11 @@ public class TileEntityMortar extends TileEntity {
         this.inventory.addChangeCallback((inv, slot) -> this.sendToClients());
     }
 
-    public void doPestleProgress() {
+    public void doPestleProgress(AbstractEntityPlayer player) {
         if (!this.world.isClient()) {
             MortarRecipe recipe = MortarRecipe.getRecipe(this.inventory);
+
+            if (recipe != null && !recipe.isKnown(player) && this.currentRecipe == null) return;
 
             if (recipe != this.currentRecipe) {
                 this.currentRecipe = recipe;
@@ -38,7 +41,7 @@ public class TileEntityMortar extends TileEntity {
                     this.currentRecipe = null;
                     this.progress = 0;
 
-                    recipe.construct(this.inventory, this, 1);
+                    recipe.construct(player, this.inventory, this, 1);
                 } else {
                     this.sendToClients();
                 }

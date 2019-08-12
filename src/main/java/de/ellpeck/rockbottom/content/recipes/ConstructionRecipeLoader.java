@@ -1,6 +1,5 @@
 package de.ellpeck.rockbottom.content.recipes;
 
-import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,21 +9,15 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.construction.KnowledgeConstructionRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.ICriteria;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
-import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
-import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.content.ContentManager;
 
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,21 +35,17 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
     @Override
     public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
         if (!this.disabled.contains(resourceName)) {
-            if (ConstructionRecipe.forName(resourceName) != null) {
+            if (ICompendiumRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-                String resPath = path + element.getAsString();
+                JsonObject object = getRecipeObject(game, path + element.getAsString());
 
-                InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
-                JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
-                reader.close();
-
-                JsonObject object = recipeElement.getAsJsonObject();
                 String type = object.get("type").getAsString();
-                float skill = object.get("skill").getAsFloat();
+                boolean knowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
+                float skill = object.has("skill") ? object.get("skill").getAsFloat() : 0;
 
-                List<IUseInfo> inputList = new ArrayList<>();
-                List<ItemInstance> outputList = new ArrayList<>();
+                List<IUseInfo> inputList = readUseInfos(object.get("inputs").getAsJsonArray());
+                List<ItemInstance> outputList = readItemInstances(object.get("outputs").getAsJsonArray());
 
                 List<ConstructionTool> tools = new ArrayList<>();
 
@@ -75,59 +64,17 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
                     }
                 }
 
-                JsonArray outputs = object.get("outputs").getAsJsonArray();
-                for (JsonElement output : outputs) {
-                    JsonObject out = output.getAsJsonObject();
-
-                    Item item = Registries.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
-                    int amount = out.has("amount") ? out.get("amount").getAsInt() : 1;
-                    int meta = out.has("meta") ? out.get("meta").getAsInt() : 0;
-
-                    outputList.add(new ItemInstance(item, amount, meta));
-                }
-
-                JsonArray inputs = object.get("inputs").getAsJsonArray();
-                for (JsonElement input : inputs) {
-                    JsonObject in = input.getAsJsonObject();
-
-                    String name = in.get("name").getAsString();
-                    int amount = in.has("amount") ? in.get("amount").getAsInt() : 1;
-
-                    if (Util.isResourceName(name)) {
-                        int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                        inputList.add(new ItemUseInfo(Registries.ITEM_REGISTRY.get(new ResourceName(name)), amount, meta));
-                    } else {
-                        inputList.add(new ResUseInfo(name, amount));
-                    }
-                }
-
                 ConstructionRecipe recipe;
                 if ("manual".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
-                } else if ("manual_knowledge".equals(type)) {
-                    recipe = new KnowledgeConstructionRecipe(resourceName, null, inputList, outputList, skill).registerManual();
+                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, knowledge, skill).registerManual();
                 } else if ("construction_table".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
-                } else if ("construction_table_knowledge".equals(type)) {
-                    recipe = new KnowledgeConstructionRecipe(resourceName, tools, inputList, outputList, skill).registerConstructionTable();
+                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, knowledge, skill).registerConstructionTable();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }
 
                 if (object.has("criteria")) {
-                    JsonArray ca = object.getAsJsonArray("criteria");
-                    for (JsonElement ce : ca) {
-                        JsonObject criteria = ce.getAsJsonObject();
-                        String cname = criteria.get("name").getAsString();
-                        ICriteria icriteria = Registries.CRITERIA_REGISTRY.get(new ResourceName(cname));
-                        if (icriteria == null) {
-                            throw new IllegalArgumentException("Invalid criteria " + cname + " for recipe " + resourceName);
-                        }
-                        JsonObject params = criteria.getAsJsonObject("params");
-                        if (!icriteria.deserialize(recipe, params)) {
-                            RockBottomAPI.logger().warning("Failed to deserialize criteria " + cname + " for recipe " + resourceName);
-                        }
-                    }
+                    processCriteria(recipe, object.getAsJsonArray("criteria"));
                 }
 
                 RockBottomAPI.logger().config("Loaded recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with type " + type + ", inputs " + inputList + " outputs " + outputList + " and skill " + skill + " with content pack " + pack.getName());

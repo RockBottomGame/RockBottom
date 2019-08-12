@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.entity.player;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.entity.Entity;
@@ -253,7 +254,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     }
                 }
 
-                List<ICompendiumRecipe> depthRecipes = CriteriaReachDepth.getRecipesFor((int)y);
+                List<PlayerCompendiumRecipe> depthRecipes = CriteriaReachDepth.getRecipesFor((int)y);
                 if (depthRecipes != null) {
                     this.getKnowledge().teachRecipes(depthRecipes);
                 }

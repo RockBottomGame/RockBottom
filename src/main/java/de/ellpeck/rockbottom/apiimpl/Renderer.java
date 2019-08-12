@@ -470,11 +470,11 @@ public class Renderer implements IRenderer {
     }
 
     @Override
-    public void describeItem(IGameInstance game, IAssetManager manager, ItemInstance instance) {
+    public void describeItem(IGameInstance game, IAssetManager manager, ItemInstance instance, boolean isRealItem) {
         boolean advanced = Settings.KEY_ADVANCED_INFO.isDown();
 
         List<String> desc = new ArrayList<>();
-        instance.getItem().describeItem(manager, instance, desc, advanced);
+        instance.getItem().describeItem(manager, instance, desc, advanced, isRealItem);
 
         if (this.isItemInfoDebug()) {
             desc.add("");

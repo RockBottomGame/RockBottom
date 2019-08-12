@@ -1,28 +1,18 @@
 package de.ellpeck.rockbottom.content.recipes;
 
-import com.google.common.base.Charsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.mortar.MortarRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
-import de.ellpeck.rockbottom.api.construction.resource.ItemUseInfo;
-import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
-import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
-import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
-import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.content.ContentManager;
 
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,49 +32,19 @@ public class MortarRecipeLoader implements IContentLoader<MortarRecipe> {
             if (MortarRecipe.forName(resourceName) != null) {
                 RockBottomAPI.logger().info("Mortar recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());
             } else {
-                String resPath = path + element.getAsString();
+				JsonObject object = getRecipeObject(game, path + element.getAsString());
 
-                InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(resPath), Charsets.UTF_8);
-                JsonElement recipeElement = Util.JSON_PARSER.parse(reader);
-                reader.close();
-
-
-				JsonObject object = recipeElement.getAsJsonObject();
-				int skillReward = 0;
-				if (object.has("skill")) {
-					object.get("skill").getAsInt();
-				}
+				boolean isKnowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
+				int skillReward = object.has("skill") ? object.get("skill").getAsInt() : 0;
 				int time = object.get("time").getAsInt();
+                List<ItemInstance> output = readItemInstances(object.get("output").getAsJsonArray());
+                List<IUseInfo> input = readUseInfos(object.get("input").getAsJsonArray());
 
-                List<ItemInstance> output = new ArrayList<>();
-                for (JsonElement e : object.get("output").getAsJsonArray()) {
-                    JsonObject out = e.getAsJsonObject();
-                    Item outItem = Registries.ITEM_REGISTRY.get(new ResourceName(out.get("name").getAsString()));
-                    int outAmount = out.has("amount") ? out.get("amount").getAsInt() : 1;
-                    int outMeta = out.has("meta") ? out.get("meta").getAsInt() : 0;
+                MortarRecipe recipe = new MortarRecipe(resourceName, input, output, time, isKnowledge, skillReward).register();
 
-                    ItemInstance instance = new ItemInstance(outItem, outAmount, outMeta);
-                    if (out.has("data")) {
-                        ModBasedDataSet set = instance.getOrCreateAdditionalData();
-                        RockBottomAPI.getApiHandler().readDataSet(out.get("data").getAsJsonObject(), set);
-                    }
-                    output.add(instance);
+                if (object.has("criteria")) {
+                    processCriteria(recipe, object.getAsJsonArray("criteria"));
                 }
-
-                List<IUseInfo> input = new ArrayList<>();
-                for (JsonElement e : object.get("input").getAsJsonArray()) {
-                    JsonObject in = e.getAsJsonObject();
-                    String name = in.get("name").getAsString();
-
-                    if (Util.isResourceName(name)) {
-                        int meta = in.has("meta") ? in.get("meta").getAsInt() : 0;
-                        input.add(new ItemUseInfo(Registries.ITEM_REGISTRY.get(new ResourceName(name)), 1, meta));
-                    } else {
-                        input.add(new ResUseInfo(name));
-                    }
-                }
-
-                new MortarRecipe(resourceName, input, output, time, skillReward).register();
 
                 RockBottomAPI.logger().config("Loaded mortar recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + " with time " + time + ", input " + input + " and output " + output + " with content pack " + pack.getName());
             }
