@@ -180,6 +180,10 @@ public class GuiManager implements IGuiManager {
         } else {
             for (int i = 0; i < this.onScreenComponents.size(); i++) {
                 GuiComponent component = this.onScreenComponents.get(i);
+                // Check if the player is in creative mode, to not render the health bar if so
+                if(player != null && player.getGameMode().isCreative() && component instanceof ComponentHealth){
+                    continue;
+                }
                 if (RockBottomAPI.getEventHandler().fireEvent(new ComponentRenderEvent(null, i, component)) != EventResult.CANCELLED) {
                     component.render(game, manager, g, component.getRenderX(), component.getRenderY());
                 }
