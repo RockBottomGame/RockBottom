@@ -77,7 +77,7 @@ public class WorldRenderer {
         this.addClouds(Util.RANDOM.nextInt(5) + 3, true);
     }
 
-    public void calcCameraValues(IRenderer g) {
+    public void calcCameraValues(IAssetManager m, IRenderer g) {
         double width = g.getWidthInWorld();
         double height = g.getHeightInWorld();
 
@@ -99,10 +99,21 @@ public class WorldRenderer {
         this.minY = Util.floor(-this.transY - g.getHeightInWorld() + 1) + offset;
         this.maxX = Util.ceil(this.transX + g.getWidthInWorld()) - offset;
         this.maxY = Util.ceil(-this.transY + 1) - offset;
+
+
+        IShaderProgram breakShader = m.getShaderProgram(IShaderProgram.BREAK_SHADER);
+        breakShader.bind();
+        breakShader.setUniform("camera", this.transX, this.transY, g.getWorldScale());
+        breakShader.unbind();
+
+        IShaderProgram worldShader = m.getShaderProgram(IShaderProgram.WORLD_SHADER);
+        worldShader.bind();
+        worldShader.setUniform("camera", this.transX, this.transY, g.getWorldScale());
+
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, AbstractWorld world, EntityPlayer player, InteractionManager input) {
-        float scale = g.getWorldScale();
+        float scale = 1;
 
         this.renderSky(game, manager, g, world, player, g.getWidthInWorld(), g.getHeightInWorld());
 
@@ -165,16 +176,16 @@ public class WorldRenderer {
                             }
                         }
 
-                        renderer.render(game, manager, g, world, entity, (float) x - this.transX, (float) -y - this.transY + 1F, color);
+                        renderer.render(game, manager, g, world, entity, (float) x, (float) -y + 1F, color);
 
                         if (g.isBoundBoxDebug()) {
-                            g.addFilledRect((float) x - this.transX - 0.1F, (float) -y - this.transY + 0.9F, 0.2F, 0.2F, Colors.GREEN);
+                            g.addFilledRect((float) x - 0.1F, (float) -y + 0.9F, 0.2F, 0.2F, Colors.GREEN);
 
                             BoundBox box = entity.currentBounds;
-                            g.addEmptyRect((float) box.getMinX() - this.transX, (float) -box.getMaxY() - this.transY + 1F, (float) box.getWidth(), (float) box.getHeight(), 0.1F, Colors.RED);
+                            g.addEmptyRect((float) box.getMinX(), (float) -box.getMaxY() - this.transY + 1F, (float) box.getWidth(), (float) box.getHeight(), 0.1F, Colors.RED);
 
                             BoundBox boxMotion = box.copy().add(entity.motionX, entity.motionY);
-                            g.addEmptyRect((float) boxMotion.getMinX() - this.transX, (float) -boxMotion.getMaxY() - this.transY + 1F, (float) boxMotion.getWidth(), (float) boxMotion.getHeight(), 0.05F, Colors.YELLOW);
+                            g.addEmptyRect((float) boxMotion.getMinX(), (float) -boxMotion.getMaxY() + 1F, (float) boxMotion.getWidth(), (float) boxMotion.getHeight(), 0.05F, Colors.YELLOW);
                         }
                     }
                 }
@@ -189,7 +200,7 @@ public class WorldRenderer {
 
         players.forEach(entity -> {
             if (entity.shouldRender() && !entity.isLocalPlayer()) {
-                manager.getFont().drawCenteredString((float) entity.getLerpedX() - this.transX, (float) -entity.getLerpedY() - this.transY - 0.75F, entity.getChatColorFormat() + entity.getName(), 0.015F, false);
+                manager.getFont().drawCenteredString((float) entity.getLerpedX(), (float) -entity.getLerpedY() - 0.75F, entity.getChatColorFormat() + entity.getName(), 0.015F, false);
             }
         });
 
@@ -219,7 +230,7 @@ public class WorldRenderer {
                         int worldY = Util.toWorldPos(gridY);
 
                         if (chunkDebug) {
-                            g.addEmptyRect(worldX - this.transX, -worldY - this.transY + 1F - Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 0.1F, Colors.GREEN);
+                            g.addEmptyRect(worldX, -worldY + 1F - Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 0.1F, Colors.GREEN);
                         }
 
                         if (heightDebug || biomeDebug) {
@@ -228,11 +239,11 @@ public class WorldRenderer {
                                 if (heightDebug) {
                                     for (TileLayer layer : TileLayer.getLayersByRenderPrio()) {
                                         this.random.setSeed(layer.getName().hashCode());
-                                        g.addFilledRect(worldX - this.transX + x, -worldY - this.transY + 1F - chunk.getHeightInner(layer, x), 1F, 0.1F, Colors.random(this.random));
+                                        g.addFilledRect(worldX + x, -worldY + 1F - chunk.getHeightInner(layer, x), 1F, 0.1F, Colors.random(this.random));
                                     }
                                     int highest = world.getHighestTile(worldX + x, world.getChunkHeight(TileLayer.MAIN, worldX, worldY), false);
                                     if (highest >= chunk.getY() && highest <= chunk.getY() + Constants.CHUNK_SIZE) {
-                                        g.addFilledRect(worldX - this.transX + x,  -highest - this.transY + 1.1F, 1F, 0.1F, Colors.YELLOW);
+                                        g.addFilledRect(worldX + x,  -highest + 1.1F, 1F, 0.1F, Colors.YELLOW);
                                     }
                                 }
 
@@ -240,10 +251,10 @@ public class WorldRenderer {
                                     for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
                                         if (!world.isClient()) {
                                             this.random.setSeed(chunk.getExpectedBiomeLevel(worldX + x, worldY + y).getName().hashCode());
-                                            g.addFilledRect(worldX - this.transX + x + 0.35F, -worldY - this.transY - y + 0.35F, 0.3F, 0.3F, Colors.random(this.random));
+                                            g.addFilledRect(worldX + x + 0.35F, -worldY - y + 0.35F, 0.3F, 0.3F, Colors.random(this.random));
                                         }
                                         this.random.setSeed(chunk.getBiomeInner(x, y).getName().hashCode());
-                                        g.addEmptyRect(worldX - this.transX + x + 0.25F, -worldY - this.transY - y + 0.25F, 0.5F, 0.5F, 0.1F, Colors.random(this.random));
+                                        g.addEmptyRect(worldX + x + 0.25F, -worldY - y + 0.25F, 0.5F, 0.5F, 0.1F, Colors.random(this.random));
                                     }
                                 }
                             }
@@ -325,11 +336,11 @@ public class WorldRenderer {
         }
 
         if (renderNormal) {
-            renderer.render(game, manager, g, world, tile, state, x, y, layer, (x - this.transX) * scale, (-y - this.transY) * scale, scale, color);
+            renderer.render(game, manager, g, world, tile, state, x, y, layer, x, -y, scale, color);
         }
 
         if (renderForeground) {
-            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, (x - this.transX) * scale, (-y - this.transY) * scale, scale, color);
+            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, x, y, scale, color);
         }
 
         if (isBreakTile) {

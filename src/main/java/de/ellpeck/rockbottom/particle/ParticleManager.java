@@ -40,7 +40,7 @@ public class ParticleManager implements IParticleManager {
             double y = particle.getY();
 
             int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
-            particle.render(game, manager, g, (float) x - transX, (float) -y - transY + 1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
+            particle.render(game, manager, g, (float) x, (float) -y + 1F, RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN));
         });
     }
 

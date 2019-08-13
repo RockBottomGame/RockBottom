@@ -147,7 +147,7 @@ public class Texture implements ITexture {
 
     @Override
     public void draw(float x, float y, float scale) {
-        this.draw(x, y, this.renderWidth * scale, this.renderHeight * scale);
+        this.draw(x, y, this.renderWidth, this.renderHeight);
     }
 
     @Override
