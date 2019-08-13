@@ -113,7 +113,6 @@ public class WorldRenderer {
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, AbstractWorld world, EntityPlayer player, InteractionManager input) {
-        float scale = 1;
 
         this.renderSky(game, manager, g, world, player, g.getWidthInWorld(), g.getHeightInWorld());
 
@@ -124,7 +123,7 @@ public class WorldRenderer {
             for (int gridX = this.minChunkX; gridX <= this.maxChunkX; gridX++) {
                 if (world.isChunkLoaded(gridX, gridY)) {
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
-                    this.renderChunk(game, manager, g, input, world, chunk, scale, chunk.getLoadedLayers(), false);
+                    this.renderChunk(game, manager, g, input, world, chunk, chunk.getLoadedLayers(), false);
 
                     for (Entity entity : chunk.getAllEntities()) {
                         entities.add(entity);
@@ -137,8 +136,6 @@ public class WorldRenderer {
             }
         }
         g.setProgram(null);
-
-        g.setScale(scale, scale);
 
         entities.stream().sorted(Comparator.comparingInt(Entity::getRenderPriority)).forEach(entity -> {
             if (entity.shouldRender()) {
@@ -182,7 +179,7 @@ public class WorldRenderer {
                             g.addFilledRect((float) x - 0.1F, (float) -y + 0.9F, 0.2F, 0.2F, Colors.GREEN);
 
                             BoundBox box = entity.currentBounds;
-                            g.addEmptyRect((float) box.getMinX(), (float) -box.getMaxY() - this.transY + 1F, (float) box.getWidth(), (float) box.getHeight(), 0.1F, Colors.RED);
+                            g.addEmptyRect((float) box.getMinX(), (float) -box.getMaxY() + 1F, (float) box.getWidth(), (float) box.getHeight(), 0.1F, Colors.RED);
 
                             BoundBox boxMotion = box.copy().add(entity.motionX, entity.motionY);
                             g.addEmptyRect((float) boxMotion.getMinX(), (float) -boxMotion.getMaxY() + 1F, (float) boxMotion.getWidth(), (float) boxMotion.getHeight(), 0.05F, Colors.YELLOW);
@@ -193,10 +190,10 @@ public class WorldRenderer {
         });
         g.setProgram(null);
 
-        particles.render(game, manager, g, world, this.transX, this.transY);
+        particles.render(game, manager, g, world);
         g.setProgram(null);
 
-        RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player, this.transX, this.transY));
+        RockBottomAPI.getEventHandler().fireEvent(new WorldRenderEvent(game, manager, g, world, player));
 
         players.forEach(entity -> {
             if (entity.shouldRender() && !entity.isLocalPlayer()) {
@@ -204,13 +201,11 @@ public class WorldRenderer {
             }
         });
 
-        g.setScale(1F, 1F);
-
         for (int gridY = this.minChunkY; gridY <= this.maxChunkY; gridY++) {
             for (int gridX = this.minChunkX; gridX <= this.maxChunkX; gridX++) {
                 if (world.isChunkLoaded(gridX, gridY)) {
                     IChunk chunk = world.getChunkFromGridCoords(gridX, gridY);
-                    this.renderChunk(game, manager, g, input, world, chunk, scale, chunk.getLoadedLayers(), true);
+                    this.renderChunk(game, manager, g, input, world, chunk, chunk.getLoadedLayers(), true);
                 }
             }
         }
@@ -221,7 +216,6 @@ public class WorldRenderer {
         boolean biomeDebug = g.isBiomeDebug();
 
         if (chunkDebug || heightDebug || biomeDebug) {
-            g.setScale(scale, scale);
 
             for (int gridX = this.minChunkX; gridX <= this.maxChunkX; gridX++) {
                 for (int gridY = this.minChunkY; gridY <= this.maxChunkY; gridY++) {
@@ -262,12 +256,10 @@ public class WorldRenderer {
                     }
                 }
             }
-
-            g.setScale(1F, 1F);
         }
     }
 
-    private void renderChunk(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, float scale, List<TileLayer> layers, boolean foreground) {
+    private void renderChunk(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, List<TileLayer> layers, boolean foreground) {
         int chunkX = chunk.getX();
         int chunkY = chunk.getY();
 
@@ -301,13 +293,13 @@ public class WorldRenderer {
                         }
                     }
 
-                    this.renderLayer(game, manager, g, input, world, chunk, layer, x, y, scale, color, foreground);
+                    this.renderLayer(game, manager, g, input, world, chunk, layer, x, y, color, foreground);
                 }
             }
         }
     }
 
-    private void renderLayer(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, float scale, int[] color, boolean foreground) {
+    private void renderLayer(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, IChunk chunk, TileLayer layer, int x, int y, int[] color, boolean foreground) {
         if (layer.isVisible(game, game.getPlayer(), chunk, x, y, foreground)) {
             TileState state = chunk.getState(layer, x, y);
             Tile tile = state.getTile();
@@ -316,15 +308,15 @@ public class WorldRenderer {
 
             if (renderer != null) {
                 if (foreground) {
-                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, scale, color, forcesForeground, true);
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, color, forcesForeground, true);
                 } else if (!forcesForeground) {
-                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, scale, color, true, false);
+                    this.renderTile(game, manager, g, input, world, layer, state, tile, renderer, x, y, color, true, false);
                 }
             }
         }
     }
 
-    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, int x, int y, float scale, int[] color, boolean renderNormal, boolean renderForeground) {
+    private void renderTile(IGameInstance game, IAssetManager manager, IRenderer g, InteractionManager input, IWorld world, TileLayer layer, TileState state, Tile tile, ITileRenderer renderer, int x, int y, int[] color, boolean renderNormal, boolean renderForeground) {
         boolean isBreakTile = input.breakingLayer == layer && input.breakProgress > 0 && x == input.breakTileX && y == input.breakTileY;
 
         if (isBreakTile) {
@@ -336,11 +328,11 @@ public class WorldRenderer {
         }
 
         if (renderNormal) {
-            renderer.render(game, manager, g, world, tile, state, x, y, layer, x, -y, scale, color);
+            renderer.render(game, manager, g, world, tile, state, x, y, layer, x, -y, 1, color);
         }
 
         if (renderForeground) {
-            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, x, y, scale, color);
+            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, x, y, 1, color);
         }
 
         if (isBreakTile) {
@@ -360,11 +352,7 @@ public class WorldRenderer {
         int skyColor = SKY_COLORS[skyLight];
         g.backgroundColor(skyColor);
 
-        float scale = g.getWorldScale();
-        g.setScale(scale, scale);
-
         int time = world.getCurrentTime();
-        float worldScale = game.getSettings().renderScale;
 
         float starAlpha = 1F - Math.min(1F, skylightMod + 0.5F);
         if (starAlpha <= 0F) {
@@ -387,8 +375,8 @@ public class WorldRenderer {
             }
         }
 
-        double radiusX = 10D / worldScale;
-        double radiusY = 7D / worldScale;
+        double radiusX = 10D;
+        double radiusY = 7D;
 
         double sunAngle = (time / (double) Constants.TIME_PER_DAY) * 360D + 180D;
         double sunRads = Math.toRadians(sunAngle);
@@ -406,8 +394,6 @@ public class WorldRenderer {
         for (Cloud cloud : this.clouds) {
             cloud.render(manager, width, height, skylightMod, yOff);
         }
-
-        g.setScale(1F, 1F);
     }
 
     public void update(IWorld world, IParticleManager manager) {

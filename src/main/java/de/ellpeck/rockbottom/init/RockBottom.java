@@ -561,7 +561,7 @@ public class RockBottom extends AbstractGame {
         guiShader.bind();
         guiShader.setUniform("scale", scale, scale);
 
-        this.renderer.setScale(scale, scale);
+        this.renderer.setScale(1, 1);
 
         this.guiManager.render(this, this.assetManager, this.renderer, this.player);
         this.toaster.render(this, this.assetManager, this.renderer);

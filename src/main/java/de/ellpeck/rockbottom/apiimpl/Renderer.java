@@ -174,10 +174,10 @@ public class Renderer implements IRenderer {
         }
 
         if (this.scaleX != 1F) {
-            //theX *= this.scaleX;
+            theX *= this.scaleX;
         }
         if (this.scaleY != 1F) {
-            //theY *= this.scaleY;
+            theY *= this.scaleY;
         }
 
         this.program.getProcessor().addVertex(this, theX, theY, color, u, v);

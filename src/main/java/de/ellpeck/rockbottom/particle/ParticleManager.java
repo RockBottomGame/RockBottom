@@ -31,7 +31,7 @@ public class ParticleManager implements IParticleManager {
         }
     }
 
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, float transX, float transY) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world) {
         this.particles.forEach(particle -> {
             ResourceName program = particle.getRenderShader(game, manager, g);
             g.setProgram(program == null ? null : manager.getShaderProgram(program));
