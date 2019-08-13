@@ -546,7 +546,6 @@ public class RockBottom extends AbstractGame {
 
     protected void render() {
         this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.WORLD_SHADER));
-        this.worldRenderer.calcCameraValues(this.assetManager, this.renderer);
         this.renderer.begin();
 
         if (this.player != null) {
@@ -554,19 +553,10 @@ public class RockBottom extends AbstractGame {
         }
 
         this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.GUI_SHADER));
-
-        float scale = this.renderer.getGuiScale();
-
-        IShaderProgram guiShader = assetManager.getShaderProgram(IShaderProgram.GUI_SHADER);
-        guiShader.bind();
-        guiShader.setUniform("scale", scale, scale);
-
-        this.renderer.setScale(1, 1);
+        this.assetManager.getShaderProgram(IShaderProgram.GUI_SHADER).bind().setUniform("scale", this.renderer.getGuiScale());
 
         this.guiManager.render(this, this.assetManager, this.renderer, this.player);
         this.toaster.render(this, this.assetManager, this.renderer);
-
-        this.renderer.setScale(1F, 1F);
 
         if (this.renderer.isDebug()) {
             DebugRenderer.render(this, this.assetManager, this.getPlayerWorld(), this.player, this.renderer);

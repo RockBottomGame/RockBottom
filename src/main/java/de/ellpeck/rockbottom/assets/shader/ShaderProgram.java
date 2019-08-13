@@ -80,7 +80,7 @@ public class ShaderProgram implements IShaderProgram {
     }
 
     @Override
-    public void bind() {
+    public IShaderProgram bind() {
         if (boundProgram != this.id) {
             boundProgram = this.id;
             boundProgramRef = this;
@@ -92,6 +92,7 @@ public class ShaderProgram implements IShaderProgram {
                 GL20.glEnableVertexAttribArray(i);
             }
         }
+        return this;
     }
 
     @Override
@@ -116,35 +117,40 @@ public class ShaderProgram implements IShaderProgram {
     }
 
     @Override
-    public void setUniform(String name, Matrix4f matrix) {
+    public IShaderProgram setUniform(String name, Matrix4f matrix) {
         int location = this.getUniformLocation(name);
         MemoryStack stack = MemoryStack.stackPush();
         GL20.glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(4 * 4)));
         stack.pop();
+        return this;
     }
 
     @Override
-    public void setUniform(String name, int value) {
+    public IShaderProgram setUniform(String name, int value) {
         GL20.glUniform1i(this.getUniformLocation(name), value);
+        return this;
     }
 
     @Override
-    public void setUniform(String name, float f) {
+    public IShaderProgram setUniform(String name, float f) {
         GL20.glUniform1f(this.getUniformLocation(name), f);
+        return this;
     }
 
     @Override
-    public void setUniform(String name, float x, float y) {
+    public IShaderProgram setUniform(String name, float x, float y) {
         GL20.glUniform2f(this.getUniformLocation(name), x, y);
+        return this;
     }
 
     @Override
-    public void setUniform(String name, float x, float y, float z) {
+    public IShaderProgram setUniform(String name, float x, float y, float z) {
         GL20.glUniform3f(this.getUniformLocation(name), x, y, z);
+        return this;
     }
 
     @Override
-    public void unbind() {
+    public IShaderProgram unbind() {
         if (boundProgram == this.id) {
             for (int i : this.attributeLocations.values()) {
                 GL20.glDisableVertexAttribArray(i);
@@ -156,6 +162,7 @@ public class ShaderProgram implements IShaderProgram {
             boundProgram = -1;
             boundProgramRef = null;
         }
+        return this;
     }
 
     @Override

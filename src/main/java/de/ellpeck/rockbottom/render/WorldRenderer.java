@@ -99,22 +99,25 @@ public class WorldRenderer {
         this.minY = Util.floor(-this.transY - g.getHeightInWorld() + 1) + offset;
         this.maxX = Util.ceil(this.transX + g.getWidthInWorld()) - offset;
         this.maxY = Util.ceil(-this.transY + 1) - offset;
+    }
 
-
-        IShaderProgram breakShader = m.getShaderProgram(IShaderProgram.BREAK_SHADER);
-        breakShader.bind();
-        breakShader.setUniform("camera", this.transX, this.transY, g.getWorldScale());
-        breakShader.unbind();
-
-        IShaderProgram worldShader = m.getShaderProgram(IShaderProgram.WORLD_SHADER);
-        worldShader.bind();
-        worldShader.setUniform("camera", this.transX, this.transY, g.getWorldScale());
-
+    private IShaderProgram setCameraValues(IAssetManager manager, ResourceName shader, float transX, float transY, float scale) {
+        IShaderProgram program = manager.getShaderProgram(shader);
+        program.bind();
+        program.setUniform("camera", transX, transY, scale);
+        return program;
     }
 
     public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, AbstractWorld world, EntityPlayer player, InteractionManager input) {
+        calcCameraValues(manager, g);
+
+        this.setCameraValues(manager, IShaderProgram.BREAK_SHADER, this.transX, this.transY, g.getWorldScale()).unbind();
+        this.setCameraValues(manager, IShaderProgram.WORLD_SHADER, 0, 0, g.getWorldScale());
 
         this.renderSky(game, manager, g, world, player, g.getWidthInWorld(), g.getHeightInWorld());
+
+        g.flush();
+        this.setCameraValues(manager, IShaderProgram.WORLD_SHADER, this.transX, this.transY, g.getWorldScale());
 
         List<Entity> entities = new ArrayList<>();
         List<EntityPlayer> players = new ArrayList<>();
@@ -332,7 +335,7 @@ public class WorldRenderer {
         }
 
         if (renderForeground) {
-            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, x, y, 1, color);
+            renderer.renderInForeground(game, manager, g, world, tile, state, x, y, layer, x, -y, 1, color);
         }
 
         if (isBreakTile) {
