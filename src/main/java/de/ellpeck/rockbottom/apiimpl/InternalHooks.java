@@ -8,6 +8,7 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.smithing.SmithingRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
@@ -23,6 +24,7 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlaceTileEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.AbstractStatGui;
+import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.gui.container.ContainerSlot;
@@ -46,6 +48,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
+import de.ellpeck.rockbottom.gui.GuiSmithing;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
@@ -538,11 +541,6 @@ public class InternalHooks implements IInternalHooks {
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean useCraftingTool(IToolStation craftingStation, ConstructionTool tool, boolean simulate) {
-            return craftingStation.damageTool(tool, simulate);
     }
 
     @Override
@@ -1256,14 +1254,9 @@ public class InternalHooks implements IInternalHooks {
         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketEntityChange(entity, false), entity.getX(), entity.getY());
     }
 
-    @Override
-    public void defaultConstruct(AbstractEntityPlayer player, PlayerCompendiumRecipe recipe, TileEntity machine) {
-        if (RockBottomAPI.getNet().isClient()) {
-            RockBottomAPI.getNet().sendToServer(new PacketConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
-        } else {
-            if (recipe.isKnown(player)) {
-                recipe.playerConstruct(player, machine,1);
-            }
-        }
-    }
+	@Override
+	public void smithingConstruct(AbstractEntityPlayer player, TileEntity tile, SmithingRecipe recipe, List<ItemInstance> actualInputs) {
+		GuiSmithing gui = new GuiSmithing(player, tile, recipe, actualInputs);
+		player.openGui(gui);
+	}
 }

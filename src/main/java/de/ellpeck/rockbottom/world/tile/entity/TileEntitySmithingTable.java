@@ -25,8 +25,8 @@ public class TileEntitySmithingTable extends TileEntity implements IToolStation 
 	}
 
 	@Override
-	public ItemInstance getTool(Item tool) {
-		return tool == GameContent.ITEM_HAMMER ? hammerSlot.get(0) : null;
+	public int getToolSlot(Item tool) {
+		return tool == GameContent.ITEM_HAMMER ? 0 : -1;
 	}
 
 	@Override

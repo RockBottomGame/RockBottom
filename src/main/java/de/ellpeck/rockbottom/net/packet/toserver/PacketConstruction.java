@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.net.packet.toserver;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.net.NetUtil;
@@ -66,11 +68,12 @@ public class PacketConstruction implements IPacket {
         if (game.getWorld() != null) {
             AbstractEntityPlayer player = game.getWorld().getPlayer(this.playerId);
             if (player != null) {
-                ConstructionRecipe recipe = ConstructionRecipe.forName(this.recipeName);
-                if (recipe != null && recipe.isKnown(player)) {
+                ICompendiumRecipe recipe = ICompendiumRecipe.forName(this.recipeName);
+                if (recipe instanceof PlayerCompendiumRecipe && recipe.isKnown(player)) {
+					PlayerCompendiumRecipe pcRecipe = (PlayerCompendiumRecipe) recipe;
                     TileEntity machine = null;
                     if (machineLayer != null) machine = player.world.getTileEntity(machineLayer, machinePos.getX(), machinePos.getY());
-                    recipe.playerConstruct(player, machine, this.amount);
+					pcRecipe.playerConstruct(player, machine, this.amount);
                 }
             }
         }

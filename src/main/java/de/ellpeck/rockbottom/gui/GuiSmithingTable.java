@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
@@ -30,12 +31,12 @@ import java.util.function.BiConsumer;
 
 public class GuiSmithingTable extends GuiContainer {
 
-    private static final ResourceName background = ResourceName.intern("gui.construction_table.background");
+    private static final ResourceName background = ResourceName.intern("gui.smithing_table.background");
     private static final int PAGE_HEIGHT = 94;
     private static final int MENU_WIDTH = 22 + 4;
 
-	public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.construction_table.item_background");
-	public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.construction_table.ingredient_background");
+	public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.smithing_table.item_background");
+	public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.smithing_table.ingredient_background");
 
 	private final TileEntitySmithingTable tile;
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
@@ -55,8 +56,6 @@ public class GuiSmithingTable extends GuiContainer {
         ShiftClickBehavior input = new ShiftClickBehavior(0, playerSlots - 1, playerSlots, playerSlots - 1 + tile.getTileInventory().getSlotAmount());
         this.shiftClickBehaviors.add(input);
         this.shiftClickBehaviors.add(input.reversed());
-
-		System.out.println(Registries.SMITHING_RECIPES.values());
     }
 
     @Override
@@ -116,7 +115,7 @@ public class GuiSmithingTable extends GuiContainer {
 
         if (recipe != null) {
             IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, tile, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct = recipe.getConstructButton(this, this.player, tile, tile.getTileInventory().get(tile.getToolSlot(GameContent.ITEM_HAMMER)) != null && this.selectedRecipe.canConstruct(inv, inv));
             this.construct.setPos(56, 17);
             this.components.add(this.construct);
         }

@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
@@ -16,6 +15,7 @@ import de.ellpeck.rockbottom.api.data.set.part.IPartFactory;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
+import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
@@ -32,6 +32,7 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.log.Logging;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketConstruction;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 
@@ -190,38 +191,70 @@ public class ApiHandler implements IApiHandler {
     }
 
     @Override
-    public List<ItemInstance> construct(AbstractEntityPlayer player, Inventory inputInventory, Inventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> inputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
-        List<ItemInstance> remains = new ArrayList<>();
+	public boolean collectItems(IInventory inventory, List<IUseInfo> inputs, boolean simulate, List<ItemInstance> out) {
+    	int[] outSlots = new int[inputs.size()];
+		for (int i = 0; i < inputs.size(); i++) {
+			IUseInfo input = inputs.get(i);
+			for (int slot = 0; slot < inventory.getSlotAmount(); slot++) {
+				ItemInstance item = inventory.get(slot);
 
-        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, machine, amount, inputs, outputGetter, skillReward);
+				if (item != null && input.containsItem(item) && item.getAmount() >= input.getAmount()) {
+					out.add(item.copy().setAmount(input.getAmount()));
+					outSlots[i] = slot;
+					break;
+				}
+			}
+		}
+		if (out.size() != inputs.size()) {
+			return false;
+		}
+		if (!simulate) {
+			for (int i = 0; i < out.size(); i++) {
+				inventory.remove(outSlots[i], out.get(i).getAmount());
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public void defaultConstruct(AbstractEntityPlayer player, PlayerCompendiumRecipe recipe, TileEntity machine) {
+		if (RockBottomAPI.getNet().isClient()) {
+			RockBottomAPI.getNet().sendToServer(new PacketConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
+		} else {
+			if (recipe.isKnown(player)) {
+				recipe.playerConstruct(player, machine, 1);
+			}
+		}
+	}
+
+    @Override
+    public List<ItemInstance> construct(AbstractEntityPlayer player, Inventory inputInventory, Inventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> recipeInputs, List<ItemInstance> actualInputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
+        List<ItemInstance> remains = new ArrayList<>();
+        if (actualInputs == null) {
+        	actualInputs = new ArrayList<>();
+        	this.collectItems(inputInventory, recipeInputs, true, actualInputs);
+		}
+
+        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, machine, amount, recipeInputs, actualInputs, outputGetter, skillReward);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
             inputInventory = event.inputInventory;
             outputInventory = event.outputInventory;
             recipe = event.recipe;
             machine = event.machine;
             amount = event.amount;
-            inputs = event.inputs;
+            recipeInputs = event.recipeInputs;
+            actualInputs = event.actualInputs;
             outputGetter = event.outputGetter;
             skillReward = event.skillReward;
 
             for (int a = 0; a < amount; a++) {
                 if (recipe.canConstruct(inputInventory, outputInventory)) {
-                    if (recipe.handleMachine(player, inputInventory, outputInventory, machine, amount, inputs, outputGetter, skillReward)) {
-                        List<ItemInstance> usedInputs = new ArrayList<>();
+                    if (recipe.handleRecipe(player, inputInventory, outputInventory, machine, recipeInputs, actualInputs, outputGetter, skillReward)) {
+                    	for (ItemInstance input : actualInputs) {
+                    		inputInventory.remove(inputInventory.getItemIndex(input), input.getAmount());
+						}
 
-                        for (IUseInfo input : inputs) {
-                            for (int i = 0; i < inputInventory.getSlotAmount(); i++) {
-                                ItemInstance inv = inputInventory.get(i);
-
-                                if (inv != null && input.containsItem(inv) && inv.getAmount() >= input.getAmount()) {
-                                    usedInputs.add(inv.copy().setAmount(input.getAmount()));
-                                    inputInventory.remove(i, input.getAmount());
-                                    break;
-                                }
-                            }
-                        }
-
-                        for (ItemInstance output : outputGetter.apply(usedInputs)) {
+                        for (ItemInstance output : outputGetter.apply(actualInputs)) {
                             ItemInstance left = outputInventory.addExistingFirst(output, false);
                             if (left != null) {
                                 remains.add(left);
