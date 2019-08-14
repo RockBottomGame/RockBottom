@@ -144,7 +144,7 @@ public class GuiConstructionTable extends GuiContainer {
 
         boolean containsSelected = false;
         for (ConstructionRecipe recipe : Registries.CONSTRUCTION_RECIPES.values()) {
-            if (recipe.canUseTools(tile)) {
+            if (recipe.showInConstructionTable() && recipe.canUseTools(tile)) {
                 if (recipe.isKnown(this.player)) {
                     IInventory inv = this.player.getInv();
                     ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(inv, inv), POLAROID_TEX);

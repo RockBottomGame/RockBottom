@@ -65,10 +65,10 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
                 }
 
                 ConstructionRecipe recipe;
-                if ("manual".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, knowledge, skill).registerManual();
+                if ("manual".equals(type) || "manual_only".equals(type)) {
+                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, !"manual_only".equals(type), knowledge, skill).registerManual();
                 } else if ("construction_table".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, knowledge, skill).registerConstructionTable();
+                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, true, knowledge, skill).registerConstructionTable();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }

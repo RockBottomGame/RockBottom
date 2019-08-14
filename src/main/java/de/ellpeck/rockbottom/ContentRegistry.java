@@ -80,6 +80,7 @@ public final class ContentRegistry {
         new ItemStartNote().register();
         new ItemBasic(ResourceName.intern("plant_fiber")).register();
         new ItemTwig().register();
+        new ItemBasic(ResourceName.intern("stick")).register();
         new ItemTool(ResourceName.intern("stone_pickaxe"), 2.5F, 120, ToolProperty.PICKAXE, 5).register();
         new ItemTool(ResourceName.intern("stone_axe"), 1.5F, 120, ToolProperty.AXE, 5).register();
         new ItemTool(ResourceName.intern("stone_shovel"), 1.5F, 120, ToolProperty.SHOVEL, 5).register();
