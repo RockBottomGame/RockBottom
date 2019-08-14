@@ -35,21 +35,21 @@ public class SmithingRecipeLoader implements IContentLoader<SmithingRecipe> {
                 JsonObject object = getRecipeObject(game, path + element.getAsString());
 
 
-				boolean knowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
-				List<IUseInfo> inputList = readUseInfos(object.get("inputs").getAsJsonArray());
-				List<ItemInstance> outputList = readItemInstances(object.get("outputs").getAsJsonArray());
-				//float difficulty = object.has("difficulty") ? object.get("difficulty").getAsFloat() : 1;
-				//int hits = object.has("hits") ? object.get("hits").getAsInt() : 1;
-				//int usage = object.has("usage") ? object.get("usage").getAsInt() : 1;
-				float skill = object.has("skill") ? object.get("skill").getAsFloat() : 0;
+                boolean knowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
+                List<IUseInfo> inputList = readUseInfos(object.get("inputs").getAsJsonArray());
+                List<ItemInstance> outputList = readItemInstances(object.get("outputs").getAsJsonArray());
+                //float difficulty = object.has("difficulty") ? object.get("difficulty").getAsFloat() : 1;
+                //int hits = object.has("hits") ? object.get("hits").getAsInt() : 1;
+                //int usage = object.has("usage") ? object.get("usage").getAsInt() : 1;
+                float skill = object.has("skill") ? object.get("skill").getAsFloat() : 0;
 
-				SmithingRecipe recipe = new SmithingRecipe(resourceName, inputList, outputList, knowledge, skill).register();
+                SmithingRecipe recipe = new SmithingRecipe(resourceName, inputList, outputList, knowledge, skill).register();
 
-				if (object.has("criteria")) {
-					processCriteria(recipe, object.get("criteria").getAsJsonArray());
-				}
+                if (object.has("criteria")) {
+                    processCriteria(recipe, object.get("criteria").getAsJsonArray());
+                }
 
-				RockBottomAPI.logger().config("Loaded smithing recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + ", recipeInputs " + inputList + " outputs " + outputList + " skill " + skill + " with content pack " + pack.getName());
+                RockBottomAPI.logger().config("Loaded smithing recipe " + resourceName + " for mod " + loadingMod.getDisplayName() + ", recipeInputs " + inputList + " outputs " + outputList + " skill " + skill + " with content pack " + pack.getName());
             }
         } else {
             RockBottomAPI.logger().info("Smithing recipe " + resourceName + " will not be loaded for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName() + " because it was disabled by another content pack!");

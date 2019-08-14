@@ -70,10 +70,12 @@ public class PacketConstruction implements IPacket {
             if (player != null) {
                 ICompendiumRecipe recipe = ICompendiumRecipe.forName(this.recipeName);
                 if (recipe instanceof PlayerCompendiumRecipe && recipe.isKnown(player)) {
-					PlayerCompendiumRecipe pcRecipe = (PlayerCompendiumRecipe) recipe;
+                    PlayerCompendiumRecipe pcRecipe = (PlayerCompendiumRecipe) recipe;
                     TileEntity machine = null;
-                    if (machineLayer != null) machine = player.world.getTileEntity(machineLayer, machinePos.getX(), machinePos.getY());
-					pcRecipe.playerConstruct(player, machine, this.amount);
+                    if (machineLayer != null) {
+                        machine = player.world.getTileEntity(machineLayer, machinePos.getX(), machinePos.getY());
+                    }
+                    pcRecipe.playerConstruct(player, machine, this.amount);
                 }
             }
         }

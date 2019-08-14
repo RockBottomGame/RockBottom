@@ -35,10 +35,10 @@ public class GuiSmithingTable extends GuiContainer {
     private static final int PAGE_HEIGHT = 94;
     private static final int MENU_WIDTH = 22 + 4;
 
-	public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.smithing_table.item_background");
-	public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.smithing_table.ingredient_background");
+    public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.smithing_table.item_background");
+    public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.smithing_table.ingredient_background");
 
-	private final TileEntitySmithingTable tile;
+    private final TileEntitySmithingTable tile;
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
     private final List<ComponentIngredient> ingredients = new ArrayList<>();
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> this.organise();
@@ -147,20 +147,20 @@ public class GuiSmithingTable extends GuiContainer {
 
         boolean containsSelected = false;
         for (SmithingRecipe recipe : Registries.SMITHING_RECIPES.values()) {
-			if (recipe.isKnown(this.player)) {
-				IInventory inv = this.player.getInv();
-				ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(inv, inv), POLAROID_TEX);
+            if (recipe.isKnown(this.player)) {
+                IInventory inv = this.player.getInv();
+                ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(inv, inv), POLAROID_TEX);
 
-				polaroid.isSelected = this.selectedRecipe == recipe;
-				if (polaroid.isSelected) {
-					containsSelected = true;
-				}
+                polaroid.isSelected = this.selectedRecipe == recipe;
+                if (polaroid.isSelected) {
+                    containsSelected = true;
+                }
 
-				this.polaroids.add(polaroid);
+                this.polaroids.add(polaroid);
 
-			} else {
-				this.polaroids.add(ComponentPolaroid.getUnknown(this, POLAROID_TEX));
-			}
+            } else {
+                this.polaroids.add(ComponentPolaroid.getUnknown(this, POLAROID_TEX));
+            }
         }
         if (!containsSelected) {
             this.selectedRecipe = null;
