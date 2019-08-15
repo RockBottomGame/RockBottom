@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.content;
+package de.ellpeck.rockbottom.content.recipes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,6 +16,7 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
