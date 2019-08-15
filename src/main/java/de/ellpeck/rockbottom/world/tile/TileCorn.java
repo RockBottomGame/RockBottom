@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
-import de.ellpeck.rockbottom.api.tile.TilePlant;
+import de.ellpeck.rockbottom.api.tile.TileTallPlant;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.render.tile.TileCornRenderer;
 
-public class TileCorn extends TilePlant {
+public class TileCorn extends TileTallPlant {
 
     public TileCorn() {
         super(ResourceName.intern("corn"));
