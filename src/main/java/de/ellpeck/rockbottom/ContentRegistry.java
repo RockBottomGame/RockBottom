@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.item.*;
+import de.ellpeck.rockbottom.construction.category.*;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
@@ -11,10 +12,6 @@ import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
-import de.ellpeck.rockbottom.construction.category.CategoryConstructionTable;
-import de.ellpeck.rockbottom.construction.category.CategoryManualConstruction;
-import de.ellpeck.rockbottom.construction.category.CategoryMortar;
-import de.ellpeck.rockbottom.construction.category.CategorySmelting;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaReachDepth;
 import de.ellpeck.rockbottom.item.*;
@@ -155,6 +152,7 @@ public final class ContentRegistry {
 
         CategoryManualConstruction.INSTANCE.register();
         new CategoryConstructionTable().register();
+        new CategorySmithingTable().register();
         new CategoryMortar().register();
         new CategorySmelting().register();
     }

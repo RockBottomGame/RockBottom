@@ -10,12 +10,14 @@ public class RecipeCache {
 	public static PlayerCompendiumRecipe simpleFurnace;
 	public static PlayerCompendiumRecipe chest;
 	public static PlayerCompendiumRecipe constructionTable;
+	public static PlayerCompendiumRecipe smithingTable;
 	public static PlayerCompendiumRecipe mortar;
 
 	public static void postInit() {
 		simpleFurnace = getPlayerRecipe(GameContent.TILE_SIMPLE_FURNACE.getName());
 		chest = getPlayerRecipe(GameContent.TILE_CHEST.getName());
 		constructionTable = getPlayerRecipe(GameContent.TILE_CONSTRUCTION_TABLE.getName());
+		smithingTable = getPlayerRecipe(GameContent.TILE_SMITHING_TABLE.getName());
 		mortar = getPlayerRecipe(GameContent.TILE_MORTAR.getName());
 	}
 
