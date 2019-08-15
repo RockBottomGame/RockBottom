@@ -115,7 +115,7 @@ public class GuiSmithingTable extends GuiContainer {
 
         if (recipe != null) {
             IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, tile, tile.getTileInventory().get(tile.getToolSlot(GameContent.ITEM_HAMMER)) != null && this.selectedRecipe.canConstruct(inv, inv));
+            this.construct = recipe.getConstructButton(this, this.player, tile, this.selectedRecipe.canConstruct(inv, inv));
             this.construct.setPos(56, 17);
             this.components.add(this.construct);
         }
