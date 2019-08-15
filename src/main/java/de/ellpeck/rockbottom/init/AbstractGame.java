@@ -351,7 +351,7 @@ public abstract class AbstractGame implements IGameInstance {
 
     @Override
     public String[] getAuthors() {
-        return new String[]{"Ellpeck", "wiiv"};
+        return new String[]{"Ellpeck", "wiiv", "raphydaphy", "Quarris", "canitzp"};
     }
 
     @Override

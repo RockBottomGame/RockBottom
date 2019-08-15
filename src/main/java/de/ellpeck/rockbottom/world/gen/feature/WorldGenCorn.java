@@ -38,8 +38,8 @@ public class WorldGenCorn implements IWorldGenerator {
                         if (chunk.getStateInner(x + xOff, y).getTile().canReplace(world, chunk.getX() + x + xOff, chunk.getY() + y, TileLayer.MAIN) && chunk.getStateInner(x + xOff, y + 1).getTile().canReplace(world, chunk.getX() + x + xOff, chunk.getY() + y + 1, TileLayer.MAIN)) {
                             chunk.setStateInner(x + xOff, y - 1, GameContent.TILE_SOIL_TILLED.getDefState());
 
-                            chunk.setStateInner(x + xOff, y, GameContent.TILE_CORN.getDefState().prop(StaticTileProps.CORN_GROWTH, 9));
-                            chunk.setStateInner(x + xOff, y + 1, GameContent.TILE_CORN.getDefState().prop(StaticTileProps.TOP_HALF, true).prop(StaticTileProps.CORN_GROWTH, 9));
+                            chunk.setStateInner(x + xOff, y, GameContent.TILE_CORN.getDefState().prop(StaticTileProps.PLANT_GROWTH, 9));
+                            chunk.setStateInner(x + xOff, y + 1, GameContent.TILE_CORN.getDefState().prop(StaticTileProps.TOP_HALF, true).prop(StaticTileProps.PLANT_GROWTH, 9));
                         }
                     }
                 }
