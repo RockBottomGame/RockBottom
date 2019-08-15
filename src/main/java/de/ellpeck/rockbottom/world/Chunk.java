@@ -559,6 +559,42 @@ public class Chunk implements IChunk {
     }
 
     @Override
+    public List<Entity> getEntities(List<BoundBox> area) {
+        return this.getEntities(area, null, null);
+    }
+
+    @Override
+    public List<Entity> getEntities(List<BoundBox> area, Predicate<Entity> test) {
+        return this.getEntities(area, null, test);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type) {
+        return this.getEntities(area, type, null);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type, Predicate<T> test) {
+        List<T> entities = new ArrayList<>();
+
+        for (Entity entity : this.entities) {
+            if (!entity.isDead() && (type == null || type.isAssignableFrom(entity.getClass()))) {
+                T castEntity = (T) entity;
+                if (test == null || test.test(castEntity)) {
+                    for (BoundBox box : area) {
+                        if (entity.currentBounds.intersects(box)) {
+                            entities.add(castEntity);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return entities;
+    }
+
+    @Override
     public byte getCombinedLight(int x, int y) {
         return this.getCombinedLightInner(x - this.x, y - this.y);
     }

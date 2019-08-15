@@ -347,6 +347,41 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
+    public List<Entity> getEntities(List<BoundBox> area) {
+        return this.getEntities(area, null, null);
+    }
+
+    @Override
+    public List<Entity> getEntities(List<BoundBox> area, Predicate<Entity> test) {
+        return this.getEntities(area, null, test);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type) {
+        return this.getEntities(area, type, null);
+    }
+
+    @Override
+    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type, Predicate<T> test) {
+        BoundBox union = BoundBox.getCombinedBoundBox(area);
+        int minChunkX = Util.toGridPos(union.getMinX() - Constants.CHUNK_SIZE / 2);
+        int minChunkY = Util.toGridPos(union.getMinY() - Constants.CHUNK_SIZE / 2);
+        int maxChunkX = Util.toGridPos(union.getMaxX() + Constants.CHUNK_SIZE / 2);
+        int maxChunkY = Util.toGridPos(union.getMaxY() + Constants.CHUNK_SIZE / 2);
+
+        List<T> entities = new ArrayList<>();
+        for (int x = minChunkX; x <= maxChunkX; x++) {
+            for (int y = minChunkY; y <= maxChunkY; y++) {
+                if (this.isChunkLoaded(x, y)) {
+                    IChunk chunk = this.getChunkFromGridCoords(x, y);
+                    entities.addAll(chunk.getEntities(area, type, test));
+                }
+            }
+        }
+        return entities;
+    }
+
+    @Override
     public byte getCombinedLight(int x, int y) {
         IChunk chunk = this.getChunk(x, y);
         return chunk.getCombinedLight(x, y);

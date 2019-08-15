@@ -501,7 +501,7 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate) {
-    	BoundBox tileBounds = tile.getActualBoundBox(player.world, tile.getPlacementState(player.world, x, y, layer, selected, player), x, y, layer).copy().add(x, y);
+        List<BoundBox> tileBounds = tile.getBoundBoxes(player.world, tile.getPlacementState(player.world, x, y, layer, selected, player), x, y, layer, player, player.currentBounds, player.currentBounds.add(player.motionX, player.motionY));
         if (layer != TileLayer.MAIN || player.world.getEntities(tileBounds, entity -> !(entity instanceof AbstractEntityItem)).isEmpty()) {
             if (layer.canTileBeInLayer(player.world, x, y, tile)) {
                 Tile tileThere = player.world.getState(layer, x, y).getTile();
