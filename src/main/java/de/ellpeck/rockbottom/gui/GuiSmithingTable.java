@@ -149,7 +149,7 @@ public class GuiSmithingTable extends GuiContainer {
         for (SmithingRecipe recipe : Registries.SMITHING_RECIPES.values()) {
             if (recipe.isKnown(this.player)) {
                 IInventory inv = this.player.getInv();
-                ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(inv, inv), POLAROID_TEX);
+                ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, tile.getTileInventory().get(0) != null && recipe.canConstruct(inv, inv), POLAROID_TEX);
 
                 polaroid.isSelected = this.selectedRecipe == recipe;
                 if (polaroid.isSelected) {
@@ -165,6 +165,8 @@ public class GuiSmithingTable extends GuiContainer {
         if (!containsSelected) {
             this.selectedRecipe = null;
             initConstructButton(null);
+        } else {
+            this.initConstructButton(selectedRecipe);
         }
 
         this.polaroids.sort((p1, p2) -> Integer.compare(Boolean.compare(p1.recipe == null, p2.recipe == null) * 2, Boolean.compare(p1.canConstruct, p2.canConstruct)));
