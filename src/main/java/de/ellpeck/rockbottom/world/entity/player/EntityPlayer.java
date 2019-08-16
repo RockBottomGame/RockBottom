@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
@@ -517,6 +518,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
             }
 
             return level;
+        } else if (Main.debugMode && this.isLocalPlayer()) {
+            return Constants.ADMIN_PERMISSION;
         } else {
             return 0;
         }

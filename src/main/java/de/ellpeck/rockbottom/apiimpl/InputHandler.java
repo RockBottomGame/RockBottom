@@ -161,7 +161,7 @@ public class InputHandler implements IInputHandler {
                     player.openGuiContainer(new GuiCompendium(player), player.getInvContainer());
                     return true;
                 } else if (Settings.KEY_CHAT.isKey(key) || Settings.KEY_COMMAND.isKey(key)) {
-                    if (RockBottomAPI.getNet().isActive()) {
+                    if (RockBottomAPI.getNet().isActive() || Main.debugMode) {
                         this.game.getGuiManager().openGui(new GuiChat(Settings.KEY_COMMAND.isKey(key)));
                     } else {
                         this.game.getChatLog().displayMessage(new ChatComponentTranslation(ResourceName.intern("info.no_server")));

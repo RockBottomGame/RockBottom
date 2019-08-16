@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.net.chat;
 
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -62,7 +63,7 @@ public class ChatLog implements IChatLog {
 
     @Override
     public void sendCommandSenderMessage(String message, ICommandSender sender) {
-        if (RockBottomAPI.getNet().isServer()) {
+        if (RockBottomAPI.getNet().isServer() || (Main.debugMode && !RockBottomAPI.getNet().isClient())) {
             ChatMessageEvent event = new ChatMessageEvent(this, sender, message);
             if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
                 message = event.message.trim();
