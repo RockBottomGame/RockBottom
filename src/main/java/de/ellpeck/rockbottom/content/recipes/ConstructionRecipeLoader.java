@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.content;
+package de.ellpeck.rockbottom.content.recipes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,6 +16,7 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.content.ContentManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -64,10 +65,10 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
                 }
 
                 ConstructionRecipe recipe;
-                if ("manual".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, knowledge, skill).registerManual();
+                if ("manual".equals(type) || "manual_only".equals(type)) {
+                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, "manual_only".equals(type), knowledge, skill).registerManual();
                 } else if ("construction_table".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, knowledge, skill).registerConstructionTable();
+                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, false, knowledge, skill).registerConstructionTable();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }

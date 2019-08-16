@@ -32,7 +32,7 @@ public class TileCornRenderer extends DefaultTileRenderer<TileCorn> {
     @Override
     public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TileCorn tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         int top = state.get(StaticTileProps.TOP_HALF) ? 1 : 0;
-        int variant = state.get(StaticTileProps.CORN_GROWTH);
+        int variant = state.get(StaticTileProps.PLANT_GROWTH);
         manager.getTexture(this.textures[top][variant]).draw(renderX, renderY, scale, scale, light);
     }
 }

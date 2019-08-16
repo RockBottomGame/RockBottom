@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.item.*;
+import de.ellpeck.rockbottom.construction.category.*;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
@@ -11,10 +12,6 @@ import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevelBasic;
-import de.ellpeck.rockbottom.construction.category.CategoryConstructionTable;
-import de.ellpeck.rockbottom.construction.category.CategoryManualConstruction;
-import de.ellpeck.rockbottom.construction.category.CategoryMortar;
-import de.ellpeck.rockbottom.construction.category.CategorySmelting;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaPickupItem;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaReachDepth;
 import de.ellpeck.rockbottom.item.*;
@@ -56,14 +53,17 @@ public final class ContentRegistry {
         new TileRemainsGoo().register();
         new TileGrassTorch().register();
         new TileCopper().register();
+        new TileSpinningWheel().register();
         new TileSimpleFurnace().register();
         new TileConstructionTable().register();
+        new TileSmithingTable().register();
         new TileCaveMushroom().register();
         new TileStardrop().register();
         new TileLamp(ResourceName.intern("lamp_iron")).register();
         new TileMortar().register();
         new TileTilledSoil().register();
         new TileCorn().register();
+        new TileCotton().register();
         new TileGlass().register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
@@ -78,7 +78,9 @@ public final class ContentRegistry {
         new ItemFirework().register();
         new ItemStartNote().register();
         new ItemBasic(ResourceName.intern("plant_fiber")).register();
+        new ItemBasic(ResourceName.intern("yarn")).register();
         new ItemTwig().register();
+        new ItemBasic(ResourceName.intern("stick")).register();
         new ItemTool(ResourceName.intern("stone_pickaxe"), 2.5F, 120, ToolProperty.PICKAXE, 5).register();
         new ItemTool(ResourceName.intern("stone_axe"), 1.5F, 120, ToolProperty.AXE, 5).register();
         new ItemTool(ResourceName.intern("stone_shovel"), 1.5F, 120, ToolProperty.SHOVEL, 5).register();
@@ -127,6 +129,7 @@ public final class ContentRegistry {
         Registries.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), WorldGenStardrops.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("lakes"), WorldGenLakes.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("corn"), WorldGenCorn.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("cotton"), WorldGenCotton.class);
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation.class);
 
@@ -149,6 +152,7 @@ public final class ContentRegistry {
 
         CategoryManualConstruction.INSTANCE.register();
         new CategoryConstructionTable().register();
+        new CategorySmithingTable().register();
         new CategoryMortar().register();
         new CategorySmelting().register();
     }

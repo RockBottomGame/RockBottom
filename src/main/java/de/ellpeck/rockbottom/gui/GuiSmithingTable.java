@@ -1,11 +1,13 @@
 package de.ellpeck.rockbottom.gui;
 
+import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.construction.ConstructionRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.smithing.SmithingRecipe;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
@@ -20,22 +22,23 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityConstructionTable;
+import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmithingTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class GuiConstructionTable extends GuiContainer {
+public class GuiSmithingTable extends GuiContainer {
 
-    private static final ResourceName background = ResourceName.intern("gui.construction_table.background");
+    private static final ResourceName background = ResourceName.intern("gui.smithing_table.background");
     private static final int PAGE_HEIGHT = 94;
     private static final int MENU_WIDTH = 22 + 4;
 
-	public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.construction_table.item_background");
-	public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.construction_table.ingredient_background");
+    public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.smithing_table.item_background");
+    public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.smithing_table.ingredient_background");
 
-	private final TileEntityConstructionTable tile;
+    private final TileEntitySmithingTable tile;
     private final List<ComponentPolaroid> polaroids = new ArrayList<>();
     private final List<ComponentIngredient> ingredients = new ArrayList<>();
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> this.organise();
@@ -44,7 +47,7 @@ public class GuiConstructionTable extends GuiContainer {
     private ComponentConstruct construct;
     private ICompendiumRecipe selectedRecipe;
 
-    public GuiConstructionTable(AbstractEntityPlayer player, TileEntityConstructionTable tile) {
+    public GuiSmithingTable(AbstractEntityPlayer player, TileEntitySmithingTable tile) {
         super(player, 135, 169);
         this.tile = tile;
 
@@ -132,7 +135,7 @@ public class GuiConstructionTable extends GuiContainer {
     public void init(IGameInstance game) {
         super.init(game);
 
-        this.menu = new ComponentMenu(this, 7, 1, 6, PAGE_HEIGHT - 2, 1, 4, -2, 1, new BoundBox(7, 0, 7 + MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction_table.scroll_bar"));
+        this.menu = new ComponentMenu(this, 7, 1, 6, PAGE_HEIGHT - 2, 1, 4, -2, 1, new BoundBox(7, 0, MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.smithing_table.scroll_bar"));
         this.components.add(this.menu);
 
         organise();
@@ -143,22 +146,20 @@ public class GuiConstructionTable extends GuiContainer {
         this.polaroids.clear();
 
         boolean containsSelected = false;
-        for (ConstructionRecipe recipe : Registries.CONSTRUCTION_RECIPES.values()) {
-            if (recipe.showInConstructionTable() && recipe.canUseTools(tile)) {
-                if (recipe.isKnown(this.player)) {
-                    IInventory inv = this.player.getInv();
-                    ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(inv, inv), POLAROID_TEX);
+        for (SmithingRecipe recipe : Registries.SMITHING_RECIPES.values()) {
+            if (recipe.isKnown(this.player)) {
+                IInventory inv = this.player.getInv();
+                ComponentPolaroid polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(inv, inv), POLAROID_TEX);
 
-                    polaroid.isSelected = this.selectedRecipe == recipe;
-                    if (polaroid.isSelected) {
-                        containsSelected = true;
-                    }
-
-                    this.polaroids.add(polaroid);
-
-                } else {
-                    this.polaroids.add(ComponentPolaroid.getUnknown(this, POLAROID_TEX));
+                polaroid.isSelected = this.selectedRecipe == recipe;
+                if (polaroid.isSelected) {
+                    containsSelected = true;
                 }
+
+                this.polaroids.add(polaroid);
+
+            } else {
+                this.polaroids.add(ComponentPolaroid.getUnknown(this, POLAROID_TEX));
             }
         }
         if (!containsSelected) {
@@ -204,6 +205,6 @@ public class GuiConstructionTable extends GuiContainer {
 
     @Override
     public ResourceName getName() {
-        return ResourceName.intern("construction_table");
+        return ResourceName.intern("smithing_table");
     }
 }
