@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
+import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -9,6 +10,9 @@ import de.ellpeck.rockbottom.api.gui.IGuiManager;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.gui.GuiInformation;
+import de.ellpeck.rockbottom.net.post.PostData;
+import de.ellpeck.rockbottom.net.post.PostUtil;
 
 public class GuiLogin extends Gui {
 
@@ -35,6 +39,15 @@ public class GuiLogin extends Gui {
         this.components.add(this.passField);
 
         this.loginButton = new ComponentButton(this, this.width / 2 - 50, 80, 100, 16, () -> {
+            Thread thread = new Thread(() -> {
+                JsonObject obj = PostUtil.post("https://canitzp.de:38000/login", new PostData("username", this.nameField.getText()), new PostData("password", this.passField.getText()));
+                System.out.println(obj);
+                game.getGuiManager().openGui(this);
+            });
+
+            thread.start();
+            game.getGuiManager().openGui(new GuiInformation(this, 0.5f, false, "Logging In..."));
+
             return true;
         }, assetManager.localize(ResourceName.intern("button.login")));
         this.components.add(this.loginButton);
