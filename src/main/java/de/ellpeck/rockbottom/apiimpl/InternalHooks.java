@@ -6,7 +6,6 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
-import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.smithing.SmithingRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -24,7 +23,6 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlaceTileEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.AbstractStatGui;
-import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.gui.container.ContainerSlot;
@@ -35,15 +33,11 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
-import de.ellpeck.rockbottom.api.tile.entity.IToolStation;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
-import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.Counter;
-import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -52,7 +46,6 @@ import de.ellpeck.rockbottom.gui.GuiSmithing;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketConstruction;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
 import de.ellpeck.rockbottom.world.entity.EntityItem;
@@ -558,8 +551,9 @@ public class InternalHooks implements IInternalHooks {
         if (!world.isPosLoaded(x, y - 1)) {
             return;
         }
+        // TODO Spread into chiseled
         // Check down
-        if (world.getState(x, y - 1).getTile().canLiquidSpreadInto(world, x, y - 1, tile)) {
+        if (world.getState(x, y - 1).getTile().canLiquidSpread(world, x, y - 1, tile, Direction.UP) && tile.canLiquidSpread(world, x, y, tile, Direction.DOWN)) {
             TileState beneathState = world.getState(layer, x, y - 1);
             if (beneathState.getTile() == tile) {
                 // Liquid beneath us
@@ -679,7 +673,8 @@ public class InternalHooks implements IInternalHooks {
     }
 
     private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState ourState, int ourLevel, int x, int y, int direction, TileLiquid tile) {
-        if (world.getState(x + direction, y).getTile().canLiquidSpreadInto(world, x + direction, y, tile)) {
+        Direction flowDirection = Direction.getHorizontal(direction);
+        if (world.getState(x + direction, y).getTile().canLiquidSpread(world, x + direction, y, tile, flowDirection.getOpposite()) && ourState.getTile().canLiquidSpread(world, x + direction - 1, y, tile, flowDirection)) {
             if (otherState.getTile() == tile) {
                 // Balance in direction
                 int otherLevel = otherState.get(tile.level) + 1;
