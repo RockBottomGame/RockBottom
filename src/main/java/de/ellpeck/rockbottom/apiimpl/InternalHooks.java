@@ -553,7 +553,7 @@ public class InternalHooks implements IInternalHooks {
         }
         // TODO Spread into chiseled
         // Check down
-        if (world.getState(x, y - 1).getTile().canLiquidSpread(world, x, y - 1, tile, Direction.UP) && tile.canLiquidSpread(world, x, y, tile, Direction.DOWN)) {
+        if (world.getState(x, y - 1).getTile().canLiquidSpread(world, x, y - 1, tile, Direction.UP) && ourState.getTile().canLiquidSpread(world, x, y, tile, Direction.DOWN)) {
             TileState beneathState = world.getState(layer, x, y - 1);
             if (beneathState.getTile() == tile) {
                 // Liquid beneath us
