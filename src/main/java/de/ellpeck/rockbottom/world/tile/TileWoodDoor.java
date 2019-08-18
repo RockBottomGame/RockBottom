@@ -7,6 +7,8 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
+import de.ellpeck.rockbottom.api.tile.TileLiquid;
+import de.ellpeck.rockbottom.api.tile.state.BoolProp;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -14,6 +16,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileDoorRenderer;
+import org.omg.CORBA.TIMEOUT;
 
 import java.util.Collections;
 import java.util.List;
@@ -94,6 +97,13 @@ public class TileWoodDoor extends TileBasic {
     @Override
     public boolean isFullTile() {
         return false;
+    }
+
+    @Override
+    public boolean canLiquidSpread(IWorld world, int x, int y, TileLiquid liquid, Direction dir) {
+        TileState state = world.getState(x, y);
+        boolean facingRight = state.get(StaticTileProps.FACING_RIGHT);
+        return state.get(StaticTileProps.OPEN) || facingRight && dir == Direction.LEFT || !facingRight && dir == Direction.RIGHT;
     }
 
     @Override

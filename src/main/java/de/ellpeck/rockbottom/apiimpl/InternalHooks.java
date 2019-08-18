@@ -551,7 +551,6 @@ public class InternalHooks implements IInternalHooks {
         if (!world.isPosLoaded(x, y - 1)) {
             return;
         }
-        // TODO Spread into chiseled
         // Check down
         if (world.getState(x, y - 1).getTile().canLiquidSpread(world, x, y - 1, tile, Direction.UP) && ourState.getTile().canLiquidSpread(world, x, y, tile, Direction.DOWN)) {
             TileState beneathState = world.getState(layer, x, y - 1);
@@ -673,8 +672,9 @@ public class InternalHooks implements IInternalHooks {
     }
 
     private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState ourState, int ourLevel, int x, int y, int direction, TileLiquid tile) {
-        Direction flowDirection = Direction.getHorizontal(direction);
-        if (world.getState(x + direction, y).getTile().canLiquidSpread(world, x + direction, y, tile, flowDirection.getOpposite()) && ourState.getTile().canLiquidSpread(world, x + direction - 1, y, tile, flowDirection)) {
+        Direction flow = Direction.getHorizontal(direction);
+        if (world.getState(x + direction, y).getTile().canLiquidSpread(world, x + direction, y, tile, flow.getOpposite()) &&  // enter state
+                world.getState(x + direction - flow.x, y).getTile().canLiquidSpread(world, x + direction - flow.x, y, tile, flow)) {  // exit state
             if (otherState.getTile() == tile) {
                 // Balance in direction
                 int otherLevel = otherState.get(tile.level) + 1;
