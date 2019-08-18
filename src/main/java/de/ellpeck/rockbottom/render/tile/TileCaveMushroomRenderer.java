@@ -23,7 +23,7 @@ public class TileCaveMushroomRenderer extends TileMetaRenderer<TileCaveMushroom>
         for (int i = 0; i < light.length; i++) {
             light[i] = Math.max(light[i], Colors.multiply(Colors.WHITE, 0.2F));
         }
-        manager.getTexture(this.getTexture(tile, state.get(tile.metaProp))).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
+        manager.getTexture(this.getTextureResource(tile, state.get(tile.metaProp))).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
     }
 
     @Override
