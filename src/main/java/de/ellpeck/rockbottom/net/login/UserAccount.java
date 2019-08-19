@@ -26,6 +26,12 @@ public class UserAccount implements IUserAccount {
         return null;
     }
 
+    public static boolean validate(UUID serverToken, String username) {
+        JsonObject obj = PostUtil.post("https://canitzp.de:38000/server_access", new PostData("mode", "check"), new PostData("token", serverToken), new PostData("username", username));
+        System.out.println(obj);
+        return true;
+    }
+
     public UserAccount(String username, UUID token) {
         this.username = username;
         this.token = token;
@@ -42,6 +48,20 @@ public class UserAccount implements IUserAccount {
     }
 
     @Override
+    public UUID getServerToken() {
+        JsonObject obj = PostUtil.post("https://canitzp.de:38000/server_access", new PostData("mode", "get"), new PostData("username", this.username), new PostData("token", this.token));
+        if (obj.has("code")) {
+            int code = obj.get("code").getAsInt();
+            if (code == 101) {
+                return UUID.fromString(obj.get("server_access").getAsString());
+            } else {
+                System.err.println("Failed to get server access token with error code " + code + ": " + getError(obj));
+            }
+        }
+        return null;
+    }
+
+    @Override
     public boolean isValid() {
         return token != null;
     }
@@ -49,7 +69,21 @@ public class UserAccount implements IUserAccount {
     @Override
     public boolean renew() {
         JsonObject obj = PostUtil.post("https://canitzp.de:38000/login", new PostData("mode", "renew"), new PostData("username", this.username), new PostData("token", this.token));
-        System.out.println(obj);
+        if (obj.has("code")) {
+            int code = obj.get("code").getAsInt();
+            if (code == 101) {
+                int duration = obj.get("renew_until").getAsInt();
+                this.token = UUID.fromString(obj.get("token").getAsString());
+                return true;
+            } else {
+                System.err.println("Failed to renew token with error code " + code + ". " + getError(obj));
+            }
+        }
         return false;
+    }
+
+    private String getError(JsonObject obj) {
+        if (obj.has("error")) return obj.get("error").getAsString();
+        return "No error message provided.";
     }
 }

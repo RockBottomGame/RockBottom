@@ -46,6 +46,10 @@ public class GuiLogin extends Gui {
                 UserAccount account = UserAccount.login(game, this.nameField.getText(), this.passField.getText());
                 if (account != null) {
                     account.renew();
+                    UUID serverToken = account.getServerToken();
+                    if (serverToken != null) {
+                        UserAccount.validate(serverToken, account.getUsername());
+                    }
                 }
                 game.getGuiManager().openGui(this);
             });
