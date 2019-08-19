@@ -24,6 +24,7 @@ public final class ThreadHandler {
     public static final String CHUNK_GEN = "chunkGen";
     public static final String LIGHTING = "lighting";
     public static final String SHUTDOWN_HOOK = "shutdownHook";
+    public static final String ACCOUNT_SERVER = "accountServer";
 
     public static Thread consoleThread;
     public static QueueThread chunkGenThread;

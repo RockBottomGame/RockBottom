@@ -1,9 +1,7 @@
 package de.ellpeck.rockbottom.net.login;
 
 import com.google.gson.JsonObject;
-import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.net.login.IUserAccount;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.data.DataManager;
@@ -16,19 +14,6 @@ public class UserAccount implements IUserAccount {
     private String username;
     private UUID uuid;
     private UUID token;
-
-    public static UserAccount create(IGameInstance game, String username, String password) {
-        JsonObject obj = PostUtil.post("https://canitzp.de:38000/login", new PostData("mode", "login"), new PostData("username", username), new PostData("password", password));
-        if (obj.has("code")) {
-            int code = obj.get("code").getAsInt();
-            if (code == 100) {
-                return new UserAccount(UUID.fromString(obj.get("uuid").getAsString()), username, UUID.fromString(obj.get("token").getAsString()));
-            } else if (obj.has("error")) {
-                RockBottomAPI.logger().warning("Failed to login with error code " + code + ": " + obj.get("error").getAsString());
-            }
-        }
-        return null;
-    }
 
     public static boolean validate(UUID serverToken, UUID uuid) {
         JsonObject obj = PostUtil.post("https://canitzp.de:38000/server_access", new PostData("mode", "check"), new PostData("server_access_token", serverToken), new PostData("uuid", uuid));
@@ -65,7 +50,7 @@ public class UserAccount implements IUserAccount {
             if (code == 101) {
                 return UUID.fromString(obj.get("server_access").getAsString());
             } else {
-                RockBottomAPI.logger().warning("Failed to get server access token with error code " + code + ": " + getError(obj));
+                RockBottomAPI.logger().warning("Failed to get server access token with error code " + code + ": " + getMessage(obj));
             }
         }
         return null;
@@ -88,10 +73,25 @@ public class UserAccount implements IUserAccount {
                 cache();
                 return true;
             } else {
-                RockBottomAPI.logger().warning("Failed to renew token with error code " + code + ". " + getError(obj));
+                RockBottomAPI.logger().warning("Failed to renew token with error code " + code + ". " + getMessage(obj));
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean changePassword(String oldPassword, String newPassword) {
+        JsonObject obj = PostUtil.post("https://canitzp.de:38000/set", new PostData("mode", "password"), new PostData("token", this.getToken()), new PostData("uuid", this.getUUID()), new PostData("old_password", oldPassword), new PostData("new_password", newPassword));
+        if (obj.has("code")) {
+            int code = obj.get("code").getAsInt();
+            if (code == 101) {
+                RockBottomAPI.logger().info("Changed password for " + this.username + " successfully!");
+                return true;
+            } else {
+                RockBottomAPI.logger().warning("Failed to change password with error code " + code + ": " + getMessage(obj));
+            }
+        }
+        return true;
     }
 
     @Override
@@ -113,9 +113,9 @@ public class UserAccount implements IUserAccount {
         }
     }
 
-    private String getError(JsonObject obj) {
-        if (obj.has("error")) return obj.get("error").getAsString();
-        return "No error message provided.";
+    private String getMessage(JsonObject obj) {
+        if (obj.has("message")) return obj.get("message").getAsString();
+        return "No message provided.";
     }
 
     public static UserAccount loadExisting(DataManager manager) {

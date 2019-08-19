@@ -50,6 +50,7 @@ import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.util.CrashManager;
+import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
@@ -219,10 +220,14 @@ public class RockBottom extends AbstractGame {
         ChangelogManager.loadChangelog();
         super.init();
 
-        IUserAccount account = UserAccount.loadExisting(this.dataManager);
-        if (account != null && account.renew()) {
-            this.loginAs(account);
-        }
+        Thread thread = new Thread(() -> {
+            IUserAccount account = UserAccount.loadExisting(this.dataManager);
+            if (account != null && account.renew()) {
+                this.loginAs(account);
+            }
+        }, ThreadHandler.ACCOUNT_SERVER);
+        thread.start();
+
 
         this.guiManager.updateDimensions();
         if (!Main.skipIntro) {
@@ -571,7 +576,9 @@ public class RockBottom extends AbstractGame {
 
     @Override
     public void loginAs(IUserAccount account) {
-        this.account = account;
+        synchronized (this) {
+            this.account = account;
+        }
         RockBottomAPI.logger().info("Logged in as" + account.getUsername());
     }
 
