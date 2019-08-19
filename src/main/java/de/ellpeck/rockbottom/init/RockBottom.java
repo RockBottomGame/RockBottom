@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.login.IUserAccount;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
 import de.ellpeck.rockbottom.api.toast.ToastBasic;
@@ -85,6 +86,7 @@ public class RockBottom extends AbstractGame {
     public Renderer renderer;
     protected Settings settings;
     private EntityPlayer player;
+    private IUserAccount account;
     private IPlayerDesign playerDesign;
     private GuiManager guiManager;
     private InteractionManager interactionManager;
@@ -394,6 +396,7 @@ public class RockBottom extends AbstractGame {
         super.startWorld(worldFile, info, isNewlyCreated);
 
         this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, true);
+        this.account = null;
         this.player.world.addEntity(this.player);
         this.player.world.addPlayer(this.player);
 
@@ -582,6 +585,16 @@ public class RockBottom extends AbstractGame {
     @Override
     public EntityPlayer getPlayer() {
         return this.player;
+    }
+
+    @Override
+    public IUserAccount getAccount() {
+        return this.account;
+    }
+
+    @Override
+    public void loginAs(IUserAccount account) {
+        this.account = account;
     }
 
     @Override

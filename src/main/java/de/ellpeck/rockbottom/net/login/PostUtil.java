@@ -1,4 +1,4 @@
-package de.ellpeck.rockbottom.net.post;
+package de.ellpeck.rockbottom.net.login;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,7 +13,6 @@ public class PostUtil {
 
     private static final String USER_AGENT = "Mozilla/5.0";
 
-    // TODO: async
     public static JsonObject post(String url, PostData... data) {
         StringBuilder parameters = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
@@ -39,6 +38,7 @@ public class PostUtil {
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", USER_AGENT);
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        con.setConnectTimeout(1000);
 
         // Send Request
         con.setDoOutput(true);
@@ -46,10 +46,6 @@ public class PostUtil {
         wr.writeBytes(postData);
         wr.flush();
         wr.close();
-
-        int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Response Code : " + responseCode);
 
         InputStreamReader reader = new InputStreamReader(con.getInputStream());
         JsonElement response = Util.JSON_PARSER.parse(reader);

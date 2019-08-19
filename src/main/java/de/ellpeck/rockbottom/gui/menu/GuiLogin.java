@@ -11,8 +11,11 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentInputField;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.GuiInformation;
-import de.ellpeck.rockbottom.net.post.PostData;
-import de.ellpeck.rockbottom.net.post.PostUtil;
+import de.ellpeck.rockbottom.net.login.PostData;
+import de.ellpeck.rockbottom.net.login.PostUtil;
+import de.ellpeck.rockbottom.net.login.UserAccount;
+
+import java.util.UUID;
 
 public class GuiLogin extends Gui {
 
@@ -40,8 +43,10 @@ public class GuiLogin extends Gui {
 
         this.loginButton = new ComponentButton(this, this.width / 2 - 50, 80, 100, 16, () -> {
             Thread thread = new Thread(() -> {
-                JsonObject obj = PostUtil.post("https://canitzp.de:38000/login", new PostData("username", this.nameField.getText()), new PostData("password", this.passField.getText()));
-                System.out.println(obj);
+                UserAccount account = UserAccount.login(game, this.nameField.getText(), this.passField.getText());
+                if (account != null) {
+                    account.renew();
+                }
                 game.getGuiManager().openGui(this);
             });
 

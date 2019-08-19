@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
+import de.ellpeck.rockbottom.api.net.login.IUserAccount;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
@@ -93,6 +94,16 @@ public class RockBottomServer extends AbstractGame {
 
     @Override
     public AbstractEntityPlayer getPlayer() {
+        throw new UnsupportedOperationException("Cannot get the player on a dedicated server");
+    }
+
+    @Override
+    public IUserAccount getAccount() {
+        throw new UnsupportedOperationException("Cannot get the player on a dedicated server");
+    }
+
+    @Override
+    public void loginAs(IUserAccount account) {
         throw new UnsupportedOperationException("Cannot get the player on a dedicated server");
     }
 
