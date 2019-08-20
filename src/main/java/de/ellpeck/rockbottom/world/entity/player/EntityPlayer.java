@@ -620,6 +620,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public double getMoveSpeed() {
+        if (this.gameMode.isCreative() && this.isFlying)
+            return 0.3;
         double speed = 0.2;
         speed += 0.01 * this.getEffectModifier(GameContent.EFFECT_SPEED);
         return this.statEvent(StatType.MOVE_SPEED, speed);
@@ -720,6 +722,10 @@ public class EntityPlayer extends AbstractEntityPlayer {
         } else if (type == 2) {
             if (this.canSwim) {
                 this.motionY = 0.075;
+            } else if(this.isFlying) {
+                //this.motionY += this.getMoveSpeed();
+                //this.facing = Direction.UP;
+                //return true;
             } else {
                 this.jump(this.getJumpHeight());
             }
