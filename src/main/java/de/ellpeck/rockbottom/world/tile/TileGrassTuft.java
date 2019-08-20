@@ -28,7 +28,7 @@ public class TileGrassTuft extends TileMeta {
 
     @Override
     protected ITileRenderer createRenderer(ResourceName name) {
-        return new TileGrassTuftRenderer();
+        return new TileGrassTuftRenderer(name);
     }
 
     @Override
