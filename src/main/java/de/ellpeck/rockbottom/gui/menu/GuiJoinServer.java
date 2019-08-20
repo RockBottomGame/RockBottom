@@ -41,7 +41,7 @@ public class GuiJoinServer extends Gui {
                     }
 
                     RockBottomAPI.logger().info("Attempting to join server");
-                    RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
+                    RockBottomAPI.getNet().sendToServer(new PacketJoin(game.getUniqueId(), game.getServerToken(), game.getPlayerDesign(), RockBottomAPI.getModLoader().getActiveMods()));
                 } catch (Exception e) {
                     RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
                     game.getGuiManager().openGui(new GuiInformation(this, 0.5F, true, game.getAssetManager().localize(ResourceName.intern("info.reject.connection"), e.getMessage())));

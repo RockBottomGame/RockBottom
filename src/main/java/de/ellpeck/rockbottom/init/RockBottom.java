@@ -84,7 +84,6 @@ public class RockBottom extends AbstractGame {
         }
     };
     public AssetManager assetManager;
-    public UUID uniqueId;
     public Renderer renderer;
     protected Settings settings;
     private EntityPlayer player;
@@ -224,13 +223,6 @@ public class RockBottom extends AbstractGame {
             IUserAccount account = UserAccount.loadExisting(this.dataManager);
             if (account != null) {
                 if (account.renew()) this.loginAs(account);
-                else {
-                    File accountFile = new File(dataManager.getGameDir(), "account.dat");
-                    if (accountFile.exists()) {
-                        RockBottomAPI.logger().info("Removed invalid account file");
-                        accountFile.delete();
-                    }
-                }
             }
         }, ThreadHandler.ACCOUNT_SERVER);
         thread.start();
@@ -650,8 +642,8 @@ public class RockBottom extends AbstractGame {
 
     @Override
     public UUID getUniqueId() {
-        if (this.uniqueId != null) {
-            return this.uniqueId;
+        if (this.account != null) {
+            return this.account.getUUID();
         } else {
             return this.getDefaultUniqueId();
         }
@@ -660,6 +652,15 @@ public class RockBottom extends AbstractGame {
     @Override
     public UUID getDefaultUniqueId() {
         return DEFAULT_UUID;
+    }
+
+    @Override
+    public UUID getServerToken() {
+        if (this.account != null) {
+            return this.account.getServerToken();
+        } else {
+            return this.getDefaultUniqueId();
+        }
     }
 
     public void takeScreenshot() {

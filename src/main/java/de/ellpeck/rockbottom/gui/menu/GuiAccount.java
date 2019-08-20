@@ -43,7 +43,6 @@ public class GuiAccount extends Gui {
         Thread thread = new Thread(() -> {
             String email = this.emailField.getText();
             JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "login"), new PostData("email", email), new PostData("password", this.passField.getText()));
-            System.out.println("login object: " + obj);
             if (obj.has("code")) {
                 int code = obj.get("code").getAsInt();
                 if (code == 201) { // Login Success
@@ -51,9 +50,11 @@ public class GuiAccount extends Gui {
                     account.cache();
                     game.loginAs(account);
 
-                    boolean firstLogin = obj.get("was_verified").getAsBoolean();
+                    boolean firstLogin = obj.get("first_login").getAsBoolean();
                     if (firstLogin) {
                         RockBottomAPI.logger().info("Logged into account " + account.getEmail() + " for the first time!");
+                    } else {
+                        this.menu = AccountMenu.MAIN;
                     }
                 }
             }

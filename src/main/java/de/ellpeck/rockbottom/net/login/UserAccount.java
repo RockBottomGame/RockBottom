@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.login.IUserAccount;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.data.DataManager;
+import de.ellpeck.rockbottom.init.RockBottom;
 
 import java.io.*;
 import java.util.UUID;
@@ -19,8 +20,13 @@ public class UserAccount implements IUserAccount {
 
     public static boolean validate(UUID serverToken, UUID uuid) {
         JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "sa_check"), new PostData("server_access_token", serverToken), new PostData("uuid", uuid));
-        RockBottomAPI.logger().info("Validated: " + obj);
-        return true;
+        if (obj.has("code")) {
+            int code = obj.get("code").getAsInt();
+            if (code == 203) { // 203 = Valid Token
+                return true;
+            }
+        }
+        return false;
     }
 
     public UserAccount(UUID uuid, String email, UUID token) {
@@ -55,10 +61,11 @@ public class UserAccount implements IUserAccount {
     @Override
     public UUID getServerToken() {
         JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "sa_get"), new PostData("uuid", this.uuid), new PostData("token", this.token));
+        System.out.println(obj);
         if (obj.has("code")) {
             int code = obj.get("code").getAsInt();
             if (code == 210) { // Successful Token
-                return UUID.fromString(obj.get("server_access").getAsString());
+                return UUID.fromString(obj.get("server_access_token").getAsString());
             } else {
                 RockBottomAPI.logger().warning("Failed to get server access token with error code " + code + ": " + getMessage(obj));
             }
@@ -83,7 +90,11 @@ public class UserAccount implements IUserAccount {
                 cache();
                 return true;
             } else if (code == 312) { // 312 = Invalid User
-                return false;
+                File accountFile = new File(RockBottomAPI.getGame().getDataManager().getGameDir(), "account.dat");
+                if (accountFile.exists()) {
+                    RockBottomAPI.logger().info("Removed invalid account file");
+                    accountFile.delete();
+                }
             } else {
                 RockBottomAPI.logger().warning("Failed to renew token with error code " + code + ". " + getMessage(obj));
             }

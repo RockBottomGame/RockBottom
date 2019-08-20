@@ -148,6 +148,11 @@ public class RockBottomServer extends AbstractGame {
     }
 
     @Override
+    public UUID getServerToken() {
+        throw new UnsupportedOperationException("Cannot get a server token on a dedicated server");
+    }
+
+    @Override
     public void setFullscreen(boolean fullscreen) {
         throw new UnsupportedOperationException("Cannot set fullscreen on a dedicated server");
     }

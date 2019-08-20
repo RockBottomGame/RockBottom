@@ -13,6 +13,7 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.net.login.UserAccount;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketInitialServerData;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketPlayer;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketReject;
@@ -30,10 +31,12 @@ public class PacketJoin implements IPacket {
 
     private final List<ModInfo> modInfos = new ArrayList<>();
     private UUID id;
+    private UUID serverToken;
     private IPlayerDesign design;
 
-    public PacketJoin(UUID id, IPlayerDesign design, List<IMod> mods) {
+    public PacketJoin(UUID id, UUID serverToken, IPlayerDesign design, List<IMod> mods) {
         this.id = id;
+        this.serverToken = serverToken;
         this.design = design;
 
         for (IMod mod : mods) {
@@ -47,8 +50,9 @@ public class PacketJoin implements IPacket {
 
     @Override
     public void toBuffer(ByteBuf buf) {
-        buf.writeLong(this.id.getMostSignificantBits());
-        buf.writeLong(this.id.getLeastSignificantBits());
+        NetUtil.writeUUIDToBuffer(this.id, buf);
+        NetUtil.writeUUIDToBuffer(this.serverToken, buf);
+
         NetUtil.writeStringToBuffer(Util.GSON.toJson(this.design), buf);
 
         buf.writeInt(this.modInfos.size());
@@ -59,7 +63,8 @@ public class PacketJoin implements IPacket {
 
     @Override
     public void fromBuffer(ByteBuf buf) {
-        this.id = new UUID(buf.readLong(), buf.readLong());
+        this.id = NetUtil.readUUIDFromBuffer(buf);
+        this.serverToken = NetUtil.readUUIDFromBuffer(buf);
         this.design = Util.GSON.fromJson(NetUtil.readStringFromBuffer(buf), PlayerDesign.class);
 
         int amount = buf.readInt();
@@ -73,7 +78,11 @@ public class PacketJoin implements IPacket {
         IWorld world = game.getWorld();
         ChatComponentTranslation reject = null;
 
-        if (world != null && world.getAllPlayers().size() >= game.getPlayerCap()) {
+        if (!UserAccount.validate(this.serverToken, this.id)) {
+            reject = new ChatComponentTranslation(ResourceName.intern("info.reject.invalid_token"));
+        }
+
+        if (reject == null && world != null && world.getAllPlayers().size() >= game.getPlayerCap()) {
             reject = new ChatComponentTranslation(ResourceName.intern("info.reject.server_full"));
         }
 
