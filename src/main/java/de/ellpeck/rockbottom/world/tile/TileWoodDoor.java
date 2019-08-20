@@ -16,7 +16,6 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.TileDoorRenderer;
-import org.omg.CORBA.TIMEOUT;
 
 import java.util.Collections;
 import java.util.List;
