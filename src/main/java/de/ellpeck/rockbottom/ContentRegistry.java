@@ -65,6 +65,7 @@ public final class ContentRegistry {
         new TileCorn().register();
         new TileCotton().register();
         new TileGlass().register();
+        new TilePlatform().register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();

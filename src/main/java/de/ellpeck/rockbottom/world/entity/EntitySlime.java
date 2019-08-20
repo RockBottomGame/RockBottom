@@ -99,6 +99,8 @@ public class EntitySlime extends AbstractEntitySlime {
         if (this.attackCooldown > 0) {
             this.attackCooldown--;
         }
+        if (this.isFalling && this.targetTask.target != null && this.targetTask.target.getY() < this.getY())
+            this.isDropping = true;
     }
 
     @Override

@@ -1,7 +1,12 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.tile.MultiTile;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -13,6 +18,9 @@ import de.ellpeck.rockbottom.gui.GuiChest;
 import de.ellpeck.rockbottom.gui.container.ContainerChest;
 import de.ellpeck.rockbottom.render.tile.TileChestRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityChest;
+
+import java.util.Collections;
+import java.util.List;
 
 public class TileChest extends TileBasic {
 
@@ -32,6 +40,16 @@ public class TileChest extends TileBasic {
 
     @Override
     public boolean canProvideTileEntity() {
+        return true;
+    }
+
+    @Override
+    public List<BoundBox> getPlatformBounds(IWorld world, int x, int y, TileLayer layer, TileState state, MovableWorldObject object, BoundBox objectBox, BoundBox objectBoxMotion) {
+        return RockBottomAPI.getApiHandler().getDefaultPlatformBounds(world, x, y, layer, 10/12d, 8/12f, state, object, objectBox);
+    }
+
+    @Override
+    public boolean isPlatform() {
         return true;
     }
 
