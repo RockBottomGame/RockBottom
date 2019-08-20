@@ -11,25 +11,35 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class UserAccount implements IUserAccount {
+    private final String email;
+    private final UUID uuid;
+
     private String username;
-    private UUID uuid;
     private UUID token;
 
     public static boolean validate(UUID serverToken, UUID uuid) {
-        JsonObject obj = PostUtil.post("https://canitzp.de:38000/server_access", new PostData("mode", "check"), new PostData("server_access_token", serverToken), new PostData("uuid", uuid));
+        JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "sa_check"), new PostData("server_access_token", serverToken), new PostData("uuid", uuid));
         RockBottomAPI.logger().info("Validated: " + obj);
         return true;
     }
 
-    public UserAccount(UUID uuid, String username, UUID token) {
+    public UserAccount(UUID uuid, String email, UUID token) {
         this.uuid = uuid;
-        this.username = username;
+        this.email = email;
+
+        // TODO: fetch username and player design
+        this.username = email;
         this.token = token;
     }
 
     @Override
     public UUID getUUID() {
         return this.uuid;
+    }
+
+    @Override
+    public String getEmail() {
+        return this.email;
     }
 
     @Override
@@ -44,10 +54,10 @@ public class UserAccount implements IUserAccount {
 
     @Override
     public UUID getServerToken() {
-        JsonObject obj = PostUtil.post("https://canitzp.de:38000/server_access", new PostData("mode", "get"), new PostData("uuid", this.uuid), new PostData("token", this.token));
+        JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "sa_get"), new PostData("uuid", this.uuid), new PostData("token", this.token));
         if (obj.has("code")) {
             int code = obj.get("code").getAsInt();
-            if (code == 101) {
+            if (code == 210) { // Successful Token
                 return UUID.fromString(obj.get("server_access").getAsString());
             } else {
                 RockBottomAPI.logger().warning("Failed to get server access token with error code " + code + ": " + getMessage(obj));
@@ -63,15 +73,17 @@ public class UserAccount implements IUserAccount {
 
     @Override
     public boolean renew() {
-        JsonObject obj = PostUtil.post("https://canitzp.de:38000/login", new PostData("mode", "renew"), new PostData("uuid", this.uuid), new PostData("token", this.token));
+        JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "renew"), new PostData("uuid", this.uuid), new PostData("token", this.token));
         if (obj.has("code")) {
             int code = obj.get("code").getAsInt();
-            if (code == 101) {
+            if (code == 202) { // 202 = Renew Success
                 int duration = obj.get("renew_until").getAsInt();
                 this.token = UUID.fromString(obj.get("token").getAsString());
-                RockBottomAPI.logger().info("Renewed user " + this.username + " for " + duration + "!");
+                RockBottomAPI.logger().info("Renewed user " + this.email + " for " + duration + "!");
                 cache();
                 return true;
+            } else if (code == 312) { // 312 = Invalid User
+                return false;
             } else {
                 RockBottomAPI.logger().warning("Failed to renew token with error code " + code + ". " + getMessage(obj));
             }
@@ -81,11 +93,11 @@ public class UserAccount implements IUserAccount {
 
     @Override
     public boolean changePassword(String oldPassword, String newPassword) {
-        JsonObject obj = PostUtil.post("https://canitzp.de:38000/set", new PostData("mode", "password"), new PostData("token", this.getToken()), new PostData("uuid", this.getUUID()), new PostData("old_password", oldPassword), new PostData("new_password", newPassword));
+        JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "set_password"), new PostData("token", this.getToken()), new PostData("uuid", this.getUUID()), new PostData("old_password", oldPassword), new PostData("new_password", newPassword));
         if (obj.has("code")) {
             int code = obj.get("code").getAsInt();
-            if (code == 101) {
-                RockBottomAPI.logger().info("Changed password for " + this.username + " successfully!");
+            if (code == 211) { // Password change success
+                RockBottomAPI.logger().info("Changed password for " + this.email + " successfully!");
                 return true;
             } else {
                 RockBottomAPI.logger().warning("Failed to change password with error code " + code + ": " + getMessage(obj));
@@ -103,7 +115,7 @@ public class UserAccount implements IUserAccount {
 
             JsonObject obj = new JsonObject();
             obj.addProperty("uuid", this.uuid.toString());
-            obj.addProperty("username", this.username);
+            obj.addProperty("username", this.email);
             obj.addProperty("token", this.token.toString());
 
             writer.write(Util.GSON.toJson(obj));

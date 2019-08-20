@@ -222,8 +222,15 @@ public class RockBottom extends AbstractGame {
 
         Thread thread = new Thread(() -> {
             IUserAccount account = UserAccount.loadExisting(this.dataManager);
-            if (account != null && account.renew()) {
-                this.loginAs(account);
+            if (account != null) {
+                if (account.renew()) this.loginAs(account);
+                else {
+                    File accountFile = new File(dataManager.getGameDir(), "account.dat");
+                    if (accountFile.exists()) {
+                        RockBottomAPI.logger().info("Removed invalid account file");
+                        accountFile.delete();
+                    }
+                }
             }
         }, ThreadHandler.ACCOUNT_SERVER);
         thread.start();
@@ -579,7 +586,7 @@ public class RockBottom extends AbstractGame {
         synchronized (this) {
             this.account = account;
         }
-        RockBottomAPI.logger().info("Logged in as" + account.getUsername());
+        RockBottomAPI.logger().info("Logged in as " + account.getUsername());
     }
 
     @Override

@@ -2,7 +2,9 @@ package de.ellpeck.rockbottom.net.login;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.init.RockBottom;
 
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -24,7 +26,13 @@ public class PostUtil {
         try {
             return post(url, parameters.toString());
         } catch (Exception e) {
-            System.err.println("Failed to send post request. Printing stack trace...");
+            StringBuilder warning = new StringBuilder();
+            warning.append("Failed to send post request to ").append(url).append("!");
+            warning.append("\nData:");
+            for (PostData postData : data) {
+                warning.append("\nName: ").append(postData.name).append(" Value: ").append(postData.value);
+            }
+            RockBottomAPI.logger().warning(warning.toString());
             e.printStackTrace();
         }
         return new JsonObject();

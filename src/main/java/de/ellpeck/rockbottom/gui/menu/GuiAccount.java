@@ -41,18 +41,19 @@ public class GuiAccount extends Gui {
 
     private void login(IGameInstance game) {
         Thread thread = new Thread(() -> {
-            JsonObject obj = PostUtil.post("https://canitzp.de:38000/login", new PostData("mode", "login"), new PostData("email", this.emailField.getText()), new PostData("password", this.passField.getText()));
+            String email = this.emailField.getText();
+            JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "login"), new PostData("email", email), new PostData("password", this.passField.getText()));
             System.out.println("login object: " + obj);
             if (obj.has("code")) {
                 int code = obj.get("code").getAsInt();
-                if (code == 100) {
+                if (code == 201) { // Login Success
                     UserAccount account = new UserAccount(UUID.fromString(obj.get("uuid").getAsString()), this.emailField.getText(), UUID.fromString(obj.get("token").getAsString()));
                     account.cache();
                     game.loginAs(account);
 
                     boolean firstLogin = obj.get("was_verified").getAsBoolean();
                     if (firstLogin) {
-                        RockBottomAPI.logger().info("Logged into account " + account.getUsername() + " for the first time!");
+                        RockBottomAPI.logger().info("Logged into account " + account.getEmail() + " for the first time!");
                     }
                 }
             }
@@ -71,22 +72,26 @@ public class GuiAccount extends Gui {
     private void register(IGameInstance game) {
         Thread thread = new Thread(() -> {
             String email = this.emailField.getText();
-            JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "register"), new PostData("email", email), new PostData("username", this.usernameField.getText()));
+            String username = this.usernameField.getText();
+            JsonObject obj = PostUtil.post("https://canitzp.de:38000/", new PostData("mode", "register"), new PostData("email", email), new PostData("username", username));
 
             synchronized (game) {
                 game.getGuiManager().openGui(this);
             }
             if (obj.has("code")) {
                 int code = obj.get("code").getAsInt();
-                if (code == 212) {
-
+                synchronized (this) {
+                    if (code == 212) { // Register Success
+                        setMenu(AccountMenu.MAIN, game);
+                    }
+                    if (code == 212 || code == 320) { // 320 = Username Taken
+                        this.emailField.setText(email);
+                    } else if (code == 321) { // 321 = Email Taken
+                        this.usernameField.setText(username);
+                    }
                 }
             }
 
-            synchronized (this) {
-                this.emailField.setText();
-                setMenu(AccountMenu.MAIN, game);
-            }
             updateFeedback(obj);
         }, ThreadHandler.ACCOUNT_SERVER);
 
@@ -188,6 +193,8 @@ public class GuiAccount extends Gui {
     }
 
     private void updateButtons(IGameInstance game) {
+        this.loggedIn = game.getAccount() != null;
+
         this.emailField.setActive(false);
         this.usernameField.setActive(false);
         this.passField.setActive(false);
@@ -222,7 +229,6 @@ public class GuiAccount extends Gui {
                 break;
 
         }
-        this.loggedIn = game.getAccount() != null;
     }
 
     @Override
