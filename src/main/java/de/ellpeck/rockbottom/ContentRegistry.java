@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.item.*;
+import de.ellpeck.rockbottom.api.tile.TilePlatform;
 import de.ellpeck.rockbottom.construction.category.*;
 import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
