@@ -37,6 +37,7 @@ public class TilePlatform extends TileBasic {
 
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
+        // Ladders can be placed on platforms
         if (!GameContent.TILE_LADDER.canPlace(world, x, y, layer, player))
             return false;
 
@@ -52,6 +53,15 @@ public class TilePlatform extends TileBasic {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
+        List<ItemInstance> drops = super.getDrops(world, x, y, layer, destroyer);
+        if (world.getState(x, y).get(StaticTileProps.HAS_LADDER))
+            drops.addAll(GameContent.TILE_LADDER.getDrops(world, x, y, layer, destroyer));
+
+        return drops;
     }
 
     @Override
@@ -87,6 +97,9 @@ public class TilePlatform extends TileBasic {
 
     @Override
     public boolean canStay(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
+        if (world.getState(x, y).get(StaticTileProps.HAS_LADDER))
+            return GameContent.TILE_LADDER.canStay(world, x, y, layer, changedX, changedY, changedLayer);
+
         // If tile placed in background
         if (!world.getState(TileLayer.BACKGROUND, x, y).getTile().isAir())
             return true;

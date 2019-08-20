@@ -65,7 +65,7 @@ public class InteractionManager implements IInteractionManager {
                 interactions.add(new InteractionInfo(() -> RockBottomAPI.getEventHandler().fireEvent(new TileInteractEvent(player, state, layer, x, y, mouseX, mouseY)) != EventResult.CANCELLED && (destKey ? tile.onInteractWithBreakKey(player.world, x, y, layer, mouseX, mouseY, player) : tile.onInteractWith(player.world, x, y, layer, mouseX, mouseY, player)), tile.getInteractionPriority(player.world, x, y, layer, mouseX, mouseY, player)));
             }
 
-            ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+            ItemInstance selected = player.getSelectedItem();
             if (selected != null) {
                 Item item = selected.getItem();
                 if (player.isInRange(mouseX, mouseY, item.getMaxInteractionDistance(player.world, x, y, layer, mouseX, mouseY, player, selected))) {
@@ -86,7 +86,7 @@ public class InteractionManager implements IInteractionManager {
 
     public static boolean attackEntity(AbstractEntityPlayer player, double mouseX, double mouseY) {
         boolean oneAttacked = false;
-        ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+        ItemInstance selected = player.getSelectedItem();
 
         List<Entity> entities = getAttackableEntities(player, mouseX, mouseY, selected);
         if (!entities.isEmpty()) {
@@ -263,7 +263,7 @@ public class InteractionManager implements IInteractionManager {
                         this.breakProgress = 0;
                     }
 
-                    ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+                    ItemInstance selected = player.getSelectedItem();
 
                     if (selected != null && selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player, selected) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()) {
                         if (this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)) {

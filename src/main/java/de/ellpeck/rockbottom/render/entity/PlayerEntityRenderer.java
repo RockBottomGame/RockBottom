@@ -32,7 +32,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer> {
             return;
         }
 
-        ItemInstance holding = player != null ? player.getInv().get(player.getSelectedSlot()) : null;
+        ItemInstance holding = player != null ? player.getSelectedItem() : null;
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
 

@@ -572,6 +572,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
+    public ItemInstance getSelectedItem() {
+        return this.getInv().get(this.getSelectedSlot());
+    }
+
+    @Override
     public String getChatColorFormat() {
         int color = this.design.getFavoriteColor();
         return Colors.toFormattingCode(color);
