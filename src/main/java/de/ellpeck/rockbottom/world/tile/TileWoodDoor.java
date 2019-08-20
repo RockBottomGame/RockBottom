@@ -103,7 +103,7 @@ public class TileWoodDoor extends TileBasic {
     public boolean canLiquidSpread(IWorld world, int x, int y, TileLiquid liquid, Direction dir) {
         TileState state = world.getState(x, y);
         boolean facingRight = state.get(StaticTileProps.FACING_RIGHT);
-        return state.get(StaticTileProps.OPEN) || facingRight && dir == Direction.LEFT || !facingRight && dir == Direction.RIGHT;
+        return state.get(StaticTileProps.OPEN) || (facingRight && dir == Direction.LEFT) || (!facingRight && dir == Direction.RIGHT);
     }
 
     @Override

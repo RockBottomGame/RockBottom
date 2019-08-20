@@ -74,7 +74,7 @@ public final class ContentRegistry {
         new ItemBasicTool(ResourceName.intern("saw"), 100).register();
         new ItemBasicTool(ResourceName.intern("hammer"), 100).register();
         new ItemBasicTool(ResourceName.intern("mallet"), 100).register();
-        new ItemTool(ResourceName.intern("chisel"), 1, 100, ToolProperty.CHISEL, 1).register();
+        new ItemChisel(ResourceName.intern("chisel"), 1, 100, ToolProperty.CHISEL, 1).register();
         new ItemFirework().register();
         new ItemStartNote().register();
         new ItemBasic(ResourceName.intern("plant_fiber")).register();
