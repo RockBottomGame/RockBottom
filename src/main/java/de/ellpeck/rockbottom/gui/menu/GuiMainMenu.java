@@ -108,7 +108,7 @@ public class GuiMainMenu extends Gui {
         }, assetManager.localize(ResourceName.intern("button.join"))));
 
         ComponentButton loginButton = new ComponentButton(this, start + partWidth * 2, y - 54, buttonWidth, 16, () -> {
-            guiManager.openGui(new GuiLogin(this));
+            guiManager.openGui(new GuiAccount(this));
             return true;
         }, assetManager.localize(ResourceName.intern("button.account_settings")));
         this.components.add(loginButton);
