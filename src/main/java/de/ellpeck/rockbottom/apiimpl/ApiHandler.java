@@ -176,9 +176,9 @@ public class ApiHandler implements IApiHandler {
 
             int[] light = new int[4];
             light[ITexture.TOP_LEFT] = (lightAround[0] + lightAround[8] + lightAround[1] + lightAround[2]) / 4;
-            light[ITexture.TOP_RIGHT] = (lightAround[0] + lightAround[2] + lightAround[3] + lightAround[4]) / 4;
-            light[ITexture.BOTTOM_RIGHT] = (lightAround[0] + lightAround[4] + lightAround[5] + lightAround[6]) / 4;
             light[ITexture.BOTTOM_LEFT] = (lightAround[0] + lightAround[6] + lightAround[7] + lightAround[8]) / 4;
+            light[ITexture.BOTTOM_RIGHT] = (lightAround[0] + lightAround[4] + lightAround[5] + lightAround[6]) / 4;
+            light[ITexture.TOP_RIGHT] = (lightAround[0] + lightAround[2] + lightAround[3] + lightAround[4]) / 4;
             return light;
         }
     }

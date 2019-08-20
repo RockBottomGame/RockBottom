@@ -100,7 +100,7 @@ public class GuiChat extends Gui {
                         int index = strg.endsWith(" ") ? args.length : args.length - 1;
 
                         for (String suggestion : command.getAutocompleteSuggestions(args, index, game.getPlayer(), game, game.getChatLog())) {
-                            if (index == args.length || suggestion.startsWith(args[index])) {
+                            if (index == args.length || suggestion.contains(args[index])) {
                                 this.suggestions.add(suggestion);
                             }
                         }

@@ -1,5 +1,6 @@
 package de.ellpeck.rockbottom.world.entity.player;
 
+import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
@@ -187,28 +188,22 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.isDropping = false;
 
         if (this.collidedHor) {
-        	/*
+            // TODO step up
+            /*
         	int moveOntoX = Util.floor(this.currentBounds.getBoundEdge(this.facing)+this.facing.x/100f);
-        	int moveOntoY = Util.floor(this.getY()+1);
+        	int moveOntoY = Util.floor(this.getY()+0.5f);
         	TileState moveOntoState = world.getState(moveOntoX, moveOntoY);
-        	BoundBox tileBounds = moveOntoState.getTile().getBoundBox(world, moveOntoX, moveOntoY, TileLayer.MAIN);
+        	List<BoundBox> tileBounds = moveOntoState.getTile().getBoundBoxes(world, moveOntoState, moveOntoX, moveOntoY, TileLayer.MAIN, this, this.currentBounds, this.currentBounds.copy().add(this.motionX, this.motionY));
 
-        	if (tileBounds == null) {
-        		tileBounds = new BoundBox();
-			}
-			else {
-				tileBounds = tileBounds.copy();
-			}
-			tileBounds.add(moveOntoX, moveOntoY);
-			BoundBox playerBounds = this.currentBounds.copy().add(this.motionX, this.motionY);
-			boolean canStepUp = tileBounds.isEmpty() || !tileBounds.intersects(playerBounds);
+			BoundBox motionBounds = this.currentBounds.copy().add(this.motionX, this.motionY);
+			boolean canStepUp = tileBounds.isEmpty() || !tileBounds.intersects(motionBounds);
         	if (this.onGround && canStepUp) {
         		this.setPos(this.getX(), this.getY()+1.03f);
 			}
 			else {
 				this.motionX = 0;
 			}
-			*/
+            */
         	this.motionX = 0;
         }
 
@@ -518,6 +513,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
             }
 
             return level;
+        } else if (Main.debugMode && this.isLocalPlayer()) {
+            return Constants.ADMIN_PERMISSION;
         } else {
             return 0;
         }

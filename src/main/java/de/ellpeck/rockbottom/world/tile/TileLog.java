@@ -90,7 +90,7 @@ public class TileLog extends TileBasic {
     }
 
     @Override
-    public boolean canLiquidSpreadInto(IWorld world, int x, int y, TileLiquid liquid) {
+    public boolean canLiquidSpread(IWorld world, int x, int y, TileLiquid liquid, Direction dir) {
         return world.getState(x, y).get(StaticTileProps.LOG_VARIANT).isNatural();
     }
 
