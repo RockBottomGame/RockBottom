@@ -180,6 +180,9 @@ public class InteractionManager implements IInteractionManager {
     }
 
     public static boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y) {
+        if (player.getGameMode().isCreative())
+            return true;
+        
         if (instance != null) {
             Map<ToolProperty, Integer> props = instance.getItem().getToolProperties(instance);
             if (!props.isEmpty()) {
