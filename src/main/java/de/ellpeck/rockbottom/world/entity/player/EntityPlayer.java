@@ -186,6 +186,9 @@ public class EntityPlayer extends AbstractEntityPlayer {
         boolean couldSwim = this.canSwim;
         super.update(game);
 
+        if (this.onGround)
+            this.isFlying = false;
+        
         if (this.collidedHor) {
         	/*
         	int moveOntoX = Util.floor(this.currentBounds.getBoundEdge(this.facing)+this.facing.x/100f);

@@ -242,15 +242,6 @@ public class InputHandler implements IInputHandler {
     }
 
     @Override
-    public boolean wasKeyPressedWithinTime(int key, int amount, long time) {
-        return this.pressedKeysTimed.stream()
-                .filter(pair -> pair.getLeft().equals(key))
-                .mapToLong(Pair::getRight)
-                .filter(value -> value >= System.currentTimeMillis() - time)
-                .count() >= amount;
-    }
-
-    @Override
     public int getMouseWheelChange() {
         return this.mouseWheelDelta[1];
     }
