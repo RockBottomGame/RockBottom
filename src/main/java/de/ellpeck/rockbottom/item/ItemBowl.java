@@ -17,6 +17,6 @@ public class ItemBowl extends ItemLiquidContainer {
 
     @Override
     public int getCapacity(ItemInstance instance) {
-        return 5;
+        return 6;
     }
 }

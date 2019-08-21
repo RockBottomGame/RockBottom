@@ -21,7 +21,7 @@ public class TileCaveMushroom extends TileMeta {
 
     @Override
     protected ITileRenderer createRenderer(ResourceName name) {
-        return new TileCaveMushroomRenderer();
+        return new TileCaveMushroomRenderer(name);
     }
 
     @Override
