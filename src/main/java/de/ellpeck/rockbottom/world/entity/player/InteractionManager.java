@@ -218,16 +218,16 @@ public class InteractionManager implements IInteractionManager {
                 if (itemIndex >= 0) { // If the item we want to pick up is in the inventory
                     if (itemIndex < 8) { // If the item is in the hotbar
                         player.setSelectedSlot(itemIndex);
-                    } else { // Else if the item is somewhere in the inventory, then swap if held item
+                    } else { // Else if the item is somewhere in the inventory, then swap with the held item
                         int selected = player.getSelectedSlot();
                         ItemInstance held = inv.get(selected);
                         ItemInstance invItem = inv.get(itemIndex);
                         inv.set(selected, invItem);
                         inv.set(itemIndex, held);
                     }
-                } else { // If the item is not already in the inventory
+                } else { // Else if the item is not already in the inventory
                     itemIndex = inv.getNextFreeIndex();
-                    if (itemIndex < 0) // If no slot is free, override the current slot.
+                    if (itemIndex < 0) // If no slot is free, override the selected slot.
                         inv.set(player.getSelectedSlot(), inst);
                     else if (itemIndex < 8) { // If the next free slot is in the hotbar, pick up at the slot and select it.
                         inv.set(itemIndex, inst);
