@@ -18,10 +18,7 @@ import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InputHandler implements IInputHandler {
@@ -242,15 +239,6 @@ public class InputHandler implements IInputHandler {
     @Override
     public boolean wasKeyPressed(int key) {
         return this.pressedKeys.contains(key);
-    }
-
-    @Override
-    public boolean wasKeyPressedWithinTime(int key, int amount, long time) {
-        return this.pressedKeysTimed.stream()
-                .filter(pair -> pair.getLeft().equals(key))
-                .mapToLong(Pair::getRight)
-                .filter(value -> value >= System.currentTimeMillis() - time)
-                .count() >= amount;
     }
 
     @Override

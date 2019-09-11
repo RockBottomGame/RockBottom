@@ -15,6 +15,7 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.tile.Tile;
+import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundBox;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -179,6 +180,9 @@ public class InteractionManager implements IInteractionManager {
     }
 
     public static boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y) {
+        if (player.getGameMode().isCreative())
+            return true;
+        
         if (instance != null) {
             Map<ToolProperty, Integer> props = instance.getItem().getToolProperties(instance);
             if (!props.isEmpty()) {
@@ -191,23 +195,52 @@ public class InteractionManager implements IInteractionManager {
         }
         return false;
     }
-    
-    public static boolean pickup(AbstractEntityPlayer player, TileLayer layer, int x, int y){
-        Tile tile = player.world.getState(layer, x, y).getTile();
-        if(tile != null){
+
+    public static boolean pickup(AbstractEntityPlayer player, TileLayer layer, int x, int y) {
+        TileState state = player.world.getState(layer, x, y);
+        Tile tile = state.getTile();
+        int meta = 0;
+        if (tile instanceof TileMeta)
+            meta = state.get(((TileMeta) tile).metaProp);
+
+        if (tile != null) {
             Item item = tile.getItem();
-            if(item == null){
+            if (item == null) {
                 List<ItemInstance> drops = tile.getDrops(player.world, x, y, layer, player);
-                if(!drops.isEmpty()){
+                if (!drops.isEmpty()) {
                     item = drops.get(0).getItem();
                 }
             }
-            if(item != null){
+            if (item != null) {
+                ItemInstance inst = new ItemInstance(item, 1, meta);
                 Inventory inv = player.getInv();
-                if(inv.get(player.getSelectedSlot()) == null){
-                    inv.set(player.getSelectedSlot(), new ItemInstance(item, 1));
-                    return true;
+                int itemIndex = inv.getItemIndex(inst);
+                if (itemIndex >= 0) { // If the item we want to pick up is in the inventory
+                    if (itemIndex < 8) { // If the item is in the hotbar
+                        player.setSelectedSlot(itemIndex);
+                    } else { // Else if the item is somewhere in the inventory, then swap with the held item
+                        int selected = player.getSelectedSlot();
+                        ItemInstance held = inv.get(selected);
+                        ItemInstance invItem = inv.get(itemIndex);
+                        inv.set(selected, invItem);
+                        inv.set(itemIndex, held);
+                    }
+                } else { // Else if the item is not already in the inventory
+                    itemIndex = inv.getNextFreeIndex();
+                    if (itemIndex < 0) // If no slot is free, override the selected slot.
+                        inv.set(player.getSelectedSlot(), inst);
+                    else if (itemIndex < 8) { // If the next free slot is in the hotbar, pick up at the slot and select it.
+                        inv.set(itemIndex, inst);
+                        player.setSelectedSlot(itemIndex);
+                    }
+                    else { // If there is a free slot in the inventory, swap the slots.
+                        int thisSlot = player.getSelectedSlot();
+                        ItemInstance thisItem = inv.get(thisSlot);
+                        inv.set(thisSlot, inst);
+                        inv.set(itemIndex, thisItem);
+                    }
                 }
+                return true;
             }
         }
         return false;
@@ -234,19 +267,21 @@ public class InteractionManager implements IInteractionManager {
                 }
 
                 if (Settings.KEY_UP.isDown()) {
-                    player.move(3);
+                    if (Settings.KEY_JUMP.isPressed() && player.getGameMode().isCreative()) {
+                        player.isFlying = true;
+                    } else {
+                        player.move(3);
+                    }
                 } else if (Settings.KEY_DOWN.isDown()) {
-                    player.move(4);
+                    if (Settings.KEY_JUMP.isPressed() && player.getGameMode().isCreative()) {
+                        player.isFlying = false;
+                    } else {
+                        player.move(4);
+                    }
                 }
 
                 if (Settings.KEY_JUMP.isDown()) {
                     player.move(2);
-                }
-
-                if(Settings.KEY_JUMP.wasPressedWithinTime(2, 200)){
-                    if(player.getGameMode().isCreative()){
-                        player.isFlying = !player.isFlying;
-                    }
                 }
 
                 double mousedTileX = game.getRenderer().getMousedTileX();
@@ -304,7 +339,7 @@ public class InteractionManager implements IInteractionManager {
 
                                             float progressAmount;
 
-                                            if(player.getGameMode().isCreative()){
+                                            if (player.getGameMode().isCreative()) {
                                                 progressAmount = 1.0F;
                                             } else {
                                                 float hardness = tile.getHardness(player.world, x, y, layer);
@@ -356,14 +391,14 @@ public class InteractionManager implements IInteractionManager {
                                     }
                                 }
                             }
-                            
-                            if(Settings.KEY_PICKUP.isDown()){
-                                if(player.getGameMode().isCreative()){
-                                    if(pickup(player, layer, x, y)){
+
+                            if (Settings.KEY_PICKUP.isPressed()) {
+                                if (player.getGameMode().isCreative()) {
+                                    if (pickup(player, layer, x, y)) {
                                         if (RockBottomAPI.getNet().isClient()) {
                                             RockBottomAPI.getNet().sendToServer(new PacketPickup(player.getUniqueId(), layer, x, y));
                                         }
-    
+
                                         this.interactCooldown = 10;
                                         break;
                                     }
