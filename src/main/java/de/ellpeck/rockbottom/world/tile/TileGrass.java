@@ -81,7 +81,7 @@ public class TileGrass extends TileBasic {
 
     @Override
     public boolean onInteractWithBreakKey(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
-        ItemInstance selected = player.getInv().get(player.getSelectedSlot());
+        ItemInstance selected = player.getSelectedItem();
         if (selected != null && selected.getItem().getToolProperties(selected).containsKey(ToolProperty.HOE)) {
             if (!world.isClient()) {
                 world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());

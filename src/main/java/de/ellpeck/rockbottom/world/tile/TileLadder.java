@@ -1,7 +1,10 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -32,6 +35,21 @@ public class TileLadder extends TileBasic {
     @Override
     public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
+    }
+
+    @Override
+    public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
+        if (layer == TileLayer.MAIN) {
+            ItemInstance instance = player.getSelectedItem();
+            if (instance.getItem() == GameContent.TILE_PLATFORM.getItem()) {
+                if (!world.isClient()) {
+                    world.setState(x, y, GameContent.TILE_PLATFORM.getDefState().prop(StaticTileProps.HAS_LADDER, true));
+                    instance.removeAmount(1);
+                }
+                return true;
+            }
+        }
+        return super.onInteractWith(world, x, y, layer, mouseX, mouseY, player);
     }
 
     @Override

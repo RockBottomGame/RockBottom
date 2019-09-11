@@ -29,6 +29,11 @@ public class TileConstructionTable extends MultiTile {
     }
 
     @Override
+    public boolean isPlatform() {
+        return true;
+    }
+
+    @Override
     public boolean canProvideTileEntity() {
         return true;
     }

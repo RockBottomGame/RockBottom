@@ -2,6 +2,10 @@ package de.ellpeck.rockbottom;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.Registries;
+import de.ellpeck.rockbottom.api.item.*;
+import de.ellpeck.rockbottom.api.tile.TilePlatform;
+import de.ellpeck.rockbottom.construction.category.*;
+import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.api.construction.resource.ResUseInfo;
 import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.effect.BasicEffect;
@@ -65,6 +69,7 @@ public final class ContentRegistry {
         new TileCorn().register();
         new TileCotton().register();
         new TileGlass().register();
+        new TilePlatform().register();
 
         new ItemTool(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
         new ItemTool(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();
