@@ -9,11 +9,8 @@ import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.gui.GuiConstructionTable;
 import de.ellpeck.rockbottom.gui.GuiSmithingTable;
-import de.ellpeck.rockbottom.gui.container.ContainerConstructionTable;
 import de.ellpeck.rockbottom.gui.container.ContainerSmithingTable;
-import de.ellpeck.rockbottom.world.tile.entity.TileEntityConstructionTable;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySmithingTable;
 
 public class TileSmithingTable extends MultiTile {
@@ -34,7 +31,12 @@ public class TileSmithingTable extends MultiTile {
 		return null;
 	}
 
-	@Override
+    @Override
+    public boolean isPlatform() {
+        return true;
+    }
+
+    @Override
 	public boolean canPlaceInLayer(TileLayer layer) {
 		return layer == TileLayer.MAIN;
 	}

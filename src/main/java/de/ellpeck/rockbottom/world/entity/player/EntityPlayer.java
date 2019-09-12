@@ -185,30 +185,28 @@ public class EntityPlayer extends AbstractEntityPlayer {
     public void update(IGameInstance game) {
         boolean couldSwim = this.canSwim;
         super.update(game);
+        this.isDropping = false;
 
+        if (this.onGround)
+            this.isFlying = false;
+        
         if (this.collidedHor) {
-        	/*
+            // TODO step up
+            /*
         	int moveOntoX = Util.floor(this.currentBounds.getBoundEdge(this.facing)+this.facing.x/100f);
-        	int moveOntoY = Util.floor(this.getY()+1);
+        	int moveOntoY = Util.floor(this.getY()+0.5f);
         	TileState moveOntoState = world.getState(moveOntoX, moveOntoY);
-        	BoundBox tileBounds = moveOntoState.getTile().getBoundBox(world, moveOntoX, moveOntoY, TileLayer.MAIN);
+        	List<BoundBox> tileBounds = moveOntoState.getTile().getBoundBoxes(world, moveOntoState, moveOntoX, moveOntoY, TileLayer.MAIN, this, this.currentBounds, this.currentBounds.copy().add(this.motionX, this.motionY));
 
-        	if (tileBounds == null) {
-        		tileBounds = new BoundBox();
-			}
-			else {
-				tileBounds = tileBounds.copy();
-			}
-			tileBounds.add(moveOntoX, moveOntoY);
-			BoundBox playerBounds = this.currentBounds.copy().add(this.motionX, this.motionY);
-			boolean canStepUp = tileBounds.isEmpty() || !tileBounds.intersects(playerBounds);
+			BoundBox motionBounds = this.currentBounds.copy().add(this.motionX, this.motionY);
+			boolean canStepUp = tileBounds.isEmpty() || !tileBounds.intersects(motionBounds);
         	if (this.onGround && canStepUp) {
         		this.setPos(this.getX(), this.getY()+1.03f);
 			}
 			else {
 				this.motionX = 0;
 			}
-			*/
+            */
         	this.motionX = 0;
         }
 
@@ -291,7 +289,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
             }
         }
         
-        if(this.isFlying){
+        if (this.isFlying) {
             this.motionY = 0;
         }
     }
@@ -574,6 +572,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
+    public ItemInstance getSelectedItem() {
+        return this.getInv().get(this.getSelectedSlot());
+    }
+
+    @Override
     public String getChatColorFormat() {
         int color = this.design.getFavoriteColor();
         return Colors.toFormattingCode(color);
@@ -620,6 +623,8 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public double getMoveSpeed() {
+        if (this.gameMode.isCreative() && this.isFlying)
+            return 0.3;
         double speed = 0.2;
         speed += 0.01 * this.getEffectModifier(GameContent.EFFECT_SPEED);
         return this.statEvent(StatType.MOVE_SPEED, speed);
@@ -709,41 +714,47 @@ public class EntityPlayer extends AbstractEntityPlayer {
 
     @Override
     public boolean move(int type) {
-        if (type == 0) {
+        if (type == 0) {    // Move left
             this.motionX -= this.getMoveSpeed();
             this.facing = Direction.LEFT;
             return true;
-        } else if (type == 1) {
+        } else if (type == 1) { // Move right
             this.motionX += this.getMoveSpeed();
             this.facing = Direction.RIGHT;
             return true;
-        } else if (type == 2) {
+        } else if (type == 2) { // Jump
             if (this.canSwim) {
                 this.motionY = 0.075;
+            } else if(this.isFlying) {
+                //this.motionY += this.getMoveSpeed();
+                //this.facing = Direction.UP;
+                //return true;
             } else {
                 this.jump(this.getJumpHeight());
             }
             return true;
-        } else if (type == 3) {
+        } else if (type == 3) { // Move up
             if (this.canClimb) {
                 this.motionY += this.getClimbSpeed();
                 this.facing = Direction.UP;
                 return true;
-            } else if(this.isFlying){
+            } else if (this.isFlying) {
                 this.motionY += this.getMoveSpeed();
                 this.facing = Direction.UP;
                 return true;
             }
-        } else if (type == 4) {
+        } else if (type == 4) { // Move down
+            this.isDropping = true;
             if (this.canClimb) {
                 this.motionY -= this.getClimbSpeed();
                 this.facing = Direction.DOWN;
                 return true;
-            } else if(this.isFlying){
+            } else if (this.isFlying) {
                 this.motionY -= this.getMoveSpeed();
                 this.facing = Direction.DOWN;
                 return true;
             }
+
         }
         return false;
     }

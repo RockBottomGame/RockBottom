@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -16,6 +18,9 @@ import de.ellpeck.rockbottom.gui.GuiSimpleFurnace;
 import de.ellpeck.rockbottom.gui.container.ContainerSimpleFurnace;
 import de.ellpeck.rockbottom.render.tile.TileSimpleFurnaceRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntitySimpleFurnace;
+
+import java.util.Collections;
+import java.util.List;
 
 public class TileSimpleFurnace extends MultiTile {
 
@@ -35,6 +40,19 @@ public class TileSimpleFurnace extends MultiTile {
         Pos2 main = this.getMainPos(x, y, world.getState(layer, x, y));
         TileEntitySimpleFurnace tile = world.getTileEntity(layer, main.getX(), main.getY(), TileEntitySimpleFurnace.class);
         return tile != null && tile.isActive() ? 70 : 0;
+    }
+
+    @Override
+    public boolean isPlatform() {
+        return true;
+    }
+
+    @Override
+    public List<BoundBox> getPlatformBounds(IWorld world, int x, int y, TileLayer layer, TileState state, MovableWorldObject object, BoundBox objectBox, BoundBox objectBoxMotion) {
+        if (layer == TileLayer.MAIN && !this.isMainPos(x, y, state))
+            return RockBottomAPI.getApiHandler().getDefaultPlatformBounds(world, x, y, layer, 1, 4/12d, state, object, objectBox);
+        else
+            return Collections.emptyList();
     }
 
     @Override

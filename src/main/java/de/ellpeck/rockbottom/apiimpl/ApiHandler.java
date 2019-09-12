@@ -12,6 +12,8 @@ import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.data.set.AbstractDataSet;
 import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.set.part.IPartFactory;
+import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
@@ -19,11 +21,11 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.tile.MultiTile;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
-import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.Direction;
-import de.ellpeck.rockbottom.api.util.Pos2;
-import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.BiomeGen;
@@ -174,9 +176,9 @@ public class ApiHandler implements IApiHandler {
 
             int[] light = new int[4];
             light[ITexture.TOP_LEFT] = (lightAround[0] + lightAround[8] + lightAround[1] + lightAround[2]) / 4;
-            light[ITexture.TOP_RIGHT] = (lightAround[0] + lightAround[2] + lightAround[3] + lightAround[4]) / 4;
-            light[ITexture.BOTTOM_RIGHT] = (lightAround[0] + lightAround[4] + lightAround[5] + lightAround[6]) / 4;
             light[ITexture.BOTTOM_LEFT] = (lightAround[0] + lightAround[6] + lightAround[7] + lightAround[8]) / 4;
+            light[ITexture.BOTTOM_RIGHT] = (lightAround[0] + lightAround[4] + lightAround[5] + lightAround[6]) / 4;
+            light[ITexture.TOP_RIGHT] = (lightAround[0] + lightAround[2] + lightAround[3] + lightAround[4]) / 4;
             return light;
         }
     }
@@ -188,6 +190,19 @@ public class ApiHandler implements IApiHandler {
             colors[i] = this.getColorByLight(interpolatedLight[i], layer);
         }
         return colors;
+    }
+
+    @Override
+    public List<BoundBox> getDefaultPlatformBounds(IWorld world, int x, int y, TileLayer layer, double tileWidth, double tileHeight, TileState state, MovableWorldObject object, BoundBox objectBox) {
+        if (object instanceof Entity && ((Entity) object).isDropping) {
+            return Collections.emptyList();
+        }
+
+        if (objectBox.getMinY() >= y + tileHeight) {
+            return Collections.singletonList(new BoundBox((Util.ceil(tileWidth) - tileWidth)/2, tileHeight - 1/12d, (Util.ceil(tileWidth) + tileWidth)/2, tileHeight).add(x, y));
+        }
+
+        return Collections.emptyList();
     }
 
     @Override
