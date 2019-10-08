@@ -8,8 +8,8 @@ apply plugin: 'application'
 
 mainClassName = "de.ellpeck.rockbottom.Main"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.10
+targetCompatibility = 1.10
 
 ext {
     proguardEnabled = new File(gradle.proguardDir).exists()
