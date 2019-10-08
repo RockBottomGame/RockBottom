@@ -7,6 +7,8 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.part.PartDataSet;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
+import de.ellpeck.rockbottom.api.event.EventResult;
+import de.ellpeck.rockbottom.api.event.impl.RecipeLearnEvent;
 import de.ellpeck.rockbottom.api.toast.IToast;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
@@ -114,6 +116,11 @@ public class KnowledgeManager implements IKnowledgeManager {
     @Override
     public boolean teachRecipe(PlayerCompendiumRecipe recipe, boolean announce) {
         if (!recipe.isKnown(this.player)) {
+            RecipeLearnEvent event = new RecipeLearnEvent(this.player, recipe, announce);
+            if (RockBottomAPI.getEventHandler().fireEvent(event) == EventResult.CANCELLED)
+                return false;
+            recipe = event.recipe;
+            announce = event.announce;
             RecipeInformation information = new RecipeInformation(recipe);
             this.teachInformation(information, announce);
             return true;
