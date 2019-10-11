@@ -46,7 +46,7 @@ public class InteractionManager implements IInteractionManager {
     public static boolean interact(AbstractEntityPlayer player, TileLayer inputLayer, double mouseX, double mouseY, boolean destKey) {
         List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
 
-        InteractionEvent event = new InteractionEvent(player, entities, inputLayer, Util.floor(mouseX), Util.floor(mouseY), mouseX, mouseY);
+        InteractionEvent event = new InteractionEvent(player, entities, inputLayer, Util.floor(mouseX), Util.floor(mouseY), mouseX, mouseY, destKey);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
             TileLayer layer = event.layer;
             int x = event.x;
