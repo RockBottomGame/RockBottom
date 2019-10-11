@@ -5,6 +5,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'application'
+apply plugin: 'maven-publish'
 
 mainClassName = "de.ellpeck.rockbottom.Main"
 
@@ -57,6 +58,18 @@ jar {
 installDist {
     destinationDir = new File('build/temp/libs')
     exclude 'RockBottom-*'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact jar
+        }
+    }
+    repositories {
+        maven { url "file:///srv/nginx/maven" }
+    }
 }
 
 if (proguardEnabled) {

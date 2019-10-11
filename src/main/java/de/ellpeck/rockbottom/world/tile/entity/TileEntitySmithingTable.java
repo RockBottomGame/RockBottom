@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.world.tile.entity;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.item.Item;
-import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.IToolStation;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;

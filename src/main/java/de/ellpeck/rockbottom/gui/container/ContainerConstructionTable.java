@@ -4,7 +4,6 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.gui.container.RestrictedInputSlot;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
-import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityConstructionTable;
 

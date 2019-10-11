@@ -3,7 +3,6 @@ package de.ellpeck.rockbottom.world.entity.player;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
@@ -278,7 +277,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
         if (this.isLocalPlayer()) {
             if (this.world.isClient() && this.ticksExisted % this.getSyncFrequency() == 0) {
                 if (this.lastSyncX != x || this.lastSyncY != y) {
-                    RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing));
+                    RockBottomAPI.getNet().sendToServer(new PacketPlayerMovement(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.isFlying));
                     this.lastSyncX = x;
                     this.lastSyncY = y;
                 }

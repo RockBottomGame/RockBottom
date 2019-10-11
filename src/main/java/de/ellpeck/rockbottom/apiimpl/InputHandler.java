@@ -18,8 +18,10 @@ import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL11;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class InputHandler implements IInputHandler {
 

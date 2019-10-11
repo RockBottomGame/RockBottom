@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.net.chat.command.CommandItemList;
 import de.ellpeck.rockbottom.world.entity.EntityBoomerang;
 
 public class ItemBoomerang extends ItemTool {

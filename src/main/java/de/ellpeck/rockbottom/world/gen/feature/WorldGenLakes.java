@@ -47,7 +47,7 @@ public class WorldGenLakes implements IWorldGenerator {
                         }
                     }
 
-                    if (chunk.getStateInner(x, startY - depthX).getTile().canLiquidSpread(world, x, startY - depthX, GameContent.TILE_WATER, Direction.NONE)) {
+                    if (chunk.getStateInner(x, startY - depthX).getTile().canLiquidSpread(world, x, chunk.getY() + startY - depthX, GameContent.TILE_WATER, Direction.NONE)) {
                         chunk.setStateInner(x, startY - depthX, chunk.getBiomeInner(x, startY - depthX).getFillerTile(world, chunk, x, startY - depthX));
                     }
 
