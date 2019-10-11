@@ -55,8 +55,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class InternalHooks implements IInternalHooks {
@@ -316,7 +316,7 @@ public class InternalHooks implements IInternalHooks {
             if (entity.doesSync()) {
                 if (entity.ticksExisted % entity.getSyncFrequency() == 0) {
                     if (entity.lastSyncX != x || entity.lastSyncY != y) {
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing), x, y, entity);
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.isFlying), x, y, entity);
 
                         entity.lastSyncX = x;
                         entity.lastSyncY = y;

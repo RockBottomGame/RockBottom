@@ -144,7 +144,7 @@ public class ConnectedPlayer extends EntityPlayer {
         this.lastCalcY = this.getY();
         this.distanceCounter = 0;
 
-        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing));
+        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.isFlying));
     }
 
     @Override

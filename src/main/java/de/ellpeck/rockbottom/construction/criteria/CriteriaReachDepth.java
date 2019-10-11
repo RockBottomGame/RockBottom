@@ -1,11 +1,8 @@
 package de.ellpeck.rockbottom.construction.criteria;
 
 import com.google.gson.JsonObject;
-import de.ellpeck.rockbottom.api.Registries;
-import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.ICriteria;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
-import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.ArrayList;
