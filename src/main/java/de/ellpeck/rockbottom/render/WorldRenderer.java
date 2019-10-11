@@ -135,6 +135,12 @@ public class WorldRenderer {
                 if (renderer != null) {
                     double x = entity.getLerpedX();
                     double y = entity.getLerpedY();
+
+                    if (game.getGuiManager().getGui() != null && game.getGuiManager().getGui().doesPauseGame()) {
+                        x = entity.getX();
+                        y = entity.getY();
+                    }
+
                     if (x >= this.minX && x <= this.maxX && y >= this.minY && y <= this.maxY) {
                         ResourceName program = renderer.getRenderShader(game, manager, g, world, entity);
                         g.setProgram(program == null ? null : manager.getShaderProgram(program));
