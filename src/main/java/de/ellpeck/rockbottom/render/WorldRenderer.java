@@ -351,16 +351,16 @@ public class WorldRenderer {
 
         Biome biome = world.getBiome(player.chunkX, player.chunkY);
 
-        if (!biome.renderBackground(game, manager, g, world, player, width, height)) {
-            return;
-        }
-
         // Sky Color
         float skylightMod = world.getSkylightModifier(false);
 
         int skyLight = (int) (skylightMod * (SKY_COLORS.length - 1));
         int skyColor = biome.getSkyColor(SKY_COLORS[skyLight]);
         g.backgroundColor(skyColor);
+
+        if (!biome.renderBackground(game, manager, g, world, player, width, height)) {
+            return;
+        }
 
         // Scale
         float scale = g.getWorldScale();
