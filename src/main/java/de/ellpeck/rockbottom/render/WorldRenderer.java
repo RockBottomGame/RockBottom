@@ -24,6 +24,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.AbstractWorld;
@@ -205,6 +206,9 @@ public class WorldRenderer {
         }
         g.setProgram(null);
 
+        Biome biome = world.getBiome(player.chunkX, player.chunkY);
+        biome.renderForeground(game, manager, g, world, player, scale);
+
         boolean chunkDebug = g.isChunkBorderDebug();
         boolean heightDebug = g.isHeightDebug();
         boolean biomeDebug = g.isBiomeDebug();
@@ -339,18 +343,27 @@ public class WorldRenderer {
             return;
         }
 
+        Biome biome = world.getBiome(player.chunkX, player.chunkY);
+
+        if (!biome.renderBackground(game, manager, g, world, player, width, height)) {
+            return;
+        }
+
+        // Sky Color
         float skylightMod = world.getSkylightModifier(false);
 
         int skyLight = (int) (skylightMod * (SKY_COLORS.length - 1));
-        int skyColor = SKY_COLORS[skyLight];
+        int skyColor = biome.getSkyColor(SKY_COLORS[skyLight]);
         g.backgroundColor(skyColor);
 
+        // Scale
         float scale = g.getWorldScale();
         g.setScale(scale, scale);
 
         int time = world.getCurrentTime();
         float worldScale = game.getSettings().renderScale;
 
+        // Stars
         float starAlpha = 1F - Math.min(1F, skylightMod + 0.5F);
         if (starAlpha <= 0F) {
             if (!this.starMap.isEmpty()) {
@@ -375,18 +388,21 @@ public class WorldRenderer {
         double radiusX = 10D / worldScale;
         double radiusY = 7D / worldScale;
 
+        // Sun
         double sunAngle = (time / (double) Constants.TIME_PER_DAY) * 360D + 180D;
         double sunRads = Math.toRadians(sunAngle);
         float sunX = (float) (width / 2D + Math.cos(sunRads) * radiusX);
         float sunY = (float) (height + Math.sin(sunRads) * radiusY);
         manager.getTexture(SUN_RES).draw(sunX - 2F, sunY - 2F, 4F, 4F);
 
+        // Moon
         double moonAngle = (time / (double) Constants.TIME_PER_DAY) * 360D;
         double moonRads = Math.toRadians(moonAngle);
         float moonX = (float) (width / 2D + Math.cos(moonRads) * radiusX);
         float moonY = (float) (height + Math.sin(moonRads) * radiusY);
         manager.getTexture(MOON_RES).draw(moonX - 2F, moonY - 2F, 4F, 4F);
 
+        // Clouds
         float yOff = (float) player.getY() * 0.025F;
         for (Cloud cloud : this.clouds) {
             cloud.render(manager, width, height, skylightMod, yOff);
