@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.world.tile.entity;
 
 import de.ellpeck.rockbottom.api.Registries;
-import de.ellpeck.rockbottom.api.construction.compendium.mortar.MortarRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.MortarRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;

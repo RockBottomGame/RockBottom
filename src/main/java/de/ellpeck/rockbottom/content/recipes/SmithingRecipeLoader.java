@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.construction.compendium.smithing.SmithingRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.SmithingRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
@@ -38,12 +38,10 @@ public class SmithingRecipeLoader implements IContentLoader<SmithingRecipe> {
                 boolean knowledge = object.has("knowledge") && object.get("knowledge").getAsBoolean();
                 List<IUseInfo> inputList = readUseInfos(object.get("inputs").getAsJsonArray());
                 List<ItemInstance> outputList = readItemInstances(object.get("outputs").getAsJsonArray());
-                //float difficulty = object.has("difficulty") ? object.get("difficulty").getAsFloat() : 1;
-                //int hits = object.has("hits") ? object.get("hits").getAsInt() : 1;
-                //int usage = object.has("usage") ? object.get("usage").getAsInt() : 1;
+                int usage = object.has("usage") ? object.get("usage").getAsInt() : 1;
                 float skill = object.has("skill") ? object.get("skill").getAsFloat() : 0;
 
-                SmithingRecipe recipe = new SmithingRecipe(resourceName, inputList, outputList, knowledge, skill).register();
+                SmithingRecipe recipe = new SmithingRecipe(resourceName, inputList, outputList, knowledge, skill, usage).register();
 
                 if (object.has("criteria")) {
                     processCriteria(recipe, object.get("criteria").getAsJsonArray());
