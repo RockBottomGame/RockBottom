@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.init.RockBottom;
 
 public class PlayerDesign implements IPlayerDesign {
 
@@ -87,7 +88,7 @@ public class PlayerDesign implements IPlayerDesign {
         design.setPantsColor(Colors.random(Util.RANDOM));
 
         design.setFootwear(Util.RANDOM.nextInt(FOOTWEAR.size()));
-        design.setFavoriteColor(Colors.random(Util.RANDOM));
+        design.setFootwearColor(Colors.random(Util.RANDOM));
 
         design.setAccessory(Util.RANDOM.nextInt(ACCESSORIES.size()));
 
