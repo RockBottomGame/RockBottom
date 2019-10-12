@@ -212,7 +212,7 @@ public class WorldRenderer {
         }
         g.setProgram(null);
 
-        Biome biome = world.getBiome(player.chunkX, player.chunkY);
+        Biome biome = world.getBiome((int)player.getX(), (int)player.getY());
         biome.renderForeground(game, manager, g, world, player, scale);
 
         boolean chunkDebug = g.isChunkBorderDebug();
@@ -349,7 +349,7 @@ public class WorldRenderer {
             return;
         }
 
-        Biome biome = world.getBiome(player.chunkX, player.chunkY);
+        Biome biome = world.getBiome((int)player.getX(), (int)player.getY());
 
         // Sky Color
         float skylightMod = world.getSkylightModifier(false);

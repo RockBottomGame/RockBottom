@@ -69,7 +69,8 @@ public class GuiPlayerEditor extends Gui {
         this.components.add(new Slider(this, x, y, design.getBeard(), IPlayerDesign.BEARD.size() - 1, design::setBeard, assetManager.localize(ResourceName.intern("button.player_design.beard"))));
         this.components.add(new ColorPicker(this, colorX, y, design.getBeardColor(), design::setBeardColor));
 
-        ComponentInputField nameField = new ComponentInputField(this, x - 98, 0, 80, 12, true, true, false, 24, true, design::setName) {
+        ComponentInputField nameField = new ComponentInputField(this, x - 98, 0, 80, 12, true, true, false, 24, true,
+                (name) -> { if (!name.isEmpty()) design.setName(name); }) {
             @Override
             public String getDisplayText() {
                 return Colors.toFormattingCode(design.getFavoriteColor()) + super.getDisplayText();
