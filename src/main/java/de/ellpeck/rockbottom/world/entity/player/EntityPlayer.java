@@ -825,6 +825,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     public void setGameMode(GameMode gameMode){
         this.gameMode = gameMode;
         this.isFlying = false;
+        this.sendToClients();
     }
 
 }
