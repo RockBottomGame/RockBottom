@@ -27,7 +27,7 @@ buildscript {
             flatDir dirs: gradle.proguardDir
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.3'
         if (proguardEnabled)
             classpath ':proguard:'
     }
