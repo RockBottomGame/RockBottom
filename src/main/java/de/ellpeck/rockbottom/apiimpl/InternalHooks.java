@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.smithing.SmithingRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.SmithingRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
@@ -45,6 +45,7 @@ import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.gui.GuiSmithing;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
+import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotClick;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
@@ -490,6 +491,17 @@ public class InternalHooks implements IInternalHooks {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean doDefaultSlotClick(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot) {
+        ItemInstance slotInstance = slot.slot.get();
+        boolean cancel = false;
+        if (slotInstance != null) {
+            cancel = slotInstance.getItem().onClickInSlot(gui.player, gui.getContainer(), slot.slot, slotInstance, button, gui.getContainer().holdingInst);
+            RockBottomAPI.getNet().sendToServer(new PacketSlotClick(gui.player, gui.getContainer().getIdForSlot(slot.slot), button));
+        }
+        return cancel;
     }
 
     @Override

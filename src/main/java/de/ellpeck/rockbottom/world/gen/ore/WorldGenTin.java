@@ -9,16 +9,16 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import java.util.Collections;
 import java.util.Set;
 
-public class WorldGenCopper extends WorldGenOre {
+public class WorldGenTin extends WorldGenOre {
 
     @Override
     protected int getHighestGridPos() {
-        return -1;
+        return -3;
     }
 
     @Override
     protected int getLowestGridPos() {
-        return -50;
+        return -20;
     }
 
     @Override
@@ -38,8 +38,7 @@ public class WorldGenCopper extends WorldGenOre {
 
     @Override
     protected TileState getOreState() {
-        TileState state = GameContent.TILE_COPPER.getDefState();
-        return this.oreRandom.nextInt(30) <= 0 ? state.prop(StaticTileProps.HAS_CANISTER, true) : state;
+        return GameContent.TILE_TIN.getDefState();
     }
 
     @Override
