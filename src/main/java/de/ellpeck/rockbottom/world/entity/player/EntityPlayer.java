@@ -129,7 +129,6 @@ public class EntityPlayer extends AbstractEntityPlayer {
                         inv.removeChangeCallback(this.invCallback);
                     }
                 }
-
                 this.currentContainer.onClosed();
             }
 

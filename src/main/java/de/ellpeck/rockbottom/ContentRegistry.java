@@ -103,6 +103,7 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("bronze_axe"), 4F, 650, ToolProperty.AXE, 20).register();
         new ItemTool(ResourceName.intern("bronze_shovel"), 4F, 650, ToolProperty.SHOVEL, 20).register();
         new ItemSword(ResourceName.intern("bronze_sword"), 650, 15, 30, 2D, 0.4D).register();
+        new ItemStorageContainer(ResourceName.intern("bronze_canister"), 4).register();
         new ItemRecipeNote().register();
         new ItemBowl().register();
         new ItemTool(ResourceName.intern("pestle"), 1F, 64, ToolProperty.PESTLE, 1).register();
