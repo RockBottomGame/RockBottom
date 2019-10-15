@@ -129,7 +129,6 @@ public class EntityPlayer extends AbstractEntityPlayer {
                         inv.removeChangeCallback(this.invCallback);
                     }
                 }
-
                 this.currentContainer.onClosed();
             }
 
@@ -825,6 +824,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     public void setGameMode(GameMode gameMode){
         this.gameMode = gameMode;
         this.isFlying = false;
+        this.sendToClients();
     }
 
 }

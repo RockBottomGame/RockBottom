@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
+import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -31,6 +32,9 @@ import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.gui.GuiExtendedInventory;
+import de.ellpeck.rockbottom.gui.GuiInventory;
+import de.ellpeck.rockbottom.gui.container.ContainerExtendedInventory;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketConstruction;
 import de.ellpeck.rockbottom.render.WorldRenderer;
@@ -38,6 +42,7 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.logging.Level;
@@ -493,5 +498,19 @@ public class ApiHandler implements IApiHandler {
 
     public INoiseGen getBiomeNoise(IWorld world, Biome biome, Map<Biome, INoiseGen> biomeNoiseGens) {
         return biomeNoiseGens.computeIfAbsent(biome, b -> RockBottomAPI.getApiHandler().makeSimplexNoise(b.getBiomeSeed(world)));
+    }
+
+    @Override
+    public void openPlayerInventory(AbstractEntityPlayer player) {
+        player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
+    }
+
+    @Override
+    public void openExtendedPlayerInventory(AbstractEntityPlayer player, IInventory inventory, int containerWidth, Consumer<IInventory> onClosed, ItemContainer.ISlotCallback slotCallback) {
+        int containerHeight = 1 + inventory.getSlotAmount() / containerWidth;
+        player.openGuiContainer(
+                new GuiExtendedInventory(player, containerWidth, containerHeight),
+                new ContainerExtendedInventory(player, inventory, containerWidth, containerHeight, onClosed, slotCallback)
+        );
     }
 }

@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.smithing.SmithingRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.SmithingRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;

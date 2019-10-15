@@ -46,9 +46,12 @@ public final class PacketDrop implements IPacket {
 
     public static void dropHeldItem(AbstractEntityPlayer player, ItemContainer container) {
         if (container.holdingInst != null) {
+            System.out.println(container.holdingInst);
             if (RockBottomAPI.getNet().isClient()) {
+                System.out.println("Client drop");
                 RockBottomAPI.getNet().sendToServer(new PacketDrop(player.getUniqueId()));
             } else {
+                System.out.println("Server drop");
                 AbstractEntityItem.spawn(player.world, container.holdingInst, player.getX(), player.getY() + 1, player.facing.x * 0.25, 0);
             }
             container.holdingInst = null;

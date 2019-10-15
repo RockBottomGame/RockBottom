@@ -24,6 +24,7 @@ import de.ellpeck.rockbottom.world.gen.biome.*;
 import de.ellpeck.rockbottom.world.gen.feature.*;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCoal;
 import de.ellpeck.rockbottom.world.gen.ore.WorldGenCopper;
+import de.ellpeck.rockbottom.world.gen.ore.WorldGenTin;
 import de.ellpeck.rockbottom.world.tile.*;
 
 public final class ContentRegistry {
@@ -54,8 +55,10 @@ public final class ContentRegistry {
         new TileRemainsGoo().register();
         new TileGrassTorch().register();
         new TileCopper().register();
+        new TileOreMaterial(ResourceName.intern("tin")).register();
         new TileSpinningWheel().register();
         new TileSimpleFurnace().register();
+        new TileCombiner().register();
         new TileConstructionTable().register();
         new TileSmithingTable().register();
         new TileCaveMushroom().register();
@@ -94,6 +97,13 @@ public final class ContentRegistry {
         new ItemTool(ResourceName.intern("copper_axe"), 2F, 350, ToolProperty.AXE, 10).register();
         new ItemTool(ResourceName.intern("copper_shovel"), 2F, 350, ToolProperty.SHOVEL, 10).register();
         new ItemSword(ResourceName.intern("copper_sword"), 350, 12, 30, 2D, 0.35D).register();
+        new ItemBasic(ResourceName.intern("tin_ingot")).register();
+        new ItemBasic(ResourceName.intern("bronze_ingot")).register();
+        new ItemTool(ResourceName.intern("bronze_pickaxe"), 6F, 650, ToolProperty.PICKAXE, 20).register();
+        new ItemTool(ResourceName.intern("bronze_axe"), 4F, 650, ToolProperty.AXE, 20).register();
+        new ItemTool(ResourceName.intern("bronze_shovel"), 4F, 650, ToolProperty.SHOVEL, 20).register();
+        new ItemSword(ResourceName.intern("bronze_sword"), 650, 15, 30, 2D, 0.4D).register();
+        new ItemStorageContainer(ResourceName.intern("bronze_canister"), 4).register();
         new ItemRecipeNote().register();
         new ItemBowl().register();
         new ItemTool(ResourceName.intern("pestle"), 1F, 64, ToolProperty.PESTLE, 1).register();
@@ -126,6 +136,7 @@ public final class ContentRegistry {
         Registries.WORLD_GENERATORS.register(ResourceName.intern("coal"), WorldGenCoal.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("start_hut"), WorldGenStartHut.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("copper"), WorldGenCopper.class);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("tin"), WorldGenTin.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("caves"), WorldGenCaves.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("cave_mushrooms"), WorldGenCaveMushrooms.class);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), WorldGenStardrops.class);
