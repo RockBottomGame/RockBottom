@@ -5,6 +5,6 @@
 /*.ipr
 /*.iws
 /game
-/rockbottom
+/rockbottom*
 /build
 /.gradle
