@@ -17,6 +17,7 @@ import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
+import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
@@ -505,11 +506,11 @@ public class ApiHandler implements IApiHandler {
     }
 
     @Override
-    public void openExtendedPlayerInventory(AbstractEntityPlayer player, IInventory inventory, int containerWidth, Consumer<IInventory> onClosed) {
+    public void openExtendedPlayerInventory(AbstractEntityPlayer player, IInventory inventory, int containerWidth, Consumer<IInventory> onClosed, ItemContainer.ISlotCallback slotCallback) {
         int containerHeight = 1 + inventory.getSlotAmount() / containerWidth;
         player.openGuiContainer(
                 new GuiExtendedInventory(player, containerWidth, containerHeight),
-                new ContainerExtendedInventory(player, inventory, containerWidth, containerHeight, onClosed)
+                new ContainerExtendedInventory(player, inventory, containerWidth, containerHeight, onClosed, slotCallback)
         );
     }
 }

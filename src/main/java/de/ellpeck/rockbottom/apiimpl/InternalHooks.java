@@ -45,7 +45,6 @@ import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
 import de.ellpeck.rockbottom.gui.GuiSmithing;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketSlotClick;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
@@ -491,17 +490,6 @@ public class InternalHooks implements IInternalHooks {
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean doDefaultSlotClick(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot) {
-        ItemInstance slotInstance = slot.slot.get();
-        boolean cancel = false;
-        if (slotInstance != null) {
-            cancel = slotInstance.getItem().onClickInSlot(gui.player, gui.getContainer(), slot.slot, slotInstance, button, gui.getContainer().holdingInst);
-            RockBottomAPI.getNet().sendToServer(new PacketSlotClick(gui.player, gui.getContainer().getIdForSlot(slot.slot), button));
-        }
-        return cancel;
     }
 
     @Override
