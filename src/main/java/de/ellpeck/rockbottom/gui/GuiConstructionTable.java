@@ -30,7 +30,10 @@ public class GuiConstructionTable extends GuiContainer {
 
     private static final ResourceName background = ResourceName.intern("gui.construction_table.background");
     private static final int PAGE_HEIGHT = 94;
-    private static final int MENU_WIDTH = 22 + 4;
+    private static final int MENU_WIDTH = 43 + 4;
+
+    private static final int GUI_WIDTH = 135;
+    private static final int GUI_HEIGHT = 169;
 
 	public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.construction_table.item_background");
 	public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.construction_table.ingredient_background");
@@ -45,7 +48,7 @@ public class GuiConstructionTable extends GuiContainer {
     private ICompendiumRecipe selectedRecipe;
 
     public GuiConstructionTable(AbstractEntityPlayer player, TileEntityConstructionTable tile) {
-        super(player, 135, 169);
+        super(player, GUI_WIDTH, GUI_HEIGHT);
         this.tile = tile;
 
         int playerSlots = player.getInv().getSlotAmount();
@@ -56,17 +59,37 @@ public class GuiConstructionTable extends GuiContainer {
     }
 
     @Override
-    public void onOpened(IGameInstance game) {
-        super.onOpened(game);
-        this.player.getInv().addChangeCallback(this.invCallback);
-        this.tile.getTileInventory().addChangeCallback(this.invCallback);
+    public void init(IGameInstance game) {
+        super.init(game);
+
+        this.menu = new ComponentMenu(this, -4, 1, 6, PAGE_HEIGHT - 2, 2, 4, -1, 1, new BoundBox(0, 0, MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction_table.scroll_bar"), 1);
+        this.components.add(this.menu);
+
+        organise();
+    }
+
+    private void initConstructButton(ICompendiumRecipe recipe) {
+        if (this.construct != null) {
+            this.components.remove(this.construct);
+            this.construct = null;
+        }
+
+        if (recipe != null) {
+            IInventory inv = this.player.getInv();
+            this.construct = recipe.getConstructButton(this, this.player, tile, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct.setPos(66, 17);
+            this.components.add(this.construct);
+        }
     }
 
     @Override
-    public void onClosed(IGameInstance game) {
-        super.onClosed(game);
-        this.player.getInv().removeChangeCallback(this.invCallback);
-        this.tile.getTileInventory().removeChangeCallback(this.invCallback);
+    public final void render(IGameInstance game, IAssetManager assetManager, IRenderer renderer) {
+        assetManager.getTexture(background).draw((float) this.x, (float) this.y, GUI_WIDTH, PAGE_HEIGHT);
+        if (this.selectedRecipe != null) {
+            String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
+            assetManager.getFont().drawAutoScaledString(this.x + 72, this.y + 6, strg, 0.25F, 72 - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
+        }
+        super.render(game, assetManager, renderer);
     }
 
     @Override
@@ -104,38 +127,39 @@ public class GuiConstructionTable extends GuiContainer {
         }
     }
 
-    private void initConstructButton(ICompendiumRecipe recipe) {
-        if (this.construct != null) {
-            this.components.remove(this.construct);
-            this.construct = null;
-        }
-
-        if (recipe != null) {
-            IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, tile, this.selectedRecipe.canConstruct(inv, inv));
-            this.construct.setPos(56, 17);
-            this.components.add(this.construct);
-        }
+    @Override
+    public void onOpened(IGameInstance game) {
+        super.onOpened(game);
+        this.player.getInv().addChangeCallback(this.invCallback);
+        this.tile.getTileInventory().addChangeCallback(this.invCallback);
     }
 
     @Override
-    public final void render(IGameInstance game, IAssetManager assetManager, IRenderer renderer) {
-        assetManager.getTexture(background).draw((float) this.x + 7, (float) this.y, 120.0F, 94.0F);
-        if (this.selectedRecipe != null) {
-            String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
-            assetManager.getFont().drawAutoScaledString(this.x + 72, this.y + 6, strg, 0.25F, 72 - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
-        }
-        super.render(game, assetManager, renderer);
+    public void onClosed(IGameInstance game) {
+        super.onClosed(game);
+        this.player.getInv().removeChangeCallback(this.invCallback);
+        this.tile.getTileInventory().removeChangeCallback(this.invCallback);
     }
 
-    @Override
-    public void init(IGameInstance game) {
-        super.init(game);
+    private void stockIngredients(List<ComponentIngredient> actualIngredients) {
+        if (!this.ingredients.isEmpty()) {
+            this.components.removeAll(this.ingredients);
+            this.ingredients.clear();
+        }
 
-        this.menu = new ComponentMenu(this, 7, 1, 6, PAGE_HEIGHT - 2, 1, 4, -2, 1, new BoundBox(7, 0, 7 + MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.construction_table.scroll_bar"));
-        this.components.add(this.menu);
+        this.ingredients.addAll(actualIngredients);
+        while (this.ingredients.size() < 8) {
+            this.ingredients.add(new ComponentIngredient(this, false, Collections.emptyList(), INGREDIENT_TEX));
+        }
 
-        organise();
+        this.components.addAll(this.ingredients);
+
+        int counter = 0;
+        for (ComponentIngredient comp : this.ingredients) {
+            Pos2 pos = new Pos2(50 + (counter % 4) * 16, 51 + (counter / 4) * 19);
+            comp.setPos(pos.getX(), pos.getY());
+            counter++;
+        }
     }
 
     private void organise() {
@@ -180,27 +204,6 @@ public class GuiConstructionTable extends GuiContainer {
             this.stockIngredients(this.selectedRecipe.getIngredientButtons(this, this.player, INGREDIENT_TEX));
         } else {
             this.stockIngredients(Collections.emptyList());
-        }
-    }
-
-    private void stockIngredients(List<ComponentIngredient> actualIngredients) {
-        if (!this.ingredients.isEmpty()) {
-            this.components.removeAll(this.ingredients);
-            this.ingredients.clear();
-        }
-
-        this.ingredients.addAll(actualIngredients);
-        while (this.ingredients.size() < 8) {
-            this.ingredients.add(new ComponentIngredient(this, false, Collections.emptyList(), INGREDIENT_TEX));
-        }
-
-        this.components.addAll(this.ingredients);
-
-        int counter = 0;
-        for (ComponentIngredient comp : this.ingredients) {
-            Pos2 pos = new Pos2(40 + (counter % 4) * 16, 51 + (counter / 4) * 19);
-            comp.setPos(pos.getX(), pos.getY());
-            counter++;
         }
     }
 

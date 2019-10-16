@@ -15,7 +15,7 @@ public class ContainerSmithingTable extends ItemContainer {
         this.addPlayerInventory(player, 0, 99);
 
         IFilteredInventory inv = tile.getTileInventory();
-        this.addSlot(new RestrictedInputSlot(inv, 0, 109, 2).disableSlotBackgroundRender());
+        this.addSlot(new RestrictedInputSlot(inv, 0, 119, 2).disableSlotBackgroundRender());
     }
 
     @Override
