@@ -4,12 +4,23 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.gui.GuiContainer;
 import de.ellpeck.rockbottom.api.gui.component.ComponentFancyButton;
+import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 public class GuiExtendedInventory extends GuiContainer {
 
-    public GuiExtendedInventory(AbstractEntityPlayer player, int containerWidth, int containerHeight) {
+    private IInventory inventory;
+
+    public GuiExtendedInventory(AbstractEntityPlayer player, IInventory inventory, int containerWidth, int containerHeight) {
         super(player, Math.max(135, containerWidth * 17 - 1), 70 + containerHeight * 17 + 8);
+        this.inventory = inventory;
+
+        int playerSlots = player.getInv().getSlotAmount();
+        int invSlots = this.inventory.getSlotAmount();
+
+        ShiftClickBehavior behavior = new ShiftClickBehavior(0, invSlots - 1, invSlots, invSlots + playerSlots);
+        this.shiftClickBehaviors.add(behavior);
+        this.shiftClickBehaviors.add(behavior.reversed());
     }
 
     @Override

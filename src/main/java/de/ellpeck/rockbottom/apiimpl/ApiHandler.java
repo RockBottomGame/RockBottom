@@ -509,7 +509,7 @@ public class ApiHandler implements IApiHandler {
     public void openExtendedPlayerInventory(AbstractEntityPlayer player, IInventory inventory, int containerWidth, Consumer<IInventory> onClosed, ItemContainer.ISlotCallback slotCallback) {
         int containerHeight = 1 + inventory.getSlotAmount() / containerWidth;
         player.openGuiContainer(
-                new GuiExtendedInventory(player, containerWidth, containerHeight),
+                new GuiExtendedInventory(player, inventory, containerWidth, containerHeight),
                 new ContainerExtendedInventory(player, inventory, containerWidth, containerHeight, onClosed, slotCallback)
         );
     }
