@@ -126,6 +126,7 @@ public final class ContentRegistry {
         Registries.ENTITY_REGISTRY.register(ResourceName.intern("firework"), EntityFirework.class);
         Registries.ENTITY_REGISTRY.register(ResourceName.intern("slime"), EntitySlime.class);
         Registries.ENTITY_REGISTRY.register(ResourceName.intern("boomerang"), EntityBoomerang.class);
+        Registries.ENTITY_REGISTRY.register(ResourceName.intern("fire"), EntityFire.class);
 
         Registries.WORLD_GENERATORS.register(WorldGenBiomes.ID, WorldGenBiomes.class);
         Registries.WORLD_GENERATORS.register(WorldGenHeights.ID, WorldGenHeights.class);
