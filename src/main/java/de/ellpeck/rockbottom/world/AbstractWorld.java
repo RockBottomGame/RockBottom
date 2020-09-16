@@ -15,7 +15,7 @@ import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -313,22 +313,22 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
-    public List<Entity> getEntities(BoundBox area) {
+    public List<Entity> getEntities(BoundingBox area) {
         return this.getEntities(area, null, null);
     }
 
     @Override
-    public List<Entity> getEntities(BoundBox area, Predicate<Entity> test) {
+    public List<Entity> getEntities(BoundingBox area, Predicate<Entity> test) {
         return this.getEntities(area, null, test);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type) {
+    public <T extends Entity> List<T> getEntities(BoundingBox area, Class<T> type) {
         return this.getEntities(area, type, null);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test) {
+    public <T extends Entity> List<T> getEntities(BoundingBox area, Class<T> type, Predicate<T> test) {
         int minChunkX = Util.toGridPos(area.getMinX() - Constants.CHUNK_SIZE / 2);
         int minChunkY = Util.toGridPos(area.getMinY() - Constants.CHUNK_SIZE / 2);
         int maxChunkX = Util.toGridPos(area.getMaxX() + Constants.CHUNK_SIZE / 2);
@@ -347,23 +347,23 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
-    public List<Entity> getEntities(List<BoundBox> area) {
+    public List<Entity> getEntities(List<BoundingBox> area) {
         return this.getEntities(area, null, null);
     }
 
     @Override
-    public List<Entity> getEntities(List<BoundBox> area, Predicate<Entity> test) {
+    public List<Entity> getEntities(List<BoundingBox> area, Predicate<Entity> test) {
         return this.getEntities(area, null, test);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type) {
+    public <T extends Entity> List<T> getEntities(List<BoundingBox> area, Class<T> type) {
         return this.getEntities(area, type, null);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type, Predicate<T> test) {
-        BoundBox union = BoundBox.getCombinedBoundBox(area);
+    public <T extends Entity> List<T> getEntities(List<BoundingBox> area, Class<T> type, Predicate<T> test) {
+        BoundingBox union = BoundingBox.getCombinedBoundBox(area);
         int minChunkX = Util.toGridPos(union.getMinX() - Constants.CHUNK_SIZE / 2);
         int minChunkY = Util.toGridPos(union.getMinY() - Constants.CHUNK_SIZE / 2);
         int maxChunkX = Util.toGridPos(union.getMaxX() + Constants.CHUNK_SIZE / 2);

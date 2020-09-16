@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
 import de.ellpeck.rockbottom.api.gui.component.ComponentText;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.component.ComponentKeybind;
 
@@ -28,7 +28,7 @@ public class GuiKeybinds extends Gui {
     public void init(IGameInstance game) {
         super.init(game);
 
-        BoundBox box = new BoundBox(this.width / 2 - 104, 0, this.width / 2 + 98, this.height - 26).add(this.getX(), this.getY());
+        BoundingBox box = new BoundingBox(this.width / 2 - 104, 0, this.width / 2 + 98, this.height - 26).add(this.getX(), this.getY());
         ComponentMenu menu = new ComponentMenu(this, this.width / 2 - 112, 0, this.height - 26, 1, 7, box);
         this.components.add(menu);
 

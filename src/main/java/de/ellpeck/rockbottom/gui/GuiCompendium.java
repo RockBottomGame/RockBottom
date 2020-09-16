@@ -18,7 +18,7 @@ import de.ellpeck.rockbottom.api.gui.component.construction.ComponentIngredient;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentPolaroid;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -51,7 +51,7 @@ public class GuiCompendium extends GuiContainer {
     private ComponentMenu menu;
     private ComponentConstruct construct;
     private ComponentInputField searchBar;
-    private BoundBox searchButtonBox;
+    private BoundingBox searchButtonBox;
     private String searchText = "";
     private final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> this.organize();
 
@@ -67,7 +67,7 @@ public class GuiCompendium extends GuiContainer {
     public void init(IGameInstance game) {
         super.init(game);
 
-        this.menu = new ComponentMenu(this, -12, 2, 12, PAGE_HEIGHT - 4, 3, 4, 11, 0, new BoundBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.compendium.scroll_bar"));
+        this.menu = new ComponentMenu(this, -12, 2, 12, PAGE_HEIGHT - 4, 3, 4, 11, 0, new BoundingBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.compendium.scroll_bar"));
         this.components.add(this.menu);
 
         this.components.add(new ComponentFancyButton(this, 5 - 16, GuiCompendium.PAGE_HEIGHT + 5, 14, 14, () -> {
@@ -85,7 +85,7 @@ public class GuiCompendium extends GuiContainer {
         this.searchBar.setActive(false);
         this.components.add(this.searchBar);
 
-        this.searchButtonBox = new BoundBox(0, 0, 13, 14).add(this.x + 145, this.y + 79);
+        this.searchButtonBox = new BoundingBox(0, 0, 13, 14).add(this.x + 145, this.y + 79);
 
         for (CompendiumCategory category : Registries.COMPENDIUM_CATEGORY_REGISTRY.values()) {
             if (category.shouldDisplay(this.player)) {

@@ -17,7 +17,7 @@ import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -43,7 +43,7 @@ public class InteractionManager implements IInteractionManager {
     public int attackCooldown;
 
     public static boolean interact(AbstractEntityPlayer player, TileLayer inputLayer, double mouseX, double mouseY, boolean destKey) {
-        List<Entity> entities = player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
+        List<Entity> entities = player.world.getEntities(new BoundingBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
 
         InteractionEvent event = new InteractionEvent(player, entities, inputLayer, Util.floor(mouseX), Util.floor(mouseY), mouseX, mouseY, destKey);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
@@ -115,7 +115,7 @@ public class InteractionManager implements IInteractionManager {
                 return entities;
             }
         }
-        return player.world.getEntities(new BoundBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F), entity -> entity != player && player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player)));
+        return player.world.getEntities(new BoundingBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F), entity -> entity != player && player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player)));
     }
 
     public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective, ItemInstance instance) {

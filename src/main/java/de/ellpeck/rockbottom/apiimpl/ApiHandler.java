@@ -196,13 +196,13 @@ public class ApiHandler implements IApiHandler {
     }
 
     @Override
-    public List<BoundBox> getDefaultPlatformBounds(IWorld world, int x, int y, TileLayer layer, double tileWidth, double tileHeight, TileState state, MovableWorldObject object, BoundBox objectBox) {
+    public List<BoundingBox> getDefaultPlatformBounds(IWorld world, int x, int y, TileLayer layer, double tileWidth, double tileHeight, TileState state, MovableWorldObject object, BoundingBox objectBox) {
         if (object instanceof Entity && ((Entity) object).isDropping) {
             return Collections.emptyList();
         }
 
         if (objectBox.getMinY() >= y + tileHeight) {
-            return Collections.singletonList(new BoundBox((Util.ceil(tileWidth) - tileWidth)/2, tileHeight - 1/12d, (Util.ceil(tileWidth) + tileWidth)/2, tileHeight).add(x, y));
+            return Collections.singletonList(new BoundingBox((Util.ceil(tileWidth) - tileWidth)/2, tileHeight - 1/12d, (Util.ceil(tileWidth) + tileWidth)/2, tileHeight).add(x, y));
         }
 
         return Collections.emptyList();

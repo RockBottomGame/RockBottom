@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.render.item.DefaultItemRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -45,7 +45,7 @@ public class TilePebbles extends TileBasic {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+    public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
     }
 

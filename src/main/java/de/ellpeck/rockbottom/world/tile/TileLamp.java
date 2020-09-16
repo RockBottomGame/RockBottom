@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -24,7 +24,7 @@ public class TileLamp extends TileBasic {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+    public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
     }
 

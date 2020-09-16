@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentScrollBar;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.util.ChangelogManager.Changelog;
@@ -41,7 +41,7 @@ public class GuiChangelog extends Gui {
         if (this.changelog != null && !this.failed) {
             int height = this.height / 3 * 2 - 10;
             int max = (this.drawAndGetHeight(this.changelog, assetManager.getFont(), 20, 5, Integer.MAX_VALUE, false) - height) / 10;
-            this.scrollBar = new ComponentScrollBar(this, 12, 5, height, new BoundBox(0, 0, this.width - 20 * 2, height).add(20, 5), max, null);
+            this.scrollBar = new ComponentScrollBar(this, 12, 5, height, new BoundingBox(0, 0, this.width - 20 * 2, height).add(20, 5), max, null);
             this.components.add(this.scrollBar);
         }
     }

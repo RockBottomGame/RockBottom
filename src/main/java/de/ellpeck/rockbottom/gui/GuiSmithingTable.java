@@ -15,7 +15,7 @@ import de.ellpeck.rockbottom.api.gui.component.construction.ComponentConstruct;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentIngredient;
 import de.ellpeck.rockbottom.api.gui.component.construction.ComponentPolaroid;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -63,7 +63,7 @@ public class GuiSmithingTable extends GuiContainer {
     public void init(IGameInstance game) {
         super.init(game);
 
-        this.menu = new ComponentMenu(this, -4, 1, 6, PAGE_HEIGHT - 2, 2, 4, -1, 1, new BoundBox(0, 0, MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.smithing_table.scroll_bar"), 1);
+        this.menu = new ComponentMenu(this, -4, 1, 6, PAGE_HEIGHT - 2, 2, 4, -1, 1, new BoundingBox(0, 0, MENU_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.smithing_table.scroll_bar"), 1);
         this.components.add(this.menu);
 
         organise();

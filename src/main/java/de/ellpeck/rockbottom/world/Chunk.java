@@ -17,7 +17,7 @@ import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.Pos3;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -526,22 +526,22 @@ public class Chunk implements IChunk {
     }
 
     @Override
-    public List<Entity> getEntities(BoundBox area) {
+    public List<Entity> getEntities(BoundingBox area) {
         return this.getEntities(area, null, null);
     }
 
     @Override
-    public List<Entity> getEntities(BoundBox area, Predicate<Entity> test) {
+    public List<Entity> getEntities(BoundingBox area, Predicate<Entity> test) {
         return this.getEntities(area, null, test);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type) {
+    public <T extends Entity> List<T> getEntities(BoundingBox area, Class<T> type) {
         return this.getEntities(area, type, null);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(BoundBox area, Class<T> type, Predicate<T> test) {
+    public <T extends Entity> List<T> getEntities(BoundingBox area, Class<T> type, Predicate<T> test) {
         List<T> entities = new ArrayList<>();
 
         for (Entity entity : this.entities) {
@@ -559,29 +559,29 @@ public class Chunk implements IChunk {
     }
 
     @Override
-    public List<Entity> getEntities(List<BoundBox> area) {
+    public List<Entity> getEntities(List<BoundingBox> area) {
         return this.getEntities(area, null, null);
     }
 
     @Override
-    public List<Entity> getEntities(List<BoundBox> area, Predicate<Entity> test) {
+    public List<Entity> getEntities(List<BoundingBox> area, Predicate<Entity> test) {
         return this.getEntities(area, null, test);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type) {
+    public <T extends Entity> List<T> getEntities(List<BoundingBox> area, Class<T> type) {
         return this.getEntities(area, type, null);
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(List<BoundBox> area, Class<T> type, Predicate<T> test) {
+    public <T extends Entity> List<T> getEntities(List<BoundingBox> area, Class<T> type, Predicate<T> test) {
         List<T> entities = new ArrayList<>();
 
         for (Entity entity : this.entities) {
             if (!entity.isDead() && (type == null || type.isAssignableFrom(entity.getClass()))) {
                 T castEntity = (T) entity;
                 if (test == null || test.test(castEntity)) {
-                    for (BoundBox box : area) {
+                    for (BoundingBox box : area) {
                         if (entity.currentBounds.intersects(box)) {
                             entities.add(castEntity);
                             break;

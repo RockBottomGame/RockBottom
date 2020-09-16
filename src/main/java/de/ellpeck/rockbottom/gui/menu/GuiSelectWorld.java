@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
@@ -29,7 +29,7 @@ public class GuiSelectWorld extends Gui {
         IAssetManager manager = game.getAssetManager();
 
         int menuX = this.width / 2 - (186 + 14 + 8) / 2;
-        BoundBox box = new BoundBox(0, 0, 186 + 14 + 8, 138).add(this.getX() + menuX, this.getY() + 5);
+        BoundingBox box = new BoundingBox(0, 0, 186 + 14 + 8, 138).add(this.getX() + menuX, this.getY() + 5);
         ComponentMenu menu = new ComponentMenu(this, menuX, 5, 138, 1, 5, box);
         this.components.add(menu);
 

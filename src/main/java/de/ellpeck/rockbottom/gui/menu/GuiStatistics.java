@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
 import de.ellpeck.rockbottom.api.gui.component.ComponentStatistic;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.backandforth.PacketStats;
 
@@ -47,7 +47,7 @@ public class GuiStatistics extends AbstractStatGui {
 
         this.hasData = !player.world.isClient() || this.statsReceived;
         if (this.hasData) {
-            ComponentMenu menu = new ComponentMenu(this, 0, 0, this.height - 24, 1, 7, new BoundBox(0, 0, 150, this.height - 24).add(this.x + 8, this.y));
+            ComponentMenu menu = new ComponentMenu(this, 0, 0, this.height - 24, 1, 7, new BoundingBox(0, 0, 150, this.height - 24).add(this.x + 8, this.y));
             this.components.add(menu);
 
             List<ComponentStatistic> components = this.getComponents(game, player, menu);

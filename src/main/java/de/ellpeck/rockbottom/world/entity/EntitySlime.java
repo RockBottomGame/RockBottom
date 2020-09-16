@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.entity.spawn.DespawnHandler;
 import de.ellpeck.rockbottom.api.entity.spawn.SpawnBehavior;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -176,7 +176,7 @@ public class EntitySlime extends AbstractEntitySlime {
     }
 
     @Override
-    public void onIntersectWithEntity(Entity otherEntity, BoundBox thisBox, BoundBox thisBoxMotion, BoundBox otherBox, BoundBox otherBoxMotion) {
+    public void onIntersectWithEntity(Entity otherEntity, BoundingBox thisBox, BoundingBox thisBoxMotion, BoundingBox otherBox, BoundingBox otherBoxMotion) {
         if (this.attackCooldown <= 0 && Math.abs(this.motionX) > 0.01D) {
             if (!otherEntity.isDead() && otherEntity instanceof EntityLiving && !(otherEntity instanceof AbstractEntitySlime)) {
                 if (((EntityLiving) otherEntity).takeDamage(Util.RANDOM.nextInt(15) + 5)) {

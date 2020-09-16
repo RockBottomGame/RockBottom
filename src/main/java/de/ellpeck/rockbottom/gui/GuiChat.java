@@ -13,7 +13,7 @@ import de.ellpeck.rockbottom.api.gui.component.ComponentScrollBar;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.net.packet.toserver.PacketSendChat;
@@ -131,7 +131,7 @@ public class GuiChat extends Gui {
 
         int height = this.height / 3 * 2;
         int y = (int) game.getRenderer().getHeightInGui() - 24 - height;
-        this.scrollBar = new ComponentScrollBar(this, 1, y, height - 1, new BoundBox(0, 0, game.getRenderer().getWidthInGui() / 2, height).add(8, y), 0, null);
+        this.scrollBar = new ComponentScrollBar(this, 1, y, height - 1, new BoundingBox(0, 0, game.getRenderer().getWidthInGui() / 2, height).add(8, y), 0, null);
         this.scrollBar.setDrawReversed(true);
         this.components.add(this.scrollBar);
     }

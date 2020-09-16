@@ -8,7 +8,7 @@ import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -48,7 +48,7 @@ public class TileSimpleFurnace extends MultiTile {
     }
 
     @Override
-    public List<BoundBox> getPlatformBounds(IWorld world, int x, int y, TileLayer layer, TileState state, MovableWorldObject object, BoundBox objectBox, BoundBox objectBoxMotion) {
+    public List<BoundingBox> getPlatformBounds(IWorld world, int x, int y, TileLayer layer, TileState state, MovableWorldObject object, BoundingBox objectBox, BoundingBox objectBoxMotion) {
         if (layer == TileLayer.MAIN && !this.isMainPos(x, y, state))
             return RockBottomAPI.getApiHandler().getDefaultPlatformBounds(world, x, y, layer, 1, 4/12d, state, object, objectBox);
         else
@@ -76,7 +76,7 @@ public class TileSimpleFurnace extends MultiTile {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+    public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
     }
 

@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -26,7 +26,7 @@ public class TileLeaves extends TileBasic {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+    public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return state.get(StaticTileProps.NATURAL) ? null : super.getBoundBox(world, state, x, y, layer);
     }
 

@@ -8,20 +8,16 @@ import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.gui.GuiCombiner;
-import de.ellpeck.rockbottom.gui.GuiSimpleFurnace;
 import de.ellpeck.rockbottom.gui.container.ContainerCombiner;
-import de.ellpeck.rockbottom.gui.container.ContainerSimpleFurnace;
 import de.ellpeck.rockbottom.render.tile.TileCombinerRenderer;
-import de.ellpeck.rockbottom.render.tile.TileSimpleFurnaceRenderer;
 import de.ellpeck.rockbottom.world.tile.entity.TileEntityCombiner;
-import de.ellpeck.rockbottom.world.tile.entity.TileEntitySimpleFurnace;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +48,7 @@ public class TileCombiner extends MultiTile {
     }
 
     @Override
-    public List<BoundBox> getPlatformBounds(IWorld world, int x, int y, TileLayer layer, TileState state, MovableWorldObject object, BoundBox objectBox, BoundBox objectBoxMotion) {
+    public List<BoundingBox> getPlatformBounds(IWorld world, int x, int y, TileLayer layer, TileState state, MovableWorldObject object, BoundingBox objectBox, BoundingBox objectBoxMotion) {
         Pos2 mainPosUp = this.getMainPos(x, y, state).add(0, 1);
         if (layer == TileLayer.MAIN && mainPosUp.getY() == y)
             return RockBottomAPI.getApiHandler().getDefaultPlatformBounds(world, x, y, layer, 1, 4/12d, state, object, objectBox);
@@ -81,7 +77,7 @@ public class TileCombiner extends MultiTile {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+    public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
     }
 

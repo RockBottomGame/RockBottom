@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.tile.TileBasic;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -21,8 +21,8 @@ import java.util.List;
 
 public class TileWoodDoor extends TileBasic {
 
-    private final BoundBox boxLeft = new BoundBox(0D, 0D, 2D / 12D, 1D);
-    private final BoundBox boxRight = new BoundBox(1D - 2D / 12D, 0D, 1D, 1D);
+    private final BoundingBox boxLeft = new BoundingBox(0D, 0D, 2D / 12D, 1D);
+    private final BoundingBox boxRight = new BoundingBox(1D - 2D / 12D, 0D, 1D, 1D);
 
     public TileWoodDoor(ResourceName name) {
         super(name);
@@ -63,7 +63,7 @@ public class TileWoodDoor extends TileBasic {
         TileState state = world.getState(layer, x, y);
         int yAdd = state.get(StaticTileProps.TOP_HALF) ? -1 : 1;
 
-        if (world.getEntities(new BoundBox(0, 0, 1, 2).add(x, y + yAdd), EntityLiving.class).isEmpty()) {
+        if (world.getEntities(new BoundingBox(0, 0, 1, 2).add(x, y + yAdd), EntityLiving.class).isEmpty()) {
             if (!world.isClient()) {
                 boolean open = !state.get(StaticTileProps.OPEN);
 
@@ -105,7 +105,7 @@ public class TileWoodDoor extends TileBasic {
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+    public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         if (state.get(StaticTileProps.OPEN)) {
             return null;
         } else {

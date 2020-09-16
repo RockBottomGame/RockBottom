@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 public class GuiLogo extends Gui {
@@ -14,7 +14,7 @@ public class GuiLogo extends Gui {
     private final ResourceName texture;
     private final ResourceName texAngry;
     private final Gui followUp;
-    private BoundBox faceBox;
+    private BoundingBox faceBox;
 
     private int timer = 120;
     private boolean isAngry;
@@ -28,7 +28,7 @@ public class GuiLogo extends Gui {
     @Override
     public void init(IGameInstance game) {
         super.init(game);
-        this.faceBox = new BoundBox(-20, -32, 20, 16).add(this.width / 2, this.height / 2);
+        this.faceBox = new BoundingBox(-20, -32, 20, 16).add(this.width / 2, this.height / 2);
     }
 
     @Override

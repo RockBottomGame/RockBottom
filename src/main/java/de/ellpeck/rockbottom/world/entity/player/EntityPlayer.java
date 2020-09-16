@@ -306,7 +306,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
                     if (closest == null || Util.distanceSq(closest.getX(), closest.getY(), x, y) >= min * min) {
                         double cap = behavior.getEntityCap(this.world);
                         if (cap > 0) {
-                            List<Entity> entities = this.world.getEntities(new BoundBox(x, y, x, y).expand(behavior.getEntityCapArea(this.world, this)), behavior::belongsToCap);
+                            List<Entity> entities = this.world.getEntities(new BoundingBox(x, y, x, y).expand(behavior.getEntityCapArea(this.world, this)), behavior::belongsToCap);
                             if (entities.size() >= cap) {
                                 break;
                             }
@@ -758,7 +758,7 @@ public class EntityPlayer extends AbstractEntityPlayer {
     }
 
     @Override
-    public boolean shouldStartClimbing(int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes) {
+    public boolean shouldStartClimbing(int x, int y, TileLayer layer, TileState state, BoundingBox entityBox, BoundingBox entityBoxMotion, List<BoundingBox> tileBoxes) {
         return true;
     }
 

@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.data.settings.ModSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.mod.IMod;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
@@ -31,7 +31,7 @@ public class GuiMods extends Gui {
 
         int height = 126;
         int y = this.height / 2 - height / 2 - 10;
-        ComponentMenu menu = new ComponentMenu(this, 10, y, height, 1, 8, new BoundBox(0, 0, 100, height).add(18, y));
+        ComponentMenu menu = new ComponentMenu(this, 10, y, height, 1, 8, new BoundingBox(0, 0, 100, height).add(18, y));
         this.components.add(menu);
 
         for (IMod mod : RockBottomAPI.getModLoader().getAllTheMods()) {

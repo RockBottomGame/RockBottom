@@ -4,7 +4,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -27,7 +27,7 @@ public class TileSmithingTable extends MultiTile {
 	}
 
 	@Override
-	public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+	public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
 		return null;
 	}
 

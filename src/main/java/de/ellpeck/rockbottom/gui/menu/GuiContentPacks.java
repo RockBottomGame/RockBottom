@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.content.pack.IContentPackLoader;
 import de.ellpeck.rockbottom.api.data.settings.ContentPackSettings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.*;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
@@ -33,10 +33,10 @@ public class GuiContentPacks extends Gui {
         super.init(game);
         int halfWidth = this.width / 2;
 
-        this.leftMenu = new ComponentMenu(this, halfWidth / 2 - 63, 0, this.height - 42, 1, 4, new BoundBox(0, 0, 128, this.height - 42).add(this.x + halfWidth / 2 - 63, this.y));
+        this.leftMenu = new ComponentMenu(this, halfWidth / 2 - 63, 0, this.height - 42, 1, 4, new BoundingBox(0, 0, 128, this.height - 42).add(this.x + halfWidth / 2 - 63, this.y));
         this.components.add(this.leftMenu);
 
-        this.rightMenu = new ComponentMenu(this, halfWidth + halfWidth / 2 - 63, 0, this.height - 42, 1, 4, new BoundBox(0, 0, 128, this.height - 42).add(this.x + halfWidth + halfWidth / 2 - 63, this.y));
+        this.rightMenu = new ComponentMenu(this, halfWidth + halfWidth / 2 - 63, 0, this.height - 42, 1, 4, new BoundingBox(0, 0, 128, this.height - 42).add(this.x + halfWidth + halfWidth / 2 - 63, this.y));
         this.components.add(this.rightMenu);
 
         this.organize();

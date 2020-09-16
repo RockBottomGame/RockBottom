@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ComponentButton;
 import de.ellpeck.rockbottom.api.gui.component.ComponentMenu;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ public class GuiLanguage extends Gui {
     public void init(IGameInstance game) {
         super.init(game);
 
-        BoundBox area = new BoundBox(0, 0, 150, 106).add(this.getX(), this.getY());
+        BoundingBox area = new BoundingBox(0, 0, 150, 106).add(this.getX(), this.getY());
         ComponentMenu menu = new ComponentMenu(this, -8, 0, 106, 1, 6, area);
         this.components.add(menu);
 

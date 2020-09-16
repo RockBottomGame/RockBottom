@@ -4,7 +4,7 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.tile.TileLiquid;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -15,19 +15,19 @@ import java.util.List;
 
 public class TileWater extends TileLiquid {
 
-    private final BoundBox[] bounds;
+    private final BoundingBox[] bounds;
 
     public TileWater() {
         super(ResourceName.intern("water"));
 
-        this.bounds = new BoundBox[this.getLevels()];
+        this.bounds = new BoundingBox[this.getLevels()];
         for (int i = 0; i < this.bounds.length; i++) {
-            this.bounds[i] = new BoundBox(0, 0, 1, (i + 1) / (double) this.getLevels());
+            this.bounds[i] = new BoundingBox(0, 0, 1, (i + 1) / (double) this.getLevels());
         }
     }
 
     @Override
-    public BoundBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
+    public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return this.bounds[state.get(this.level)];
     }
 
@@ -47,10 +47,10 @@ public class TileWater extends TileLiquid {
     }
 
     @Override
-    public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundBox entityBox, BoundBox entityBoxMotion, List<BoundBox> tileBoxes, Entity entity) {
+    public void onIntersectWithEntity(IWorld world, int x, int y, TileLayer layer, TileState state, BoundingBox entityBox, BoundingBox entityBoxMotion, List<BoundingBox> tileBoxes, Entity entity) {
         super.onIntersectWithEntity(world, x, y, layer, state, entityBox, entityBoxMotion, tileBoxes, entity);
 
-        for (BoundBox box : tileBoxes) {
+        for (BoundingBox box : tileBoxes) {
             if (box.contains(entity.getX(), entity.getOriginY())) {
                 entity.motionX *= 0.65;
                 if (entity.motionY < 0) {

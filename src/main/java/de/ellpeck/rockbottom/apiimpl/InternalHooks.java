@@ -331,18 +331,18 @@ public class InternalHooks implements IInternalHooks {
         double motionX = object.motionX;
         double motionY = object.motionY;
 
-        BoundBox ownBox = object.currentBounds;
-        BoundBox ownBoxMotion = ownBox.copy().add(motionX, motionY);
+        BoundingBox ownBox = object.currentBounds;
+        BoundingBox ownBoxMotion = ownBox.copy().add(motionX, motionY);
 
         if (object.world.isPosLoaded(ownBoxMotion.getMinX(), ownBoxMotion.getMinY()) && object.world.isPosLoaded(ownBoxMotion.getMaxX(), ownBoxMotion.getMaxY())) {
-            List<BoundBox> boxes = new ArrayList<>();
+            List<BoundingBox> boxes = new ArrayList<>();
 
             for (int x = Util.floor(ownBoxMotion.getMinX()); x < Util.ceil(ownBoxMotion.getMaxX()); x++) {
                 for (int y = Util.floor(ownBoxMotion.getMinY()); y < Util.ceil(ownBoxMotion.getMaxY()); y++) {
                     if (object.world.isPosLoaded(x, y)) {
                         for (TileLayer layer : TileLayer.getAllLayers()) {
                             TileState state = object.world.getState(layer, x, y);
-                            List<BoundBox> tileBoxes = state.getTile().getBoundBoxes(object.world, state, x, y, layer, object, ownBox, ownBoxMotion);
+                            List<BoundingBox> tileBoxes = state.getTile().getBoundBoxes(object.world, state, x, y, layer, object, ownBox, ownBoxMotion);
 
                             if (layer.canCollide(object) && object.canCollideWithTile(state, x, y, layer)) {
                                 object.onTileCollision(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
@@ -357,8 +357,8 @@ public class InternalHooks implements IInternalHooks {
 
             List<Entity> entities = object.world.getEntities(ownBoxMotion, e -> e != object);
             for (Entity entity : entities) {
-                BoundBox entityBox = entity.currentBounds;
-                BoundBox entityBoxMotion = entityBox.copy().add(entity.motionX, entity.motionY);
+                BoundingBox entityBox = entity.currentBounds;
+                BoundingBox entityBoxMotion = entityBox.copy().add(entity.motionX, entity.motionY);
 
                 if (entity.canCollideWith(object, ownBox, ownBoxMotion)) {
                     object.onEntityCollision(entity, ownBox, ownBoxMotion, entityBox, entityBoxMotion);
@@ -375,7 +375,7 @@ public class InternalHooks implements IInternalHooks {
 
             if (motionY != 0) {
                 if (!boxes.isEmpty()) {
-                    for (BoundBox box : boxes) {
+                    for (BoundingBox box : boxes) {
                         if (motionY != 0) {
                             if (!box.isEmpty()) {
                                 if (ownBox.getMaxX() > box.getMinX() && ownBox.getMinX() < box.getMaxX()) {
@@ -403,7 +403,7 @@ public class InternalHooks implements IInternalHooks {
 
             if (motionX != 0) {
                 if (!boxes.isEmpty()) {
-                    for (BoundBox box : boxes) {
+                    for (BoundingBox box : boxes) {
                         if (motionX != 0) {
                             if (!box.isEmpty()) {
                                 if (ownBox.getMaxY() > box.getMinY() && ownBox.getMinY() < box.getMaxY()) {
@@ -494,7 +494,7 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate) {
-        List<BoundBox> tileBounds = tile.getBoundBoxes(player.world, tile.getPlacementState(player.world, x, y, layer, selected, player), x, y, layer, player, player.currentBounds.copy(), player.currentBounds.copy().add(player.motionX, player.motionY));
+        List<BoundingBox> tileBounds = tile.getBoundBoxes(player.world, tile.getPlacementState(player.world, x, y, layer, selected, player), x, y, layer, player, player.currentBounds.copy(), player.currentBounds.copy().add(player.motionX, player.motionY));
         if (layer != TileLayer.MAIN || player.world.getEntities(tileBounds, entity -> !(entity instanceof AbstractEntityItem)).isEmpty()) {
             if (layer.canTileBeInLayer(player.world, x, y, tile)) {
                 Tile tileThere = player.world.getState(layer, x, y).getTile();

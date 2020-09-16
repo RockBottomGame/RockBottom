@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.BoundBox;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
@@ -78,7 +78,7 @@ public class EntityFalling extends Entity {
     }
 
     @Override
-    public boolean canCollideWith(MovableWorldObject object, BoundBox entityBox, BoundBox entityBoxMotion) {
+    public boolean canCollideWith(MovableWorldObject object, BoundingBox entityBox, BoundingBox entityBoxMotion) {
         return object instanceof AbstractEntityPlayer || object instanceof EntityFalling;
     }
 }
