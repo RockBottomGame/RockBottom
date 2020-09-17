@@ -12,6 +12,7 @@ mainClassName = "de.ellpeck.rockbottom.Main"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+group = "de.ellpeck.rockbottom"
 archivesBaseName = "RockBottom"
 
 ext {
@@ -65,6 +66,9 @@ installDist {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
             from components.java
             artifact jar
         }
