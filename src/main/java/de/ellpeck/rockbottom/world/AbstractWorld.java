@@ -6,6 +6,8 @@ import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
+import de.ellpeck.rockbottom.api.data.set.part.DataPart;
+import de.ellpeck.rockbottom.api.data.set.part.num.PartInt;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -54,6 +56,7 @@ public abstract class AbstractWorld implements IWorld {
     protected int totalTime;
     protected boolean timeFrozen;
     protected float skylightModifier;
+    protected Map<Integer, Integer> highestTile;
     private Map<ResourceName, IWorldGenerator> generators;
     private List<IWorldGenerator> loopingGenerators;
     private List<IWorldGenerator> retroactiveGenerators;

@@ -156,6 +156,16 @@ public class World extends AbstractWorld {
     }
 
     @Override
+    public int getWeatherHeight() {
+        return 100;
+    }
+
+    @Override
+    public int getHighestTilePos(int x) {
+        return 0;
+    }
+
+    @Override
     public int getIdForState(TileState state) {
         ResourceName name = Registries.TILE_STATE_REGISTRY.getId(state);
         if (name != null) {
