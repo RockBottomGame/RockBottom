@@ -1,6 +1,12 @@
 pipeline {
   agent any
   stages {
+    stage('Checkout Deps') {
+      steps {
+        git 'https://github.com/RockBottomGame/Assets'
+        git 'https://github.com/RockBottomGame/API'
+      }
+    }
     stage('Clean') {
       steps {
         sh './gradlew clean --no-daemon'
