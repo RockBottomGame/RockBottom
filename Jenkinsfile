@@ -3,8 +3,8 @@ pipeline {
   stages {
     stage('Checkout Deps') {
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: 'env.BRANCH_NAME']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '..']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RockBottomGame/API']]])
-        checkout([$class: 'GitSCM', branches: [[name: 'env.BRANCH_NAME']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '..']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RockBottomGame/Assets']]])
+        checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '..']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RockBottomGame/API']]])
+        checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '..']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RockBottomGame/Assets']]])
       }
     }
     stage('Clean') {
