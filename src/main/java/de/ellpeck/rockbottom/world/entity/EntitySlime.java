@@ -19,6 +19,8 @@ import de.ellpeck.rockbottom.world.entity.ai.TaskSlimeTarget;
 
 public class EntitySlime extends AbstractEntitySlime {
 
+    public static final ResourceName ID = ResourceName.intern("slime");
+
     public static final SpawnBehavior<EntitySlime> SPAWN_BEHAVIOR = new SpawnBehavior<EntitySlime>(ResourceName.intern("slime")) {
         @Override
         public EntitySlime createEntity(IWorld world, double x, double y) {
@@ -85,6 +87,11 @@ public class EntitySlime extends AbstractEntitySlime {
         super(world);
         this.addAiTask(this.jumpTask);
         this.addAiTask(this.targetTask);
+    }
+
+    @Override
+    public ResourceName getRegistryName() {
+        return ID;
     }
 
     @Override

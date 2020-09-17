@@ -4,10 +4,13 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.AbstractEntityFire;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.FireEntityRenderer;
 
 public class EntityFire extends AbstractEntityFire {
+
+    public static final ResourceName ID = ResourceName.intern("fire");
 
     private final int lifespan;
     private int life;
@@ -18,6 +21,11 @@ public class EntityFire extends AbstractEntityFire {
         this.lifespan = Util.seconds(5) + Util.seconds(Util.RANDOM.nextInt(5));
         this.life = 0;
         this.size = 0.5f;
+    }
+
+    @Override
+    public ResourceName getRegistryName() {
+        return ID;
     }
 
     @Override

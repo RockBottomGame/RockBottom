@@ -33,7 +33,7 @@ public class PacketEntityChange implements IPacket {
             if (entity instanceof EntityPlayer) {
                 this.name = PLAYER_NAME;
             } else {
-                this.name = Registries.ENTITY_REGISTRY.getId(entity.getClass()).toString();
+                this.name = entity.getRegistryName().toString();
             }
             entity.save(this.entitySet, true);
         }

@@ -3,12 +3,17 @@ package de.ellpeck.rockbottom.world.gen.ore;
 import com.google.common.collect.Sets;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.WorldGenOre;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 
 import java.util.Set;
 
 public class WorldGenCoal extends WorldGenOre {
+
+    public WorldGenCoal() {
+        super(ResourceName.intern("coal"));
+    }
 
     @Override
     protected int getHighestGridPos() {

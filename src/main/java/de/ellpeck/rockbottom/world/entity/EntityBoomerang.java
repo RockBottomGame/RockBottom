@@ -11,10 +11,13 @@ import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.BoomerangEntityRenderer;
 
 public class EntityBoomerang extends AbstractEntityBoomerang {
+
+    public static final ResourceName ID = ResourceName.intern("boomerang");
 
     private final IEntityRenderer renderer = new BoomerangEntityRenderer();
     private double startX;
@@ -25,6 +28,11 @@ public class EntityBoomerang extends AbstractEntityBoomerang {
 
     public EntityBoomerang(IWorld world) {
         super(world);
+    }
+
+    @Override
+    public ResourceName getRegistryName() {
+        return ID;
     }
 
     @Override

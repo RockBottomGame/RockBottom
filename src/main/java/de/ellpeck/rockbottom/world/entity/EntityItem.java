@@ -6,11 +6,14 @@ import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.ApiInternal;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.render.entity.ItemEntityRenderer;
 
 @ApiInternal
 public class EntityItem extends AbstractEntityItem {
+
+    public static final ResourceName ID = ResourceName.intern("item");
 
     private final IEntityRenderer renderer;
     private ItemInstance item;
@@ -20,6 +23,11 @@ public class EntityItem extends AbstractEntityItem {
     public EntityItem(IWorld world) {
         super(world);
         this.renderer = new ItemEntityRenderer();
+    }
+
+    @Override
+    public ResourceName getRegistryName() {
+        return ID;
     }
 
     public EntityItem(IWorld world, ItemInstance item) {

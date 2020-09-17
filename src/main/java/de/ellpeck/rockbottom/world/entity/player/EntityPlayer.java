@@ -55,6 +55,8 @@ import java.util.function.BiConsumer;
 
 public class EntityPlayer extends AbstractEntityPlayer {
 
+    public static final ResourceName ID = ResourceName.intern("player");
+
     private final KnowledgeManager knowledge = new KnowledgeManager(this);
     private final Statistics statistics = new Statistics();
     private final InventoryPlayer inv = new InventoryPlayer(this);
@@ -94,6 +96,11 @@ public class EntityPlayer extends AbstractEntityPlayer {
         this.design = design;
         this.gameMode = GameMode.SURVIVAL;
         this.inv.addChangeCallback(this.invCallback);
+    }
+
+    @Override
+    public ResourceName getRegistryName() {
+        return ID;
     }
 
     @Override

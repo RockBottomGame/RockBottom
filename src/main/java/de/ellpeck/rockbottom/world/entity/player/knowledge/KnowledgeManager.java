@@ -53,10 +53,10 @@ public class KnowledgeManager implements IKnowledgeManager {
     }
 
     private static Information loadInformation(ResourceName regName, ResourceName name) {
-        Class<? extends Information> infoClass = Registries.INFORMATION_REGISTRY.get(regName);
+        Information.IFactory infoFactory = Registries.INFORMATION_REGISTRY.get(regName);
 
         try {
-            return infoClass.getConstructor(ResourceName.class).newInstance(name);
+            return infoFactory.create(name);
         } catch (Exception e) {
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't initialize information with registry name " + regName + " and name " + name, e);
             return null;

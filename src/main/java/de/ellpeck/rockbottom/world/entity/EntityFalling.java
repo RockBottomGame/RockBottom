@@ -11,11 +11,14 @@ import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.entity.FallingEntityRenderer;
 
 public class EntityFalling extends Entity {
+
+    public static final ResourceName ID = ResourceName.intern("falling");
 
     private final IEntityRenderer renderer = new FallingEntityRenderer();
     public TileState state;
@@ -29,6 +32,11 @@ public class EntityFalling extends Entity {
 
     public EntityFalling(IWorld world) {
         super(world);
+    }
+
+    @Override
+    public ResourceName getRegistryName() {
+        return ID;
     }
 
     @Override

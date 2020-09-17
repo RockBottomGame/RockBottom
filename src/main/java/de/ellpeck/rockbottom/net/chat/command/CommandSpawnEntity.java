@@ -36,11 +36,11 @@ public class CommandSpawnEntity extends Command {
         if (sender instanceof AbstractEntityPlayer) {
             AbstractEntityPlayer player = (AbstractEntityPlayer) sender;
 
-            Class<? extends Entity> entityClass;
+            Entity.IFactory entityFactory;
             if (args.length > 0) {
                 try {
                     ResourceName name = new ResourceName(args[0]);
-                    entityClass = Registries.ENTITY_REGISTRY.get(name);
+                    entityFactory = Registries.ENTITY_REGISTRY.get(name);
                 } catch (Exception e) {
                     return new ChatComponentText(FormattingCode.RED + "'" + args[0] + "' isn't a valid entity name!");
                 }
@@ -58,9 +58,9 @@ public class CommandSpawnEntity extends Command {
                 }
             }
 
-            if (entityClass != null) {
+            if (entityFactory != null) {
                 try {
-                    Entity entity = entityClass.getConstructor(IWorld.class).newInstance(player.world);
+                    Entity entity = entityFactory.create(player.world);
                     entity.setPos(x, y);
                     player.world.addEntity(entity);
 

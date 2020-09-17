@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.world.gen.ore;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.WorldGenOre;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 
@@ -10,6 +11,10 @@ import java.util.Collections;
 import java.util.Set;
 
 public class WorldGenTin extends WorldGenOre {
+
+    public WorldGenTin() {
+        super(ResourceName.intern("tin"));
+    }
 
     @Override
     protected int getHighestGridPos() {

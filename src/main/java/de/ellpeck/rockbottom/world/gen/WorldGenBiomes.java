@@ -13,6 +13,10 @@ public class WorldGenBiomes extends BiomeGen {
 
     public static final ResourceName ID = ResourceName.intern("biomes");
 
+    public WorldGenBiomes() {
+        super(ID);
+    }
+
     @Override
     public int getLevelTransition(IWorld world) {
         return 7;

@@ -99,9 +99,9 @@ public abstract class AbstractWorld implements IWorld {
         List<IWorldGenerator> loopingGenerators = new ArrayList<>();
         List<IWorldGenerator> retroactiveGenerators = new ArrayList<>();
 
-        for (Map.Entry<ResourceName, Class<? extends IWorldGenerator>> entry : Registries.WORLD_GENERATORS.entrySet()) {
+        for (Map.Entry<ResourceName, IWorldGenerator.IFactory> entry : Registries.WORLD_GENERATORS.entrySet()) {
             try {
-                IWorldGenerator generator = entry.getValue().getConstructor().newInstance();
+                IWorldGenerator generator = entry.getValue().create();
                 if (this.shouldGenerateHere(generator, entry.getKey())) {
                     generator.initWorld(this);
 

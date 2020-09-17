@@ -7,11 +7,14 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.particle.ParticleFirework;
 import de.ellpeck.rockbottom.render.entity.FireworkEntityRenderer;
 
 public class EntityFirework extends Entity {
+
+    public static final ResourceName ID = ResourceName.intern("firework");
 
     private final IEntityRenderer renderer = new FireworkEntityRenderer();
     private int lifetime;
@@ -19,6 +22,11 @@ public class EntityFirework extends Entity {
     public EntityFirework(IWorld world) {
         super(world);
         this.lifetime = Util.RANDOM.nextInt(30) + 20;
+    }
+
+    @Override
+    public ResourceName getRegistryName() {
+        return ID;
     }
 
     @Override

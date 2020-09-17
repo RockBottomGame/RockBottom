@@ -869,7 +869,7 @@ public class Chunk implements IChunk {
             if (entity.doesSave() && !(entity instanceof EntityPlayer)) {
                 DataSet entitySet = new DataSet();
                 entitySet.addUniqueId("uuid", entity.getUniqueId());
-                entitySet.addString("name", Registries.ENTITY_REGISTRY.getId(entity.getClass()).toString());
+                entitySet.addString("name", entity.getRegistryName().toString());
                 entity.save(entitySet, false);
                 entities.add(new PartDataSet(entitySet));
             }
