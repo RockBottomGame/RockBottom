@@ -88,6 +88,16 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
+    public int getWeatherHeight() {
+        return 0;
+    }
+
+    @Override
+    public int getHighestTilePos(int x) {
+        return 0;
+    }
+
+    @Override
     public int getIdForState(TileState state) {
         return this.mainWorld.getIdForState(state);
     }
