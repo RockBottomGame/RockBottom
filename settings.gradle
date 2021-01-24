@@ -5,3 +5,9 @@ gradle.ext.proguardDir = '../proguard/lib'
 
 include ":Assets"
 project(":Assets").projectDir = file("../Assets")
+
+include ":Changelog"
+project(":Changelog").projectDir = file("../Changelog")
+
+include ":Modding"
+project(":Modding").projectDir = file("../Modding")

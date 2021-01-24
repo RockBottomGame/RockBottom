@@ -1,6 +1,9 @@
 pipeline {
   agent any
   stages {
+    stage('Wait') {
+        sleep 30
+    }
     stage('Checkout Deps') {
       steps {
         checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '../API']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/RockBottomGame/API']]])
