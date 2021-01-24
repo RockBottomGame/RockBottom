@@ -6,12 +6,12 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.effect.IEffect;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.ResetMovedPlayerEvent;
 import de.ellpeck.rockbottom.api.net.INetHandler;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
@@ -21,14 +21,14 @@ import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.world.AbstractWorld;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 import io.netty.channel.Channel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ConnectedPlayer extends EntityPlayer {
+public class ConnectedPlayer extends PlayerEntity {
 
     private final List<IChunk> chunksToSend = new ArrayList<>();
     private final Channel channel;
@@ -45,7 +45,7 @@ public class ConnectedPlayer extends EntityPlayer {
         this.channel = channel;
     }
 
-    public static void disconnectPlayer(AbstractEntityPlayer player) {
+    public static void disconnectPlayer(AbstractPlayerEntity player) {
         RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(player, true));
 
         player.world.savePlayer(player);
@@ -54,7 +54,7 @@ public class ConnectedPlayer extends EntityPlayer {
 
         RockBottomAPI.logger().info("Saving and removing disconnected player " + player.getName() + " with id " + player.getUniqueId() + " from world");
 
-        RockBottomAPI.getGame().getChatLog().broadcastMessage(new ChatComponentTranslation(ResourceName.intern("info.disconnect"), player.getName()));
+        RockBottomAPI.getGame().getChatLog().broadcastMessage(new TranslationChatComponent(ResourceName.intern("info.disconnect"), player.getName()));
     }
 
     @Override
@@ -95,12 +95,12 @@ public class ConnectedPlayer extends EntityPlayer {
         }
 
         if (net.isWhitelistEnabled() && !net.isWhitelisted(this.getUniqueId())) {
-            this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.whitelist"))));
+            this.sendPacket(new RejectPacket(new TranslationChatComponent(ResourceName.intern("info.reject.whitelist"))));
 
             this.channel.disconnect();
             disconnectPlayer(this);
         } else if (net.isBlacklisted(this.getUniqueId())) {
-            this.sendPacket(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
+            this.sendPacket(new RejectPacket(new TranslationChatComponent(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.getUniqueId()))));
 
             this.channel.disconnect();
             disconnectPlayer(this);
@@ -127,12 +127,12 @@ public class ConnectedPlayer extends EntityPlayer {
 
         if (this.getHealth() != this.lastHealth && this.world.getTotalTime() % 10 == 0) {
             this.lastHealth = this.getHealth();
-            this.sendPacket(new PacketHealth(this.getHealth(), false, false));
+            this.sendPacket(new HealthPacket(this.getHealth(), false, false));
         }
 
         if (this.getBreath() != this.lastBreath && this.world.getTotalTime() % 20 == 0) {
             this.lastBreath = this.getBreath();
-            this.sendPacket(new PacketHealth(this.getBreath(), false, true));
+            this.sendPacket(new HealthPacket(this.getBreath(), false, true));
         }
     }
 
@@ -144,7 +144,7 @@ public class ConnectedPlayer extends EntityPlayer {
         this.lastCalcY = this.getY();
         this.distanceCounter = 0;
 
-        this.sendPacket(new PacketEntityUpdate(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.isFlying));
+        this.sendPacket(new EntityUpdatePacket(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.isFlying));
     }
 
     @Override
@@ -165,16 +165,16 @@ public class ConnectedPlayer extends EntityPlayer {
         if (!chunk.isGenerating()) {
             RockBottomAPI.logger().finer("Sending chunk at " + chunk.getGridX() + ", " + chunk.getGridY() + " to player " + this.getName() + " with id " + this.getUniqueId());
 
-            this.sendPacket(new PacketChunk(chunk));
+            this.sendPacket(new ChunkPacket(chunk));
 
             for (Entity entity : chunk.getAllEntities()) {
                 if (entity != this) {
-                    this.sendPacket(new PacketEntityChange(entity, false));
+                    this.sendPacket(new EntityChangePacket(entity, false));
                 }
             }
 
             for (TileEntity tile : chunk.getAllTileEntities()) {
-                this.sendPacket(new PacketTileEntityData(tile.x, tile.y, tile.layer, tile));
+                this.sendPacket(new TileEntityDataPacket(tile.x, tile.y, tile.layer, tile));
             }
 
             return true;
@@ -187,7 +187,7 @@ public class ConnectedPlayer extends EntityPlayer {
     public void onChunkUnloaded(IChunk chunk) {
         RockBottomAPI.logger().finer("Sending chunk unloading packet for chunk at " + chunk.getGridX() + ", " + chunk.getGridY() + " to player " + this.getName() + " with id " + this.getUniqueId());
 
-        this.sendPacket(new PacketChunkUnload(chunk.getGridX(), chunk.getGridY()));
+        this.sendPacket(new ChunkUnloadPacket(chunk.getGridX(), chunk.getGridY()));
     }
 
     @Override
@@ -196,7 +196,7 @@ public class ConnectedPlayer extends EntityPlayer {
 
         DataSet set = new DataSet();
         ((AbstractWorld) world).saveWorldData(set);
-        this.sendPacket(new PacketChangeWorld(set, world.getSubName()));
+        this.sendPacket(new ChangeWorldPacket(set, world.getSubName()));
     }
 
     @Override
@@ -204,7 +204,7 @@ public class ConnectedPlayer extends EntityPlayer {
         int remaining = super.addEffect(effect);
 
         if (remaining != effect.getTime()) {
-            this.sendPacket(new PacketEffect(effect, false));
+            this.sendPacket(new EffectPacket(effect, false));
         }
 
         return remaining;
@@ -213,7 +213,7 @@ public class ConnectedPlayer extends EntityPlayer {
     @Override
     public boolean removeEffect(IEffect effect) {
         if (super.removeEffect(effect)) {
-            this.sendPacket(new PacketEffect(new ActiveEffect(effect), true));
+            this.sendPacket(new EffectPacket(new ActiveEffect(effect), true));
             return true;
         } else {
             return false;
@@ -230,18 +230,18 @@ public class ConnectedPlayer extends EntityPlayer {
     @Override
     public void setMaxHealth(int maxHealth) {
         super.setMaxHealth(maxHealth);
-        this.sendPacket(new PacketHealth(this.getMaxHealth(), true, false));
+        this.sendPacket(new HealthPacket(this.getMaxHealth(), true, false));
     }
 
     @Override
     public void setMaxBreath(int maxBreath) {
         super.setMaxBreath(maxBreath);
-        this.sendPacket(new PacketHealth(this.getMaxBreath(), true, true));
+        this.sendPacket(new HealthPacket(this.getMaxBreath(), true, true));
     }
 
     @Override
     public void setSkill(float percentage, int points) {
         super.setSkill(percentage, points);
-        this.sendPacket(new PacketSkill(this.getSkillPercentage(), this.getSkillPoints()));
+        this.sendPacket(new SkillPacket(this.getSkillPercentage(), this.getSkillPoints()));
     }
 }

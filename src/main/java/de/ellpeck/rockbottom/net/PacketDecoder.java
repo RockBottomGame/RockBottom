@@ -14,18 +14,17 @@ public class PacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> out) throws Exception {
         int id = buf.readByte();
 
-        Class<? extends IPacket> packetClass = Registries.PACKET_REGISTRY.get(id);
-        if (packetClass != null) {
-            IPacket packet = packetClass.getConstructor().newInstance();
-
+        IPacket.IFactory factory = Registries.PACKET_REGISTRY.get(id);
+        if (factory != null) {
+            IPacket packet = factory.create();
             try {
                 packet.fromBuffer(buf);
 
                 if (buf.isReadable()) {
-                    ctx.fireExceptionCaught(new IllegalStateException("Packet " + packetClass + " with id " + id + " read from buffer, but left " + buf.readableBytes() + " bytes behind!"));
+                    ctx.fireExceptionCaught(new IllegalStateException("Packet " + packet.getClass() + " with id " + id + " read from buffer, but left " + buf.readableBytes() + " bytes behind!"));
                 }
             } catch (Exception e) {
-                ctx.fireExceptionCaught(new RuntimeException("Couldn't read packet " + packetClass + " with id " + id + " from buffer", e));
+                ctx.fireExceptionCaught(new RuntimeException("Couldn't read packet " + packet.getClass() + " with id " + id + " from buffer", e));
             }
 
             out.add(packet);

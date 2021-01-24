@@ -4,8 +4,8 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.gui.GuiInformation;
-import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
+import de.ellpeck.rockbottom.gui.InformationGui;
+import de.ellpeck.rockbottom.gui.menu.MainMenuGui;
 import de.ellpeck.rockbottom.log.Logging;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -41,6 +41,6 @@ public class ClientNetworkHandler extends SimpleChannelInboundHandler<IPacket> {
         if (message == null) {
             message = "Unspecified reason";
         }
-        game.getGuiManager().openGui(new GuiInformation(new GuiMainMenu(), 0.5F, true, game.getAssetManager().localize(ResourceName.intern("info.reject.exception"), message)));
+        game.getGuiManager().openGui(new InformationGui(new MainMenuGui(), 0.5F, true, game.getAssetManager().localize(ResourceName.intern("info.reject.exception"), message)));
     }
 }

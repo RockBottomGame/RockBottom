@@ -5,15 +5,15 @@ import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IInputHandler;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.util.Pair;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.gui.GuiChat;
-import de.ellpeck.rockbottom.gui.GuiCompendium;
-import de.ellpeck.rockbottom.gui.GuiInventory;
+import de.ellpeck.rockbottom.gui.ChatGui;
+import de.ellpeck.rockbottom.gui.CompendiumGui;
+import de.ellpeck.rockbottom.gui.InventoryGui;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL11;
@@ -148,22 +148,22 @@ public class InputHandler implements IInputHandler {
 
     protected boolean keyPressed(int key) {
         if (this.game.getGuiManager().getGui() == null) {
-            AbstractEntityPlayer player = this.game.getPlayer();
+            AbstractPlayerEntity player = this.game.getPlayer();
             if (!player.isDead()) {
                 if (Settings.KEY_MENU.isKey(key)) {
                     this.game.openIngameMenu();
                     return true;
                 } else if (Settings.KEY_INVENTORY.isKey(key)) {
-                    player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
+                    player.openGuiContainer(new InventoryGui(player), player.getInvContainer());
                     return true;
                 } else if (Settings.KEY_COMPENDIUM.isKey(key)) {
-                    player.openGuiContainer(new GuiCompendium(player), player.getInvContainer());
+                    player.openGuiContainer(new CompendiumGui(player), player.getInvContainer());
                     return true;
                 } else if (Settings.KEY_CHAT.isKey(key) || Settings.KEY_COMMAND.isKey(key)) {
                     if (RockBottomAPI.getNet().isActive() || Main.debugMode) {
-                        this.game.getGuiManager().openGui(new GuiChat(Settings.KEY_COMMAND.isKey(key)));
+                        this.game.getGuiManager().openGui(new ChatGui(Settings.KEY_COMMAND.isKey(key)));
                     } else {
-                        this.game.getChatLog().displayMessage(new ChatComponentTranslation(ResourceName.intern("info.no_server")));
+                        this.game.getChatLog().displayMessage(new TranslationChatComponent(ResourceName.intern("info.no_server")));
                     }
                     return true;
                 }

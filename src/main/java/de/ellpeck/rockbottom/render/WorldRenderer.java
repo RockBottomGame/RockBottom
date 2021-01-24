@@ -8,8 +8,8 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.EntityLiving;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.LivingEntity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.impl.WorldRenderEvent;
 import de.ellpeck.rockbottom.api.particle.IParticleManager;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
@@ -28,7 +28,7 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.AbstractWorld;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
 import java.util.ArrayList;
@@ -102,13 +102,13 @@ public class WorldRenderer {
         this.maxY = Util.ceil(-this.transY + 1) - offset;
     }
 
-    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, AbstractWorld world, EntityPlayer player, InteractionManager input) {
+    public void render(IGameInstance game, IAssetManager manager, ParticleManager particles, IRenderer g, AbstractWorld world, PlayerEntity player, InteractionManager input) {
         float scale = g.getWorldScale();
 
         this.renderSky(game, manager, g, world, player, g.getWidthInWorld(), g.getHeightInWorld());
 
         List<Entity> entities = new ArrayList<>();
-        List<EntityPlayer> players = new ArrayList<>();
+        List<PlayerEntity> players = new ArrayList<>();
 
         for (int gridY = this.minChunkY; gridY <= this.maxChunkY; gridY++) {
             for (int gridX = this.minChunkX; gridX <= this.maxChunkX; gridX++) {
@@ -119,8 +119,8 @@ public class WorldRenderer {
                     for (Entity entity : chunk.getAllEntities()) {
                         entities.add(entity);
 
-                        if (entity instanceof EntityPlayer) {
-                            players.add((EntityPlayer) entity);
+                        if (entity instanceof PlayerEntity) {
+                            players.add((PlayerEntity) entity);
                         }
                     }
                 }
@@ -149,8 +149,8 @@ public class WorldRenderer {
                         int light = world.getCombinedVisualLight(Util.floor(x), Util.floor(y));
                         int color = RockBottomAPI.getApiHandler().getColorByLight(light, TileLayer.MAIN);
 
-                        if (entity instanceof EntityLiving) {
-                            EntityLiving living = (EntityLiving) entity;
+                        if (entity instanceof LivingEntity) {
+                            LivingEntity living = (LivingEntity) entity;
 
                             float damagePercentage;
                             float fadePercentage;
@@ -344,7 +344,7 @@ public class WorldRenderer {
         }
     }
 
-    private void renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+    private void renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractPlayerEntity player, double width, double height) {
         if (!world.renderSky(game, manager, g, world, player, width, height)) {
             return;
         }

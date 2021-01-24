@@ -14,7 +14,7 @@ import de.ellpeck.rockbottom.api.data.set.part.DataPart;
 import de.ellpeck.rockbottom.api.data.set.part.IPartFactory;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
@@ -32,11 +32,11 @@ import de.ellpeck.rockbottom.api.world.gen.INoiseGen;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.gui.GuiExtendedInventory;
-import de.ellpeck.rockbottom.gui.GuiInventory;
-import de.ellpeck.rockbottom.gui.container.ContainerExtendedInventory;
+import de.ellpeck.rockbottom.gui.ExtendedInventoryGui;
+import de.ellpeck.rockbottom.gui.InventoryGui;
+import de.ellpeck.rockbottom.gui.container.ExtendedInventoryContainer;
 import de.ellpeck.rockbottom.log.Logging;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketConstruction;
+import de.ellpeck.rockbottom.net.packet.toserver.ConstructionPacket;
 import de.ellpeck.rockbottom.render.WorldRenderer;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 
@@ -235,9 +235,9 @@ public class ApiHandler implements IApiHandler {
 	}
 
 	@Override
-	public void defaultConstruct(AbstractEntityPlayer player, PlayerCompendiumRecipe recipe, TileEntity machine) {
+	public void defaultConstruct(AbstractPlayerEntity player, PlayerCompendiumRecipe recipe, TileEntity machine) {
 		if (RockBottomAPI.getNet().isClient()) {
-			RockBottomAPI.getNet().sendToServer(new PacketConstruction(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
+			RockBottomAPI.getNet().sendToServer(new ConstructionPacket(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
 		} else {
 			if (recipe.isKnown(player)) {
 				recipe.playerConstruct(player, machine, 1);
@@ -246,7 +246,7 @@ public class ApiHandler implements IApiHandler {
 	}
 
     @Override
-    public List<ItemInstance> construct(AbstractEntityPlayer player, Inventory inputInventory, Inventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> recipeInputs, List<ItemInstance> actualInputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
+    public List<ItemInstance> construct(AbstractPlayerEntity player, Inventory inputInventory, Inventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> recipeInputs, List<ItemInstance> actualInputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
         List<ItemInstance> remains = new ArrayList<>();
         if (actualInputs == null) {
         	actualInputs = new ArrayList<>();
@@ -309,7 +309,7 @@ public class ApiHandler implements IApiHandler {
     }
 
     @Override
-    public void renderPlayer(AbstractEntityPlayer player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light) {
+    public void renderPlayer(AbstractPlayerEntity player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light) {
         PlayerEntityRenderer.renderPlayer(player, game, manager, g, design, x, y, scale, row, light);
     }
 
@@ -501,16 +501,16 @@ public class ApiHandler implements IApiHandler {
     }
 
     @Override
-    public void openPlayerInventory(AbstractEntityPlayer player) {
-        player.openGuiContainer(new GuiInventory(player), player.getInvContainer());
+    public void openPlayerInventory(AbstractPlayerEntity player) {
+        player.openGuiContainer(new InventoryGui(player), player.getInvContainer());
     }
 
     @Override
-    public void openExtendedPlayerInventory(AbstractEntityPlayer player, IInventory inventory, int containerWidth, Consumer<IInventory> onClosed, ItemContainer.ISlotCallback slotCallback) {
+    public void openExtendedPlayerInventory(AbstractPlayerEntity player, IInventory inventory, int containerWidth, Consumer<IInventory> onClosed, ItemContainer.ISlotCallback slotCallback) {
         int containerHeight = 1 + inventory.getSlotAmount() / containerWidth;
         player.openGuiContainer(
-                new GuiExtendedInventory(player, inventory, containerWidth, containerHeight),
-                new ContainerExtendedInventory(player, inventory, containerWidth, containerHeight, onClosed, slotCallback)
+                new ExtendedInventoryGui(player, inventory, containerWidth, containerHeight),
+                new ExtendedInventoryContainer(player, inventory, containerWidth, containerHeight, onClosed, slotCallback)
         );
     }
 }

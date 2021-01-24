@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.settings.IJsonSettings;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 
 import java.io.File;
 import java.util.HashMap;
@@ -53,7 +53,7 @@ public class CommandPermissions implements IJsonSettings {
         return "Command permission settings";
     }
 
-    public int getCommandLevel(AbstractEntityPlayer player) {
+    public int getCommandLevel(AbstractPlayerEntity player) {
         return this.commandLevels.getOrDefault(player.getUniqueId(), 0);
     }
 

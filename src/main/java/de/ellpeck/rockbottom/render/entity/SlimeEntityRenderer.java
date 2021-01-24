@@ -8,14 +8,14 @@ import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.world.entity.EntitySlime;
+import de.ellpeck.rockbottom.world.entity.SlimeEntity;
 
-public class SlimeEntityRenderer implements IEntityRenderer<EntitySlime> {
+public class SlimeEntityRenderer implements IEntityRenderer<SlimeEntity> {
 
     private final ResourceName animation = ResourceName.intern("monster.slime");
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntitySlime entity, float x, float y, int light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, SlimeEntity entity, float x, float y, int light) {
         int row = entity.getVariation() * 4;
         long startTime = 0;
 

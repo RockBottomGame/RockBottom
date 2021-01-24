@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.net;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.net.INetHandler;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -102,7 +102,7 @@ public class NetHandler implements INetHandler {
     @Override
     public void sendToAllPlayersExcept(IWorld world, IPacket packet, Entity except) {
         if (this.isServer()) {
-            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+            for (AbstractPlayerEntity player : world.getAllPlayers()) {
                 if (player != except) {
                     player.sendPacket(packet);
                 }
@@ -118,7 +118,7 @@ public class NetHandler implements INetHandler {
     @Override
     public void sendToAllPlayersInWorldExcept(IWorld world, IPacket packet, Entity except) {
         if (this.isServer()) {
-            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+            for (AbstractPlayerEntity player : world.getAllPlayers()) {
                 if (player.world == world && player != except) {
                     player.sendPacket(packet);
                 }
@@ -134,7 +134,7 @@ public class NetHandler implements INetHandler {
     @Override
     public void sendToAllPlayersAroundExcept(IWorld world, IPacket packet, double x, double y, double radius, Entity except) {
         if (this.isServer()) {
-            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+            for (AbstractPlayerEntity player : world.getAllPlayers()) {
                 if (player.world == world && player != except && Util.distanceSq(x, y, player.getX(), player.getY()) <= radius * radius) {
                     player.sendPacket(packet);
                 }
@@ -151,7 +151,7 @@ public class NetHandler implements INetHandler {
     public void sendToAllPlayersWithLoadedPosExcept(IWorld world, IPacket packet, double x, double y, Entity except) {
         if (this.isServer()) {
             IChunk chunk = world.getChunk(x, y);
-            for (AbstractEntityPlayer player : world.getAllPlayers()) {
+            for (AbstractPlayerEntity player : world.getAllPlayers()) {
                 if (player.world == world && player != except && (chunk.getPlayersInRange().contains(player) || chunk.getPlayersLeftRange().contains(player))) {
                     player.sendPacket(packet);
                 }
@@ -160,7 +160,7 @@ public class NetHandler implements INetHandler {
     }
 
     @Override
-    public int getCommandLevel(AbstractEntityPlayer player) {
+    public int getCommandLevel(AbstractPlayerEntity player) {
         if (this.isServer()) {
             return this.server.commandPermissions.getCommandLevel(player);
         } else {
@@ -169,7 +169,7 @@ public class NetHandler implements INetHandler {
     }
 
     @Override
-    public void setCommandLevel(AbstractEntityPlayer player, int level) {
+    public void setCommandLevel(AbstractPlayerEntity player, int level) {
         this.setCommandLevel(player.getUniqueId(), level);
     }
 

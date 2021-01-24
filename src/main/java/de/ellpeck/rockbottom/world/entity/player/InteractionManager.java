@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.world.entity.player;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
@@ -42,7 +42,7 @@ public class InteractionManager implements IInteractionManager {
     public int interactCooldown;
     public int attackCooldown;
 
-    public static boolean interact(AbstractEntityPlayer player, TileLayer inputLayer, double mouseX, double mouseY, boolean destKey) {
+    public static boolean interact(AbstractPlayerEntity player, TileLayer inputLayer, double mouseX, double mouseY, boolean destKey) {
         List<Entity> entities = player.world.getEntities(new BoundingBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F));
 
         InteractionEvent event = new InteractionEvent(player, entities, inputLayer, Util.floor(mouseX), Util.floor(mouseY), mouseX, mouseY, destKey);
@@ -84,7 +84,7 @@ public class InteractionManager implements IInteractionManager {
         return false;
     }
 
-    public static boolean attackEntity(AbstractEntityPlayer player, double mouseX, double mouseY) {
+    public static boolean attackEntity(AbstractPlayerEntity player, double mouseX, double mouseY) {
         boolean oneAttacked = false;
         ItemInstance selected = player.getSelectedItem();
 
@@ -108,7 +108,7 @@ public class InteractionManager implements IInteractionManager {
         return oneAttacked;
     }
 
-    private static List<Entity> getAttackableEntities(AbstractEntityPlayer player, double mouseX, double mouseY, ItemInstance selected) {
+    private static List<Entity> getAttackableEntities(AbstractPlayerEntity player, double mouseX, double mouseY, ItemInstance selected) {
         if (selected != null) {
             List<Entity> entities = selected.getItem().getCustomAttackableEntities(player.world, mouseX, mouseY, player, selected);
             if (entities != null) {
@@ -118,7 +118,7 @@ public class InteractionManager implements IInteractionManager {
         return player.world.getEntities(new BoundingBox(mouseX, mouseY, mouseX, mouseY).expand(0.01F), entity -> entity != player && player.isInRange(mouseX, mouseY, entity.getMaxInteractionDistance(player.world, mouseX, mouseY, player)));
     }
 
-    public static void breakTile(Tile tile, AbstractEntityPlayer player, int x, int y, TileLayer layer, boolean effective, ItemInstance instance) {
+    public static void breakTile(Tile tile, AbstractPlayerEntity player, int x, int y, TileLayer layer, boolean effective, ItemInstance instance) {
         BreakEvent event = new BreakEvent(player, layer, x, y, effective);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
             layer = event.layer;
@@ -141,7 +141,7 @@ public class InteractionManager implements IInteractionManager {
         }
     }
 
-    public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractEntityPlayer player) {
+    public static boolean defaultTileBreakingCheck(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractPlayerEntity player) {
         if (player.isInRange(mouseX, mouseY, world.getState(layer, x, y).getTile().getMaxInteractionDistance(world, x, y, layer, mouseX, mouseY, player))) {
             if (layer == TileLayer.MAIN) {
                 return true;
@@ -178,7 +178,7 @@ public class InteractionManager implements IInteractionManager {
 
     }
 
-    public static boolean isToolEffective(AbstractEntityPlayer player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y) {
+    public static boolean isToolEffective(AbstractPlayerEntity player, ItemInstance instance, Tile tile, TileLayer layer, int x, int y) {
         if (player.getGameMode().isCreative())
             return true;
         
@@ -195,7 +195,7 @@ public class InteractionManager implements IInteractionManager {
         return false;
     }
 
-    public static boolean pickup(AbstractEntityPlayer player, TileLayer layer, int x, int y) {
+    public static boolean pickup(AbstractPlayerEntity player, TileLayer layer, int x, int y) {
         TileState state = player.world.getState(layer, x, y);
         Tile tile = state.getTile();
         int meta = 0;
@@ -246,7 +246,7 @@ public class InteractionManager implements IInteractionManager {
     }
 
     public void update(RockBottom game) {
-        EntityPlayer player = game.getPlayer();
+        PlayerEntity player = game.getPlayer();
         if (player != null) {
             Gui gui = game.getGuiManager().getGui();
 
@@ -302,7 +302,7 @@ public class InteractionManager implements IInteractionManager {
                     if (selected != null && selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player, selected) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()) {
                         if (this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)) {
                             if (RockBottomAPI.getNet().isClient()) {
-                                RockBottomAPI.getNet().sendToServer(new PacketAttack(player.getUniqueId(), mousedTileX, mousedTileY));
+                                RockBottomAPI.getNet().sendToServer(new AttackPacket(player.getUniqueId(), mousedTileX, mousedTileY));
                             }
 
                             this.attackCooldown = selected == null ? 40 : selected.getItem().getAttackCooldown(player.world, mousedTileX, mousedTileY, player, selected);
@@ -318,7 +318,7 @@ public class InteractionManager implements IInteractionManager {
                                     if (interactBreakResult != EventResult.CANCELLED && (interactBreakResult == EventResult.MODIFIED || (layer.canEditLayer(game, player) && this.interactCooldown <= 0))) {
                                         if (interact(player, layer, mousedTileX, mousedTileY, true)) {
                                             if (RockBottomAPI.getNet().isClient()) {
-                                                RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY, true));
+                                                RockBottomAPI.getNet().sendToServer(new InteractPacket(player.getUniqueId(), layer, mousedTileX, mousedTileY, true));
                                             }
 
                                             this.interactCooldown = 10;
@@ -361,7 +361,7 @@ public class InteractionManager implements IInteractionManager {
                                                 this.breakProgress = 0;
 
                                                 if (RockBottomAPI.getNet().isClient()) {
-                                                    RockBottomAPI.getNet().sendToServer(new PacketBreakTile(player.getUniqueId(), layer, mousedTileX, mousedTileY));
+                                                    RockBottomAPI.getNet().sendToServer(new BreakTilePacket(player.getUniqueId(), layer, mousedTileX, mousedTileY));
                                                 } else {
                                                     breakTile(tile, player, x, y, layer, effective, selected);
                                                 }
@@ -382,7 +382,7 @@ public class InteractionManager implements IInteractionManager {
                                 if (placeResult != EventResult.CANCELLED && (placeResult == EventResult.MODIFIED || (layer.canEditLayer(game, player) && this.interactCooldown <= 0))) {
                                     if (interact(player, layer, mousedTileX, mousedTileY, false)) {
                                         if (RockBottomAPI.getNet().isClient()) {
-                                            RockBottomAPI.getNet().sendToServer(new PacketInteract(player.getUniqueId(), layer, mousedTileX, mousedTileY, false));
+                                            RockBottomAPI.getNet().sendToServer(new InteractPacket(player.getUniqueId(), layer, mousedTileX, mousedTileY, false));
                                         }
 
                                         this.interactCooldown = 10;
@@ -395,7 +395,7 @@ public class InteractionManager implements IInteractionManager {
                                 if (player.getGameMode().isCreative()) {
                                     if (pickup(player, layer, x, y)) {
                                         if (RockBottomAPI.getNet().isClient()) {
-                                            RockBottomAPI.getNet().sendToServer(new PacketPickup(player.getUniqueId(), layer, x, y));
+                                            RockBottomAPI.getNet().sendToServer(new PickupPacket(player.getUniqueId(), layer, x, y));
                                         }
 
                                         this.interactCooldown = 10;
@@ -437,7 +437,7 @@ public class InteractionManager implements IInteractionManager {
                     player.setSelectedSlot(slot);
 
                     if (RockBottomAPI.getNet().isClient()) {
-                        RockBottomAPI.getNet().sendToServer(new PacketHotbar(player.getUniqueId(), player.getSelectedSlot()));
+                        RockBottomAPI.getNet().sendToServer(new HotbarPacket(player.getUniqueId(), player.getSelectedSlot()));
                     }
                 }
             } else {
@@ -460,7 +460,7 @@ public class InteractionManager implements IInteractionManager {
                         game.getPlayer().setSelectedSlot(i);
 
                         if (RockBottomAPI.getNet().isClient()) {
-                            RockBottomAPI.getNet().sendToServer(new PacketHotbar(game.getPlayer().getUniqueId(), i));
+                            RockBottomAPI.getNet().sendToServer(new HotbarPacket(game.getPlayer().getUniqueId(), i));
                         }
 
                         return true;

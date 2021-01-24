@@ -60,17 +60,17 @@ public class ParticleManager implements IParticleManager {
 
     @Override
     public void addSingleTileParticle(IWorld world, double x, double y, double motionX, double motionY, TileState state) {
-        this.addParticle(new ParticleTile(world, x, y, motionX, motionY, state));
+        this.addParticle(new TileParticle(world, x, y, motionX, motionY, state));
     }
 
     @Override
     public void addSmokeParticle(IWorld world, double x, double y, double motionX, double motionY, float scale) {
-        this.addParticle(new ParticleSmoke(world, x, y, motionX, motionY, scale));
+        this.addParticle(new SmokeParticle(world, x, y, motionX, motionY, scale));
     }
 
     @Override
     public void addSnowParticle(IWorld world, double x, double y, double motionX, double motionY, int maxLife) {
-        this.addParticle(new ParticleSnow(world, x, y, motionX, motionY, maxLife));
+        this.addParticle(new SnowParticle(world, x, y, motionX, motionY, maxLife));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ParticleManager implements IParticleManager {
 
     @Override
     public void addSingleItemParticle(IWorld world, double x, double y, double motionX, double motionY, ItemInstance instance) {
-        this.addParticle(new ParticleItem(world, x, y, motionX, motionY, instance));
+        this.addParticle(new ItemParticle(world, x, y, motionX, motionY, instance));
     }
 
     @Override

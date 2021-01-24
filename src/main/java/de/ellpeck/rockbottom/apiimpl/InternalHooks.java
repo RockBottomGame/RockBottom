@@ -12,27 +12,28 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.effect.IEffect;
-import de.ellpeck.rockbottom.api.entity.AbstractEntityItem;
+import de.ellpeck.rockbottom.api.entity.AbstractItemEntity;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.ai.AITask;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlaceTileEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldObjectCollisionEvent;
 import de.ellpeck.rockbottom.api.gui.AbstractStatGui;
-import de.ellpeck.rockbottom.api.gui.GuiContainer;
+import de.ellpeck.rockbottom.api.gui.ContainerGui;
 import de.ellpeck.rockbottom.api.gui.component.*;
-import de.ellpeck.rockbottom.api.gui.container.ContainerSlot;
+import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
+import de.ellpeck.rockbottom.api.gui.container.SlotContainer;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
 import de.ellpeck.rockbottom.api.internal.IInternalHooks;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.tile.Tile;
-import de.ellpeck.rockbottom.api.tile.TileLiquid;
+import de.ellpeck.rockbottom.api.tile.LiquidTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.IStateHandler;
 import de.ellpeck.rockbottom.api.tile.state.TileProp;
@@ -41,14 +42,14 @@ import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.construction.criteria.CriteriaBreakTile;
-import de.ellpeck.rockbottom.gui.GuiSmithing;
+import de.ellpeck.rockbottom.construction.criteria.BreakTileCriteria;
+import de.ellpeck.rockbottom.gui.SmithingGui;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketDrop;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketSetOrPickHolding;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketShiftClick;
-import de.ellpeck.rockbottom.world.entity.EntityItem;
+import de.ellpeck.rockbottom.net.packet.toserver.DropPacket;
+import de.ellpeck.rockbottom.net.packet.toserver.SetOrPickHoldingPacket;
+import de.ellpeck.rockbottom.net.packet.toserver.ShiftClickPacket;
+import de.ellpeck.rockbottom.world.entity.ItemEntity;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import org.lwjgl.glfw.GLFW;
@@ -61,12 +62,12 @@ import java.util.logging.Logger;
 
 public class InternalHooks implements IInternalHooks {
 
-    public static boolean setOrPickUpHolding(AbstractEntityPlayer player, ItemContainer container, int slotId, boolean half) {
+    public static boolean setOrPickUpHolding(AbstractPlayerEntity player, ItemContainer container, int slotId, boolean half) {
         if (player.world.isClient()) {
-            RockBottomAPI.getNet().sendToServer(new PacketSetOrPickHolding(player.getUniqueId(), slotId, half));
+            RockBottomAPI.getNet().sendToServer(new SetOrPickHoldingPacket(player.getUniqueId(), slotId, half));
         }
 
-        ContainerSlot slot = container.getSlot(slotId);
+        SlotContainer slot = container.getSlot(slotId);
         ItemInstance slotInst = slot.get();
 
         if (half) {
@@ -145,13 +146,13 @@ public class InternalHooks implements IInternalHooks {
         return false;
     }
 
-    public static int shiftClick(AbstractEntityPlayer player, ItemContainer container, int from, int into) {
+    public static int shiftClick(AbstractPlayerEntity player, ItemContainer container, int from, int into) {
         if (player.world.isClient()) {
-            RockBottomAPI.getNet().sendToServer(new PacketShiftClick(player.getUniqueId(), from, into));
+            RockBottomAPI.getNet().sendToServer(new ShiftClickPacket(player.getUniqueId(), from, into));
         }
 
-        ContainerSlot slotFrom = container.getSlot(from);
-        ContainerSlot slotInto = container.getSlot(into);
+        SlotContainer slotFrom = container.getSlot(from);
+        SlotContainer slotInto = container.getSlot(into);
 
         ItemInstance fromInst = slotFrom.get();
         ItemInstance intoInst = slotInto.get();
@@ -242,14 +243,14 @@ public class InternalHooks implements IInternalHooks {
                         newTask = currTask.getNextTask(newTask, entity);
                     }
 
-                    PacketAITask.setNewTask(entity, currTask, newTask);
+                    AITaskPacket.setNewTask(entity, currTask, newTask);
 
                     if (entity.world.isServer()) {
                         DataSet data = new DataSet();
                         if (newTask != null) {
                             newTask.save(data, true, entity);
                         }
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketAITask(entity.getUniqueId(), data, newTaskId), x, y);
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new AITaskPacket(entity.getUniqueId(), data, newTaskId), x, y);
                     }
                 }
             } else {
@@ -316,7 +317,7 @@ public class InternalHooks implements IInternalHooks {
             if (entity.doesSync()) {
                 if (entity.ticksExisted % entity.getSyncFrequency() == 0) {
                     if (entity.lastSyncX != x || entity.lastSyncY != y) {
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new PacketEntityUpdate(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.isFlying), x, y, entity);
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(entity.world, new EntityUpdatePacket(entity.getUniqueId(), entity.getOriginX(), entity.getOriginY(), entity.motionX, entity.motionY, entity.facing, entity.isFlying), x, y, entity);
 
                         entity.lastSyncX = x;
                         entity.lastSyncY = y;
@@ -446,7 +447,7 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public boolean doDefaultSlotMovement(IGameInstance game, int button, float x, float y, GuiContainer gui, ComponentSlot slot) {
+    public boolean doDefaultSlotMovement(IGameInstance game, int button, float x, float y, ContainerGui gui, SlotComponent slot) {
         boolean isSecond = Settings.KEY_GUI_ACTION_2.isKey(button);
         if (isSecond || Settings.KEY_GUI_ACTION_1.isKey(button)) {
             ItemContainer container = gui.getContainer();
@@ -456,20 +457,20 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public boolean doDefaultShiftClicking(IGameInstance game, int button, GuiContainer gui, ComponentSlot slot) {
+    public boolean doDefaultShiftClicking(IGameInstance game, int button, ContainerGui gui, SlotComponent slot) {
         if (Settings.KEY_GUI_ACTION_1.isKey(button)) {
             ItemContainer container = gui.getContainer();
             ItemInstance remaining = slot.slot.get();
 
             if (remaining != null) {
                 boolean modified = false;
-                for (GuiContainer.ShiftClickBehavior behavior : gui.shiftClickBehaviors) {
+                for (ContainerGui.ShiftClickBehavior behavior : gui.shiftClickBehaviors) {
                     if (behavior.slots.contains(slot.componentId)) {
                         for (int i = 0; i < 2; i++) {
                             for (int slotInto : behavior.slotsInto) {
                                 GuiComponent comp = gui.getComponents().get(slotInto);
-                                if (comp instanceof ComponentSlot) {
-                                    ComponentSlot intoSlot = (ComponentSlot) comp;
+                                if (comp instanceof SlotComponent) {
+                                    SlotComponent intoSlot = (SlotComponent) comp;
                                     if (i == 1 || (intoSlot.slot.get() != null && intoSlot.slot.get().isEffectivelyEqual(remaining))) {
                                         if (behavior.condition == null || behavior.condition.apply(slot.slot, intoSlot.slot)) {
                                             int result = shiftClick(gui.player, container, container.getIdForSlot(slot.slot), container.getIdForSlot(intoSlot.slot));
@@ -493,9 +494,10 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public boolean placeTile(int x, int y, TileLayer layer, AbstractEntityPlayer player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate) {
+    public boolean placeTile(int x, int y, TileLayer layer, AbstractPlayerEntity player, ItemInstance selected, Tile tile, boolean removeItem, boolean simulate) {
+
         List<BoundingBox> tileBounds = tile.getBoundBoxes(player.world, tile.getPlacementState(player.world, x, y, layer, selected, player), x, y, layer, player, player.currentBounds.copy(), player.currentBounds.copy().add(player.motionX, player.motionY));
-        if (layer != TileLayer.MAIN || player.world.getEntities(tileBounds, entity -> !(entity instanceof AbstractEntityItem)).isEmpty()) {
+        if (layer != TileLayer.MAIN || player.world.getEntities(tileBounds, entity -> !(entity instanceof AbstractItemEntity)).isEmpty()) {
             if (layer.canTileBeInLayer(player.world, x, y, tile)) {
                 Tile tileThere = player.world.getState(layer, x, y).getTile();
                 if (tileThere != tile && tileThere.canReplace(player.world, x, y, layer)) {
@@ -538,12 +540,12 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public List<PlayerCompendiumRecipe> getRecipesToLearnFrom(Tile tile) {
-        List<PlayerCompendiumRecipe> recipes = CriteriaBreakTile.getRecipesFor(tile);
+        List<PlayerCompendiumRecipe> recipes = BreakTileCriteria.getRecipesFor(tile);
         return recipes == null ? null : Collections.unmodifiableList(recipes);
     }
 
     @Override
-    public void doDefaultLiquidBehavior(IWorld world, int x, int y, TileLayer layer, TileLiquid tile) {
+    public void doDefaultLiquidBehavior(IWorld world, int x, int y, TileLayer layer, LiquidTile tile) {
         TileState ourState = world.getState(layer, x, y);
         int ourLevel = ourState.get(tile.level) + 1;
         int startLevel = ourLevel;
@@ -671,7 +673,7 @@ public class InternalHooks implements IInternalHooks {
 
     }
 
-    private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState ourState, int ourLevel, int x, int y, int direction, TileLiquid tile) {
+    private boolean balanceAndSpread(IWorld world, TileLayer layer, TileState otherState, TileState ourState, int ourLevel, int x, int y, int direction, LiquidTile tile) {
         Direction flow = Direction.getHorizontal(direction);
         if (world.getState(x + direction, y).getTile().canLiquidSpread(world, x + direction, y, tile, flow.getOpposite()) &&  // enter state
                 world.getState(x + direction - flow.x, y).getTile().canLiquidSpread(world, x + direction - flow.x, y, tile, flow)) {  // exit state
@@ -719,18 +721,18 @@ public class InternalHooks implements IInternalHooks {
         }
     }
 
-    private void spread(IWorld world, TileLayer layer, int ourLevel, TileState ourState, int x, int y, int direction, TileLiquid tile) {
+    private void spread(IWorld world, TileLayer layer, int ourLevel, TileState ourState, int x, int y, int direction, LiquidTile tile) {
         world.setState(layer, x + direction, y, tile.getDefState()); // Place one unit
         world.setState(layer, x, y, ourState.prop(tile.level, ourLevel - 2)); // Decrease our level
     }
 
-    private void transfer(IWorld world, TileLayer layer, int secondLevel, TileState firstState, TileState secondState, int x1, int x2, int y, TileLiquid tile) {
+    private void transfer(IWorld world, TileLayer layer, int secondLevel, TileState firstState, TileState secondState, int x1, int x2, int y, LiquidTile tile) {
         world.setState(layer, x1, y, firstState.prop(tile.level, firstState.get(tile.level) - 1)); // Decrease first by one
         world.setState(layer, x2, y, secondState.prop(tile.level, secondLevel)); // Increase second by one
         world.scheduleUpdate(x2, y, layer, tile.getFlowSpeed());
     }
 
-    private boolean transferDown(IWorld world, TileLayer layer, TileState firstState, TileState secondState, int x, int y, int direction, TileLiquid tile) {
+    private boolean transferDown(IWorld world, TileLayer layer, TileState firstState, TileState secondState, int x, int y, int direction, LiquidTile tile) {
         boolean empty = false;
         if (secondState.getTile() == tile) {
             int secondLevel = secondState.get(tile.level) + 1;
@@ -1019,7 +1021,7 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public boolean doInputFieldKeyPress(IGameInstance game, int button, ComponentInputField field) {
+    public boolean doInputFieldKeyPress(IGameInstance game, int button, InputFieldComponent field) {
         if (field.isSelected()) {
             if (button == GLFW.GLFW_KEY_BACKSPACE) {
                 if (!field.getText().isEmpty()) {
@@ -1057,7 +1059,7 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public boolean doInputFieldCharInput(IGameInstance game, char[] characters, ComponentInputField field) {
+    public boolean doInputFieldCharInput(IGameInstance game, char[] characters, InputFieldComponent field) {
         boolean did = false;
         if (field.isSelected()) {
             for (char character : characters) {
@@ -1073,7 +1075,7 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public void doInputFieldRender(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y, ComponentInputField field) {
+    public void doInputFieldRender(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y, InputFieldComponent field) {
         if (field.renderBox) {
             g.addFilledRect(x, y, field.getWidth(), field.getHeight(), field.isMouseOverPrioritized(game) ? GuiComponent.getElementColor() : GuiComponent.getUnselectedElementColor());
             g.addEmptyRect(x, y, field.getWidth(), field.getHeight(), GuiComponent.getElementOutlineColor());
@@ -1098,7 +1100,7 @@ public class InternalHooks implements IInternalHooks {
         }
     }
 
-    private int getTextSpace(IGameInstance game, ComponentInputField field) {
+    private int getTextSpace(IGameInstance game, InputFieldComponent field) {
         return field.maxLength - game.getAssetManager().getFont().removeFormatting(field.getText()).length();
     }
 
@@ -1165,14 +1167,14 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public AbstractEntityItem makeItem(IWorld world, ItemInstance inst, double x, double y, double motionX, double motionY) {
-        return new EntityItem(world, inst);
+    public AbstractItemEntity makeItem(IWorld world, ItemInstance inst, double x, double y, double motionX, double motionY) {
+        return new ItemEntity(world, inst);
     }
 
     @Override
-    public List<ComponentStatistic> makeItemStatComponents(IGameInstance game, ItemStatistic.Stat stat, Map<Item, Counter> statMap, AbstractStatGui gui, ComponentMenu menu, ResourceName textureLocation) {
-        return Collections.singletonList(new ComponentStatistic(gui, () -> game.getAssetManager().localize(stat.getInitializer().getName().addPrefix("stat.")), () -> String.valueOf(stat.getTotal()), stat.getTotal(), () -> {
-            List<ComponentStatistic> list = new ArrayList<>();
+    public List<StatisticComponent> makeItemStatComponents(IGameInstance game, ItemStatistic.Stat stat, Map<Item, Counter> statMap, AbstractStatGui gui, MenuComponent menu, ResourceName textureLocation) {
+        return Collections.singletonList(new StatisticComponent(gui, () -> game.getAssetManager().localize(stat.getInitializer().getName().addPrefix("stat.")), () -> String.valueOf(stat.getTotal()), stat.getTotal(), () -> {
+            List<StatisticComponent> list = new ArrayList<>();
 
             for (Map.Entry<Item, Counter> entry : statMap.entrySet()) {
                 Item item = entry.getKey();
@@ -1181,7 +1183,7 @@ public class InternalHooks implements IInternalHooks {
                 ItemInstance instance = new ItemInstance(item);
                 String statName = game.getAssetManager().localize(stat.getInitializer().getName().addPrefix("stat.").addSuffix("_per_tile"));
 
-                list.add(new ComponentStatistic(gui, () -> {
+                list.add(new StatisticComponent(gui, () -> {
                     instance.setMeta((game.getTotalTicks() / Constants.TARGET_TPS) % (item.getHighestPossibleMeta() + 1));
                     return String.format(statName, instance.getDisplayName());
                 }, value::toString, value.get(), null) {
@@ -1212,9 +1214,9 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public void onToolBroken(IWorld world, AbstractEntityPlayer player, ItemInstance instance) {
+    public void onToolBroken(IWorld world, AbstractPlayerEntity player, ItemInstance instance) {
         if (world.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new PacketToolBreak(player.getUniqueId(), instance), player.getX(), player.getY());
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new ToolBreakPacket(player.getUniqueId(), instance), player.getX(), player.getY());
         }
 
         if (!world.isDedicatedServer()) {
@@ -1225,33 +1227,33 @@ public class InternalHooks implements IInternalHooks {
     }
 
     @Override
-    public void dropHeldItem(AbstractEntityPlayer player, ItemContainer container) {
-        PacketDrop.dropHeldItem(player, container);
+    public void dropHeldItem(AbstractPlayerEntity player, ItemContainer container) {
+        DropPacket.dropHeldItem(player, container);
     }
 
     @Override
     public void packetDamage(IWorld world, double x, double y, UUID entityId, int damage) {
-        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new PacketDamage(entityId, damage), x, y);
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new DamagePacket(entityId, damage), x, y);
     }
 
     @Override
     public void packetDeath(IWorld world, double x, double y, UUID entityId) {
-        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new PacketDeath(entityId), x, y);
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(world, new DeathPacket(entityId), x, y);
     }
 
     @Override
     public void packetTileEntityData(TileEntity tile) {
-        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(tile.world, new PacketTileEntityData(tile.x, tile.y, tile.layer, tile), tile.x, tile.y);
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(tile.world, new TileEntityDataPacket(tile.x, tile.y, tile.layer, tile), tile.x, tile.y);
     }
 
     @Override
     public void packetEntityData(Entity entity) {
-        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new PacketEntityChange(entity, false), entity.getX(), entity.getY());
+        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new EntityChangePacket(entity, false), entity.getX(), entity.getY());
     }
 
 	@Override
-	public void smithingConstruct(AbstractEntityPlayer player, TileEntity tile, SmithingRecipe recipe, List<ItemInstance> actualInputs) {
-		GuiSmithing gui = new GuiSmithing(player, tile, recipe, actualInputs);
+	public void smithingConstruct(AbstractPlayerEntity player, TileEntity tile, SmithingRecipe recipe, List<ItemInstance> actualInputs) {
+		SmithingGui gui = new SmithingGui(player, tile, recipe, actualInputs);
 		player.openGui(gui);
 	}
 }

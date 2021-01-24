@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.util.CrashManager;
 import de.ellpeck.rockbottom.world.AbstractWorld;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public final class DebugRenderer {
 
-    public static void render(RockBottom game, IAssetManager manager, IWorld world, EntityPlayer player, IRenderer g) {
+    public static void render(RockBottom game, IAssetManager manager, IWorld world, PlayerEntity player, IRenderer g) {
         List<String> list = getInfo(game, world, player, g);
 
         int y = 0;
@@ -44,7 +44,7 @@ public final class DebugRenderer {
         }
     }
 
-    public static List<String> getInfo(RockBottom game, IWorld world, EntityPlayer player, IRenderer g) {
+    public static List<String> getInfo(RockBottom game, IWorld world, PlayerEntity player, IRenderer g) {
         List<String> list = new ArrayList<>();
 
         Runtime runtime = Runtime.getRuntime();

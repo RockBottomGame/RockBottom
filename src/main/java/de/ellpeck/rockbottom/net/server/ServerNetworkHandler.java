@@ -1,11 +1,11 @@
 package de.ellpeck.rockbottom.net.server;
 
 import de.ellpeck.rockbottom.api.RockBottomAPI;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.log.Logging;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketReject;
+import de.ellpeck.rockbottom.net.packet.toclient.RejectPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -52,7 +52,7 @@ public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket> {
         if (message == null) {
             message = "Unspecified reason";
         }
-        ctx.writeAndFlush(new PacketReject(new ChatComponentTranslation(ResourceName.intern("info.reject.exception"), message)));
+        ctx.writeAndFlush(new RejectPacket(new TranslationChatComponent(ResourceName.intern("info.reject.exception"), message)));
         ctx.disconnect();
     }
 }

@@ -28,10 +28,10 @@ import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.assets.tex.TextureStitcher;
 import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.content.ContentManager.LoaderCallback;
-import de.ellpeck.rockbottom.gui.cursor.CursorClosedHand;
-import de.ellpeck.rockbottom.gui.cursor.CursorFinger;
-import de.ellpeck.rockbottom.gui.cursor.CursorOpenHand;
-import de.ellpeck.rockbottom.gui.cursor.CursorPointer;
+import de.ellpeck.rockbottom.gui.cursor.ClosedHandCursor;
+import de.ellpeck.rockbottom.gui.cursor.FingerCursor;
+import de.ellpeck.rockbottom.gui.cursor.OpenHandCursor;
+import de.ellpeck.rockbottom.gui.cursor.PointerCursor;
 import de.ellpeck.rockbottom.gui.menu.background.DesertTheme;
 import de.ellpeck.rockbottom.gui.menu.background.NatureTheme;
 import de.ellpeck.rockbottom.gui.menu.background.StoneTheme;
@@ -60,10 +60,10 @@ public class AssetManager implements IAssetManager, IDisposable {
         new TextureLoader().register();
         new ShaderLoader().register();
 
-        Registries.SPECIAL_CURSORS.register(0, new CursorPointer());
-        Registries.SPECIAL_CURSORS.register(1, new CursorFinger());
-        Registries.SPECIAL_CURSORS.register(2, new CursorClosedHand());
-        Registries.SPECIAL_CURSORS.register(3, new CursorOpenHand());
+        Registries.SPECIAL_CURSORS.register(0, new PointerCursor());
+        Registries.SPECIAL_CURSORS.register(1, new FingerCursor());
+        Registries.SPECIAL_CURSORS.register(2, new ClosedHandCursor());
+        Registries.SPECIAL_CURSORS.register(3, new OpenHandCursor());
 
         Registries.MAIN_MENU_THEMES.register(0, new StoneTheme());
         Registries.MAIN_MENU_THEMES.register(1, new NatureTheme());

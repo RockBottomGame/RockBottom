@@ -4,7 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Pos2;
@@ -68,7 +68,7 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
-    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractPlayerEntity player, double width, double height) {
         return this.initializer.renderSky(this, game, manager, g, world, player, width, height);
     }
 
@@ -138,27 +138,27 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
-    public AbstractEntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
+    public AbstractPlayerEntity createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
         return this.mainWorld.createPlayer(id, design, channel, loadOrSwapLast);
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(UUID id) {
+    public AbstractPlayerEntity getPlayer(UUID id) {
         return this.mainWorld.getPlayer(id);
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(String name) {
+    public AbstractPlayerEntity getPlayer(String name) {
         return this.mainWorld.getPlayer(name);
     }
 
     @Override
-    public void savePlayer(AbstractEntityPlayer player) {
+    public void savePlayer(AbstractPlayerEntity player) {
         this.mainWorld.savePlayer(player);
     }
 
     @Override
-    public List<AbstractEntityPlayer> getAllPlayers() {
+    public List<AbstractPlayerEntity> getAllPlayers() {
         return this.mainWorld.getAllPlayers();
     }
 
@@ -173,22 +173,22 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
-    public AbstractEntityPlayer getClosestPlayer(double x, double y, AbstractEntityPlayer excluding) {
+    public AbstractPlayerEntity getClosestPlayer(double x, double y, AbstractPlayerEntity excluding) {
         return this.mainWorld.getClosestPlayer(x, y, excluding);
     }
 
     @Override
-    public AbstractEntityPlayer getClosestPlayer(double x, double y) {
+    public AbstractPlayerEntity getClosestPlayer(double x, double y) {
         return this.mainWorld.getClosestPlayer(x, y);
     }
 
     @Override
-    public void addPlayer(AbstractEntityPlayer player) {
+    public void addPlayer(AbstractPlayerEntity player) {
         this.mainWorld.addPlayer(player);
     }
 
     @Override
-    public void removePlayer(AbstractEntityPlayer player) {
+    public void removePlayer(AbstractPlayerEntity player) {
         this.mainWorld.removePlayer(player);
     }
 

@@ -10,7 +10,7 @@ import de.ellpeck.rockbottom.api.data.set.part.num.PartByte;
 import de.ellpeck.rockbottom.api.data.set.part.num.PartInt;
 import de.ellpeck.rockbottom.api.data.set.part.num.PartShort;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.spawn.DespawnHandler;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
@@ -28,10 +28,10 @@ import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketScheduledUpdate;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketTileChange;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.net.packet.toclient.EntityChangePacket;
+import de.ellpeck.rockbottom.net.packet.toclient.ScheduledUpdatePacket;
+import de.ellpeck.rockbottom.net.packet.toclient.TileChangePacket;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -46,9 +46,9 @@ public class Chunk implements IChunk {
 
     public final int gridX;
     public final int gridY;
-    public final List<AbstractEntityPlayer> playersInRange = new ArrayList<>();
-    public final List<AbstractEntityPlayer> playersOutOfRangeCached = new ArrayList<>();
-    public final Map<AbstractEntityPlayer, Counter> playersOutOfRangeCachedTimers = new HashMap<>();
+    public final List<AbstractPlayerEntity> playersInRange = new ArrayList<>();
+    public final List<AbstractPlayerEntity> playersOutOfRangeCached = new ArrayList<>();
+    public final Map<AbstractPlayerEntity, Counter> playersOutOfRangeCachedTimers = new HashMap<>();
     protected final AbstractWorld world;
     protected final Biome[][] biomeGrid = new Biome[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     protected final Map<TileLayer, TileState[][]> stateGrid = new HashMap<>();
@@ -99,14 +99,14 @@ public class Chunk implements IChunk {
     }
 
     private static void addRemoveEntitiesOnBorder(IChunk firstChunk, IChunk secondChunk, Entity entity, boolean remove) {
-        for (AbstractEntityPlayer player : firstChunk.getPlayersInRange()) {
+        for (AbstractPlayerEntity player : firstChunk.getPlayersInRange()) {
             if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
-                player.sendPacket(new PacketEntityChange(entity, remove));
+                player.sendPacket(new EntityChangePacket(entity, remove));
             }
         }
-        for (AbstractEntityPlayer player : firstChunk.getPlayersLeftRange()) {
+        for (AbstractPlayerEntity player : firstChunk.getPlayersLeftRange()) {
             if (!secondChunk.getPlayersInRange().contains(player) && !secondChunk.getPlayersLeftRange().contains(player)) {
-                player.sendPacket(new PacketEntityChange(entity, remove));
+                player.sendPacket(new EntityChangePacket(entity, remove));
             }
         }
     }
@@ -132,7 +132,7 @@ public class Chunk implements IChunk {
 
     private boolean canGenerate(IWorldGenerator generator) {
         if (generator.needsPlayerToAllowGeneration(this.world, this)) {
-            for (AbstractEntityPlayer player : this.world.getAllPlayers()) {
+            for (AbstractPlayerEntity player : this.world.getAllPlayers()) {
                 if (generator.doesPlayerAllowGeneration(this.world, this, player)) {
                     return true;
                 }
@@ -199,7 +199,7 @@ public class Chunk implements IChunk {
         DespawnHandler handler = entity.getDespawnHandler();
         if (handler != null) {
             if (this.world.getTotalTime() % handler.getDespawnFrequency(this.world) == 0 && handler.isReadyToDespawn(entity)) {
-                AbstractEntityPlayer player = this.world.getClosestPlayer(x, y);
+                AbstractPlayerEntity player = this.world.getClosestPlayer(x, y);
                 double dist = handler.getMaxPlayerDistance(entity);
                 if (player == null || Util.distanceSq(player.getX(), player.getY(), x, y) >= dist * dist) {
                     handler.despawn(entity);
@@ -240,7 +240,7 @@ public class Chunk implements IChunk {
                             tile.onScheduledUpdate(this.world, update.x, update.y, update.layer, update.scheduledMeta);
 
                             if (this.world.isServer()) {
-                                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketScheduledUpdate(update.layer, update.x, update.y, update.scheduledMeta), update.x, update.y);
+                                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new ScheduledUpdatePacket(update.layer, update.x, update.y, update.scheduledMeta), update.x, update.y);
                             }
                         }
 
@@ -255,7 +255,7 @@ public class Chunk implements IChunk {
         }
 
         for (int i = this.playersOutOfRangeCached.size() - 1; i >= 0; i--) {
-            AbstractEntityPlayer player = this.playersOutOfRangeCached.get(i);
+            AbstractPlayerEntity player = this.playersOutOfRangeCached.get(i);
 
             Counter time = this.playersOutOfRangeCachedTimers.get(player);
             time.add(-1);
@@ -396,7 +396,7 @@ public class Chunk implements IChunk {
                     this.world.notifyNeighborsOfChange(this.x + x, this.y + y, layer);
 
                     if (this.world.isServer() && this.getStateInner(layer, x, y) == state) {
-                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new PacketTileChange(this.x + x, this.y + y, layer, this.world.getIdForState(state)), this.x + x, this.y + y);
+                        RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this.world, new TileChangePacket(this.x + x, this.y + y, layer, this.world.getIdForState(state)), this.x + x, this.y + y);
                     }
 
                     this.setDirty();
@@ -866,7 +866,7 @@ public class Chunk implements IChunk {
 
         List<PartDataSet> entities = new ArrayList<>();
         for (Entity entity : this.entities) {
-            if (entity.doesSave() && !(entity instanceof EntityPlayer)) {
+            if (entity.doesSave() && !(entity instanceof PlayerEntity)) {
                 DataSet entitySet = new DataSet();
                 entitySet.addUniqueId("uuid", entity.getUniqueId());
                 entitySet.addString("name", entity.getRegistryName().toString());
@@ -1115,17 +1115,17 @@ public class Chunk implements IChunk {
     }
 
     @Override
-    public List<AbstractEntityPlayer> getPlayersInRange() {
+    public List<AbstractPlayerEntity> getPlayersInRange() {
         return this.playersInRange;
     }
 
     @Override
-    public List<AbstractEntityPlayer> getPlayersLeftRange() {
+    public List<AbstractPlayerEntity> getPlayersLeftRange() {
         return this.playersOutOfRangeCached;
     }
 
     @Override
-    public Map<AbstractEntityPlayer, Counter> getLeftPlayerTimers() {
+    public Map<AbstractPlayerEntity, Counter> getLeftPlayerTimers() {
         return this.playersOutOfRangeCachedTimers;
     }
 

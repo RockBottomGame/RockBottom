@@ -5,14 +5,14 @@ import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.impl.PlayerJoinWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.toast.ToastBasic;
+import de.ellpeck.rockbottom.api.toast.BasicToast;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.NameToIndexInfo;
@@ -26,11 +26,11 @@ import de.ellpeck.rockbottom.api.world.gen.HeightGen;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketPlayer;
+import de.ellpeck.rockbottom.net.packet.toclient.PlayerPacket;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
-import de.ellpeck.rockbottom.world.gen.WorldGenBiomes;
-import de.ellpeck.rockbottom.world.gen.WorldGenHeights;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
+import de.ellpeck.rockbottom.world.gen.BiomeWorldGen;
+import de.ellpeck.rockbottom.world.gen.HeightWorldGen;
 import io.netty.channel.Channel;
 
 import java.io.File;
@@ -41,8 +41,8 @@ import java.util.UUID;
 
 public class World extends AbstractWorld {
 
-    public final List<AbstractEntityPlayer> players = new ArrayList<>();
-    protected final List<AbstractEntityPlayer> playersUnmodifiable = Collections.unmodifiableList(this.players);
+    public final List<AbstractPlayerEntity> players = new ArrayList<>();
+    protected final List<AbstractPlayerEntity> playersUnmodifiable = Collections.unmodifiableList(this.players);
     protected final WorldInfo info;
     private final List<SubWorld> subWorlds;
     private final DynamicRegistryInfo regInfo;
@@ -87,22 +87,22 @@ public class World extends AbstractWorld {
         }
     }
 
-    private static EntityPlayer makePlayer(IWorld world, UUID id, IPlayerDesign design, Channel channel) {
-        return channel != null ? new ConnectedPlayer(world, id, design, channel) : new EntityPlayer(world, id, design);
+    private static PlayerEntity makePlayer(IWorld world, UUID id, IPlayerDesign design, Channel channel) {
+        return channel != null ? new ConnectedPlayer(world, id, design, channel) : new PlayerEntity(world, id, design);
     }
 
     @Override
     protected BiomeGen getBiomeGen() {
-        return Preconditions.checkNotNull((WorldGenBiomes) this.getGenerator(WorldGenBiomes.ID), "The default biome generator has been removed from the registry!");
+        return Preconditions.checkNotNull((BiomeWorldGen) this.getGenerator(BiomeWorldGen.ID), "The default biome generator has been removed from the registry!");
     }
 
     @Override
     protected HeightGen getHeightGen() {
-        return Preconditions.checkNotNull((WorldGenHeights) this.getGenerator(WorldGenHeights.ID), "The default heights generator has been removed from the registry!");
+        return Preconditions.checkNotNull((HeightWorldGen) this.getGenerator(HeightWorldGen.ID), "The default heights generator has been removed from the registry!");
     }
 
     @Override
-    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractPlayerEntity player, double width, double height) {
         return true;
     }
 
@@ -187,11 +187,11 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public AbstractEntityPlayer getClosestPlayer(double x, double y, AbstractEntityPlayer excluding) {
+    public AbstractPlayerEntity getClosestPlayer(double x, double y, AbstractPlayerEntity excluding) {
         double closestDist = Double.MAX_VALUE;
-        AbstractEntityPlayer closestPlayer = null;
+        AbstractPlayerEntity closestPlayer = null;
 
-        for (AbstractEntityPlayer player : this.players) {
+        for (AbstractPlayerEntity player : this.players) {
             if (player != excluding) {
                 double dist = Util.distanceSq(x, y, player.getX(), player.getY());
                 if (closestDist >= dist) {
@@ -205,12 +205,12 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public AbstractEntityPlayer getClosestPlayer(double x, double y) {
+    public AbstractPlayerEntity getClosestPlayer(double x, double y) {
         return this.getClosestPlayer(x, y, null);
     }
 
     @Override
-    public void addPlayer(AbstractEntityPlayer player) {
+    public void addPlayer(AbstractPlayerEntity player) {
         if (this.getPlayer(player.getUniqueId()) == null) {
             this.players.add(player);
         } else {
@@ -218,16 +218,16 @@ public class World extends AbstractWorld {
         }
 
         if (this.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketPlayer(player, false), player);
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PlayerPacket(player, false), player);
         }
     }
 
     @Override
-    public void removePlayer(AbstractEntityPlayer player) {
+    public void removePlayer(AbstractPlayerEntity player) {
         this.players.remove(player);
 
         if (this.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PacketPlayer(player, true), player);
+            RockBottomAPI.getNet().sendToAllPlayersExcept(this, new PlayerPacket(player, true), player);
         }
     }
 
@@ -312,7 +312,7 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public List<AbstractEntityPlayer> getAllPlayers() {
+    public List<AbstractPlayerEntity> getAllPlayers() {
         return this.playersUnmodifiable;
     }
 
@@ -322,7 +322,7 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public void savePlayer(AbstractEntityPlayer player) {
+    public void savePlayer(AbstractPlayerEntity player) {
         DataSet playerSet = new DataSet();
         player.save(playerSet, false);
 
@@ -335,8 +335,8 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
-        EntityPlayer player = null;
+    public PlayerEntity createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
+        PlayerEntity player = null;
 
         File file = new File(this.playerDirectory, id + ".dat");
         if (file.exists()) {
@@ -376,7 +376,7 @@ public class World extends AbstractWorld {
         return player;
     }
 
-    private EntityPlayer loadPlayer(File file, UUID id, IPlayerDesign design, Channel channel) {
+    private PlayerEntity loadPlayer(File file, UUID id, IPlayerDesign design, Channel channel) {
         DataSet set = new DataSet();
         set.read(file);
 
@@ -388,14 +388,14 @@ public class World extends AbstractWorld {
             world = this;
         }
 
-        EntityPlayer player = makePlayer(world, id, design, channel);
+        PlayerEntity player = makePlayer(world, id, design, channel);
         player.load(set, false);
         return player;
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(UUID id) {
-        for (AbstractEntityPlayer player : this.players) {
+    public AbstractPlayerEntity getPlayer(UUID id) {
+        for (AbstractPlayerEntity player : this.players) {
             if (id.equals(player.getUniqueId())) {
                 return player;
             }
@@ -404,8 +404,8 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer(String name) {
-        for (AbstractEntityPlayer player : this.players) {
+    public AbstractPlayerEntity getPlayer(String name) {
+        for (AbstractPlayerEntity player : this.players) {
             if (name.equals(player.getName())) {
                 return player;
             }
@@ -430,7 +430,7 @@ public class World extends AbstractWorld {
 
         if (!this.isDedicatedServer()) {
             IGameInstance game = RockBottomAPI.getGame();
-            game.enqueueAction((g, o) -> game.getToaster().displayToast(new ToastBasic(ResourceName.intern("gui.save_world"), new ChatComponentTranslation(ResourceName.intern("info.saved")), new ChatComponentTranslation(ResourceName.intern("info.saved_world"), String.valueOf((float) time / 1000F)), 160)), null);
+            game.enqueueAction((g, o) -> game.getToaster().displayToast(new BasicToast(ResourceName.intern("gui.save_world"), new TranslationChatComponent(ResourceName.intern("info.saved")), new TranslationChatComponent(ResourceName.intern("info.saved_world"), String.valueOf((float) time / 1000F)), 160)), null);
         }
     }
 

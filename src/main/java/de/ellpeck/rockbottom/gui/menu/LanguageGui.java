@@ -1,0 +1,59 @@
+package de.ellpeck.rockbottom.gui.menu;
+
+import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
+import de.ellpeck.rockbottom.api.assets.Locale;
+import de.ellpeck.rockbottom.api.gui.Gui;
+import de.ellpeck.rockbottom.api.gui.component.ButtonComponent;
+import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
+import de.ellpeck.rockbottom.api.gui.component.MenuItemComponent;
+import de.ellpeck.rockbottom.api.util.BoundingBox;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+
+import java.util.Map;
+
+public class LanguageGui extends Gui {
+
+    public LanguageGui(Gui parent) {
+        super(150, 150, parent);
+    }
+
+    @Override
+    public void init(IGameInstance game) {
+        super.init(game);
+
+        BoundingBox area = new BoundingBox(0, 0, 150, 106).add(this.getX(), this.getY());
+        MenuComponent menu = new MenuComponent(this, -8, 0, 106, 1, 6, area);
+        this.components.add(menu);
+
+        IAssetManager manager = game.getAssetManager();
+        for (Map.Entry<ResourceName, Locale> entry : manager.<Locale>getAllOfType(Locale.ID).entrySet()) {
+            ResourceName res = entry.getKey();
+            Locale loc = entry.getValue();
+
+            menu.add(new MenuItemComponent(150, 16).add(0, 0, new ButtonComponent(this, 0, 0, 150, 16, () -> {
+                if (manager.getLocale() != loc) {
+                    game.getSettings().currentLocale = res.toString();
+                    game.getSettings().save();
+
+                    manager.setLocale(loc);
+                    game.getGuiManager().updateDimensions();
+                    return true;
+                }
+                return false;
+            }, loc.localize(null, res.addPrefix("loc.")))));
+        }
+
+        menu.organize();
+
+        this.components.add(new ButtonComponent(this, this.width / 2 - 40, this.height - 16, 80, 16, () -> {
+            game.getGuiManager().openGui(this.parent);
+            return true;
+        }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
+    }
+
+    @Override
+    public ResourceName getName() {
+        return ResourceName.intern("language");
+    }
+}

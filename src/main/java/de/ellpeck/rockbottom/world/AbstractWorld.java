@@ -6,10 +6,8 @@ import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.set.ModBasedDataSet;
-import de.ellpeck.rockbottom.api.data.set.part.DataPart;
-import de.ellpeck.rockbottom.api.data.set.part.num.PartInt;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.AddEntityToWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldSaveEvent;
@@ -31,10 +29,10 @@ import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.init.AbstractGame;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketEntityChange;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketParticles;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketSound;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketTime;
+import de.ellpeck.rockbottom.net.packet.toclient.EntityChangePacket;
+import de.ellpeck.rockbottom.net.packet.toclient.ParticlesPacket;
+import de.ellpeck.rockbottom.net.packet.toclient.SoundPacket;
+import de.ellpeck.rockbottom.net.packet.toclient.TimePacket;
 import de.ellpeck.rockbottom.util.thread.ThreadHandler;
 
 import java.io.File;
@@ -95,7 +93,7 @@ public abstract class AbstractWorld implements IWorld {
 
     protected abstract HeightGen getHeightGen();
 
-    public abstract boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height);
+    public abstract boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractPlayerEntity player, double width, double height);
 
     protected void initializeGenerators() {
         Map<ResourceName, IWorldGenerator> generators = new HashMap<>();
@@ -204,7 +202,7 @@ public abstract class AbstractWorld implements IWorld {
             this.updateChunksAndTime(game);
 
             if (this.isServer() && this.totalTime % 80 == 0) {
-                RockBottomAPI.getNet().sendToAllPlayersInWorld(this, new PacketTime(this.time, this.totalTime, this.timeFrozen));
+                RockBottomAPI.getNet().sendToAllPlayersInWorld(this, new TimePacket(this.time, this.totalTime, this.timeFrozen));
             }
 
             return true;
@@ -226,7 +224,7 @@ public abstract class AbstractWorld implements IWorld {
             chunk.addEntity(entity);
 
             if (!chunk.isGenerating() && this.isServer()) {
-                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, false), x, y, entity);
+                RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new EntityChangePacket(entity, false), x, y, entity);
             }
         }
     }
@@ -395,7 +393,7 @@ public abstract class AbstractWorld implements IWorld {
         byte light = this.getCombinedLight(x, y);
 
         if (!this.isDedicatedServer()) {
-            AbstractEntityPlayer player = RockBottomAPI.getGame().getPlayer();
+            AbstractPlayerEntity player = RockBottomAPI.getGame().getPlayer();
             double dist = Util.distanceSq(x + 0.5D, y, player.getX(), player.getY());
             if (dist <= 20D) {
                 byte newLight = (byte) (0.35D * (20D - dist));
@@ -573,7 +571,7 @@ public abstract class AbstractWorld implements IWorld {
         state.getTile().onDestroyed(this, x, y, destroyer, layer, shouldDrop);
 
         if (this.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this, PacketParticles.tile(this, x, y, state), x, y);
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(this, ParticlesPacket.tile(this, x, y, state), x, y);
         }
 
         if (!this.isDedicatedServer()) {
@@ -778,27 +776,27 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
-    public void playSound(AbstractEntityPlayer player, ResourceName name, double x, double y, double z, float pitch, float volume) {
+    public void playSound(AbstractPlayerEntity player, ResourceName name, double x, double y, double z, float pitch, float volume) {
         if (this.isLocalPlayer(player)) {
             RockBottomAPI.getGame().getAssetManager().getSound(name).playAt(pitch, volume, x, y, z);
         } else {
-            player.sendPacket(new PacketSound(name, x, y, z, pitch, volume));
+            player.sendPacket(new SoundPacket(name, x, y, z, pitch, volume));
         }
     }
 
     @Override
-    public void broadcastSound(AbstractEntityPlayer player, ResourceName name, float pitch, float volume) {
+    public void broadcastSound(AbstractPlayerEntity player, ResourceName name, float pitch, float volume) {
         if (this.isLocalPlayer(player)) {
             RockBottomAPI.getGame().getAssetManager().getSound(name).play(pitch, volume);
         } else {
-            player.sendPacket(new PacketSound(name, pitch, volume));
+            player.sendPacket(new SoundPacket(name, pitch, volume));
         }
     }
 
     @Override
-    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume, AbstractEntityPlayer except) {
+    public void playSound(ResourceName name, double x, double y, double z, float pitch, float volume, AbstractPlayerEntity except) {
         if (this.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketSound(name, x, y, z, pitch, volume), x, y, except);
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new SoundPacket(name, x, y, z, pitch, volume), x, y, except);
         }
 
         if (!this.isDedicatedServer() && !this.isLocalPlayer(except)) {
@@ -807,9 +805,9 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
-    public void broadcastSound(ResourceName name, float pitch, float volume, AbstractEntityPlayer except) {
+    public void broadcastSound(ResourceName name, float pitch, float volume, AbstractPlayerEntity except) {
         if (this.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersInWorldExcept(this, new PacketSound(name, pitch, volume), except);
+            RockBottomAPI.getNet().sendToAllPlayersInWorldExcept(this, new SoundPacket(name, pitch, volume), except);
         }
 
         if (!this.isDedicatedServer() && !this.isLocalPlayer(except)) {
@@ -833,7 +831,7 @@ public abstract class AbstractWorld implements IWorld {
         entity.onRemoveFromWorld();
 
         if (this.isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new PacketEntityChange(entity, true), chunk.getX(), chunk.getY(), entity);
+            RockBottomAPI.getNet().sendToAllPlayersWithLoadedPosExcept(this, new EntityChangePacket(entity, true), chunk.getX(), chunk.getY(), entity);
         }
     }
 

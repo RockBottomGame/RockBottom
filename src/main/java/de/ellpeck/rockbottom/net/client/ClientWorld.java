@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.WorldTickEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldUnloadEvent;
@@ -20,7 +20,7 @@ import de.ellpeck.rockbottom.init.AbstractGame;
 import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.Chunk;
 import de.ellpeck.rockbottom.world.World;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 import io.netty.channel.Channel;
 
 import java.util.List;
@@ -86,7 +86,7 @@ public class ClientWorld extends World {
     }
 
     @Override
-    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractEntityPlayer player, double width, double height) {
+    public boolean renderSky(IGameInstance game, IAssetManager manager, IRenderer g, AbstractWorld world, AbstractPlayerEntity player, double width, double height) {
         if (this.subWorld != null) {
             return this.subWorld.renderSky(this, game, manager, g, world, player, width, height);
         } else {
@@ -114,11 +114,11 @@ public class ClientWorld extends World {
     }
 
     @Override
-    public EntityPlayer createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
+    public PlayerEntity createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
         if (channel != null) {
             throw new UnsupportedOperationException("Cannot create a connected player in a client world");
         } else {
-            return new EntityPlayer(this, id, design);
+            return new PlayerEntity(this, id, design);
         }
     }
 

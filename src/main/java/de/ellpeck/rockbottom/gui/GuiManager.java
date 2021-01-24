@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
 import de.ellpeck.rockbottom.api.gui.Gui;
@@ -28,14 +28,14 @@ import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.gui.component.ComponentBreath;
-import de.ellpeck.rockbottom.gui.component.ComponentHealth;
-import de.ellpeck.rockbottom.gui.component.ComponentHotbarSlot;
-import de.ellpeck.rockbottom.gui.component.ComponentSkill;
+import de.ellpeck.rockbottom.gui.component.BreathComponent;
+import de.ellpeck.rockbottom.gui.component.HealthComponent;
+import de.ellpeck.rockbottom.gui.component.HotbarSlotComponent;
+import de.ellpeck.rockbottom.gui.component.SkillComponent;
 import de.ellpeck.rockbottom.gui.menu.background.MainMenuBackground;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class GuiManager implements IGuiManager {
     @Override
     public void initOnScreenComponents() {
         IGameInstance game = RockBottomAPI.getGame();
-        AbstractEntityPlayer player = game.getPlayer();
+        AbstractPlayerEntity player = game.getPlayer();
 
         if (!this.onScreenComponents.isEmpty()) {
             this.onScreenComponents.clear();
@@ -95,18 +95,18 @@ public class GuiManager implements IGuiManager {
 
             for (int i = 0; i < 8; i++) {
                 int x = (width / 2 - 4 * 13 + 1 + i * 13);
-                this.onScreenComponents.add(new ComponentHotbarSlot(player, player.getInv(), i, x, 3));
+                this.onScreenComponents.add(new HotbarSlotComponent(player, player.getInv(), i, x, 3));
             }
 
             int maxHealthParts = Util.ceil(game.getPlayer().getMaxHealth() / 20D);
-            this.onScreenComponents.add(new ComponentHealth(null, width - 3 - maxHealthParts * 13, height - 3 - 12, 13 * maxHealthParts - 1, 12));
+            this.onScreenComponents.add(new HealthComponent(null, width - 3 - maxHealthParts * 13, height - 3 - 12, 13 * maxHealthParts - 1, 12));
 
             int maxBreath = game.getPlayer().getMaxBreath();
-            this.onScreenComponents.add(new ComponentBreath(null, width - 3 - maxBreath * 13, height - 3 - 12 - 13, 13 * maxBreath - 1, 12));
+            this.onScreenComponents.add(new BreathComponent(null, width - 3 - maxBreath * 13, height - 3 - 12 - 13, 13 * maxBreath - 1, 12));
 
             int skillWidth = 75;
             int skillHeight = 15;
-            this.onScreenComponents.add(new ComponentSkill(null, 3, height - 3 - skillHeight, skillWidth, skillHeight));
+            this.onScreenComponents.add(new SkillComponent(null, 3, height - 3 - skillHeight, skillWidth, skillHeight));
         }
     }
 
@@ -158,7 +158,7 @@ public class GuiManager implements IGuiManager {
         }
     }
 
-    public void render(RockBottom game, IAssetManager manager, IRenderer g, EntityPlayer player) {
+    public void render(RockBottom game, IAssetManager manager, IRenderer g, PlayerEntity player) {
         int actualColor = game.getSettings().guiColor;
         if (rainbowMode) {
             game.getSettings().guiColor = Colors.rainbow((Util.getTimeMillis() / 20) % 256);
@@ -181,7 +181,7 @@ public class GuiManager implements IGuiManager {
             for (int i = 0; i < this.onScreenComponents.size(); i++) {
                 GuiComponent component = this.onScreenComponents.get(i);
                 // Check if the player is in creative mode, to not render the health bar if so
-                if(player != null && player.getGameMode().isCreative() && component instanceof ComponentHealth){
+                if(player != null && player.getGameMode().isCreative() && component instanceof HealthComponent){
                     continue;
                 }
                 if (RockBottomAPI.getEventHandler().fireEvent(new ComponentRenderEvent(null, i, component)) != EventResult.CANCELLED) {
@@ -194,7 +194,7 @@ public class GuiManager implements IGuiManager {
                 float x = width - 3F - 13F;
                 float y = height - 3F - 26F;
 
-                if (ComponentBreath.shouldDisplay(game)) {
+                if (BreathComponent.shouldDisplay(game)) {
                     y -= 13F;
                 }
 
@@ -235,7 +235,7 @@ public class GuiManager implements IGuiManager {
                 font.drawString(5, 5, "Players:", 0.3F);
 
                 int y = 0;
-                for (AbstractEntityPlayer p : player.world.getAllPlayers()) {
+                for (AbstractPlayerEntity p : player.world.getAllPlayers()) {
                     String s = p.getChatColorFormat() + p.getName();
                     if (p != player) {
                         if (player.world.getEntity(p.getUniqueId()) != null) {
@@ -257,7 +257,7 @@ public class GuiManager implements IGuiManager {
             }
         }
 
-        if (!(gui instanceof GuiChat) && this.background == null) {
+        if (!(gui instanceof ChatGui) && this.background == null) {
             game.getChatLog().drawNewMessages(game, manager, g);
         }
 

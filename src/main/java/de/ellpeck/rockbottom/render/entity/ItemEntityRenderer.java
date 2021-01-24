@@ -30,13 +30,13 @@ import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.ApiInternal;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.world.entity.EntityItem;
+import de.ellpeck.rockbottom.world.entity.ItemEntity;
 
 @ApiInternal
-public class ItemEntityRenderer implements IEntityRenderer<EntityItem> {
+public class ItemEntityRenderer implements IEntityRenderer<ItemEntity> {
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityItem entity, float x, float y, int light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, ItemEntity entity, float x, float y, int light) {
         ItemInstance instance = entity.getItem();
         if (instance != null) {
             Item item = instance.getItem();

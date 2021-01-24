@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.net;
 
 import de.ellpeck.rockbottom.api.Registries;
+import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
+import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -10,7 +12,7 @@ public class PacketEncoder extends MessageToByteEncoder<IPacket> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, IPacket packet, ByteBuf buf) throws RuntimeException {
-        int id = Registries.PACKET_REGISTRY.getId(packet.getClass());
+        int id = Registries.PACKET_REGISTRY.getId(packet.getName());
 
         if (id >= 0) {
             buf.writeByte(id);

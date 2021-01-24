@@ -11,9 +11,9 @@ import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.RecipeLearnEvent;
 import de.ellpeck.rockbottom.api.toast.IToast;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketKnowledge;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketRecipesToast;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.net.packet.toclient.KnowledgePacket;
+import de.ellpeck.rockbottom.net.packet.toclient.RecipesToastPacket;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +24,9 @@ import java.util.logging.Level;
 public class KnowledgeManager implements IKnowledgeManager {
 
     private final Map<ResourceName, Information> information = new HashMap<>();
-    private final EntityPlayer player;
+    private final PlayerEntity player;
 
-    public KnowledgeManager(EntityPlayer player) {
+    public KnowledgeManager(PlayerEntity player) {
         this.player = player;
     }
 
@@ -138,7 +138,7 @@ public class KnowledgeManager implements IKnowledgeManager {
             }
         }
 
-        PacketRecipesToast packet = new PacketRecipesToast(newRecipes);
+        RecipesToastPacket packet = new RecipesToastPacket(newRecipes);
         if (player.isLocalPlayer()) {
             packet.handle(RockBottomAPI.getGame(), null);
         } else if (player.world.isServer()) {
@@ -164,7 +164,7 @@ public class KnowledgeManager implements IKnowledgeManager {
                     }
                 }
             } else if (this.player.world.isServer()) {
-                this.player.sendPacket(new PacketKnowledge(this.player, information, announce, false));
+                this.player.sendPacket(new KnowledgePacket(this.player, information, announce, false));
             }
         }
     }
@@ -196,7 +196,7 @@ public class KnowledgeManager implements IKnowledgeManager {
                     RockBottomAPI.getGame().getToaster().displayToast(toast);
                 }
             } else if (this.player.world.isServer()) {
-                this.player.sendPacket(new PacketKnowledge(this.player, info, announce, true));
+                this.player.sendPacket(new KnowledgePacket(this.player, info, announce, true));
             }
         }
     }

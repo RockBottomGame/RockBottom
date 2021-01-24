@@ -6,23 +6,23 @@ import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ChatMessageEvent;
 import de.ellpeck.rockbottom.api.net.chat.Command;
 import de.ellpeck.rockbottom.api.net.chat.IChatLog;
 import de.ellpeck.rockbottom.api.net.chat.ICommandSender;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
+import de.ellpeck.rockbottom.api.net.chat.component.TextChatComponent;
 import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.gui.GuiChat;
+import de.ellpeck.rockbottom.gui.ChatGui;
 import de.ellpeck.rockbottom.init.RockBottom;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.chat.command.*;
-import de.ellpeck.rockbottom.net.packet.toclient.PacketChatMessage;
+import de.ellpeck.rockbottom.net.packet.toclient.ChatMessagePacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +35,19 @@ public class ChatLog implements IChatLog {
     private final List<String> lastInputs = new ArrayList<>();
 
     public static void initCommands() {
-        new CommandHelp().register();
-        new CommandStopServer().register();
-        new CommandSpawnItem().register();
-        new CommandSpawnEntity().register();
-        new CommandTeleport().register();
-        new CommandWhitelist().register();
-        new CommandBlacklist().register();
-        new CommandTime().register();
-        new CommandEffect().register();
-        new CommandItemList().register();
-        new CommandMe().register();
-        new CommandMessage().register();
-        new CommandGameMode().register();
+        new HelpCommand().register();
+        new StopServerCommand().register();
+        new SpawnItemCommand().register();
+        new SpawnEntityCommand().register();
+        new TeleportCommand().register();
+        new WhitelistCommand().register();
+        new BlacklistCommand().register();
+        new TimeCommand().register();
+        new EffectCommand().register();
+        new ItemListCommand().register();
+        new MeCommand().register();
+        new MessageCommand().register();
+        new GameModeCommand().register();
     }
 
     @Override
@@ -85,10 +85,10 @@ public class ChatLog implements IChatLog {
 
                             cmdFeedback = command.execute(args, sender, sender.getName(), RockBottomAPI.getGame(), this);
                         } else {
-                            cmdFeedback = new ChatComponentText(FormattingCode.RED + "You are not allowed to execute this command!");
+                            cmdFeedback = new TextChatComponent(FormattingCode.RED + "You are not allowed to execute this command!");
                         }
                     } else {
-                        cmdFeedback = new ChatComponentText(FormattingCode.RED + "Unknown command, use /help for a list of commands.");
+                        cmdFeedback = new TextChatComponent(FormattingCode.RED + "Unknown command, use /help for a list of commands.");
                     }
 
                     if (cmdFeedback != null) {
@@ -97,7 +97,7 @@ public class ChatLog implements IChatLog {
 
                     Logging.chatLogger.info("Command sender " + sender.getName() + " with id " + sender.getUniqueId() + " executed command '/" + cmdName + "' with feedback '" + cmdFeedback + '\'');
                 } else {
-                    this.broadcastMessage(new ChatComponentText(sender.getChatColorFormat() + '[' + sender.getName() + "] &4" + message));
+                    this.broadcastMessage(new TextChatComponent(sender.getChatColorFormat() + '[' + sender.getName() + "] &4" + message));
                 }
             }
         }
@@ -129,7 +129,7 @@ public class ChatLog implements IChatLog {
         this.displayMessage(message);
 
         if (RockBottomAPI.getNet().isServer()) {
-            RockBottomAPI.getNet().sendToAllPlayers(RockBottomAPI.getGame().getWorld(), new PacketChatMessage(message));
+            RockBottomAPI.getNet().sendToAllPlayers(RockBottomAPI.getGame().getWorld(), new ChatMessagePacket(message));
         }
     }
 
@@ -150,7 +150,7 @@ public class ChatLog implements IChatLog {
             return UUID.fromString(nameOrId);
         } catch (Exception e) {
             IWorld world = RockBottomAPI.getGame().getWorld();
-            AbstractEntityPlayer player = world.getPlayer(nameOrId);
+            AbstractPlayerEntity player = world.getPlayer(nameOrId);
 
             if (player != null) {
                 return player.getUniqueId();
@@ -165,7 +165,7 @@ public class ChatLog implements IChatLog {
         List<String> suggestions = new ArrayList<>();
 
         IWorld world = RockBottomAPI.getGame().getWorld();
-        for (AbstractEntityPlayer player : world.getAllPlayers()) {
+        for (AbstractPlayerEntity player : world.getAllPlayers()) {
             suggestions.add(player.getName());
             suggestions.add(player.getUniqueId().toString());
         }
@@ -182,7 +182,7 @@ public class ChatLog implements IChatLog {
 
     public void drawNewMessages(RockBottom game, IAssetManager manager, IRenderer g) {
         if (!this.newMessageCounter.isEmpty()) {
-            GuiChat.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size(), 0, (int) g.getHeightInGui() / 2);
+            ChatGui.drawMessages(game, manager, g, this.messages, this.newMessageCounter.size(), 0, (int) g.getHeightInGui() / 2);
         }
     }
 

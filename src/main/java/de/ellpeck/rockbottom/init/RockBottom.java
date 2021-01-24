@@ -16,10 +16,10 @@ import de.ellpeck.rockbottom.api.event.impl.MakeCameraCoordsEvent;
 import de.ellpeck.rockbottom.api.event.impl.PlayerLeaveWorldEvent;
 import de.ellpeck.rockbottom.api.event.impl.WorldLoadEvent;
 import de.ellpeck.rockbottom.api.gui.Gui;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.toast.IToaster;
-import de.ellpeck.rockbottom.api.toast.ToastBasic;
+import de.ellpeck.rockbottom.api.toast.BasicToast;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -34,14 +34,14 @@ import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
 import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
-import de.ellpeck.rockbottom.gui.GuiInformation;
-import de.ellpeck.rockbottom.gui.GuiLogo;
+import de.ellpeck.rockbottom.gui.InformationGui;
+import de.ellpeck.rockbottom.gui.LogoGui;
 import de.ellpeck.rockbottom.gui.GuiManager;
-import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
-import de.ellpeck.rockbottom.gui.menu.GuiMenu;
+import de.ellpeck.rockbottom.gui.menu.MainMenuGui;
+import de.ellpeck.rockbottom.gui.menu.MenuGui;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.client.ClientWorld;
-import de.ellpeck.rockbottom.net.packet.toserver.PacketDisconnect;
+import de.ellpeck.rockbottom.net.packet.toserver.DisconnectPacket;
 import de.ellpeck.rockbottom.net.server.ConnectedPlayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.render.WorldRenderer;
@@ -50,9 +50,8 @@ import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.util.CrashManager;
 import de.ellpeck.rockbottom.world.AbstractWorld;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
-import joptsimple.internal.Strings;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -85,7 +84,7 @@ public class RockBottom extends AbstractGame {
     public UUID uniqueId;
     public Renderer renderer;
     protected Settings settings;
-    private EntityPlayer player;
+    private PlayerEntity player;
     private IPlayerDesign playerDesign;
     private GuiManager guiManager;
     private InteractionManager interactionManager;
@@ -222,9 +221,9 @@ public class RockBottom extends AbstractGame {
 
         this.guiManager.updateDimensions();
         if (!Main.skipIntro) {
-            this.guiManager.openGui(new GuiLogo("intro.ellpeck", new GuiLogo("intro.wiiv", new GuiMainMenu())));
+            this.guiManager.openGui(new LogoGui("intro.ellpeck", new LogoGui("intro.wiiv", new MainMenuGui())));
         } else {
-            this.guiManager.openGui(new GuiMainMenu());
+            this.guiManager.openGui(new MainMenuGui());
         }
         this.guiManager.fadeIn(30, null);
     }
@@ -376,7 +375,7 @@ public class RockBottom extends AbstractGame {
         if (RockBottomAPI.getNet().isClient()) {
             if (!RockBottomAPI.getNet().isConnectedToServer()) {
                 this.quitWorld();
-                this.guiManager.openGui(new GuiInformation(this.guiManager.getGui(), 0.5F, true, this.assetManager.localize(ResourceName.intern("info.reject.server_down"))));
+                this.guiManager.openGui(new InformationGui(this.guiManager.getGui(), 0.5F, true, this.assetManager.localize(ResourceName.intern("info.reject.server_down"))));
             }
         }
 
@@ -438,7 +437,7 @@ public class RockBottom extends AbstractGame {
         if (this.player != null) {
             if (RockBottomAPI.getNet().isClient()) {
                 RockBottomAPI.logger().info("Sending disconnection packet");
-                RockBottomAPI.getNet().sendToServer(new PacketDisconnect(this.player.getUniqueId()));
+                RockBottomAPI.getNet().sendToServer(new DisconnectPacket(this.player.getUniqueId()));
             }
 
             RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(this.player, this.player instanceof ConnectedPlayer));
@@ -448,7 +447,7 @@ public class RockBottom extends AbstractGame {
         if (this.guiManager != null) {
             this.guiManager.closeGui();
             this.guiManager.updateDimensions();
-            this.guiManager.openGui(new GuiMainMenu());
+            this.guiManager.openGui(new MainMenuGui());
         }
 
         if (this.toaster != null) {
@@ -574,7 +573,7 @@ public class RockBottom extends AbstractGame {
 
     @Override
     public void openIngameMenu() {
-        this.guiManager.openGui(new GuiMenu());
+        this.guiManager.openGui(new MenuGui());
 
         if (!RockBottomAPI.getNet().isClient()) {
             this.world.save();
@@ -582,7 +581,7 @@ public class RockBottom extends AbstractGame {
     }
 
     @Override
-    public EntityPlayer getPlayer() {
+    public PlayerEntity getPlayer() {
         return this.player;
     }
 
@@ -693,7 +692,7 @@ public class RockBottom extends AbstractGame {
             ImageIO.write(image, "png", file);
 
             RockBottomAPI.logger().info("Saved screenshot to " + file);
-            this.toaster.displayToast(new ToastBasic(new ChatComponentTranslation(ResourceName.intern("info.screenshot.title")), new ChatComponentTranslation(ResourceName.intern("info.screenshot"), file.getName()), 350));
+            this.toaster.displayToast(new BasicToast(new TranslationChatComponent(ResourceName.intern("info.screenshot.title")), new TranslationChatComponent(ResourceName.intern("info.screenshot"), file.getName()), 350));
         } catch (Exception e) {
             RockBottomAPI.logger().log(Level.WARNING, "Couldn't take screenshot", e);
         }

@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.PlayerRenderEvent;
 import de.ellpeck.rockbottom.api.item.Item;
@@ -20,14 +20,14 @@ import de.ellpeck.rockbottom.api.util.Direction;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.world.entity.player.EntityPlayer;
+import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
-public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer> {
+public class PlayerEntityRenderer implements IEntityRenderer<PlayerEntity> {
 
     private static final ResourceName SPECIAL_BASE = ResourceName.intern("player.base.s");
     private static final ResourceName SPECIAL_ARMS = ResourceName.intern("player.arm.skin_s");
 
-    public static void renderPlayer(AbstractEntityPlayer player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light) {
+    public static void renderPlayer(AbstractPlayerEntity player, IGameInstance game, IAssetManager manager, IRenderer g, IPlayerDesign design, float x, float y, float scale, int row, int light) {
         if (RockBottomAPI.getEventHandler().fireEvent(new PlayerRenderEvent.Pre(game, manager, g, player, x, y)) == EventResult.CANCELLED) {
             return;
         }
@@ -151,7 +151,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<EntityPlayer> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityPlayer entity, float x, float y, int light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, PlayerEntity entity, float x, float y, int light) {
         IPlayerDesign design = entity.getDesign();
         boolean isRight = entity.facing == Direction.RIGHT;
         boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;

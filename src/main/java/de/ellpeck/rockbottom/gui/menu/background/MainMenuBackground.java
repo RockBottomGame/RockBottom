@@ -11,7 +11,7 @@ import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.gui.menu.GuiMainMenu;
+import de.ellpeck.rockbottom.gui.menu.MainMenuGui;
 import de.ellpeck.rockbottom.init.RockBottom;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class MainMenuBackground {
         float mouseX = g.getMouseInGuiX();
         float mouseY = g.getMouseInGuiY();
 
-        if (game.getGuiManager().getGui() instanceof GuiMainMenu && mouseX >= x + 72 * scale && mouseY >= y + 28 * scale && mouseX <= x + width - 72 * scale && mouseY <= y + height - 32 * scale) {
+        if (game.getGuiManager().getGui() instanceof MainMenuGui && mouseX >= x + 72 * scale && mouseY >= y + 28 * scale && mouseX <= x + width - 72 * scale && mouseY <= y + height - 32 * scale) {
             if (this.hoverStartTime <= 0) {
                 this.hoverStartTime = Util.getTimeMillis() - this.hoverPauseTime;
                 this.hoverPauseTime = 0;

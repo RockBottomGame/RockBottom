@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.ServerSettings;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
@@ -92,7 +92,7 @@ public class RockBottomServer extends AbstractGame {
     }
 
     @Override
-    public AbstractEntityPlayer getPlayer() {
+    public AbstractPlayerEntity getPlayer() {
         throw new UnsupportedOperationException("Cannot get the player on a dedicated server");
     }
 

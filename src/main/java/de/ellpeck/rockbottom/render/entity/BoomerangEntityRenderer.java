@@ -8,11 +8,11 @@ import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.world.IWorld;
-import de.ellpeck.rockbottom.world.entity.EntityBoomerang;
+import de.ellpeck.rockbottom.world.entity.BoomerangEntity;
 
-public class BoomerangEntityRenderer implements IEntityRenderer<EntityBoomerang> {
+public class BoomerangEntityRenderer implements IEntityRenderer<BoomerangEntity> {
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, EntityBoomerang entity, float x, float y, int light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, BoomerangEntity entity, float x, float y, int light) {
         ItemInstance instance = entity.getItem();
         if (instance != null) {
             Item item = instance.getItem();

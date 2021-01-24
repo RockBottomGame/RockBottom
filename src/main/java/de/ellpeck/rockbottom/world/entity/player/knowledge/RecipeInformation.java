@@ -7,12 +7,12 @@ import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentEmpty;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentText;
-import de.ellpeck.rockbottom.api.net.chat.component.ChatComponentTranslation;
+import de.ellpeck.rockbottom.api.net.chat.component.EmptyChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.TextChatComponent;
+import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.toast.IToast;
-import de.ellpeck.rockbottom.api.toast.ToastBasic;
-import de.ellpeck.rockbottom.api.toast.ToastItem;
+import de.ellpeck.rockbottom.api.toast.BasicToast;
+import de.ellpeck.rockbottom.api.toast.ItemToast;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 import java.util.Collections;
@@ -35,22 +35,22 @@ public class RecipeInformation extends Information {
 
     @Override
     public IToast announceForget() {
-        return new ToastBasic(ResourceName.intern("gui.compendium.book_closed"), new ChatComponentTranslation(ResourceName.intern("info.recipe_forgotten")), this.getOutputName(), 200);
+        return new BasicToast(ResourceName.intern("gui.compendium.book_closed"), new TranslationChatComponent(ResourceName.intern("info.recipe_forgotten")), this.getOutputName(), 200);
     }
 
     @Override
     public IToast announceTeach() {
-        if (recipe == null) return new ToastBasic(ResourceName.intern("gui.compendium.book_open"), new ChatComponentTranslation(ResourceName.intern("info.recipe_learned")), this.getOutputName(), 200);
-        return new ToastItem(recipe.getOutputs(), new ChatComponentTranslation(ResourceName.intern("info.recipe_learned")), Collections.singletonList(this.getOutputName()), 200);
+        if (recipe == null) return new BasicToast(ResourceName.intern("gui.compendium.book_open"), new TranslationChatComponent(ResourceName.intern("info.recipe_learned")), this.getOutputName(), 200);
+        return new ItemToast(recipe.getOutputs(), new TranslationChatComponent(ResourceName.intern("info.recipe_learned")), Collections.singletonList(this.getOutputName()), 200);
     }
 
     private ChatComponent getOutputName() {
         if (this.recipe != null) {
             List<ItemInstance> outputs = this.recipe.getOutputs();
             ItemInstance output = outputs.get(0);
-            return new ChatComponentText(output.getDisplayName() + " x" + output.getAmount());
+            return new TextChatComponent(output.getDisplayName() + " x" + output.getAmount());
         } else {
-            return new ChatComponentEmpty();
+            return new EmptyChatComponent();
         }
     }
 

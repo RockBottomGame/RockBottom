@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.net.client;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.entity.player.AbstractEntityPlayer;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.util.Counter;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.Chunk;
@@ -55,17 +55,17 @@ public class ClientChunk extends Chunk {
     }
 
     @Override
-    public List<AbstractEntityPlayer> getPlayersInRange() {
+    public List<AbstractPlayerEntity> getPlayersInRange() {
         throw new UnsupportedOperationException("Cannot get players in range of a client chunk");
     }
 
     @Override
-    public List<AbstractEntityPlayer> getPlayersLeftRange() {
+    public List<AbstractPlayerEntity> getPlayersLeftRange() {
         throw new UnsupportedOperationException("Cannot get players that left range of a client chunk");
     }
 
     @Override
-    public Map<AbstractEntityPlayer, Counter> getLeftPlayerTimers() {
+    public Map<AbstractPlayerEntity, Counter> getLeftPlayerTimers() {
         throw new UnsupportedOperationException("Cannot get timers for players that left range of a client chunk");
     }
 }
