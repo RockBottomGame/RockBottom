@@ -11,6 +11,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.CottonTileRenderer;
+import de.ellpeck.rockbottom.world.Chunk;
 
 public class CottonTile extends TileTallPlant {
     public CottonTile() {
@@ -25,6 +26,8 @@ public class CottonTile extends TileTallPlant {
 
     @Override
     public final void updateRandomly(IWorld world, int x, int y, TileLayer layer) {
+        if (true)
+            return;
         TileState state = world.getState(layer, x, y);
         if (!state.get(StaticTileProps.TOP_HALF)) {
             int growth = state.get(StaticTileProps.PLANT_GROWTH);

@@ -156,6 +156,11 @@ public class World extends AbstractWorld {
     }
 
     @Override
+    public int getSeaLevel() {
+        return 10;
+    }
+
+    @Override
     public int getWeatherHeight() {
         return 100;
     }

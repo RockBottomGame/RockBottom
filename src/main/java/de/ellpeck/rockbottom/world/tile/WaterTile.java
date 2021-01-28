@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.tile.LiquidTile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
@@ -52,9 +53,11 @@ public class WaterTile extends LiquidTile {
 
         for (BoundingBox box : tileBoxes) {
             if (box.contains(entity.getX(), entity.getOriginY())) {
-                entity.motionX *= 0.65;
-                if (entity.motionY < 0) {
-                    entity.motionY *= 0.65;
+                if (!(entity instanceof AbstractPlayerEntity) || !((AbstractPlayerEntity) entity).getGameMode().isCreative()) {
+                    entity.motionX *= 0.65;
+                    if (entity.motionY < 0) {
+                        entity.motionY *= 0.65;
+                    }
                 }
                 entity.fallStartY = entity.getY();
 

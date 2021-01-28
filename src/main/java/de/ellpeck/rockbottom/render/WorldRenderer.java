@@ -25,16 +25,14 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.biome.Biome;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.particle.ParticleManager;
 import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 import de.ellpeck.rockbottom.world.entity.player.InteractionManager;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class WorldRenderer {
 
@@ -245,8 +243,11 @@ public class WorldRenderer {
                                 if (biomeDebug) {
                                     for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
                                         if (!world.isClient()) {
-                                            this.random.setSeed(chunk.getExpectedBiomeLevel(worldX + x, worldY + y).getName().hashCode());
-                                            g.addFilledRect(worldX - this.transX + x + 0.35F, -worldY - this.transY - y + 0.35F, 0.3F, 0.3F, Colors.random(this.random));
+                                            Set<BiomeLevel> levels = chunk.getExpectedBiomeLevels(worldX + x, worldY + y);
+                                            for (BiomeLevel level : levels) {
+                                                this.random.setSeed(level.getName().hashCode());
+                                                g.addFilledRect(worldX - this.transX + x + 0.35F, -worldY - this.transY - y + 0.35F, 0.3F, 0.3F, Colors.setA(Colors.random(this.random), 0.3f));
+                                            }
                                         }
                                         this.random.setSeed(chunk.getBiomeInner(x, y).getName().hashCode());
                                         g.addEmptyRect(worldX - this.transX + x + 0.25F, -worldY - this.transY - y + 0.25F, 0.5F, 0.5F, 0.1F, Colors.random(this.random));
@@ -358,7 +359,7 @@ public class WorldRenderer {
         int skyColor = biome.getSkyColor(SKY_COLORS[skyLight]);
         g.backgroundColor(skyColor);
 
-        if (!biome.renderBackground(game, manager, g, world, player, width, height)) {
+        if (biome.renderSky(game, manager, g, world, player, width, height)) {
             return;
         }
 

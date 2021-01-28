@@ -88,6 +88,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private float skillPercentage;
     private int skillPoints;
     private GameMode gameMode;
+    private boolean noClip;
 
     public PlayerEntity(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
@@ -409,6 +410,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
         set.addFloat("skill_percentage", this.skillPercentage);
         set.addInt("skill_points", this.skillPoints);
         set.addEnum("game_mode", this.gameMode);
+        set.addBoolean("no_clip", this.isNoClip());
     }
 
     @Override
@@ -422,6 +424,10 @@ public class PlayerEntity extends AbstractPlayerEntity {
         if(set.hasKey("game_mode")){
             this.gameMode = set.getEnum("game_mode", GameMode.class);
         }
+        if (set.hasKey("no_clip")) {
+            this.setNoClip(set.getBoolean("no_clip"));
+        }
+
     }
 
     @Override
@@ -680,6 +686,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.motionY = 0;
         this.isFalling = false;
         this.fallStartY = 0;
+        this.noClip = false;
         this.setHealth(this.getMaxHealth());
         this.setBreath(this.getMaxBreath());
 
@@ -824,7 +831,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public GameMode getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     @Override
@@ -834,4 +841,21 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.sendToClients();
     }
 
+    @Override
+    public boolean isNoClip() {
+        return this.gameMode.isCreative() && this.noClip;
+    }
+
+    @Override
+    public void setNoClip(boolean noClip) {
+        if (this.gameMode.isCreative()) {
+            this.noClip = noClip;
+            this.sendToClients();
+        }
+    }
+
+    @Override
+    public boolean canCollideWithTile(TileState state, int x, int y, TileLayer layer) {
+        return !this.isNoClip();
+    }
 }

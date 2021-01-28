@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
@@ -15,8 +16,10 @@ import de.ellpeck.rockbottom.world.AbstractWorld;
 import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public final class DebugRenderer {
 
@@ -117,7 +120,7 @@ public final class DebugRenderer {
                 list.add("Light: Sky " + world.getSkyLight(x, y) + " / Art " + world.getArtificialLight(x, y) + " -> " + world.getCombinedVisualLight(x, y));
                 String s = "Biome: " + world.getBiome(x, y).getName();
                 if (!world.isClient()) {
-                    s += ", Level: " + world.getExpectedBiomeLevel(x, y).getName();
+                    s += ", Levels: " + world.getExpectedBiomeLevels(x, y).stream().map(BiomeLevel::getName).collect(Collectors.toList());
                 }
                 list.add(s);
                 list.add("Most Prominent Biome: " + chunk.getMostProminentBiome().getName());

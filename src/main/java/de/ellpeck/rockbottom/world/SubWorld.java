@@ -88,6 +88,11 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
+    public int getSeaLevel() {
+        return 0;
+    }
+
+    @Override
     public int getWeatherHeight() {
         return 0;
     }

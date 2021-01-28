@@ -675,6 +675,11 @@ public class Chunk implements IChunk {
     }
 
     @Override
+    public Set<BiomeLevel> getExpectedBiomeLevels(int x, int y) {
+        return this.world.getExpectedBiomeLevels(x, y);
+    }
+
+    @Override
     public int getExpectedSurfaceHeight(TileLayer layer, int x) {
         return this.world.getExpectedSurfaceHeight(layer, x);
     }

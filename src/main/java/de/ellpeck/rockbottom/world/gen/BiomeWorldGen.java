@@ -38,6 +38,11 @@ public class BiomeWorldGen extends BiomeGen {
     }
 
     @Override
+    public int getLayerSeedScramble(IWorld world) {
+        return 827398433;
+    }
+
+    @Override
     public Set<Biome> getBiomesToGen(IWorld world) {
         return Registries.BIOME_REGISTRY.values();
     }
@@ -45,10 +50,5 @@ public class BiomeWorldGen extends BiomeGen {
     @Override
     public Set<BiomeLevel> getLevelsToGen(IWorld world) {
         return Registries.BIOME_LEVEL_REGISTRY.values();
-    }
-
-    @Override
-    public int getLayerSeedScramble(IWorld world) {
-        return 827398433;
     }
 }

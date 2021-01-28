@@ -25,6 +25,7 @@ import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class ClientWorld extends World {
@@ -163,6 +164,11 @@ public class ClientWorld extends World {
 
     @Override
     public BiomeLevel getExpectedBiomeLevel(int x, int y) {
+        throw new UnsupportedOperationException("Cannot get world generation information in a client world");
+    }
+
+    @Override
+    public Set<BiomeLevel> getExpectedBiomeLevels(int x, int y) {
         throw new UnsupportedOperationException("Cannot get world generation information in a client world");
     }
 

@@ -47,6 +47,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -345,10 +346,10 @@ public class ApiHandler implements IApiHandler {
 
         for (Biome biome : gen.getBiomesToGen(world)) {
             if (biome.shouldGenerateInWorld(world)) {
-                List<BiomeLevel> levels = biome.getGenerationLevels(world);
+                List<BiomeLevel> biomeLevels = biome.getGenerationLevels(world);
                 for (BiomeLevel level : gen.getLevelsToGen(world)) {
                     if (level.shouldGenerateInWorld(world)) {
-                        if (levels.contains(level) || level.getAdditionalGenBiomes(world).contains(biome)) {
+                        if (biomeLevels.contains(level) || level.getAdditionalGenBiomes(world).contains(biome)) {
                             biomesPerLevel.put(level, biome);
                         }
                     }
@@ -388,26 +389,84 @@ public class ApiHandler implements IApiHandler {
     @Override
     public Biome getBiome(IWorld world, int x, int y, int height, Map<BiomeLevel, Integer> totalWeights, ListMultimap<BiomeLevel, Biome> biomesPerLevel, Random biomeRandom, int blobSize, long[] layerSeeds, INoiseGen levelHeightNoise, int levelTransition, int biomeTransition) {
         BiomeLevel level = this.getSmoothedLevelForPos(world, x, y, height, levelTransition, biomesPerLevel, levelHeightNoise);
-
+        Set<BiomeLevel> levels = this.getSmoothedLevelsForPos(world, x, y, height, levelTransition, biomesPerLevel, levelHeightNoise);
         biomeRandom.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
         int addX = biomeRandom.nextInt(biomeTransition) - biomeTransition / 2;
 
-        if (level.isForcedSideBySide()) {
-            return this.getBiomeFromWeightPercentage(world, x, y, x + addX, 0, level, height, totalWeights, biomesPerLevel, biomeRandom, blobSize, layerSeeds);
-        } else {
+        // Removed for now until I figure out exactly what "forceSideBySide" is
+        //if (level.isForcedSideBySide()) {
+        //    return this.getBiomeFromWeightPercentage(world, x, y, x + addX, 0, levels, height, totalWeights, biomesPerLevel, biomeRandom, blobSize, layerSeeds);
+        //} else {
             int addY = biomeRandom.nextInt(biomeTransition) - biomeTransition / 2;
-            return this.getBiomeFromWeightPercentage(world, x, y, x + addX, y + addY, level, height, totalWeights, biomesPerLevel, biomeRandom, blobSize, layerSeeds);
-        }
+            return this.getBiomeFromWeightPercentage(world, x, y, x + addX, y + addY, levels, height, totalWeights, biomesPerLevel, biomeRandom, blobSize, layerSeeds);
+        //}
     }
 
-    private Biome getBiomeFromWeightPercentage(IWorld world, int x, int y, int percentageX, int percentageY, BiomeLevel level, int height, Map<BiomeLevel, Integer> totalWeights, ListMultimap<BiomeLevel, Biome> biomesPerLevel, Random biomeRandom, int blobSize, long[] layerSeeds) {
-        int totalWeight = totalWeights.get(level);
+    @Override
+    public Biome getBiome(IWorld world, int x, int y, int height, Map<BiomeLevel, Integer> totalWeights, ListMultimap<BiomeLevel, Biome> biomesPerLevel, Random random, int blobSize, long[] layerSeeds, INoiseGen levelHeightNoise, INoiseGen levelBlobNoise, int levelTransition, int biomeTransition) {
+        Set<BiomeLevel> levels = this.getSmoothedLevelsForPos(world, x, y, height, levelTransition, biomesPerLevel, levelHeightNoise);
+        random.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
+        int addLevelX = random.nextInt(levelTransition) - levelTransition / 2;
+        int addLevelY = random.nextInt(levelTransition) - levelTransition / 2;
+        BiomeLevel level = this.getLevelFromWeightPercentage(world, x, y, x + addLevelX, y + addLevelY, levels, random, blobSize, layerSeeds);
+
+        random.setSeed(Util.scrambleSeed(x, y, world.getSeed()));
+        int addX = random.nextInt(biomeTransition) - biomeTransition / 2;
+
+        // Removed for now until I figure out exactly what "forceSideBySide" is
+        //if (level.isForcedSideBySide()) {
+        //    return this.getBiomeFromWeightPercentage(world, x, y, x + addX, 0, level, height, totalWeights, biomesPerLevel, random, blobSize, layerSeeds);
+        //} else {
+            int addY = random.nextInt(biomeTransition) - biomeTransition / 2;
+            return this.getBiomeFromWeightPercentage(world, x, y, x + addX, y + addY, levels, height, totalWeights, biomesPerLevel, random, blobSize, layerSeeds);
+        //}
+    }
+
+    private BiomeLevel getLevelFromWeightPercentage(IWorld world, int x, int y, int percentageX, int percentageY, Set<BiomeLevel> levels, Random levelRandom, int blobSize, long[] layerSeeds) {
+        int totalWeight = getLevelWeights(world, levels);
+        int chosenWeight = Util.ceil(totalWeight * this.getLevelPercentage(world, percentageX, percentageY, blobSize, layerSeeds, levelRandom));
+
+        BiomeLevel chosen = null;
+
+        int weightCounter = 0;
+        for (BiomeLevel level : levels) {
+            weightCounter += level.getWeight(world);
+
+            if (weightCounter >= chosenWeight) {
+                chosen = level;
+                break;
+            }
+        }
+
+        if (chosen == null) {
+            RockBottomAPI.logger().warning("Couldn't find a biome level to generate for " + x + ", " + y);
+            chosen = GameContent.BIOME_LEVEL_SKY;
+        }
+
+        return chosen;
+    }
+
+    private int getLevelWeights(IWorld world, Set<BiomeLevel> levels) {
+        int total = 0;
+        for (BiomeLevel level : levels) {
+            total += level.getWeight(world);
+        }
+
+        return total;
+    }
+
+    private Biome getBiomeFromWeightPercentage(IWorld world, int x, int y, int percentageX, int percentageY, Set<BiomeLevel> levels, int height, Map<BiomeLevel, Integer> totalWeights, ListMultimap<BiomeLevel, Biome> biomesPerLevel, Random biomeRandom, int blobSize, long[] layerSeeds) {
+        int totalWeight = levels.stream().mapToInt(totalWeights::get).sum();
         int chosenWeight = Util.ceil(totalWeight * this.getBiomePercentage(world, percentageX, percentageY, blobSize, layerSeeds, biomeRandom));
 
         Biome chosen = null;
 
         int weightCounter = 0;
-        for (Biome biome : biomesPerLevel.get(level)) {
+        Set<Biome> biomes = new HashSet<>();
+        for (BiomeLevel level : levels) {
+            biomes.addAll(biomesPerLevel.get(level));
+        }
+        for (Biome biome : biomes) {
             weightCounter += biome.getWeight(world);
 
             if (weightCounter >= chosenWeight) {
@@ -417,11 +476,36 @@ public class ApiHandler implements IApiHandler {
         }
 
         if (chosen == null) {
-            RockBottomAPI.logger().warning("Couldn't find a biome to generate for " + x + ", " + y + " with level " + level.getName());
+            RockBottomAPI.logger().warning("Couldn't find a biome to generate for " + x + ", " + y + " with levels " + levels.stream().map(BiomeLevel::getName).collect(Collectors.toList()));
             chosen = GameContent.BIOME_SKY;
         }
 
         return chosen.getVariationToGenerate(world, x, y, height, biomeRandom);
+    }
+
+    @Override
+    public Set<BiomeLevel> getSmoothedLevelsForPos(IWorld world, int x, int y, int height, int levelTransition, ListMultimap<BiomeLevel, Biome> biomesPerLevel, INoiseGen levelHeightNoise) {
+        Set<BiomeLevel> levels = new HashSet<>();
+        Set<BiomeLevel> ret = this.getLevelsForPos(world, x, y, height, biomesPerLevel);
+        for (BiomeLevel level : ret) {
+            int maxY = level.getMaxY(world, x, y, height);
+            if (Math.abs(maxY - y) <= levelTransition) {
+                int changeHeight = Util.floor(levelTransition * levelHeightNoise.make2dNoise(x / 10D, maxY));
+                if (y >= maxY - changeHeight + Util.ceil(levelTransition / 2D)) {
+                    levels.addAll(this.getLevelsForPos(world, x, maxY + 1, height, biomesPerLevel));
+                }
+            } else {
+                int minY = level.getMinY(world, x, y, height);
+                if (Math.abs(minY - y) <= levelTransition) {
+                    int changeHeight = Util.ceil(levelTransition * (1D - levelHeightNoise.make2dNoise(x / 10D, minY)));
+                    if (y <= minY + changeHeight - Util.floor(levelTransition / 2D)) {
+                        levels.addAll(this.getLevelsForPos(world, x, minY - 1, height, biomesPerLevel));
+                    }
+                }
+            }
+        }
+
+        return levels.isEmpty() ? ret : levels;
     }
 
     @Override
@@ -446,16 +530,28 @@ public class ApiHandler implements IApiHandler {
         return level;
     }
 
+    private Set<BiomeLevel> getLevelsForPos(IWorld world, int x, int y, int height, ListMultimap<BiomeLevel, Biome> biomesPerLevel) {
+        return biomesPerLevel.keySet().stream()
+                .filter(level -> y >= level.getMinY(world, x, y, height) && y <= level.getMaxY(world, x, y, height))
+                .collect(Collectors.toSet());
+    }
+
     private BiomeLevel getLevelForPos(IWorld world, int x, int y, int height, ListMultimap<BiomeLevel, Biome> biomesPerLevel) {
         BiomeLevel chosen = null;
         for (BiomeLevel level : biomesPerLevel.keySet()) {
             if (y >= level.getMinY(world, x, y, height) && y <= level.getMaxY(world, x, y, height)) {
-                if (chosen == null || level.getPriority() >= chosen.getPriority()) {
+                if (chosen == null || level.getWeight(world) >= chosen.getWeight(world)) {
                     chosen = level;
                 }
             }
         }
         return chosen;
+    }
+
+    private double getLevelPercentage(IWorld world, int x, int y, int blobSize, long[] layerSeeds, Random levelRandom) {
+        Pos2 blobPos = this.getBlobPos(x, y, world, blobSize, layerSeeds, levelRandom);
+        levelRandom.setSeed(Util.scrambleSeed(blobPos.getX(), blobPos.getY(), world.getSeed()) + world.getSeed());
+        return levelRandom.nextDouble();
     }
 
     private double getBiomePercentage(IWorld world, int x, int y, int blobSize, long[] layerSeeds, Random biomeRandom) {
@@ -464,15 +560,15 @@ public class ApiHandler implements IApiHandler {
         return biomeRandom.nextDouble();
     }
 
-    private Pos2 getBlobPos(int x, int y, IWorld world, int blobSize, long[] layerSeeds, Random biomeRandom) {
+    private Pos2 getBlobPos(int x, int y, IWorld world, int blobSize, long[] layerSeeds, Random random) {
         Pos2 offset = new Pos2(x, y);
         for (int i = 0; i < blobSize; i++) {
-            offset = this.zoomFromPos(offset, layerSeeds[i], world, biomeRandom);
+            offset = this.zoomFromPos(offset, layerSeeds[i], world, random);
         }
         return offset;
     }
 
-    private Pos2 zoomFromPos(Pos2 pos, long seed, IWorld world, Random biomeRandom) {
+    private Pos2 zoomFromPos(Pos2 pos, long seed, IWorld world, Random random) {
         boolean xEven = (pos.getX() & 1) == 0;
         boolean yEven = (pos.getY() & 1) == 0;
 
@@ -482,9 +578,9 @@ public class ApiHandler implements IApiHandler {
         if (xEven && yEven) {
             return new Pos2(halfX, halfY);
         } else {
-            biomeRandom.setSeed(Util.scrambleSeed(pos.getX(), pos.getY(), world.getSeed()) + seed);
-            int offX = biomeRandom.nextBoolean() ? (pos.getX() < 0 ? -1 : 1) : 0;
-            int offY = biomeRandom.nextBoolean() ? (pos.getY() < 0 ? -1 : 1) : 0;
+            random.setSeed(Util.scrambleSeed(pos.getX(), pos.getY(), world.getSeed()) + seed);
+            int offX = random.nextBoolean() ? (pos.getX() < 0 ? -1 : 1) : 0;
+            int offY = random.nextBoolean() ? (pos.getY() < 0 ? -1 : 1) : 0;
 
             if (xEven) {
                 return new Pos2(halfX, halfY + offY);

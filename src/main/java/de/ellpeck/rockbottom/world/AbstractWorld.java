@@ -1028,6 +1028,11 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
+    public Set<BiomeLevel> getExpectedBiomeLevels(int x, int y) {
+        return this.biomeGen.getBiomeLevels(this, x, y, this.getExpectedSurfaceHeight(TileLayer.MAIN, x));
+    }
+
+    @Override
     public int getExpectedSurfaceHeight(TileLayer layer, int x) {
         return this.heightGen.getHeight(this, layer, x);
     }

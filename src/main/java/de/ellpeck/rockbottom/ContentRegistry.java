@@ -113,13 +113,15 @@ public final class ContentRegistry {
 
         BiomeLevel sky = new BasicBiomeLevel(ResourceName.intern("sky"), 15, Integer.MAX_VALUE, false, 0).register();
         BiomeLevel surface = new BasicBiomeLevel(ResourceName.intern("surface"), -10, 15, true, 1000).register();
-        BiomeLevel underground = new BasicBiomeLevel(ResourceName.intern("underground"), Integer.MIN_VALUE, -10, false, 500).register();
+        BiomeLevel sea = new BasicBiomeLevel(ResourceName.intern("sea"), -20, 10, false, 800).register();
+        BiomeLevel underground = new BasicBiomeLevel(ResourceName.intern("underground"), Integer.MIN_VALUE, -10, false, 1000).register();
 
         new SkyBiome(ResourceName.intern("sky"), 0, sky).register();
         new GrasslandBiome(ResourceName.intern("grassland"), 1000, surface).register();
         new DesertBiome(ResourceName.intern("desert"), 800, surface).register();
         new UndergroundBiome(ResourceName.intern("underground"), 1000, underground).register();
         new ColdGrasslandBiome(ResourceName.intern("cold_grassland")).register();
+        new SeaBiome(ResourceName.intern("sea"), 600, sea).register();
 
         Registries.ENTITY_REGISTRY.register(ItemEntity.ID, ItemEntity::new);
         Registries.ENTITY_REGISTRY.register(FallingEntity.ID, FallingEntity::new);
@@ -143,7 +145,7 @@ public final class ContentRegistry {
         Registries.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), StardropsWorldGen::new);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("lakes"), LakesWorldGen::new);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("corn"), CornWorldGen::new);
-        Registries.WORLD_GENERATORS.register(ResourceName.intern("cotton"), CottonWorldGen::new);
+        //Registries.WORLD_GENERATORS.register(ResourceName.intern("cotton"), CottonWorldGen::new);
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation::new);
 
