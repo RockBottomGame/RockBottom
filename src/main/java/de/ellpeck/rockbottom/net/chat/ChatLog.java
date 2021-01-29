@@ -48,6 +48,7 @@ public class ChatLog implements IChatLog {
         new MeCommand().register();
         new MessageCommand().register();
         new GameModeCommand().register();
+        new PermissionCommand().register();
     }
 
     @Override

@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
+import de.ellpeck.rockbottom.api.render.entity.LivingRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Direction;
@@ -22,7 +23,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
-public class PlayerEntityRenderer implements IEntityRenderer<PlayerEntity> {
+public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
 
     private static final ResourceName SPECIAL_BASE = ResourceName.intern("player.base.s");
     private static final ResourceName SPECIAL_ARMS = ResourceName.intern("player.arm.skin_s");
@@ -151,7 +152,7 @@ public class PlayerEntityRenderer implements IEntityRenderer<PlayerEntity> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, PlayerEntity entity, float x, float y, int light) {
+    public void renderEntity(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, PlayerEntity entity, float x, float y, int light) {
         IPlayerDesign design = entity.getDesign();
         boolean isRight = entity.facing == Direction.RIGHT;
         boolean isHorMovement = Math.abs(entity.motionX) >= 0.01;
@@ -166,6 +167,6 @@ public class PlayerEntityRenderer implements IEntityRenderer<PlayerEntity> {
         } else {
             row = isRight ? 2 : 3;
         }
-        renderPlayer(entity, game, manager, g, design, x - 0.5F, y + entity.getHeight() / 2F - 2F, 1F, row, light);
+        renderPlayer(entity, game, manager, renderer, design, x - 0.5F, y + entity.getHeight() / 2F - 2F, 1F, row, light);
     }
 }

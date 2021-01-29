@@ -259,6 +259,14 @@ public class InteractionManager implements IInteractionManager {
                     this.attackCooldown--;
                 }
 
+                if (Settings.KEY_TOGGLE_CAMERA_MODE.isPressed()) {
+                    if (!player.getCameraMode().isActive()) {
+                        player.getCameraMode().start();
+                    } else {
+                        player.getCameraMode().end();
+                    }
+                }
+
                 if (Settings.KEY_LEFT.isDown()) {
                     player.move(0);
                 } else if (Settings.KEY_RIGHT.isDown()) {
@@ -281,6 +289,11 @@ public class InteractionManager implements IInteractionManager {
 
                 if (Settings.KEY_JUMP.isDown()) {
                     player.move(2);
+                }
+
+                // If the player is in camera mode, they cannot do any interaction such as breaking or attacking
+                if (player.getCameraMode().isActive()) {
+                    return;
                 }
 
                 double mousedTileX = game.getRenderer().getMousedTileX();
