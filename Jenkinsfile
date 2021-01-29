@@ -2,7 +2,9 @@ pipeline {
   agent any
   stages {
     stage('Wait') {
-        sleep 30
+        steps {
+            sleep 30
+        }
     }
     stage('Checkout Deps') {
       steps {

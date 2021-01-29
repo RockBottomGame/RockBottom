@@ -205,8 +205,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
             this.isFlying = false;
         
         if (this.collidedHor) {
-            // TODO Remove emotion test
-            this.emotionHandler.setEmotion(new Emotion(Emotion.EmotionType.SPEECH, GameContent.HAPPY_EMOTION), 80);
             // TODO step up
             /*
         	int moveOntoX = Util.floor(this.currentBounds.getBoundEdge(this.facing)+this.facing.x/100f);
@@ -847,16 +845,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.gameMode = gameMode;
         this.isFlying = false;
         this.sendToClients();
-    }
-
-    @Override
-    public boolean isNoClip() {
-        return false;
-    }
-
-    @Override
-    public void setNoClip(boolean noClip) {
-
     }
 
     @Override
