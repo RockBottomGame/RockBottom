@@ -91,6 +91,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private int skillPoints;
     private GameMode gameMode;
     protected CameraMode cameraMode;
+    protected boolean noClip;
 
     public PlayerEntity(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
@@ -844,6 +845,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
     public void setGameMode(GameMode gameMode){
         this.gameMode = gameMode;
         this.isFlying = false;
+        this.noClip = false;
         this.sendToClients();
     }
 
@@ -852,4 +854,20 @@ public class PlayerEntity extends AbstractPlayerEntity {
         return this.cameraMode;
     }
 
+    @Override
+    public boolean isNoClip() {
+        return this.noClip;
+    }
+
+    @Override
+    public void setNoClip(boolean noClip) {
+        if (this.gameMode.isCreative()) {
+            this.noClip = noClip;
+        }
+    }
+
+    @Override
+    public boolean canCollideWithTile(TileState state, int x, int y, TileLayer layer) {
+        return !this.noClip;
+    }
 }
