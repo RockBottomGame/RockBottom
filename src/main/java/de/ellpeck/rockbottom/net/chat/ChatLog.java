@@ -49,7 +49,7 @@ public class ChatLog implements IChatLog {
         new MessageCommand().register();
         new GameModeCommand().register();
         new NoClipCommand().register();
-
+        new PermissionCommand().register();
     }
 
     @Override

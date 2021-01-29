@@ -7,7 +7,9 @@ import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractItemEntity;
 import de.ellpeck.rockbottom.api.entity.Entity;
+import de.ellpeck.rockbottom.api.entity.emotion.Emotion;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
+import de.ellpeck.rockbottom.api.entity.player.CameraMode;
 import de.ellpeck.rockbottom.api.entity.player.GameMode;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
@@ -89,6 +91,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private int skillPoints;
     private GameMode gameMode;
     private boolean noClip;
+    protected CameraMode cameraMode;
 
     public PlayerEntity(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
@@ -97,6 +100,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.design = design;
         this.gameMode = GameMode.SURVIVAL;
         this.inv.addChangeCallback(this.invCallback);
+        this.cameraMode = new CameraMode(this);
     }
 
     @Override
@@ -191,6 +195,9 @@ public class PlayerEntity extends AbstractPlayerEntity {
     public void update(IGameInstance game) {
         boolean couldSwim = this.canSwim;
         super.update(game);
+        if (this.getCameraMode().isActive()) {
+            this.getCameraMode().update();
+        }
         this.isDropping = false;
 
         if (this.onGround)
@@ -427,7 +434,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
         if (set.hasKey("no_clip")) {
             this.setNoClip(set.getBoolean("no_clip"));
         }
-
     }
 
     @Override
@@ -726,6 +732,10 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public boolean move(int type) {
+        if (this.getCameraMode().isActive()) {
+            return this.getCameraMode().move(type);
+        }
+
         if (type == 0) {    // Move left
             this.motionX -= this.getMoveSpeed();
             this.facing = Direction.LEFT;
@@ -858,4 +868,10 @@ public class PlayerEntity extends AbstractPlayerEntity {
     public boolean canCollideWithTile(TileState state, int x, int y, TileLayer layer) {
         return !this.isNoClip();
     }
+
+    @Override
+    public CameraMode getCameraMode() {
+        return this.cameraMode;
+    }
+
 }

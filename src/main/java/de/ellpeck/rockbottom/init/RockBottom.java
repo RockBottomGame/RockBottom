@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.data.IDataManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
+import de.ellpeck.rockbottom.api.entity.player.CameraMode;
 import de.ellpeck.rockbottom.api.event.IEventHandler;
 import de.ellpeck.rockbottom.api.event.impl.LoadSettingsEvent;
 import de.ellpeck.rockbottom.api.event.impl.MakeCameraCoordsEvent;
@@ -522,11 +523,20 @@ public class RockBottom extends AbstractGame {
                 double cameraX = this.player.getLerpedX();
                 double cameraY = this.player.getLerpedY();
 
-                if (this.guiManager.getGui() != null && this.guiManager.getGui().doesPauseGame()) {
+                if (this.player.getCameraMode().isActive()) {
+                    CameraMode camera = this.player.getCameraMode();
+                    cameraX = camera.getLerpedX();
+                    cameraY = camera.getLerpedY();
+                    if (this.guiManager.getGui() != null && this.guiManager.getGui().doesPauseGame()) {
+                        cameraX = camera.getX();
+                        cameraY = camera.getY();
+                    }
+                } else if (this.guiManager.getGui() != null && this.guiManager.getGui().doesPauseGame()) {
                     cameraX = this.player.getX();
                     cameraY = this.player.getY();
                 }
-                MakeCameraCoordsEvent event = new MakeCameraCoordsEvent(this.player, cameraX, cameraY - 0.5D);
+
+                MakeCameraCoordsEvent event = new MakeCameraCoordsEvent(this.player, cameraX, cameraY - 0.5D, this.player.getCameraMode().isActive());
                 RockBottomAPI.getEventHandler().fireEvent(event);
                 this.renderer.cameraX = event.cameraX;
                 this.renderer.cameraY = event.cameraY;

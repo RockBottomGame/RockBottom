@@ -13,7 +13,7 @@ public class FireworkEntityRenderer implements IEntityRenderer<FireworkEntity> {
     private final ResourceName texture = ResourceName.intern("items.firework");
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, FireworkEntity entity, float x, float y, int light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, FireworkEntity entity, float x, float y, int light) {
         manager.getTexture(this.texture).draw(x - 0.25F, y - 0.25F, 0.5F, 0.5F, light);
     }
 }
