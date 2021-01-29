@@ -90,7 +90,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private float skillPercentage;
     private int skillPoints;
     private GameMode gameMode;
-    private boolean noClip;
     protected CameraMode cameraMode;
 
     public PlayerEntity(IWorld world, UUID uniqueId, IPlayerDesign design) {
@@ -195,9 +194,11 @@ public class PlayerEntity extends AbstractPlayerEntity {
     public void update(IGameInstance game) {
         boolean couldSwim = this.canSwim;
         super.update(game);
+
         if (this.getCameraMode().isActive()) {
             this.getCameraMode().update();
         }
+
         this.isDropping = false;
 
         if (this.onGround)
@@ -417,7 +418,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
         set.addFloat("skill_percentage", this.skillPercentage);
         set.addInt("skill_points", this.skillPoints);
         set.addEnum("game_mode", this.gameMode);
-        set.addBoolean("no_clip", this.isNoClip());
     }
 
     @Override
@@ -430,9 +430,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.skillPoints = set.getInt("skill_points");
         if(set.hasKey("game_mode")){
             this.gameMode = set.getEnum("game_mode", GameMode.class);
-        }
-        if (set.hasKey("no_clip")) {
-            this.setNoClip(set.getBoolean("no_clip"));
         }
     }
 
@@ -692,7 +689,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.motionY = 0;
         this.isFalling = false;
         this.fallStartY = 0;
-        this.noClip = false;
         this.setHealth(this.getMaxHealth());
         this.setBreath(this.getMaxBreath());
 
@@ -841,7 +837,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public GameMode getGameMode() {
-        return this.gameMode;
+        return gameMode;
     }
 
     @Override
@@ -849,24 +845,6 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.gameMode = gameMode;
         this.isFlying = false;
         this.sendToClients();
-    }
-
-    @Override
-    public boolean isNoClip() {
-        return this.gameMode.isCreative() && this.noClip;
-    }
-
-    @Override
-    public void setNoClip(boolean noClip) {
-        if (this.gameMode.isCreative()) {
-            this.noClip = noClip;
-            this.sendToClients();
-        }
-    }
-
-    @Override
-    public boolean canCollideWithTile(TileState state, int x, int y, TileLayer layer) {
-        return !this.isNoClip();
     }
 
     @Override
