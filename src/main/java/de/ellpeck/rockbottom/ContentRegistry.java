@@ -70,6 +70,7 @@ public final class ContentRegistry {
         new CottonTile().register();
         new GlassTile().register();
         new TilePlatform().register();
+        new RopeTile(ResourceName.intern("plant_rope")).register();
 
         new ToolItem(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
         new ToolItem(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();
@@ -143,7 +144,7 @@ public final class ContentRegistry {
         Registries.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), StardropsWorldGen::new);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("lakes"), LakesWorldGen::new);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("corn"), CornWorldGen::new);
-        Registries.WORLD_GENERATORS.register(ResourceName.intern("cotton"), CottonWorldGen::new);
+        //Registries.WORLD_GENERATORS.register(ResourceName.intern("cotton"), CottonWorldGen::new);
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation::new);
 
