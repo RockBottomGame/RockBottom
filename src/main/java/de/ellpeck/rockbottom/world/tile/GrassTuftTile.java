@@ -21,8 +21,8 @@ public class GrassTuftTile extends TileMeta {
 
     public GrassTuftTile() {
         super(ResourceName.intern("grass_tuft"));
-        this.addSubTile(ResourceName.intern("grass_short"));
-        this.addSubTile(ResourceName.intern("grass_tall"));
+        this.addSubTile(ResourceName.intern("short_grass"));
+        this.addSubTile(ResourceName.intern("tall_grass"));
         this.addSubTile(ResourceName.intern("bush"));
     }
 
@@ -33,7 +33,7 @@ public class GrassTuftTile extends TileMeta {
 
     @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
-        return Util.RANDOM.nextDouble() >= 0.25 ? Collections.singletonList(new ItemInstance(GameContent.ITEM_PLANT_FIBER, Util.RANDOM.nextInt(3) + 1)) : Collections.emptyList();
+        return Util.RANDOM.nextDouble() >= 0.25 ? Collections.singletonList(new ItemInstance(GameContent.Items.PLANT_FIBER, Util.RANDOM.nextInt(3) + 1)) : Collections.emptyList();
     }
 
     @Override

@@ -43,7 +43,7 @@ public class CopperWorldGen extends WorldGenOre {
 
     @Override
     protected TileState getOreState() {
-        TileState state = GameContent.TILE_COPPER.getDefState();
+        TileState state = GameContent.Tiles.COPPER.getDefState();
         return this.oreRandom.nextInt(30) <= 0 ? state.prop(StaticTileProps.HAS_CANISTER, true) : state;
     }
 
@@ -54,6 +54,6 @@ public class CopperWorldGen extends WorldGenOre {
 
     @Override
     protected Set<Biome> getAllowedBiomes() {
-        return Collections.singleton(GameContent.BIOME_UNDERGROUND);
+        return Collections.singleton(GameContent.Biomes.UNDERGROUND);
     }
 }

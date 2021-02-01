@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class SmithingTableTileEntity extends TileEntity implements IToolStation {
 
-	private TileInventory hammerSlot = new TileInventory(this, (inst) -> inst != null && inst.getItem() == GameContent.ITEM_HAMMER);
+	private TileInventory hammerSlot = new TileInventory(this, (inst) -> inst != null && inst.getItem() == GameContent.Items.HAMMER);
 
 	public SmithingTableTileEntity(IWorld world, int x, int y, TileLayer layer) {
 		super(world, x, y, layer);
@@ -25,7 +25,7 @@ public class SmithingTableTileEntity extends TileEntity implements IToolStation 
 
 	@Override
 	public int getToolSlot(Item tool) {
-		return tool == GameContent.ITEM_HAMMER ? 0 : -1;
+		return tool == GameContent.Items.HAMMER ? 0 : -1;
 	}
 
 	@Override

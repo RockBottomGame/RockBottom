@@ -7,10 +7,10 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class RemainsGooTile extends BasicTile {
+public class GooRemainsTile extends BasicTile {
 
-    public RemainsGooTile() {
-        super(ResourceName.intern("remains_goo"));
+    public GooRemainsTile() {
+        super(ResourceName.intern("goo_remains"));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class RemainsGooTile extends BasicTile {
                 if (world.getState(layer, x, y - 1).getTile().canReplace(world, x, y - 1, layer)) {
                     if (!simulate) {
                         world.setState(layer, x, y - 1, world.getState(layer, x, y));
-                        world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                        world.setState(layer, x, y, GameContent.Tiles.AIR.getDefState());
                     }
                     return true;
                 }

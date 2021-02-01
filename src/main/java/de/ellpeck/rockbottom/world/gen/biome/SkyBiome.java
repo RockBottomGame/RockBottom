@@ -18,6 +18,6 @@ public class SkyBiome extends BasicBiome {
 
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight) {
-        return GameContent.TILE_AIR.getDefState();
+        return GameContent.Tiles.AIR.getDefState();
     }
 }

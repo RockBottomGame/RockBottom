@@ -23,7 +23,7 @@ public class FallingTile extends BasicTile {
                     falling.setPos(x + 0.5, y + 0.5);
                     world.addEntity(falling);
 
-                    world.setState(x, y, GameContent.TILE_AIR.getDefState());
+                    world.setState(x, y, GameContent.Tiles.AIR.getDefState());
                 }
             }
         }

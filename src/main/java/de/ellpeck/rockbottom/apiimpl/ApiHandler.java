@@ -418,7 +418,7 @@ public class ApiHandler implements IApiHandler {
 
         if (chosen == null) {
             RockBottomAPI.logger().warning("Couldn't find a biome to generate for " + x + ", " + y + " with level " + level.getName());
-            chosen = GameContent.BIOME_SKY;
+            chosen = GameContent.Biomes.SKY;
         }
 
         return chosen.getVariationToGenerate(world, x, y, height, biomeRandom);

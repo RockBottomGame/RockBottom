@@ -24,7 +24,7 @@ public class ColdGrasslandBiome extends BasicBiome {
         int snowHeight = surfaceHeight + Util.ceil(noise.make2dNoise(theX / 50D, 0D) * 2.5D);
 
         if (theY <= snowHeight && theY > surfaceHeight && (layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND) && world.getExpectedBiome(theX, surfaceHeight + 1) == this) {
-            return GameContent.TILE_SNOW.getDefState();
+            return GameContent.Tiles.SNOW.getDefState();
         } else {
             int stoneHeight = surfaceHeight - Util.ceil(noise.make2dNoise(theX / 5D, 0D) * 3D) - 2;
             return GrasslandBiome.getState(layer, theY, surfaceHeight, stoneHeight);

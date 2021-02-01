@@ -41,7 +41,7 @@ public class Structure implements IStructure {
         if (tiles != null) {
             return tiles[x][this.height - 1 - y];
         } else {
-            return GameContent.TILE_AIR.getDefState();
+            return GameContent.Tiles.AIR.getDefState();
         }
     }
 

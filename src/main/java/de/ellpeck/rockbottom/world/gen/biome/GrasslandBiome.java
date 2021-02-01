@@ -23,16 +23,16 @@ public class GrasslandBiome extends BasicBiome {
     public static TileState getState(TileLayer layer, int y, int height, int stoneHeight) {
         if (layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND) {
             if (y == height && layer == TileLayer.MAIN) {
-                return GameContent.TILE_GRASS.getDefState();
+                return GameContent.Tiles.GRASS.getDefState();
             } else if (y <= height) {
                 if (y >= stoneHeight) {
-                    return GameContent.TILE_SOIL.getDefState();
+                    return GameContent.Tiles.SOIL.getDefState();
                 } else {
-                    return GameContent.TILE_STONE.getDefState();
+                    return GameContent.Tiles.STONE.getDefState();
                 }
             }
         }
-        return GameContent.TILE_AIR.getDefState();
+        return GameContent.Tiles.AIR.getDefState();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class GrasslandBiome extends BasicBiome {
     public Biome getVariationToGenerate(IWorld world, int x, int y, int surfaceHeight, Random random) {
         double chance = Math.max(0, Math.min(1, (surfaceHeight - 20) / 5D));
         random.setSeed(Util.scrambleSeed(x, y, world.getSeed()) + 12382342);
-        return random.nextDouble() < chance ? GameContent.BIOME_COLD_GRASSLAND : this;
+        return random.nextDouble() < chance ? GameContent.Biomes.COLD_GRASSLAND : this;
     }
 
     @Override

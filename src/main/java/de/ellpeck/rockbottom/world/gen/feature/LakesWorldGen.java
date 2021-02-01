@@ -37,9 +37,9 @@ public class LakesWorldGen implements IWorldGenerator {
                 for (int x = startX; x <= endX; x++) {
                     int depthX = Util.ceil(depth * (1F - Math.abs(x - startX - width / 2F) / width * 2F)) - this.genRandom.nextInt(2);
                     for (int y = startY - depthX + 1; y <= startY; y++) {
-                        chunk.setStateInner(x, y, GameContent.TILE_AIR.getDefState());
+                        chunk.setStateInner(x, y, GameContent.Tiles.AIR.getDefState());
 
-                        LiquidTile water = GameContent.TILE_WATER;
+                        LiquidTile water = GameContent.Tiles.WATER;
                         if (y == startY) {
                             chunk.setStateInner(TileLayer.LIQUIDS, x, y, water.getDefState().prop(water.level, water.getLevels() - 3));
                         } else {
@@ -47,12 +47,12 @@ public class LakesWorldGen implements IWorldGenerator {
                         }
                     }
 
-                    if (chunk.getStateInner(x, startY - depthX).getTile().canLiquidSpread(world, x, chunk.getY() + startY - depthX, GameContent.TILE_WATER, Direction.NONE)) {
+                    if (chunk.getStateInner(x, startY - depthX).getTile().canLiquidSpread(world, x, chunk.getY() + startY - depthX, GameContent.Tiles.WATER, Direction.NONE)) {
                         chunk.setStateInner(x, startY - depthX, chunk.getBiomeInner(x, startY - depthX).getFillerTile(world, chunk, x, startY - depthX));
                     }
 
                     for (int y = this.genRandom.nextInt(3) + 1; y > 0; y--) {
-                        chunk.setStateInner(x, startY + y, GameContent.TILE_AIR.getDefState());
+                        chunk.setStateInner(x, startY + y, GameContent.Tiles.AIR.getDefState());
                     }
                 }
             }

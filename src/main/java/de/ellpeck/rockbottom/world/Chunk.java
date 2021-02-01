@@ -73,7 +73,7 @@ public class Chunk implements IChunk {
     protected boolean needsSave;
     private int internalLoadingTimer;
     private ModBasedDataSet additionalData;
-    private Biome mostProminentBiome = GameContent.BIOME_SKY;
+    private Biome mostProminentBiome = GameContent.Biomes.SKY;
     private float fadePercentage;
 
     public Chunk(AbstractWorld world, int gridX, int gridY, boolean constantlyPersistent) {
@@ -89,7 +89,7 @@ public class Chunk implements IChunk {
 
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                this.biomeGrid[x][y] = GameContent.BIOME_SKY;
+                this.biomeGrid[x][y] = GameContent.Biomes.SKY;
             }
         }
 
@@ -301,7 +301,7 @@ public class Chunk implements IChunk {
             }
             return state;
         } else {
-            return GameContent.TILE_AIR.getDefState();
+            return GameContent.Tiles.AIR.getDefState();
         }
     }
 
@@ -1167,7 +1167,7 @@ public class Chunk implements IChunk {
             grid = new TileState[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
             for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    grid[x][y] = GameContent.TILE_AIR.getDefState();
+                    grid[x][y] = GameContent.Tiles.AIR.getDefState();
                 }
             }
 

@@ -87,7 +87,7 @@ public class ConstructionTableGui extends ContainerGui {
         assetManager.getTexture(background).draw((float) this.x, (float) this.y, GUI_WIDTH, PAGE_HEIGHT);
         if (this.selectedRecipe != null) {
             String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
-            assetManager.getFont().drawAutoScaledString(this.x + 72, this.y + 6, strg, 0.25F, 72 - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
+            assetManager.getFont().drawAutoScaledString(this.x + 81, this.y + 6, strg, 0.25F, 72 - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
         }
         super.render(game, assetManager, renderer);
     }

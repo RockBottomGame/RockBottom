@@ -40,11 +40,11 @@ public class LeavesTile extends BasicTile {
         List<ItemInstance> drops = new ArrayList<>();
 
         if (Util.RANDOM.nextDouble() >= 0.85) {
-            drops.add(new ItemInstance(GameContent.TILE_SAPLING));
+            drops.add(new ItemInstance(GameContent.Tiles.SAPLING));
         }
 
         if (destroyer != null && Util.RANDOM.nextDouble() >= 0.65) {
-            drops.add(new ItemInstance(GameContent.ITEM_TWIG));
+            drops.add(new ItemInstance(GameContent.Items.TWIG));
         }
 
         return drops;

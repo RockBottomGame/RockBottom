@@ -28,7 +28,7 @@ public class CopperTile extends OreMaterialTile {
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
         List<ItemInstance> drops = super.getDrops(world, x, y, layer, destroyer);
         if (world.getState(layer, x, y).get(StaticTileProps.HAS_CANISTER)) {
-            drops.add(new ItemInstance(GameContent.ITEM_COPPER_CANISTER));
+            drops.add(new ItemInstance(GameContent.Items.COPPER_CANISTER));
         }
         return drops;
     }

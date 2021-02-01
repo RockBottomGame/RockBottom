@@ -36,7 +36,7 @@ public class CaveMushroomsWorldGen implements IWorldGenerator {
                 TileState state = chunk.getStateInner(x, y);
 
                 if (state.getTile().canReplace(world, worldX, worldY, TileLayer.MAIN)) {
-                    TileMeta tile = GameContent.TILE_CAVE_MUSHROOM;
+                    TileMeta tile = GameContent.Tiles.CAVE_MUSHROOM;
                     if (y > 0 && tile.canPlace(world, worldX, worldY, TileLayer.MAIN, null)) {
                         this.random.setSeed(Util.scrambleSeed(worldX, worldY, this.seed));
                         if (this.random.nextFloat() >= 0.8F) {

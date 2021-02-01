@@ -17,7 +17,7 @@ import java.util.List;
 public class TilledSoilTile extends BasicTile {
 
     public TilledSoilTile() {
-        super(ResourceName.intern("soil_tilled"));
+        super(ResourceName.intern("tilled_soil"));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class TilledSoilTile extends BasicTile {
 
     @Override
     public List<ItemInstance> getDrops(IWorld world, int x, int y, TileLayer layer, Entity destroyer) {
-        return Collections.singletonList(new ItemInstance(GameContent.TILE_SOIL));
+        return Collections.singletonList(new ItemInstance(GameContent.Tiles.SOIL));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TilledSoilTile extends BasicTile {
         ItemInstance selected = player.getInv().get(player.getSelectedSlot());
         if (selected != null && selected.getItem().getToolProperties(selected).containsKey(ToolProperty.HOE)) {
             if (!world.isClient()) {
-                world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
+                world.setState(layer, x, y, GameContent.Tiles.SOIL.getDefState());
                 selected.getItem().takeDamage(selected, player, 1);
             }
             return true;
@@ -53,14 +53,14 @@ public class TilledSoilTile extends BasicTile {
     public void onChangeAround(IWorld world, int x, int y, TileLayer layer, int changedX, int changedY, TileLayer changedLayer) {
         super.onChangeAround(world, x, y, layer, changedX, changedY, changedLayer);
         if (this.shouldDecay(world, x, y, layer)) {
-            world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
+            world.setState(layer, x, y, GameContent.Tiles.SOIL.getDefState());
         }
     }
 
     @Override
     public void updateRandomly(IWorld world, int x, int y, TileLayer layer) {
         if (this.shouldDecay(world, x, y, layer)) {
-            world.setState(layer, x, y, GameContent.TILE_SOIL.getDefState());
+            world.setState(layer, x, y, GameContent.Tiles.SOIL.getDefState());
         }
     }
 

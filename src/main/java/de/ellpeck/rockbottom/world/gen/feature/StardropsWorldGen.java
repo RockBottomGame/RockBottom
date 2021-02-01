@@ -42,7 +42,7 @@ public class StardropsWorldGen implements IWorldGenerator {
                 if (y < Constants.CHUNK_SIZE - 1 && chunk.getStateInner(x, y + 1).getTile().isFullTile()) {
                     this.random.setSeed(Util.scrambleSeed(worldX, worldY, this.seed));
                     if (this.random.nextFloat() >= 0.95F) {
-                        chunk.setStateInner(x, y, GameContent.TILE_STARDROP.getDefState().prop(StaticTileProps.STARDROP_GROWTH, this.random.nextInt(StaticTileProps.STARDROP_GROWTH.getVariants())));
+                        chunk.setStateInner(x, y, GameContent.Tiles.STARDROP.getDefState().prop(StaticTileProps.STARDROP_GROWTH, this.random.nextInt(StaticTileProps.STARDROP_GROWTH.getVariants())));
                     }
                 }
             }

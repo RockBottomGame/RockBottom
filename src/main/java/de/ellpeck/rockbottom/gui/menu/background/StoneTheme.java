@@ -13,13 +13,13 @@ public class StoneTheme implements IMainMenuTheme {
     @Override
     public TileState getState(int x, int y, TileState[][] grid) {
         if (x == this.ladderX) {
-            return GameContent.TILE_LADDER.getDefState();
+            return GameContent.Tiles.LADDER.getDefState();
         } else {
             switch (Util.RANDOM.nextInt(10)) {
                 case 0:
-                    return GameContent.TILE_COAL.getDefState();
+                    return GameContent.Tiles.COAL.getDefState();
                 default:
-                    return GameContent.TILE_STONE.getDefState();
+                    return GameContent.Tiles.STONE.getDefState();
             }
         }
     }

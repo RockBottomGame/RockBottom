@@ -26,7 +26,7 @@ public class RecipeNoteItem extends BasicItem {
     }
 
     public static ItemInstance create(ICompendiumRecipe... recipes) {
-        ItemInstance instance = new ItemInstance(GameContent.ITEM_RECIPE_NOTE);
+        ItemInstance instance = new ItemInstance(GameContent.Items.RECIPE_NOTE);
         ModBasedDataSet set = new ModBasedDataSet();
         for (ICompendiumRecipe recipe : recipes) {
             set.addBoolean(recipe.getName(), true);

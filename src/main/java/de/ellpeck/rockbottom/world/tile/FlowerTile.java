@@ -12,14 +12,14 @@ public class FlowerTile extends TileMeta {
 
     public FlowerTile() {
         super(ResourceName.intern("flower"), false);
-        this.addSubTile(ResourceName.intern("flower_gray"));
-        this.addSubTile(ResourceName.intern("flower_orange"));
-        this.addSubTile(ResourceName.intern("flower_pink"));
-        this.addSubTile(ResourceName.intern("flower_red"));
-        this.addSubTile(ResourceName.intern("flower_white"));
-        this.addSubTile(ResourceName.intern("flower_yellow"));
-        this.addSubTile(ResourceName.intern("flower_blue"));
-        this.addSubTile(ResourceName.intern("flower_purple"));
+        this.addSubTile(ResourceName.intern("gray_flower"));
+        this.addSubTile(ResourceName.intern("orange_flower"));
+        this.addSubTile(ResourceName.intern("pink_flower"));
+        this.addSubTile(ResourceName.intern("red_flower"));
+        this.addSubTile(ResourceName.intern("white_flower"));
+        this.addSubTile(ResourceName.intern("yellow_flower"));
+        this.addSubTile(ResourceName.intern("blue_flower"));
+        this.addSubTile(ResourceName.intern("purple_flower"));
     }
 
     @Override

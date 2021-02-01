@@ -32,7 +32,7 @@ public class SoilTile extends BasicTile {
         if (selected != null && selected.getItem().getToolProperties(selected).containsKey(ToolProperty.HOE)) {
             if (!world.getState(layer, x, y + 1).getTile().hasSolidSurface(world, x, y + 1, layer)) {
                 if (!world.isClient()) {
-                    world.setState(layer, x, y, GameContent.TILE_SOIL_TILLED.getDefState());
+                    world.setState(layer, x, y, GameContent.Tiles.TILLED_SOIL.getDefState());
                     selected.getItem().takeDamage(selected, player, 1);
                 }
                 return true;

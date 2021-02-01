@@ -41,9 +41,9 @@ public class LadderTile extends BasicTile {
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractPlayerEntity player) {
         if (layer == TileLayer.MAIN) {
             ItemInstance instance = player.getSelectedItem();
-            if (instance != null && instance.getItem() == GameContent.TILE_PLATFORM.getItem()) {
+            if (instance != null && instance.getItem() == GameContent.Tiles.PLATFORM.getItem()) {
                 if (!world.isClient()) {
-                    world.setState(x, y, GameContent.TILE_PLATFORM.getDefState().prop(StaticTileProps.HAS_LADDER, true));
+                    world.setState(x, y, GameContent.Tiles.PLATFORM.getDefState().prop(StaticTileProps.HAS_LADDER, true));
                     instance.removeAmount(1);
                 }
                 return true;

@@ -14,11 +14,11 @@ import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
 public class ConstructionTableTileEntity extends TileEntity implements IToolStation {
 
-    private final TileInventory chiselSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.ITEM_CHISEL);
-    private final TileInventory hammerSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.ITEM_HAMMER);
-    private final TileInventory sawSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.ITEM_SAW);
-    private final TileInventory malletSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.ITEM_MALLET);
-    private final TileInventory wrenchSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.ITEM_WRENCH);
+    private final TileInventory chiselSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.Items.CHISEL);
+    private final TileInventory hammerSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.Items.HAMMER);
+    private final TileInventory sawSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.Items.SAW);
+    private final TileInventory malletSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.Items.MALLET);
+    private final TileInventory wrenchSlot = new TileInventory(this, inst -> inst != null && inst.getItem() == GameContent.Items.WRENCH);
     private final CombinedInventory inventory = new CombinedInventory(this.chiselSlot, this.hammerSlot, this.sawSlot, this.malletSlot, this.wrenchSlot);
 
     public ConstructionTableTileEntity(IWorld world, int x, int y, TileLayer layer) {
@@ -37,15 +37,15 @@ public class ConstructionTableTileEntity extends TileEntity implements IToolStat
 
     @Override
     public int getToolSlot(Item tool) {
-        if (tool == GameContent.ITEM_CHISEL) {
+        if (tool == GameContent.Items.CHISEL) {
             return 0;
-        } else if (tool == GameContent.ITEM_HAMMER) {
+        } else if (tool == GameContent.Items.HAMMER) {
             return 1;
-        } else if (tool == GameContent.ITEM_SAW) {
+        } else if (tool == GameContent.Items.SAW) {
             return 2;
-        } else if (tool == GameContent.ITEM_MALLET) {
+        } else if (tool == GameContent.Items.MALLET) {
             return 3;
-        } else if (tool == GameContent.ITEM_WRENCH) {
+        } else if (tool == GameContent.Items.WRENCH) {
             return 4;
         }
         return -1;

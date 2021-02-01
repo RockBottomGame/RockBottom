@@ -583,7 +583,7 @@ public abstract class AbstractWorld implements IWorld {
             this.playSound(sound, x + 0.5, y + 0.5, layer.index(), 1F, 1F);
         }
 
-        this.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+        this.setState(layer, x, y, GameContent.Tiles.AIR.getDefState());
     }
 
     @Override

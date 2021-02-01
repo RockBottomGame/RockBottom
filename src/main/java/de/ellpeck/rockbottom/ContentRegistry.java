@@ -7,7 +7,7 @@ import de.ellpeck.rockbottom.api.construction.smelting.FuelInput;
 import de.ellpeck.rockbottom.api.effect.BasicEffect;
 import de.ellpeck.rockbottom.api.item.*;
 import de.ellpeck.rockbottom.api.tile.BasicTile;
-import de.ellpeck.rockbottom.api.tile.TilePlatform;
+import de.ellpeck.rockbottom.api.tile.PlatformTile;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BasicBiomeLevel;
@@ -51,8 +51,8 @@ public final class ContentRegistry {
         new WaterTile().register();
         new WoodBoardsTile().setChiselable().register();
         new WoodDoorTile(ResourceName.intern("wood_door")).register();
-        new WoodDoorTile(ResourceName.intern("wood_door_old")).register();
-        new RemainsGooTile().register();
+        new WoodDoorTile(ResourceName.intern("old_wood_door")).register();
+        new GooRemainsTile().register();
         new GrassTorchTile().register();
         new CopperTile().register();
         new OreMaterialTile(ResourceName.intern("tin")).register();
@@ -63,13 +63,13 @@ public final class ContentRegistry {
         new SmithingTableTile().register();
         new CaveMushroomTile().register();
         new StardropTile().register();
-        new LampTile(ResourceName.intern("lamp_iron")).register();
+        new LampTile(ResourceName.intern("iron_lamp")).register();
         new MortarTile().register();
         new TilledSoilTile().register();
         new CornTile().register();
         new CottonTile().register();
         new GlassTile().register();
-        new TilePlatform().register();
+        new PlatformTile().register();
         new RopeTile(ResourceName.intern("plant_rope")).register();
 
         new ToolItem(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
@@ -157,11 +157,11 @@ public final class ContentRegistry {
         new BasicEffect(ResourceName.intern("range"), false, false, 36000, 10).register();
         new BasicEffect(ResourceName.intern("pickup_range"), false, false, 36000, 10).register();
 
-        new FuelInput(new ResUseInfo(GameContent.RES_COAL), 1000).register();
-        new FuelInput(new ResUseInfo(GameContent.RES_WOOD_RAW), 300).register();
-        new FuelInput(new ResUseInfo(GameContent.RES_WOOD_PROCESSED), 100).register();
-        new FuelInput(new ResUseInfo(GameContent.RES_PLANT_FIBER), 20).register();
-        new FuelInput(new ResUseInfo(GameContent.RES_STICK), 20).register();
+        new FuelInput(new ResUseInfo(GameContent.Resources.COAL), 1000).register();
+        new FuelInput(new ResUseInfo(GameContent.Resources.WOOD_RAW), 300).register();
+        new FuelInput(new ResUseInfo(GameContent.Resources.WOOD_PROCESSED), 100).register();
+        new FuelInput(new ResUseInfo(GameContent.Resources.PLANT_FIBER), 20).register();
+        new FuelInput(new ResUseInfo(GameContent.Resources.STICK), 20).register();
 
         SlimeEntity.SPAWN_BEHAVIOR.register();
 

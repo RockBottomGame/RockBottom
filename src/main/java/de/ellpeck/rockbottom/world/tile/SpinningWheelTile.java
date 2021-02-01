@@ -77,7 +77,7 @@ public class SpinningWheelTile extends MultiTile {
 
             if (stage == 0) {
                 ItemInstance held = player.getInv().get(player.getSelectedSlot());
-                if (held != null && held.getItem() == GameContent.TILE_COTTON.getItem() && held.getAmount() >= 3) {
+                if (held != null && held.getItem() == GameContent.Tiles.COTTON.getItem() && held.getAmount() >= 3) {
                     if (!world.isClient()) {
                         player.getInv().remove(player.getSelectedSlot(), 3);
                         world.setState(layer, main.getX(), main.getY(), state.prop(StaticTileProps.SPINNING_STAGE, 1));
@@ -90,7 +90,7 @@ public class SpinningWheelTile extends MultiTile {
                         world.setState(layer, main.getX(), main.getY(), state.prop(StaticTileProps.SPINNING_STAGE, stage + 1));
                     } else {
                         world.setState(layer, main.getX(), main.getY(), state.prop(StaticTileProps.SPINNING_STAGE, 0));
-                        AbstractItemEntity.spawn(world, new ItemInstance(GameContent.ITEM_YARN), main.getX() + 2.5, main.getY() + 1.5, Util.RANDOM.nextGaussian() * 0.1, Util.RANDOM.nextGaussian() * 0.1);
+                        AbstractItemEntity.spawn(world, new ItemInstance(GameContent.Items.YARN), main.getX() + 2.5, main.getY() + 1.5, Util.RANDOM.nextGaussian() * 0.1, Util.RANDOM.nextGaussian() * 0.1);
                     }
                 }
                 return true;

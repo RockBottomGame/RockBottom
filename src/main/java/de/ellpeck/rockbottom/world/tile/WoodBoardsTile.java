@@ -7,6 +7,6 @@ public class WoodBoardsTile extends TileMeta {
 
     public WoodBoardsTile() {
         super(ResourceName.intern("wood_boards"));
-        this.addSubTile(ResourceName.intern("wood_boards_old"));
+        this.addSubTile(ResourceName.intern("old_wood_boards"));
     }
 }

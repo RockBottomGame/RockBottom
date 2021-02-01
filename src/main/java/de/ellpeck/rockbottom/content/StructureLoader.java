@@ -141,7 +141,7 @@ public class StructureLoader implements IContentLoader<IStructure> {
                                     tileGrid = new TileState[width][layerGrid.size()];
                                 }
 
-                                tileGrid[x][y] = states.getOrDefault(c, GameContent.TILE_AIR.getDefState());
+                                tileGrid[x][y] = states.getOrDefault(c, GameContent.Tiles.AIR.getDefState());
                             }
                         }
 

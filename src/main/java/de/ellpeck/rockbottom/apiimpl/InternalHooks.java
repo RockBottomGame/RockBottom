@@ -568,7 +568,7 @@ public class InternalHooks implements IInternalHooks {
                         return;
                     } else {
                         // Transfer our last unit to the liquid beneath us and remove this liquid
-                        world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                        world.setState(layer, x, y, GameContent.Tiles.AIR.getDefState());
                         world.setState(layer, x, y - 1, beneathState.prop(tile.level, otherLevel + ourLevel - 1));
                         return;
                     }
@@ -607,7 +607,7 @@ public class InternalHooks implements IInternalHooks {
             } else if (beneathState.getTile().isAir()) {
                 // Nothing beneath us move down
                 world.setState(layer, x, y - 1, ourState);
-                world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                world.setState(layer, x, y, GameContent.Tiles.AIR.getDefState());
                 return;
             }
             // Fall through to the balancing and spreading logic
@@ -699,7 +699,7 @@ public class InternalHooks implements IInternalHooks {
                 if (belowState.getTile() == tile) {
                     if (belowState.get(tile.level) + 1 < tile.getLevels()) {
                         world.setState(layer, x + direction, y, ourState);
-                        world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                        world.setState(layer, x, y, GameContent.Tiles.AIR.getDefState());
                         return true;
                     } else if (ourLevel > 1) {
                         // Spread
@@ -738,7 +738,7 @@ public class InternalHooks implements IInternalHooks {
             int secondLevel = secondState.get(tile.level) + 1;
             if (secondLevel < tile.getLevels()) {
                 if (firstState.get(tile.level) == 0) {
-                    world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                    world.setState(layer, x, y, GameContent.Tiles.AIR.getDefState());
                     empty = true;
                 } else {
                     world.setState(layer, x, y, firstState.prop(tile.level, firstState.get(tile.level) - 1)); // Decrease first by one

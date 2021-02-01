@@ -67,7 +67,7 @@ public class StartHutWorldGen implements IWorldGenerator {
         for (int x = 0; x < structure.getWidth(); x++) {
             for (int y = 0; y < structure.getHeight(); y++) {
                 for (TileLayer layer : TileLayer.getAllLayers()) {
-                    chunk.setStateInner(layer, startX + x, startY + y, GameContent.TILE_AIR.getDefState());
+                    chunk.setStateInner(layer, startX + x, startY + y, GameContent.Tiles.AIR.getDefState());
                 }
             }
 
@@ -82,7 +82,7 @@ public class StartHutWorldGen implements IWorldGenerator {
             for (int x = 0; x < structure.getWidth(); x++) {
                 for (int y = 0; y < structure.getHeight(); y++) {
                     TileState state = structure.getTile(layer, x, y);
-                    if (state.getTile() == GameContent.TILE_SOIL) {
+                    if (state.getTile() == GameContent.Tiles.SOIL) {
                         state = chunk.getBiomeInner(startX + x, startY + y).getFillerTile(chunk.getWorld(), chunk, startX + x, startY);
                     }
                     chunk.setStateInner(layer, startX + x, startY + y, state);
@@ -95,16 +95,16 @@ public class StartHutWorldGen implements IWorldGenerator {
         if (chest != null) {
             List<ItemInstance> items = new ArrayList<>();
 
-            ItemInstance note = new ItemInstance(GameContent.ITEM_STAT_NOTE, 1, this.generatorRandom.nextInt(StartNoteItem.TEXT_VARIATIONS));
+            ItemInstance note = new ItemInstance(GameContent.Items.START_NOTE, 1, this.generatorRandom.nextInt(StartNoteItem.TEXT_VARIATIONS));
             items.add(note);
 
             for (int i = this.generatorRandom.nextInt(5) + 5; i >= 0; i--) {
-                ItemInstance torch = new ItemInstance(GameContent.TILE_GRASS_TORCH);
+                ItemInstance torch = new ItemInstance(GameContent.Tiles.GRASS_TORCH);
                 items.add(torch);
             }
 
             for (int i = this.generatorRandom.nextInt(5) + 3; i >= 0; i--) {
-                ItemInstance twig = new ItemInstance(GameContent.ITEM_TWIG);
+                ItemInstance twig = new ItemInstance(GameContent.Items.TWIG);
                 items.add(twig);
             }
 

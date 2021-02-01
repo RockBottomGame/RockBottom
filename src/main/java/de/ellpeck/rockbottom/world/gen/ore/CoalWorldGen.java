@@ -37,7 +37,7 @@ public class CoalWorldGen extends WorldGenOre {
 
     @Override
     protected TileState getOreState() {
-        return GameContent.TILE_COAL.getDefState();
+        return GameContent.Tiles.COAL.getDefState();
     }
 
     @Override
@@ -47,6 +47,6 @@ public class CoalWorldGen extends WorldGenOre {
 
     @Override
     protected Set<Biome> getAllowedBiomes() {
-        return Sets.newHashSet(GameContent.BIOME_GRASSLAND, GameContent.BIOME_UNDERGROUND);
+        return Sets.newHashSet(GameContent.Biomes.GRASSLAND, GameContent.Biomes.UNDERGROUND);
     }
 }

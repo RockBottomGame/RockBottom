@@ -5,7 +5,6 @@ import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Util;
-import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.gen.IWorldGenerator;
@@ -38,9 +37,9 @@ public class CottonWorldGen implements IWorldGenerator {
                     height -= 1;
                     x += 1;
                     int left = x - 2;
-                    if (water.getTile() == GameContent.TILE_WATER && chunk.getStateInner(x, height).getTile().canKeepPlants(world, chunk.getX() + x, chunk.getY() + height, TileLayer.MAIN) && chunk.getStateInner(TileLayer.LIQUIDS, x, height).getTile().isAir() && chunk.getStateInner(x, height + 1).getTile().canReplace(world, chunk.getX() + x, chunk.getY() + height + 1, TileLayer.MAIN) && chunk.getStateInner(x, height + 2).getTile().canReplace(world, chunk.getX() + x, chunk.getY() + height + 2, TileLayer.MAIN)) {
+                    if (water.getTile() == GameContent.Tiles.WATER && chunk.getStateInner(x, height).getTile().canKeepPlants(world, chunk.getX() + x, chunk.getY() + height, TileLayer.MAIN) && chunk.getStateInner(TileLayer.LIQUIDS, x, height).getTile().isAir() && chunk.getStateInner(x, height + 1).getTile().canReplace(world, chunk.getX() + x, chunk.getY() + height + 1, TileLayer.MAIN) && chunk.getStateInner(x, height + 2).getTile().canReplace(world, chunk.getX() + x, chunk.getY() + height + 2, TileLayer.MAIN)) {
                         placeCotton(chunk, x, height);
-                    } else if (water.getTile() == GameContent.TILE_WATER && chunk.getStateInner(left, height).getTile().canKeepPlants(world, chunk.getX() + left, chunk.getY() + height, TileLayer.MAIN) && chunk.getStateInner(TileLayer.LIQUIDS, left, height).getTile().isAir() && chunk.getStateInner(left, height + 1).getTile().canReplace(world, chunk.getX() + left, chunk.getY() + height + 1, TileLayer.MAIN) && chunk.getStateInner(left, height + 2).getTile().canReplace(world, chunk.getX() + left, chunk.getY() + height + 2, TileLayer.MAIN) && cottonRand.nextBoolean()) {
+                    } else if (water.getTile() == GameContent.Tiles.WATER && chunk.getStateInner(left, height).getTile().canKeepPlants(world, chunk.getX() + left, chunk.getY() + height, TileLayer.MAIN) && chunk.getStateInner(TileLayer.LIQUIDS, left, height).getTile().isAir() && chunk.getStateInner(left, height + 1).getTile().canReplace(world, chunk.getX() + left, chunk.getY() + height + 1, TileLayer.MAIN) && chunk.getStateInner(left, height + 2).getTile().canReplace(world, chunk.getX() + left, chunk.getY() + height + 2, TileLayer.MAIN) && cottonRand.nextBoolean()) {
                         placeCotton(chunk, left, height);
                         return;
                     }
@@ -52,9 +51,9 @@ public class CottonWorldGen implements IWorldGenerator {
     }
 
     private void placeCotton(IChunk chunk, int x, int y) {
-        chunk.setStateInner(x, y, GameContent.TILE_SOIL_TILLED.getDefState());
-        chunk.setStateInner(x, y + 1, GameContent.TILE_COTTON.getDefState().prop(StaticTileProps.PLANT_GROWTH, 9).prop(StaticTileProps.ALIVE, true));
-        chunk.setStateInner(x, y + 2, GameContent.TILE_COTTON.getDefState().prop(StaticTileProps.TOP_HALF, true).prop(StaticTileProps.PLANT_GROWTH, 9).prop(StaticTileProps.ALIVE, true));
+        chunk.setStateInner(x, y, GameContent.Tiles.TILLED_SOIL.getDefState());
+        chunk.setStateInner(x, y + 1, GameContent.Tiles.COTTON.getDefState().prop(StaticTileProps.PLANT_GROWTH, 9).prop(StaticTileProps.ALIVE, true));
+        chunk.setStateInner(x, y + 2, GameContent.Tiles.COTTON.getDefState().prop(StaticTileProps.TOP_HALF, true).prop(StaticTileProps.PLANT_GROWTH, 9).prop(StaticTileProps.ALIVE, true));
     }
 
     public int getPriority() {

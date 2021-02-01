@@ -31,13 +31,13 @@ public class CottonTile extends TileTallPlant {
 
             boolean left = true;
             TileState liquid = world.getState(TileLayer.LIQUIDS, x - 1, y - 1);
-            if (liquid.getTile() != GameContent.TILE_WATER) {
+            if (liquid.getTile() != GameContent.Tiles.WATER) {
                 left = false;
                 liquid = world.getState(TileLayer.LIQUIDS, x + 1, y - 1);
             }
 
             boolean wasAlive = state.get(StaticTileProps.ALIVE);
-            boolean alive = liquid.getTile() == GameContent.TILE_WATER && world.getCombinedLight(x, y) > 50;
+            boolean alive = liquid.getTile() == GameContent.Tiles.WATER && world.getCombinedLight(x, y) > 50;
             if (wasAlive != alive) {
                 if (alive) {
                     world.setState(layer, x, y, state.prop(StaticTileProps.ALIVE, true));
@@ -73,11 +73,11 @@ public class CottonTile extends TileTallPlant {
                         }
                     }
                     if (Util.RANDOM.nextFloat() >= 0.6f) {
-                        int level = liquid.get(GameContent.TILE_WATER.level);
+                        int level = liquid.get(GameContent.Tiles.WATER.level);
                         if (level > 0) {
-                            world.setState(TileLayer.LIQUIDS, x + (left ? -1 : 1), y - 1, liquid.prop(GameContent.TILE_WATER.level, level - 1));
+                            world.setState(TileLayer.LIQUIDS, x + (left ? -1 : 1), y - 1, liquid.prop(GameContent.Tiles.WATER.level, level - 1));
                         } else {
-                            world.setState(TileLayer.LIQUIDS, x + (left ? -1 : 1), y - 1, GameContent.TILE_AIR.getDefState());
+                            world.setState(TileLayer.LIQUIDS, x + (left ? -1 : 1), y - 1, GameContent.Tiles.AIR.getDefState());
                         }
                     }
                     world.setState(layer, x, y, state.prop(StaticTileProps.PLANT_GROWTH, growth + 1).prop(StaticTileProps.ALIVE, true));

@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.AbstractItemEntity;
 import de.ellpeck.rockbottom.api.entity.Entity;
-import de.ellpeck.rockbottom.api.entity.emotion.Emotion;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.player.CameraMode;
 import de.ellpeck.rockbottom.api.entity.player.GameMode;
@@ -640,7 +639,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
         if (this.gameMode.isCreative() && this.isFlying)
             return 0.3;
         double speed = 0.2;
-        speed += 0.01 * this.getEffectModifier(GameContent.EFFECT_SPEED);
+        speed += 0.01 * this.getEffectModifier(GameContent.Effects.SPEED);
         return this.statEvent(StatType.MOVE_SPEED, speed);
     }
 
@@ -653,21 +652,21 @@ public class PlayerEntity extends AbstractPlayerEntity {
     @Override
     public double getJumpHeight() {
         double height = 0.29;
-        height += 0.03 * this.getEffectModifier(GameContent.EFFECT_JUMP_HEIGHT);
+        height += 0.03 * this.getEffectModifier(GameContent.Effects.JUMP_HEIGHT);
         return this.statEvent(StatType.JUMP_HEIGHT, height);
     }
 
     @Override
     public double getRange() {
         double range = 5;
-        range += this.getEffectModifier(GameContent.EFFECT_RANGE);
+        range += this.getEffectModifier(GameContent.Effects.RANGE);
         return this.statEvent(StatType.RANGE, range);
     }
 
     @Override
     public double getPickupRange() {
         double range = 1;
-        range += 0.5 * this.getEffectModifier(GameContent.EFFECT_PICKUP_RANGE);
+        range += 0.5 * this.getEffectModifier(GameContent.Effects.PICKUP_RANGE);
         return this.statEvent(StatType.PICKUP_RANGE, range);
     }
 

@@ -14,11 +14,11 @@ public class RecipeCache {
 	public static PlayerCompendiumRecipe mortar;
 
 	public static void postInit() {
-		simpleFurnace = getPlayerRecipe(GameContent.TILE_SIMPLE_FURNACE.getName());
-		chest = getPlayerRecipe(GameContent.TILE_CHEST.getName());
-		constructionTable = getPlayerRecipe(GameContent.TILE_CONSTRUCTION_TABLE.getName());
-		smithingTable = getPlayerRecipe(GameContent.TILE_SMITHING_TABLE.getName());
-		mortar = getPlayerRecipe(GameContent.TILE_MORTAR.getName());
+		simpleFurnace = getPlayerRecipe(GameContent.Tiles.SIMPLE_FURNACE.getName());
+		chest = getPlayerRecipe(GameContent.Tiles.CHEST.getName());
+		constructionTable = getPlayerRecipe(GameContent.Tiles.CONSTRUCTION_TABLE.getName());
+		smithingTable = getPlayerRecipe(GameContent.Tiles.SMITHING_TABLE.getName());
+		mortar = getPlayerRecipe(GameContent.Tiles.MORTAR.getName());
 	}
 
 	public static PlayerCompendiumRecipe getPlayerRecipe(ResourceName name) {

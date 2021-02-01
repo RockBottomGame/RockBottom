@@ -28,13 +28,13 @@ public class DesertBiome extends BasicBiome {
 
             if (chunk.getY() + y <= surfaceHeight) {
                 if (chunk.getY() + y >= surfaceHeight - Util.ceil(noise.make2dNoise(worldX / 5D, 0D) * 3D)) {
-                    return GameContent.TILE_SAND.getDefState();
+                    return GameContent.Tiles.SAND.getDefState();
                 } else {
-                    return GameContent.TILE_SANDSTONE.getDefState();
+                    return GameContent.Tiles.SANDSTONE.getDefState();
                 }
             }
         }
-        return GameContent.TILE_AIR.getDefState();
+        return GameContent.Tiles.AIR.getDefState();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DesertBiome extends BasicBiome {
 
     @Override
     public TileState getFillerTile(IWorld world, IChunk chunk, int x, int y) {
-        return GameContent.TILE_SAND.getDefState();
+        return GameContent.Tiles.SAND.getDefState();
     }
 
     @Override

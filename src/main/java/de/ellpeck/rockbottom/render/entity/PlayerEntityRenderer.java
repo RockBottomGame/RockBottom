@@ -143,6 +143,10 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
                         holdingMirrored = false;
                     }
 
+                    if (player.isClimbing && Math.abs(player.motionY) > 0.01f) {
+                        itemY += 1/12f * scale;
+                    }
+
                     renderer.renderHolding(game, manager, g, item, holding, player, itemX, itemY, holdingAngle, scale * holdingScale, light, holdingMirrored);
                 }
             }

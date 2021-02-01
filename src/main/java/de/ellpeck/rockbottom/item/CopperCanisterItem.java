@@ -29,7 +29,7 @@ public class CopperCanisterItem extends BasicItem {
 
     @Override
     public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractPlayerEntity player, ItemInstance instance) {
-		ICompendiumRecipe recipe = ICompendiumRecipe.forName(GameContent.TILE_SIMPLE_FURNACE.getName());
+		ICompendiumRecipe recipe = ICompendiumRecipe.forName(GameContent.Tiles.SIMPLE_FURNACE.getName());
 		if (!recipe.isKnown(player)) {
 			if (!world.isClient()) {
                 ItemInstance note = RecipeNoteItem.create(recipe);

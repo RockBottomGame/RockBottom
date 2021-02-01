@@ -19,9 +19,9 @@ public class UndergroundBiome extends BasicBiome {
     @Override
     public TileState getState(IWorld world, IChunk chunk, int x, int y, TileLayer layer, INoiseGen noise, int surfaceHeight) {
         if (layer == TileLayer.MAIN || layer == TileLayer.BACKGROUND) {
-            return GameContent.TILE_STONE.getDefState();
+            return GameContent.Tiles.STONE.getDefState();
         } else {
-            return GameContent.TILE_AIR.getDefState();
+            return GameContent.Tiles.AIR.getDefState();
         }
     }
 
@@ -32,6 +32,6 @@ public class UndergroundBiome extends BasicBiome {
 
     @Override
     public TileState getFillerTile(IWorld world, IChunk chunk, int x, int y) {
-        return GameContent.TILE_STONE.getDefState();
+        return GameContent.Tiles.STONE.getDefState();
     }
 }

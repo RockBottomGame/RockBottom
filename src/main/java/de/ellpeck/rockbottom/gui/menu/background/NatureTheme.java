@@ -19,17 +19,17 @@ public class NatureTheme implements IMainMenuTheme {
 
         TileState state;
         if (y == height) {
-            state = GameContent.TILE_GRASS.getDefState();
+            state = GameContent.Tiles.GRASS.getDefState();
         } else if (y <= height) {
-            state = GameContent.TILE_SOIL.getDefState();
+            state = GameContent.Tiles.SOIL.getDefState();
         } else {
-            state = GameContent.TILE_AIR.getDefState();
+            state = GameContent.Tiles.AIR.getDefState();
         }
 
         if (state.getTile().isAir()) {
             if (Util.RANDOM.nextFloat() >= 0.45F) {
                 if (grid[x][y - 1].getTile().isFullTile()) {
-                    TileMeta tile = GameContent.TILE_GRASS_TUFT;
+                    TileMeta tile = GameContent.Tiles.GRASS_TUFT;
                     int type = Util.floor(Util.RANDOM.nextDouble() * (double) tile.metaProp.getVariants());
                     return tile.getDefState().prop(tile.metaProp, type);
                 }

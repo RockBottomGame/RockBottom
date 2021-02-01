@@ -37,7 +37,7 @@ public class CavesWorldGen implements IWorldGenerator {
                     noise += this.noiseGen.make2dNoise(theX / 10D, theY / 100D) * 0.25D;
 
                     if (noise <= mod) {
-                        chunk.setStateInner(x, y, GameContent.TILE_AIR.getDefState());
+                        chunk.setStateInner(x, y, GameContent.Tiles.AIR.getDefState());
                     }
                 }
             }

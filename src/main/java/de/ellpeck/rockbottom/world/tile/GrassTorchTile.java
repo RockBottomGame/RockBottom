@@ -5,7 +5,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 public class GrassTorchTile extends TorchTile {
 
     public GrassTorchTile() {
-        super(ResourceName.intern("torch_grass"));
+        super(ResourceName.intern("grass_torch"));
     }
 
     @Override

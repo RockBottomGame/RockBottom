@@ -18,17 +18,17 @@ public class DesertTheme implements IMainMenuTheme {
 
         TileState state;
         if (y <= height - 3) {
-            state = GameContent.TILE_SANDSTONE.getDefState();
+            state = GameContent.Tiles.SANDSTONE.getDefState();
         } else if (y <= height) {
-            state = GameContent.TILE_SAND.getDefState();
+            state = GameContent.Tiles.SAND.getDefState();
         } else {
-            state = GameContent.TILE_AIR.getDefState();
+            state = GameContent.Tiles.AIR.getDefState();
         }
 
         if (state.getTile().isAir()) {
             if (Util.RANDOM.nextFloat() >= 0.75F) {
                 if (grid[x][y - 1].getTile().isFullTile()) {
-                    return GameContent.TILE_PEBBLES.getDefState();
+                    return GameContent.Tiles.PEBBLES.getDefState();
                 }
             }
         }

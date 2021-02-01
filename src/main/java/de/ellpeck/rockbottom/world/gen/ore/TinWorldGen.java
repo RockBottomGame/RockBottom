@@ -1,7 +1,6 @@
 package de.ellpeck.rockbottom.world.gen.ore;
 
 import de.ellpeck.rockbottom.api.GameContent;
-import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.WorldGenOre;
@@ -43,7 +42,7 @@ public class TinWorldGen extends WorldGenOre {
 
     @Override
     protected TileState getOreState() {
-        return GameContent.TILE_TIN.getDefState();
+        return GameContent.Tiles.TIN.getDefState();
     }
 
     @Override
@@ -53,6 +52,6 @@ public class TinWorldGen extends WorldGenOre {
 
     @Override
     protected Set<Biome> getAllowedBiomes() {
-        return Collections.singleton(GameContent.BIOME_UNDERGROUND);
+        return Collections.singleton(GameContent.Biomes.UNDERGROUND);
     }
 }

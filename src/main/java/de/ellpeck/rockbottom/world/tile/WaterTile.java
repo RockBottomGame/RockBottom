@@ -81,7 +81,7 @@ public class WaterTile extends LiquidTile {
                 }
 
                 if (level <= 0) {
-                    world.setState(layer, x, y, GameContent.TILE_AIR.getDefState());
+                    world.setState(layer, x, y, GameContent.Tiles.AIR.getDefState());
                 } else {
                     world.setState(layer, x, y, state.prop(this.level, level - 1));
                 }
