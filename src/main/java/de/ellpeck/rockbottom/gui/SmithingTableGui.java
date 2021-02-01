@@ -35,7 +35,6 @@ public class SmithingTableGui extends ContainerGui {
     private static final int GUI_WIDTH = 135;
     private static final int GUI_HEIGHT = 169;
 
-
     public static final ResourceName POLAROID_TEX = ResourceName.intern("gui.smithing_table.item_background");
     public static final ResourceName INGREDIENT_TEX = ResourceName.intern("gui.smithing_table.ingredient_background");
 
@@ -88,7 +87,7 @@ public class SmithingTableGui extends ContainerGui {
         assetManager.getTexture(background).draw((float) this.x, (float) this.y, GUI_WIDTH, PAGE_HEIGHT);
         if (this.selectedRecipe != null) {
             String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
-            assetManager.getFont().drawAutoScaledString(this.x + 72, this.y + 6, strg, 0.25F, 72 - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
+            assetManager.getFont().drawAutoScaledString(this.x + 80, this.y + 6, strg, 0.25F, 72 - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
         }
         super.render(game, assetManager, renderer);
     }

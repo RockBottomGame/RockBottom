@@ -2,7 +2,7 @@ package de.ellpeck.rockbottom.construction.criteria;
 
 import com.google.gson.JsonObject;
 import de.ellpeck.rockbottom.api.Registries;
-import de.ellpeck.rockbottom.api.construction.compendium.ICriteria;
+import de.ellpeck.rockbottom.api.construction.compendium.ICriterion;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BreakTileCriteria implements ICriteria {
+public class BreakTileCriterion implements ICriterion {
     private static final Map<ResourceName, List<PlayerCompendiumRecipe>> MAP = new HashMap<>();
 
     public static List<PlayerCompendiumRecipe> getRecipesFor(Tile tile) {

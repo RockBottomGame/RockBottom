@@ -38,7 +38,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.construction.criteria.ReachDepthCriteria;
+import de.ellpeck.rockbottom.construction.criteria.ReachDepthCriterion;
 import de.ellpeck.rockbottom.gui.container.InventoryContainer;
 import de.ellpeck.rockbottom.inventory.PlayerInventory;
 import de.ellpeck.rockbottom.net.packet.backandforth.OpenUnboundContainerPacket;
@@ -269,7 +269,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
                     }
                 }
 
-                List<PlayerCompendiumRecipe> depthRecipes = ReachDepthCriteria.getRecipesFor((int)y);
+                List<PlayerCompendiumRecipe> depthRecipes = ReachDepthCriterion.getRecipesFor((int)y);
                 if (depthRecipes != null) {
                     this.getKnowledge().teachRecipes(depthRecipes);
                 }

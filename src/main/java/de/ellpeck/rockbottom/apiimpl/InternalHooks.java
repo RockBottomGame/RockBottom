@@ -7,7 +7,6 @@ import de.ellpeck.rockbottom.api.assets.font.FontProp;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.assets.font.IFont;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
-import de.ellpeck.rockbottom.api.construction.compendium.SmithingRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
@@ -42,8 +41,7 @@ import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
-import de.ellpeck.rockbottom.construction.criteria.BreakTileCriteria;
-import de.ellpeck.rockbottom.gui.SmithingGui;
+import de.ellpeck.rockbottom.construction.criteria.BreakTileCriterion;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.net.packet.toclient.*;
 import de.ellpeck.rockbottom.net.packet.toserver.DropPacket;
@@ -540,7 +538,7 @@ public class InternalHooks implements IInternalHooks {
 
     @Override
     public List<PlayerCompendiumRecipe> getRecipesToLearnFrom(Tile tile) {
-        List<PlayerCompendiumRecipe> recipes = BreakTileCriteria.getRecipesFor(tile);
+        List<PlayerCompendiumRecipe> recipes = BreakTileCriterion.getRecipesFor(tile);
         return recipes == null ? null : Collections.unmodifiableList(recipes);
     }
 
@@ -1250,10 +1248,4 @@ public class InternalHooks implements IInternalHooks {
     public void packetEntityData(Entity entity) {
         RockBottomAPI.getNet().sendToAllPlayersWithLoadedPos(entity.world, new EntityChangePacket(entity, false), entity.getX(), entity.getY());
     }
-
-	@Override
-	public void smithingConstruct(AbstractPlayerEntity player, TileEntity tile, SmithingRecipe recipe, List<ItemInstance> actualInputs) {
-		SmithingGui gui = new SmithingGui(player, tile, recipe, actualInputs);
-		player.openGui(gui);
-	}
 }

@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
 import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
@@ -15,10 +17,18 @@ import de.ellpeck.rockbottom.gui.ConstructionTableGui;
 import de.ellpeck.rockbottom.gui.container.ConstructionTableContainer;
 import de.ellpeck.rockbottom.world.tile.entity.ConstructionTableTileEntity;
 
+import java.util.List;
+
 public class ConstructionTableTile extends MultiTile {
 
     public ConstructionTableTile() {
         super(ResourceName.intern("construction_table"));
+    }
+
+    @Override
+    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced) {
+        super.describeItem(manager, instance, desc, isAdvanced);
+        desc.add(manager.localize(ResourceName.intern("info.construction_table")));
     }
 
     @Override

@@ -246,14 +246,17 @@ public class ApiHandler implements IApiHandler {
 	}
 
     @Override
-    public List<ItemInstance> construct(AbstractPlayerEntity player, Inventory inputInventory, Inventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> recipeInputs, List<ItemInstance> actualInputs, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
+    public List<ItemInstance> construct(AbstractPlayerEntity player, Inventory inputInventory, Inventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> recipeInputs, List<ItemInstance> ingredients, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
         List<ItemInstance> remains = new ArrayList<>();
-        if (actualInputs == null) {
-        	actualInputs = new ArrayList<>();
-        	this.collectItems(inputInventory, recipeInputs, true, actualInputs);
-		}
+        boolean hasEnoughItems;
+        if (ingredients == null) {
+        	ingredients = new ArrayList<>();
+        	hasEnoughItems = this.hasItems(inputInventory, recipeInputs, amount, ingredients, null);
+		} else {
+            hasEnoughItems = this.hasItems(inputInventory, recipeInputs, amount, null, null);
+        }
 
-        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, machine, amount, recipeInputs, actualInputs, outputGetter, skillReward);
+        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, machine, amount, recipeInputs, ingredients, outputGetter, skillReward, hasEnoughItems);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
             inputInventory = event.inputInventory;
             outputInventory = event.outputInventory;
@@ -261,18 +264,18 @@ public class ApiHandler implements IApiHandler {
             machine = event.machine;
             amount = event.amount;
             recipeInputs = event.recipeInputs;
-            actualInputs = event.actualInputs;
+            ingredients = event.ingredients;
             outputGetter = event.outputGetter;
             skillReward = event.skillReward;
 
             for (int a = 0; a < amount; a++) {
                 if (recipe.canConstruct(inputInventory, outputInventory)) {
-                    if (recipe.handleRecipe(player, inputInventory, outputInventory, machine, recipeInputs, actualInputs, outputGetter, skillReward)) {
-                    	for (ItemInstance input : actualInputs) {
+                    if (recipe.handleRecipe(player, inputInventory, outputInventory, machine, recipeInputs, ingredients, outputGetter, skillReward)) {
+                    	for (ItemInstance input : ingredients) {
                     		inputInventory.remove(inputInventory.getItemIndex(input), input.getAmount());
 						}
 
-                        for (ItemInstance output : outputGetter.apply(actualInputs)) {
+                        for (ItemInstance output : outputGetter.apply(ingredients)) {
                             ItemInstance left = outputInventory.addExistingFirst(output, false);
                             if (left != null) {
                                 remains.add(left);
@@ -291,6 +294,35 @@ public class ApiHandler implements IApiHandler {
             }
         }
         return remains;
+    }
+
+    public boolean hasItems(IInventory inputInv, List<IUseInfo> checklist, int count, List<ItemInstance> outInputs, Map<Integer, Integer> outSlotsToDeduct) {
+        for (IUseInfo checkItem : checklist) {
+            boolean foundEnoughItems = false;
+            int neededAmount = checkItem.getAmount() * count;
+            for (int slot = 0; slot < inputInv.getSlotAmount() && !foundEnoughItems; slot++) {
+                ItemInstance inst = inputInv.get(slot);
+                // If the item is valid for the recipe and its amount is still needed
+                if (inst != null && neededAmount > 0 && checkItem.containsItem(inst)) {
+                    int taken = Math.min(neededAmount, inst.getAmount());
+                    neededAmount -= taken;
+                    if (outSlotsToDeduct != null) {
+                        outSlotsToDeduct.put(slot, taken + outSlotsToDeduct.getOrDefault(slot, 0));
+                    }
+                    if (outInputs != null) {
+                        outInputs.add(inst.copy().setAmount(taken));
+                    }
+                    if (neededAmount == 0) {
+                        foundEnoughItems = true;
+                    }
+                }
+            }
+            if (!foundEnoughItems) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

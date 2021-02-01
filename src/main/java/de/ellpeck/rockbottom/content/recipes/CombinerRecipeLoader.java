@@ -28,7 +28,6 @@ public class CombinerRecipeLoader implements IContentLoader<CombinerRecipe> {
 
     @Override
     public void loadContent(IGameInstance game, ResourceName resourceName, String path, JsonElement element, String elementName, IMod loadingMod, ContentPack pack) throws Exception {
-        System.out.println("COMBINER RECIPE LOADER");
         if (!this.disabled.contains(resourceName)) {
             if (Registries.COMBINER_REGISTRY.get(resourceName) != null) {
                 RockBottomAPI.logger().info("Combiner recipe with name " + resourceName + " already exists, not adding recipe for mod " + loadingMod.getDisplayName() + " with content pack " + pack.getName());

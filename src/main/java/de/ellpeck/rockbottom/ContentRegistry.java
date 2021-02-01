@@ -12,9 +12,9 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BiomeLevel;
 import de.ellpeck.rockbottom.api.world.gen.biome.level.BasicBiomeLevel;
 import de.ellpeck.rockbottom.construction.category.*;
-import de.ellpeck.rockbottom.construction.criteria.BreakTileCriteria;
-import de.ellpeck.rockbottom.construction.criteria.PickupItemCriteria;
-import de.ellpeck.rockbottom.construction.criteria.ReachDepthCriteria;
+import de.ellpeck.rockbottom.construction.criteria.BreakTileCriterion;
+import de.ellpeck.rockbottom.construction.criteria.PickupItemCriterion;
+import de.ellpeck.rockbottom.construction.criteria.ReachDepthCriterion;
 import de.ellpeck.rockbottom.item.*;
 import de.ellpeck.rockbottom.world.entity.*;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.RecipeInformation;
@@ -148,9 +148,9 @@ public final class ContentRegistry {
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation::new);
 
-        new BreakTileCriteria().register();
-        new PickupItemCriteria().register();
-        new ReachDepthCriteria().register();
+        new BreakTileCriterion().register();
+        new PickupItemCriterion().register();
+        new ReachDepthCriterion().register();
 
         new BasicEffect(ResourceName.intern("speed"), false, false, 36000, 10).register();
         new BasicEffect(ResourceName.intern("jump_height"), false, false, 36000, 20).register();

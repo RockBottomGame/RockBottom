@@ -6,7 +6,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.construction.RecipeCache;
-import de.ellpeck.rockbottom.construction.criteria.PickupItemCriteria;
+import de.ellpeck.rockbottom.construction.criteria.PickupItemCriterion;
 import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
@@ -39,11 +39,11 @@ public class PlayerInventory extends Inventory {
             this.addChangeCallback((inv, slot) -> {
                 ItemInstance instance = inv.get(slot);
                 if (instance == null) return;
-                List<PlayerCompendiumRecipe> allRecipes = PickupItemCriteria.getRecipesFor(instance.getItem());
+                List<PlayerCompendiumRecipe> allRecipes = PickupItemCriterion.getRecipesFor(instance.getItem());
                 if (allRecipes == null) allRecipes = new ArrayList<>();
                 List<String> names = RockBottomAPI.getResourceRegistry().getNames(instance);
                 for (String name : names) {
-                    List<PlayerCompendiumRecipe> resRecipes = PickupItemCriteria.getRecipesFor(name);
+                    List<PlayerCompendiumRecipe> resRecipes = PickupItemCriterion.getRecipesFor(name);
                     if (resRecipes != null) allRecipes.addAll(resRecipes);
                 }
                 player.getKnowledge().teachRecipes(allRecipes);

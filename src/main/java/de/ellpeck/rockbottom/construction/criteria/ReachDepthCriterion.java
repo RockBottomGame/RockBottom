@@ -1,7 +1,7 @@
 package de.ellpeck.rockbottom.construction.criteria;
 
 import com.google.gson.JsonObject;
-import de.ellpeck.rockbottom.api.construction.compendium.ICriteria;
+import de.ellpeck.rockbottom.api.construction.compendium.ICriterion;
 import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReachDepthCriteria implements ICriteria {
+public class ReachDepthCriterion implements ICriterion {
     private static final Map<Integer, List<PlayerCompendiumRecipe>> MAP = new HashMap<>();
 
     public static List<PlayerCompendiumRecipe> getRecipesFor(int depth) {

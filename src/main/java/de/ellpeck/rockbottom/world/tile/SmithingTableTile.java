@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.world.tile;
 
+import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.tile.MultiTile;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
@@ -13,13 +15,21 @@ import de.ellpeck.rockbottom.gui.SmithingTableGui;
 import de.ellpeck.rockbottom.gui.container.SmithingTableContainer;
 import de.ellpeck.rockbottom.world.tile.entity.SmithingTableTileEntity;
 
+import java.util.List;
+
 public class SmithingTableTile extends MultiTile {
 
 	public SmithingTableTile() {
 		super(ResourceName.intern("smithing_table"));
 	}
 
-	@Override
+    @Override
+    public void describeItem(IAssetManager manager, ItemInstance instance, List<String> desc, boolean isAdvanced) {
+        super.describeItem(manager, instance, desc, isAdvanced);
+        desc.add(manager.localize(ResourceName.intern("info.smithing_table")));
+    }
+
+    @Override
 	public boolean onInteractWith(IWorld world, int x, int y, TileLayer layer, double mouseX, double mouseY, AbstractPlayerEntity player) {
 		Pos2 main = this.getMainPos(x, y, world.getState(layer, x, y));
 		SmithingTableTileEntity tile = world.getTileEntity(layer, main.getX(), main.getY(), SmithingTableTileEntity.class);
