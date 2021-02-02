@@ -639,7 +639,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
         if (this.gameMode.isCreative() && this.isFlying)
             return 0.3;
         double speed = 0.2;
-        speed += 0.01 * this.getEffectModifier(GameContent.Effects.SPEED);
+        speed += 0.02 * this.getEffectModifier(GameContent.Effects.SPEED);
         return this.statEvent(StatType.MOVE_SPEED, speed);
     }
 

@@ -22,6 +22,7 @@ import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
+import de.ellpeck.rockbottom.api.tile.entity.IToolStation;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
@@ -276,6 +277,13 @@ public class ApiHandler implements IApiHandler {
 						}
 
                         for (ItemInstance output : outputGetter.apply(ingredients)) {
+                            int toolSlot;
+                            if (machine instanceof IToolStation && (toolSlot = ((IToolStation) machine).getToolSlot(output.getItem())) >= 0) {
+                                if (machine.getTileInventory().get(toolSlot) == null) {
+                                    machine.getTileInventory().set(toolSlot, output);
+                                    continue;
+                                }
+                            }
                             ItemInstance left = outputInventory.addExistingFirst(output, false);
                             if (left != null) {
                                 remains.add(left);

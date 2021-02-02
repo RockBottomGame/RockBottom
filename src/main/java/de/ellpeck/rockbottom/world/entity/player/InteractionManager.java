@@ -39,6 +39,7 @@ public class InteractionManager implements IInteractionManager {
     public int breakTileY;
 
     public float breakProgress;
+    public boolean didPlace;
     public int interactCooldown;
     public int attackCooldown;
 
@@ -398,7 +399,7 @@ public class InteractionManager implements IInteractionManager {
                                             RockBottomAPI.getNet().sendToServer(new InteractPacket(player.getUniqueId(), layer, mousedTileX, mousedTileY, false));
                                         }
 
-                                        if (player.getGameMode().isCreative()) {
+                                        if (this.didPlace && player.getGameMode().isCreative()) {
                                             this.interactCooldown = 0;
                                         } else {
                                             this.interactCooldown = 10;
