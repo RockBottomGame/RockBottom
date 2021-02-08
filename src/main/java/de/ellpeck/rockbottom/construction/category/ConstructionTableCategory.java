@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.construction.RecipeCache;
 
 import java.util.Set;
 
-public class ConstructionTableCategory extends CompendiumCategory {
+public class ConstructionTableCategory extends ToolConstructionCategory {
 
     public ConstructionTableCategory() {
         super(ResourceName.intern("construction_table"));

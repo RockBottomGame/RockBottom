@@ -14,6 +14,7 @@ import de.ellpeck.rockbottom.api.gui.component.MenuItemComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.ConstructComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.IngredientComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.PolaroidComponent;
+import de.ellpeck.rockbottom.api.helper.InventoryHelper;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -76,7 +77,7 @@ public class ConstructionTableGui extends ContainerGui {
 
         if (recipe != null) {
             IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, tile, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct = recipe.getConstructButton(this, this.player, tile, this.selectedRecipe.canConstruct(this.player, inv, inv, null, InventoryHelper.collectItems(inv)));
             this.construct.setPos(66, 17);
             this.components.add(this.construct);
         }
@@ -171,7 +172,7 @@ public class ConstructionTableGui extends ContainerGui {
             if (recipe.showInConstructionTable()) {
                 if (recipe.isKnown(this.player)) {
                     IInventory inv = this.player.getInv();
-                    PolaroidComponent polaroid = recipe.getPolaroidButton(this, player, recipe.canUseTools(tile) && recipe.canConstruct(inv, inv), POLAROID_TEX);
+                    PolaroidComponent polaroid = recipe.getPolaroidButton(this, player, recipe.canConstruct(this.player, inv, inv, null, InventoryHelper.collectItems(inv)), POLAROID_TEX);
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if (polaroid.isSelected) {

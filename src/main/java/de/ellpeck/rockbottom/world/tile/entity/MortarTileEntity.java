@@ -26,7 +26,7 @@ public class MortarTileEntity extends TileEntity {
 
     public void doPestleProgress(AbstractPlayerEntity player) {
         if (!this.world.isClient()) {
-            MortarRecipe recipe = MortarRecipe.getRecipe(this.inventory);
+            MortarRecipe recipe = MortarRecipe.getRecipe(player, this.inventory, this);
 
             if (recipe != null && !recipe.isKnown(player) && this.currentRecipe == null) return;
 

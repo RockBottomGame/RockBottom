@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.construction.RecipeCache;
 
 import java.util.Set;
 
-public class SmithingTableCategory extends CompendiumCategory {
+public class SmithingTableCategory extends ToolConstructionCategory {
 
     public SmithingTableCategory() {
         super(ResourceName.intern("smithing_table"));

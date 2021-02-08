@@ -2,13 +2,17 @@ package de.ellpeck.rockbottom.world.tile.entity;
 
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
-import de.ellpeck.rockbottom.api.item.Item;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.tile.entity.IFilteredInventory;
 import de.ellpeck.rockbottom.api.tile.entity.IToolStation;
 import de.ellpeck.rockbottom.api.tile.entity.TileEntity;
 import de.ellpeck.rockbottom.api.tile.entity.TileInventory;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SmithingTableTileEntity extends TileEntity implements IToolStation {
 
@@ -23,12 +27,25 @@ public class SmithingTableTileEntity extends TileEntity implements IToolStation 
 		return this.hammerSlot;
 	}
 
-	@Override
-	public int getToolSlot(Item tool) {
-		return tool == GameContent.Items.HAMMER ? 0 : -1;
+    @Override
+    public List<ItemInstance> getTools() {
+        return Collections.singletonList(hammerSlot.get(0));
+    }
+
+    @Override
+	public ItemInstance getTool(ToolProperty tool) {
+		return tool == ToolProperty.HAMMER ? this.hammerSlot.get(0) : null;
 	}
 
-	@Override
+    @Override
+    public ItemInstance insertTool(ItemInstance tool) {
+        if (tool.getItem().hasToolProperty(tool, ToolProperty.HAMMER)) {
+            return this.hammerSlot.add(tool, false);
+        }
+        return tool;
+    }
+
+    @Override
 	public void save(DataSet set, boolean forSync) {
 		if (!forSync) {
 			hammerSlot.save(set);

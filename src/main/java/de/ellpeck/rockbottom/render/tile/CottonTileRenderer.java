@@ -6,46 +6,34 @@ import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.DefaultTileRenderer;
-import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
+import de.ellpeck.rockbottom.world.tile.CottonTile;
 
-public class CottonTileRenderer extends DefaultTileRenderer {
-    private final ResourceName[][] alive = new ResourceName[2][10];
-    private final ResourceName[][] dead = new ResourceName[2][5];
+public class CottonTileRenderer extends DefaultTileRenderer<CottonTile> {
 
-    public CottonTileRenderer(ResourceName name) {
-        super(name);
+    private final ResourceName[][] textures;
 
-        for (int i = 0; i < 10; ++i) {
-            this.alive[0][i] = this.texture.addSuffix("." + i + ".bottom");
-            this.alive[1][i] = this.texture.addSuffix("." + i + ".top");
+    public CottonTileRenderer(ResourceName texture) {
+        super(texture);
 
-            if (i < 5) {
-                this.dead[0][i] = this.texture.addSuffix(".dead." + i + ".bottom");
-                this.dead[1][i] = this.texture.addSuffix(".dead." + i + ".top");
-            }
+        this.textures = new ResourceName[2][10];
+        for (int i = 0; i < 10; i++) {
+            this.textures[0][i] = this.texture.addSuffix("." + i + ".bottom");
+            this.textures[1][i] = this.texture.addSuffix("." + i + ".top");
         }
-
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, Tile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
-
+    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, CottonTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
     }
 
     @Override
-    public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, Tile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
-        boolean top = state.get(StaticTileProps.TOP_HALF);
-        int growth = state.get(StaticTileProps.PLANT_GROWTH);
-
-        if (!state.get(StaticTileProps.ALIVE)) {
-            manager.getTexture(this.dead[top ? 1 : 0][Math.min(growth, 4)]).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
-        } else {
-            manager.getTexture(this.alive[top ? 1 : 0][growth]).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
-        }
-
+    public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, CottonTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+        int top = state.get(StaticTileProps.TOP_HALF) ? 1 : 0;
+        int variant = state.get(StaticTileProps.PLANT_GROWTH);
+        manager.getTexture(this.textures[top][variant]).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
     }
 }

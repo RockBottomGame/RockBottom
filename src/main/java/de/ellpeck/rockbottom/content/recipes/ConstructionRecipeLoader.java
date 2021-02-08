@@ -9,11 +9,13 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.construction.ConstructionTool;
 import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.construction.compendium.ConstructionRecipe;
+import de.ellpeck.rockbottom.api.construction.compendium.ToolConstructionRecipe;
 import de.ellpeck.rockbottom.api.construction.resource.IUseInfo;
 import de.ellpeck.rockbottom.api.content.IContentLoader;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
@@ -52,11 +54,11 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
                     JsonArray toolsJson = object.get("tools").getAsJsonArray();
                     for (JsonElement toolRaw : toolsJson) {
                         JsonObject tool = toolRaw.getAsJsonObject();
-                        Item item = Registries.ITEM_REGISTRY.get(new ResourceName(tool.get("name").getAsString()));
+                        ToolProperty toolProperty = Registries.TOOL_PROPERTY_REGISTRY.get(new ResourceName(tool.get("name").getAsString()));
                         int usage = tool.has("usage") ? tool.get("usage").getAsInt() : 1;
 
-                        if (item != null && usage > 0) {
-                            tools.add(new ConstructionTool(item, usage));
+                        if (toolProperty != null && usage > 0) {
+                            tools.add(new ConstructionTool(toolProperty, usage));
                         } else {
                             RockBottomAPI.logger().warning("Invalid tool listed for recipe " + resourceName);
                         }
@@ -65,9 +67,9 @@ public class ConstructionRecipeLoader implements IContentLoader<ConstructionReci
 
                 ConstructionRecipe recipe;
                 if ("manual".equals(type) || "manual_only".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, null, inputList, outputList, "manual_only".equals(type), knowledge, skill).registerManual();
+                    recipe = new ConstructionRecipe(resourceName, inputList, outputList, "manual_only".equals(type), knowledge, skill).registerManual();
                 } else if ("construction_table".equals(type)) {
-                    recipe = new ConstructionRecipe(resourceName, tools, inputList, outputList, false, knowledge, skill).registerConstructionTable();
+                    recipe = new ToolConstructionRecipe(resourceName, tools, inputList, outputList, false, knowledge, skill).registerConstructionTable();
                 } else {
                     throw new IllegalArgumentException("Invalid recipe type " + type + " for recipe " + resourceName);
                 }

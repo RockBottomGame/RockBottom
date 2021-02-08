@@ -18,8 +18,8 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.ConstructEvent;
 import de.ellpeck.rockbottom.api.gui.container.ItemContainer;
+import de.ellpeck.rockbottom.api.helper.InventoryHelper;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.tile.entity.IToolStation;
@@ -44,7 +44,6 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import java.io.*;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -203,98 +202,89 @@ public class ApiHandler implements IApiHandler {
         }
 
         if (objectBox.getMinY() >= y + tileHeight) {
-            return Collections.singletonList(new BoundingBox((Util.ceil(tileWidth) - tileWidth)/2, tileHeight - 1/12d, (Util.ceil(tileWidth) + tileWidth)/2, tileHeight).add(x, y));
+            return Collections.singletonList(new BoundingBox((Util.ceil(tileWidth) - tileWidth) / 2, tileHeight - 1 / 12d, (Util.ceil(tileWidth) + tileWidth) / 2, tileHeight).add(x, y));
         }
 
         return Collections.emptyList();
     }
 
     @Override
-	public boolean collectItems(IInventory inventory, List<IUseInfo> inputs, boolean simulate, List<ItemInstance> out) {
-    	int[] outSlots = new int[inputs.size()];
-		for (int i = 0; i < inputs.size(); i++) {
-			IUseInfo input = inputs.get(i);
-			for (int slot = 0; slot < inventory.getSlotAmount(); slot++) {
-				ItemInstance item = inventory.get(slot);
+    public boolean collectItems(IInventory inventory, List<IUseInfo> inputs, boolean simulate, List<ItemInstance> out) {
+        int[] outSlots = new int[inputs.size()];
+        for (int i = 0; i < inputs.size(); i++) {
+            IUseInfo input = inputs.get(i);
+            for (int slot = 0; slot < inventory.getSlotAmount(); slot++) {
+                ItemInstance item = inventory.get(slot);
 
-				if (item != null && input.containsItem(item) && item.getAmount() >= input.getAmount()) {
-					out.add(item.copy().setAmount(input.getAmount()));
-					outSlots[i] = slot;
-					break;
-				}
-			}
-		}
-		if (out.size() != inputs.size()) {
-			return false;
-		}
-		if (!simulate) {
-			for (int i = 0; i < out.size(); i++) {
-				inventory.remove(outSlots[i], out.get(i).getAmount());
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public void defaultConstruct(AbstractPlayerEntity player, PlayerCompendiumRecipe recipe, TileEntity machine) {
-		if (RockBottomAPI.getNet().isClient()) {
-			RockBottomAPI.getNet().sendToServer(new ConstructionPacket(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
-		} else {
-			if (recipe.isKnown(player)) {
-				recipe.playerConstruct(player, machine, 1);
-			}
-		}
-	}
+                if (item != null && input.containsItem(item) && item.getAmount() >= input.getAmount()) {
+                    out.add(item.copy().setAmount(input.getAmount()));
+                    outSlots[i] = slot;
+                    break;
+                }
+            }
+        }
+        if (out.size() != inputs.size()) {
+            return false;
+        }
+        if (!simulate) {
+            for (int i = 0; i < out.size(); i++) {
+                inventory.remove(outSlots[i], out.get(i).getAmount());
+            }
+        }
+        return true;
+    }
 
     @Override
-    public List<ItemInstance> construct(AbstractPlayerEntity player, Inventory inputInventory, Inventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<IUseInfo> recipeInputs, List<ItemInstance> ingredients, Function<List<ItemInstance>, List<ItemInstance>> outputGetter, float skillReward) {
+    public void defaultConstruct(AbstractPlayerEntity player, PlayerCompendiumRecipe recipe, TileEntity machine) {
+        if (RockBottomAPI.getNet().isClient()) {
+            RockBottomAPI.getNet().sendToServer(new ConstructionPacket(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
+        } else if (recipe.isKnown(player)) {
+            recipe.playerConstruct(player, machine, 1);
+        }
+    }
+
+    @Override
+    public List<ItemInstance> construct(AbstractPlayerEntity player, IInventory inputInventory, IInventory outputInventory, PlayerCompendiumRecipe recipe, TileEntity machine, int amount, List<ItemInstance> availableInputs, float skillReward) {
         List<ItemInstance> remains = new ArrayList<>();
         boolean hasEnoughItems;
-        if (ingredients == null) {
-        	ingredients = new ArrayList<>();
-        	hasEnoughItems = this.hasItems(inputInventory, recipeInputs, amount, ingredients, null);
-		} else {
-            hasEnoughItems = this.hasItems(inputInventory, recipeInputs, amount, null, null);
+        if (availableInputs == null) {
+            availableInputs = new ArrayList<>();
+            hasEnoughItems = this.hasItems(inputInventory, recipe.getInputs(), amount, availableInputs, null);
+        } else {
+            hasEnoughItems = this.hasItems(inputInventory, recipe.getInputs(), amount, null, null);
         }
 
-        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, machine, amount, recipeInputs, ingredients, outputGetter, skillReward, hasEnoughItems);
+        ConstructEvent event = new ConstructEvent(player, inputInventory, outputInventory, recipe, machine, amount, availableInputs, skillReward, hasEnoughItems);
         if (RockBottomAPI.getEventHandler().fireEvent(event) != EventResult.CANCELLED) {
             inputInventory = event.inputInventory;
             outputInventory = event.outputInventory;
             recipe = event.recipe;
             machine = event.machine;
             amount = event.amount;
-            recipeInputs = event.recipeInputs;
-            ingredients = event.ingredients;
-            outputGetter = event.outputGetter;
+            availableInputs = event.availableInputs;
             skillReward = event.skillReward;
 
             for (int a = 0; a < amount; a++) {
-                if (recipe.canConstruct(inputInventory, outputInventory)) {
-                    if (recipe.handleRecipe(player, inputInventory, outputInventory, machine, recipeInputs, ingredients, outputGetter, skillReward)) {
-                    	for (ItemInstance input : ingredients) {
-                    		inputInventory.remove(inputInventory.getItemIndex(input), input.getAmount());
-						}
+                if (recipe.canConstruct(player, inputInventory, outputInventory, machine, availableInputs)) {
+                    recipe.onConstruct(player, inputInventory, outputInventory, machine, availableInputs, skillReward);
+                    for (IUseInfo input : recipe.getInputs()) {
+                        InventoryHelper.removeFrom(inputInventory, input);
+                    }
 
-                        for (ItemInstance output : outputGetter.apply(ingredients)) {
-                            int toolSlot;
-                            if (machine instanceof IToolStation && (toolSlot = ((IToolStation) machine).getToolSlot(output.getItem())) >= 0) {
-                                if (machine.getTileInventory().get(toolSlot) == null) {
-                                    machine.getTileInventory().set(toolSlot, output);
-                                    continue;
-                                }
-                            }
+                    for (ItemInstance output : recipe.getOutputs()) {
+                        if (machine instanceof IToolStation) {
+                            output = ((IToolStation) machine).insertTool(output);
+                        }
+                        if (output != null) {
                             ItemInstance left = outputInventory.addExistingFirst(output, false);
                             if (left != null) {
                                 remains.add(left);
                             }
                         }
+                    }
 
-                        if (player != null && skillReward > 0F) {
-                            player.gainSkill(skillReward);
-                        }
-                    } else {
-                        break;
+                    if (player != null && skillReward > 0F) {
+                        player.gainSkill(skillReward);
                     }
                 } else {
                     break;

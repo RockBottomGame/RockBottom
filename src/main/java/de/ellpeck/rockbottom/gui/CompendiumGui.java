@@ -16,7 +16,9 @@ import de.ellpeck.rockbottom.api.gui.component.MenuItemComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.ConstructComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.IngredientComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.PolaroidComponent;
+import de.ellpeck.rockbottom.api.helper.InventoryHelper;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
+import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -139,7 +141,7 @@ public class CompendiumGui extends ContainerGui {
             if (recipe.isKnown(this.player)) {
                 if (this.searchText.isEmpty() || this.matchesSearch(recipe.getOutputs())) {
                     IInventory inv = this.player.getInv();
-                    PolaroidComponent polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(inv, inv), PolaroidComponent.DEFAULT_TEX);
+                    PolaroidComponent polaroid = recipe.getPolaroidButton(this, this.player, recipe.canConstruct(this.player, inv, inv, null, InventoryHelper.collectItems(inv)), PolaroidComponent.DEFAULT_TEX);
 
                     polaroid.isSelected = this.selectedRecipe == recipe;
                     if (polaroid.isSelected) {
@@ -218,7 +220,7 @@ public class CompendiumGui extends ContainerGui {
 
         if (recipe != null) {
             IInventory inv = this.player.getInv();
-            this.construct = recipe.getConstructButton(this, this.player, null, this.selectedRecipe.canConstruct(inv, inv));
+            this.construct = recipe.getConstructButton(this, this.player, null, recipe.canConstruct(this.player, inv, inv, null, InventoryHelper.collectItems(inv)));
             this.components.add(this.construct);
         }
     }
@@ -229,8 +231,8 @@ public class CompendiumGui extends ContainerGui {
         manager.getTexture(currentCategory.getBackgroundPicture(this, manager)).draw(this.x + PAGE_WIDTH + 1, this.y, PAGE_WIDTH, PAGE_HEIGHT);
 
         if (this.selectedRecipe != null) {
-            String strg = this.selectedRecipe.getOutputs().get(0).getDisplayName();
-            manager.getFont().drawAutoScaledString(this.x + 109, this.y + 6, strg, 0.25F, PAGE_WIDTH - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
+            String outputName = this.selectedRecipe.getOutputs().get(0).getDisplayName();
+            manager.getFont().drawAutoScaledString(this.x + 109, this.y + 6, outputName, 0.25F, PAGE_WIDTH - 2, Colors.BLACK, Colors.NO_COLOR, true, false);
         }
 
         if (this.searchBar.isActive()) {

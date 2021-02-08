@@ -76,10 +76,10 @@ public final class ContentRegistry {
         new ToolItem(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();
         new ToolItem(ResourceName.intern("brittle_shovel"), 1.25F, 50, ToolProperty.SHOVEL, 1).register();
         new SwordItem(ResourceName.intern("brittle_sword"), 50, 4, 10, 1.5D, 0.25D).register();
-        new BasicItemTool(ResourceName.intern("wrench"), 100).register();
-        new BasicItemTool(ResourceName.intern("saw"), 100).register();
-        new BasicItemTool(ResourceName.intern("hammer"), 100).register();
-        new BasicItemTool(ResourceName.intern("mallet"), 100).register();
+        new ToolItem(ResourceName.intern("wrench"), 1, 100, ToolProperty.WRENCH, 1).register();
+        new ToolItem(ResourceName.intern("saw"), 1, 100, ToolProperty.SAW, 1).register();
+        new ToolItem(ResourceName.intern("hammer"), 1, 100, ToolProperty.HAMMER, 1).register();
+        new ToolItem(ResourceName.intern("mallet"), 1, 100, ToolProperty.MALLET, 1).register();
         new ChiselItem(ResourceName.intern("chisel"), 1, 100, ToolProperty.CHISEL, 1).register();
         new FireworkItem().register();
         new StartNoteItem().register();
@@ -144,7 +144,7 @@ public final class ContentRegistry {
         Registries.WORLD_GENERATORS.register(ResourceName.intern("stardrops"), StardropsWorldGen::new);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("lakes"), LakesWorldGen::new);
         Registries.WORLD_GENERATORS.register(ResourceName.intern("corn"), CornWorldGen::new);
-        //Registries.WORLD_GENERATORS.register(ResourceName.intern("cotton"), CottonWorldGen::new);
+        Registries.WORLD_GENERATORS.register(ResourceName.intern("cotton"), CottonWorldGen::new);
 
         Registries.INFORMATION_REGISTRY.register(RecipeInformation.REG_NAME, RecipeInformation::new);
 
