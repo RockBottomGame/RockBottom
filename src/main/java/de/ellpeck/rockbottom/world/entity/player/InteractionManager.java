@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.player.IInteractionManager;
+import de.ellpeck.rockbottom.api.entity.player.MoveType;
 import de.ellpeck.rockbottom.api.entity.player.statistics.ItemStatistic;
 import de.ellpeck.rockbottom.api.event.EventResult;
 import de.ellpeck.rockbottom.api.event.impl.*;
@@ -268,27 +269,27 @@ public class InteractionManager implements IInteractionManager {
                 }
 
                 if (Settings.KEY_LEFT.isDown()) {
-                    player.move(0);
+                    player.move(MoveType.LEFT);
                 } else if (Settings.KEY_RIGHT.isDown()) {
-                    player.move(1);
+                    player.move(MoveType.RIGHT);
                 }
 
                 if (Settings.KEY_UP.isDown()) {
                     if (Settings.KEY_JUMP.isPressed() && player.getGameMode().isCreative()) {
                         player.isFlying = true;
                     } else {
-                        player.move(3);
+                        player.move(MoveType.UP);
                     }
                 } else if (Settings.KEY_DOWN.isDown()) {
                     if (Settings.KEY_JUMP.isPressed() && player.getGameMode().isCreative()) {
                         player.isFlying = false;
                     } else {
-                        player.move(4);
+                        player.move(MoveType.DOWN);
                     }
                 }
 
                 if (Settings.KEY_JUMP.isDown()) {
-                    player.move(2);
+                    player.move(MoveType.JUMP);
                 }
 
                 // If the player is in camera mode, they cannot do any interaction such as breaking or attacking

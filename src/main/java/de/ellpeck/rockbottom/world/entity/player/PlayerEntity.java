@@ -10,6 +10,7 @@ import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.player.CameraMode;
 import de.ellpeck.rockbottom.api.entity.player.GameMode;
+import de.ellpeck.rockbottom.api.entity.player.MoveType;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.statistics.IStatistics;
 import de.ellpeck.rockbottom.api.entity.player.statistics.NumberStatistic;
@@ -726,52 +727,55 @@ public class PlayerEntity extends AbstractPlayerEntity {
     }
 
     @Override
-    public boolean move(int type) {
+    public boolean move(MoveType type) {
         if (this.getCameraMode().isActive()) {
             return this.getCameraMode().move(type);
         }
 
-        if (type == 0) {    // Move left
-            this.motionX -= this.getMoveSpeed();
-            this.facing = Direction.LEFT;
-            return true;
-        } else if (type == 1) { // Move right
-            this.motionX += this.getMoveSpeed();
-            this.facing = Direction.RIGHT;
-            return true;
-        } else if (type == 2) { // Jump
-            if (this.canSwim) {
-                this.motionY = 0.075;
-            } else if(this.isFlying) {
-                //this.motionY += this.getMoveSpeed();
-                //this.facing = Direction.UP;
-                //return true;
-            } else {
-                this.jump(this.getJumpHeight());
-            }
-            return true;
-        } else if (type == 3) { // Move up
-            if (this.canClimb) {
-                this.motionY += this.getClimbSpeed();
-                this.facing = Direction.UP;
-                return true;
-            } else if (this.isFlying) {
-                this.motionY += this.getMoveSpeed();
-                this.facing = Direction.UP;
+        switch (type){
+            case LEFT: {
+                this.motionX -= this.getMoveSpeed();
+                this.facing = Direction.LEFT;
                 return true;
             }
-        } else if (type == 4) { // Move down
-            this.isDropping = true;
-            if (this.canClimb) {
-                this.motionY -= this.getClimbSpeed();
-                this.facing = Direction.DOWN;
-                return true;
-            } else if (this.isFlying) {
-                this.motionY -= this.getMoveSpeed();
-                this.facing = Direction.DOWN;
+            case RIGHT: {
+                this.motionX += this.getMoveSpeed();
+                this.facing = Direction.RIGHT;
                 return true;
             }
-
+            case JUMP: {
+                if (this.canSwim) {
+                    this.motionY = 0.075;
+                } else if(this.isFlying) {
+                    //this.motionY += this.getMoveSpeed();
+                    //this.facing = Direction.UP;
+                    //return true;
+                } else {
+                    this.jump(this.getJumpHeight());
+                }
+                return true;
+            }
+            case UP: {
+                if (this.canClimb) {
+                    this.motionY += this.getClimbSpeed();
+                    this.facing = Direction.UP;
+                } else if (this.isFlying) {
+                    this.motionY += this.getMoveSpeed();
+                    this.facing = Direction.UP;
+                }
+                return true;
+            }
+            case DOWN: {
+                this.isDropping = true;
+                if (this.canClimb) {
+                    this.motionY -= this.getClimbSpeed();
+                    this.facing = Direction.DOWN;
+                } else if (this.isFlying) {
+                    this.motionY -= this.getMoveSpeed();
+                    this.facing = Direction.DOWN;
+                }
+                return true;
+            }
         }
         return false;
     }
