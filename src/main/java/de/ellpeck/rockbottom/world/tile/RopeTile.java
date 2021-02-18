@@ -28,7 +28,7 @@ public class RopeTile extends BasicTile {
 
     @Override
     public boolean canClimb(IWorld world, int x, int y, TileLayer layer, TileState state, BoundingBox entityBox, BoundingBox entityBoxMotion, List<BoundingBox> tileBoxes, Entity entity) {
-        return Util.floor(entity.getY()) == y;
+        return Util.floor(entity.getY()) == y && entity.getX() >= (x + 0.25F) && entity.getX() <= (x + 0.75F);
     }
 
     @Override

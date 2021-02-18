@@ -24,7 +24,7 @@ public class LadderTile extends BasicTile {
 
     @Override
     public boolean canClimb(IWorld world, int x, int y, TileLayer layer, TileState state, BoundingBox entityBox, BoundingBox entityBoxMotion, List<BoundingBox> tileBoxes, Entity entity) {
-        return Util.floor(entity.getY()) == y;
+        return Util.floor(entity.getY()) == y && Util.floor(entity.getX()) == x;
     }
 
     @Override
