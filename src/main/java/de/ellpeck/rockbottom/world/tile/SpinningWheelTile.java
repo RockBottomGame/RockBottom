@@ -2,8 +2,10 @@ package de.ellpeck.rockbottom.world.tile;
 
 
 import de.ellpeck.rockbottom.api.GameContent;
+import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.entity.AbstractItemEntity;
+import de.ellpeck.rockbottom.api.entity.MovableWorldObject;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
@@ -17,6 +19,9 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.SpinningWheelTileRenderer;
 
+import java.util.Collections;
+import java.util.List;
+
 public class SpinningWheelTile extends MultiTile {
     public SpinningWheelTile() {
         super(ResourceName.intern("spinning_wheel"));
@@ -26,9 +31,8 @@ public class SpinningWheelTile extends MultiTile {
     @Override
     protected boolean[][] makeStructure() {
         return new boolean[][]{
-                {true, true, true},
-                {true, true, true},
-                {true, true, true}
+                {true, true},
+                {true, true},
         };
     }
 
@@ -38,33 +42,16 @@ public class SpinningWheelTile extends MultiTile {
     }
 
     @Override
-    public boolean isFullTile() {
-        return false;
+    public List<BoundingBox> getPlatformBounds(IWorld world, int x, int y, TileLayer layer, TileState state, MovableWorldObject object, BoundingBox objectBox, BoundingBox objectBoxMotion) {
+        if (layer == TileLayer.MAIN && this.getMainPos(x, y, state).getY() == y)
+            return RockBottomAPI.getApiHandler().getDefaultPlatformBounds(world, x, y, layer, 1, 11/12d, state, object, objectBox);
+        else
+            return Collections.emptyList();
     }
 
     @Override
     public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
-    }
-
-    @Override
-    public int getWidth() {
-        return 3;
-    }
-
-    @Override
-    public int getHeight() {
-        return 3;
-    }
-
-    @Override
-    public int getMainX() {
-        return 0;
-    }
-
-    @Override
-    public int getMainY() {
-        return 0;
     }
 
     @Override
@@ -77,16 +64,16 @@ public class SpinningWheelTile extends MultiTile {
 
             if (stage == 0) {
                 ItemInstance held = player.getInv().get(player.getSelectedSlot());
-                if (held != null && held.getItem() == GameContent.Tiles.COTTON.getItem() && held.getAmount() >= 3) {
+                if (held != null && held.getItem() == GameContent.Tiles.COTTON.getItem() && held.getAmount() >= 2) {
                     if (!world.isClient()) {
-                        player.getInv().remove(player.getSelectedSlot(), 3);
+                        player.getInv().remove(player.getSelectedSlot(), 2);
                         world.setState(layer, main.getX(), main.getY(), state.prop(StaticTileProps.SPINNING_STAGE, 1));
                     }
                     return true;
                 }
             } else {
                 if (!world.isClient()) {
-                    if (stage < 7) {
+                    if (stage < StaticTileProps.SPINNING_STAGE.getVariants() - 1) {
                         world.setState(layer, main.getX(), main.getY(), state.prop(StaticTileProps.SPINNING_STAGE, stage + 1));
                     } else {
                         world.setState(layer, main.getX(), main.getY(), state.prop(StaticTileProps.SPINNING_STAGE, 0));
@@ -97,6 +84,36 @@ public class SpinningWheelTile extends MultiTile {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isFullTile() {
+        return false;
+    }
+
+    @Override
+    public boolean isPlatform() {
+        return true;
+    }
+
+    @Override
+    public int getWidth() {
+        return 2;
+    }
+
+    @Override
+    public int getHeight() {
+        return 2;
+    }
+
+    @Override
+    public int getMainX() {
+        return 0;
+    }
+
+    @Override
+    public int getMainY() {
+        return 0;
     }
 
     @Override

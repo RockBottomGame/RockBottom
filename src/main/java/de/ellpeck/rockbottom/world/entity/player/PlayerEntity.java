@@ -48,6 +48,8 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import de.ellpeck.rockbottom.world.entity.player.statistics.Statistics;
+import de.ellpeck.rockbottom.world.tile.LadderTile;
+import de.ellpeck.rockbottom.world.tile.RopeTile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -645,7 +647,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public double getClimbSpeed() {
-        double speed = 0.1;
+        double speed = 0.15;
         return this.statEvent(StatType.CLIMB_SPEED, speed);
     }
 

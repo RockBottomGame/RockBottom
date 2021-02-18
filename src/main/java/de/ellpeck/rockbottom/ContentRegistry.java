@@ -87,16 +87,16 @@ public final class ContentRegistry {
         new BasicItem(ResourceName.intern("yarn")).register();
         new TwigItem().register();
         new BasicItem(ResourceName.intern("stick")).register();
-        new ToolItem(ResourceName.intern("stone_pickaxe"), 2.5F, 120, ToolProperty.PICKAXE, 5).register();
-        new ToolItem(ResourceName.intern("stone_axe"), 1.5F, 120, ToolProperty.AXE, 5).register();
-        new ToolItem(ResourceName.intern("stone_shovel"), 1.5F, 120, ToolProperty.SHOVEL, 5).register();
+        new ToolItem(ResourceName.intern("stone_pickaxe"), 3.5F, 120, ToolProperty.PICKAXE, 5).register();
+        new ToolItem(ResourceName.intern("stone_axe"), 2F, 120, ToolProperty.AXE, 5).register();
+        new ToolItem(ResourceName.intern("stone_shovel"), 2F, 120, ToolProperty.SHOVEL, 5).register();
         new SwordItem(ResourceName.intern("stone_sword"), 120, 8, 20, 2D, 0.5D).register();
         new CopperCanisterItem().register();
         new ToolItem(ResourceName.intern("super_pickaxe"), Float.MAX_VALUE, Short.MAX_VALUE, ToolProperty.PICKAXE, Integer.MAX_VALUE).addToolProperty(ToolProperty.AXE, Integer.MAX_VALUE).addToolProperty(ToolProperty.SHOVEL, Integer.MAX_VALUE).register();
         new BasicItem(ResourceName.intern("copper_ingot")).register();
-        new ToolItem(ResourceName.intern("copper_pickaxe"), 4F, 350, ToolProperty.PICKAXE, 10).register();
-        new ToolItem(ResourceName.intern("copper_axe"), 2F, 350, ToolProperty.AXE, 10).register();
-        new ToolItem(ResourceName.intern("copper_shovel"), 2F, 350, ToolProperty.SHOVEL, 10).register();
+        new ToolItem(ResourceName.intern("copper_pickaxe"), 4.5F, 350, ToolProperty.PICKAXE, 10).register();
+        new ToolItem(ResourceName.intern("copper_axe"), 2.5F, 350, ToolProperty.AXE, 10).register();
+        new ToolItem(ResourceName.intern("copper_shovel"), 2.5F, 350, ToolProperty.SHOVEL, 10).register();
         new SwordItem(ResourceName.intern("copper_sword"), 350, 12, 30, 2D, 0.35D).register();
         new BasicItem(ResourceName.intern("tin_ingot")).register();
         new BasicItem(ResourceName.intern("bronze_ingot")).register();
@@ -158,8 +158,8 @@ public final class ContentRegistry {
         new BasicEffect(ResourceName.intern("pickup_range"), false, false, 36000, 10).register();
 
         new FuelInput(new ResUseInfo(GameContent.Resources.COAL), 1000).register();
-        new FuelInput(new ResUseInfo(GameContent.Resources.WOOD_RAW), 300).register();
-        new FuelInput(new ResUseInfo(GameContent.Resources.WOOD_PROCESSED), 100).register();
+        new FuelInput(new ResUseInfo(GameContent.Resources.RAW_WOOD), 300).register();
+        new FuelInput(new ResUseInfo(GameContent.Resources.PROCESSED_WOOD), 100).register();
         new FuelInput(new ResUseInfo(GameContent.Resources.PLANT_FIBER), 20).register();
         new FuelInput(new ResUseInfo(GameContent.Resources.STICK), 20).register();
 

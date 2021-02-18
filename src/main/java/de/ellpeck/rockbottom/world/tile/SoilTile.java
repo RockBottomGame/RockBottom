@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.item.ToolProperty;
 import de.ellpeck.rockbottom.api.tile.BasicTile;
+import de.ellpeck.rockbottom.api.tile.Tile;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
@@ -18,7 +19,12 @@ public class SoilTile extends BasicTile {
 
     @Override
     public boolean canGrassSpreadTo(IWorld world, int x, int y, TileLayer layer) {
-        return Util.RANDOM.nextInt(30) <= 0 && !world.getState(layer, x, y + 1).getTile().isFullTile();
+        if (Util.RANDOM.nextInt(30) == 0 && world.isPosLoaded(x, y + 1)) {
+            Tile above = world.getState(layer, x, y + 1).getTile();
+            Tile aboveLiquid = world.getState(TileLayer.LIQUIDS, x, y + 1).getTile();
+            return !above.isFullTile() && aboveLiquid.isAir();
+        }
+        return false;
     }
 
     @Override
