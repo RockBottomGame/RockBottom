@@ -30,7 +30,7 @@ buildscript {
             flatDir dirs: gradle.proguardDir
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.3'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
         if (proguardEnabled)
             classpath ':proguard:'
     }
@@ -49,7 +49,7 @@ dependencies {
     compile project(":Assets")
 
     //JOPT Simple for launch arg parsing
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-2'
+    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
 }
 
 jar {
