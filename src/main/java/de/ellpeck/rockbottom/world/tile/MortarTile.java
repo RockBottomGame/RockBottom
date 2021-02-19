@@ -33,7 +33,7 @@ public class MortarTile extends BasicTile {
         if (tile != null) {
             IFilteredInventory inv = tile.getTileInventory();
             if (instance != null) {
-                if (instance.getItem().getToolProperties(instance).containsKey(ToolProperty.PESTLE)) {
+                if (instance.getItem().hasToolProperty(instance, ToolProperty.PESTLE)) {
                     if (!world.isClient()) {
                         instance.getItem().takeDamage(instance, player, 1);
                         tile.doPestleProgress(player);

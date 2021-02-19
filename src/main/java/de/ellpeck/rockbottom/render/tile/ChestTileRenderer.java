@@ -21,12 +21,12 @@ public class ChestTileRenderer extends DefaultTileRenderer<ChestTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, ChestTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, ChestTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         ChestTileEntity tileEntity = world.getTileEntity(layer, x, y, ChestTileEntity.class);
         if (tileEntity != null && tileEntity.getOpenCount() > 0) {
             manager.getTexture(this.texOpen).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
         } else {
-            super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
+            super.render(game, manager, renderer, world, tile, state, x, y, layer, renderX, renderY, scale, light);
         }
     }
 }

@@ -1,7 +1,9 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.tile.ITileRenderer;
+import de.ellpeck.rockbottom.api.tile.IPotPlantable;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
@@ -10,7 +12,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.render.tile.CaveMushroomTileRenderer;
 
-public class CaveMushroomTile extends TileMeta {
+public class CaveMushroomTile extends TileMeta implements IPotPlantable {
 
     public CaveMushroomTile() {
         super(ResourceName.intern("cave_mushroom"), false);
@@ -47,5 +49,15 @@ public class CaveMushroomTile extends TileMeta {
 
     private boolean canBeHere(IWorld world, int x, int y, TileLayer layer) {
         return world.getState(layer, x, y - 1).getTile().hasSolidSurface(world, x, y - 1, layer) && world.getState(TileLayer.LIQUIDS, x, y).getTile().isAir();
+    }
+
+    @Override
+    public float getXRenderOffset(IWorld world, TileState pot, int x, int y, ItemInstance item) {
+        return -1/12f;
+    }
+
+    @Override
+    public float getRenderYOffset(IWorld world, TileState pot, int x, int y, ItemInstance item) {
+        return -4/12f;
     }
 }

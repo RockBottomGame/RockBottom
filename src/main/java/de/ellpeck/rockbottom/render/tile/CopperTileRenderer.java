@@ -21,11 +21,11 @@ public class CopperTileRenderer extends DefaultTileRenderer<CopperTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, CopperTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, CopperTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         if (state.get(StaticTileProps.HAS_CANISTER)) {
             manager.getTexture(this.canister).draw(renderX, renderY, scale, scale, light);
         } else {
-            super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
+            super.render(game, manager, renderer, world, tile, state, x, y, layer, renderX, renderY, scale, light);
         }
     }
 }

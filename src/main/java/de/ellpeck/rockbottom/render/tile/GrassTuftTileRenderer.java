@@ -19,14 +19,14 @@ public class GrassTuftTileRenderer extends TileMetaRenderer<GrassTuftTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, GrassTuftTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, GrassTuftTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         if (layer != TileLayer.MAIN) {
             this.doRender(manager, world, tile, state, x, y, renderX, renderY, scale, light);
         }
     }
 
     @Override
-    public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, GrassTuftTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, GrassTuftTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         if (layer == TileLayer.MAIN) {
             this.doRender(manager, world, tile, state, x, y, renderX, renderY, scale, light);
         }

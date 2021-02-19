@@ -26,11 +26,11 @@ public class CornTileRenderer extends DefaultTileRenderer<CornTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, CornTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, CornTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
     }
 
     @Override
-    public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, CornTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void renderInForeground(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, CornTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         int top = state.get(StaticTileProps.TOP_HALF) ? 1 : 0;
         int variant = state.get(StaticTileProps.PLANT_GROWTH);
         manager.getTexture(this.textures[top][variant]).draw(renderX, renderY, scale, scale, light);

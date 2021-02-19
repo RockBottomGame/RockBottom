@@ -21,7 +21,7 @@ public class SpinningWheelTileRenderer extends MultiTileRenderer<SpinningWheelTi
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, SpinningWheelTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light)
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, SpinningWheelTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light)
     {
         Pos2 innerCoord = tile.getInnerCoord(state);
         Pos2 main = tile.getMainPos(x, y, state);

@@ -24,7 +24,7 @@ public class StardropTileRenderer extends DefaultTileRenderer<StardropTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, StardropTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, StardropTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         manager.getTexture(this.stages[state.get(StaticTileProps.STARDROP_GROWTH)]).draw(renderX, renderY, scale, scale, light);
     }
 }

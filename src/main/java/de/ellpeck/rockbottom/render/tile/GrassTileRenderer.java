@@ -20,11 +20,11 @@ public class GrassTileRenderer extends DefaultTileRenderer<GrassTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, GrassTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, GrassTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         if (world.getState(x, y + 1).getTile().makesGrassSnowy(world, x, y + 1, layer)) {
             manager.getTexture(this.texSnowy).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
         } else {
-            super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
+            super.render(game, manager, renderer, world, tile, state, x, y, layer, renderX, renderY, scale, light);
         }
     }
 }

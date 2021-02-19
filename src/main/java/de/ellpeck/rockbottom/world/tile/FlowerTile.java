@@ -1,6 +1,8 @@
 package de.ellpeck.rockbottom.world.tile;
 
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
+import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.tile.IPotPlantable;
 import de.ellpeck.rockbottom.api.tile.TileMeta;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
@@ -8,7 +10,7 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 
-public class FlowerTile extends TileMeta {
+public class FlowerTile extends TileMeta implements IPotPlantable {
 
     public FlowerTile() {
         super(ResourceName.intern("flower"), false);
@@ -49,5 +51,10 @@ public class FlowerTile extends TileMeta {
     @Override
     public BoundingBox getBoundBox(IWorld world, TileState state, int x, int y, TileLayer layer) {
         return null;
+    }
+
+    @Override
+    public float getRenderYOffset(IWorld world, TileState pot, int x, int y, ItemInstance item) {
+        return -0.5f;
     }
 }

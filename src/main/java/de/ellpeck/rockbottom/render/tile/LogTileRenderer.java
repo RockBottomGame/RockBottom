@@ -33,7 +33,7 @@ public class LogTileRenderer extends DefaultTileRenderer<LogTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, LogTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, LogTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         LogType type = state.get(StaticTileProps.LOG_VARIANT);
         ResourceName tex = this.textures[type.ordinal()];
         manager.getTexture(tex).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);

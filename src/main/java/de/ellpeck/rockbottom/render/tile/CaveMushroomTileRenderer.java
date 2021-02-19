@@ -19,7 +19,7 @@ public class CaveMushroomTileRenderer extends TileMetaRenderer<CaveMushroomTile>
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, CaveMushroomTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, CaveMushroomTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         for (int i = 0; i < light.length; i++) {
             light[i] = Math.max(light[i], Colors.multiply(Colors.WHITE, 0.2F));
         }
@@ -27,7 +27,7 @@ public class CaveMushroomTileRenderer extends TileMetaRenderer<CaveMushroomTile>
     }
 
     @Override
-    public void renderItem(IGameInstance game, IAssetManager manager, IRenderer g, CaveMushroomTile tile, ItemInstance instance, float x, float y, float scale, int filter) {
+    public void renderItem(IGameInstance game, IAssetManager manager, IRenderer renderer, CaveMushroomTile tile, ItemInstance instance, float x, float y, float scale, int filter) {
         manager.getTexture(tile.subResourceNames.get(instance.getMeta()).addSuffix(".item")).draw(x, y, scale, scale, filter);
     }
 }

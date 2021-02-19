@@ -32,7 +32,7 @@ public class SimpleFurnaceTileRenderer extends MultiTileRenderer<SimpleFurnaceTi
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, SimpleFurnaceTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, SimpleFurnaceTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         Pos2 main = tile.getMainPos(x, y, state);
         SimpleFurnaceTileEntity tileEntity = world.getTileEntity(layer, main.getX(), main.getY(), SimpleFurnaceTileEntity.class);
 
@@ -40,7 +40,7 @@ public class SimpleFurnaceTileRenderer extends MultiTileRenderer<SimpleFurnaceTi
             Pos2 innerCoord = tile.getInnerCoord(state);
             manager.getTexture(this.texturesActive.get(innerCoord)).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light);
         } else {
-            super.render(game, manager, g, world, tile, state, x, y, layer, renderX, renderY, scale, light);
+            super.render(game, manager, renderer, world, tile, state, x, y, layer, renderX, renderY, scale, light);
         }
     }
 }

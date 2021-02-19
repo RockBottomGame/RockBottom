@@ -32,7 +32,7 @@ public class TorchTileRenderer extends DefaultTileRenderer<TorchTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, TorchTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, TorchTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         int meta = state.get(StaticTileProps.TORCH_FACING);
 
         ResourceName[] tex;

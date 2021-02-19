@@ -29,7 +29,7 @@ public class DoorTileRenderer extends DefaultTileRenderer<WoodDoorTile> {
     }
 
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, WoodDoorTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, WoodDoorTile tile, TileState state, int x, int y, TileLayer layer, float renderX, float renderY, float scale, int[] light) {
         int half = state.get(StaticTileProps.TOP_HALF) ? 0 : 1;
 
         ResourceName tex;
