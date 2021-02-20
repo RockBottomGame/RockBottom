@@ -16,7 +16,7 @@ public class FireworkEntity extends Entity {
 
     public static final ResourceName ID = ResourceName.intern("firework");
 
-    private final IEntityRenderer renderer = new FireworkEntityRenderer();
+    private final FireworkEntityRenderer renderer = new FireworkEntityRenderer();
     private int lifetime;
 
     public FireworkEntity(IWorld world) {
@@ -30,7 +30,7 @@ public class FireworkEntity extends Entity {
     }
 
     @Override
-    public IEntityRenderer getRenderer() {
+    public FireworkEntityRenderer getRenderer() {
         return this.renderer;
     }
 

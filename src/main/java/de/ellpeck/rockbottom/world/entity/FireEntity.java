@@ -12,6 +12,7 @@ public class FireEntity extends AbstractFireEntity {
 
     public static final ResourceName ID = ResourceName.intern("fire");
 
+    public final FireEntityRenderer renderer = new FireEntityRenderer();
     private final int lifespan;
     private int life;
     private float size;
@@ -47,8 +48,8 @@ public class FireEntity extends AbstractFireEntity {
     }
 
     @Override
-    public IEntityRenderer getRenderer() {
-        return new FireEntityRenderer();
+    public FireEntityRenderer getRenderer() {
+        return this.renderer;
     }
 
     @Override

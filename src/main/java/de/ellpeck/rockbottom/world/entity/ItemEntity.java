@@ -15,7 +15,7 @@ public class ItemEntity extends AbstractItemEntity {
 
     public static final ResourceName ID = ResourceName.intern("item");
 
-    private final IEntityRenderer renderer;
+    private final ItemEntityRenderer renderer;
     private ItemInstance item;
 
     private int pickupDelay = 10;
@@ -36,7 +36,7 @@ public class ItemEntity extends AbstractItemEntity {
     }
 
     @Override
-    public IEntityRenderer getRenderer() {
+    public ItemEntityRenderer getRenderer() {
         return this.renderer;
     }
 

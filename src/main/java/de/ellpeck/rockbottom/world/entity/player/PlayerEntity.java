@@ -65,7 +65,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private final Statistics statistics = new Statistics();
     private final PlayerInventory inv = new PlayerInventory(this);
     private final ItemContainer inventoryContainer = new InventoryContainer(this);
-    private final IEntityRenderer renderer = new PlayerEntityRenderer();
+    private final PlayerEntityRenderer renderer = new PlayerEntityRenderer();
     private final List<IChunk> chunksInRange = new ArrayList<>();
     private final IPlayerDesign design;
     private ItemContainer currentContainer;
@@ -110,7 +110,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
     }
 
     @Override
-    public IEntityRenderer getRenderer() {
+    public PlayerEntityRenderer getRenderer() {
         return this.renderer;
     }
 

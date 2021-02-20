@@ -20,7 +20,7 @@ public class FallingEntity extends Entity {
 
     public static final ResourceName ID = ResourceName.intern("falling");
 
-    private final IEntityRenderer renderer = new FallingEntityRenderer();
+    private final FallingEntityRenderer renderer = new FallingEntityRenderer();
     public TileState state;
     public ItemInstance stateInstance;
 
@@ -40,7 +40,7 @@ public class FallingEntity extends Entity {
     }
 
     @Override
-    public IEntityRenderer getRenderer() {
+    public FallingEntityRenderer getRenderer() {
         return this.renderer;
     }
 

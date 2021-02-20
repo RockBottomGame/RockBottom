@@ -19,7 +19,7 @@ public class BoomerangEntity extends AbstractBoomerangEntity {
 
     public static final ResourceName ID = ResourceName.intern("boomerang");
 
-    private final IEntityRenderer renderer = new BoomerangEntityRenderer();
+    private final BoomerangEntityRenderer renderer = new BoomerangEntityRenderer();
     private double startX;
     private double startY;
     private double maxDistanceSq;
@@ -154,7 +154,7 @@ public class BoomerangEntity extends AbstractBoomerangEntity {
     }
 
     @Override
-    public IEntityRenderer getRenderer() {
+    public BoomerangEntityRenderer getRenderer() {
         return this.renderer;
     }
 

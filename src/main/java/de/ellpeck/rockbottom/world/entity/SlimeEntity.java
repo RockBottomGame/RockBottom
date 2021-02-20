@@ -73,7 +73,7 @@ public class SlimeEntity extends AbstractSlimeEntity {
     private static final int VARIATION_COUNT = 8;
     public final SlimeJumpTask jumpTask = new SlimeJumpTask(0);
     public final SlimeTargetTask targetTask = new SlimeTargetTask(10, 10D, 2D);
-    private final IEntityRenderer renderer = new SlimeEntityRenderer();
+    private final SlimeEntityRenderer renderer = new SlimeEntityRenderer();
     private final DespawnHandler<SlimeEntity> despawnHandler = new DespawnHandler<SlimeEntity>() {
         @Override
         public double getMaxPlayerDistance(SlimeEntity entity) {
@@ -95,7 +95,7 @@ public class SlimeEntity extends AbstractSlimeEntity {
     }
 
     @Override
-    public IEntityRenderer getRenderer() {
+    public SlimeEntityRenderer getRenderer() {
         return this.renderer;
     }
 
@@ -178,13 +178,13 @@ public class SlimeEntity extends AbstractSlimeEntity {
     }
 
     @Override
-    public DespawnHandler getDespawnHandler() {
+    public DespawnHandler<SlimeEntity> getDespawnHandler() {
         return this.despawnHandler;
     }
 
     @Override
     public void onIntersectWithEntity(Entity otherEntity, BoundingBox thisBox, BoundingBox thisBoxMotion, BoundingBox otherBox, BoundingBox otherBoxMotion) {
-        if (this.attackCooldown <= 0 && Math.abs(this.motionX) > 0.01D) {
+        if (!this.isDead() && this.attackCooldown <= 0 && Math.abs(this.motionX) > 0.01D) {
             if (!otherEntity.isDead() && otherEntity instanceof LivingEntity && !(otherEntity instanceof AbstractSlimeEntity)) {
                 if (((LivingEntity) otherEntity).takeDamage(Util.RANDOM.nextInt(15) + 5)) {
                     otherEntity.applyKnockback(this, 0.25D);
