@@ -333,6 +333,7 @@ public class InternalHooks implements IInternalHooks {
         BoundingBox ownBox = object.currentBounds;
         BoundingBox ownBoxMotion = ownBox.copy().add(motionX, motionY);
 
+        List<Runnable> tileIntersections = new ArrayList<>();
         if (object.world.isPosLoaded(ownBoxMotion.getMinX(), ownBoxMotion.getMinY()) && object.world.isPosLoaded(ownBoxMotion.getMaxX(), ownBoxMotion.getMaxY())) {
             List<BoundingBox> boxes = new ArrayList<>();
 
@@ -348,7 +349,9 @@ public class InternalHooks implements IInternalHooks {
                                 boxes.addAll(tileBoxes);
                             }
 
-                            object.onTileIntersection(x, y, layer, state, ownBox, ownBoxMotion, tileBoxes);
+                            int tileX = x;
+                            int tileY = y;
+                            tileIntersections.add(() -> object.onTileIntersection(tileX, tileY, layer, state, ownBox, ownBoxMotion, tileBoxes));
                         }
                     }
                 }
@@ -442,6 +445,10 @@ public class InternalHooks implements IInternalHooks {
         object.collidedHor = motionX != object.motionX;
         object.collidedVert = motionY != object.motionY;
         object.onGround = object.collidedVert && object.motionY < 0;
+
+        for (Runnable tileIntersection : tileIntersections) {
+            tileIntersection.run();
+        }
     }
 
     @Override
