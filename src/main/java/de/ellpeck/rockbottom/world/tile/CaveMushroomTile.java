@@ -52,11 +52,6 @@ public class CaveMushroomTile extends TileMeta implements IPotPlantable {
     }
 
     @Override
-    public float getXRenderOffset(IWorld world, TileState pot, int x, int y, ItemInstance item) {
-        return -1/12f;
-    }
-
-    @Override
     public float getRenderYOffset(IWorld world, TileState pot, int x, int y, ItemInstance item) {
         return -4/12f;
     }

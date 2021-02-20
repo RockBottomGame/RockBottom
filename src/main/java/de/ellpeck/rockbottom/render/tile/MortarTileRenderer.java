@@ -45,13 +45,13 @@ public class MortarTileRenderer extends DefaultTileRenderer<MortarTile> {
     }
 
     @Override
-    public void renderOnMouseOver(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, MortarTile tile, TileState state, int x, int y, TileLayer layer, float mouseX, float mouseY) {
+    public void renderOnMouseOver(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, MortarTile tile, TileState state, int x, int y, TileLayer layer, float mouseX, float mouseY) {
         MortarTileEntity tileEntity = world.getTileEntity(layer, x, y, MortarTileEntity.class);
         if (tileEntity != null) {
             float progress = tileEntity.getProgress();
             if (progress >= 0F) {
-                g.addFilledRect(mouseX + 5, mouseY - 5 - progress * 15, 5, progress * 15, Colors.GREEN);
-                g.addEmptyRect(mouseX + 5, mouseY - 20, 5, 15, Colors.BLACK);
+                renderer.addFilledRect(mouseX + 5, mouseY - 5 - progress * 15, 5, progress * 15, Colors.GREEN);
+                renderer.addEmptyRect(mouseX + 5, mouseY - 20, 5, 15, Colors.BLACK);
             }
         }
     }

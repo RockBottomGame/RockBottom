@@ -55,6 +55,6 @@ public class FlowerTile extends TileMeta implements IPotPlantable {
 
     @Override
     public float getRenderYOffset(IWorld world, TileState pot, int x, int y, ItemInstance item) {
-        return -0.5f;
+        return -3/12f;
     }
 }

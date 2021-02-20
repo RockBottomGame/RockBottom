@@ -20,14 +20,14 @@ public class SignTileRenderer extends DefaultTileRenderer<SignTile> {
     }
 
     @Override
-    public void renderOnMouseOver(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, SignTile tile, TileState state, int x, int y, TileLayer layer, float mouseX, float mouseY) {
+    public void renderOnMouseOver(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, SignTile tile, TileState state, int x, int y, TileLayer layer, float mouseX, float mouseY) {
         AbstractPlayerEntity player = game.getPlayer();
-        if (player.isInRange(g.getMousedTileX(), g.getMousedTileY(), player.getRange())) {
+        if (player.isInRange(renderer.getMousedTileX(), renderer.getMousedTileY(), player.getRange())) {
             SignTileEntity tileEntity = world.getTileEntity(x, y, SignTileEntity.class);
             if (tileEntity != null) {
-                g.scale(0.5F, 0.5F);
+                renderer.scale(0.5F, 0.5F);
                 SignGui.drawSign(manager, tileEntity.text, true, (mouseX + 3) * 2F, (mouseY + 3) * 2F);
-                g.scale(2F, 2F);
+                renderer.scale(2F, 2F);
             }
         }
     }
