@@ -44,7 +44,7 @@ public class LadderTile extends BasicTile {
             if (instance != null && instance.getItem() == GameContent.Tiles.PLATFORM.getItem()) {
                 if (!world.isClient()) {
                     world.setState(x, y, GameContent.Tiles.PLATFORM.getDefState().prop(StaticTileProps.HAS_LADDER, true));
-                    instance.removeAmount(1);
+                    player.getInv().set(player.getSelectedSlot(), instance.removeAmount(1).nullIfEmpty());
                 }
                 return true;
             }
