@@ -4,7 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
-import de.ellpeck.rockbottom.api.render.tile.TileMetaRenderer;
+import de.ellpeck.rockbottom.api.render.tile.MetaTileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -12,7 +12,7 @@ import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.CaveMushroomTile;
 
-public class CaveMushroomTileRenderer extends TileMetaRenderer<CaveMushroomTile> {
+public class CaveMushroomTileRenderer extends MetaTileRenderer<CaveMushroomTile> {
 
     public CaveMushroomTileRenderer(ResourceName texture) {
         super(texture);
