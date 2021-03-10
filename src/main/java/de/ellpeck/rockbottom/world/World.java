@@ -114,7 +114,7 @@ public class World extends AbstractWorld {
     @Override
     protected void updateLocalTime() {
         if (!this.timeFrozen) {
-            this.time = (this.time + 1) % Constants.TIME_PER_DAY;
+            this.time = (this.time + 1 + (int) (10 * this.getSleepingPercentage())) % Constants.TIME_PER_DAY;
         }
     }
 
@@ -440,5 +440,17 @@ public class World extends AbstractWorld {
         for (SubWorld world : this.subWorlds) {
             RockBottomAPI.getEventHandler().fireEvent(new WorldUnloadEvent(world));
         }
+    }
+
+    @Override
+    public float getSleepingPercentage() {
+        int sleeping = 0;
+        for (AbstractPlayerEntity player : this.players) {
+            if (player.isSleeping()) {
+                sleeping++;
+            }
+        }
+
+        return sleeping / (float) this.players.size();
     }
 }

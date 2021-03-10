@@ -209,7 +209,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
         if (this.onGround)
             this.isFlying = false;
-        
+
         if (this.collidedHor) {
             // TODO step up
             /*
@@ -281,6 +281,10 @@ public class PlayerEntity extends AbstractPlayerEntity {
                     this.getKnowledge().teachRecipes(depthRecipes);
                 }
 
+                if (this.isSleeping && !this.world.isNighttime()) {
+                    this.wake();
+                }
+
                 this.handleEntitySpawns(x, y);
             }
 
@@ -308,14 +312,14 @@ public class PlayerEntity extends AbstractPlayerEntity {
                 this.motionY += 0.15D;
             }
         }
-        
+
         if (this.isFlying) {
             this.motionY = 0;
         }
     }
 
     private void handleEntitySpawns(double thisX, double thisY) {
-        for (SpawnBehavior behavior : Registries.SPAWN_BEHAVIOR_REGISTRY.values()) {
+        for (SpawnBehavior<?> behavior : Registries.SPAWN_BEHAVIOR_REGISTRY.values()) {
             if (this.world.getTotalTime() % behavior.getSpawnFrequency(this.world) == 0 && behavior.isReadyToSpawn(this.world)) {
                 double min = behavior.getMinPlayerDistance(this.world, this);
                 double max = behavior.getMaxPlayerDistance(this.world, this);
@@ -424,6 +428,14 @@ public class PlayerEntity extends AbstractPlayerEntity {
         set.addFloat("skill_percentage", this.skillPercentage);
         set.addInt("skill_points", this.skillPoints);
         set.addEnum("game_mode", this.gameMode);
+        if (this.bedPosition != null) {
+            set.addInt("bedX", this.bedPosition.getX());
+            set.addInt("bedY", this.bedPosition.getY());
+        }
+
+        if (forFullSync) {
+            set.addBoolean("sleeping", this.isSleeping);
+        }
     }
 
     @Override
@@ -436,6 +448,12 @@ public class PlayerEntity extends AbstractPlayerEntity {
         this.skillPoints = set.getInt("skill_points");
         if(set.hasKey("game_mode")){
             this.gameMode = set.getEnum("game_mode", GameMode.class);
+        }
+        if (set.hasKey("bedX") && set.hasKey("bedY")) {
+            this.bedPosition = new Pos2(set.getInt("bedX"), set.getInt("bedY"));
+        }
+        if (set.hasKey("sleeping")) {
+            this.isSleeping = set.getBoolean("sleeping");
         }
     }
 
@@ -742,11 +760,13 @@ public class PlayerEntity extends AbstractPlayerEntity {
             case LEFT: {
                 this.motionX -= this.getMoveSpeed();
                 this.facing = Direction.LEFT;
+                this.wake();
                 return true;
             }
             case RIGHT: {
                 this.motionX += this.getMoveSpeed();
                 this.facing = Direction.RIGHT;
+                this.wake();
                 return true;
             }
             case JUMP: {
@@ -759,15 +779,18 @@ public class PlayerEntity extends AbstractPlayerEntity {
                 } else {
                     this.jump(this.getJumpHeight());
                 }
+                this.wake();
                 return true;
             }
             case UP: {
                 if (this.canClimb) {
                     this.motionY += this.getClimbSpeed();
                     this.facing = Direction.UP;
+                    this.wake();
                 } else if (this.isFlying) {
                     this.motionY += this.getMoveSpeed();
                     this.facing = Direction.UP;
+                    this.wake();
                 }
                 return true;
             }
@@ -776,9 +799,11 @@ public class PlayerEntity extends AbstractPlayerEntity {
                 if (this.canClimb) {
                     this.motionY -= this.getClimbSpeed();
                     this.facing = Direction.DOWN;
+                    this.wake();
                 } else if (this.isFlying) {
                     this.motionY -= this.getMoveSpeed();
                     this.facing = Direction.DOWN;
+                    this.wake();
                 }
                 return true;
             }
@@ -793,11 +818,17 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public float getWidth() {
+        if (this.isSleeping) {
+            return 1.85F;
+        }
         return 0.83F;
     }
 
     @Override
     public float getHeight() {
+        if (this.isSleeping) {
+            return 0.83F;
+        }
         return 1.85F;
     }
 
