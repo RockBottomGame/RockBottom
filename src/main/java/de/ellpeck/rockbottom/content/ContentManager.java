@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.content;
 import com.google.common.base.Charsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
@@ -60,7 +61,7 @@ public final class ContentManager {
 
                     try {
                         InputStreamReader reader = new InputStreamReader(stream, Charsets.UTF_8);
-                        JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                        JsonObject main = JsonParser.parseReader(reader).getAsJsonObject();
                         reader.close();
 
                         for (Map.Entry<String, JsonElement> resType : main.entrySet()) {

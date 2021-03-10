@@ -65,6 +65,16 @@ public class Animation implements IAnimation {
     }
 
     @Override
+    public void drawRow(int row, float x, float y, float width, float height, int filter, boolean mirrorHor, boolean mirrorVert) {
+        this.drawRow(0L, row, x, y, width, height, filter, mirrorHor, mirrorVert);
+    }
+
+    @Override
+    public void drawRow(int row, float x, float y, float width, float height, int[] light, int filter, boolean mirrorHor, boolean mirrorVert) {
+        this.drawRow(0L, row, x, y, width, height, light, filter, mirrorHor, mirrorVert);
+    }
+
+    @Override
     public void drawRow(int row, float x, float y, float scale, int filter) {
         this.drawRow(0L, row, x, y, scale, null, filter);
     }
@@ -92,6 +102,20 @@ public class Animation implements IAnimation {
     @Override
     public void drawRow(long startTimeMillis, int row, float x, float y, float scale, int filter) {
         this.drawRow(startTimeMillis, row, x, y, scale, null, filter);
+    }
+
+    @Override
+    public void drawRow(long startTimeMillis, int row, float x, float y, float width, float height, int filter, boolean mirrorHor, boolean mirrorVert) {
+        this.drawRow(startTimeMillis, row, x, y, width, height, null, filter, mirrorHor, mirrorVert);
+    }
+
+    @Override
+    public void drawRow(long startTimeMillis, int row, float x, float y, float width, float height, int[] light, int filter, boolean mirrorHor, boolean mirrorVert) {
+        float srcX = mirrorHor ? this.frameWidth : 0;
+        float srcY = mirrorVert ? this.frameHeight : 0;
+        float srcX2 = mirrorHor ? 0 : this.frameWidth;
+        float srcY2 = mirrorVert ? 0 : this.frameHeight;
+        this.drawRow(startTimeMillis, row, x, y, x + width, y + height, srcX, srcY, srcX2, srcY2, light, filter);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ListMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
@@ -89,7 +90,7 @@ public class ApiHandler implements IApiHandler {
             if (file.exists()) {
                 if (asJson) {
                     InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8);
-                    JsonObject object = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                    JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
                     reader.close();
 
                     this.readDataSet(object, set);

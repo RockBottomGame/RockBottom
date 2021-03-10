@@ -17,7 +17,7 @@ public class FallingEntityRenderer implements IEntityRenderer<FallingEntity> {
             Tile tile = entity.state.getTile();
             ITileRenderer renderer = tile.getRenderer();
             if (renderer != null) {
-                renderer.renderItem(game, manager, g, tile, entity.stateInstance, x - 0.5F, y - 0.5F, 1F, light);
+                renderer.renderItem(game, manager, g, tile, entity.stateInstance, x - 0.5F, y - 0.5F, 1F, light, false);
             }
         }
     }

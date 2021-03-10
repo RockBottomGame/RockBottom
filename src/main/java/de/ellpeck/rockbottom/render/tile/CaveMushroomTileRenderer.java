@@ -27,7 +27,7 @@ public class CaveMushroomTileRenderer extends MetaTileRenderer<CaveMushroomTile>
     }
 
     @Override
-    public void renderItem(IGameInstance game, IAssetManager manager, IRenderer renderer, CaveMushroomTile tile, ItemInstance instance, float x, float y, float scale, int filter) {
-        manager.getTexture(tile.subResourceNames.get(instance.getMeta()).addSuffix(".item")).draw(x, y, scale, scale, filter);
+    public void renderItem(IGameInstance game, IAssetManager manager, IRenderer renderer, CaveMushroomTile tile, ItemInstance instance, float x, float y, float scale, int filter, boolean mirrored) {
+        manager.getTexture(tile.subResourceNames.get(instance.getMeta()).addSuffix(".item")).draw(x, y, scale, scale, filter, mirrored, false);
     }
 }

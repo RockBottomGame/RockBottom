@@ -12,18 +12,18 @@ import de.ellpeck.rockbottom.world.entity.BoomerangEntity;
 
 public class BoomerangEntityRenderer implements IEntityRenderer<BoomerangEntity> {
     @Override
-    public void render(IGameInstance game, IAssetManager manager, IRenderer g, IWorld world, BoomerangEntity entity, float x, float y, int light) {
+    public void render(IGameInstance game, IAssetManager manager, IRenderer renderer, IWorld world, BoomerangEntity entity, float x, float y, int light) {
         ItemInstance instance = entity.getItem();
         if (instance != null) {
             Item item = instance.getItem();
-            IItemRenderer renderer = item.getRenderer();
-            if (renderer != null) {
+            IItemRenderer itemRenderer = item.getRenderer();
+            if (itemRenderer != null) {
+                renderer.pushMatrix();
                 float rotation = entity.ticksExisted * 15F;
-                g.translate(x, y);
-                g.rotate(rotation);
-                renderer.render(game, manager, g, item, instance, -entity.getWidth() * 0.375F, -entity.getHeight() * 0.375F, 0.75F, light);
-                g.rotate(-rotation);
-                g.translate(-x, -y);
+                renderer.translate(x, y);
+                renderer.rotate(rotation);
+                itemRenderer.render(game, manager, renderer, item, instance, -entity.getWidth() * 0.375F, -entity.getHeight() * 0.375F, 0.75F, light, false);
+                renderer.popMatrix();
             }
         }
     }

@@ -36,7 +36,7 @@ public class MortarTileRenderer extends DefaultTileRenderer<MortarTile> {
                     Item item = content.getItem();
                     IItemRenderer renderer = item.getRenderer();
                     if (renderer != null) {
-                        renderer.render(game, manager, g, item, content, renderX + xOff, renderY + scale / 2.5F, scale / 3, light[0]);
+                        renderer.render(game, manager, g, item, content, renderX + xOff, renderY + scale / 2.5F, scale / 3, light[0], false);
                     }
                 }
                 xOff += scale / 6;

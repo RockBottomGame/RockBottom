@@ -24,6 +24,8 @@ import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Util;
+import de.ellpeck.rockbottom.api.util.math.MatrixStack;
+import de.ellpeck.rockbottom.api.util.math.Vector2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.font.Font;
 import de.ellpeck.rockbottom.assets.font.SimpleFont;
@@ -74,19 +76,9 @@ public class Renderer implements IRenderer {
     private float guiHeight;
     private float worldWidth;
     private float worldHeight;
-    private float rotationCenterX;
-    private float rotationCenterY;
-    private float rotation;
-    private float sinRot;
-    private float cosRot;
-    private float translationX;
-    private float translationY;
-    private float scaleX;
-    private float scaleY;
-    private boolean mirroredHor;
-    private boolean mirroredVert;
     private int lastFlushes;
     private int flushCounter;
+    private MatrixStack matrixStack;
 
     public Renderer(IGameInstance game) {
         this.game = game;
@@ -117,17 +109,6 @@ public class Renderer implements IRenderer {
         float u2 = (srcX2 + texture.getRenderOffsetX()) / texture.getTextureWidth();
         float v2 = (srcY2 + texture.getRenderOffsetY()) / texture.getTextureHeight();
 
-        if (this.mirroredHor) {
-            float temp = u2;
-            u2 = u;
-            u = temp;
-        }
-        if (this.mirroredVert) {
-            float temp = v2;
-            v2 = v;
-            v = temp;
-        }
-
         int topLeft = this.combineLight(light, ITexture.TOP_LEFT, filter);
         int bottomLeft = this.combineLight(light, ITexture.BOTTOM_LEFT, filter);
         int bottomRight = this.combineLight(light, ITexture.BOTTOM_RIGHT, filter);
@@ -143,44 +124,9 @@ public class Renderer implements IRenderer {
 
     @Override
     public void addVertex(float x, float y, int color, float u, float v) {
-        float theX;
-        float theY;
-
-        if (this.rotation != 0F) {
-            if (this.rotationCenterX != 0F) {
-                x -= this.rotationCenterX;
-                theX = this.rotationCenterX + x * this.cosRot - y * this.sinRot;
-            } else {
-                theX = x * this.cosRot - y * this.sinRot;
-            }
-
-            if (this.rotationCenterY != 0F) {
-                y -= this.rotationCenterY;
-                theY = this.rotationCenterY + x * this.sinRot + y * this.cosRot;
-            } else {
-                theY = x * this.sinRot + y * this.cosRot;
-            }
-
-        } else {
-            theX = x;
-            theY = y;
-        }
-
-        if (this.translationX != 0F) {
-            theX += this.translationX;
-        }
-        if (this.translationY != 0F) {
-            theY += this.translationY;
-        }
-
-        if (this.scaleX != 1F) {
-            theX *= this.scaleX;
-        }
-        if (this.scaleY != 1F) {
-            theY *= this.scaleY;
-        }
-
-        this.program.getProcessor().addVertex(this, theX, theY, color, u, v);
+        Vector2 point = new Vector2(x, y);
+        Vector2 transformed = this.matrixStack.getLast().apply(point);
+        this.program.getProcessor().addVertex(this, transformed.x, transformed.y, color, u, v);
     }
 
     @Override
@@ -208,7 +154,7 @@ public class Renderer implements IRenderer {
     public void begin() {
         Preconditions.checkState(!this.isDrawing, "Can't begin a renderer that is already drawing!");
 
-        ((Buffer) this.vertices).clear();
+        this.vertices.clear();
         this.vertexAmount = 0;
         this.flushCounter = 0;
 
@@ -236,13 +182,13 @@ public class Renderer implements IRenderer {
     @Override
     public void flush() {
         if (this.vertexAmount > 0) {
-            ((Buffer) this.vertices).flip();
+            this.vertices.flip();
             this.program.bind();
 
             this.vbo.subData(this.vertices);
             this.program.draw(this.vertexAmount);
 
-            ((Buffer) this.vertices).clear();
+            this.vertices.clear();
             this.vertexAmount = 0;
 
             this.flushCounter++;
@@ -252,111 +198,40 @@ public class Renderer implements IRenderer {
     }
 
     @Override
+    public void pushMatrix() {
+        this.matrixStack.push();
+    }
+
+    @Override
+    public void popMatrix() {
+        this.matrixStack.pop();
+    }
+
+    @Override
     public void rotate(float angle) {
-        this.setRotation(this.rotation + angle);
-    }
-
-    @Override
-    public void setRotationCenter(float x, float y) {
-        this.rotationCenterX = x;
-        this.rotationCenterY = y;
-    }
-
-    @Override
-    public float getRotationCenterX() {
-        return this.rotationCenterX;
-    }
-
-    @Override
-    public float getRotationCenterY() {
-        return this.rotationCenterY;
+        this.matrixStack.rotate(angle);
     }
 
     @Override
     public void translate(float x, float y) {
-        this.setTranslation(this.translationX + x, this.translationY + y);
+        this.matrixStack.translate(x, y);
     }
 
     @Override
-    public void setTranslation(float x, float y) {
-        this.translationX = x;
-        this.translationY = y;
+    public void scale(float scale) {
+        this.matrixStack.scale(scale);
     }
 
     @Override
     public void scale(float x, float y) {
-        this.setScale(this.scaleX * x, this.scaleY * y);
-    }
-
-    @Override
-    public void setScale(float x, float y) {
-        this.scaleX = x;
-        this.scaleY = y;
-    }
-
-    @Override
-    public void mirror(boolean hor, boolean vert) {
-        this.setMirrored(hor != this.mirroredHor, vert != this.mirroredVert);
-    }
-
-    @Override
-    public void setMirrored(boolean hor, boolean vert) {
-        this.mirroredHor = hor;
-        this.mirroredVert = vert;
+        this.matrixStack.scale(x, y);
     }
 
     @Override
     public void resetTransformation() {
-        this.setRotation(0F);
-        this.setTranslation(0F, 0F);
-        this.setScale(1F, 1F);
-        this.setMirrored(false, false);
-        this.setRotationCenter(0F, 0F);
+        this.matrixStack = new MatrixStack();
     }
 
-    @Override
-    public float getRotation() {
-        return this.rotation;
-    }
-
-    @Override
-    public void setRotation(float angle) {
-        this.rotation = angle % 360F;
-
-        double rads = Math.toRadians(this.rotation);
-        this.sinRot = (float) Math.sin(rads);
-        this.cosRot = (float) Math.cos(rads);
-    }
-
-    @Override
-    public float getTranslationX() {
-        return this.translationX;
-    }
-
-    @Override
-    public float getTranslationY() {
-        return this.translationY;
-    }
-
-    @Override
-    public float getScaleX() {
-        return this.scaleX;
-    }
-
-    @Override
-    public float getScaleY() {
-        return this.scaleY;
-    }
-
-    @Override
-    public boolean isMirroredHor() {
-        return this.mirroredHor;
-    }
-
-    @Override
-    public boolean isMirroredVert() {
-        return this.mirroredVert;
-    }
 
     @Override
     public IShaderProgram getProgram() {
@@ -446,7 +321,7 @@ public class Renderer implements IRenderer {
 
         IItemRenderer renderer = item.getRenderer();
         if (renderer != null) {
-            renderer.render(game, manager, this, item, slot, x, y, 10F * scale, color);
+            renderer.render(game, manager, this, item, slot, x, y, 10F * scale, color, false);
         }
 
         if (displayDurability) {
@@ -774,5 +649,10 @@ public class Renderer implements IRenderer {
     @Override
     public double getCameraY() {
         return this.cameraY;
+    }
+
+    @Override
+    public MatrixStack getMatrixStack() {
+        return this.matrixStack;
     }
 }

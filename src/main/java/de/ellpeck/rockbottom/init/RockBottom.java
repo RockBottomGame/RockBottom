@@ -561,18 +561,19 @@ public class RockBottom extends AbstractGame {
         this.renderer.begin();
 
         if (this.player != null) {
+            this.renderer.pushMatrix();
             this.worldRenderer.render(this, this.assetManager, this.particleManager, this.renderer, (AbstractWorld) this.getPlayerWorld(), this.player, this.interactionManager);
+            this.renderer.popMatrix();
         }
 
         this.renderer.setDefaultProgram(this.assetManager.getShaderProgram(IShaderProgram.GUI_SHADER));
 
+        this.renderer.pushMatrix();
         float scale = this.renderer.getGuiScale();
-        this.renderer.setScale(scale, scale);
-
+        this.renderer.scale(scale);
         this.guiManager.render(this, this.assetManager, this.renderer, this.player);
         this.toaster.render(this, this.assetManager, this.renderer);
-
-        this.renderer.setScale(1F, 1F);
+        this.renderer.popMatrix();
 
         if (this.renderer.isDebug()) {
             DebugRenderer.render(this, this.assetManager, this.getPlayerWorld(), this.player, this.renderer);

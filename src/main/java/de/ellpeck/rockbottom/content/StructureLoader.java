@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.GameContent;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
@@ -56,7 +57,7 @@ public class StructureLoader implements IContentLoader<IStructure> {
                 }
 
                 InputStreamReader tileReader = new InputStreamReader(ContentManager.getResourceAsStream(tilePath), Charsets.UTF_8);
-                JsonElement tileElement = Util.JSON_PARSER.parse(tileReader);
+                JsonElement tileElement = JsonParser.parseReader(tileReader);
                 tileReader.close();
 
                 Map<Character, TileState> states = this.tileCache.get(tilePath);
@@ -103,7 +104,7 @@ public class StructureLoader implements IContentLoader<IStructure> {
                 }
 
                 InputStreamReader structureReader = new InputStreamReader(ContentManager.getResourceAsStream(structurePath), Charsets.UTF_8);
-                JsonElement structureElement = Util.JSON_PARSER.parse(structureReader);
+                JsonElement structureElement = JsonParser.parseReader(structureReader);
                 structureReader.close();
 
                 Map<TileLayer, TileState[][]> layers = new HashMap<>();

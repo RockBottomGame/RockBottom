@@ -171,6 +171,20 @@ public class Texture implements ITexture {
     }
 
     @Override
+    public void draw(float x, float y, float width, float height, int filter, boolean mirrorHor, boolean mirrorVert) {
+        this.draw(x, y, width, height, null, filter, mirrorHor, mirrorVert);
+    }
+
+    @Override
+    public void draw(float x, float y, float width, float height, int[] light, int filter, boolean mirrorHor, boolean mirrorVert) {
+        float srcX = mirrorHor ? this.renderWidth : 0;
+        float srcY = mirrorVert ? this.renderHeight : 0;
+        float srcX2 = mirrorHor ? 0 : this.renderWidth;
+        float srcY2 = mirrorVert ? 0 : this.renderHeight;
+        this.draw(x, y, x + width, y + height, srcX, srcY, srcX2, srcY2, light, filter);
+    }
+
+    @Override
     public void draw(float x, float y, float x2, float y2, float srcX, float srcY, float srcX2, float srcY2) {
         this.draw(x, y, x2, y2, srcX, srcY, srcX2, srcY2, Colors.WHITE);
     }
@@ -239,7 +253,7 @@ public class Texture implements ITexture {
 
         ByteBuffer data = BufferUtils.createByteBuffer(input.length);
         data.put(input);
-        ((Buffer) data).flip();
+        data.flip();
 
         MemoryStack stack = MemoryStack.stackPush();
         IntBuffer width = stack.mallocInt(1);

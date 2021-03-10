@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.content.pack.ContentPack;
@@ -127,7 +128,7 @@ public class ContentPackLoader implements IContentPackLoader {
         String entryName = entry.getName();
         if (entryName != null && entryName.equals("pack.json")) {
             InputStream stream = file.getInputStream(entry);
-            JsonElement main = Util.JSON_PARSER.parse(new InputStreamReader(stream, Charsets.UTF_8));
+            JsonElement main = JsonParser.parseReader(new InputStreamReader(stream, Charsets.UTF_8));
             stream.close();
 
             JsonObject mainObj = main.getAsJsonObject();

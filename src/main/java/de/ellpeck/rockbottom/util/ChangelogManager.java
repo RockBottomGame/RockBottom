@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.util.Util;
@@ -29,7 +30,7 @@ public final class ChangelogManager {
 
                 RockBottomAPI.logger().info("Parsing the changelog...");
 
-                JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                JsonObject main = JsonParser.parseReader(reader).getAsJsonObject();
 
                 String current = RockBottomAPI.getGame().getVersion();
                 String latest = main.get("latest").getAsString();

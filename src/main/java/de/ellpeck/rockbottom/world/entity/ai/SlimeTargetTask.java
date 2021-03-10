@@ -29,7 +29,7 @@ public class SlimeTargetTask extends AITask<SlimeEntity> {
 
             if (this.target == null) {
                 AbstractPlayerEntity player = entity.world.getClosestPlayer(x, y);
-                return player != null && !player.isDead() && Util.distanceSq(player.getX(), player.getY(), x, y) <= this.maxDistance * this.maxDistance;
+                return player != null && !player.getGameMode().isCreative() && !player.isDead() && Util.distanceSq(player.getX(), player.getY(), x, y) <= this.maxDistance * this.maxDistance;
             } else {
                 return this.target.isDead() || Util.distanceSq(this.target.getX(), this.target.getY(), x, y) > this.maxDistance * this.maxDistance;
             }

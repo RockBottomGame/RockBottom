@@ -1,6 +1,7 @@
 package de.ellpeck.rockbottom.net.chat.command;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.Registries;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
@@ -72,7 +73,7 @@ public class SpawnItemCommand extends Command {
                 try {
                     set = new ModBasedDataSet();
 
-                    JsonObject json = Util.JSON_PARSER.parse(args[3]).getAsJsonObject();
+                    JsonObject json = JsonParser.parseString(args[3]).getAsJsonObject();
                     RockBottomAPI.getApiHandler().readDataSet(json, set);
                 } catch (Exception e) {
                     return new TextChatComponent(FormattingCode.RED + "Couldn't parse json information " + args[3] + '!');

@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAnimation;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
@@ -64,7 +65,7 @@ public class AnimationLoader implements IAssetLoader<Animation> {
                     List<AnimationRow> rows = new ArrayList<>();
 
                     InputStream infoStream = ContentManager.getResourceAsStream(path + anim);
-                    JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
+                    JsonObject main = JsonParser.parseReader(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
                     infoStream.close();
 
                     for (Map.Entry<String, JsonElement> entry : main.getAsJsonObject().entrySet()) {

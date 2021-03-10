@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
@@ -90,7 +91,7 @@ public class TextureLoader implements IAssetLoader<ITexture> {
                     additionalData = this.additionalDataCache.get(dataPath);
                     if (additionalData == null) {
                         InputStreamReader reader = new InputStreamReader(ContentManager.getResourceAsStream(dataPath), Charsets.UTF_8);
-                        JsonObject main = Util.JSON_PARSER.parse(reader).getAsJsonObject();
+                        JsonObject main = JsonParser.parseReader(reader).getAsJsonObject();
                         reader.close();
 
                         if (main != null) {

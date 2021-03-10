@@ -57,7 +57,7 @@ public class PotTileRenderer extends DefaultTileRenderer<PotTile> {
             }
             tile.getRenderer().render(game, manager, renderer, world, tile, renderState, x, y, layer, renderX, renderY, scale, light);
         } else {
-            plant.getItem().getRenderer().render(game, manager, renderer, plant.getItem(), plant, renderX, renderY, scale, color);
+            plant.getItem().getRenderer().render(game, manager, renderer, plant.getItem(), plant, renderX, renderY, scale, color, false);
         }
     }
 }

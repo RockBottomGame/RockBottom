@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.assets.loader;
 
 import com.google.common.base.Charsets;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.IAssetLoader;
@@ -54,7 +55,7 @@ public class LocaleLoader implements IAssetLoader<Locale> {
     }
 
     private Locale fromStream(InputStream stream, String name) throws Exception {
-        JsonElement main = Util.JSON_PARSER.parse(new InputStreamReader(stream, Charsets.UTF_8));
+        JsonElement main = JsonParser.parseReader(new InputStreamReader(stream, Charsets.UTF_8));
         stream.close();
 
         Map<ResourceName, String> locale = new HashMap<>();

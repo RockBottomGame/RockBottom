@@ -25,9 +25,10 @@ public class SignTileRenderer extends DefaultTileRenderer<SignTile> {
         if (player.isInRange(renderer.getMousedTileX(), renderer.getMousedTileY(), player.getRange())) {
             SignTileEntity tileEntity = world.getTileEntity(x, y, SignTileEntity.class);
             if (tileEntity != null) {
-                renderer.scale(0.5F, 0.5F);
+                renderer.pushMatrix();
+                renderer.scale(0.5F);
                 SignGui.drawSign(manager, tileEntity.text, true, (mouseX + 3) * 2F, (mouseY + 3) * 2F);
-                renderer.scale(2F, 2F);
+                renderer.popMatrix();
             }
         }
     }

@@ -203,6 +203,11 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
+    public float getSleepingPercentage() {
+        return this.mainWorld.getSleepingPercentage();
+    }
+
+    @Override
     public List<? extends IWorld> getSubWorlds() {
         return this.mainWorld.getSubWorlds();
     }

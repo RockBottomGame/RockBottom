@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom.assets.font;
 import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.ellpeck.rockbottom.api.IRenderer;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.font.FontProp;
@@ -39,7 +40,7 @@ public class Font implements IFont {
     }
 
     public static Font fromStream(ITexture texture, InputStream infoStream, String name) throws Exception {
-        JsonObject main = Util.JSON_PARSER.parse(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
+        JsonObject main = JsonParser.parseReader(new InputStreamReader(infoStream, Charsets.UTF_8)).getAsJsonObject();
         infoStream.close();
 
         int width = 0;

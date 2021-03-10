@@ -1196,7 +1196,7 @@ public class InternalHooks implements IInternalHooks {
                     public void renderStatGraphic(IGameInstance game, IAssetManager manager, IRenderer g, int x, int y) {
                         IItemRenderer renderer = item.getRenderer();
                         if (renderer != null) {
-                            renderer.render(game, manager, g, item, instance, x + 1, y + 1, 12F, Colors.WHITE);
+                            renderer.render(game, manager, g, item, instance, x + 1, y + 1, 12F, Colors.WHITE, false);
                         }
                     }
                 });
