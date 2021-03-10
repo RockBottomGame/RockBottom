@@ -72,6 +72,7 @@ public final class ContentRegistry {
         new PlatformTile().register();
         new RopeTile(ResourceName.intern("plant_rope")).register();
         new PotTile().register();
+        new BedTile().register();
 
         new ToolItem(ResourceName.intern("brittle_pickaxe"), 1.5F, 50, ToolProperty.PICKAXE, 1).register();
         new ToolItem(ResourceName.intern("brittle_axe"), 1.25F, 50, ToolProperty.AXE, 1).register();

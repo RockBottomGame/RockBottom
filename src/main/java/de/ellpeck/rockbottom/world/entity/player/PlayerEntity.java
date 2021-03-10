@@ -51,6 +51,7 @@ import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import de.ellpeck.rockbottom.world.entity.player.statistics.Statistics;
 import de.ellpeck.rockbottom.world.tile.LadderTile;
 import de.ellpeck.rockbottom.world.tile.RopeTile;
+import de.ellpeck.rockbottom.world.tile.entity.BedTileEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,9 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private int skillPoints;
     private GameMode gameMode;
     protected CameraMode cameraMode;
+    private boolean bedSpawn;
+    private Pos2 bedPosition;
+    private boolean isSleeping;
 
     public PlayerEntity(IWorld world, UUID uniqueId, IPlayerDesign design) {
         super(world);
@@ -857,4 +861,54 @@ public class PlayerEntity extends AbstractPlayerEntity {
         return this.cameraMode;
     }
 
+    @Override
+    public Pos2 getBedPosition() {
+        return this.bedPosition;
+    }
+
+    @Override
+    public boolean sleep(Pos2 pos, boolean saveSpawn, boolean faceRight) {
+        if (this.isSleeping) {
+            return false;
+        }
+
+        this.isSleeping = true;
+        this.bedPosition = pos;
+        this.setPos(pos.getX() + 1, pos.getY() + 1);
+        if (saveSpawn) {
+            this.bedSpawn = true;
+        }
+
+        this.facing = faceRight ? Direction.RIGHT : Direction.LEFT;
+        this.sendToClients();
+        return true;
+    }
+
+    @Override
+    public boolean wake() {
+        if (!this.isSleeping) {
+            return false;
+        }
+
+        this.isSleeping = false;
+        if (!this.world.isClient()) {
+            BedTileEntity bed = this.world.getTileEntity(this.bedPosition.getX(), this.bedPosition.getY(), BedTileEntity.class);
+            if (bed != null) {
+                bed.sleepingPlayer = null;
+            }
+        }
+        this.resetBounds();
+        this.sendToClients();
+        return true;
+    }
+
+    @Override
+    public void removeBedSpawn() {
+        this.bedSpawn = false;
+    }
+
+    @Override
+    public boolean isSleeping() {
+        return isSleeping;
+    }
 }
