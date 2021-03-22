@@ -13,7 +13,6 @@ import de.ellpeck.rockbottom.api.event.impl.PlayerRenderEvent;
 import de.ellpeck.rockbottom.api.item.Item;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
-import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.render.entity.LivingRenderer;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -37,6 +36,17 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
 
+        float rotation = 90;
+        float tx = 2 - 0.5F;
+        float ty = 2 - 1F + 3/12F;
+        if (player != null && player.isSleeping()) {
+            g.setRotationCenter(x, y);
+            g.rotate(rotation);
+            g.translate(tx, ty);
+            if (player.facing == Direction.RIGHT) {
+                g.mirror(true, true);
+            }
+        }
         manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.' + (design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, 2F * scale, light);
         manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, 2F * scale, Colors.multiply(light, design.getEyeColor()));
 
@@ -149,6 +159,14 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
 
                     renderer.renderHolding(game, manager, g, item, holding, player, itemX, itemY, holdingAngle, scale * holdingScale, light, holdingMirrored);
                 }
+            }
+        }
+
+        if (player != null && player.isSleeping()) {
+            g.rotate(-rotation);
+            g.translate(-tx, -ty);
+            if (player.facing == Direction.RIGHT) {
+                g.mirror(true, true);
             }
         }
 

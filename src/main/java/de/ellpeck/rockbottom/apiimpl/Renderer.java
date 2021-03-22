@@ -147,20 +147,10 @@ public class Renderer implements IRenderer {
         float theY;
 
         if (this.rotation != 0F) {
-            if (this.rotationCenterX != 0F) {
-                x -= this.rotationCenterX;
-                theX = this.rotationCenterX + x * this.cosRot - y * this.sinRot;
-            } else {
-                theX = x * this.cosRot - y * this.sinRot;
-            }
-
-            if (this.rotationCenterY != 0F) {
-                y -= this.rotationCenterY;
-                theY = this.rotationCenterY + x * this.sinRot + y * this.cosRot;
-            } else {
-                theY = x * this.sinRot + y * this.cosRot;
-            }
-
+            x -= this.rotationCenterX;
+            y -= this.rotationCenterY;
+            theX = this.rotationCenterX + x * this.cosRot - y * this.sinRot;
+            theY = this.rotationCenterY + x * this.sinRot + y * this.cosRot;
         } else {
             theX = x;
             theY = y;

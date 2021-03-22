@@ -398,7 +398,11 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public boolean takeDamage(int amount) {
-        return !this.gameMode.isCreative() && super.takeDamage(amount);
+        if (!this.gameMode.isCreative() && super.takeDamage(amount)) {
+            this.wake();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -903,9 +907,13 @@ public class PlayerEntity extends AbstractPlayerEntity {
             return false;
         }
 
+        // TODO Add check to see if there is enough space above the bed to sleep
+
         this.isSleeping = true;
         this.bedPosition = pos;
         this.setPos(pos.getX() + 1, pos.getY() + 1);
+        this.motionX = 0;
+        this.motionY = 0;
         if (saveSpawn) {
             this.bedSpawn = true;
         }
