@@ -39,10 +39,9 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
 
         renderer.translate(x, y);
         renderer.scale(scale);
-        renderer.addEmptyRect(0, 0, 1, 2, 0.1f, Colors.RED);
         boolean mirrorHor = false;
         boolean mirrorVert = false;
-        if (player.isSleeping()) {
+        if (player != null && player.isSleeping()) {
             TileState bed = player.world.getState(player.getBedPosition().getX(), player.getBedPosition().getY());
             if (bed != null && bed.getTile() instanceof BedTile) {
                 boolean bedFacingRight = bed.get(StaticTileProps.FACING_RIGHT);
@@ -57,8 +56,7 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
                 }
             }
         }
-        renderer.addEmptyRect(0, 0, 1, 2, 0.1f, Colors.RED);
-        ItemInstance holding = player.getSelectedItem();
+        ItemInstance holding = player != null ? player.getSelectedItem() : null;
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
 
