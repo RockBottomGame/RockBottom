@@ -28,8 +28,6 @@ public class BedTile extends MultiTile {
     public BedTile() {
         super(ResourceName.intern("bed"));
         this.addProps(StaticTileProps.FACING_RIGHT);
-        this.addProps(StaticTileProps.PILLOW_COLOR);
-        this.addProps(StaticTileProps.COVER_COLOR);
     }
 
     @Override
@@ -38,36 +36,38 @@ public class BedTile extends MultiTile {
         double hitY = mouseY - y;
 
         TileState thisState = world.getState(x, y);
-        boolean isMainPos = this.isMainPos(x, y, thisState);
         boolean isFacingRight = thisState.get(StaticTileProps.FACING_RIGHT);
 
         ItemInstance held = player.getSelectedItem();
         if (held != null && held.getItem() == GameContent.Tiles.FLOWER.getItem()) {
-            DyeColor flowerColor = DyeColor.fromMeta(held.getMeta());
-            int otherX = isMainPos ? x + 1 : x - 1;
-            TileState otherState = world.getState(otherX, y);
+            Pos2 mainPos = this.getMainPos(x, y, thisState);
+            BedTileEntity bedTE = world.getTileEntity(mainPos.getX(), mainPos.getY(), BedTileEntity.class);
+
             boolean used = false;
-            if (this.isPillowPos(world, x, y)) {
-                if (hitY > 4/12f && hitY < 8/12f) {
-                    if (isFacingRight && hitX > 0.5f || !isFacingRight && hitX < 0.5f) {
-                        world.setState(x, y, thisState.prop(StaticTileProps.PILLOW_COLOR, flowerColor));
-                        world.setState(otherX, y, otherState.prop(StaticTileProps.PILLOW_COLOR, flowerColor));
+            if (bedTE != null) {
+                DyeColor flowerColor = DyeColor.fromMeta(held.getMeta());
+                if (this.isPillowPos(world, x, y)) {
+                    // Check if clicked on pillow
+                    if (hitY > 4/12f && hitY < 8/12f) {
+                        if (isFacingRight && hitX > 0.5f || !isFacingRight && hitX < 0.5f) {
+                            bedTE.pillowColor = flowerColor;
+                            used = true;
+                        }
+                    }
+                }
+
+                if (!used) {
+                    // Check if clicked on cover (bottom half of tile)
+                    if (hitY < 0.5) {
+                        bedTE.coverColor = flowerColor;
                         used = true;
                     }
                 }
-            }
 
-            if (!used) {
-                if (hitY < 0.5) {
-                    world.setState(x, y, thisState.prop(StaticTileProps.COVER_COLOR, flowerColor));
-                    world.setState(otherX, y, otherState.prop(StaticTileProps.COVER_COLOR, flowerColor));
-                    used = true;
+                if (used) {
+                    player.getInv().set(player.getSelectedSlot(), held.removeAmount(1).nullIfEmpty());
+                    return true;
                 }
-            }
-
-            if (used) {
-                player.getInv().set(player.getSelectedSlot(), held.removeAmount(1).nullIfEmpty());
-                return true;
             }
         }
 

@@ -6,12 +6,12 @@ import de.ellpeck.rockbottom.api.StaticTileProps;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.render.tile.MultiTileRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
-import de.ellpeck.rockbottom.api.util.Colors;
 import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import de.ellpeck.rockbottom.world.tile.BedTile;
+import de.ellpeck.rockbottom.world.tile.entity.BedTileEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,14 +42,19 @@ public class BedTileRenderer extends MultiTileRenderer<BedTile> {
         // Draw Frame
         super.render(game, manager, renderer, world, tile, state, x, y, layer, renderX, renderY, scale, light);
 
-        // Draw Cover
-        Pos2 innerCoord = tile.getInnerCoord(state);
-        manager.getTexture(this.coverTextures.get(innerCoord)).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light, state.get(StaticTileProps.COVER_COLOR).color);
+        Pos2 mainPos = tile.getMainPos(x, y, state);
+        BedTileEntity bedTE = world.getTileEntity(mainPos.getX(), mainPos.getY(), BedTileEntity.class);
 
-        // Draw Pillow
-        boolean isFacingRight = state.get(StaticTileProps.FACING_RIGHT);
-        if (tile.isPillowPos(world, x, y)) {
-            manager.getTexture(isFacingRight ? this.rightPillow : this.leftPillow).draw(renderX, renderY, scale, scale, light, state.get(StaticTileProps.PILLOW_COLOR).color);
+        if (bedTE != null) {
+            // Draw Cover
+            Pos2 innerCoord = tile.getInnerCoord(state);
+            manager.getTexture(this.coverTextures.get(innerCoord)).getPositionalVariation(x, y).draw(renderX, renderY, scale, scale, light, bedTE.coverColor.color);
+
+            // Draw Pillow
+            boolean isFacingRight = state.get(StaticTileProps.FACING_RIGHT);
+            if (tile.isPillowPos(world, x, y)) {
+                manager.getTexture(isFacingRight ? this.rightPillow : this.leftPillow).draw(renderX, renderY, scale, scale, light, bedTE.pillowColor.color);
+            }
         }
     }
 }
