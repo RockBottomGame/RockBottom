@@ -1,0 +1,24 @@
+{
+    "type": "manual",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "flower"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/pot"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "stone",
+            "amount": 10
+        }
+    ],
+    "skill": 0.005
+}

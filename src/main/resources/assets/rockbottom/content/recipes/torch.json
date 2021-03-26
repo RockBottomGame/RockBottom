@@ -1,0 +1,29 @@
+{
+    "type": "manual",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "rockbottom/coal"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/torch",
+            "amount": 6
+        }
+    ],
+    "inputs": [
+        {
+            "name": "coal",
+            "amount": 1
+        },
+        {
+            "name": "stick",
+            "amount": 3
+        }
+    ],
+    "skill": 0.0015
+}

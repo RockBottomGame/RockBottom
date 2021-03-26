@@ -1,0 +1,49 @@
+{
+    "rockbottom/main": [
+        " W       ",
+        " ^D     W",
+        "WVDD CDDW",
+        "DWWWWWWWW"
+    ],
+    "rockbottom/background": [
+        " WWWW    ",
+        " WWWWDWWW",
+        " WDDWDDDW",
+        "DWWDDWWWW"
+    ],
+    "rockbottom/liquids": [
+        "         ",
+        "         ",
+        "    G    ",
+        "         "
+    ],
+    "tiles": {
+        "W": {
+            "tile": "rockbottom/wood_boards",
+            "props": {
+                "meta": 1
+            }
+        },
+        "^": {
+            "tile": "rockbottom/old_wood_door",
+            "props": {
+                "top_half": true
+            }
+        },
+        "V": {
+            "tile": "rockbottom/old_wood_door",
+            "props": {
+                "top_half": false
+            }
+        },
+        "D": {
+            "tile": "rockbottom/soil"
+        },
+        "C": {
+            "tile": "rockbottom/chest"
+        },
+        "G": {
+            "tile": "rockbottom/goo_remains"
+        }
+    }
+}

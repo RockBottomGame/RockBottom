@@ -1,0 +1,24 @@
+{
+    "type": "construction_table",
+    "tools": [
+        {
+            "name": "rockbottom/saw",
+            "usage": 2
+        },
+        {
+            "name": "rockbottom/mallet"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/sign"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_wood",
+            "amount": 8
+        }
+    ],
+    "skill": 0.0025
+}

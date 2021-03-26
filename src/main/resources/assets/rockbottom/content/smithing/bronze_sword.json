@@ -1,0 +1,28 @@
+{
+    "type": "smithing",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "processed_bronze"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/bronze_sword"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_bronze",
+            "amount": 14
+        },
+        {
+            "name": "stick",
+            "amount": 6
+        }
+    ],
+    "skill": 0.03
+}

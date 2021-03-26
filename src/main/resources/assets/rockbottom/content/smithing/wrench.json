@@ -1,0 +1,15 @@
+{
+    "type": "smithing",
+    "outputs": [
+        {
+            "name": "rockbottom/wrench"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_copper",
+            "amount": 8
+        }
+    ],
+    "skill": 0.0085
+}

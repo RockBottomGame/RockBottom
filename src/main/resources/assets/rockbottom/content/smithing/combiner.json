@@ -1,0 +1,32 @@
+{
+    "type": "smithing",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "processed_copper"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/combiner"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_copper",
+            "amount": 6
+        },
+        {
+            "name": "stone",
+            "amount": 24
+        },
+        {
+            "name": "coal",
+            "amount": 12
+        }
+    ],
+    "skill": 0.03
+}

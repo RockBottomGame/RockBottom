@@ -1,0 +1,11 @@
+{
+    "input": {
+        "name": "sand",
+        "amount": 5
+    },
+    "output": {
+        "name": "rockbottom/glass",
+        "amount": 2
+    },
+    "time": 400
+}

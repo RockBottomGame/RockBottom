@@ -1,0 +1,25 @@
+{
+    "type": "manual",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "rockbottom/plant_fiber"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/plant_rope",
+            "amount": 3
+        }
+    ],
+    "inputs": [
+        {
+            "name": "plant_fiber",
+            "amount": 5
+        }
+    ],
+    "skill": 0.005
+}

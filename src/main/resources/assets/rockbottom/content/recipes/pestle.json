@@ -1,0 +1,24 @@
+{
+    "type": "manual",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/break_tile",
+            "params": {
+                "tile": "rockbottom/cave_mushroom"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/pestle"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "stone",
+            "amount": 3
+        }
+    ],
+    "skill": 0.001
+}

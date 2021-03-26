@@ -1,0 +1,49 @@
+{
+    "tiles": {
+        "L": {
+            "tile": "rockbottom/leaves"
+        },
+        "q": {
+            "tile": "rockbottom/log",
+            "props": {
+                "variant": "BRANCH_LEFT"
+            }
+        },
+        "p": {
+            "tile": "rockbottom/log",
+            "props": {
+                "variant": "BRANCH_RIGHT"
+            }
+        },
+        "^": {
+            "tile": "rockbottom/log",
+            "props": {
+                "variant": "TRUNK_TOP"
+            }
+        },
+        "T": {
+            "tile": "rockbottom/log",
+            "props": {
+                "variant": "TRUNK_MIDDLE"
+            }
+        },
+        "v": {
+            "tile": "rockbottom/log",
+            "props": {
+                "variant": "TRUNK_BOTTOM"
+            }
+        },
+        "<": {
+            "tile": "rockbottom/log",
+            "props": {
+                "variant": "ROOT_LEFT"
+            }
+        },
+        ">": {
+            "tile": "rockbottom/log",
+            "props": {
+                "variant": "ROOT_RIGHT"
+            }
+        }
+    }
+}

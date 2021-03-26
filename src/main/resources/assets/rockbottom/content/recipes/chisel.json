@@ -1,0 +1,28 @@
+{
+  "type": "manual",
+  "knowledge": true,
+  "criteria": [
+    {
+      "name": "rockbottom/break_tile",
+      "params": {
+        "tile": "rockbottom/stone"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "name": "rockbottom/chisel"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "stone",
+      "amount": 8
+    },
+    {
+      "name": "stick",
+      "amount": 4
+    }
+  ],
+  "skill": 0.0085
+}

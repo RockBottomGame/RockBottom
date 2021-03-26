@@ -1,0 +1,11 @@
+{
+    "input": {
+        "name": "raw_copper",
+        "amount": 2
+    },
+    "output": {
+        "name": "rockbottom/copper_ingot",
+        "amount": 1
+    },
+    "time": 200
+}

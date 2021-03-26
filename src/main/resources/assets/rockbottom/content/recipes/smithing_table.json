@@ -1,0 +1,38 @@
+{
+    "type": "construction_table",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/break_tile",
+            "params": {
+                "tile": "rockbottom/stone"
+            }
+        }
+    ],
+    "tools": [
+        {
+            "name": "rockbottom/hammer",
+            "usage": 20
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/smithing_table"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_copper",
+            "amount": 14
+        },
+        {
+            "name": "rockbottom/stone",
+            "amount": 20
+        },
+        {
+            "name": "processed_wood",
+            "amount": 5
+        }
+    ],
+    "skill": 0.02
+}

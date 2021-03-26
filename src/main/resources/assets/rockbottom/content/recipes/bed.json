@@ -1,0 +1,42 @@
+{
+    "type": "construction_table",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "string"
+            }
+        }
+    ],
+    "tools": [
+        {
+            "name": "rockbottom/hammer",
+            "usage": 5
+        },
+        {
+            "name": "rockbottom/saw",
+            "usage": 3
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/bed"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "string",
+            "amount": 10
+        },
+        {
+            "name": "processed_wood",
+            "amount": 20
+        },
+        {
+            "name": "plant_fiber",
+            "amount": 20
+        }
+    ],
+    "skill": 0.02
+}

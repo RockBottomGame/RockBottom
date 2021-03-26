@@ -1,0 +1,50 @@
+{
+    "type": "construction_table",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "rockbottom/cotton"
+            }
+        }
+    ],
+    "tools": [
+        {
+            "name": "rockbottom/saw",
+            "usage": 3
+        },
+        {
+            "name": "rockbottom/mallet",
+            "usage": 2
+        },
+        {
+            "name": "rockbottom/chisel",
+            "usage": 2
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/spinning_wheel"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "stone",
+            "amount": 10
+        },
+        {
+            "name": "stick",
+            "amount": 15
+        },
+        {
+            "name": "processed_wood",
+            "amount": 20
+        },
+        {
+            "name": "plant_fiber",
+            "amount": 15
+        }
+    ],
+    "skill": 0.25
+}
