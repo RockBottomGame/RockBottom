@@ -64,6 +64,7 @@ public final class Main {
             gameDir = options.valueOf(optionGameDir);
             Logging.init(options.valueOf(optionLogLevel));
 
+            Logging.mainLogger.info("Operating System: " + System.getProperty("os.name"));
             Logging.mainLogger.info("Using Java version " + System.getProperty("java.version"));
 
             Logging.mainLogger.info("Found launch args " + Arrays.toString(args));
