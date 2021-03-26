@@ -102,6 +102,7 @@ if (proguardEnabled) {
         from file("${buildDir}/temp/libs/lib")
         exclude '*.sha1'
         exclude '*.git'
+        classifier("sj")
     }.dependsOn.clear()
     shadowJar.dependsOn(deleteFiles)
 

@@ -11,3 +11,9 @@ project(":Changelog").projectDir = file("../Changelog")
 
 include ":Modding"
 project(":Modding").projectDir = file("../Modding")
+
+include ":Gradle"
+project(":Gradle").projectDir = file("../Gradle")
+
+include ":Backend"
+project(":Backend").projectDir = file("../Backend")
