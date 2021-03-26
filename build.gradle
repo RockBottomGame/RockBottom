@@ -62,6 +62,11 @@ jar {
     }
 }
 
+shadowJar {
+    from file("${buildDir}/obf")
+    from file("${buildDir}/temp/libs/lib")
+}.dependsOn.clear()
+
 installDist {
     destinationDir = new File('build/temp/libs')
     exclude 'RockBottom-*'
@@ -74,7 +79,6 @@ publishing {
             artifactId project.archivesBaseName
             version project.version
             from components.java
-            artifact shadowJar
         }
     }
     repositories {
