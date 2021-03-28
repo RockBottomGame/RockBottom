@@ -8,7 +8,6 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.util.Colors;
-import de.ellpeck.rockbottom.api.util.DrawContext;
 import de.ellpeck.rockbottom.api.util.Util;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -139,12 +138,6 @@ public class Texture implements ITexture {
     @Override
     public JsonElement getAdditionalData(String name) {
         return this.additionalData != null ? this.additionalData.get(name) : null;
-    }
-
-    @Override
-    public void draw(DrawContext ctx) {
-        IRenderer renderer = RockBottomAPI.getGame().getRenderer();
-        renderer.addTexturedRegion(this, ctx);
     }
 
     @Override
