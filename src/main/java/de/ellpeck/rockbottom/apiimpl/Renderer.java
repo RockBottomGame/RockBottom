@@ -23,6 +23,7 @@ import de.ellpeck.rockbottom.api.render.engine.IVBO;
 import de.ellpeck.rockbottom.api.render.engine.TextureBank;
 import de.ellpeck.rockbottom.api.render.item.IItemRenderer;
 import de.ellpeck.rockbottom.api.util.Colors;
+import de.ellpeck.rockbottom.api.util.DrawContext;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.assets.font.Font;
@@ -74,6 +75,8 @@ public class Renderer implements IRenderer {
     private float guiHeight;
     private float worldWidth;
     private float worldHeight;
+
+    // Move to Draw Context
     private float rotationCenterX;
     private float rotationCenterY;
     private float rotation;
@@ -85,6 +88,7 @@ public class Renderer implements IRenderer {
     private float scaleY;
     private boolean mirroredHor;
     private boolean mirroredVert;
+
     private int lastFlushes;
     private int flushCounter;
 
@@ -106,6 +110,21 @@ public class Renderer implements IRenderer {
     public void setDefaultProgram(IShaderProgram defaultProgram) {
         this.defaultProgram = defaultProgram;
         this.setProgram(null);
+    }
+
+    @Override
+    public void addTexturedRegion(ITexture texture, DrawContext ctx) {
+        this.setTexture(texture);
+
+        float u = ctx.uv().getU();
+        float v = ctx.uv().getV();
+        float u2 = ctx.uv().getU2();
+        float v2 = ctx.uv().getV2();
+
+        int topLeft = this.combineLight(ctx.light, ITexture.TOP_LEFT, ctx.filter);
+        int bottomLeft = this.combineLight(ctx.light, ITexture.BOTTOM_LEFT, ctx.filter);
+        int bottomRight = this.combineLight(ctx.light, ITexture.BOTTOM_RIGHT, ctx.filter);
+        int topRight = this.combineLight(ctx.light, ITexture.TOP_RIGHT, ctx.filter);
     }
 
     @Override
