@@ -1,0 +1,15 @@
+{
+    "type": "manual",
+    "outputs": [
+        {
+            "name": "rockbottom/bowl"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_wood",
+            "amount": 10
+        }
+    ],
+    "skill": 0.005
+}

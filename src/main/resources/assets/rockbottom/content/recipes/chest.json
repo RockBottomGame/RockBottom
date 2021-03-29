@@ -1,0 +1,30 @@
+{
+    "type": "construction_table",
+    "knowledge": true,
+    "tools": [
+        {
+            "name": "rockbottom/saw",
+            "usage": 5
+        },
+        {
+            "name": "rockbottom/hammer",
+            "usage": 2
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/chest"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_wood",
+            "amount": 20
+        },
+        {
+            "name": "raw_wood",
+            "amount": 4
+        }
+    ],
+    "skill": 0.015
+}

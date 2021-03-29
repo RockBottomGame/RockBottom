@@ -1,0 +1,28 @@
+{
+    "type": "manual",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/break_tile",
+            "params": {
+                "tile": "rockbottom/stone"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/construction_table"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "stone",
+            "amount": 25
+        },
+        {
+            "name": "processed_wood",
+            "amount": 16
+        }
+    ],
+    "skill": 0.02
+}

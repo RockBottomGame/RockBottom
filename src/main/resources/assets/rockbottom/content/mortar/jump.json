@@ -1,0 +1,29 @@
+{
+    "type": "mortar",
+    "input": [
+        {
+            "name": "rockbottom/cave_mushroom",
+            "meta": 0
+        }, {
+            "name": "rockbottom/cave_mushroom",
+            "meta": 2
+        }, {
+            "name": "rockbottom/cave_mushroom",
+            "meta": 6
+        }
+    ],
+    "output": [
+        {
+            "name": "rockbottom/mush",
+            "amount": 2,
+            "data": {
+                "rockbottom/effect": {
+                    "name": "rockbottom/jump_height",
+                    "time": 1200,
+                    "level": 2
+                }
+            }
+        }
+    ],
+    "time": 10
+}

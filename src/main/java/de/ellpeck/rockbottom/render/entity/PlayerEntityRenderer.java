@@ -37,6 +37,20 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
             return;
         }
 
+        /*
+        float rotation = 90;
+        float tx = 2 - 0.5F;
+        float ty = 2 - 1F + 3/12F;
+        if (player != null && player.isSleeping()) {
+            g.setRotationCenter(x, y);
+            g.rotate(rotation);
+            g.translate(tx, ty);
+            if (player.facing == Direction.RIGHT) {
+                g.mirror(true, true);
+            }
+        }
+         */
+
         renderer.translate(x, y);
         renderer.scale(scale);
         boolean mirrorHor = false;
@@ -62,6 +76,9 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
 
         manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.' + (design.isFemale() ? "female" : "male"))).drawRow(row, 0F, 0F, 1F, 2F, light);
         manager.getAnimation(IPlayerDesign.EYES).drawRow(row, 0F, 0F, 1F, 2F, Colors.multiply(light, design.getEyeColor()), mirrorHor, mirrorVert);
+
+        manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.' + (design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, 2F * scale, light);
+        manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, 2F * scale, Colors.multiply(light, design.getEyeColor()));
 
         ResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());
         if (eyebrows != null) {

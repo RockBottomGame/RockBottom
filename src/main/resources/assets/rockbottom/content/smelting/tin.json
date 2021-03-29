@@ -1,0 +1,11 @@
+{
+    "input": {
+        "name": "raw_tin",
+        "amount": 2
+    },
+    "output": {
+        "name": "rockbottom/tin_ingot",
+        "amount": 1
+    },
+    "time": 200
+}

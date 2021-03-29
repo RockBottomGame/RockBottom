@@ -1,0 +1,28 @@
+{
+    "type": "smithing",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "processed_copper"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/copper_pickaxe"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_copper",
+            "amount": 16
+        },
+        {
+            "name": "stick",
+            "amount": 8
+        }
+    ],
+    "skill": 0.03
+}

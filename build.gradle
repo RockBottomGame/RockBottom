@@ -1,5 +1,5 @@
 group 'de.ellpeck.rockbottom'
-version '0.3.7'
+version '0.4.0'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -19,24 +19,12 @@ if (System.getenv("BUILD_NUMBER") != null) {
     version = "${version}-${System.getenv("BUILD_NUMBER")}"
 }
 
-ext {
-    proguardEnabled = new File(gradle.proguardDir).exists()
-}
-
 buildscript {
-    ext {
-        proguardEnabled = new File(gradle.proguardDir).exists()
-    }
-
     repositories {
         jcenter()
-        if (proguardEnabled)
-            flatDir dirs: gradle.proguardDir
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
-        if (proguardEnabled)
-            classpath ':proguard:'
     }
 }
 
@@ -50,7 +38,6 @@ repositories {
 
 dependencies {
     compile project(":API")
-    compile project(":Assets")
 
     //JOPT Simple for launch arg parsing
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
@@ -74,40 +61,9 @@ publishing {
             artifactId project.archivesBaseName
             version project.version
             from components.java
-            artifact shadowJar
         }
     }
     repositories {
         maven { url "file://" + System.getenv("local_maven") }
     }
-}
-
-if (proguardEnabled) {
-    task myProguardTask(type: proguard.gradle.ProGuardTask) {
-        configuration 'settings.pro'
-
-        injars 'build/libs'
-        outjars 'build/obf/Obf.jar'
-    }
-    myProguardTask.dependsOn(installDist)
-
-    task deleteFiles(type: Delete) {
-        delete 'build/libs/'
-        delete 'build/classes/'
-    }
-    deleteFiles.dependsOn myProguardTask
-
-    shadowJar {
-        from file("${buildDir}/obf")
-        from file("${buildDir}/temp/libs/lib")
-        exclude '*.sha1'
-        exclude '*.git'
-    }.dependsOn.clear()
-    shadowJar.dependsOn(deleteFiles)
-
-    task buildObf {
-
-    }
-    buildObf.dependsOn build
-    buildObf.dependsOn installDist
 }

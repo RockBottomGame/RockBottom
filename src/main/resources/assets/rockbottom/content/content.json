@@ -1,0 +1,72 @@
+{
+    "recipe.": {
+        "brittle_pickaxe": "/recipes/brittle_pickaxe.json",
+        "brittle_axe": "/recipes/brittle_axe.json",
+        "brittle_shovel": "/recipes/brittle_shovel.json",
+        "brittle_sword": "/recipes/brittle_sword.json",
+        "ladder": "/recipes/ladder.json",
+        "chest": "/recipes/chest.json",
+        "grass_torch": "/recipes/grass_torch.json",
+        "sign": "/recipes/sign.json",
+        "wood_boards_manual": "/recipes/wood_boards_manual.json",
+        "wood_boards_construction_table": "/recipes/wood_boards_construction_table.json",
+        "stick": "/recipes/stick.json",
+        "wood_door": "/recipes/wood_door.json",
+        "stone_pickaxe": "/recipes/stone_pickaxe.json",
+        "stone_axe": "/recipes/stone_axe.json",
+        "stone_shovel": "/recipes/stone_shovel.json",
+        "stone_sword": "/recipes/stone_sword.json",
+        "saw": "/recipes/saw.json",
+        "hammer": "/recipes/hammer.json",
+        "mallet": "/recipes/mallet.json",
+        "chisel": "/recipes/chisel.json",
+        "construction_table": "/recipes/construction_table.json",
+        "smithing_table": "/recipes/smithing_table.json",
+        "spinning_wheel": "/recipes/spinning_wheel.json",
+        "simple_furnace": "/recipes/simple_furnace.json",
+        "torch": "/recipes/torch.json",
+        "bowl": "/recipes/bowl.json",
+        "mortar": "/recipes/mortar.json",
+        "pestle": "/recipes/pestle.json",
+        "wood_boomerang": "/recipes/wood_boomerang.json",
+        "simple_hoe": "/recipes/simple_hoe.json",
+        "platform": "/recipes/platform.json",
+        "plant_rope": "/recipes/plant_rope.json",
+        "bronze_canister": "/recipes/bronze_canister.json",
+        "pot": "/recipes/pot.json",
+        "bed": "/recipes/bed.json"
+    },
+    "smithing.": {
+        "copper_pickaxe": "/smithing/copper_pickaxe.json",
+        "copper_shovel": "/smithing/copper_shovel.json",
+        "copper_sword": "/smithing/copper_sword.json",
+        "copper_axe": "/smithing/copper_axe.json",
+        "bronze_pickaxe": "/smithing/bronze_pickaxe.json",
+        "bronze_shovel": "/smithing/bronze_shovel.json",
+        "bronze_sword": "/smithing/bronze_sword.json",
+        "bronze_axe": "/smithing/bronze_axe.json",
+        "wrench": "/smithing/wrench.json",
+        "combiner": "/smithing/combiner.json"
+    },
+    "smelting.": {
+        "copper": "/smelting/copper.json",
+        "tin": "/smelting/tin.json",
+        "glass": "/smelting/glass.json"
+    },
+    "combiner.": {
+        "bronze": "/combiner/bronze.json"
+    },
+    "structure.": {
+        "grassland_tree.": {
+            "oak_1": ["/trees/oak_1.json", "/trees/tree_tiles.json"],
+            "oak_2": ["/trees/oak_2.json", "/trees/tree_tiles.json"],
+            "oak_3": ["/trees/oak_3.json", "/trees/tree_tiles.json"],
+            "oak_4": ["/trees/oak_4.json", "/trees/tree_tiles.json"]
+        },
+        "start_hut": "/structures/start_hut.json"
+    },
+    "mortar.": {
+        "speed": "/mortar/speed.json",
+        "jump": "/mortar/jump.json"
+    }
+}

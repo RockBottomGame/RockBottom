@@ -1,0 +1,20 @@
+{
+    "type": "construction_table",
+    "tools": [
+        {
+            "name": "rockbottom/saw"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/wood_boards",
+            "amount": 3
+        }
+    ],
+    "inputs": [
+        {
+            "name": "raw_wood"
+        }
+    ],
+    "skill": 0.0002
+}

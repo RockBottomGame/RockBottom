@@ -1,0 +1,32 @@
+{
+    "type": "manual",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/break_tile",
+            "params": {
+                "tile": "rockbottom/pebbles"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/brittle_pickaxe"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "pebbles",
+            "amount": 12
+        },
+        {
+            "name": "stick",
+            "amount": 4
+        },
+        {
+            "name": "plant_fiber",
+            "amount": 4
+        }
+    ],
+    "skill": 0.01
+}

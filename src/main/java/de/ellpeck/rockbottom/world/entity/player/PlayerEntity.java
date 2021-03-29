@@ -32,7 +32,6 @@ import de.ellpeck.rockbottom.api.net.chat.component.TextChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.render.IPlayerDesign;
-import de.ellpeck.rockbottom.api.render.entity.IEntityRenderer;
 import de.ellpeck.rockbottom.api.tile.state.TileState;
 import de.ellpeck.rockbottom.api.util.*;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
@@ -49,8 +48,6 @@ import de.ellpeck.rockbottom.render.entity.PlayerEntityRenderer;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import de.ellpeck.rockbottom.world.entity.player.statistics.StatisticList;
 import de.ellpeck.rockbottom.world.entity.player.statistics.Statistics;
-import de.ellpeck.rockbottom.world.tile.LadderTile;
-import de.ellpeck.rockbottom.world.tile.RopeTile;
 import de.ellpeck.rockbottom.world.tile.entity.BedTileEntity;
 
 import java.util.ArrayList;
@@ -209,7 +206,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
         if (this.onGround)
             this.isFlying = false;
-        
+
         if (this.collidedHor) {
             // TODO step up
             /*
@@ -312,7 +309,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
                 this.motionY += 0.15D;
             }
         }
-        
+
         if (this.isFlying) {
             this.motionY = 0;
         }
@@ -398,7 +395,11 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public boolean takeDamage(int amount) {
-        return !this.gameMode.isCreative() && super.takeDamage(amount);
+        if (!this.gameMode.isCreative() && super.takeDamage(amount)) {
+            this.wake();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -903,9 +904,13 @@ public class PlayerEntity extends AbstractPlayerEntity {
             return false;
         }
 
+        // TODO Add check to see if there is enough space above the bed to sleep
+
         this.isSleeping = true;
         this.bedPosition = pos;
         this.setPos(pos.getX() + 1, pos.getY() + 1);
+        this.motionX = 0;
+        this.motionY = 0;
         if (saveSpawn) {
             this.bedSpawn = true;
         }

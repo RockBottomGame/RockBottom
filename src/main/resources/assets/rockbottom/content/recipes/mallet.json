@@ -1,0 +1,28 @@
+{
+  "type": "manual",
+  "knowledge": true,
+  "criteria": [
+    {
+      "name": "rockbottom/break_tile",
+      "params": {
+        "tile": "rockbottom/stone"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "name": "rockbottom/mallet"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "processed_wood",
+      "amount": 12
+    },
+    {
+      "name": "stick",
+      "amount": 8
+    }
+  ],
+  "skill": 0.0085
+}

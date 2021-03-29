@@ -1,0 +1,38 @@
+{
+    "type": "construction_table",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "processed_bronze"
+            }
+        }
+    ],
+    "tools": [
+        {
+            "name": "rockbottom/hammer",
+            "usage": 10
+        },
+        {
+            "name": "rockbottom/wrench",
+            "usage": 6
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/bronze_canister"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_bronze",
+            "amount": 5
+        },
+        {
+            "name": "glass",
+            "amount": 4
+        }
+    ],
+    "skill": 0.01
+}

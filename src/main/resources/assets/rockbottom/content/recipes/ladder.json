@@ -1,0 +1,35 @@
+{
+    "type": "construction_table",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/reach_depth",
+            "params": {
+                "depth": 0
+            }
+        }
+    ],
+    "tools": [
+        {
+            "name": "rockbottom/saw",
+            "usage": 2
+        },
+        {
+            "name": "rockbottom/hammer",
+            "usage": 1
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/ladder",
+            "amount": 5
+        }
+    ],
+    "inputs": [
+        {
+            "name": "processed_wood",
+            "amount": 8
+        }
+    ],
+    "skill": 0.005
+}

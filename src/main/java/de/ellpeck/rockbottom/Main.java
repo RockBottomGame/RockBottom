@@ -3,6 +3,7 @@ package de.ellpeck.rockbottom;
 import de.ellpeck.rockbottom.api.util.math.MatrixStack;
 import de.ellpeck.rockbottom.log.Logging;
 import de.ellpeck.rockbottom.util.CrashManager;
+import de.ellpeck.rockbottom.util.OSType;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -14,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
@@ -23,6 +25,7 @@ public final class Main {
     public static CustomClassLoader classLoader;
     public static Thread mainThread;
 
+    public static OSType OS;
     public static File gameDir;
     public static File unpackedModsDir;
 
@@ -39,10 +42,11 @@ public final class Main {
 
     public static void main(String[] args) {
         try {
+            OS = getOS();
             OptionParser parser = new OptionParser();
             parser.allowsUnrecognizedOptions();
             OptionSpec<String> optionLogLevel = parser.accepts("logLevel").withRequiredArg().ofType(String.class).defaultsTo(Level.INFO.getName());
-            File defaultGameDir = new File(".", "rockbottom");
+            File defaultGameDir = new File(OS.defaultGamePath);
             OptionSpec<File> optionGameDir = parser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(defaultGameDir);
             OptionSpec<File> optionUnpackedDir = parser.accepts("unpackedModsDir").withRequiredArg().ofType(File.class);
             OptionSpec<Integer> optionWidth = parser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(1280);
@@ -61,6 +65,7 @@ public final class Main {
             gameDir = options.valueOf(optionGameDir);
             Logging.init(options.valueOf(optionLogLevel));
 
+            Logging.mainLogger.info("Operating System: " + System.getProperty("os.name"));
             Logging.mainLogger.info("Using Java version " + System.getProperty("java.version"));
 
             Logging.mainLogger.info("Found launch args " + Arrays.toString(args));
@@ -125,6 +130,22 @@ public final class Main {
             System.exit(1);
         }
         System.exit(0);
+    }
+
+    private static OSType getOS() {
+        String osName = System.getProperty("os.name").toLowerCase(Locale.ROOT);
+
+        if (osName.contains("win")) {
+            return OSType.WINDOWS;
+        }
+        if (osName.contains("mac")) {
+            return OSType.MACOS;
+        }
+        if (osName.contains("nux")) {
+            return OSType.LINUX;
+        }
+
+        return OSType.OTHER;
     }
 
     private static URL fileToURL(File file) {

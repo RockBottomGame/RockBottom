@@ -1,0 +1,42 @@
+{
+    "type": "construction_table",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/break_tile",
+            "params": {
+                "tile": "rockbottom/stone"
+            }
+        }
+    ],
+    "tools": [
+        {
+            "name": "rockbottom/hammer",
+            "usage": 5
+        },
+        {
+            "name": "rockbottom/chisel",
+            "usage": 3
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/simple_furnace"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "stone",
+            "amount": 40
+        },
+        {
+            "name": "pebbles",
+            "amount": 10
+        },
+        {
+            "name": "coal",
+            "amount": 5
+        }
+    ],
+    "skill": 0.15
+}

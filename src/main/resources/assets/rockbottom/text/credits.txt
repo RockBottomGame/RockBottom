@@ -1,0 +1,76 @@
+Rock Bottom - a Game by Ellpeck
+
+
+&2Story and Design
+  Ellpeck
+  wiiv
+
+
+&2Programming
+  Ellpeck
+  raphydaphy
+  Quarris
+  canitzp
+
+
+&2Art
+  wiiv
+
+
+&2Additional Programming
+  superaxander
+  SSBlur
+  xdjackiexd
+
+
+&2Libraries and Additional Code
+  Lightweight Java Game Library
+  Java OpenGL Math Library
+  Netty
+  Google Guava and Gson
+  JOpt Simple
+
+
+&2Special Thanks
+  SSBlur - Authentication system
+  superaxander - Music streaming system
+  TTFTCUTS - Help with terrain gen
+  witsend66 - Game name
+
+  &2Beta Modders
+    superaxander
+    raphydaphy
+    Quarris
+    Kinomora
+    AKTheKnight
+    Gegy
+    Raqbit
+
+  All of the great people that
+  beta test and report bugs
+
+  ConcernedApe and his amazing work on
+  Stardew Valley for inspiring me to
+  create a game myself. Finding the
+  Star Flower means finding the reason
+  that Rock Bottom exists.
+
+
+
+
+
+&iRock Bottom was inspired by amazing
+&igames like Minecraft, Terraria and
+&iStardew Valley.
+&iI believe that video games are an
+&iawesome way of bringing people together
+&ito create something amazing.
+&iRock Bottom wasn't created with the
+&iintent to be "just another sandbox game",
+&ibut to create a great community of
+&iplayers, modders and content creators
+&ithat have fun with what they do.
+&iI hope that you enjoy playing the game
+&ias much as we enjoy working on it.
+
+                                -Ellpeck

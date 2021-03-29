@@ -1,0 +1,15 @@
+{
+    "type": "manual_only",
+    "outputs": [
+        {
+            "name": "rockbottom/wood_boards",
+            "amount": 1
+        }
+    ],
+    "inputs": [
+        {
+            "name": "raw_wood"
+        }
+    ],
+    "skill": 0.0002
+}

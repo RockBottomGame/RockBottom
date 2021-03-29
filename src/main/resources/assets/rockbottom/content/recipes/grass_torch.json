@@ -1,0 +1,29 @@
+{
+    "type": "manual",
+    "knowledge": true,
+    "criteria": [
+        {
+            "name": "rockbottom/pickup_item",
+            "params": {
+                "item": "rockbottom/grass_torch"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "rockbottom/grass_torch",
+            "amount": 2
+        }
+    ],
+    "inputs": [
+        {
+            "name": "plant_fiber",
+            "amount": 4
+        },
+        {
+            "name": "stick",
+            "amount": 3
+        }
+    ],
+    "skill": 0.0005
+}
