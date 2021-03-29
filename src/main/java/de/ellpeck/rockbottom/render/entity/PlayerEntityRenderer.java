@@ -37,20 +37,6 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
             return;
         }
 
-        /*
-        float rotation = 90;
-        float tx = 2 - 0.5F;
-        float ty = 2 - 1F + 3/12F;
-        if (player != null && player.isSleeping()) {
-            g.setRotationCenter(x, y);
-            g.rotate(rotation);
-            g.translate(tx, ty);
-            if (player.facing == Direction.RIGHT) {
-                g.mirror(true, true);
-            }
-        }
-         */
-
         renderer.translate(x, y);
         renderer.scale(scale);
         boolean mirrorHor = false;
@@ -58,15 +44,11 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
         if (player != null && player.isSleeping()) {
             TileState bed = player.world.getState(player.getBedPosition().getX(), player.getBedPosition().getY());
             if (bed != null && bed.getTile() instanceof BedTile) {
-                boolean bedFacingRight = bed.get(StaticTileProps.FACING_RIGHT);
-                boolean playerFacingRight = player.facing == Direction.RIGHT;
-                if (player.facing == Direction.RIGHT) {
-                    renderer.rotate(90);
-                    if (playerFacingRight) {
-                        mirrorHor = true;
-                    } else {
-                        mirrorVert = true;
-                    }
+                renderer.translate(-0.5F, 2F + 3/12F);
+                renderer.rotate(90F);
+                if (player.facing == Direction.LEFT) {
+                    mirrorVert = true;
+                    mirrorHor = true;
                 }
             }
         }
@@ -74,11 +56,8 @@ public class PlayerEntityRenderer extends LivingRenderer<PlayerEntity> {
         String arms = holding == null ? "hanging" : "holding";
         int base = design.getBase();
 
-        manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.' + (design.isFemale() ? "female" : "male"))).drawRow(row, 0F, 0F, 1F, 2F, light);
+        manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.' + (design.isFemale() ? "female" : "male"))).drawRow(row, 0F, 0F, 1F, 2F, light, mirrorHor, mirrorVert);
         manager.getAnimation(IPlayerDesign.EYES).drawRow(row, 0F, 0F, 1F, 2F, Colors.multiply(light, design.getEyeColor()), mirrorHor, mirrorVert);
-
-        manager.getAnimation((base == -1 ? SPECIAL_BASE : IPlayerDesign.BASE.get(base)).addSuffix('.' + (design.isFemale() ? "female" : "male"))).drawRow(row, x, y, scale, 2F * scale, light);
-        manager.getAnimation(IPlayerDesign.EYES).drawRow(row, x, y, scale, 2F * scale, Colors.multiply(light, design.getEyeColor()));
 
         ResourceName eyebrows = IPlayerDesign.EYEBROWS.get(design.getEyebrows());
         if (eyebrows != null) {
