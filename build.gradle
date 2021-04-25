@@ -41,6 +41,9 @@ dependencies {
 
     //JOPT Simple for launch arg parsing
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
+
+    // OkHttps to create http connections for auth
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
 }
 
 jar {

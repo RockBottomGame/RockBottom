@@ -87,8 +87,8 @@ public class World extends AbstractWorld {
         }
     }
 
-    private static PlayerEntity makePlayer(IWorld world, UUID id, IPlayerDesign design, Channel channel) {
-        return channel != null ? new ConnectedPlayer(world, id, design, channel) : new PlayerEntity(world, id, design);
+    private static PlayerEntity makePlayer(IWorld world, String username, UUID id, IPlayerDesign design, Channel channel) {
+        return channel != null ? new ConnectedPlayer(world, username, id, design, channel) : new PlayerEntity(world, username, id, design);
     }
 
     @Override
@@ -335,13 +335,13 @@ public class World extends AbstractWorld {
     }
 
     @Override
-    public PlayerEntity createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
+    public PlayerEntity createPlayer(String username, UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
         PlayerEntity player = null;
 
         File file = new File(this.playerDirectory, id + ".dat");
         if (file.exists()) {
-            player = this.loadPlayer(file, id, design, channel);
-            RockBottomAPI.logger().info("Loading player " + design.getName() + " with unique id " + id + '!');
+            player = this.loadPlayer(file, username, id, design, channel);
+            RockBottomAPI.logger().info("Loading player " + username + " with unique id " + id + '!');
         } else {
             boolean loaded = false;
 
@@ -349,8 +349,8 @@ public class World extends AbstractWorld {
                 if (this.info.lastPlayerId != null) {
                     File lastFile = new File(this.playerDirectory, this.info.lastPlayerId + ".dat");
                     if (lastFile.exists()) {
-                        player = this.loadPlayer(lastFile, id, design, channel);
-                        RockBottomAPI.logger().info("Loading player " + design.getName() + " with unique id " + id + " from last player file " + lastFile + '!');
+                        player = this.loadPlayer(lastFile, username, id, design, channel);
+                        RockBottomAPI.logger().info("Loading player " + username + " with unique id " + id + " from last player file " + lastFile + '!');
 
                         this.savePlayer(player);
                         lastFile.delete();
@@ -360,9 +360,9 @@ public class World extends AbstractWorld {
             }
 
             if (!loaded) {
-                player = makePlayer(this, id, design, channel);
+                player = makePlayer(this, username, id, design, channel);
                 player.resetAndSpawn(RockBottomAPI.getGame());
-                RockBottomAPI.logger().info("Adding new player " + design.getName() + " with unique id " + id + " to world!");
+                RockBottomAPI.logger().info("Adding new player " + username + " with unique id " + id + " to world!");
             }
         }
 
@@ -376,7 +376,7 @@ public class World extends AbstractWorld {
         return player;
     }
 
-    private PlayerEntity loadPlayer(File file, UUID id, IPlayerDesign design, Channel channel) {
+    private PlayerEntity loadPlayer(File file, String username, UUID id, IPlayerDesign design, Channel channel) {
         DataSet set = new DataSet();
         set.read(file);
 
@@ -388,7 +388,7 @@ public class World extends AbstractWorld {
             world = this;
         }
 
-        PlayerEntity player = makePlayer(world, id, design, channel);
+        PlayerEntity player = makePlayer(world, username, id, design, channel);
         player.load(set, false);
         return player;
     }

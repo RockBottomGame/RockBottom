@@ -1,9 +1,6 @@
 package de.ellpeck.rockbottom.gui.menu;
 
-import de.ellpeck.rockbottom.api.Constants;
-import de.ellpeck.rockbottom.api.IGameInstance;
-import de.ellpeck.rockbottom.api.IRenderer;
-import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.*;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
@@ -15,11 +12,15 @@ import de.ellpeck.rockbottom.api.gui.component.ConfirmationPopupComponent;
 import de.ellpeck.rockbottom.api.gui.component.MessageBoxComponent;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
-import de.ellpeck.rockbottom.gui.PlayerEditorGui;
+import de.ellpeck.rockbottom.gui.menu.account.AccountGui;
+import de.ellpeck.rockbottom.gui.menu.account.LoginGui;
 import de.ellpeck.rockbottom.util.ChangelogManager;
 import de.ellpeck.rockbottom.util.ChangelogManager.Changelog;
 
 public class MainMenuGui extends Gui {
+
+    private ButtonComponent loginButton;
+    private ButtonComponent accountButton;
 
     @Override
     public void init(IGameInstance game) {
@@ -27,6 +28,9 @@ public class MainMenuGui extends Gui {
         IAssetManager assetManager = game.getAssetManager();
         IGuiManager guiManager = game.getGuiManager();
         Settings settings = game.getSettings();
+        IGameAccount account = game.getAccount();
+
+        boolean loggedIn = account != null;
 
         if (!settings.betaTextDisplayed) {
             guiManager.openGui(new Gui() {
@@ -61,6 +65,7 @@ public class MainMenuGui extends Gui {
         int start = (this.width - buttonWidth * buttonAmount - (buttonAmount - 1) * (partWidth - buttonWidth)) / 2;
         int y = this.height - 30;
 
+        // Content
         ButtonComponent modsButton = new ButtonComponent(this, start, y - 54, buttonWidth, 16, () -> {
             guiManager.openGui(new ModsGui(this));
             return true;
@@ -79,7 +84,9 @@ public class MainMenuGui extends Gui {
             modsButton.setActive(!modsButton.isActive());
             contentButton.setActive(!contentButton.isActive());
             return true;
-        }, "Game Content"));
+        }, assetManager.localize(ResourceName.intern("button.game_content"))));
+
+        // Changelog
         this.components.add(new ButtonComponent(this, start, y, buttonWidth, 16, () -> {
             guiManager.openGui(new ChangelogGui(this));
             return true;
@@ -98,17 +105,21 @@ public class MainMenuGui extends Gui {
             }
         });
 
+        // Singleplayer/Multiplayer
         this.components.add(new ButtonComponent(this, start + partWidth - 5, y - 20, buttonWidth + 10, 16, () -> {
             guiManager.openGui(new SelectWorldGui(this));
             return true;
         }, assetManager.localize(ResourceName.intern("button.play"))));
+
         this.components.add(new ButtonComponent(this, start + partWidth - 5, y, buttonWidth + 10, 16, () -> {
             guiManager.openGui(new JoinServerGui(this));
             return true;
         }, assetManager.localize(ResourceName.intern("button.join"))));
 
+        // Account
+        /*
         ButtonComponent loginButton = new ButtonComponent(this, start + partWidth * 2, y - 54, buttonWidth, 16, () -> {
-            guiManager.openGui(new LoginGui(this));
+            guiManager.openGui(new LoginGui(this, game.getAccount()));
             return true;
         }, assetManager.localize(ResourceName.intern("button.account_settings")));
         this.components.add(loginButton);
@@ -120,22 +131,35 @@ public class MainMenuGui extends Gui {
         }, assetManager.localize(ResourceName.intern("button.player_editor")));
         this.components.add(editorButton);
         editorButton.setActive(false);
+         */
 
-        this.components.add(new ButtonComponent(this, start + partWidth * 2, y - 20, buttonWidth, 16, () -> {
-            loginButton.setActive(!loginButton.isActive());
-            editorButton.setActive(!editorButton.isActive());
+        this.loginButton = new ButtonComponent(this, start + partWidth * 2, y - 20, buttonWidth, 16, () -> {
+            guiManager.openGui(new LoginGui(this));
             return true;
-        }, "The Player"));
+        }, assetManager.localize(ResourceName.intern("button.login")));
+        this.components.add(this.loginButton);
+        this.loginButton.setActive(!loggedIn);
+
+        this.accountButton = new ButtonComponent(this, start + partWidth * 2, y - 20, buttonWidth, 16, () -> {
+            guiManager.openGui(new AccountGui(this));
+            return true;
+        }, assetManager.localize(ResourceName.intern("button.account")));
+        this.components.add(this.accountButton);
+        this.accountButton.setActive(loggedIn);
+
+        // Settings
         this.components.add(new ButtonComponent(this, start + partWidth * 2, y, buttonWidth, 16, () -> {
             guiManager.openGui(new SettingsGui(this));
             return true;
         }, assetManager.localize(ResourceName.intern("button.settings"))));
 
+        // Credits
         this.components.add(new ButtonComponent(this, this.width - 52, 2, 50, 10, () -> {
             guiManager.openGui(new CreditsGui(this));
             return true;
         }, assetManager.localize(ResourceName.intern("button.credits"))));
 
+        // Quit
         this.components.add(new ButtonComponent(this, 2, 2, 50, 10, () -> {
             this.components.add(new ConfirmationPopupComponent(this, 27, 2 + 5, aBoolean -> {
                 if (aBoolean) {

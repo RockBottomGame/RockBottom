@@ -66,6 +66,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private final PlayerEntityRenderer renderer = new PlayerEntityRenderer();
     private final List<IChunk> chunksInRange = new ArrayList<>();
     private final IPlayerDesign design;
+    private final String username;
     private ItemContainer currentContainer;
     public final BiConsumer<IInventory, Integer> invCallback = (inv, slot) -> {
         if (this.world.isServer()) {
@@ -95,8 +96,9 @@ public class PlayerEntity extends AbstractPlayerEntity {
     private Pos2 bedPosition;
     private boolean isSleeping;
 
-    public PlayerEntity(IWorld world, UUID uniqueId, IPlayerDesign design) {
+    public PlayerEntity(IWorld world, String username, UUID uniqueId, IPlayerDesign design) {
         super(world);
+        this.username = username;
         this.setUniqueId(uniqueId);
         this.facing = Direction.RIGHT;
         this.design = design;
@@ -632,7 +634,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
 
     @Override
     public String getName() {
-        return this.design.getName();
+        return this.username;
     }
 
     @Override

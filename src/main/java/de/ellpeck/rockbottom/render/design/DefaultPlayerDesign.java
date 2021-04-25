@@ -6,7 +6,6 @@ public class DefaultPlayerDesign extends PlayerDesign {
 
     public DefaultPlayerDesign() {
         this.setFavoriteColor(Colors.WHITE);
-        this.setName("Defaulty");
         this.setBase(0);
         this.setEyeColor(-14346752);
         this.setShirt(0);

@@ -2,6 +2,7 @@ package de.ellpeck.rockbottom.init;
 
 import de.ellpeck.rockbottom.Main;
 import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.IGameAccount;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.data.settings.ServerSettings;
@@ -147,6 +148,11 @@ public class RockBottomServer extends AbstractGame {
     }
 
     @Override
+    public String getPlayerName() {
+        throw new UnsupportedOperationException("Cannot get player name on a dedicated server");
+    }
+
+    @Override
     public void setPlayerDesign(String jsonString) {
         throw new UnsupportedOperationException("Cannot set player design on a dedicated server");
     }
@@ -184,5 +190,15 @@ public class RockBottomServer extends AbstractGame {
     @Override
     public Settings getSettings() {
         throw new UnsupportedOperationException("Cannot get settings on a dedicated server");
+    }
+
+    @Override
+    public IGameAccount getAccount() {
+        throw new UnsupportedOperationException("Cannot get account on a dedicated server");
+    }
+
+    @Override
+    public void setAccount(IGameAccount account) {
+        throw new UnsupportedOperationException("Cannot set account on a dedicated server");
     }
 }

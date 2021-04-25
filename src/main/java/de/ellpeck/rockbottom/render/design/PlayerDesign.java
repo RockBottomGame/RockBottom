@@ -8,10 +8,6 @@ import de.ellpeck.rockbottom.init.RockBottom;
 
 public class PlayerDesign implements IPlayerDesign {
 
-    private static final String[] DEFAULT_NAMES = new String[]{"Jake", "Craig", "Mariana", "Louise", "Rosie", "Flo", "Luke", "Abbie", "James", "Chris", "Kieran", "Fatima", "Adam", "Giles", "Megan", "Tim", "Calypso", "Hayley", "Aimee", "Megan", "Eleanor"};
-
-    @SerializedName("name")
-    private String name;
     @SerializedName("color")
     private int color;
     @SerializedName("female")
@@ -63,12 +59,7 @@ public class PlayerDesign implements IPlayerDesign {
     @SerializedName("beard_color")
     private int beardColor;
 
-    public static String getRandomName() {
-        return DEFAULT_NAMES[Util.RANDOM.nextInt(DEFAULT_NAMES.length)];
-    }
-
     public static void randomizeDesign(IPlayerDesign design) {
-        design.setName(getRandomName());
         design.setFavoriteColor(Colors.random(Util.RANDOM));
         design.setFemale(Util.RANDOM.nextBoolean());
 
@@ -109,16 +100,6 @@ public class PlayerDesign implements IPlayerDesign {
     @Override
     public void setFavoriteColor(int color) {
         this.color = color;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -309,5 +290,16 @@ public class PlayerDesign implements IPlayerDesign {
     @Override
     public void setFemale(boolean female) {
         this.female = female;
+    }
+
+    @Override
+    public IPlayerDesign clone() {
+        try {
+            return (PlayerDesign) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

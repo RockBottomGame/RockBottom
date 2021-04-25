@@ -1,5 +1,7 @@
 package de.ellpeck.rockbottom.net.packet.toserver;
 
+import de.ellpeck.rockbottom.GameAccount;
+import de.ellpeck.rockbottom.api.IGameAccount;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
@@ -31,12 +33,10 @@ public class JoinPacket implements IPacket {
     public static final ResourceName NAME = ResourceName.intern("join");
 
     private final List<ModInfo> modInfos = new ArrayList<>();
-    private UUID id;
-    private IPlayerDesign design;
+    private IGameAccount account;
 
-    public JoinPacket(UUID id, IPlayerDesign design, List<IMod> mods) {
-        this.id = id;
-        this.design = design;
+    public JoinPacket(IGameAccount account, List<IMod> mods) {
+        this.account = account;
 
         for (IMod mod : mods) {
             this.modInfos.add(new ModInfo(mod.getId(), mod.getVersion(), mod.isRequiredOnServer()));
@@ -49,9 +49,9 @@ public class JoinPacket implements IPacket {
 
     @Override
     public void toBuffer(ByteBuf buf) {
-        buf.writeLong(this.id.getMostSignificantBits());
-        buf.writeLong(this.id.getLeastSignificantBits());
-        NetUtil.writeStringToBuffer(Util.GSON.toJson(this.design), buf);
+        NetUtil.writeStringToBuffer(this.account.getDisplayName(), buf);
+        NetUtil.writeUUIDToBuffer(this.account.getUUID(), buf);
+        NetUtil.writeStringToBuffer(Util.GSON.toJson(this.account.getPlayerDesign()), buf);
 
         buf.writeInt(this.modInfos.size());
         for (ModInfo info : this.modInfos) {
@@ -61,8 +61,11 @@ public class JoinPacket implements IPacket {
 
     @Override
     public void fromBuffer(ByteBuf buf) {
-        this.id = new UUID(buf.readLong(), buf.readLong());
-        this.design = Util.GSON.fromJson(NetUtil.readStringFromBuffer(buf), PlayerDesign.class);
+        this.account = new GameAccount();
+        this.account.setDisplayName(NetUtil.readStringFromBuffer(buf));
+        this.account.setUuid(NetUtil.readUUIDFromBuffer(buf));
+        this.account.setPlayerDesign(Util.GSON.fromJson(NetUtil.readStringFromBuffer(buf), PlayerDesign.class));
+        this.account.verify(true);
 
         int amount = buf.readInt();
         for (int i = 0; i < amount; i++) {
@@ -81,10 +84,10 @@ public class JoinPacket implements IPacket {
 
         if (reject == null) {
             INetHandler net = RockBottomAPI.getNet();
-            if (net.isWhitelistEnabled() && !net.isWhitelisted(this.id)) {
+            if (net.isWhitelistEnabled() && !net.isWhitelisted(this.account.getUUID())) {
                 reject = new TranslationChatComponent(ResourceName.intern("info.reject.whitelist"));
-            } else if (net.isBlacklisted(this.id)) {
-                reject = new TranslationChatComponent(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.id));
+            } else if (net.isBlacklisted(this.account.getUUID())) {
+                reject = new TranslationChatComponent(ResourceName.intern("info.reject.blacklist"), net.getBlacklistReason(this.account.getUUID()));
             }
         }
 
@@ -92,8 +95,8 @@ public class JoinPacket implements IPacket {
             TranslationChatComponent mods = this.checkMods(new ArrayList<>(RockBottomAPI.getModLoader().getActiveMods()));
             if (mods == null) {
                 if (world != null) {
-                    if (world.getPlayer(this.id) == null) {
-                        AbstractPlayerEntity player = world.createPlayer(this.id, this.design, context.channel(), false);
+                    if (world.getPlayer(this.account.getUUID()) == null) {
+                        AbstractPlayerEntity player = world.createPlayer(this.account.getDisplayName(), this.account.getUUID(), this.account.getPlayerDesign(), context.channel(), false);
 
                         DataSet set = new DataSet();
                         ((AbstractWorld) player.world).saveWorldData(set);
@@ -106,11 +109,12 @@ public class JoinPacket implements IPacket {
                         player.world.addPlayer(player);
                         player.world.addEntity(player);
 
-                        RockBottomAPI.logger().info("Player " + this.design.getName() + " with id " + this.id + " joined, sending initial server data");
+                        // TODO Put player names from the account
+                        RockBottomAPI.logger().info("Player " + this.account.getDisplayName() + " with id " + this.account.getUUID() + " joined, sending initial server data");
 
                         RockBottomAPI.getGame().getChatLog().broadcastMessage(new TranslationChatComponent(ResourceName.intern("info.connect"), player.getName()));
                     } else {
-                        RockBottomAPI.logger().warning("Player " + this.design.getName() + " with id " + this.id + " tried joining while already connected!");
+                        RockBottomAPI.logger().warning("Player " + this.account.getDisplayName() + " with id " + this.account.getUUID() + " tried joining while already connected!");
                         reject = new TranslationChatComponent(ResourceName.intern("info.reject.connected_already"));
                     }
                 } else {
@@ -124,7 +128,7 @@ public class JoinPacket implements IPacket {
         if (reject != null) {
             context.writeAndFlush(new RejectPacket(reject));
             context.disconnect();
-            RockBottomAPI.logger().info("Disconnecting player " + this.design.getName() + " with id " + this.id);
+            RockBottomAPI.logger().info("Disconnecting player " + this.account.getDisplayName() + " with id " + this.account.getUUID());
         }
     }
 
@@ -134,7 +138,7 @@ public class JoinPacket implements IPacket {
     }
 
     private TranslationChatComponent checkMods(List<IMod> mods) {
-        RockBottomAPI.logger().info("Player " + this.design.getName() + " with id " + this.id + " is connecting with mods " + this.modInfos);
+        RockBottomAPI.logger().info("Player " + this.account.getDisplayName() + " with id " + this.account.getUUID() + " is connecting with mods " + this.modInfos);
 
         for (int i = mods.size() - 1; i >= 0; i--) {
             IMod mod = mods.get(i);
@@ -142,7 +146,7 @@ public class JoinPacket implements IPacket {
                 for (ModInfo info : this.modInfos) {
                     if (mod.getId().equals(info.id)) {
                         if (!mod.isCompatibleWithModVersion(info.version)) {
-                            RockBottomAPI.logger().warning("Player " + this.design.getName() + " with id " + this.id + " tried joining with incompatible version " + info.version + " of mod " + mod.getId() + ", expected was " + mod.getVersion());
+                            RockBottomAPI.logger().warning("Player " + this.account.getDisplayName() + " with id " + this.account.getUUID() + " tried joining with incompatible version " + info.version + " of mod " + mod.getId() + ", expected was " + mod.getVersion());
                             return new TranslationChatComponent(ResourceName.intern("info.reject.incompatible_version"), mod.getId(), info.version, mod.getVersion());
                         } else {
                             mods.remove(i);
@@ -157,12 +161,12 @@ public class JoinPacket implements IPacket {
 
         if (!mods.isEmpty()) {
             String modList = this.listMods(mods);
-            RockBottomAPI.logger().warning("Player " + this.design.getName() + " with id " + this.id + " tried joining with missing required mods " + modList);
+            RockBottomAPI.logger().warning("Player " + this.account.getDisplayName() + " with id " + this.account.getUUID() + " tried joining with missing required mods " + modList);
             return new TranslationChatComponent(ResourceName.intern("info.reject.missing_mods"), modList);
         }
 
         if (!this.modInfos.isEmpty()) {
-            RockBottomAPI.logger().info("Player " + this.design.getName() + " with id " + this.id + " is attempting to join with mods that aren't on the server: " + this.modInfos);
+            RockBottomAPI.logger().info("Player " + this.account.getDisplayName() + " with id " + this.account.getUUID() + " is attempting to join with mods that aren't on the server: " + this.modInfos);
 
             for (int i = this.modInfos.size() - 1; i >= 0; i--) {
                 if (!this.modInfos.get(i).requiredOnServer) {
@@ -171,7 +175,7 @@ public class JoinPacket implements IPacket {
             }
 
             if (!this.modInfos.isEmpty()) {
-                RockBottomAPI.logger().warning("Player " + this.design.getName() + " with id " + this.id + " tried joining with serverside required mods that aren't on the server: " + this.modInfos);
+                RockBottomAPI.logger().warning("Player " + this.account.getDisplayName() + " with id " + this.account.getUUID() + " tried joining with serverside required mods that aren't on the server: " + this.modInfos);
                 return new TranslationChatComponent(ResourceName.intern("info.reject.too_many_mods"), this.modInfos.toString());
             }
         }

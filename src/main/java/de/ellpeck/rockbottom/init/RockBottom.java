@@ -3,7 +3,9 @@ package de.ellpeck.rockbottom.init;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import de.ellpeck.rockbottom.Main;
+import de.ellpeck.rockbottom.GameAccount;
 import de.ellpeck.rockbottom.api.*;
+import de.ellpeck.rockbottom.api.IGameAccount;
 import de.ellpeck.rockbottom.api.assets.IAssetManager;
 import de.ellpeck.rockbottom.api.assets.IShaderProgram;
 import de.ellpeck.rockbottom.api.assets.texture.ITexture;
@@ -33,6 +35,9 @@ import de.ellpeck.rockbottom.apiimpl.Toaster;
 import de.ellpeck.rockbottom.assets.AssetManager;
 import de.ellpeck.rockbottom.assets.sound.SoundHandler;
 import de.ellpeck.rockbottom.assets.tex.Texture;
+import de.ellpeck.rockbottom.auth.ManagementServer;
+import de.ellpeck.rockbottom.auth.ManagementServerUtil;
+import de.ellpeck.rockbottom.auth.ServerResponse;
 import de.ellpeck.rockbottom.content.ContentManager;
 import de.ellpeck.rockbottom.gui.DebugRenderer;
 import de.ellpeck.rockbottom.gui.InformationGui;
@@ -86,7 +91,7 @@ public class RockBottom extends AbstractGame {
     public Renderer renderer;
     protected Settings settings;
     private PlayerEntity player;
-    private IPlayerDesign playerDesign;
+    private GameAccount account;
     private GuiManager guiManager;
     private InteractionManager interactionManager;
     private ParticleManager particleManager;
@@ -217,8 +222,19 @@ public class RockBottom extends AbstractGame {
         ChangelogManager.loadChangelog();
         super.init();
 
+        if (ManagementServer.getServer().getApiToken() != null) {
+            ManagementServerUtil.getUser(ManagementServer.getServer().getApiToken(),
+                    account -> {
+                        this.setAccount(account);
+                        if (this.getGuiManager().getGui() != null) {
+                            this.getGuiManager().getGui().init(this);
+                        }
+                    },
+                    msg -> RockBottomAPI.logger().info(this.assetManager.localize(ResourceName.intern(msg))));
+        }
         //TODO Remove this once the auth system is actually there
         this.tempUUID();
+
 
         this.guiManager.updateDimensions();
         if (!Main.skipIntro) {
@@ -295,18 +311,7 @@ public class RockBottom extends AbstractGame {
         this.assetManager = new AssetManager(this);
         this.assetManager.load();
 
-        this.setPlayerDesign();
         this.renderer.calcScales();
-    }
-
-    private void setPlayerDesign() {
-        try {
-            FileReader reader = new FileReader(this.dataManager.getPlayerDesignFile());
-            this.playerDesign = Util.GSON.fromJson(reader, PlayerDesign.class);
-        } catch (Exception e) {
-            this.playerDesign = new DefaultPlayerDesign();
-            savePlayerDesign(this, this.playerDesign);
-        }
     }
 
     @Override
@@ -388,7 +393,7 @@ public class RockBottom extends AbstractGame {
     public void startWorld(File worldFile, WorldInfo info, boolean isNewlyCreated) {
         super.startWorld(worldFile, info, isNewlyCreated);
 
-        this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, true);
+        this.player = this.world.createPlayer(this.getPlayerName(), this.getUniqueId(), this.getPlayerDesign(), null, true);
         this.player.world.addEntity(this.player);
         this.player.world.addPlayer(this.player);
 
@@ -407,7 +412,7 @@ public class RockBottom extends AbstractGame {
 
         RockBottomAPI.getEventHandler().fireEvent(new WorldLoadEvent(this.world, info, regInfo));
 
-        this.player = this.world.createPlayer(this.getUniqueId(), this.playerDesign, null, false);
+        this.player = this.world.createPlayer(this.getPlayerName(), this.getUniqueId(), this.getPlayerDesign(), null, false);
         this.player.load(playerSet, true);
 
         this.world.addEntity(this.player);
@@ -458,12 +463,17 @@ public class RockBottom extends AbstractGame {
 
     @Override
     public IPlayerDesign getPlayerDesign() {
-        return this.playerDesign;
+        return this.account != null ? this.account.getPlayerDesign() : new DefaultPlayerDesign();
+    }
+
+    @Override
+    public String getPlayerName() {
+        return this.account != null ? this.account.getDisplayName() : "Defaulty";
     }
 
     @Override
     public void setPlayerDesign(String jsonString) {
-        this.playerDesign = Util.GSON.fromJson(jsonString, PlayerDesign.class);
+        this.account.setPlayerDesign(Util.GSON.fromJson(jsonString, PlayerDesign.class));
     }
 
     @Override
@@ -594,6 +604,22 @@ public class RockBottom extends AbstractGame {
     @Override
     public PlayerEntity getPlayer() {
         return this.player;
+    }
+
+    @Override
+    public GameAccount getAccount() {
+        return this.account;
+    }
+
+    @Override
+    public void setAccount(IGameAccount account) {
+        if (account == null) {
+            this.account = null;
+            return;
+        }
+        if (account.isVerified()) {
+            this.account = (GameAccount) account;
+        }
     }
 
     @Override

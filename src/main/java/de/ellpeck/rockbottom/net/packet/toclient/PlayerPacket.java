@@ -20,12 +20,14 @@ public class PlayerPacket implements IPacket {
     public static final ResourceName NAME = ResourceName.intern("player");
 
     private final DataSet playerData = new DataSet();
+    private String username;
     private UUID playerId;
     private boolean remove;
 
     public PlayerPacket(AbstractPlayerEntity player, boolean remove) {
         this.playerId = player.getUniqueId();
         this.remove = remove;
+        this.username = player.getName();
 
         if (!remove) {
             player.save(this.playerData, true);
@@ -38,15 +40,16 @@ public class PlayerPacket implements IPacket {
 
     @Override
     public void toBuffer(ByteBuf buf) {
-        buf.writeLong(this.playerId.getMostSignificantBits());
-        buf.writeLong(this.playerId.getLeastSignificantBits());
+        NetUtil.writeStringToBuffer(this.username, buf);
+        NetUtil.writeUUIDToBuffer(this.playerId, buf);
         buf.writeBoolean(this.remove);
         NetUtil.writeSetToBuffer(this.playerData, buf);
     }
 
     @Override
     public void fromBuffer(ByteBuf buf) {
-        this.playerId = new UUID(buf.readLong(), buf.readLong());
+        this.username = NetUtil.readStringFromBuffer(buf);
+        this.playerId = NetUtil.readUUIDFromBuffer(buf);
         this.remove = buf.readBoolean();
         NetUtil.readSetFromBuffer(this.playerData, buf);
     }
@@ -62,7 +65,7 @@ public class PlayerPacket implements IPacket {
                 }
             } else {
                 PlayerDesign design = Util.GSON.fromJson(this.playerData.getString("design"), PlayerDesign.class);
-                AbstractPlayerEntity player = new PlayerEntity(world, this.playerId, design);
+                AbstractPlayerEntity player = new PlayerEntity(world, this.username, this.playerId, design);
                 player.load(this.playerData, true);
                 world.addPlayer(player);
             }

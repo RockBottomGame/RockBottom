@@ -83,6 +83,11 @@ public class Font implements IFont {
     }
 
     @Override
+    public void drawCenteredString(float x, float y, String s, float scale, boolean centeredOnY, int color) {
+        this.drawString(x - this.getWidth(s, scale) / 2F, centeredOnY ? (y - this.getHeight(scale) / 2F) : y, s, scale, color);
+    }
+
+    @Override
     public void drawFadingString(float x, float y, String s, float scale, float fadeTotal, float fadeInEnd, float fadeOutStart) {
         int color = Colors.WHITE;
 

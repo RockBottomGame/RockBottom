@@ -138,8 +138,8 @@ public class SubWorld extends AbstractWorld {
     }
 
     @Override
-    public AbstractPlayerEntity createPlayer(UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
-        return this.mainWorld.createPlayer(id, design, channel, loadOrSwapLast);
+    public AbstractPlayerEntity createPlayer(String username, UUID id, IPlayerDesign design, Channel channel, boolean loadOrSwapLast) {
+        return this.mainWorld.createPlayer(username, id, design, channel, loadOrSwapLast);
     }
 
     @Override

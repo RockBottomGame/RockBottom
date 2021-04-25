@@ -40,8 +40,8 @@ public class ConnectedPlayer extends PlayerEntity {
     private double lastCalcY;
     private double distanceCounter;
 
-    public ConnectedPlayer(IWorld world, UUID uniqueId, IPlayerDesign design, Channel channel) {
-        super(world, uniqueId, design);
+    public ConnectedPlayer(IWorld world, String username, UUID uniqueId, IPlayerDesign design, Channel channel) {
+        super(world, username, uniqueId, design);
         this.channel = channel;
     }
 
