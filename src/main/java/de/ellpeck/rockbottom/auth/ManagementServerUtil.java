@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.util.Util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -214,6 +215,37 @@ public class ManagementServerUtil {
                         onFailed.accept(error.message);
                     } else {
                         onSuccess.accept("info.server.password_reset");
+                    }
+                });
+    }
+
+    public static ServerResponse checkVerificationStatus(String apiToken, Consumer<String> onSuccess, Consumer<String> onFailed) {
+        JsonObject details = new JsonObject();
+        return ManagementServer.getServer().post(Endpoint.CHECK_VERIFICATION, details, header().withApiToken(apiToken).toMap())
+                .onArrived((sr) -> {
+                    if (sr.hasFailed()) {
+                        RBMError error = handleError(sr);
+                        onFailed.accept(error.message);
+                    } else {
+                        onSuccess.accept("");
+                    }
+                });
+    }
+
+    public static ServerResponse checkVerificationStatus(UUID uuid, Consumer<String> onSuccess, Consumer<String> onFailed) {
+        if (uuid == null) {
+            onFailed.accept("info.server.invalid_uuid");
+            return null;
+        }
+        JsonObject details = new JsonObject();
+        details.addProperty("account_id", uuid.toString());
+        return ManagementServer.getServer().post(Endpoint.CHECK_VERIFICATION_BY_UUID, details, header().toMap())
+                .onArrived((sr) -> {
+                    if (sr.hasFailed()) {
+                        RBMError error = handleError(sr);
+                        onFailed.accept(error.message);
+                    } else {
+                        onSuccess.accept("");
                     }
                 });
     }

@@ -7,6 +7,9 @@ import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.component.ButtonComponent;
 import de.ellpeck.rockbottom.api.gui.component.InputFieldComponent;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
+import de.ellpeck.rockbottom.auth.ManagementServer;
+import de.ellpeck.rockbottom.auth.ManagementServerUtil;
+import de.ellpeck.rockbottom.auth.ServerResponse;
 import de.ellpeck.rockbottom.gui.InformationGui;
 import de.ellpeck.rockbottom.net.packet.toserver.JoinPacket;
 import de.ellpeck.rockbottom.util.thread.ThreadHandler;
@@ -31,22 +34,35 @@ public class JoinServerGui extends Gui {
 
         this.components.add(new ButtonComponent(this, this.width / 2 - 50, this.height / 2 - 20, 100, 16, () -> {
             Thread thread = new Thread(() -> {
-                try {
-                    String[] separated = this.inputField.getText().split(":");
-                    if (separated.length == 1) {
-                        RockBottomAPI.getNet().init(separated[0], 8000, false);
-                    } else {
-                        int port = Integer.parseInt(separated[1]);
-                        RockBottomAPI.getNet().init(separated[0], port, false);
-                    }
-
-                    RockBottomAPI.logger().info("Attempting to join server");
-                    // TODO Check if the account is verified to be joined to the server
-                    RockBottomAPI.getNet().sendToServer(new JoinPacket(game.getAccount(), RockBottomAPI.getModLoader().getActiveMods()));
-                } catch (Exception e) {
-                    RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
-                    game.getGuiManager().openGui(new InformationGui(this, 0.5F, true, game.getAssetManager().localize(ResourceName.intern("info.reject.connection"), e.getMessage())));
-                }
+                RockBottomAPI.logger().info("Attempting to join server");
+                ManagementServerUtil.checkVerificationStatus(ManagementServer.getServer().getApiToken(),
+                        na -> {
+                            ManagementServerUtil.getUser(ManagementServer.getServer().getApiToken(),
+                                    account -> {
+                                        // Try connect to the server
+                                        try {
+                                            String[] separated = this.inputField.getText().split(":");
+                                            if (separated.length == 1) {
+                                                RockBottomAPI.getNet().init(separated[0], 8000, false);
+                                            } else {
+                                                int port = Integer.parseInt(separated[1]);
+                                                RockBottomAPI.getNet().init(separated[0], port, false);
+                                            }
+                                            RockBottomAPI.getNet().sendToServer(new JoinPacket(account, RockBottomAPI.getModLoader().getActiveMods()));
+                                            game.setAccount(account); // Set fresh account data
+                                        } catch (Exception e) {
+                                            RockBottomAPI.logger().log(Level.WARNING, "Couldn't connect to server", e);
+                                            game.getGuiManager().openGui(new InformationGui(this, 0.5F, true, game.getAssetManager().localize(ResourceName.intern("info.reject.connection"), e.getMessage())));
+                                        }
+                                    },
+                                    msg -> {
+                                        RockBottomAPI.logger().log(Level.WARNING, "Could not get fresh user data from the management server");
+                                        game.getGuiManager().openGui(this);
+                                    });
+                        },
+                        msg -> {
+                            throw new IllegalStateException(game.getAssetManager().localize(ResourceName.intern("info.reject.not_verified")));
+                        });
             }, ThreadHandler.SERVER_JOIN);
             thread.start();
 

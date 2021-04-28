@@ -21,6 +21,7 @@ public class MainMenuGui extends Gui {
 
     private ButtonComponent loginButton;
     private ButtonComponent accountButton;
+    private ButtonComponent multiplayerButton;
 
     @Override
     public void init(IGameInstance game) {
@@ -111,10 +112,15 @@ public class MainMenuGui extends Gui {
             return true;
         }, assetManager.localize(ResourceName.intern("button.play"))));
 
-        this.components.add(new ButtonComponent(this, start + partWidth - 5, y, buttonWidth + 10, 16, () -> {
-            guiManager.openGui(new JoinServerGui(this));
+        this.components.add(this.multiplayerButton = new ButtonComponent(this, start + partWidth - 5, y, buttonWidth + 10, 16, () -> {
+            if (loggedIn) {
+                account.verify(false);
+                guiManager.openGui(new JoinServerGui(this));
+            } else {
+                guiManager.openGui(new LoginGui(this));
+            }
             return true;
-        }, assetManager.localize(ResourceName.intern("button.join"))));
+        }, assetManager.localize(ResourceName.intern("button.join")), !loggedIn ? assetManager.localize(ResourceName.intern("info.server.require_login")) : ""));
 
         // Account
         /*
