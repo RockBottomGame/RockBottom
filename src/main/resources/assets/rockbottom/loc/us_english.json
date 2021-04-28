@@ -125,7 +125,8 @@
                 "password_reset": "&gYour password has been reset!\nYou can now log in with your new password",
                 "password_mismatch": "&6The passwords do not match",
                 "incorrect_password": "&7Incorrect password",
-                "set_password": "&gNew password has been set!"
+                "set_password": "&gNew password has been set!",
+                "require_login": "Please login to play mutliplayer."
             },
             "layer_placement": "Can be placed in %s",
             "health": "Health",
@@ -190,7 +191,8 @@
                 "blacklist": "You are blacklisted on this server! Reason: \n%s",
                 "server_down": "You have lost connection to the server!",
                 "server_full": "The server is currently full!",
-                "exception": "There was an exception handling a packet and the connection was closed: \n%s"
+                "exception": "There was an exception handling a packet and the connection was closed: \n%s",
+                "not_verified": "Your account is not verified. Please log out and log back in to resend the verification code."
             },
             "changelog.": {
                 "grabbing": "Grabbing Changelog...",
