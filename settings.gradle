@@ -1,6 +1,9 @@
 include ":API"
 project(":API").projectDir = file("../API")
 
+include ":Assets"
+project(":Assets").projectDir = file("../Assets")
+
 include ":Changelog"
 project(":Changelog").projectDir = file("../Changelog")
 

@@ -37,7 +37,6 @@ import de.ellpeck.rockbottom.render.engine.VertexBufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -158,7 +157,7 @@ public class Renderer implements IRenderer {
         this.vertexAmount = 0;
         this.flushCounter = 0;
 
-        this.resetTransformation();
+        this.resetMatrix();
 
         this.isDrawing = true;
 
@@ -228,8 +227,13 @@ public class Renderer implements IRenderer {
     }
 
     @Override
-    public void resetTransformation() {
-        this.matrixStack = new MatrixStack();
+    public void resetMatrix() {
+        if (this.matrixStack == null) {
+            this.matrixStack = new MatrixStack();
+            return;
+        }
+
+        this.matrixStack.clear();
     }
 
 
