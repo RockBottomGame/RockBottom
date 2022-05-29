@@ -14,6 +14,8 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.ChatGui;
 import de.ellpeck.rockbottom.gui.CompendiumGui;
 import de.ellpeck.rockbottom.gui.InventoryGui;
+import de.ellpeck.rockbottom.gui.ItemListGui;
+import de.ellpeck.rockbottom.gui.container.ItemListContainer;
 import de.ellpeck.rockbottom.init.RockBottom;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL11;
@@ -154,7 +156,11 @@ public class InputHandler implements IInputHandler {
                     this.game.openIngameMenu();
                     return true;
                 } else if (Settings.KEY_INVENTORY.isKey(key)) {
-                    player.openGuiContainer(new InventoryGui(player), player.getInvContainer());
+                    if (player.getGameMode().isCreative()) {
+                        player.openGuiContainer(new ItemListGui(player), new ItemListContainer(player));
+                    } else {
+                        player.openGuiContainer(new InventoryGui(player), player.getInvContainer());
+                    }
                     return true;
                 } else if (Settings.KEY_COMPENDIUM.isKey(key)) {
                     player.openGuiContainer(new CompendiumGui(player), player.getInvContainer());

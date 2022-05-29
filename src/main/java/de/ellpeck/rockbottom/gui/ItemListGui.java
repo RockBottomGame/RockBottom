@@ -4,6 +4,7 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.ContainerGui;
+import de.ellpeck.rockbottom.api.gui.component.FancyButtonComponent;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.gui.component.GuiComponent;
 import de.ellpeck.rockbottom.api.gui.component.MenuItemComponent;
@@ -13,8 +14,14 @@ import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
 public class ItemListGui extends ContainerGui {
 
+    private final boolean openCompendium;
+    public ItemListGui(AbstractPlayerEntity player, boolean openCompendium) {
+        super(player, 144, 169);
+        this.openCompendium = openCompendium;
+    }
+
     public ItemListGui(AbstractPlayerEntity player) {
-        super(player, 150, 163);
+        this(player, false);
     }
 
     @Override
@@ -27,7 +34,7 @@ public class ItemListGui extends ContainerGui {
         super.init(game);
 
         BoundingBox box = new BoundingBox(0, 0, 150, 88).add(this.x, this.y);
-        MenuComponent menu = new MenuComponent(this, 0, 0, 88, 8, 5, box);
+        MenuComponent menu = new MenuComponent(this, -7, 0, 88, 8, 5, box);
 
         ItemContainer container = this.getContainer();
         for (int i = this.player.getInv().getSlotAmount() + 1; i < container.getSlotAmount(); i++) {
@@ -42,5 +49,16 @@ public class ItemListGui extends ContainerGui {
 
         menu.organize();
         this.components.add(menu);
+
+        if (this.player.getGameMode().isCreative()) {
+            this.components.add(new FancyButtonComponent(this, 145, 153, 16, 16, () -> {
+                if (this.openCompendium) {
+                    this.player.openGuiContainer(new CompendiumGui(player), player.getInvContainer());
+                } else {
+                    this.player.openGuiContainer(new InventoryGui(player), player.getInvContainer());
+                }
+                return true;
+            }, ResourceName.intern("gui.icons.survival_icon")));
+        }
     }
 }

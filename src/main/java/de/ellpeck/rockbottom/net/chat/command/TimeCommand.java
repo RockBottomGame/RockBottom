@@ -20,47 +20,60 @@ import java.util.List;
 public class TimeCommand extends Command {
 
     public TimeCommand() {
-        super(ResourceName.intern("time"), "Changes the world's time. Params: <set/advance> <amount>", 4);
+        super(ResourceName.intern("time"), "Changes the world's time. Params: <set/advance> <amount> | <freeze> (on|off)", 4);
     }
 
     @Override
     public ChatComponent execute(String[] args, ICommandSender sender, String playerName, IGameInstance game, IChatLog chat) {
-        if (args.length >= 2) {
-            IWorld world = sender.getWorld();
+        if (args.length < 1 || args.length > 2) {
+            return new TextChatComponent(FormattingCode.RED + "Wrong number of arguments! Must be between 1 and 2");
+        }
 
-            if ("freeze".equals(args[0])) {
-                boolean value;
-                if ("on".equals(args[1])) {
-                    value = true;
-                } else if ("off".equals(args[1])) {
-                    value = false;
-                } else {
-                    return new TextChatComponent(FormattingCode.RED + "Couldn't parse freeze value!");
-                }
+        if (args.length == 1) {
+            if ("freeze".equals(args[0])) { // Toggle time freeze
+                IWorld world = sender.getWorld();
+                boolean value = !world.isTimeFrozen();
                 world.setTimeFrozen(value);
+                RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new TimePacket(world.getCurrentTime(), world.getTotalTime(), world.isTimeFrozen()));
+
+                return new TextChatComponent(FormattingCode.GREEN + "Set time freeze to " + value + '!');
+            }
+
+            return new TextChatComponent(FormattingCode.RED + "Couldn't parse freeze value!");
+        }
+
+        // args.length == 2
+        IWorld world = sender.getWorld();
+        if ("freeze".equals(args[0])) { // Set time freeze value
+            boolean value;
+            if ("on".equals(args[1])) {
+                value = true;
+            } else if ("off".equals(args[1])) {
+                value = false;
+            } else {
+                return new TextChatComponent(FormattingCode.RED + "Couldn't parse freeze value!");
+            }
+            world.setTimeFrozen(value);
+
+            RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new TimePacket(world.getCurrentTime(), world.getTotalTime(), world.isTimeFrozen()));
+            return new TextChatComponent(FormattingCode.GREEN + "Set time freeze to " + value + '!');
+        } else { // Change time
+            try {
+                int amount = Math.abs(Integer.parseInt(args[1])) % Constants.TIME_PER_DAY;
+
+                if ("set".equals(args[0])) {
+                    world.setCurrentTime(amount);
+                } else if ("advance".equals(args[0])) {
+                    world.setCurrentTime(world.getCurrentTime() + amount);
+                } else {
+                    return new TextChatComponent(FormattingCode.RED + "Specify your action!");
+                }
 
                 RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new TimePacket(world.getCurrentTime(), world.getTotalTime(), world.isTimeFrozen()));
-                return new TextChatComponent(FormattingCode.GREEN + "Set time freeze to " + value + '!');
-            } else {
-                try {
-                    int amount = Math.abs(Integer.parseInt(args[1])) % Constants.TIME_PER_DAY;
-
-                    if ("set".equals(args[0])) {
-                        world.setCurrentTime(amount);
-                    } else if ("advance".equals(args[0])) {
-                        world.setCurrentTime(world.getCurrentTime() + amount);
-                    } else {
-                        return new TextChatComponent(FormattingCode.RED + "Specify your action!");
-                    }
-
-                    RockBottomAPI.getNet().sendToAllPlayersInWorld(world, new TimePacket(world.getCurrentTime(), world.getTotalTime(), world.isTimeFrozen()));
-                    return new TextChatComponent(FormattingCode.GREEN + "Set time to " + world.getCurrentTime() + '!');
-                } catch (NumberFormatException e) {
-                    return new TextChatComponent(FormattingCode.RED + "Couldn't parse time!");
-                }
+                return new TextChatComponent(FormattingCode.GREEN + "Set time to " + world.getCurrentTime() + '!');
+            } catch (NumberFormatException e) {
+                return new TextChatComponent(FormattingCode.RED + "Couldn't parse time!");
             }
-        } else {
-            return new TextChatComponent(FormattingCode.RED + "Wrong number of arguments!");
         }
     }
 

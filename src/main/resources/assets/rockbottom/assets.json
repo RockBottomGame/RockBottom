@@ -720,6 +720,10 @@
                     "selected": "/tex/gui/smithing_table/item_background_selected.png"
                 }
             },
+            "icons.": {
+                "survival_icon": "/tex/gui/icons/survival_icon.png",
+                "creative_icon": "/tex/gui/icons/creative_icon.png"
+            },
             "slot": "/tex/gui/slot.png",
             "selection_arrow": "/tex/gui/selection_arrow.png",
             "heart": "/tex/gui/heart.png",

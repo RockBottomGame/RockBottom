@@ -12,8 +12,8 @@ public class ItemListContainer extends ItemContainer {
     public ItemListContainer(AbstractPlayerEntity player) {
         super(player);
 
-        this.addPlayerInventory(player, 7, 93);
-        this.addSlot(new TrashSlotContainer(154, 72));
+        this.addPlayerInventory(player, 5, 99);
+        this.addSlot(new TrashSlotContainer(148, 72));
 
         for (Item item : Registries.ITEM_REGISTRY.values()) {
             if (!item.useMetaAsDurability()) {

@@ -26,6 +26,7 @@ import de.ellpeck.rockbottom.api.util.Pos2;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.construction.category.ManualConstructionCategory;
 import de.ellpeck.rockbottom.gui.component.CompendiumCategoryComponent;
+import de.ellpeck.rockbottom.gui.container.ItemListContainer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,6 +110,13 @@ public class CompendiumGui extends ContainerGui {
             return true;
         }, ResourceName.intern("gui.compendium.arrow_down"));
         this.components.add(this.categoryDown.setHasBackground(false));
+
+        if (this.player.getGameMode().isCreative()) {
+            this.components.add(new FancyButtonComponent(this, 145, 153, 16, 16, () -> {
+                this.player.openGuiContainer(new ItemListGui(player, true), new ItemListContainer(player));
+                return true;
+            }, ResourceName.intern("gui.icons.creative_icon")));
+        }
 
         this.sortCategories();
         this.organize();

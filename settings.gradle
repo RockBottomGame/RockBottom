@@ -1,11 +1,14 @@
 include ":API"
 project(":API").projectDir = file("../API")
 
-include ":Assets"
-project(":Assets").projectDir = file("../Assets")
-
 include ":Changelog"
 project(":Changelog").projectDir = file("../Changelog")
 
-/*include ":Modding"
-project(":Modding").projectDir = file("../Modding")*/
+include ":Modding"
+project(":Modding").projectDir = file("../Modding")
+
+include ":Gradle"
+project(":Gradle").projectDir = file("../Gradle")
+
+include ":Management"
+project(":Management").projectDir = file("../Management")
