@@ -59,7 +59,7 @@ public class GraphicsGui extends Gui {
         }, "button.smooth_lighting"));
 
         this.components.add(new ColorPickerComponent(this, 55, 70, 40, 40, settings.guiColor, (color, letGo) -> settings.guiColor = color, false));
-        this.components.add(new FancyButtonComponent(this, 99, 94, 16, 16, () -> {
+        this.components.add(new ImageButtonComponent(this, 99, 94, 16, 16, () -> {
             this.components.add(new ConfirmationPopupComponent(this, 99 + 8, 94 + 8, aBoolean -> {
                 if (aBoolean) {
                     settings.guiColor = Settings.DEFAULT_GUI_COLOR;

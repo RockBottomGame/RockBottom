@@ -9,7 +9,7 @@ import de.ellpeck.rockbottom.api.construction.compendium.ICompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.gui.ContainerGui;
-import de.ellpeck.rockbottom.api.gui.component.FancyButtonComponent;
+import de.ellpeck.rockbottom.api.gui.component.ImageButtonComponent;
 import de.ellpeck.rockbottom.api.gui.component.InputFieldComponent;
 import de.ellpeck.rockbottom.api.gui.component.MenuComponent;
 import de.ellpeck.rockbottom.api.gui.component.MenuItemComponent;
@@ -18,7 +18,6 @@ import de.ellpeck.rockbottom.api.gui.component.construction.IngredientComponent;
 import de.ellpeck.rockbottom.api.gui.component.construction.PolaroidComponent;
 import de.ellpeck.rockbottom.api.helper.InventoryHelper;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
-import de.ellpeck.rockbottom.api.inventory.Inventory;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
 import de.ellpeck.rockbottom.api.util.BoundingBox;
 import de.ellpeck.rockbottom.api.util.Colors;
@@ -47,8 +46,8 @@ public class CompendiumGui extends ContainerGui {
     private final List<PolaroidComponent> polaroids = new ArrayList<>();
     private final List<IngredientComponent> ingredients = new ArrayList<>();
     private final List<CompendiumCategoryComponent> categories = new ArrayList<>();
-    private FancyButtonComponent categoryDown;
-    private FancyButtonComponent categoryUp;
+    private ImageButtonComponent categoryDown;
+    private ImageButtonComponent categoryUp;
     public ICompendiumRecipe selectedRecipe;
     public boolean keepContainerOpen;
     private MenuComponent menu;
@@ -73,7 +72,7 @@ public class CompendiumGui extends ContainerGui {
         this.menu = new MenuComponent(this, -12, 2, 12, PAGE_HEIGHT - 4, 3, 4, 11, 0, new BoundingBox(0, 0, PAGE_WIDTH, PAGE_HEIGHT).add(this.x, this.y), ResourceName.intern("gui.compendium.scroll_bar"));
         this.components.add(this.menu);
 
-        this.components.add(new FancyButtonComponent(this, 5 - 16, CompendiumGui.PAGE_HEIGHT + 5, 14, 14, () -> {
+        this.components.add(new ImageButtonComponent(this, 5 - 16, CompendiumGui.PAGE_HEIGHT + 5, 14, 14, () -> {
             this.keepContainerOpen = true;
             game.getGuiManager().openGui(new InventoryGui(this.player));
             return true;
@@ -97,14 +96,14 @@ public class CompendiumGui extends ContainerGui {
         }
         this.components.addAll(this.categories);
 
-        this.categoryUp = new FancyButtonComponent(this, this.width + 17, 1, 6, 6, () -> {
+        this.categoryUp = new ImageButtonComponent(this, this.width + 17, 1, 6, 6, () -> {
             categoryOffset--;
             this.sortCategories();
             return true;
         }, ResourceName.intern("gui.compendium.arrow_up"));
         this.components.add(this.categoryUp.setHasBackground(false));
 
-        this.categoryDown = new FancyButtonComponent(this, this.width + 17, 1 + 14 * 5 - 6, 6, 6, () -> {
+        this.categoryDown = new ImageButtonComponent(this, this.width + 17, 1 + 14 * 5 - 6, 6, 6, () -> {
             categoryOffset++;
             this.sortCategories();
             return true;
@@ -112,7 +111,7 @@ public class CompendiumGui extends ContainerGui {
         this.components.add(this.categoryDown.setHasBackground(false));
 
         if (this.player.getGameMode().isCreative()) {
-            this.components.add(new FancyButtonComponent(this, 145, 153, 16, 16, () -> {
+            this.components.add(new ImageButtonComponent(this, 145, 153, 16, 16, () -> {
                 this.player.openGuiContainer(new ItemListGui(player, true), new ItemListContainer(player));
                 return true;
             }, ResourceName.intern("gui.icons.creative_icon")));

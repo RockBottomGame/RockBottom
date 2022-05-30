@@ -9,10 +9,7 @@ import de.ellpeck.rockbottom.api.assets.font.FormattingCode;
 import de.ellpeck.rockbottom.api.data.settings.Settings;
 import de.ellpeck.rockbottom.api.gui.Gui;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
-import de.ellpeck.rockbottom.api.gui.component.ButtonComponent;
-import de.ellpeck.rockbottom.api.gui.component.ClickableTextComponent;
-import de.ellpeck.rockbottom.api.gui.component.ConfirmationPopupComponent;
-import de.ellpeck.rockbottom.api.gui.component.MessageBoxComponent;
+import de.ellpeck.rockbottom.api.gui.component.*;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.gui.PlayerEditorGui;
@@ -38,7 +35,7 @@ public class MainMenuGui extends Gui {
                 @Override
                 public void init(IGameInstance game) {
                     super.init(game);
-                    this.components.add(new MessageBoxComponent(this, this.width / 2 - 95, this.height / 2 - 50, 190, 100, "Welcome to the beta of " + FormattingCode.ORANGE + "Rock Bottom" + FormattingCode.RESET_COLOR + "! Thanks for being part of this adventure!\nKeep in mind that a lot of features are still incomplete and there is little playable content in general. However, you should post any requests and questions that you have in Ellpeck's Discord server, along with any bug reports or problems you find.\nThere's a public multiplayer server that you can play on, you should find all the details for it in the Discord as well.\nThat's about it, so" + FormattingCode.RED + " have a lot of fun playing! <3", 0.25F, true, true, () -> {
+                    this.components.add(new MessageBoxComponent(this, this.width / 2 - 95, this.height / 2 - 50, 190, 100, "Welcome to the beta of " + FormattingCode.ORANGE + "Rock Bottom" + FormattingCode.RESET_COLOR + "! Thanks for being part of this adventure!\nKeep in mind that a lot of features are still incomplete and there is little playable content in general. However, you should post any requests and questions that you have in the official Rock Bottom discord server, along with any bug reports or problems you find.\nThere's a public multiplayer server that you can play on, you should find all the details for it in the Discord as well.\nThat's about it, so" + FormattingCode.RED + " have a lot of fun playing! <3", 0.25F, true, true, () -> {
                         settings.betaTextDisplayed = true;
                         settings.save();
                         guiManager.openGui(MainMenuGui.this);
@@ -148,6 +145,14 @@ public class MainMenuGui extends Gui {
 
         this.components.add(new ClickableTextComponent(this, this.width - 2, this.height - 7, 0.25F, true, () -> Util.openWebsite(Constants.ELLPECK_LINK), "Copyright 2017-2022 Ellpeck"));
         this.components.add(new ClickableTextComponent(this, 2, this.height - 7, 0.25F, false, () -> Util.openWebsite(Constants.WEBSITE_LINK), game.getDisplayName() + ' ' + game.getVersion() + " - API " + RockBottomAPI.VERSION));
+
+        this.components.add(new ImageButtonComponent(this, this.width / 2 - 22, this.height - 11, 8, 8, () -> Util.openWebsite(Constants.TWITTER_LINK), ResourceName.intern("gui.social.twitter"), assetManager.localize(ResourceName.intern("gui.social.twitter.hover"))).setHasBackground(false));
+
+        this.components.add(new ImageButtonComponent(this, this.width / 2 - 10, this.height - 11, 8, 8, () -> Util.openWebsite(Constants.DISCORD_LINK), ResourceName.intern("gui.social.discord"), assetManager.localize(ResourceName.intern("gui.social.discord.hover"))).setHasBackground(false));
+
+        this.components.add(new ImageButtonComponent(this, this.width / 2 + 2, this.height - 11, 8, 8, () -> Util.openWebsite(Constants.GITHUB_LINK), ResourceName.intern("gui.social.github"), assetManager.localize(ResourceName.intern("gui.social.github.hover"))).setHasBackground(false));
+
+        this.components.add(new ImageButtonComponent(this, this.width / 2 + 14, this.height - 11, 8, 8, () -> Util.openWebsite(Constants.ITCHIO_LINK), ResourceName.intern("gui.social.itchio"), assetManager.localize(ResourceName.intern("gui.social.itchio.hover"))).setHasBackground(false));
     }
 
     @Override

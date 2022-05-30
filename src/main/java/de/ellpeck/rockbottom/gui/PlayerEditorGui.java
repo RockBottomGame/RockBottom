@@ -87,7 +87,7 @@ public class PlayerEditorGui extends Gui {
 
         this.components.add(new SliderComponent(this, x - 98, 126, 80, 12, this.previewType + 1, 1, 4, ((integer, aBoolean) -> this.previewType = integer - 1), assetManager.localize(ResourceName.intern("button.player_design.preview"))));
 
-        this.components.add(new FancyButtonComponent(this, this.width / 2 - 16, this.height - 34, 14, 14, () -> {
+        this.components.add(new ImageButtonComponent(this, this.width / 2 - 16, this.height - 34, 14, 14, () -> {
             this.components.add(new ConfirmationPopupComponent(this, this.width / 2 - 16 + 7, this.height - 38 + 7, aBoolean -> {
                 if (aBoolean) {
                     PlayerDesign.randomizeDesign(design);

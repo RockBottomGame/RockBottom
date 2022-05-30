@@ -724,6 +724,12 @@
                 "survival_icon": "/tex/gui/icons/survival_icon.png",
                 "creative_icon": "/tex/gui/icons/creative_icon.png"
             },
+            "social.": {
+                "twitter": "/tex/gui/social/twitter.png",
+                "discord": "/tex/gui/social/discord.png",
+                "github": "/tex/gui/social/github.png",
+                "itchio": "/tex/gui/social/itchio.png"
+            },
             "slot": "/tex/gui/slot.png",
             "selection_arrow": "/tex/gui/selection_arrow.png",
             "heart": "/tex/gui/heart.png",

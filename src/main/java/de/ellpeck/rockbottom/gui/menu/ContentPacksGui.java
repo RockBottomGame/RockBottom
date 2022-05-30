@@ -41,7 +41,7 @@ public class ContentPacksGui extends Gui {
 
         this.organize();
 
-        this.components.add(new FancyButtonComponent(this, this.width / 2 + 83, this.height - 16, 16, 16, () -> Util.createAndOpen(game.getDataManager().getContentPacksDir()), ResourceName.intern("gui.mods_folder"), "Content Packs Folder"));
+        this.components.add(new ImageButtonComponent(this, this.width / 2 + 83, this.height - 16, 16, 16, () -> Util.createAndOpen(game.getDataManager().getContentPacksDir()), ResourceName.intern("gui.mods_folder"), "Content Packs Folder"));
 
         this.components.add(new ButtonComponent(this, this.width / 2 + 1, this.height - 16, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);

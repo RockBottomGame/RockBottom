@@ -75,7 +75,7 @@ public class ModsGui extends Gui {
 
         this.updateButtons();
 
-        this.components.add(new FancyButtonComponent(this, this.width / 2 + 83, this.height - 30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), ResourceName.intern("gui.mods_folder"), game.getAssetManager().localize(ResourceName.intern("button.mods_folder"))));
+        this.components.add(new ImageButtonComponent(this, this.width / 2 + 83, this.height - 30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getModsDir()), ResourceName.intern("gui.mods_folder"), game.getAssetManager().localize(ResourceName.intern("button.mods_folder"))));
 
         this.components.add(new ButtonComponent(this, this.width / 2 + 1, this.height - 30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);

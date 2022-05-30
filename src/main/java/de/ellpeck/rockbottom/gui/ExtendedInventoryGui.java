@@ -3,7 +3,7 @@ package de.ellpeck.rockbottom.gui;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.gui.ContainerGui;
-import de.ellpeck.rockbottom.api.gui.component.FancyButtonComponent;
+import de.ellpeck.rockbottom.api.gui.component.ImageButtonComponent;
 import de.ellpeck.rockbottom.api.inventory.IInventory;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 
@@ -27,7 +27,7 @@ public class ExtendedInventoryGui extends ContainerGui {
     public void init(IGameInstance game) {
         super.init(game);
 
-        this.components.add(new FancyButtonComponent(this, (135 - width) / 2 - 16, height - 70, 14, 14, () -> {
+        this.components.add(new ImageButtonComponent(this, (135 - width) / 2 - 16, height - 70, 14, 14, () -> {
             player.openGuiContainer(new CompendiumGui(player), player.getInvContainer());
             return true;
         }, ResourceName.intern("gui.compendium.book_closed"), game.getAssetManager().localize(ResourceName.intern("button.open_compendium"))));

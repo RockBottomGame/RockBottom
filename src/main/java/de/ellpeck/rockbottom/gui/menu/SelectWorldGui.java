@@ -43,7 +43,7 @@ public class SelectWorldGui extends Gui {
             return true;
         }, game.getAssetManager().localize(ResourceName.intern("button.back"))));
 
-        this.components.add(new FancyButtonComponent(this, this.width / 2 + 64, this.height - 30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getWorldsDir()), ResourceName.intern("gui.worlds_folder"), game.getAssetManager().localize(ResourceName.intern("button.worlds_folder"))));
+        this.components.add(new ImageButtonComponent(this, this.width / 2 + 64, this.height - 30, 16, 16, () -> Util.createAndOpen(game.getDataManager().getWorldsDir()), ResourceName.intern("gui.worlds_folder"), game.getAssetManager().localize(ResourceName.intern("button.worlds_folder"))));
 
         File worldFolder = game.getDataManager().getWorldsDir();
         File[] worlds = worldFolder.listFiles();
@@ -70,7 +70,7 @@ public class SelectWorldGui extends Gui {
             SelectWorldButtonComponent button = new SelectWorldButtonComponent(this, 0, 0, file);
             component.add(0, 0, button);
 
-            component.add(186 + 2, 0, new FancyButtonComponent(this, 0, 0, 12, 12, null, ResourceName.intern("gui.delete"), manager.localize(ResourceName.intern("button.delete_world"))) {
+            component.add(186 + 2, 0, new ImageButtonComponent(this, 0, 0, 12, 12, null, ResourceName.intern("gui.delete"), manager.localize(ResourceName.intern("button.delete_world"))) {
                 @Override
                 public boolean onPressed(IGameInstance game) {
                     this.gui.getComponents().add(new ConfirmationPopupComponent(this.gui, this.x + this.width / 2, this.y + this.height / 2, aBoolean -> {
@@ -91,7 +91,7 @@ public class SelectWorldGui extends Gui {
                 }
             });
 
-            component.add(186 + 2, 14, new FancyButtonComponent(this, 0, 0, 12, 12, () -> {
+            component.add(186 + 2, 14, new ImageButtonComponent(this, 0, 0, 12, 12, () -> {
                 game.getGuiManager().openGui(new RenameWorldGui(this, file));
                 return true;
             }, ResourceName.intern("gui.rename"), manager.localize(ResourceName.intern("button.rename_world"))));

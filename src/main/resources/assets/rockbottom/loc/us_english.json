@@ -252,7 +252,6 @@
             "smithing_table": "&3Strong table that can withstand the hard hits of a hammer. Useful for making metal tools.",
             "combiner": "&3Mixes and combines metals into advanced forms.",
             "pot": "&3Can hold various plants for decoration."
-
         },
         "button.": {
             "back": "Back",
@@ -383,7 +382,11 @@
             "place": "Interact",
             "destroy": "Destroy",
             "gui_action_1": "Gui 1st",
-            "gui_action_2": "Gui 2nd"
+            "gui_action_2": "Gui 2nd",
+            "pickup": "Pickup Tile",
+            "camera_mode": "Camera Mode",
+            "camera_zoom_in": "Camera Zoom In",
+            "camera_zoom_out": "Camera Zoom Out"
         },
         "death.flavor.": {
             "1": "%s is now ravioli.",
@@ -493,6 +496,22 @@
             "right_super": "Right Super",
             "menu": "Menu",
             "unknown": "Unrecognized Key"
+        },
+        "gui.": {
+            "social.": {
+                "twitter.": {
+                    "hover": "Follow our Twitter page!"
+                },
+                "itchio.": {
+                    "hover": "Visit our itch.io page!"
+                },
+                "github.": {
+                    "hover": "View our Github page!"
+                },
+                "discord.": {
+                    "hover": "Join our Discord server!"
+                }
+            }
         },
         "date_format": "MM.dd.yy - HH:mm"
     }
