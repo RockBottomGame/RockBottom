@@ -83,6 +83,7 @@ public class DataManager implements IDataManager {
         Registries.PACKET_REGISTRY.register(PlayerPacket.NAME, 42, PlayerPacket::new);
         Registries.PACKET_REGISTRY.register(ChangeWorldPacket.NAME, 43, ChangeWorldPacket::new);
         Registries.PACKET_REGISTRY.register(PickupPacket.NAME, 44, PickupPacket::new);
+        Registries.PACKET_REGISTRY.register(ClearInventoryPacket.NAME, 45, ClearInventoryPacket::new);
 
         Registries.CHAT_COMPONENT_REGISTRY.register(0, TextChatComponent.class);
         Registries.CHAT_COMPONENT_REGISTRY.register(1, TranslationChatComponent.class);

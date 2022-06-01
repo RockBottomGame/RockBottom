@@ -42,7 +42,7 @@ public class InitialServerDataPacket implements IPacket {
         this.info.toBuffer(buf);
         this.regInfo.toBuffer(buf);
         if (this.subName != null) {
-            NetUtil.writeStringToBuffer(this.subName.toString(), buf);
+            NetUtil.writeStringToBuffer(buf, this.subName.toString());
         }
     }
 

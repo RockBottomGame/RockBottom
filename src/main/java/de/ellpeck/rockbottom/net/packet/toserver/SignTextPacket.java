@@ -32,7 +32,7 @@ public class SignTextPacket implements IPacket {
         buf.writeInt(this.y);
 
         for (int i = 0; i < this.text.length; i++) {
-            NetUtil.writeStringToBuffer(this.text[i], buf);
+            NetUtil.writeStringToBuffer(buf, this.text[i]);
         }
     }
 

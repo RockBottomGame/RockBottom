@@ -27,6 +27,11 @@ public class InfiniteSlotContainer extends SlotContainer {
             public int getSlotAmount() {
                 return 1;
             }
+
+            @Override
+            public void clear() {
+
+            }
         };
     }
 }

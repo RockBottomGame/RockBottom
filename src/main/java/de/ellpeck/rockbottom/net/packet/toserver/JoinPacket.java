@@ -51,7 +51,7 @@ public class JoinPacket implements IPacket {
     public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.id.getMostSignificantBits());
         buf.writeLong(this.id.getLeastSignificantBits());
-        NetUtil.writeStringToBuffer(Util.GSON.toJson(this.design), buf);
+        NetUtil.writeStringToBuffer(buf, Util.GSON.toJson(this.design));
 
         buf.writeInt(this.modInfos.size());
         for (ModInfo info : this.modInfos) {
@@ -217,8 +217,8 @@ public class JoinPacket implements IPacket {
         }
 
         public void toBuffer(ByteBuf buf) {
-            NetUtil.writeStringToBuffer(this.id, buf);
-            NetUtil.writeStringToBuffer(this.version, buf);
+            NetUtil.writeStringToBuffer(buf, this.id);
+            NetUtil.writeStringToBuffer(buf, this.version);
             buf.writeBoolean(this.requiredOnServer);
         }
 

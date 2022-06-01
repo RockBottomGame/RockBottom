@@ -54,7 +54,6 @@ public abstract class AbstractWorld implements IWorld {
     protected int totalTime;
     protected boolean timeFrozen;
     protected float skylightModifier;
-    protected Map<Integer, Integer> highestTile;
     private Map<ResourceName, IWorldGenerator> generators;
     private List<IWorldGenerator> loopingGenerators;
     private List<IWorldGenerator> retroactiveGenerators;

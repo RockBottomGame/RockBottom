@@ -50,7 +50,7 @@ public class EntityChangePacket implements IPacket {
         buf.writeBoolean(this.remove);
 
         if (!this.remove) {
-            NetUtil.writeStringToBuffer(this.name, buf);
+            NetUtil.writeStringToBuffer(buf, this.name);
             NetUtil.writeSetToBuffer(this.entitySet, buf);
         }
     }

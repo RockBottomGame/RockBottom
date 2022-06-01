@@ -41,7 +41,7 @@ public class SoundPacket implements IPacket {
 
     @Override
     public void toBuffer(ByteBuf buf) {
-        NetUtil.writeStringToBuffer(this.soundName.toString(), buf);
+        NetUtil.writeStringToBuffer(buf, this.soundName.toString());
         buf.writeFloat(this.pitch);
         buf.writeFloat(this.volume);
         buf.writeBoolean(this.isBroadcast);

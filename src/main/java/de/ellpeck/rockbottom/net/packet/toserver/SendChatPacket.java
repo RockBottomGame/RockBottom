@@ -29,7 +29,7 @@ public class SendChatPacket implements IPacket {
     public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
-        NetUtil.writeStringToBuffer(this.message, buf);
+        NetUtil.writeStringToBuffer(buf, this.message);
     }
 
     @Override

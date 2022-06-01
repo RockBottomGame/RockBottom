@@ -42,7 +42,7 @@ public class ConstructionPacket implements IPacket {
     public void toBuffer(ByteBuf buf) {
         buf.writeLong(this.playerId.getMostSignificantBits());
         buf.writeLong(this.playerId.getLeastSignificantBits());
-        NetUtil.writeStringToBuffer(this.recipeName.toString(), buf);
+        NetUtil.writeStringToBuffer(buf, this.recipeName.toString());
         buf.writeBoolean(machineLayer != null);
         if (machineLayer != null) {
             buf.writeInt(machineLayer.index());

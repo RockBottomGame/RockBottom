@@ -29,7 +29,7 @@ public class ChangeWorldPacket implements IPacket {
     public void toBuffer(ByteBuf buf) {
         NetUtil.writeSetToBuffer(this.worldData, buf);
         if (this.subName != null) {
-            NetUtil.writeStringToBuffer(this.subName.toString(), buf);
+            NetUtil.writeStringToBuffer(buf, this.subName.toString());
         }
     }
 

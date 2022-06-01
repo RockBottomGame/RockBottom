@@ -386,7 +386,8 @@
             "pickup": "Pickup Tile",
             "camera_mode": "Camera Mode",
             "camera_zoom_in": "Camera Zoom In",
-            "camera_zoom_out": "Camera Zoom Out"
+            "camera_zoom_out": "Camera Zoom Out",
+            "delete": "Delete item in slot"
         },
         "death.flavor.": {
             "1": "%s is now ravioli.",
