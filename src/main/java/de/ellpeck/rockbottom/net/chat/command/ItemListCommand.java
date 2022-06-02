@@ -24,7 +24,7 @@ public class ItemListCommand extends Command {
         player.openGuiContainer(new ItemListGui(player), new ItemListContainer(player));
 
         if (!player.world.isClient()) {
-            IPacket packet = new OpenUnboundContainerPacket(null, OpenUnboundContainerPacket.ITEM_LIST_ID);
+            IPacket packet = new OpenUnboundContainerPacket(OpenUnboundContainerPacket.ITEM_LIST_ID);
             player.sendPacket(packet);
         }
     }

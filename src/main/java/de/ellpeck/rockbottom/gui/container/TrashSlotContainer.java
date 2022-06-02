@@ -55,7 +55,7 @@ public class TrashSlotContainer extends SlotContainer {
             public boolean onMouseAction(IGameInstance game, int button, float x, float y) {
                 if (this.isMouseOver(game)) {
                     if (game.getInput().isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                        RockBottomAPI.getNet().sendToServer(new ClearInventoryPacket(game.getPlayer().getUniqueId()));
+                        RockBottomAPI.getNet().sendToServer(new ClearInventoryPacket());
                         game.getPlayer().getInv().clear();
                         return true;
                     } else {

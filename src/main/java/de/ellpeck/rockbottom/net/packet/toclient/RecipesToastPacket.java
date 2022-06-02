@@ -9,6 +9,7 @@ import de.ellpeck.rockbottom.api.construction.compendium.PlayerCompendiumRecipe;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.item.ItemInstance;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.chat.component.ChatComponent;
 import de.ellpeck.rockbottom.api.net.chat.component.TextChatComponent;
@@ -18,7 +19,6 @@ import de.ellpeck.rockbottom.api.toast.IToast;
 import de.ellpeck.rockbottom.api.toast.ItemToast;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class RecipesToastPacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         AbstractPlayerEntity player = game.getPlayer();
         if (player == null || recipes == null || recipes.size() == 0) return;
 

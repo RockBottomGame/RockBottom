@@ -25,11 +25,11 @@ import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.effect.ActiveEffect;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class EffectPacket implements IPacket {
 
@@ -63,7 +63,7 @@ public class EffectPacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         if (this.effect != null) {
             AbstractPlayerEntity player = game.getPlayer();
             if (player != null) {

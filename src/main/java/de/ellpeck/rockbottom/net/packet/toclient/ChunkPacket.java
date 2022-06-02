@@ -3,12 +3,12 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 import de.ellpeck.rockbottom.api.Constants;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.RockBottomAPI;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IChunk;
 import de.ellpeck.rockbottom.api.world.layer.TileLayer;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;
 
@@ -101,7 +101,7 @@ public class ChunkPacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         if (game.getWorld() != null) {
             RockBottomAPI.logger().config("Receiving chunk at " + this.chunkX + ", " + this.chunkY);
 

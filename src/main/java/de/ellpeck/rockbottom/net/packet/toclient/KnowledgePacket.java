@@ -5,13 +5,13 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.IKnowledgeManager;
 import de.ellpeck.rockbottom.api.entity.player.knowledge.Information;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.world.entity.player.PlayerEntity;
 import de.ellpeck.rockbottom.world.entity.player.knowledge.KnowledgeManager;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class KnowledgePacket implements IPacket {
 
@@ -50,7 +50,7 @@ public class KnowledgePacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         AbstractPlayerEntity player = game.getPlayer();
         if (player != null) {
             IKnowledgeManager manager = player.getKnowledge();

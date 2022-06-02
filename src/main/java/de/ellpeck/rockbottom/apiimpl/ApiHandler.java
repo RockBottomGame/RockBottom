@@ -238,7 +238,7 @@ public class ApiHandler implements IApiHandler {
     @Override
     public void defaultConstruct(AbstractPlayerEntity player, PlayerCompendiumRecipe recipe, TileEntity machine) {
         if (RockBottomAPI.getNet().isClient()) {
-            RockBottomAPI.getNet().sendToServer(new ConstructionPacket(player.getUniqueId(), Registries.ALL_RECIPES.getId(recipe), machine, 1));
+            RockBottomAPI.getNet().sendToServer(new ConstructionPacket(Registries.ALL_RECIPES.getId(recipe), machine, 1));
         } else if (recipe.isKnown(player)) {
             recipe.playerConstruct(player, machine, 1);
         }

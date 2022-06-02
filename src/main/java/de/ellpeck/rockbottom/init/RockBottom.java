@@ -438,7 +438,7 @@ public class RockBottom extends AbstractGame {
         if (this.player != null) {
             if (RockBottomAPI.getNet().isClient()) {
                 RockBottomAPI.logger().info("Sending disconnection packet");
-                RockBottomAPI.getNet().sendToServer(new DisconnectPacket(this.player.getUniqueId()));
+                RockBottomAPI.getNet().sendToServer(new DisconnectPacket());
             }
 
             RockBottomAPI.getEventHandler().fireEvent(new PlayerLeaveWorldEvent(this.player, this.player instanceof ConnectedPlayer));

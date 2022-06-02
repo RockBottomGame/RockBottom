@@ -24,11 +24,11 @@ package de.ellpeck.rockbottom.net.packet.toclient;
 import de.ellpeck.rockbottom.api.IGameInstance;
 import de.ellpeck.rockbottom.api.entity.Entity;
 import de.ellpeck.rockbottom.api.entity.LivingEntity;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
@@ -61,7 +61,7 @@ public final class DamagePacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         IWorld world = game.getWorld();
         if (world != null) {
             Entity entity = world.getEntity(this.entityId);

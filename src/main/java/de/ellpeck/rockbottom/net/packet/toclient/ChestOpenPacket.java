@@ -1,12 +1,12 @@
 package de.ellpeck.rockbottom.net.packet.toclient;
 
 import de.ellpeck.rockbottom.api.IGameInstance;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
 import de.ellpeck.rockbottom.world.tile.entity.ChestTileEntity;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class ChestOpenPacket implements IPacket {
 
@@ -40,7 +40,7 @@ public class ChestOpenPacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         IWorld world = game.getWorld();
         if (world != null) {
             ChestTileEntity chest = world.getTileEntity(this.x, this.y, ChestTileEntity.class);

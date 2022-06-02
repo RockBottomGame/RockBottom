@@ -5,6 +5,7 @@ import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.log.Logging;
+import de.ellpeck.rockbottom.net.PacketContext;
 import de.ellpeck.rockbottom.net.packet.toclient.RejectPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -31,14 +32,15 @@ public class ServerNetworkHandler extends SimpleChannelInboundHandler<IPacket> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) {
+        PacketContext packetCtx = new PacketContext(ctx);
         RockBottomAPI.getGame().enqueueAction((game, context) -> {
             try {
                 packet.handle(game, context);
             } catch (Exception e) {
                 RockBottomAPI.logger().log(Level.SEVERE, "There was an error handling a packet on the server, closing the connection to the client", e);
-                this.notifyAndClose(context, e);
+                this.notifyAndClose(context.getChannelContext(), e);
             }
-        }, ctx);
+        }, packetCtx);
     }
 
     @Override

@@ -62,7 +62,7 @@ public class InternalHooks implements IInternalHooks {
 
     public static boolean setOrPickUpHolding(AbstractPlayerEntity player, ItemContainer container, int slotId, boolean half) {
         if (player.world.isClient()) {
-            RockBottomAPI.getNet().sendToServer(new SetOrPickHoldingPacket(player.getUniqueId(), slotId, half));
+            RockBottomAPI.getNet().sendToServer(new SetOrPickHoldingPacket(slotId, half));
         }
 
         SlotContainer slot = container.getSlot(slotId);
@@ -146,7 +146,7 @@ public class InternalHooks implements IInternalHooks {
 
     public static int shiftClick(AbstractPlayerEntity player, ItemContainer container, int from, int into) {
         if (player.world.isClient()) {
-            RockBottomAPI.getNet().sendToServer(new ShiftClickPacket(player.getUniqueId(), from, into));
+            RockBottomAPI.getNet().sendToServer(new ShiftClickPacket(from, into));
         }
 
         SlotContainer slotFrom = container.getSlot(from);

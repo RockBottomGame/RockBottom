@@ -6,6 +6,7 @@ import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.mod.IMod;
 import de.ellpeck.rockbottom.api.net.INetHandler;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.chat.component.TranslationChatComponent;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
@@ -13,13 +14,13 @@ import de.ellpeck.rockbottom.api.render.IPlayerDesign;
 import de.ellpeck.rockbottom.api.util.Util;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.IWorld;
+import de.ellpeck.rockbottom.net.PacketContext;
 import de.ellpeck.rockbottom.net.packet.toclient.InitialServerDataPacket;
 import de.ellpeck.rockbottom.net.packet.toclient.PlayerPacket;
 import de.ellpeck.rockbottom.net.packet.toclient.RejectPacket;
 import de.ellpeck.rockbottom.render.design.PlayerDesign;
 import de.ellpeck.rockbottom.world.AbstractWorld;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,9 +44,7 @@ public class JoinPacket implements IPacket {
         }
     }
 
-    public JoinPacket() {
-
-    }
+    public JoinPacket() {}
 
     @Override
     public void toBuffer(ByteBuf buf) {
@@ -71,7 +70,7 @@ public class JoinPacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         IWorld world = game.getWorld();
         TranslationChatComponent reject = null;
 
@@ -93,7 +92,7 @@ public class JoinPacket implements IPacket {
             if (mods == null) {
                 if (world != null) {
                     if (world.getPlayer(this.id) == null) {
-                        AbstractPlayerEntity player = world.createPlayer(this.id, this.design, context.channel(), false);
+                        AbstractPlayerEntity player = world.createPlayer(this.id, this.design, context.getChannelContext().channel(), false);
 
                         DataSet set = new DataSet();
                         ((AbstractWorld) player.world).saveWorldData(set);
@@ -105,6 +104,7 @@ public class JoinPacket implements IPacket {
 
                         player.world.addPlayer(player);
                         player.world.addEntity(player);
+                        context.getChannelContext().channel().attr(PacketContext.PLAYER_ATTRIBUTE_KEY).set(player);
 
                         RockBottomAPI.logger().info("Player " + this.design.getName() + " with id " + this.id + " joined, sending initial server data");
 
@@ -122,8 +122,8 @@ public class JoinPacket implements IPacket {
         }
 
         if (reject != null) {
-            context.writeAndFlush(new RejectPacket(reject));
-            context.disconnect();
+            context.getChannelContext().writeAndFlush(new RejectPacket(reject));
+            context.getChannelContext().disconnect();
             RockBottomAPI.logger().info("Disconnecting player " + this.design.getName() + " with id " + this.id);
         }
     }

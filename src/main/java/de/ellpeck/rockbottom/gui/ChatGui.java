@@ -202,7 +202,7 @@ public class ChatGui extends Gui {
 
             if (text != null && !text.isEmpty()) {
                 if (RockBottomAPI.getNet().isClient()) {
-                    RockBottomAPI.getNet().sendToServer(new SendChatPacket(game.getPlayer().getUniqueId(), text));
+                    RockBottomAPI.getNet().sendToServer(new SendChatPacket(text));
                 } else {
                     game.getChatLog().sendCommandSenderMessage(text, game.getPlayer());
                 }

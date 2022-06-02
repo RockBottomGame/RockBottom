@@ -5,13 +5,13 @@ import de.ellpeck.rockbottom.api.RockBottomAPI;
 import de.ellpeck.rockbottom.api.data.set.DataSet;
 import de.ellpeck.rockbottom.api.entity.player.AbstractPlayerEntity;
 import de.ellpeck.rockbottom.api.gui.IGuiManager;
+import de.ellpeck.rockbottom.api.net.IPacketContext;
 import de.ellpeck.rockbottom.api.net.NetUtil;
 import de.ellpeck.rockbottom.api.net.packet.IPacket;
 import de.ellpeck.rockbottom.api.util.reg.ResourceName;
 import de.ellpeck.rockbottom.api.world.DynamicRegistryInfo;
 import de.ellpeck.rockbottom.api.world.WorldInfo;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class InitialServerDataPacket implements IPacket {
 
@@ -64,7 +64,7 @@ public class InitialServerDataPacket implements IPacket {
     }
 
     @Override
-    public void handle(IGameInstance game, ChannelHandlerContext context) {
+    public void handle(IGameInstance game, IPacketContext context) {
         if (game.getWorld() == null) {
             RockBottomAPI.logger().info("Received initial server data, joining world");
 
@@ -80,7 +80,7 @@ public class InitialServerDataPacket implements IPacket {
             });
         } else {
             RockBottomAPI.logger().warning("Received initial server data while already being in a world!");
-            context.channel().disconnect();
+            context.getChannelContext().channel().disconnect();
         }
     }
 

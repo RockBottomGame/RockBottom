@@ -150,7 +150,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
             if (this.currentContainer != null) {
                 if (this.world.isClient()) {
                     if (this.currentContainer.getName().equals(InventoryContainer.NAME)) {
-                        RockBottomAPI.getNet().sendToServer(new OpenUnboundContainerPacket(this.getUniqueId(), OpenUnboundContainerPacket.INV_ID));
+                        RockBottomAPI.getNet().sendToServer(new OpenUnboundContainerPacket(OpenUnboundContainerPacket.INV_ID));
                     }
                 } else {
                     this.statistics.getOrInit(StatisticList.CONTAINERS_OPENED, NumberStatistic.class).update();
@@ -169,7 +169,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
                 }
             } else {
                 if (this.world.isClient()) {
-                    RockBottomAPI.getNet().sendToServer(new OpenUnboundContainerPacket(this.getUniqueId(), OpenUnboundContainerPacket.CLOSE_ID));
+                    RockBottomAPI.getNet().sendToServer(new OpenUnboundContainerPacket(OpenUnboundContainerPacket.CLOSE_ID));
                 }
             }
 
@@ -299,7 +299,7 @@ public class PlayerEntity extends AbstractPlayerEntity {
         if (this.isLocalPlayer()) {
             if (this.world.isClient() && this.ticksExisted % this.getSyncFrequency() == 0) {
                 if (this.lastSyncX != x || this.lastSyncY != y) {
-                    RockBottomAPI.getNet().sendToServer(new PlayerMovementPacket(this.getUniqueId(), this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.isFlying));
+                    RockBottomAPI.getNet().sendToServer(new PlayerMovementPacket(this.getOriginX(), this.getOriginY(), this.motionX, this.motionY, this.facing, this.isFlying));
                     this.lastSyncX = x;
                     this.lastSyncY = y;
                 }

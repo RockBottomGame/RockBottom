@@ -58,7 +58,7 @@ public class StatisticsGui extends AbstractStatGui {
             }
             menu.organize();
         } else {
-            RockBottomAPI.getNet().sendToServer(new StatsPacket(player.getUniqueId()));
+            RockBottomAPI.getNet().sendToServer(new StatsPacket());
         }
 
         this.components.add(new ButtonComponent(this, this.width / 2 - 40, this.height - 16, 80, 16, () -> {

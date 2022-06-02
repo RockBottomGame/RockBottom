@@ -52,7 +52,7 @@ public class HotbarSlotComponent extends GuiComponent {
                 this.player.setSelectedSlot(this.id);
 
                 if (RockBottomAPI.getNet().isClient()) {
-                    RockBottomAPI.getNet().sendToServer(new HotbarPacket(game.getPlayer().getUniqueId(), this.id));
+                    RockBottomAPI.getNet().sendToServer(new HotbarPacket(this.id));
                 }
 
                 return true;

@@ -318,7 +318,7 @@ public class InteractionManager implements IInteractionManager {
                     if (selected != null && selected.getItem().canHoldButtonToAttack(player.world, mousedTileX, mousedTileY, player, selected) ? Settings.KEY_DESTROY.isDown() : Settings.KEY_DESTROY.isPressed()) {
                         if (this.attackCooldown <= 0 && attackEntity(player, mousedTileX, mousedTileY)) {
                             if (RockBottomAPI.getNet().isClient()) {
-                                RockBottomAPI.getNet().sendToServer(new AttackPacket(player.getUniqueId(), mousedTileX, mousedTileY));
+                                RockBottomAPI.getNet().sendToServer(new AttackPacket(mousedTileX, mousedTileY));
                             }
 
                             this.attackCooldown = selected == null ? 40 : selected.getItem().getAttackCooldown(player.world, mousedTileX, mousedTileY, player, selected);
@@ -334,7 +334,7 @@ public class InteractionManager implements IInteractionManager {
                                     if (interactBreakResult != EventResult.CANCELLED && (interactBreakResult == EventResult.MODIFIED || (layer.canEditLayer(game, player) && this.interactCooldown <= 0))) {
                                         if (interact(player, layer, mousedTileX, mousedTileY, true)) {
                                             if (RockBottomAPI.getNet().isClient()) {
-                                                RockBottomAPI.getNet().sendToServer(new InteractPacket(player.getUniqueId(), layer, mousedTileX, mousedTileY, true));
+                                                RockBottomAPI.getNet().sendToServer(new InteractPacket(layer, mousedTileX, mousedTileY, true));
                                             }
 
                                             this.interactCooldown = 10;
@@ -377,7 +377,7 @@ public class InteractionManager implements IInteractionManager {
                                                 this.breakProgress = 0;
 
                                                 if (RockBottomAPI.getNet().isClient()) {
-                                                    RockBottomAPI.getNet().sendToServer(new BreakTilePacket(player.getUniqueId(), layer, mousedTileX, mousedTileY));
+                                                    RockBottomAPI.getNet().sendToServer(new BreakTilePacket(layer, mousedTileX, mousedTileY));
                                                 } else {
                                                     breakTile(tile, player, x, y, layer, effective, selected);
                                                 }
@@ -398,7 +398,7 @@ public class InteractionManager implements IInteractionManager {
                                 if (placeResult != EventResult.CANCELLED && (placeResult == EventResult.MODIFIED || (layer.canEditLayer(game, player) && this.interactCooldown <= 0))) {
                                     if (interact(player, layer, mousedTileX, mousedTileY, false)) {
                                         if (RockBottomAPI.getNet().isClient()) {
-                                            RockBottomAPI.getNet().sendToServer(new InteractPacket(player.getUniqueId(), layer, mousedTileX, mousedTileY, false));
+                                            RockBottomAPI.getNet().sendToServer(new InteractPacket(layer, mousedTileX, mousedTileY, false));
                                         }
 
                                         if (this.didPlace && player.getGameMode().isCreative()) {
@@ -415,7 +415,7 @@ public class InteractionManager implements IInteractionManager {
                                 if (player.getGameMode().isCreative()) {
                                     if (pickup(player, layer, x, y)) {
                                         if (RockBottomAPI.getNet().isClient()) {
-                                            RockBottomAPI.getNet().sendToServer(new PickupPacket(player.getUniqueId(), layer, x, y));
+                                            RockBottomAPI.getNet().sendToServer(new PickupPacket(layer, x, y));
                                         }
 
                                         this.interactCooldown = 10;
@@ -457,7 +457,7 @@ public class InteractionManager implements IInteractionManager {
                     player.setSelectedSlot(slot);
 
                     if (RockBottomAPI.getNet().isClient()) {
-                        RockBottomAPI.getNet().sendToServer(new HotbarPacket(player.getUniqueId(), player.getSelectedSlot()));
+                        RockBottomAPI.getNet().sendToServer(new HotbarPacket(player.getSelectedSlot()));
                     }
                 }
             } else {
@@ -480,7 +480,7 @@ public class InteractionManager implements IInteractionManager {
                         game.getPlayer().setSelectedSlot(i);
 
                         if (RockBottomAPI.getNet().isClient()) {
-                            RockBottomAPI.getNet().sendToServer(new HotbarPacket(game.getPlayer().getUniqueId(), i));
+                            RockBottomAPI.getNet().sendToServer(new HotbarPacket(i));
                         }
 
                         return true;
