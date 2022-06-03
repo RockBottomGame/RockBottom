@@ -27,7 +27,7 @@ public class CreateWorldGui extends Gui {
     private String worldName = "";
     private String lastSeed = "";
     private long seed;
-    private boolean storyMode = true;
+    private boolean storyMode = false;
     private boolean created;
 
     public CreateWorldGui(Gui parent) {
@@ -119,10 +119,10 @@ public class CreateWorldGui extends Gui {
             }
         }, manager.localize(ResourceName.intern("button.create"))));
 
-        this.components.add(new ToggleButtonComponent(this, this.width / 2 - 50, 112, 100, 16, this.storyMode, () -> {
+        /*this.components.add(new ToggleButtonComponent(this, this.width / 2 - 50, 112, 100, 16, this.storyMode, () -> {
             this.storyMode = !this.storyMode;
             return true;
-        }, "button.story_mode"));
+        }, "button.story_mode"));*/
 
         this.components.add(new ButtonComponent(this, this.width / 2, bottomY - 30, 80, 16, () -> {
             game.getGuiManager().openGui(this.parent);
