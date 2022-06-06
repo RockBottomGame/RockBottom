@@ -46,6 +46,11 @@ public class SmithingTableTile extends MultiTile {
         return true;
     }
 
+	@Override
+	public boolean hasSolidSurface(IWorld world, int x, int y, TileLayer layer) {
+		return true;
+	}
+
     @Override
 	public boolean canPlaceInLayer(TileLayer layer) {
 		return layer == TileLayer.MAIN;

@@ -31,65 +31,106 @@
         "tiles.": {
             "soil": {
                 "path": "/tex/tiles/soil/soil_0.png",
-                "variations": ["/tex/tiles/soil/soil_1.png", "/tex/tiles/soil/soil_2.png", "/tex/tiles/soil/soil_3.png"]
+                "variations": [
+                    "/tex/tiles/soil/soil_1.png",
+                    "/tex/tiles/soil/soil_2.png",
+                    "/tex/tiles/soil/soil_3.png"
+                ]
             },
             "grass": {
                 "path": "/tex/tiles/grass/grass_0.png",
-                "variations": ["/tex/tiles/grass/grass_1.png", "/tex/tiles/grass/grass_2.png"]
+                "variations": [
+                    "/tex/tiles/grass/grass_1.png",
+                    "/tex/tiles/grass/grass_2.png"
+                ]
             },
             "grass_snowy": {
                 "path": "/tex/tiles/grass/snow_grass_0.png",
-                "variations": ["/tex/tiles/grass/snow_grass_1.png", "/tex/tiles/grass/snow_grass_2.png"]
+                "variations": [
+                    "/tex/tiles/grass/snow_grass_1.png",
+                    "/tex/tiles/grass/snow_grass_2.png"
+                ]
             },
             "stone": {
                 "path": "/tex/tiles/stone/stone_0.png",
-                "variations": ["/tex/tiles/stone/stone_1.png", "/tex/tiles/stone/stone_2.png"]
+                "variations": [
+                    "/tex/tiles/stone/stone_1.png",
+                    "/tex/tiles/stone/stone_2.png"
+                ]
             },
             "grass_tuft": {
                 "path": "/tex/tiles/grass/grass_tuft_0.png",
-                "variations": ["/tex/tiles/grass/grass_tuft_1.png", "/tex/tiles/grass/grass_tuft_2.png"]
+                "variations": [
+                    "/tex/tiles/grass/grass_tuft_1.png",
+                    "/tex/tiles/grass/grass_tuft_2.png"
+                ]
             },
             "short_grass": {
                 "path": "/tex/tiles/grass/short_grass_0.png",
-                "variations": ["/tex/tiles/grass/short_grass_1.png"]
+                "variations": [
+                    "/tex/tiles/grass/short_grass_1.png"
+                ]
             },
             "tall_grass": {
                 "path": "/tex/tiles/grass/tall_grass_0.png",
-                "variations": ["/tex/tiles/grass/tall_grass_1.png"]
+                "variations": [
+                    "/tex/tiles/grass/tall_grass_1.png"
+                ]
             },
             "bush": {
                 "path": "/tex/tiles/bush/bush_0.png",
-                "variations": ["/tex/tiles/bush/bush_1.png", "/tex/tiles/bush/bush_2.png"]
+                "variations": [
+                    "/tex/tiles/bush/bush_1.png",
+                    "/tex/tiles/bush/bush_2.png"
+                ]
             },
             "log.": {
                 "*": "/tex/tiles/log/log.png",
                 "branch_left": {
                     "path": "/tex/tiles/log/log_branch_left_0.png",
-                    "variations": ["/tex/tiles/log/log_branch_left_1.png"]
+                    "variations": [
+                        "/tex/tiles/log/log_branch_left_1.png"
+                    ]
                 },
                 "branch_right": {
                     "path": "/tex/tiles/log/log_branch_right_0.png",
-                    "variations": ["/tex/tiles/log/log_branch_right_1.png"]
+                    "variations": [
+                        "/tex/tiles/log/log_branch_right_1.png"
+                    ]
                 },
                 "trunk_top": {
                     "path": "/tex/tiles/log/log_trunk_top_0.png",
-                    "variations": ["/tex/tiles/log/log_trunk_top_1.png"]
+                    "variations": [
+                        "/tex/tiles/log/log_trunk_top_1.png"
+                    ]
                 },
                 "trunk_middle": {
                     "path": "/tex/tiles/log/log_trunk_middle_0.png",
-                    "variations": ["/tex/tiles/log/log_trunk_middle_1.png", "/tex/tiles/log/log_trunk_middle_2.png", "/tex/tiles/log/log_trunk_middle_3.png", "/tex/tiles/log/log_trunk_middle_4.png"]
+                    "variations": [
+                        "/tex/tiles/log/log_trunk_middle_1.png",
+                        "/tex/tiles/log/log_trunk_middle_2.png",
+                        "/tex/tiles/log/log_trunk_middle_3.png",
+                        "/tex/tiles/log/log_trunk_middle_4.png"
+                    ]
                 },
                 "trunk_bottom": {
                     "path": "/tex/tiles/log/log_trunk_bottom_0.png",
-                    "variations": ["/tex/tiles/log/log_trunk_bottom_1.png", "/tex/tiles/log/log_trunk_bottom_2.png"]
+                    "variations": [
+                        "/tex/tiles/log/log_trunk_bottom_1.png",
+                        "/tex/tiles/log/log_trunk_bottom_2.png"
+                    ]
                 },
                 "root_left": {
                     "path": "/tex/tiles/log/log_root_left_0.png",
-                    "variations": ["/tex/tiles/log/log_root_left_1.png"]
+                    "variations": [
+                        "/tex/tiles/log/log_root_left_1.png"
+                    ]
                 },
                 "root_right": {
                     "path": "/tex/tiles/log/log_root_right_0.png",
-                    "variations": ["/tex/tiles/log/log_root_right_1.png"]
+                    "variations": [
+                        "/tex/tiles/log/log_root_right_1.png"
+                    ]
                 }
             },
             "leaves": "/tex/tiles/leaves.png",
@@ -103,7 +144,9 @@
             "purple_flower": "/tex/tiles/flower/purple_flower.png",
             "pebbles": {
                 "path": "/tex/tiles/pebbles_0.png",
-                "variations": ["/tex/tiles/pebbles_1.png"]
+                "variations": [
+                    "/tex/tiles/pebbles_1.png"
+                ]
             },
             "sand": "/tex/tiles/sand.png",
             "sandstone": "/tex/tiles/sandstone.png",
@@ -164,22 +207,44 @@
             "wood_boards": "/tex/tiles/wood_boards/wood_boards.png",
             "old_wood_boards": {
                 "path": "/tex/tiles/wood_boards/old_wood_boards_0.png",
-                "variations": ["/tex/tiles/wood_boards/old_wood_boards_1.png"]
+                "variations": [
+                    "/tex/tiles/wood_boards/old_wood_boards_1.png"
+                ]
             },
             "wood_door.": {
                 "item": "/tex/tiles/wood_door/wood_door_item.png",
                 "closed.": {
                     "subtexture": {
                         "file": "/tex/tiles/wood_door/wood_door_closed.png",
-                        "0": [0, 0, 12, 12],
-                        "1": [0, 12, 12, 12]
+                        "0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "open.": {
                     "subtexture": {
                         "file": "/tex/tiles/wood_door/wood_door_open.png",
-                        "0": [0, 0, 12, 12],
-                        "1": [0, 12, 12, 12]
+                        "0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -188,15 +253,35 @@
                 "closed.": {
                     "subtexture": {
                         "file": "/tex/tiles/wood_door/old_wood_door_closed.png",
-                        "0": [0, 0, 12, 12],
-                        "1": [0, 12, 12, 12]
+                        "0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "open.": {
                     "subtexture": {
                         "file": "/tex/tiles/wood_door/old_wood_door_open.png",
-                        "0": [0, 0, 12, 12],
-                        "1": [0, 12, 12, 12]
+                        "0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -211,15 +296,35 @@
                 "*.": {
                     "subtexture": {
                         "file": "/tex/tiles/simple_furnace/simple_furnace.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "active.": {
                     "subtexture": {
                         "file": "/tex/tiles/simple_furnace/simple_furnace_active.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -228,19 +333,59 @@
                 "*.": {
                     "subtexture": {
                         "file": "/tex/tiles/combiner/combiner.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "1.1": [12, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "active.": {
                     "subtexture": {
                         "file": "/tex/tiles/combiner/combiner_active.png",
-                        "0.0": [0, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "1.1": [12, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -249,8 +394,18 @@
                 "*.": {
                     "subtexture": {
                         "file": "/tex/tiles/construction_table.png",
-                        "0.0": [0, 0, 12, 12],
-                        "1.0": [12, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -259,8 +414,18 @@
                 "*.": {
                     "subtexture": {
                         "file": "/tex/tiles/smithing_table.png",
-                        "0.0": [0, 0, 12, 12],
-                        "1.0": [12, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -269,71 +434,171 @@
                 "0.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_0.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "1.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_1.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "2.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_2.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "3.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_3.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "4.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_4.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "5.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_5.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "6.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_6.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "7.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_7.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "8.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_8.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "9.": {
                     "subtexture": {
                         "file": "/tex/tiles/corn/corn_9.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -388,71 +653,171 @@
                 "0.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_0.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "1.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_1.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "2.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_2.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "3.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_3.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "4.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_4.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "5.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_5.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "6.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_6.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "7.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_7.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "8.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_8.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "9.": {
                     "subtexture": {
                         "file": "/tex/tiles/cotton/cotton_9.png",
-                        "top": [0, 0, 12, 12],
-                        "bottom": [0, 12, 12, 12]
+                        "top": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "bottom": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ]
                     }
                 }
             },
@@ -460,76 +825,220 @@
                 "item": "/tex/tiles/spinning_wheel/spinning_wheel_0.png",
                 "*.": {
                     "subtexture": {
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12],
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ],
                         "file": "/tex/tiles/spinning_wheel/spinning_wheel_0.png"
                     }
                 },
                 "1.": {
                     "subtexture": {
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12],
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ],
                         "file": "/tex/tiles/spinning_wheel/spinning_wheel_1.png"
                     }
                 },
                 "2.": {
                     "subtexture": {
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12],
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ],
                         "file": "/tex/tiles/spinning_wheel/spinning_wheel_2.png"
                     }
                 },
                 "3.": {
                     "subtexture": {
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12],
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ],
                         "file": "/tex/tiles/spinning_wheel/spinning_wheel_3.png"
                     }
                 },
                 "4.": {
                     "subtexture": {
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12],
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ],
                         "file": "/tex/tiles/spinning_wheel/spinning_wheel_4.png"
                     }
                 },
                 "5.": {
                     "subtexture": {
-                        "0.0": [0, 12, 12, 12],
-                        "1.0": [12, 12, 12, 12],
-                        "0.1": [0, 0, 12, 12],
-                        "1.1": [12, 0, 12, 12],
+                        "0.0": [
+                            0,
+                            12,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            12,
+                            12,
+                            12
+                        ],
+                        "0.1": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.1": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ],
                         "file": "/tex/tiles/spinning_wheel/spinning_wheel_5.png"
                     }
                 }
             },
             "wood_platform": "/tex/tiles/platform/wood_platform.png",
-            "plant_rope": "/tex/tiles/plant_rope.png",
+            "plant_rope.": {
+                "*": "/tex/tiles/plant_rope.png",
+                "ending": "/tex/tiles/plant_rope_ending.png",
+                "item": "/tex/items/plant_rope_item.png"
+            },
             "pot": "/tex/tiles/pot.png",
             "bed.": {
                 "item": "/tex/tiles/bed/item.png",
                 "*.": {
                     "subtexture": {
                         "file": "/tex/tiles/bed/frame.png",
-                        "0.0": [0, 0, 12, 12],
-                        "1.0": [12, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "cover.": {
                     "subtexture": {
                         "file": "/tex/tiles/bed/cover.png",
-                        "0.0": [0, 0, 12, 12],
-                        "1.0": [12, 0, 12, 12]
+                        "0.0": [
+                            0,
+                            0,
+                            12,
+                            12
+                        ],
+                        "1.0": [
+                            12,
+                            0,
+                            12,
+                            12
+                        ]
                     }
                 },
                 "left_pillow": "/tex/tiles/bed/left_pillow.png",
@@ -775,8 +1284,18 @@
             "bubbles.": {
                 "subtexture": {
                     "file": "/tex/emotions/bubbles.png",
-                    "thought": [0, 0, 24, 24],
-                    "speech": [24, 0, 24, 24]
+                    "thought": [
+                        0,
+                        0,
+                        24,
+                        24
+                    ],
+                    "speech": [
+                        24,
+                        0,
+                        24,
+                        24
+                    ]
                 }
             },
             "happy": "/tex/emotions/happy.png"
@@ -790,153 +1309,408 @@
         },
         "player.": {
             "accessory.": {
-                "monocle_1": ["/anim/player/anim.json", "/anim/player/accessory/monocle_1.png"],
-                "monocle_2": ["/anim/player/anim.json", "/anim/player/accessory/monocle_2.png"],
-                "sunglasses_1": ["/anim/player/anim.json", "/anim/player/accessory/sunglasses_1.png"],
-                "sunglasses_2": ["/anim/player/anim.json", "/anim/player/accessory/sunglasses_2.png"],
-                "sunglasses_3": ["/anim/player/anim.json", "/anim/player/accessory/sunglasses_3.png"],
-                "glasses_1": ["/anim/player/anim.json", "/anim/player/accessory/glasses_1.png"],
-                "glasses_2": ["/anim/player/anim.json", "/anim/player/accessory/glasses_2.png"],
-                "glasses_3": ["/anim/player/anim.json", "/anim/player/accessory/glasses_3.png"],
-                "eyeliner": ["/anim/player/anim.json", "/anim/player/accessory/eyeliner.png"]
+                "monocle_1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/monocle_1.png"
+                ],
+                "monocle_2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/monocle_2.png"
+                ],
+                "sunglasses_1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/sunglasses_1.png"
+                ],
+                "sunglasses_2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/sunglasses_2.png"
+                ],
+                "sunglasses_3": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/sunglasses_3.png"
+                ],
+                "glasses_1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/glasses_1.png"
+                ],
+                "glasses_2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/glasses_2.png"
+                ],
+                "glasses_3": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/glasses_3.png"
+                ],
+                "eyeliner": [
+                    "/anim/player/anim.json",
+                    "/anim/player/accessory/eyeliner.png"
+                ]
             },
             "arm.": {
                 "skin_1.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_1.png"],
-                    "holding": ["/anim/player/anim_holding.json", "/anim/player/arm/holding/skin_1.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/arm/hanging/skin_1.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim_holding.json",
+                        "/anim/player/arm/holding/skin_1.png"
+                    ]
                 },
                 "skin_2.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_2.png"],
-                    "holding": ["/anim/player/anim_holding.json", "/anim/player/arm/holding/skin_2.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/arm/hanging/skin_2.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim_holding.json",
+                        "/anim/player/arm/holding/skin_2.png"
+                    ]
                 },
                 "skin_3.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_3.png"],
-                    "holding": ["/anim/player/anim_holding.json", "/anim/player/arm/holding/skin_3.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/arm/hanging/skin_3.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim_holding.json",
+                        "/anim/player/arm/holding/skin_3.png"
+                    ]
                 },
                 "skin_4.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_4.png"],
-                    "holding": ["/anim/player/anim_holding.json", "/anim/player/arm/holding/skin_4.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/arm/hanging/skin_4.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim_holding.json",
+                        "/anim/player/arm/holding/skin_4.png"
+                    ]
                 },
                 "skin_5.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_5.png"],
-                    "holding": ["/anim/player/anim_holding.json", "/anim/player/arm/holding/skin_5.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/arm/hanging/skin_5.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim_holding.json",
+                        "/anim/player/arm/holding/skin_5.png"
+                    ]
                 },
                 "skin_s.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/arm/hanging/skin_s.png"],
-                    "holding": ["/anim/player/anim_holding.json", "/anim/player/arm/holding/skin_s.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/arm/hanging/skin_s.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim_holding.json",
+                        "/anim/player/arm/holding/skin_s.png"
+                    ]
                 }
             },
             "base.": {
-                "eyes": ["/anim/player/anim.json", "/anim/player/base/eyes.png"],
+                "eyes": [
+                    "/anim/player/anim.json",
+                    "/anim/player/base/eyes.png"
+                ],
                 "1.": {
-                    "male": ["/anim/player/anim.json", "/anim/player/base/male/1.png"],
-                    "female": ["/anim/player/anim.json", "/anim/player/base/female/1.png"]
+                    "male": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/male/1.png"
+                    ],
+                    "female": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/female/1.png"
+                    ]
                 },
                 "2.": {
-                    "male": ["/anim/player/anim.json", "/anim/player/base/male/2.png"],
-                    "female": ["/anim/player/anim.json", "/anim/player/base/female/2.png"]
+                    "male": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/male/2.png"
+                    ],
+                    "female": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/female/2.png"
+                    ]
                 },
                 "3.": {
-                    "male": ["/anim/player/anim.json", "/anim/player/base/male/3.png"],
-                    "female": ["/anim/player/anim.json", "/anim/player/base/female/3.png"]
+                    "male": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/male/3.png"
+                    ],
+                    "female": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/female/3.png"
+                    ]
                 },
                 "4.": {
-                    "male": ["/anim/player/anim.json", "/anim/player/base/male/4.png"],
-                    "female": ["/anim/player/anim.json", "/anim/player/base/female/4.png"]
+                    "male": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/male/4.png"
+                    ],
+                    "female": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/female/4.png"
+                    ]
                 },
                 "5.": {
-                    "male": ["/anim/player/anim.json", "/anim/player/base/male/5.png"],
-                    "female": ["/anim/player/anim.json", "/anim/player/base/female/5.png"]
+                    "male": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/male/5.png"
+                    ],
+                    "female": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/female/5.png"
+                    ]
                 },
                 "s.": {
-                    "male": ["/anim/player/anim.json", "/anim/player/base/male/s.png"],
-                    "female": ["/anim/player/anim.json", "/anim/player/base/female/s.png"]
+                    "male": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/male/s.png"
+                    ],
+                    "female": [
+                        "/anim/player/anim.json",
+                        "/anim/player/base/female/s.png"
+                    ]
                 }
             },
             "footwear.": {
-                "1": ["/anim/player/anim.json", "/anim/player/footwear/1.png"],
-                "2": ["/anim/player/anim.json", "/anim/player/footwear/2.png"],
-                "3": ["/anim/player/anim.json", "/anim/player/footwear/3.png"],
-                "4": ["/anim/player/anim.json", "/anim/player/footwear/4.png"],
-                "5": ["/anim/player/anim.json", "/anim/player/footwear/5.png"]
+                "1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/footwear/1.png"
+                ],
+                "2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/footwear/2.png"
+                ],
+                "3": [
+                    "/anim/player/anim.json",
+                    "/anim/player/footwear/3.png"
+                ],
+                "4": [
+                    "/anim/player/anim.json",
+                    "/anim/player/footwear/4.png"
+                ],
+                "5": [
+                    "/anim/player/anim.json",
+                    "/anim/player/footwear/5.png"
+                ]
             },
             "hair.": {
-                "1": ["/anim/player/anim.json", "/anim/player/hair/1.png"],
-                "2": ["/anim/player/anim.json", "/anim/player/hair/2.png"],
-                "3": ["/anim/player/anim.json", "/anim/player/hair/3.png"],
-                "4": ["/anim/player/anim.json", "/anim/player/hair/4.png"],
-                "5": ["/anim/player/anim.json", "/anim/player/hair/5.png"],
-                "6": ["/anim/player/anim.json", "/anim/player/hair/6.png"],
-                "7": ["/anim/player/anim.json", "/anim/player/hair/7.png"],
-                "8": ["/anim/player/anim.json", "/anim/player/hair/8.png"],
-                "9": ["/anim/player/anim.json", "/anim/player/hair/9.png"]
+                "1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/1.png"
+                ],
+                "2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/2.png"
+                ],
+                "3": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/3.png"
+                ],
+                "4": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/4.png"
+                ],
+                "5": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/5.png"
+                ],
+                "6": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/6.png"
+                ],
+                "7": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/7.png"
+                ],
+                "8": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/8.png"
+                ],
+                "9": [
+                    "/anim/player/anim.json",
+                    "/anim/player/hair/9.png"
+                ]
             },
             "pants.": {
-                "1": ["/anim/player/anim.json", "/anim/player/pants/1.png"],
-                "2": ["/anim/player/anim.json", "/anim/player/pants/2.png"]
+                "1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/pants/1.png"
+                ],
+                "2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/pants/2.png"
+                ]
             },
             "shirt.": {
-                "1": ["/anim/player/anim.json", "/anim/player/shirt/1.png"],
-                "2": ["/anim/player/anim.json", "/anim/player/shirt/2.png"],
-                "3": ["/anim/player/anim.json", "/anim/player/shirt/3.png"],
-                "4": ["/anim/player/anim.json", "/anim/player/shirt/4.png"]
+                "1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/shirt/1.png"
+                ],
+                "2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/shirt/2.png"
+                ],
+                "3": [
+                    "/anim/player/anim.json",
+                    "/anim/player/shirt/3.png"
+                ],
+                "4": [
+                    "/anim/player/anim.json",
+                    "/anim/player/shirt/4.png"
+                ]
             },
             "sleeve.": {
                 "1.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/1.png"],
-                    "holding": ["/anim/player/anim.json", "/anim/player/sleeve/holding/1.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/hanging/1.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/holding/1.png"
+                    ]
                 },
                 "2.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/2.png"],
-                    "holding": ["/anim/player/anim.json", "/anim/player/sleeve/holding/2.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/hanging/2.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/holding/2.png"
+                    ]
                 },
                 "3.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/3.png"],
-                    "holding": ["/anim/player/anim.json", "/anim/player/sleeve/holding/3.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/hanging/3.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/holding/3.png"
+                    ]
                 },
                 "4.": {
-                    "hanging": ["/anim/player/anim.json", "/anim/player/sleeve/hanging/4.png"],
-                    "holding": ["/anim/player/anim.json", "/anim/player/sleeve/holding/4.png"]
+                    "hanging": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/hanging/4.png"
+                    ],
+                    "holding": [
+                        "/anim/player/anim.json",
+                        "/anim/player/sleeve/holding/4.png"
+                    ]
                 }
             },
             "eyebrows.": {
-                "1": ["/anim/player/anim.json", "/anim/player/eyebrows/1.png"],
-                "2": ["/anim/player/anim.json", "/anim/player/eyebrows/2.png"],
-                "3": ["/anim/player/anim.json", "/anim/player/eyebrows/3.png"],
-                "4": ["/anim/player/anim.json", "/anim/player/eyebrows/4.png"],
-                "5": ["/anim/player/anim.json", "/anim/player/eyebrows/5.png"],
-                "6": ["/anim/player/anim.json", "/anim/player/eyebrows/6.png"]
+                "1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/eyebrows/1.png"
+                ],
+                "2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/eyebrows/2.png"
+                ],
+                "3": [
+                    "/anim/player/anim.json",
+                    "/anim/player/eyebrows/3.png"
+                ],
+                "4": [
+                    "/anim/player/anim.json",
+                    "/anim/player/eyebrows/4.png"
+                ],
+                "5": [
+                    "/anim/player/anim.json",
+                    "/anim/player/eyebrows/5.png"
+                ],
+                "6": [
+                    "/anim/player/anim.json",
+                    "/anim/player/eyebrows/6.png"
+                ]
             },
             "mouth.": {
-                "1": ["/anim/player/anim.json", "/anim/player/mouth/1.png"],
-                "2": ["/anim/player/anim.json", "/anim/player/mouth/2.png"],
-                "3": ["/anim/player/anim.json", "/anim/player/mouth/3.png"],
-                "4": ["/anim/player/anim.json", "/anim/player/mouth/4.png"],
-                "5": ["/anim/player/anim.json", "/anim/player/mouth/5.png"],
-                "6": ["/anim/player/anim.json", "/anim/player/mouth/6.png"],
-                "7": ["/anim/player/anim.json", "/anim/player/mouth/7.png"],
-                "8": ["/anim/player/anim.json", "/anim/player/mouth/8.png"],
-                "9": ["/anim/player/anim.json", "/anim/player/mouth/9.png"],
-                "10": ["/anim/player/anim.json", "/anim/player/mouth/10.png"]
+                "1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/1.png"
+                ],
+                "2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/2.png"
+                ],
+                "3": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/3.png"
+                ],
+                "4": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/4.png"
+                ],
+                "5": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/5.png"
+                ],
+                "6": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/6.png"
+                ],
+                "7": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/7.png"
+                ],
+                "8": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/8.png"
+                ],
+                "9": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/9.png"
+                ],
+                "10": [
+                    "/anim/player/anim.json",
+                    "/anim/player/mouth/10.png"
+                ]
             },
             "beard.": {
-                "1": ["/anim/player/anim.json", "/anim/player/beard/1.png"],
-                "2": ["/anim/player/anim.json", "/anim/player/beard/2.png"]
+                "1": [
+                    "/anim/player/anim.json",
+                    "/anim/player/beard/1.png"
+                ],
+                "2": [
+                    "/anim/player/anim.json",
+                    "/anim/player/beard/2.png"
+                ]
             }
         },
         "gui.effect.": {
-            "speed": ["/tex/gui/effect/speed.json", "/tex/gui/effect/speed.png"],
-            "jump_height": ["/tex/gui/effect/jump_height.json", "/tex/gui/effect/jump_height.png"]
+            "speed": [
+                "/tex/gui/effect/speed.json",
+                "/tex/gui/effect/speed.png"
+            ],
+            "jump_height": [
+                "/tex/gui/effect/jump_height.json",
+                "/tex/gui/effect/jump_height.png"
+            ]
         },
         "monster.": {
-            "slime": ["/anim/monster/slime.json", "/anim/monster/slime.png"]
+            "slime": [
+                "/anim/monster/slime.json",
+                "/anim/monster/slime.png"
+            ]
         },
         "entity.": {
-            "fire": ["/anim/entity/fire.json", "/anim/entity/fire.png"]
+            "fire": [
+                "/anim/entity/fire.json",
+                "/anim/entity/fire.png"
+            ]
         }
     },
     "font.": {
-        "default": ["/font/default.json", "/font/default.png"]
+        "default": [
+            "/font/default.json",
+            "/font/default.png"
+        ]
     },
     "loc.": {
         "us_english": "/loc/us_english.json",

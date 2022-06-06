@@ -44,6 +44,11 @@ public class ConstructionTableTile extends MultiTile {
     }
 
     @Override
+    public boolean hasSolidSurface(IWorld world, int x, int y, TileLayer layer) {
+        return true;
+    }
+
+    @Override
     public boolean canProvideTileEntity() {
         return true;
     }

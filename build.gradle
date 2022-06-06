@@ -8,7 +8,7 @@ buildscript {
 }
 
 group 'de.ellpeck.rockbottom'
-version '0.4.0'
+version '0.5.0'
 
 apply plugin: 'java'
 apply plugin: 'java-library'
